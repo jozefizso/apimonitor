@@ -1,0 +1,169 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="query.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        <!-- Variables -->
+        <!-- TODO We can decode DBCOMMANDOP AS DBCOMMANDOPENUM, however, it is only used in a single API -->
+        <Variable Name="DBCOMMANDOP"                    Type="Alias"    Base="WORD" />
+        <Variable Name="CI_STATE*"                      Type="Alias"    Base="LPVOID" />
+        <Variable Name="TCHAR const*"                   Type="Alias"    Base="TCHAR*" />
+        <Variable Name="ICommand*"                      Type="Alias"    Base="LPVOID" />
+        <Variable Name="ICommand**"                     Type="Pointer"  Base="ICommand*" />
+        <Variable Name="DWORD const*"                   Type="Alias"    Base="DWORD*" />
+        <Variable Name="WCHAR const* const*"            Type="Alias"    Base="WCHAR**" />
+        <Variable Name="PROPVARIANT const*"             Type="Alias"    Base="PROPVARIANT*" />
+        <Variable Name="DBCOMMANDTREE*"                 Type="Alias"    Base="LPVOID" />
+        <Variable Name="DBCOMMANDTREE**"                Type="Pointer"  Base="DBCOMMANDTREE*" />
+        <Variable Name="DBCOMMANDTREE const*"           Type="Alias"    Base="DBCOMMANDTREE*" />
+        <Variable Name="DBCOMMANDTREE const* const*"    Type="Alias"    Base="DBCOMMANDTREE**" />
+        <Variable Name="CIPROPERTYDEF*"                 Type="Alias"    Base="LPVOID" />
+        <Variable Name="CIPROPERTYDEF const*"           Type="Alias"    Base="CIPROPERTYDEF*" />
+
+        <!-- Indexing Service -->
+        <Category Name="System Services/Indexing Service" />
+        <Api Name="CIState">
+            <Param Type="WCHAR const*" Name="pwcsCat" />
+            <Param Type="WCHAR const*" Name="pwcsMachine" />
+            <Param Type="CI_STATE*" Name="pCiState" />
+            <Return Type="STDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="LocateCatalogs" BothCharset="True">
+            <Param Type="TCHAR const*" Name="pwszScope" />
+            <Param Type="ULONG" Name="iBmk" />
+            <Param Type="TCHAR*" Name="pwszMachine" />
+            <Param Type="ULONG*" Name="pcMachine" />
+            <Param Type="TCHAR*" Name="pwszCat" />
+            <Param Type="ULONG*" Name="pcCat" />
+            <Return Type="STDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SetCatalogState">
+            <Param Type="WCHAR const*" Name="pwcsCat" />
+            <Param Type="WCHAR const*" Name="pwcsMachine" />
+            <Param Type="DWORD" Name="dwNewState" />
+            <Param Type="DWORD*" Name="pdwOldState" />
+            <Return Type="STDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CICreateCommand">
+            <Param Type="IUnknown**" Name="ppICommand" />
+            <Param Type="IUnknown*" Name="pUnkOuter" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="WCHAR const*" Name="pwcsCatalog" />
+            <Param Type="WCHAR const*" Name="pwcsMachine" />
+            <Return Type="STDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CIMakeICommand">
+            <Param Type="ICommand**" Name="ppCommand" />
+            <Param Type="ULONG" Name="cScope" />
+            <Param Type="DWORD const*" Name="aDepths" />
+            <Param Type="WCHAR const* const*" Name="awcsScope" />
+            <Param Type="WCHAR const* const*" Name="awcsCatalogs" />
+            <Param Type="WCHAR const* const*" Name="awcsMachine" />
+            <Return Type="STDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CIBuildQueryNode">
+            <Param Type="WCHAR const*" Name="wcsProperty" />
+            <Param Type="DBCOMMANDOP" Name="dbOperator" />
+            <Param Type="PROPVARIANT const*" Name="pvarPropertyValue" />
+            <Param Type="DBCOMMANDTREE**" Name="ppTree" />
+            <Param Type="ULONG" Name="cProperties" />
+            <Param Type="CIPROPERTYDEF const*" Name="pProperty" />
+            <Param Type="LCID" Name="LocaleID" />
+            <Return Type="STDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CIBuildQueryTree">
+            <Param Type="DBCOMMANDTREE const*" Name="pExistingTree" />
+            <Param Type="ULONG" Name="cSiblings" />
+            <Param Type="DBCOMMANDTREE const* const*" Name="ppSibsToCombine" />
+            <Param Type="DBCOMMANDTREE**" Name="ppTree" />
+            <Return Type="STDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CIRestrictionToFullTree">
+            <Param Type="DBCOMMANDTREE const*" Name="pTree" />
+            <Param Type="WCHAR const*" Name="pwszColumns" />
+            <Param Type="WCHAR const*" Name="pwszSortColumns" />
+            <Param Type="WCHAR const*" Name="pwszGroupings" />
+            <Param Type="DBCOMMANDTREE**" Name="ppTree" />
+            <Param Type="ULONG" Name="cProperties" />
+            <Param Type="CIPROPERTYDEF*" Name="pProperties" />
+            <Param Type="LCID" Name="LocaleID" />
+            <Return Type="STDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CITextToFullTree">
+            <Param Type="WCHAR const*" Name="pwszRestriction" />
+            <Param Type="WCHAR const*" Name="pwszColumns" />
+            <Param Type="WCHAR const*" Name="pwszSortColumns" />
+            <Param Type="WCHAR const*" Name="pwszGroupings" />
+            <Param Type="DBCOMMANDTREE**" Name="ppTree" />
+            <Param Type="ULONG" Name="cProperties" />
+            <Param Type="CIPROPERTYDEF*" Name="pProperties" />
+            <Param Type="LCID" Name="LocaleID" />
+            <Return Type="STDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CITextToFullTreeEx">
+            <Param Type="WCHAR const*" Name="pwszRestriction" />
+            <Param Type="ULONG" Name="ulDialect" />
+            <Param Type="WCHAR const*" Name="pwszColumns" />
+            <Param Type="WCHAR const*" Name="pwszSortColumns" />
+            <Param Type="WCHAR const*" Name="pwszGroupings" />
+            <Param Type="DBCOMMANDTREE**" Name="ppTree" />
+            <Param Type="ULONG" Name="cProperties" />
+            <Param Type="CIPROPERTYDEF*" Name="pProperties" />
+            <Param Type="LCID" Name="LocaleID" />
+            <Return Type="STDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CITextToSelectTree">
+            <Param Type="WCHAR const*" Name="pwszRestriction" />
+            <Param Type="DBCOMMANDTREE**" Name="ppTree" />
+            <Param Type="ULONG" Name="cProperties" />
+            <Param Type="CIPROPERTYDEF*" Name="pProperties" />
+            <Param Type="LCID" Name="LocaleID" />
+            <Return Type="STDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CITextToSelectTreeEx">
+            <Param Type="WCHAR const*" Name="pwszRestriction" />
+            <Param Type="ULONG" Name="ulDialect" />
+            <Param Type="DBCOMMANDTREE**" Name="ppTree" />
+            <Param Type="ULONG" Name="cProperties" />
+            <Param Type="CIPROPERTYDEF*" Name="pProperties" />
+            <Param Type="LCID" Name="LocaleID" />
+            <Return Type="STDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="LoadIFilter">
+            <Param Type="WCHAR const*" Name="pwcsPath" />
+            <Param Type="IUnknown*" Name="pUnkOuter" />
+            <Param Type="void**" Name="ppIUnk" />
+            <Return Type="STDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="BindIFilterFromStorage">
+            <Param Type="IStorage*" Name="pStg" />
+            <Param Type="IUnknown*" Name="pUnkOuter" />
+            <Param Type="void**" Name="ppIUnk" />
+            <Return Type="STDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="BindIFilterFromStream">
+            <Param Type="IStream*" Name="pStm" />
+            <Param Type="IUnknown*" Name="pUnkOuter" />
+            <Param Type="void**" Name="ppIUnk" />
+            <Return Type="STDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

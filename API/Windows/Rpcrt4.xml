@@ -1,0 +1,976 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\cryptography.h.xml" />
+    <Include Filename="Headers\rpc.h.xml" />
+    <Module Name="Rpcrt4.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
+        <!-- Variables -->
+        <Variable Name="[BindingOptions]" Type="Alias" Base="unsigned long">
+            <Flag SingleValue="True">
+                <Set Name="RPC_C_OPT_BINDING_NONCAUSAL"     Value="9" />
+                <Set Name="RPC_C_OPT_MAX_OPTIONS"           Value="17" />
+                <Set Name="RPC_C_DONT_FAIL"                 Value="4" />
+                <Set Name="RPC_C_OPT_SESSION_ID"            Value="6" />
+                <Set Name="RPC_C_OPT_COOKIE_AUTH"           Value="7" />
+                <Set Name="RPC_C_OPT_RESOURCE_TYPE_UUID"    Value="8" />
+                <Set Name="RPC_C_OPT_DONT_LINGER"           Value="13" />
+                <Set Name="RPC_C_OPT_UNIQUE_BINDING"        Value="11" />
+            </Flag>
+        </Variable>
+        <Variable Name="[InterfaceRegistrationFlags]" Type="Alias" Base="unsigned int">
+            <Flag>
+                <Set Name="RPC_IF_AUTOLISTEN"                   Value="0x0001" />
+                <Set Name="RPC_IF_OLE"                          Value="0x0002" />
+                <Set Name="RPC_IF_ALLOW_UNKNOWN_AUTHORITY"      Value="0x0004" />
+                <Set Name="RPC_IF_ALLOW_SECURE_ONLY"            Value="0x0008" />
+                <Set Name="RPC_IF_ALLOW_CALLBACKS_WITH_NO_AUTH" Value="0x0010" />
+                <Set Name="RPC_IF_ALLOW_LOCAL_ONLY"             Value="0x0020" />
+                <Set Name="RPC_IF_SEC_NO_CACHE"                 Value="0x0040" />
+                <Set Name="RPC_IF_SEC_CACHE_PER_PROC"           Value="0x0080" />
+                <Set Name="RPC_IF_ASYNC_CALLBACK"               Value="0x0100" />
+            </Flag>
+        </Variable>
+        <Variable Name="MIDL_ES_CODE" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="MES_ENCODE"          Value="0" />
+                <Set Name="MES_DECODE"          Value="1" />
+                <Set Name="MES_ENCODE_NDR64"    Value="2" />
+            </Flag>
+        </Variable>
+        <Variable Name="MIDL_ES_HANDLE_STYLE" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="MES_INCREMENTAL_HANDLE"      Value="0" />
+                <Set Name="MES_FIXED_BUFFER_HANDLE"     Value="1" />
+                <Set Name="MES_DYNAMIC_BUFFER_HANDLE"   Value="2" />
+            </Flag>
+        </Variable>
+        <Variable Name="handle_t"                   Type="Alias"    Base="LPVOID" />
+        <Variable Name="handle_t*"                  Type="Pointer"  Base="handle_t" />
+        <Variable Name="MIDL_ES_READ"               Type="Alias"    Base="LPVOID" />
+        <Variable Name="MIDL_ES_ALLOC"              Type="Alias"    Base="LPVOID" />
+        <Variable Name="MIDL_ES_WRITE"              Type="Alias"    Base="LPVOID" />
+        <Variable Name="NDR_USER_MARSHAL_INFO*"     Type="Alias"    Base="LPVOID" />
+        <!-- Remote Procedure Call (RPC) -->
+        <Category Name="Networking/Network Protocols/Remote Procedure Call (RPC)" />
+        <Api Name="DceErrorInqText" BothCharset="True">
+            <Param Type="unsigned long" Name="StatusToConvert" />
+            <Param Type="RPC_TSTR" Display="unsigned char*" Name="ErrorText" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="MesBufferHandleReset">
+            <Param Type="handle_t" Name="Handle" />
+            <Param Type="MIDL_ES_HANDLE_STYLE" Display="unsigned long" Name="HandleStyle" />
+            <Param Type="MIDL_ES_CODE" Name="OpCode" />
+            <Param Type="char**" Name="ppBuffer" />
+            <Param Type="unsigned long" Name="BufferSize" />
+            <Param Type="unsigned long*" Name="pEncodedSize" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="MesDecodeBufferHandleCreate">
+            <Param Type="char*" Name="Buffer" />
+            <Param Type="unsigned long" Name="BufferSize" />
+            <Param Type="handle_t*" Name="pHandle" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="MesDecodeIncrementalHandleCreate">
+            <Param Type="void*" Name="UserState" />
+            <Param Type="MIDL_ES_READ" Name="ReadFn" />
+            <Param Type="handle_t*" Name="pHandle" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="MesEncodeDynBufferHandleCreate">
+            <Param Type="char**" Name="ppBuffer" />
+            <Param Type="unsigned long*" Name="pEncodedSize" />
+            <Param Type="handle_t*" Name="pHandle" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="MesEncodeFixedBufferHandleCreate">
+            <Param Type="char*" Name="Buffer" />
+            <Param Type="unsigned long" Name="BufferSize" />
+            <Param Type="unsigned long*" Name="pEncodedSize" />
+            <Param Type="handle_t*" Name="pHandle" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="MesEncodeIncrementalHandleCreate">
+            <Param Type="void*" Name="UserState" />
+            <Param Type="MIDL_ES_ALLOC" Name="AllocFn" />
+            <Param Type="MIDL_ES_WRITE" Name="WriteFn" />
+            <Param Type="handle_t*" Name="pHandle" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="MesHandleFree">
+            <Param Type="handle_t" Name="Handle" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="MesIncrementalHandleReset">
+            <Param Type="handle_t" Name="Handle" />
+            <Param Type="void*" Name="UserState" />
+            <Param Type="MIDL_ES_ALLOC" Name="AllocFn" />
+            <Param Type="MIDL_ES_WRITE" Name="WriteFn" />
+            <Param Type="MIDL_ES_READ" Name="ReadFn" />
+            <Param Type="MIDL_ES_CODE" Name="OpCode" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="MesInqProcEncodingId">
+            <Param Type="handle_t" Name="Handle" />
+            <Param Type="PRPC_SYNTAX_IDENTIFIER" Name="pInterfaceId" />
+            <Param Type="unsigned long*" Name="pProcNum" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrGetUserMarshalInfo">
+            <Param Type="unsigned long*" Name="pFlags" />
+            <Param Type="unsigned long" Name="InformationLevel" />
+            <Param Type="NDR_USER_MARSHAL_INFO*" Name="pMarshalInfo" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcAsyncAbortCall">
+            <Param Type="PRPC_ASYNC_STATE" Name="pAsync" />
+            <Param Type="unsigned long" Name="ExceptionCode" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcAsyncCancelCall">
+            <Param Type="PRPC_ASYNC_STATE" Name="pAsync" />
+            <Param Type="BOOL" Name="fAbortCall" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcAsyncCompleteCall">
+            <Param Type="PRPC_SYNC_STATE" Name="pAsync" />
+            <Param Type="PVOID" Name="Reply" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcAsyncGetCallStatus">
+            <Param Type="PRPC_ASYNC_STATE" Name="pAsync" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcAsyncInitializeHandle">
+            <Param Type="PRPC_ASYNC_STATE" Name="pAsync" />
+            <Param Type="unsigned int" Name="Size" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcAsyncRegisterInfo">
+            <Return Type="void" />
+        </Api>
+        <Api Name="RpcBindingBind">
+            <Param Type="PRPC_ASYNC_STATE" Name="pAsync" />
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcBindingCopy">
+            <Param Type="RPC_BINDING_HANDLE" Name="SourceBinding" />
+            <Param Type="RPC_BINDING_HANDLE*" Name="DestinationBinding" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcBindingCreate" BothCharset="True">
+            <Param Type="RPC_BINDING_HANDLE_TEMPLATE*" Name="Template" />
+            <Param Type="RPC_BINDING_HANDLE_SECURITY*" Name="Security" />
+            <Param Type="RPC_BINDING_HANDLE_OPTIONS*" Name="Options" />
+            <Param Type="RPC_BINDING_HANDLE*" Name="Binding" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcBindingFree">
+            <Param Type="RPC_BINDING_HANDLE*" Name="Binding" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcBindingFromStringBinding" BothCharset="True">
+            <Param Type="RPC_TSTR" Display="unsigned char*" Name="StringBinding" />
+            <Param Type="RPC_BINDING_HANDLE*" Name="Binding" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcBindingInqAuthClient" BothCharset="True">
+            <Param Type="RPC_BINDING_HANDLE" Name="ClientBinding" />
+            <Param Type="RPC_AUTHZ_HANDLE*" Name="Privs" />
+            <Param Type="unsigned char**" Name="ServerPrincName" />
+            <Param Type="[AuthenticationLevel*]" Display="unsigned long*" Name="AuthnLevel" />
+            <Param Type="[AuthenticationService*]" Display="unsigned long*" Name="AuthnSvc" />
+            <Param Type="[AuthorizationService*]" Display="unsigned long*" Name="AuthzSvc" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcBindingInqAuthClientEx" BothCharset="True">
+            <Param Type="RPC_BINDING_HANDLE" Name="ClientBinding" />
+            <Param Type="RPC_AUTHZ_HANDLE*" Name="Privs" />
+            <Param Type="unsigned char**" Name="ServerPrincName" />
+            <Param Type="[AuthenticationLevel*]" Display="unsigned long*" Name="AuthnLevel" />
+            <Param Type="[AuthenticationService*]" Display="unsigned long*" Name="AuthnSvc" />
+            <Param Type="[AuthorizationService*]" Display="unsigned long*" Name="AuthzSvc" />
+            <Param Type="unsigned long" Name="flags" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcBindingInqAuthInfo" BothCharset="True">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="RPC_TSTR*" Name="ServerPrincName" />
+            <Param Type="[AuthenticationLevel*]" Display="unsigned long*" Name="AuthnLevel" />
+            <Param Type="[AuthenticationService*]" Display="unsigned long*" Name="AuthnSvc" />
+            <Param Type="RPC_AUTH_IDENTITY_HANDLE*" Name="AuthIdentity" />
+            <Param Type="[AuthorizationService*]" Display="unsigned long*" Name="AuthzSvc" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcBindingInqAuthInfoEx" BothCharset="True">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="RPC_TSTR" Name="ServerPrincName" />
+            <Param Type="[AuthenticationLevel*]" Display="unsigned long*" Name="AuthnLevel" />
+            <Param Type="[AuthenticationService*]" Display="unsigned long*" Name="AuthnSvc" />
+            <Param Type="RPC_AUTH_IDENTITY_HANDLE*" Name="AuthIdentity" />
+            <Param Type="[AuthorizationService*]" Display="unsigned long*" Name="AuthzSvc" />
+            <Param Type="unsigned long" Name="RpcQosVersion" />
+            <Param Type="RPC_SECURITY_QOS*" Name="SecurityQos" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcBindingInqObject">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="UUID*" Name="ObjectUuid" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcBindingInqOption">
+            <Param Type="RPC_BINDING_HANDLE" Name="hBinding" />
+            <Param Type="unsigned long" Name="Option" />
+            <Param Type="unsigned long*" Name="pOptionValue" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcBindingReset">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcBindingServerFromClient">
+            <Param Type="RPC_BINDING_HANDLE" Name="ClientBinding" />
+            <Param Type="RPC_BINDING_HANDLE*" Name="ServerBinding" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcBindingSetAuthInfo" BothCharset="True">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="RPC_TSTR" Display="unsigned char*" Name="ServerPrincName" />
+            <Param Type="[AuthenticationLevel]" Display="unsigned long" Name="AuthnLevel" />
+            <Param Type="[AuthenticationService]" Display="unsigned long" Name="AuthnSvc" />
+            <Param Type="RPC_AUTH_IDENTITY_HANDLE" Name="AuthIdentity" />
+            <Param Type="unsigned long" Name="AuthzService" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcBindingSetAuthInfoEx" BothCharset="True">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="RPC_TSTR" Display="unsigned char*" Name="ServerPrincName" />
+            <Param Type="[AuthenticationLevel]" Display="unsigned long" Name="AuthnLevel" />
+            <Param Type="[AuthenticationService]" Display="unsigned long" Name="AuthnSvc" />
+            <Param Type="RPC_AUTH_IDENTITY_HANDLE" Name="AuthIdentity" />
+            <Param Type="[AuthorizationService]" Display="unsigned long" Name="AuthzSvc" />
+            <Param Type="RPC_SECURITY_QOS*" Name="SecurityQOS" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcBindingSetObject">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="UUID*" Name="ObjectUuid" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcBindingSetOption">
+            <Param Type="RPC_BINDING_HANDLE" Name="hBinding" />
+            <Param Type="[BindingOptions]" Display="unsigned long" Name="Option" />
+            <Param Type="unsigned long" Name="OptionValue" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcBindingToStringBinding" BothCharset="True">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="unsigned char**" Name="StringBinding" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcBindingUnbind">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcBindingVectorFree">
+            <Param Type="RPC_BINDING_VECTOR**" Name="BindingVector" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcCancelThread">
+            <Param Type="HANDLE" Name="ThreadHandle" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcCancelThreadEx">
+            <Param Type="HANDLE" Name="ThreadHandle" />
+            <Param Type="LONG" Name="Timeout" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcCertGeneratePrincipalName" BothCharset="True">
+            <Param Type="PCCERT_CONTEXT" Name="Context" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="UCHAR**" Name="pBuffer" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="RpcEpRegister" BothCharset="True">
+            <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
+            <Param Type="RPC_BINDING_VECTOR*" Name="BindingVector" />
+            <Param Type="UUID_VECTOR*" Name="UuidVector" />
+            <Param Type="RPC_TSTR" Display="unsigned char*" Name="Annotation" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcEpRegisterNoReplace" BothCharset="True">
+            <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
+            <Param Type="RPC_BINDING_VECTOR*" Name="BindingVector" />
+            <Param Type="UUID_VECTOR*" Name="UuidVector" />
+            <Param Type="RPC_TSTR" Display="unsigned char*" Name="Annotation" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcEpResolveBinding">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcEpUnregister">
+            <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
+            <Param Type="RPC_BINDING_VECTOR*" Name="BindingVector" />
+            <Param Type="UUID_VECTOR*" Name="UuidVector" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcErrorAddRecord">
+            <Param Type="RPC_EXTENDED_ERROR_INFO*" Name="ErrorInfo" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcErrorClearInformation">
+            <Return Type="void" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcErrorEndEnumeration">
+            <Param Type="RPC_ERROR_ENUM_HANDLE*" Name="EnumHandle" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcErrorGetNextRecord">
+            <Param Type="RPC_ERROR_ENUM_HANDLE*" Name="EnumHandle" />
+            <Param Type="BOOL" Name="CopyStrings" />
+            <Param Type="RPC_EXTENDED_ERROR_INFO*" Name="ErrorInfo" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcErrorGetNumberOfRecords">
+            <Param Type="RPC_ERROR_ENUM_HANDLE*" Name="EnumHandle" />
+            <Param Type="int*" Name="Records" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcErrorLoadErrorInfo">
+            <Param Type="PVOID" Name="ErrorBlob" />
+            <Param Type="size_t" Name="BlobSize" />
+            <Param Type="RPC_ERROR_ENUM_HANDLE*" Name="EnumHandle" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcErrorResetEnumeration">
+            <Param Type="RPC_ERROR_ENUM_HANDLE*" Name="EnumHandle" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcErrorSaveErrorInfo">
+            <Param Type="RPC_ERROR_ENUM_HANDLE*" Name="EnumHandle" />
+            <Param Type="PVOID*" Name="ErrorBlob" />
+            <Param Type="size_t*" Name="BlobSize" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcErrorStartEnumeration">
+            <Param Type="RPC_ERROR_ENUM_HANDLE*" Name="EnumHandle" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcIfIdVectorFree">
+            <Param Type="RPC_IF_ID_VECTOR**" Name="IfIdVec" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcIfInqId">
+            <Param Type="RPC_IF_HANDLE" Name="RpcIfHandle" />
+            <Param Type="RPC_IF_ID*" Name="RpcIfId" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcImpersonateClient">
+            <Param Type="RPC_BINDING_HANDLE" Name="BindingHandle" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcMgmtEnableIdleCleanup">
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcMgmtEpEltInqBegin">
+            <Param Type="RPC_BINDING_HANDLE" Name="EpBinding" />
+            <Param Type="unsigned long" Name="InquiryType" />
+            <Param Type="RPC_IF_ID*" Name="IfId" />
+            <Param Type="unsigned long" Name="VersOption" />
+            <Param Type="UUID*" Name="ObjectUuid" />
+            <Param Type="RPC_EP_INQ_HANDLE*" Name="InquiryContext" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcMgmtEpEltInqDone">
+            <Param Type="RPC_EP_INQ_HANDLE*" Name="InquiryContext" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcMgmtEpEltInqNext" BothCharset="True">
+            <Param Type="RPC_EP_INQ_HANDLE" Name="InquiryContext" />
+            <Param Type="RPC_IF_ID*" Name="IfId" />
+            <Param Type="RPC_BINDING_HANDLE*" Name="Binding" />
+            <Param Type="UUID*" Name="ObjectUuid" />
+            <Param Type="unsigned char**" Name="Annotation" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcMgmtEpUnregister">
+            <Param Type="RPC_BINDING_HANDLE" Name="EpBinding" />
+            <Param Type="RPC_IF_ID*" Name="IfId" />
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="UUID*" Name="ObjectUuid" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcMgmtInqComTimeout">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="unsigned int*" Name="Timeout" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcMgmtInqDefaultProtectLevel">
+            <Param Type="[AuthenticationService]" Display="unsigned int" Name="AuthnSvc" />
+            <Param Type="[AuthenticationLevel*]" Display="unsigned int*" Name="AuthnLevel" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcMgmtInqIfIds">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="RPC_IF_ID_VECTOR**" Name="IfIdVector" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcMgmtInqServerPrincName" BothCharset="True">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="[AuthenticationService]" Display="unsigned int" Name="AuthnSvc" />
+            <Param Type="unsigned char**" Name="ServerPrincName" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcMgmtInqStats">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="RPC_STATS_VECTOR**" Name="Statistics" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcMgmtIsServerListening">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcMgmtSetAuthorizationFn">
+            <Param Type="RPC_MGMT_AUTHORIZATION_FN" Name="AuthorizationFn" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcMgmtSetCancelTimeout">
+            <Param Type="signed int" Name="Seconds" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcMgmtSetComTimeout">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="unsigned int" Name="Timeout" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcMgmtSetServerStackSize">
+            <Param Type="unsigned int" Name="ThreadStackSize" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcMgmtStatsVectorFree">
+            <Param Type="RPC_STATS_VECTOR**" Name="StatsVector" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcMgmtStopServerListening">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcMgmtWaitServerListen">
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcNetworkInqProtseqs" BothCharset="True">
+            <Param Type="RPC_PROTSEQ_VECTOR**" Name="ProtSeqVector" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcNetworkIsProtseqValid" BothCharset="True">
+            <Param Type="RPC_TSTR" Display="unsigned char*" Name="Protseq" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcNsBindingInqEntryName" BothCharset="True">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="unsigned long" Name="EntryNameSyntax" />
+            <Param Type="unsigned char**" Name="EntryName" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcObjectInqType">
+            <Param Type="UUID*" Name="ObjUuid" />
+            <Param Type="UUID*" Name="TypeUuid" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcObjectSetInqFn">
+            <Param Type="RPC_OBJECT_INQ_FN" Name="InquiryFn" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcObjectSetType">
+            <Param Type="UUID*" Name="ObjUuid" />
+            <Param Type="UUID*" Name="TypeUuid" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcProtseqVectorFree" BothCharset="True">
+            <Param Type="RPC_PROTSEQ_VECTOR**" Name="ProtSeqVector" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcRaiseException">
+            <Param Type="RPC_STATUS" Name="Exception" />
+            <Return Type="void" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcRevertToSelf">
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcRevertToSelfEx">
+            <Param Type="RPC_BINDING_HANDLE" Name="BindingHandle" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcServerInqBindings">
+            <Param Type="RPC_BINDING_VECTOR**" Name="BindingVector" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcServerInqCallAttributes" BothCharset="True">
+            <Param Type="RPC_BINDING_HANDLE" Name="ClientBinding" />
+            <Param Type="void*" Name="RpcCallAttributes" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcServerInqDefaultPrincName" BothCharset="True">
+            <Param Type="[AuthenticationService]" Display="unsigned long" Name="AuthnSvc" />
+            <Param Type="RPC_TSTR*" Name="PrincName" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcServerInqBindingHandle">
+            <Param Type="RPC_BINDING_HANDLE*" Name="Binding" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcServerInqIf">
+            <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
+            <Param Type="UUID*" Name="MgrTypeUuid" />
+            <Param Type="RPC_MGR_EPV**" Name="MgrEpv" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcServerListen">
+            <Param Type="unsigned int" Name="MinimumCallThreads" />
+            <Param Type="unsigned int" Name="MaxCalls" />
+            <Param Type="unsigned int" Name="DontWait" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcServerRegisterAuthInfo" BothCharset="True">
+            <Param Type="RPC_TSTR" Display="unsigned char*" Name="ServerPrincName" />
+            <Param Type="[AuthenticationService]" Display="unsigned long" Name="AuthnSvc" />
+            <Param Type="RPC_AUTH_KEY_RETRIEVAL_FN" Name="GetKeyFn" />
+            <Param Type="void*" Name="Arg" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcServerRegisterIf">
+            <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
+            <Param Type="UUID*" Name="MgrTypeUuid" />
+            <Param Type="RPC_MGR_EPV*" Name="MgrEpv" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcServerRegisterIf2">
+            <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
+            <Param Type="UUID*" Name="MgrTypeUuid" />
+            <Param Type="RPC_MGR_EPV*" Name="MgrEpv" />
+            <Param Type="[InterfaceRegistrationFlags]" Display="unsigned int" Name="Flags" />
+            <Param Type="unsigned int" Name="MaxCalls" />
+            <Param Type="unsigned int" Name="MaxRpcSize" />
+            <Param Type="RPC_IF_CALLBACK_FN*" Name="IfCallbackFn" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcServerRegisterIfEx">
+            <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
+            <Param Type="UUID*" Name="MgrTypeUuid" />
+            <Param Type="RPC_MGR_EPV*" Name="MgrEpv" />
+            <Param Type="[InterfaceRegistrationFlags]" Display="unsigned int" Name="Flags" />
+            <Param Type="unsigned int" Name="MaxCalls" />
+            <Param Type="RPC_IF_CALLBACK_FN*" Name="IfCallback" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcServerSubscribeForNotification">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="RPC_NOTIFICATIONS" Name="Notification" />
+            <Param Type="RPC_NOTIFICATION_TYPES" Name="NotificationType" />
+            <Param Type="RPC_ASYNC_NOTIFICATION_INFO*" Name="NotificationInfo" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcServerTestCancel">
+            <Param Type="RPC_BINDING_HANDLE" Name="BindingHandle" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcServerUnregisterIf">
+            <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
+            <Param Type="UUID*" Name="MgrTypeUuid" />
+            <Param Type="unsigned int" Name="WaitForCallsToComplete" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcServerUnregisterIfEx">
+            <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
+            <Param Type="UUID*" Name="MgrTypeUuid" />
+            <Param Type="int" Name="RundownContextHandles" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcServerUnsubscribeForNotification">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="RPC_NOTIFICATIONS" Name="Notification" />
+            <Param Type="unsigned long*" Name="NotificationsQueued" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcServerUseAllProtseqs">
+            <Param Type="unsigned int" Name="MaxCalls" />
+            <Param Type="void*" Name="SecurityDescriptor" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcServerUseAllProtseqsEx">
+            <Param Type="unsigned int" Name="MaxCalls" />
+            <Param Type="void*" Name="SecurityDescriptor" />
+            <Param Type="PRPC_POLICY" Name="Policy" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcServerUseAllProtseqsIf">
+            <Param Type="unsigned int" Name="MaxCalls" />
+            <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
+            <Param Type="void*" Name="SecurityDescriptor" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcServerUseAllProtseqsIfEx">
+            <Param Type="unsigned int" Name="MaxCalls" />
+            <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
+            <Param Type="void*" Name="SecurityDescriptor" />
+            <Param Type="PRPC_POLICY" Name="Policy" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcServerUseProtseq" BothCharset="True">
+            <Param Type="RPC_TSTR" Display="unsigned char*" Name="ProtSeq" />
+            <Param Type="unsigned int" Name="MaxCalls" />
+            <Param Type="void*" Name="SecurityDescriptor" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcServerUseProtseqEx" BothCharset="True">
+            <Param Type="RPC_TSTR" Display="unsigned char*" Name="ProtSeq" />
+            <Param Type="unsigned int" Name="MaxCalls" />
+            <Param Type="void*" Name="SecurityDescriptor" />
+            <Param Type="PRPC_POLICY" Name="Policy" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcServerUseProtseqEp" BothCharset="True">
+            <Param Type="RPC_TSTR" Display="unsigned char*" Name="Protseq" />
+            <Param Type="unsigned int" Name="MaxCalls" />
+            <Param Type="RPC_TSTR" Display="unsigned char*" Name="Endpoint" />
+            <Param Type="void*" Name="SecurityDescriptor" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcServerUseProtseqEpEx" BothCharset="True">
+            <Param Type="RPC_TSTR" Display="unsigned char*" Name="Protseq" />
+            <Param Type="unsigned int" Name="MaxCalls" />
+            <Param Type="RPC_TSTR" Display="unsigned char*" Name="Endpoint" />
+            <Param Type="void*" Name="SecurityDescriptor" />
+            <Param Type="PRPC_POLICY" Name="Policy" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcServerUseProtseqIf" BothCharset="True">
+            <Param Type="RPC_TSTR" Display="unsigned char*" Name="Protseq" />
+            <Param Type="unsigned int" Name="MaxCalls" />
+            <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
+            <Param Type="void*" Name="SecurityDescriptor" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcServerUseProtseqIfEx" BothCharset="True">
+            <Param Type="RPC_TSTR" Display="unsigned char*" Name="Protseq" />
+            <Param Type="unsigned int" Name="MaxCalls" />
+            <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
+            <Param Type="void*" Name="SecurityDescriptor" />
+            <Param Type="PRPC_POLICY" Name="Policy" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcSmAllocate">
+            <Param Type="size_t" Name="Size" />
+            <Param Type="RPC_STATUS*" Name="pStatus" />
+            <Return Type="void*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcSmClientFree">
+            <Param Type="void*" Name="NodeToFree" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcSmDestroyClientContext">
+            <Param Type="void**" Name="ContextHandle" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcSmDisableAllocate">
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcSmEnableAllocate">
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcSmFree">
+            <Param Type="void*" Name="NodeToFree" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcSmGetThreadHandle">
+            <Param Type="RPC_STATUS*" Name="pStatus" />
+            <Return Type="RPC_SS_THREAD_HANDLE" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcSmSetClientAllocFree">
+            <Param Type="RPC_CLIENT_ALLOC*" Name="pfnAllocate" />
+            <Param Type="RPC_CLIENT_FREE*" Name="pfnFree" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcSmSetThreadHandle">
+            <Param Type="RPC_SS_THREAD_HANDLE" Name="Handle" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcSmSwapClientAllocFree">
+            <Param Type="RPC_CLIENT_ALLOC*" Name="pfnAllocate" />
+            <Param Type="RPC_CLIENT_FREE*" Name="pfnFree" />
+            <Param Type="RPC_CLIENT_ALLOC**" Name="pfnOldAllocate" />
+            <Param Type="RPC_CLIENT_FREE**" Name="pfnOldFree" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcSsAllocate">
+            <Param Type="size_t" Name="Size" />
+            <Return Type="void*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcSsContextLockExclusive">
+            <Param Type="RPC_BINDING_HANDLE" Name="ServerBindingHandle" />
+            <Param Type="PVOID" Name="UserContext" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcSsContextLockShared">
+            <Param Type="RPC_BINDING_HANDLE" Name="ServerBindingHandle" />
+            <Param Type="PVOID" Name="UserContext" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcSsDestroyClientContext">
+            <Param Type="void**" Name="ContextHandle" />
+            <Return Type="void" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcSsDisableAllocate">
+            <Return Type="void" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcSsDontSerializeContext">
+            <Return Type="void" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcSsEnableAllocate">
+            <Return Type="void" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcSsFree">
+            <Param Type="void*" Name="NodeToFree" />
+            <Return Type="void" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcSsGetThreadHandle">
+            <Return Type="RPC_SS_THREAD_HANDLE" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcSsSetClientAllocFree">
+            <Param Type="RPC_CLIENT_ALLOC*" Name="pfnAllocate" />
+            <Param Type="RPC_CLIENT_FREE*" Name="pfnFree" />
+            <Return Type="void" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcSsSetThreadHandle">
+            <Param Type="RPC_SM_THREAD_HANDLE" Name="Handle" />
+            <Return Type="void" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcSsSwapClientAllocFree">
+            <Param Type="RPC_CLIENT_ALLOC*" Name="pfnAllocate" />
+            <Param Type="RPC_CLIENT_FREE*" Name="pfnFree" />
+            <Param Type="RPC_CLIENT_ALLOC**" Name="pfnOldAllocate" />
+            <Param Type="RPC_CLIENT_FREE**" Name="pfnOldFree" />
+            <Return Type="void" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcStringBindingCompose" BothCharset="True">
+            <Param Type="TCHAR*" Name="ObjUuid" />
+            <Param Type="TCHAR*" Name="ProtSeq" />
+            <Param Type="TCHAR*" Name="NetworkAddr" />
+            <Param Type="TCHAR*" Name="EndPoint" />
+            <Param Type="TCHAR*" Name="Options" />
+            <Param Type="TCHAR**" Name="StringBinding" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcStringBindingParse" BothCharset="True">
+            <Param Type="TCHAR*" Name="StringBinding" />
+            <Param Type="TCHAR**" Name="ObjectUuid" />
+            <Param Type="TCHAR**" Name="ProtSeq" />
+            <Param Type="TCHAR**" Name="NetworkAddr" />
+            <Param Type="TCHAR**" Name="EndPoint" />
+            <Param Type="TCHAR**" Name="NetworkOptions" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcStringFree" BothCharset="True">
+            <Param Type="unsigned char**" Name="String" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RpcTestCancel">
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="UuidCompare">
+            <Param Type="UUID*" Name="Uuid1" />
+            <Param Type="UUID*" Name="Uuid2" />
+            <Param Type="RPC_STATUS*" Name="Status" />
+            <Return Type="signed int" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="UuidCreate">
+            <Param Type="UUID*" Name="Uuid" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="UuidCreateSequential">
+            <Param Type="UUID*" Name="Uuid" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="UuidCreateNil">
+            <Param Type="UUID*" Name="Nil_Uuid" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="UuidEqual">
+            <Param Type="UUID*" Name="Uuid1" />
+            <Param Type="UUID*" Name="Uuid2" />
+            <Param Type="RPC_STATUS*" Name="Status" />
+            <Return Type="int" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="UuidFromString" BothCharset="True">
+            <Param Type="RPC_TSTR" Display="unsigned char*" Name="StringUuid" />
+            <Param Type="UUID*" Name="Uuid" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="UuidHash">
+            <Param Type="UUID*" Name="Uuid" />
+            <Param Type="RPC_STATUS*" Name="Status" />
+            <Return Type="unsigned short" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="UuidIsNil">
+            <Param Type="UUID*" Name="Uuid" />
+            <Param Type="RPC_STATUS*" Name="Status" />
+            <Return Type="int" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="UuidToString" BothCharset="True">
+            <Param Type="UUID*" Name="Uuid" />
+            <Param Type="unsigned char**" Name="StringUuid" />
+            <Return Type="RPC_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

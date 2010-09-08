@@ -1,0 +1,122 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="Dhcpcsvc.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        <!-- Parameters -->
+        <Variable Name="LPDHCPCAPI_CLASSID"          Type="Alias" Base="LPVOID" />
+        <Variable Name="DHCPCAPI_PARAMS_ARRAY"       Type="Alias" Base="LPVOID" />
+        <Variable Name="IP_ADDR_FAMILY"              Type="Alias" Base="unsigned short" />
+        <Variable Name="PMCAST_SCOPE_ENTRY"          Type="Alias" Base="LPVOID" />
+        <Variable Name="LPMCAST_CLIENT_UID"          Type="Alias" Base="LPVOID" />
+        <Variable Name="PMCAST_LEASE_REQUEST"        Type="Alias" Base="LPVOID" />
+        <Variable Name="PMCAST_LEASE_RESPONSE"       Type="Alias" Base="LPVOID" />
+        <Variable Name="PMCAST_SCOPE_CTX"            Type="Alias" Base="LPVOID" />
+
+        <!-- Dynamic Host Configuration Protocol (DHCP) -->
+        <Category Name="Networking/Network Protocols/Dynamic Host Configuration Protocol (DHCP)/DHCP Client API" />
+        <Api Name="DhcpCApiCleanup">
+            <Return Type="VOID" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DhcpDeRegisterParamChange">
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="LPVOID" Name="Reserved" />
+            <Param Type="LPVOID" Name="Event" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DhcpRegisterParamChange">
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="LPVOID" Name="Reserved" />
+            <Param Type="LPWSTR" Name="AdapterName" />
+            <Param Type="LPDHCPCAPI_CLASSID" Name="pClassId" />
+            <Param Type="DHCPCAPI_PARAMS_ARRAY" Name="Params" />
+            <Param Type="LPVOID" Name="Handle" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DhcpRequestParams">
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="LPVOID" Name="Reserved" />
+            <Param Type="LPWSTR" Name="AdapterName" />
+            <Param Type="LPDHCPCAPI_CLASSID" Name="ClassId" />
+            <Param Type="DHCPCAPI_PARAMS_ARRAY" Name="SendParams" />
+            <Param Type="DHCPCAPI_PARAMS_ARRAY" Name="RecdParams" />
+            <Param Type="LPBYTE" Name="Buffer" />
+            <Param Type="LPDWORD" Name="pSize" />
+            <Param Type="LPWSTR" Name="RequestIdStr" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DhcpRemoveDNSRegistrations">
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DhcpUndoRequestParams">
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="LPVOID" Name="Reserved" />
+            <Param Type="LPWSTR" Name="AdapterName" />
+            <Param Type="LPWSTR" Name="RequestIdStr" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DhcpCApiInitialize">
+            <Param Type="LPDWORD" Name="Version" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <!-- Multicast Address Dynamic Client Allocation Protocol (MADCAP) -->
+        <Category Name="Networking/Network Protocols/Multicast Address Dynamic Client Allocation Protocol (MADCAP)" />
+        <Api Name="McastApiCleanup">
+            <Return Type="VOID" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="McastApiStartup">
+            <Param Type="PDWORD" Name="pVersion" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="McastEnumerateScopes">
+            <Param Type="IP_ADDR_FAMILY" Name="AddrFamily" />
+            <Param Type="BOOL" Name="ReQuery" />
+            <Param Type="PMCAST_SCOPE_ENTRY" Name="pScopeList" />
+            <Param Type="PDWORD" Name="pScopeLen" />
+            <Param Type="PDWORD" Name="pScopeCount" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="McastGenUID">
+            <Param Type="LPMCAST_CLIENT_UID" Name="pRequestID" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="McastReleaseAddress">
+            <Param Type="IP_ADDR_FAMILY" Name="AddrFamily" />
+            <Param Type="LPMCAST_CLIENT_UID" Name="pRequestID" />
+            <Param Type="PMCAST_LEASE_REQUEST" Name="pReleaseRequest" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="McastRenewAddress">
+            <Param Type="IP_ADDR_FAMILY" Name="AddrFamily" />
+            <Param Type="LPMCAST_CLIENT_UID" Name="pRequestID" />
+            <Param Type="PMCAST_LEASE_REQUEST" Name="pRenewRequest" />
+            <Param Type="PMCAST_LEASE_RESPONSE" Name="pRenewResponse" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="McastRequestAddress">
+            <Param Type="IP_ADDR_FAMILY" Name="AddrFamily" />
+            <Param Type="LPMCAST_CLIENT_UID" Name="pRequestID" />
+            <Param Type="PMCAST_SCOPE_CTX" Name="pScopeCtx" />
+            <Param Type="PMCAST_LEASE_REQUEST" Name="pAddrRequest" />
+            <Param Type="PMCAST_LEASE_RESPONSE" Name="pAddrResponse" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

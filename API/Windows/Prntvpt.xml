@@ -1,0 +1,99 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="Prntvpt.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        <!-- Variables -->
+        <Variable Name="EDefaultDevmodeType" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="kUserDefaultDevmode"     Value="0" />
+                <Set Name="kPrinterDefaultDevmode"  Value="1" />
+            </Flag>
+        </Variable>
+        <Variable Name="EPrintTicketScope" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="kPTPageScope"        Value="0" />
+                <Set Name="kPTDocumentScope"    Value="1" />
+                <Set Name="kPTJobScope"         Value="3" />
+            </Flag>
+        </Variable>
+        <Variable Name="HPTPROVIDER"    Type="Alias"    Base="HANDLE" />
+        <Variable Name="HPTPROVIDER*"   Type="Pointer"  Base="HPTPROVIDER" />
+
+        <!-- Printing and Print Spooler -->
+        <Category Name="Documents and Printing/Printing/Print Ticket API" />
+        <Api Name="PTConvertPrintTicketToDevMode">
+            <Param Type="HPTPROVIDER" Name="hProvider" />
+            <Param Type="IStream*" Name="pPrintTicket" />
+            <Param Type="EDefaultDevmodeType" Name="baseDevmodeType" />
+            <Param Type="EPrintTicketScope" Name="scope" />
+            <Param Type="ULONG*" Name="pcbDevmode" />
+            <Param Type="PDEVMODE*" Name="ppDevmode" />
+            <Param Type="BSTR*" Name="pbstrErrorMessage" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PTConvertDevModeToPrintTicket">
+            <Param Type="HPTPROVIDER" Name="hProvider" />
+            <Param Type="ULONG" Name="cbDevmode" />
+            <Param Type="PDEVMODE" Name="pDevmode" />
+            <Param Type="EPrintTicketScope" Name="scope" />
+            <Param Type="IStream*" Name="pPrintTicket" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PTReleaseMemory">
+            <Param Type="PVOID" Name="pBuffer" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PTMergeAndValidatePrintTicket">
+            <Param Type="HPTPROVIDER" Name="hProvider" />
+            <Param Type="IStream*" Name="pBaseTicket" />
+            <Param Type="IStream*" Name="pDeltaTicket" />
+            <Param Type="EPrintTicketScope" Name="scope" />
+            <Param Type="IStream*" Name="pResultTicket" />
+            <Param Type="BSTR*" Name="pbstrErrorMessage" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PTGetPrintCapabilities">
+            <Param Type="HPTPROVIDER" Name="hProvider" />
+            <Param Type="IStream*" Name="pPrintTicket" />
+            <Param Type="IStream*" Name="pCapabilities" />
+            <Param Type="BSTR*" Name="pbstrErrorMessage" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PTOpenProvider">
+            <Param Type="PCWSTR" Name="pszPrinterName" />
+            <Param Type="DWORD" Name="version" />
+            <Param Type="HPTPROVIDER*" Name="phProvider" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PTOpenProviderEx">
+            <Param Type="PCWSTR" Name="pszPrinterName" />
+            <Param Type="DWORD" Name="maxVersion" />
+            <Param Type="DWORD" Name="prefVersion" />
+            <Param Type="HPTPROVIDER*" Name="phProvider" />
+            <Param Type="DWORD*" Name="usedVersion" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PTCloseProvider">
+            <Param Type="HPTPROVIDER" Name="hProvider" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PTQuerySchemaVersionSupport">
+            <Param Type="PCWSTR" Name="pszPrinterName" />
+            <Param Type="DWORD*" Name="pMaxVersion" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

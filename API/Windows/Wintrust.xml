@@ -1,0 +1,327 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\cryptography.h.xml" />
+    <Module Name="Wintrust.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        <!-- Parameters -->
+        <Variable Name="CRYPTCATCDF*"                    Type="Alias"        Base="LPVOID" />
+
+        <Variable Name="CRYPTCATATTRIBUTE*"              Type="Alias"        Base="LPVOID" />
+        <Variable Name="PFN_CDF_PARSE_ERROR_CALLBACK"    Type="Alias"        Base="LPVOID" />
+
+        <Variable Name="CRYPTCATMEMBER*"                 Type="Alias"        Base="LPVOID" />
+        <Variable Name="CRYPTCATMEMBER**"                Type="Pointer"      Base="CRYPTCATMEMBER*" />
+
+        <Variable Name="HCATADMIN"                       Type="Alias"        Base="HANDLE" />
+        <Variable Name="HCATADMIN*"                      Type="Pointer"        Base="HCATADMIN" />
+
+        <Variable Name="HCATINFO"                        Type="Alias"        Base="HANDLE" />
+        <Variable Name="HCATINFO*"                       Type="Pointer"        Base="HCATINFO" />
+        <Variable Name="CATALOG_INFO*"                   Type="Alias"        Base="LPVOID" />
+
+        <Variable Name="CRYPT_REGISTER_ACTIONID*"        Type="Alias"        Base="LPVOID" />
+        <Variable Name="CRYPT_PROVIDER_FUNCTIONS*"       Type="Alias"        Base="LPVOID" />
+        <Variable Name="WINTRUST_DATA*"                  Type="Alias"        Base="LPVOID" />
+        <Variable Name="CRYPT_PROVIDER_DATA*"            Type="Alias"        Base="LPVOID" />
+        <Variable Name="CERT_INFO*"                      Type="Alias"        Base="LPVOID" />
+        <Variable Name="CRYPT_PROVIDER_SGNR*"            Type="Alias"        Base="LPVOID" />
+        <Variable Name="CRYPT_PROVIDER_CERT*"            Type="Alias"        Base="LPVOID" />
+        <Variable Name="CRYPT_PROVIDER_PRIVDATA*"        Type="Alias"        Base="LPVOID" />
+
+        <!-- Flags -->
+        <Variable Name="[WintrustPolicyFlags]" Type="Alias" Base="DWORD">
+            <Flag>
+                <Set Name="WTPF_TRUSTTEST"              Value="0x00000020" />
+                <Set Name="WTPF_TESTCANBEVALID"         Value="0x00000080" />
+                <Set Name="WTPF_IGNOREEXPIRATION"       Value="0x00000100" />
+                <Set Name="WTPF_IGNOREREVOKATION"       Value="0x00000200" />
+                <Set Name="WTPF_OFFLINEOK_IND"          Value="0x00000400" />
+                <Set Name="WTPF_OFFLINEOK_COM"          Value="0x00000800" />
+                <Set Name="WTPF_OFFLINEOKNBU_IND"       Value="0x00001000" />
+                <Set Name="WTPF_OFFLINEOKNBU_COM"       Value="0x00002000" />
+                <Set Name="WTPF_VERIFY_V1_OFF"          Value="0x00010000" />
+                <Set Name="WTPF_IGNOREREVOCATIONONTS"   Value="0x00020000" />
+                <Set Name="WTPF_ALLOWONLYPERTRUST"      Value="0x00040000" />
+            </Flag>
+        </Variable>
+        <Variable Name="[WintrustPolicyFlags*]" Type="Pointer" Base="[WintrustPolicyFlags]" />
+        <!-- Cryptography -->
+        <Category Name="Security/Cryptography/Certificate and Certificate Store Maintenance" />
+        <Api Name="OpenPersonalTrustDBDialog">
+            <Param Type="HWND" Name="hwndParent" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="OpenPersonalTrustDBDialogEx">
+            <Param Type="HWND" Name="hwndParent" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="PVOID*" Name="pvReserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Category Name="Security/Cryptography/Catalog Definition" />
+        <Api Name="CryptCATCDFClose">
+            <Param Type="CRYPTCATCDF*" Name="pCDF" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptCATCDFEnumAttributesWithCDFTag">
+            <Param Type="CRYPTCATCDF*" Name="pCDF" />
+            <Param Type="LPWSTR" Name="pwszMemberTag" />
+            <Param Type="CRYPTCATMEMBER*" Name="pMember" />
+            <Param Type="CRYPTCATATTRIBUTE*" Name="pPrevAttr" />
+            <Param Type="PFN_CDF_PARSE_ERROR_CALLBACK" Name="pfnParseError" />
+            <Return Type="CRYPTCATATTRIBUTE*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptCATCDFEnumCatAttributes">
+            <Param Type="CRYPTCATCDF*" Name="pCDF" />
+            <Param Type="CRYPTCATATTRIBUTE*" Name="pPrevAttr" />
+            <Param Type="PFN_CDF_PARSE_ERROR_CALLBACK" Name="pfnParseError" />
+            <Return Type="CRYPTCATATTRIBUTE*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptCATCDFEnumMembersByCDFTagEx">
+            <Param Type="CRYPTCATCDF*" Name="pCDF" />
+            <Param Type="LPWSTR" Name="pwszPrevCDFTag" />
+            <Param Type="PFN_CDF_PARSE_ERROR_CALLBACK" Name="pfnParseError" />
+            <Param Type="CRYPTCATMEMBER**" Name="ppMember" />
+            <Param Type="BOOL" Name="fContinueOnError" />
+            <Param Type="LPVOID" Name="pvReserved" />
+            <Return Type="LPWSTR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptCATCDFOpen">
+            <Param Type="LPWSTR" Name="pwszFilePath" />
+            <Param Type="PFN_CDF_PARSE_ERROR_CALLBACK" Name="pfnParseError" />
+            <Return Type="CRYPTCATCDF*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Category Name="Security/Cryptography/Catalog" />
+        <Api Name="CryptCATAdminAcquireContext">
+            <Param Type="HCATADMIN*" Name="phCatAdmin" />
+            <Param Type="const GUID*" Name="pgSubsystem" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptCATAdminAddCatalog">
+            <Param Type="HCATADMIN" Name="hCatAdmin" />
+            <Param Type="WCHAR*" Name="pwszCatalogFile" />
+            <Param Type="WCHAR*" Name="pwszSelectBaseName" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="HCATINFO" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptCATAdminEnumCatalogFromHash">
+            <Param Type="HCATADMIN" Name="hCatAdmin" />
+            <Param Type="BYTE*" Name="pbHash" />
+            <Param Type="DWORD" Name="cbHash" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="HCATINFO*" Name="phPrevCatInfo" />
+            <Return Type="HCATINFO" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptCATAdminRemoveCatalog">
+            <Param Type="HCATADMIN" Name="hCatAdmin" />
+            <Param Type="LPCWSTR" Name="pwszCatalogFile" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptCATAdminCalcHashFromFileHandle">
+            <Param Type="HANDLE" Name="hFile" />
+            <Param Type="DWORD*" Name="pcbHash" />
+            <Param Type="BYTE*" Name="pbHash" PostLength="pcbHash" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptCATAdminReleaseCatalogContext">
+            <Param Type="HCATADMIN" Name="hCatAdmin" />
+            <Param Type="HCATINFO" Name="hCatInfo" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptCATAdminReleaseContext">
+            <Param Type="HCATADMIN" Name="hCatAdmin" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptCATAdminResolveCatalogPath">
+            <Param Type="HCATADMIN" Name="hCatAdmin" />
+            <Param Type="WCHAR*" Name="pwszCatalogFile" />
+            <Param Type="CATALOG_INFO*" Name="psCatInfo" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptCATCatalogInfoFromContext">
+            <Param Type="HCATINFO" Name="hCatInfo" />
+            <Param Type="CATALOG_INFO*" Name="psCatInfo" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptCATClose">
+            <Param Type="HANDLE" Name="hCatalog" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptCATOpen">
+            <Param Type="LPWSTR" Name="pwszFileName" />
+            <Param Type="DWORD" Name="fdwOpenFlags" />
+            <Param Type="HCRYPTPROV" Name="hProv" />
+            <Param Type="DWORD" Name="dwPublicVersion" />
+            <Param Type="DWORD" Name="dwEncodingType" />
+            <Return Type="HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptCATEnumerateAttr">
+            <Param Type="HANDLE" Name="hCatalog" />
+            <Param Type="CRYPTCATMEMBER*" Name="pCatMember" />
+            <Param Type="CRYPTCATATTRIBUTE*" Name="pPrevAttr" />
+            <Return Type="CRYPTCATATTRIBUTE*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptCATEnumerateCatAttr">
+            <Param Type="HANDLE" Name="hCatalog" />
+            <Param Type="CRYPTCATATTRIBUTE*" Name="pPrevAttr" />
+            <Return Type="CRYPTCATATTRIBUTE*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptCATEnumerateMember">
+            <Param Type="HANDLE" Name="hCatalog" />
+            <Param Type="CRYPTCATMEMBER*" Name="pPrevMember" />
+            <Return Type="CRYPTCATMEMBER*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptCATGetAttrInfo">
+            <Param Type="HANDLE" Name="hCatalog" />
+            <Param Type="CRYPTCATMEMBER*" Name="pCatMember" />
+            <Param Type="LPWSTR" Name="pwszReferenceTag" />
+            <Return Type="CRYPTCATATTRIBUTE*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptCATGetMemberInfo">
+            <Param Type="HANDLE" Name="hCatalog" />
+            <Param Type="LPWSTR" Name="pwszReferenceTag" />
+            <Return Type="CRYPTCATMEMBER*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="IsCatalogFile">
+            <Param Type="HANDLE" Name="hFile" />
+            <Param Type="WCHAR*" Name="pwszFileName" />
+            <Return Type="BOOL" />
+        </Api>
+        <Category Name="Security/Cryptography/WinTrust" />
+        <Api Name="WintrustAddActionID">
+            <Param Type="GUID*" Name="pgActionID" />
+            <Param Type="DWORD" Name="fdwFlags" />
+            <Param Type="CRYPT_REGISTER_ACTIONID*" Name="psProvInfo" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WintrustGetRegPolicyFlags">
+            <Param Type="[WintrustPolicyFlags*]" Display="DWORD*" Name="pdwPolicyFlags" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="WintrustLoadFunctionPointers">
+            <Param Type="GUID*" Name="pgActionID" />
+            <Param Type="CRYPT_PROVIDER_FUNCTIONS*" Name="pPfns" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WintrustRemoveActionID">
+            <Param Type="GUID*" Name="pgActionID" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WintrustSetDefaultIncludePEPageHashes">
+            <Param Type="BOOL" Name="fIncludePEPageHashes" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="WintrustSetRegPolicyFlags">
+            <Param Type="[WintrustPolicyFlags]" Display="DWORD" Name="dwPolicyFlags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WinVerifyTrust">
+            <Param Type="HWND" Name="hWnd" />
+            <Param Type="GUID*" Name="pgActionID" />
+            <Param Type="LPVOID" Name="pWVTData" />
+            <Return Type="LONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WinVerifyTrustEx">
+            <Param Type="HWND" Name="hwnd" />
+            <Param Type="GUID*" Name="pgActionID" />
+            <Param Type="WINTRUST_DATA*" Name="pWinTrustData" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WTHelperCertCheckValidSignature">
+            <Param Type="CRYPT_PROVIDER_DATA*" Name="pProvData" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WTHelperCertFindIssuerCertificate">
+            <Param Type="PCCERT_CONTEXT" Name="pChildContext" />
+            <Param Type="DWORD" Name="chStores" />
+            <Param Type="HCERTSTORE*" Name="pahStores" />
+            <Param Type="FILETIME*" Name="psftVerifyAsOf" />
+            <Param Type="DWORD" Name="dwEncoding" />
+            <Param Type="DWORD*" Name="pdwConfidence" />
+            <Param Type="DWORD*" Name="dwError" />
+            <Return Type="PCCERT_CONTEXT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WTHelperCertIsSelfSigned">
+            <Param Type="DWORD" Name="dwEncoding" />
+            <Param Type="CERT_INFO*" Name="pCert" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WTHelperGetFileHash">
+            <Param Type="LPCWSTR" Name="pwszFilename" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="PVOID" Name="pvReserved" />
+            <Param Type="BYTE*" Name="pbFileHash" />
+            <Param Type="DWORD*" Name="pcbFileHash" />
+            <Param Type="ALG_ID*" Name="pHashAlgid" />
+            <Return Type="LONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WTHelperGetProvCertFromChain">
+            <Param Type="CRYPT_PROVIDER_SGNR*" Name="pSgnr" />
+            <Param Type="DWORD" Name="idxCert" />
+            <Return Type="CRYPT_PROVIDER_CERT*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WTHelperGetProvPrivateDataFromChain">
+            <Param Type="CRYPT_PROVIDER_DATA*" Name="pProvData" />
+            <Param Type="GUID*" Name="pgProviderID" />
+            <Return Type="CRYPT_PROVIDER_PRIVDATA*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WTHelperGetProvSignerFromChain">
+            <Param Type="CRYPT_PROVIDER_DATA*" Name="pProvData" />
+            <Param Type="DWORD" Name="idxSigner" />
+            <Param Type="BOOL" Name="fCounterSigner" />
+            <Param Type="DWORD" Name="idxCounterSigner" />
+            <Return Type="CRYPT_PROVIDER_SGNR*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WTHelperProvDataFromStateData">
+            <Param Type="HANDLE" Name="hStateData" />
+            <Return Type="CRYPT_PROVIDER_DATA*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

@@ -1,0 +1,117 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\cryptography.h.xml" />
+    <Module Name="Cryptui.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        <!-- Parameters -->
+        <Variable Name="PCCRYPTUI_WIZ_DIGITAL_SIGN_INFO"         Type="Alias" Base="LPVOID" />
+        <Variable Name="PCCRYPTUI_WIZ_DIGITAL_SIGN_CONTEXT"      Type="Alias" Base="LPVOID" />
+        <Variable Name="PCCRYPTUI_WIZ_DIGITAL_SIGN_CONTEXT*"     Type="Pointer" Base="PCCRYPTUI_WIZ_DIGITAL_SIGN_CONTEXT" />
+        <Variable Name="PCCRYPTUI_WIZ_EXPORT_INFO"               Type="Alias" Base="LPVOID" />
+        <Variable Name="PCCRYPTUI_WIZ_IMPORT_SRC_INFO"           Type="Alias" Base="LPVOID" />
+        <Variable Name="PCCRYPTUI_CERT_MGR_STRUCT"               Type="Alias" Base="LPVOID" />
+        <Variable Name="PCCRYPTUI_SELECTCERTIFICATE_STRUCT"      Type="Alias" Base="LPVOID" />
+        <Variable Name="PCCRYPTUI_VIEWCERTIFICATE_STRUCTW"       Type="Alias" Base="LPVOID" />
+        <Variable Name="CRYPTUI_VIEWSIGNERINFO_STRUCT*"          Type="Alias" Base="LPVOID" />
+
+        <!-- Flags -->
+        <Variable Name="[CryptUiWizFlags]" Type="Alias" Base="DWORD">
+            <Flag>
+                <Set Name="CRYPTUI_WIZ_NO_UI"                               Value="0x0001" />
+                <Set Name="CRYPTUI_WIZ_DIGITAL_SIGN_EXCLUDE_PAGE_HASHES"    Value="0x0002" />
+                <Set Name="CRYPTUI_WIZ_NO_UI_EXCEPT_CSP"                    Value="0x0003" />
+                <Set Name="CRYPTUI_WIZ_EXPORT_PRIVATE_KEY"                  Value="0x0100" />
+                <Set Name="CRYPTUI_WIZ_EXPORT_NO_DELETE_PRIVATE_KEY"        Value="0x0200" />
+                <Set Name="CRYPTUI_WIZ_IMPORT_ALLOW_CERT"                   Value="0x00020000" />
+                <Set Name="CRYPTUI_WIZ_IMPORT_ALLOW_CRL"                    Value="0x00040000" />
+                <Set Name="CRYPTUI_WIZ_IMPORT_ALLOW_CTL"                    Value="0x00080000" />
+                <Set Name="CRYPTUI_WIZ_IMPORT_NO_CHANGE_DEST_STORE"         Value="0x00010000" />
+                <Set Name="CRYPTUI_WIZ_IMPORT_TO_LOCALMACHINE"              Value="0x00100000" />
+                <Set Name="CRYPTUI_WIZ_IMPORT_TO_CURRENTUSER"               Value="0x00200000" />
+                <Set Name="CRYPTUI_WIZ_IMPORT_REMOTE_DEST_STORE"            Value="0x00400000" />
+            </Flag>
+        </Variable>
+        <!-- Cryptography -->
+        <Category Name="Security/Cryptography/Hash and Digital Signature" />
+        <Api Name="CryptUIWizDigitalSign">
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="HWND" Name="hwndParent" />
+            <Param Type="LPCWSTR" Name="pwszWizardTitle" />
+            <Param Type="PCCRYPTUI_WIZ_DIGITAL_SIGN_INFO" Name="pDigitalSignInfo" />
+            <Param Type="PCCRYPTUI_WIZ_DIGITAL_SIGN_CONTEXT*" Name="ppSignContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptUIWizFreeDigitalSignContext">
+            <Param Type="PCCRYPTUI_WIZ_DIGITAL_SIGN_CONTEXT" Name="pSignContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Category Name="Security/Cryptography/Certificate Store" />
+        <Api Name="CryptUIWizExport">
+            <Param Type="[CryptUiWizFlags]" Display="DWORD" Name="dwFlags" />
+            <Param Type="HWND" Name="hwndParent" />
+            <Param Type="LPCWSTR" Name="pwszWizardTitle" />
+            <Param Type="PCCRYPTUI_WIZ_EXPORT_INFO" Name="pExportInfo" />
+            <Param Type="void*" Name="pvoid" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptUIWizImport">
+            <Param Type="[CryptUiWizFlags]" Display="DWORD" Name="dwFlags" />
+            <Param Type="HWND" Name="hwndParent" />
+            <Param Type="LPCWSTR" Name="pwszWizardTitle" />
+            <Param Type="PCCRYPTUI_WIZ_IMPORT_SRC_INFO" Name="pImportSrc" />
+            <Param Type="HCERTSTORE" Name="hDestCertStore" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Category Name="Security/Cryptography/Certificate" />
+        <Api Name="CryptUIDlgCertMgr">
+            <Param Type="PCCRYPTUI_CERT_MGR_STRUCT" Name="pCryptUICertMgr" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptUIDlgSelectCertificate" BothCharset="True">
+            <Param Type="PCCRYPTUI_SELECTCERTIFICATE_STRUCT" Name="pcsc" />
+            <Return Type="PCCERT_CONTEXT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptUIDlgSelectCertificateFromStore">
+            <Param Type="HCERTSTORE" Name="hCertStore" />
+            <Param Type="HWND" Name="hwnd" />
+            <Param Type="LPCWSTR" Name="pwszTitle" />
+            <Param Type="LPCWSTR" Name="pwszDisplayString" />
+            <Param Type="DWORD" Name="dwDontUseColumn" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="void*" Name="pvReserved" />
+            <Return Type="PCCERT_CONTEXT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptUIDlgViewCertificate" BothCharset="True">
+            <Param Type="PCCRYPTUI_VIEWCERTIFICATE_STRUCTW" Name="pCertViewInfo" />
+            <Param Type="BOOL*" Name="pfPropertiesChanged" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptUIDlgViewContext">
+            <Param Type="DWORD" Name="dwContextType" />
+            <Param Type="const void*" Name="pvContext" />
+            <Param Type="HWND" Name="hwnd" />
+            <Param Type="LPCWSTR" Name="pwszTitle" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="void*" Name="pvReserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptUIDlgViewSignerInfo" BothCharset="True">
+            <Param Type="CRYPTUI_VIEWSIGNERINFO_STRUCT*" Name="pcvsi" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

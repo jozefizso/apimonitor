@@ -1,0 +1,1055 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Mozilla\nspr.h.xml" />
+    <Module Name="NSPR4.DLL" CallingConvention="CDECL" OnlineHelp="Mozilla">
+        <!-- Variables -->
+        <Variable Name="[PrAddressFamily]" Type="Alias" Base="PRIntn">
+            <Flag SingleValue="True">
+                <Set Name="PR_AF_UNSPEC"    Value="0" />
+                <Set Name="PR_AF_LOCAL"     Value="1" />
+                <Set Name="PR_AF_INET"      Value="2" />
+                <Set Name="PR_AF_INET6"     Value="100" />
+            </Flag>
+        </Variable>
+        <!-- Threads -->
+        <Category Name="Netscape Portable Runtime/Threads" />
+        <Api Name="PR_JoinThread">
+            <Param Type="PRThread*" Name="thread" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_CreateThread">
+            <Param Type="PRThreadType" Name="type" />
+            <Param Type="void*" Name="arg" />
+            <Param Type="PRThreadPriority" Name="priority" />
+            <Param Type="PRThreadScope" Name="scope" />
+            <Param Type="PRThreadState" Name="state" />
+            <Param Type="PRUint32" Name="stackSize" />
+            <Return Type="PRThread*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_GetCurrentThread">
+            <Return Type="PRThread*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_AttachThread">
+            <Param Type="PRThreadType" Name="type" />
+            <Param Type="PRThreadPriority" Name="priority" />
+            <Param Type="PRThreadStack*" Name="stack" />
+            <Return Type="PRThread*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_DetachThread">
+            <Return Type="void" />
+        </Api>
+        <Api Name="PR_GetThreadPriority">
+            <Param Type="PRThread*" Name="thread" />
+            <Return Type="PRThreadPriority" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_SetThreadPriority">
+            <Param Type="PRThread*" Name="thread" />
+            <Param Type="PRThreadPriority" Name="priority" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="PR_NewThreadPrivateIndex">
+            <Param Type="PRUintn*" Name="newIndex" />
+            <Param Type="PRThreadPrivateDTOR" Name="destructor" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_SetThreadPrivate">
+            <Param Type="PRUintn" Name="index" />
+            <Param Type="void*" Name="priv" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_GetThreadPrivate">
+            <Param Type="PRUintn" Name="index" />
+            <Return Type="void*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_Interrupt">
+            <Param Type="PRThread*" Name="thread" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_ClearInterrupt">
+            <Return Type="void" />
+        </Api>
+        <Api Name="PR_Sleep">
+            <Param Type="PRIntervalTime" Name="ticks" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_SetConcurrency">
+            <Param Type="PRUintn" Name="numCPUs" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="PR_GetThreadScope">
+            <Return Type="PRThreadScope" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <!-- Locks -->
+        <Category Name="Netscape Portable Runtime/Locks" />
+        <Api Name="PR_NewLock">
+            <Return Type="PRLock*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_DestroyLock">
+            <Param Type="PRLock*" Name="lock" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="PR_Lock">
+            <Param Type="PRLock*" Name="lock" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="PR_Unlock">
+            <Param Type="PRLock*" Name="lock" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <!-- Condition Variables -->
+        <Category Name="Netscape Portable Runtime/Condition Variables" />
+        <Api Name="PR_NewCondVar">
+            <Param Type="PRLock*" Name="lock" />
+            <Return Type="PRCondVar*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_DestroyCondVar">
+            <Param Type="PRCondVar*" Name="cvar" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="PR_WaitCondVar">
+            <Param Type="PRCondVar*" Name="cvar" />
+            <Param Type="PRIntervalTime" Name="timeout" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_NotifyCondVar">
+            <Param Type="PRCondVar*" Name="cvar" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_NotifyAllCondVar">
+            <Param Type="PRCondVar*" Name="cvar" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <!-- Monitors -->
+        <Category Name="Netscape Portable Runtime/Monitors" />
+        <Api Name="PR_NewMonitor">
+            <Return Type="PRMonitor*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_DestroyMonitor">
+            <Param Type="PRMonitor*" Name="mon" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="PR_EnterMonitor">
+            <Param Type="PRMonitor*" Name="mon" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="PR_ExitMonitor">
+            <Param Type="PRMonitor*" Name="mon" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_Wait">
+            <Param Type="PRMonitor*" Name="mon" />
+            <Param Type="PRIntervalTime" Name="ticks" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_Notify">
+            <Param Type="PRMonitor*" Name="mon" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_NotifyAll">
+            <Param Type="PRMonitor*" Name="mon" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <!-- Cached Monitors -->
+        <Category Name="Netscape Portable Runtime/Cached Monitors" />
+        <Api Name="PR_CEnterMonitor">
+            <Param Type="void*" Name="address" />
+            <Return Type="PRMonitor*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_CExitMonitor">
+            <Param Type="void*" Name="address" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_CWait">
+            <Param Type="void*" Name="address" />
+            <Param Type="PRIntervalTime" Name="timeout" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_CNotify">
+            <Param Type="void*" Name="address" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_CNotifyAll">
+            <Param Type="void*" Name="address" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <!-- I/O Functions -->
+        <Category Name="Netscape Portable Runtime/IO Functions/Pathnames" />
+        <Api Name="PR_Open">
+            <Param Type="const char*" Name="name" />
+            <Param Type="PRIntn" Name="flags" />
+            <Param Type="PRIntn" Name="mode" />
+            <Return Type="PRFileDesc*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_GetFileInfo">
+            <Param Type="const char*" Name="fn" />
+            <Param Type="PRFileInfo*" Name="info" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_GetFileInfo64">
+            <Param Type="const char*" Name="fn" />
+            <Param Type="PRFileInfo64*" Name="info" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_Rename">
+            <Param Type="const char*" Name="from" />
+            <Param Type="const char*" Name="to" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_Access">
+            <Param Type="const char*" Name="name" />
+            <Param Type="PRAccessHow" Name="how" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Category Name="Netscape Portable Runtime/IO Functions/File Descriptors" />
+        <Api Name="PR_Close">
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_Read">
+            <Param Type="void*" Name="buf" Length="[Retval]" />
+            <Param Type="PRInt32" Name="amount" />
+            <Return Type="PRInt32" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_Write">
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Param Type="const void*" Name="buf" Length="amount" />
+            <Param Type="PRInt32" Name="amount" />
+            <Return Type="PRInt32" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_Writev">
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Param Type="PRIOVec*" Name="iov" />
+            <Param Type="PRInt32" Name="size" />
+            <Param Type="PRIntervalTime" Name="timeout" />
+            <Return Type="PRInt32" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_GetOpenFileInfo">
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Param Type="PRFileInfo*" Name="info" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_GetOpenFileInfo64">
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Param Type="PRFileInfo*" Name="info" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_Seek">
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Param Type="PRInt32" Name="offset" />
+            <Param Type="PRSeekWhence" Name="whence" />
+            <Return Type="PRInt32" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_Seek64">
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Param Type="PRInt64" Name="offset" />
+            <Param Type="PRSeekWhence" Name="whence" />
+            <Return Type="PRInt64" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_Available">
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Return Type="PRInt32" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_Available64">
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Return Type="PRInt64" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_Sync">
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_GetDescType">
+            <Return Type="PRDescType" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_GetSpecialFD">
+            <Return Type="PRFileDesc*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_CreatePipe">
+            <Param Type="PRFileDesc**" Name="readPipe" />
+            <Param Type="PRFileDesc**" Name="writePipe" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Category Name="Netscape Portable Runtime/IO Functions/Directory" />
+        <Api Name="PR_OpenDir">
+            <Param Type="const char*" Name="name" />
+            <Return Type="PRDir*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_ReadDir">
+            <Param Type="PRDir*" Name="dir" />
+            <Param Type="PRDirFlags" Name="flags" />
+            <Return Type="PRDirEntry*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_CloseDir">
+            <Param Type="PRDir*" Name="dir" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_MkDir">
+            <Param Type="const char*" Name="name" />
+            <Param Type="PRIntn" Name="mode" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_RmDir">
+            <Param Type="const char*" Name="name" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Category Name="Netscape Portable Runtime/IO Functions/Socket Manipulation" />
+        <Api Name="PR_OpenUDPSocket">
+            <Param Type="[PrAddressFamily]" Display="PRIntn" Name="af" />
+            <Return Type="PRFileDesc*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_NewUDPSocket">
+            <Return Type="PRFileDesc*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_OpenTCPSocket">
+            <Param Type="[PrAddressFamily]" Display="PRIntn" Name="af" />
+            <Return Type="PRFileDesc*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_NewTCPSocket">
+            <Return Type="PRFileDesc*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_Connect">
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Param Type="const PRNetAddr*" Name="addr" />
+            <Param Type="PRIntervalTime" Name="timeout" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_Accept">
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Param Type="PRNetAddr*" Name="addr" />
+            <Param Type="PRIntervalTime" Name="timeout" />
+            <Return Type="PRFileDesc*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_Bind">
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Param Type="const PRNetAddr*" Name="addr" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_Listen">
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Param Type="PRIntn" Name="backlog" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_Shutdown">
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Param Type="PRShutdownHow" Name="how" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_Recv">
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Param Type="void*" Name="buf" PostLength="[Retval]" />
+            <Param Type="PRInt32" Name="amount" />
+            <Param Type="PRIntn" Name="flags" />
+            <Param Type="PRIntervalTime" Name="timeout" />
+            <Return Type="PRInt32" />
+            <Success Return="NotEqual" Value="-1" />
+        </Api>
+        <Api Name="PR_Send">
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Param Type="const void*" Name="buf" />
+            <Param Type="PRInt32" Name="amount" />
+            <Param Type="PRIntn" Name="flags" />
+            <Param Type="PRIntervalTime" Name="timeout" />
+            <Return Type="PRInt32" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_RecvFrom">
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Param Type="void*" Name="buf" />
+            <Param Type="PRInt32" Name="amount" />
+            <Param Type="PRIntn" Name="flags" />
+            <Param Type="PRNetAddr*" Name="addr" />
+            <Param Type="PRIntervalTime" Name="timeout" />
+            <Return Type="PRInt32" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_SendTo">
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Param Type="const void*" Name="buf" />
+            <Param Type="PRInt32" Name="amount" />
+            <Param Type="PRIntn" Name="flags" />
+            <Param Type="const PRNetAddr*" Name="addr" />
+            <Param Type="PRIntervalTime" Name="timeout" />
+            <Return Type="PRInt32" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_TransmitFile">
+            <Param Type="PRFileDesc*" Name="networkSocket" />
+            <Param Type="PRFileDesc*" Name="sourceFile" />
+            <Param Type="const void*" Name="headers" />
+            <Param Type="PRInt32" Name="hlen" />
+            <Param Type="PRTransmitFileFlags" Name="flags" />
+            <Param Type="PRIntervalTime" Name="timeout" />
+            <Return Type="PRInt32" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_AcceptRead">
+            <Param Type="PRFileDesc*" Name="listenSock" />
+            <Param Type="PRFileDesc**" Name="acceptedSock" />
+            <Param Type="PRNetAddr**" Name="peerAddr" />
+            <Param Type="void*" Name="buf" />
+            <Param Type="PRInt32" Name="amount" />
+            <Param Type="PRIntervalTime" Name="timeout" />
+            <Return Type="PRInt32" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_GetSockName">
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Param Type="PRNetAddr*" Name="addr" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_GetPeerName">
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Param Type="PRNetAddr*" Name="addr" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_GetSocketOption">
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Param Type="PRSocketOptionData*" Name="data" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_SetSocketOption">
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Param Type="PRSocketOptionData*" Name="data" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Category Name="Netscape Portable Runtime/IO Functions/Converting Between Host and Network Addresses" />
+        <Api Name="PR_ntohs">
+            <Param Type="PRUint16" Name="conversion" />
+            <Return Type="PRUint16" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_ntohl">
+            <Param Type="PRUint32" Name="conversion" />
+            <Return Type="PRUint32" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_htons">
+            <Param Type="PRUint16" Name="conversion" />
+            <Return Type="PRUint16" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_htonl">
+            <Param Type="PRUint32" Name="conversion" />
+            <Return Type="PRUint32" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Category Name="Netscape Portable Runtime/IO Functions/Memory Mapped" />
+        <Api Name="PR_CreateFileMap">
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Param Type="PRInt64" Name="size" />
+            <Param Type="PRFileMapProtect" Name="prot" />
+            <Return Type="PRFileMap*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_MemMap">
+            <Param Type="PRFileMap*" Name="fmap" />
+            <Param Type="PRInt64" Name="offset" />
+            <Param Type="PRUint32" Name="len" />
+            <Return Type="void*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_MemUnmap">
+            <Param Type="void*" Name="addr" />
+            <Param Type="PRUint32" Name="len" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_CloseFileMap">
+            <Param Type="PRFileMap*" Name="fmap" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Category Name="Netscape Portable Runtime/IO Functions/Polling" />
+        <Api Name="PR_Poll">
+            <Param Type="PRPollDesc*" Name="pds" />
+            <Param Type="PRIntn" Name="npds" />
+            <Param Type="PRIntervalTime" Name="timeout" />
+            <Return Type="PRInt32" />
+            <Success Return="NotEqual" Value="-1" />
+        </Api>
+        <Api Name="PR_GetConnectStatus">
+            <Param Type="const PRPollDesc*" Name="pd" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Category Name="Netscape Portable Runtime/IO Functions/Pollable Events" />
+        <Api Name="PR_NewPollableEvent">
+            <Return Type="PRFileDesc*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_DestroyPollableEvent">
+            <Param Type="PRFileDesc*" Name="event" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_SetPollableEvent">
+            <Param Type="PRFileDesc*" Name="event" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_WaitForPollableEvent">
+            <Param Type="PRFileDesc*" Name="event" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Category Name="Netscape Portable Runtime/IO Functions/Manipulating Layers" />
+        <Api Name="PR_GetUniqueIdentity">
+            <Param Type="const char*" Name="layer_name" />
+            <Return Type="PRDescIdentity" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_GetNameForIdentity">
+            <Param Type="PRDescIdentity" Name="ident" />
+            <Return Type="const char*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_GetLayersIdentity">
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Return Type="PRDescIdentity" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_GetIdentitiesLayer">
+            <Param Type="PRFileDesc*" Name="stack" />
+            <Param Type="PRDescIdentity" Name="id" />
+            <Return Type="PRFileDesc*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_GetDefaultIOMethods">
+            <Return Type="const PRIOMethods*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_CreateIOLayerStub">
+            <Param Type="PRDescIdentity" Name="ident" />
+            <Param Type="const PRIOMethods*" Name="methods" />
+            <Return Type="PRFileDesc*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_PushIOLayer">
+            <Param Type="PRFileDesc*" Name="stack" />
+            <Param Type="PRDescIdentity" Name="id" />
+            <Param Type="PRFileDesc*" Name="layer" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_PopIOLayer">
+            <Param Type="PRFileDesc*" Name="stack" />
+            <Param Type="PRDescIdentity" Name="id" />
+            <Return Type="PRFileDesc*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <!-- Network Addresses -->
+        <Category Name="Netscape Portable Runtime/Network Addresses" />
+        <Api Name="PR_InitializeNetAddr">
+            <Param Type="PRNetAddrValue" Name="val" />
+            <Param Type="PRUint16" Name="port" />
+            <Param Type="PRNetAddr*" Name="addr" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_StringToNetAddr">
+            <Param Type="const char*" Name="string" />
+            <Param Type="PRNetAddr*" Name="addr" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_NetAddrToString">
+            <Param Type="const PRNetAddr*" Name="addr" />
+            <Param Type="char*" Name="string" />
+            <Param Type="PRUint32" Name="size" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_GetHostByName">
+            <Param Type="const char*" Name="hostname" />
+            <Param Type="char*" Name="buf" />
+            <Param Type="PRIntn" Name="bufsize" />
+            <Param Type="PRHostEnt*" Name="hostentry" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_GetHostByAddr">
+            <Param Type="const PRNetAddr*" Name="hostaddr" />
+            <Param Type="char*" Name="buf" />
+            <Param Type="PRIntn" Name="bufsize" />
+            <Param Type="PRHostEnt*" Name="hostentry" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_EnumerateHostEnt">
+            <Param Type="PRIntn" Name="enumIndex" />
+            <Param Type="const PRHostEnt*" Name="hostEnt" />
+            <Param Type="PRUint16" Name="port" />
+            <Param Type="PRNetAddr*" Name="address" />
+            <Return Type="PRIntn" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_GetProtoByName">
+            <Param Type="const char*" Name="protocolname" />
+            <Param Type="char*" Name="buffer" />
+            <Param Type="PRInt32" Name="bufsize" />
+            <Param Type="PRProtoEnt*" Name="result" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_GetProtoByNumber">
+            <Param Type="PRInt32" Name="protocolnumber" />
+            <Param Type="char*" Name="buffer" />
+            <Param Type="PRInt32" Name="bufsize" />
+            <Param Type="PRProtoEnt*" Name="result" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <!-- Intervals -->
+        <Category Name="Netscape Portable Runtime/Intervals" />
+        <Api Name="PR_IntervalNow">
+            <Return Type="PRIntervalTime" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_TicksPerSecond">
+            <Return Type="PRUint32" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_SecondsToInterval">
+            <Param Type="PRUint32" Name="seconds" />
+            <Return Type="PRIntervalTime" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_MillisecondsToInterval">
+            <Param Type="PRUint32" Name="milli" />
+            <Return Type="PRIntervalTime" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_MicrosecondsToInterval">
+            <Param Type="PRUint32" Name="milli" />
+            <Return Type="PRIntervalTime" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_IntervalToSeconds">
+            <Param Type="PRIntervalTime" Name="ticks" />
+            <Return Type="PRUint32" />
+        </Api>
+        <Api Name="PR_IntervalToMilliseconds">
+            <Param Type="PRIntervalTime" Name="ticks" />
+            <Return Type="PRUint32" />
+        </Api>
+        <Api Name="PR_IntervalToMicroseconds">
+            <Param Type="PRIntervalTime" Name="ticks" />
+            <Return Type="PRUint32" />
+        </Api>
+        <!-- Date and Time -->
+        <Category Name="Netscape Portable Runtime/Date and Time" />
+        <Api Name="PR_LocalTimeParameters">
+            <Param Type="const PRExplodedTime*" Name="gmt" />
+            <Return Type="PRTimeParameters" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_GMTParameters">
+            <Param Type="const PRExplodedTime*" Name="gmt" />
+            <Return Type="PRTimeParameters" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_Now">
+            <Return Type="PRTime" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_ExplodeTime">
+            <Param Type="PRTime" Name="usecs" />
+            <Param Type="PRTimeParamFn" Name="params" />
+            <Param Type="PRExplodedTime*" Name="exploded" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="PR_ImplodeTime">
+            <Param Type="const PRExplodedTime*" Name="exploded" />
+            <Return Type="PRTime" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_NormalizeTime">
+            <Param Type="PRExplodedTime*" Name="time" />
+            <Param Type="PRTimeParamFn" Name="params" />
+            <Return Type="void" />
+        </Api>
+        <!-- Memory Management -->
+        <Category Name="Netscape Portable Runtime/Memory Management" />
+        <Api Name="PR_Calloc">
+            <Param Type="PRUint32" Name="nelem" />
+            <Param Type="PRUint32" Name="elsize" />
+            <Return Type="void*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_Realloc">
+            <Param Type="void*" Name="ptr" />
+            <Param Type="PRUint32" Name="size" />
+            <Return Type="void*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_Free">
+            <Param Type="void*" Name="ptr" />
+            <Return Type="void" />
+        </Api>
+        <!-- Floating Point Number to String Conversion -->
+        <Category Name="Netscape Portable Runtime/Floating Point Number to String Conversion" />
+        <Api Name="PR_strtod">
+            <Param Type="const char*" Name="s00" />
+            <Param Type="char**" Name="se" />
+            <Return Type="PRFloat64" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_dtoa">
+            <Param Type="PRFloat64" Name="d" />
+            <Param Type="PRIntn" Name="mode" />
+            <Param Type="PRIntn" Name="ndigits" />
+            <Param Type="PRIntn*" Name="decpt" />
+            <Param Type="PRIntn*" Name="sign" />
+            <Param Type="char**" Name="rve" />
+            <Param Type="char*" Name="buf" />
+            <Param Type="PRSize" Name="bufsz" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_cnvtf">
+            <Param Type="char*" Name="buf" />
+            <Param Type="PRIntn" Name="bufsz" />
+            <Param Type="PRIntn" Name="prcsn" />
+            <Param Type="PRFloat64" Name="fval" />
+            <Return Type="void" />
+        </Api>
+        <!-- Library Linking -->
+        <Category Name="Netscape Portable Runtime/Library Linking" />
+        <Api Name="PR_SetLibraryPath">
+            <Param Type="const char*" Name="path" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_GetLibraryPath">
+            <Return Type="char*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_GetLibraryName">
+            <Param Type="const char*" Name="dir" />
+            <Param Type="const char*" Name="lib" />
+            <Return Type="char*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_FreeLibraryName">
+            <Param Type="char*" Name="mem" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="PR_LoadLibrary">
+            <Param Type="const char*" Name="name" />
+            <Return Type="PRLibrary*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_UnloadLibrary">
+            <Param Type="PRLibrary*" Name="lib" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_FindSymbolAndLibrary">
+            <Param Type="const char*" Name="name" />
+            <Param Type="PRLibrary**" Name="lib" />
+            <Return Type="void*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_FindSymbol">
+            <Param Type="PRLibrary*" Name="lib" />
+            <Param Type="const char*" Name="name" />
+            <Return Type="void*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <!-- Named Shared Memory -->
+        <Category Name="Netscape Portable Runtime/Named Shared Memory" />
+        <Api Name="PR_OpenSharedMemory">
+            <Param Type="const char*" Name="name" />
+            <Param Type="PRSize" Name="size" />
+            <Param Type="PRIntn" Name="flags" />
+            <Param Type="PRIntn" Name="mode" />
+            <Return Type="PRSharedMemory*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_AttachSharedMemory">
+            <Param Type="PRSharedMemory*" Name="shm" />
+            <Param Type="PRIntn" Name="flags" />
+            <Return Type="void*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_DetachSharedMemory">
+            <Param Type="PRSharedMemory*" Name="shm" />
+            <Param Type="void*" Name="addr" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_CloseSharedMemory">
+            <Param Type="PRSharedMemory*" Name="shm" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_DeleteSharedMemory">
+            <Param Type="const char*" Name="name" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <!-- Anonymous Shared Memory -->
+        <Category Name="Netscape Portable Runtime/Anonymous Shared Memory" />
+        <Api Name="PR_OpenAnonFileMap">
+            <Param Type="const char*" Name="dirName" />
+            <Param Type="PRSize" Name="size" />
+            <Param Type="PRFileMapProtect" Name="prot" />
+            <Return Type="PRFileMap*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_ProcessAttrSetInheritableFileMap">
+            <Param Type="PRProcessAttr*" Name="attr" />
+            <Param Type="PRFileMap*" Name="fm" />
+            <Param Type="const char*" Name="shmname" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_GetInheritedFileMap">
+            <Param Type="const char*" Name="shmname" />
+            <Return Type="PRFileMap*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_ExportFileMapAsString">
+            <Param Type="PRFileMap*" Name="fm" />
+            <Param Type="PRSize" Name="bufsize" />
+            <Param Type="char*" Name="buf" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_ImportFileMapFromString">
+            <Param Type="const char*" Name="fmstring" />
+            <Return Type="PRFileMap*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <!-- IPC Semaphore -->
+        <Category Name="Netscape Portable Runtime/IPC Semaphore" />
+        <Api Name="PR_OpenSemaphore">
+            <Param Type="const char*" Name="name" />
+            <Param Type="PRIntn" Name="flags" />
+            <Param Type="PRIntn" Name="mode" />
+            <Param Type="PRUintn" Name="value" />
+            <Return Type="PRSem*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_WaitSemaphore">
+            <Param Type="PRSem*" Name="sem" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_PostSemaphore">
+            <Param Type="PRSem*" Name="sem" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_CloseSemaphore">
+            <Param Type="PRSem*" Name="sem" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_DeleteSemaphore">
+            <Param Type="const char*" Name="name" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <!-- Random Number Generator -->
+        <Category Name="Netscape Portable Runtime/Random Number Generator" />
+        <Api Name="PR_GetRandomNoise">
+            <Param Type="void*" Name="buf" />
+            <Param Type="PRSize" Name="size" />
+            <Return Type="PRSize" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <!-- Error Handling -->
+        <Category Name="Netscape Portable Runtime/Error Handling" />
+        <Api Name="PR_SetError">
+            <Param Type="PRErrorCode" Name="errorCode" />
+            <Param Type="PRInt32" Name="oserr" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="PR_SetErrorText">
+            <Param Type="PRIntn" Name="textLength" />
+            <Param Type="const char*" Name="text" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="PR_GetError">
+            <Return Type="PRErrorCode" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_GetOSError">
+            <Return Type="PRInt32" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_GetErrorTextLength">
+            <Return Type="PRInt32" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_GetErrorText">
+            <Param Type="char*" Name="text" />
+            <Return Type="PRInt32" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <!-- Atomic Operations -->
+        <Category Name="Netscape Portable Runtime/Atomic Operations" />
+        <Api Name="PR_AtomicIncrement">
+            <Param Type="PRInt32*" Name="val" />
+            <Return Type="PRInt32" />
+        </Api>
+        <Api Name="PR_AtomicDecrement">
+            <Param Type="PRInt32*" Name="val" />
+            <Return Type="PRInt32" />
+        </Api>
+        <Api Name="PR_AtomicSet">
+            <Param Type="PRInt32*" Name="val" />
+            <Param Type="PRInt32" Name="newval" />
+            <Return Type="PRInt32" />
+        </Api>
+        <Api Name="PR_AtomicAdd">
+            <Param Type="PRInt32*" Name="ptr" />
+            <Param Type="PRInt32" Name="val" />
+            <Return Type="PRInt32" />
+        </Api>
+        <Api Name="PR_CreateStack">
+            <Param Type="const char*" Name="stack_name" />
+            <Return Type="PRStack*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_StackPush">
+            <Param Type="PRStack*" Name="stack" />
+            <Param Type="PRStackElem*" Name="stack_elem" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="PR_StackPop">
+            <Param Type="PRStack*" Name="stack" />
+            <Return Type="PRStackElem*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_DestroyStack">
+            <Param Type="PRStack*" Name="stack" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <!-- Process Management -->
+        <Category Name="Netscape Portable Runtime/Process Management" />
+        <Api Name="PR_NewProcessAttr">
+            <Return Type="PRProcessAttr*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_ResetProcessAttr">
+            <Param Type="PRProcessAttr*" Name="attr" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="PR_DestroyProcessAttr">
+            <Param Type="PRProcessAttr*" Name="attr" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="PR_ProcessAttrSetStdioRedirect">
+            <Param Type="PRProcessAttr*" Name="attr" />
+            <Param Type="PRInt32" Name="stdioFd" />
+            <Param Type="PRFileDesc*" Name="redirectFd" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="PR_ProcessAttrSetCurrentDirectory">
+            <Param Type="PRProcess*" Name="attr" />
+            <Param Type="const char*" Name="dir" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_ProcessAttrSetInheritableFD">
+            <Param Type="PRProcess*" Name="attr" />
+            <Param Type="PRFileDesc*" Name="fd" />
+            <Param Type="const char*" Name="name" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="PR_CreateProcess">
+            <Param Type="const char*" Name="path" />
+            <Param Type="char *const*" Name="argv" />
+            <Param Type="char *const*" Name="envp" />
+            <Param Type="const PRProcessAttr*" Name="attr" />
+            <Return Type="PRProcess*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PR_DetachProcess">
+            <Param Type="PRProcess*" Name="process" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_WaitProcess">
+            <Param Type="PRProcess*" Name="process" />
+            <Param Type="PRInt32*" Name="exitCode" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PR_KillProcess">
+            <Param Type="PRProcess*" Name="process" />
+            <Return Type="PRStatus" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

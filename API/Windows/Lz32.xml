@@ -1,0 +1,74 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="Lz32.dll" CallingConvention="STDCALL" OnlineHelp="MSDN">
+        <!-- Flags -->
+        <Variable Name="[OpenFlags]" Type="Alias" Base="WORD">
+            <Flag>
+                <Set Name="OF_READ"                 Value="0x00000000" />
+                <Set Name="OF_WRITE"                Value="0x00000001" />
+                <Set Name="OF_READWRITE"            Value="0x00000002" />
+                <Set Name="OF_SHARE_COMPAT"         Value="0x00000000" />
+                <Set Name="OF_SHARE_EXCLUSIVE"      Value="0x00000010" />
+                <Set Name="OF_SHARE_DENY_WRITE"     Value="0x00000020" />
+                <Set Name="OF_SHARE_DENY_READ"      Value="0x00000030" />
+                <Set Name="OF_SHARE_DENY_NONE"      Value="0x00000040" />
+                <Set Name="OF_PARSE"                Value="0x00000100" />
+                <Set Name="OF_DELETE"               Value="0x00000200" />
+                <Set Name="OF_VERIFY"               Value="0x00000400" />
+                <Set Name="OF_CANCEL"               Value="0x00000800" />
+                <Set Name="OF_CREATE"               Value="0x00001000" />
+                <Set Name="OF_PROMPT"               Value="0x00002000" />
+                <Set Name="OF_EXIST"                Value="0x00004000" />
+                <Set Name="OF_REOPEN"               Value="0x00008000" />
+            </Flag>
+        </Variable>
+        <Category Name="System Services/File Services/Local File Systems/File Management" />
+        <Api Name="GetExpandedName" BothCharset="True">
+            <Param Type="LPTSTR" Name="lpszSource" />
+            <Param Type="LPTSTR" Name="lpszBuffer" />
+            <Return Type="INT" />
+            <Success Return="Equal" Value="1" />
+        </Api>
+        <Api Name="LZClose">
+            <Param Type="INT" Name="hFile" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="LZCopy">
+            <Param Type="INT" Name="hfSource" />
+            <Param Type="INT" Name="hfDest" />
+            <Return Type="LONG" />
+            <Success Return="Greater" Value="-1" />
+        </Api>
+        <Api Name="LZInit">
+            <Param Type="INT" Name="hfSource" />
+            <Return Type="INT" />
+            <Success Return="Greater" Value="-1" />
+        </Api>
+        <Api Name="LZOpenFile" BothCharset="True">
+            <Param Type="LPTSTR" Name="lpFileName" />
+            <Param Type="LPOFSTRUCT" Name="lpReOpenBuf" />
+            <Param Type="[OpenFlags]" Display="WORD" Name="wStyle" />
+            <Return Type="INT" />
+            <Success Return="Greater" Value="-1" />
+        </Api>
+        <Api Name="LZRead">
+            <Param Type="INT" Name="hFile" />
+            <Param Type="LPSTR" Name="lpBuffer" PostLength="[Retval]" />
+            <Param Type="INT" Name="cbRead" />
+            <Return Type="INT" />
+            <Success Return="Greater" Value="-1" />
+        </Api>
+        <Api Name="LZSeek">
+            <Param Type="INT" Name="hFile" />
+            <Param Type="LONG" Name="lOffset" />
+            <Param Type="INT" Name="iOrigin" />
+            <Return Type="LONG" />
+            <Success Return="Greater" Value="-1" />
+        </Api>
+    </Module>
+</ApiMonitor>

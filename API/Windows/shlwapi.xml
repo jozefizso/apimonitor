@@ -1,0 +1,416 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="shlwapi.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" ErrorIsReturnValue="True" OnlineHelp="MSDN">
+        <!-- Variables -->
+        <Variable Name="ASSOCF" Type="Alias" Base="DWORD">
+            <Flag SingleValue="True">
+                <Set Name="ASSOCF_INIT_NOREMAPCLSID"        Value="0x00000001" />
+                <Set Name="ASSOCF_INIT_BYEXENAME"           Value="0x00000002" />
+                <Set Name="ASSOCF_INIT_DEFAULTTOSTAR"       Value="0x00000004" />
+                <Set Name="ASSOCF_INIT_DEFAULTTOFOLDER"     Value="0x00000008" />
+                <Set Name="ASSOCF_NOUSERSETTINGS"           Value="0x00000010" />
+                <Set Name="ASSOCF_NOTRUNCATE"               Value="0x00000020" />
+                <Set Name="ASSOCF_VERIFY"                   Value="0x00000040" />
+                <Set Name="ASSOCF_REMAPRUNDLL"              Value="0x00000080" />
+                <Set Name="ASSOCF_NOFIXUPS"                 Value="0x00000100" />
+                <Set Name="ASSOCF_IGNOREBASECLASS"          Value="0x00000200" />
+                <Set Name="ASSOCF_INIT_IGNOREUNKNOWN"       Value="0x00000400" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="ASSOCKEY" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="ASSOCKEY_SHELLEXECCLASS" Value="1" />
+                <Set Name="ASSOCKEY_APP"            Value="2" />
+                <Set Name="ASSOCKEY_CLASS"          Value="3" />
+                <Set Name="ASSOCKEY_BASECLASS"      Value="4" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="ASSOCSTR" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="ASSOCSTR_COMMAND"            Value="1" />
+                <Set Name="ASSOCSTR_EXECUTABLE"         Value="2" />
+                <Set Name="ASSOCSTR_FRIENDLYDOCNAME"    Value="3" />
+                <Set Name="ASSOCSTR_FRIENDLYAPPNAME"    Value="4" />
+                <Set Name="ASSOCSTR_NOOPEN"             Value="5" />
+                <Set Name="ASSOCSTR_SHELLNEWVALUE"      Value="6" />
+                <Set Name="ASSOCSTR_DDECOMMAND"         Value="7" />
+                <Set Name="ASSOCSTR_DDEIFEXEC"          Value="8" />
+                <Set Name="ASSOCSTR_DDEAPPLICATION"     Value="9" />
+                <Set Name="ASSOCSTR_DDETOPIC"           Value="10" />
+                <Set Name="ASSOCSTR_INFOTIP"            Value="11" />
+                <Set Name="ASSOCSTR_QUICKTIP"           Value="12" />
+                <Set Name="ASSOCSTR_TILEINFO"           Value="13" />
+                <Set Name="ASSOCSTR_CONTENTTYPE"        Value="14" />
+                <Set Name="ASSOCSTR_DEFAULTICON"        Value="15" />
+                <Set Name="ASSOCSTR_SHELLEXTENSION"     Value="16" />
+                <Set Name="ASSOCSTR_DROPTARGET"         Value="17" />
+                <Set Name="ASSOCSTR_DELEGATEEXECUTE"    Value="18" />
+                <Set Name="ASSOCSTR_MAX"                Value="19" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="SHREGENUM_FLAGS" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="SHREGENUM_DEFAULT"   Value="0x00000000" />
+                <Set Name="SHREGENUM_HKCU"      Value="0x00000001" />
+                <Set Name="SHREGENUM_HKLM"      Value="0x00000010" />
+                <Set Name="SHREGENUM_BOTH"      Value="0x00000011" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="SHREGDEL_FLAGS" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="SHREGDEL_DEFAULT"    Value="0x00000000" />
+                <Set Name="SHREGDEL_HKCU"       Value="0x00000001" />
+                <Set Name="SHREGDEL_HKLM"       Value="0x00000010" />
+                <Set Name="SHREGDEL_BOTH"       Value="0x00000011" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[ShRegSetFlags]" Type="Alias" Base="UINT">
+            <Flag>
+                <Set Name="SHREGSET_HKCU"           Value="0x00000001" />
+                <Set Name="SHREGSET_FORCE_HKCU"     Value="0x00000002" />
+                <Set Name="SHREGSET_HKLM"           Value="0x00000004" />
+                <Set Name="SHREGSET_FORCE_HKLM"     Value="0x00000008" />
+                <!-- SHREGSET_DEFAULT = (SHREGSET_FORCE_HKCU | SHREGSET_HKLM) -->
+                <Set Name="SHREGSET_DEFAULT"        Value="0x00000006" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="HUSKEY"     Type="Alias"    Base="HANDLE" />
+        <Variable Name="PHUSKEY"    Type="Pointer"  Base="HUSKEY" />
+
+        <!-- Registry -->
+        <Category Name="System Services/Windows System Information/Registry" />
+        <Api Name="AssocCreate">
+            <Param Type="CLSID" Name="clsid" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppv" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="AssocQueryKey" BothCharset="True">
+            <Param Type="ASSOCF" Name="flags" />
+            <Param Type="ASSOCKEY" Name="key" />
+            <Param Type="LPCTSTR" Name="pszAssoc" />
+            <Param Type="LPCTSTR" Name="pszExtra" />
+            <Param Type="HKEY*" Name="phkeyOut" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="AssocQueryString" BothCharset="True">
+            <Param Type="ASSOCF" Name="flags" />
+            <Param Type="ASSOCSTR" Name="str" />
+            <Param Type="LPCTSTR" Name="pszAssoc" />
+            <Param Type="LPCTSTR" Name="pszExtra" />
+            <Param Type="LPTSTR" Name="pszOut" />
+            <Param Type="DWORD*" Name="pcchOut" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="AssocQueryStringByKey" BothCharset="True">
+            <Param Type="ASSOCF" Name="flags" />
+            <Param Type="ASSOCSTR" Name="str" />
+            <Param Type="HKEY" Name="hkAssoc" />
+            <Param Type="LPCTSTR" Name="pszExtra" />
+            <Param Type="LPTSTR" Name="pszOut" />
+            <Param Type="DWORD*" Name="pcchOut" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHCopyKey" BothCharset="True">
+            <Param Type="HKEY" Name="hkeySrc" />
+            <Param Type="LPCTSTR" Name="szSrcSubKey" />
+            <Param Type="HKEY" Name="hkeyDest" />
+            <Param Type="DWORD" Name="fReserved" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHDeleteEmptyKey" BothCharset="True">
+            <Param Type="HKEY" Name="hkey" />
+            <Param Type="LPCTSTR" Name="pszSubKey" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHDeleteKey" BothCharset="True">
+            <Param Type="HKEY" Name="hkey" />
+            <Param Type="LPCTSTR" Name="pszSubKey" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHDeleteValue" BothCharset="True">
+            <Param Type="HKEY" Name="hkey" />
+            <Param Type="LPCTSTR" Name="pszSubKey" />
+            <Param Type="LPCTSTR" Name="pszValue" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHEnumKeyEx" BothCharset="True">
+            <Param Type="HKEY" Name="hkey" />
+            <Param Type="DWORD" Name="dwIndex" />
+            <Param Type="LPTSTR" Name="pszName" />
+            <Param Type="LPDWORD" Name="pcchName" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHEnumValue" BothCharset="True">
+            <Param Type="HKEY" Name="hkey" />
+            <Param Type="DWORD" Name="dwIndex" />
+            <Param Type="LPTSTR" Name="pszValueName" />
+            <Param Type="LPDWORD" Name="pcchValueName" />
+            <Param Type="[RegType*]" Display="LPDWORD" Name="pdwType" />
+            <Param Type="LPVOID" Name="pvData" />
+            <Param Type="LPDWORD" Name="pcbData" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHGetValue" BothCharset="True">
+            <Param Type="HKEY" Name="hkey" />
+            <Param Type="LPCTSTR" Name="pszSubKey" />
+            <Param Type="LPCTSTR" Name="pszValue" />
+            <Param Type="[RegType*]" Display="LPDWORD" Name="pdwType" />
+            <Param Type="LPVOID" Name="pvData" />
+            <Param Type="LPDWORD" Name="pcbData" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHQueryInfoKey" BothCharset="True">
+            <Param Type="HKEY" Name="hkey" />
+            <Param Type="LPDWORD" Name="pcSubKeys" />
+            <Param Type="LPDWORD" Name="pcchMaxSubKeyLen" />
+            <Param Type="LPDWORD" Name="pcValues" />
+            <Param Type="LPDWORD" Name="pcchMaxValueNameLen" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHQueryValueEx" BothCharset="True">
+            <Param Type="HKEY" Name="hkey" />
+            <Param Type="LPCTSTR" Name="pszValue" />
+            <Param Type="LPDWORD" Name="pdwReserved" />
+            <Param Type="[RegType*]" Display="LPDWORD" Name="pdwType" />
+            <Param Type="LPVOID" Name="pvData" />
+            <Param Type="LPDWORD" Name="pcbData" />
+            <Return Type="DWORD" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHRegCloseUSKey">
+            <Param Type="HUSKEY" Name="hUSKey" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHRegCreateUSKey" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszPath" />
+            <Param Type="REGSAM" Name="samDesired" />
+            <Param Type="HUSKEY" Name="hRelativeUSKey" />
+            <Param Type="PHUSKEY" Name="phNewUSKey" />
+            <Param Type="[ShRegSetFlags]" Display="DWORD" Name="dwFlags" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHRegDeleteEmptyUSKey" BothCharset="True">
+            <Param Type="HUSKEY" Name="hUSKey" />
+            <Param Type="LPCSTR" Name="pszValue" />
+            <Param Type="SHREGDEL_FLAGS" Name="delRegFlags" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHRegDeleteUSValue" BothCharset="True">
+            <Param Type="HUSKEY" Name="hUSKey" />
+            <Param Type="LPCTSTR" Name="pszValue" />
+            <Param Type="SHREGDEL_FLAGS" Name="delRegFlags" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHRegDuplicateHKey">
+            <Param Type="HKEY" Name="hkey" />
+            <Return Type="HKEY" />
+        </Api>
+        <Api Name="SHRegEnumUSKey" BothCharset="True">
+            <Param Type="HUSKEY" Name="hUSKey" />
+            <Param Type="DWORD" Name="dwIndex" />
+            <Param Type="LPTSTR" Name="pszName" />
+            <Param Type="LPDWORD" Name="pcchName" />
+            <Param Type="SHREGENUM_FLAGS" Name="enumRegFlags" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHRegEnumUSValue" BothCharset="True">
+            <Param Type="HUSKEY" Name="hUSKey" />
+            <Param Type="DWORD" Name="dwIndex" />
+            <Param Type="LPTSTR" Name="pszValueName" />
+            <Param Type="LPDWORD" Name="pcchValueNameLen" />
+            <Param Type="[RegType*]" Display="LPDWORD" Name="pdwType" />
+            <Param Type="void*" Name="pvData" />
+            <Param Type="LPDWORD" Name="pcbData" />
+            <Param Type="SHREGENUM_FLAGS" Name="enumRegFlags" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHRegGetBoolUSValue" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszSubKey" />
+            <Param Type="LPCTSTR" Name="pszValue" />
+            <Param Type="BOOL" Name="fIgnoreHKCU" />
+            <Param Type="BOOL" Name="fDefault" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="SHRegGetIntW">
+            <Param Type="HKEY" Name="hk" />
+            <Param Type="LPCWSTR" Name="szKey" />
+            <Param Type="int" Name="nDefault" />
+            <Return Type="int" />
+        </Api>
+        <Api Name="SHRegGetPath" BothCharset="True">
+            <Param Type="HKEY" Name="hkey" />
+            <Param Type="LPCTSTR" Name="pszSubkey" />
+            <Param Type="LPCTSTR" Name="pszValue" />
+            <Param Type="LPTSTR" Name="pszPath" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHRegGetUSValue" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszSubKey" />
+            <Param Type="LPCTSTR" Name="pszValue" />
+            <Param Type="DWORD*" Name="pdwType" />
+            <Param Type="void*" Name="pvData" />
+            <Param Type="DWORD*" Name="pcbData" />
+            <Param Type="BOOL" Name="fIgnoreHKCU" />
+            <Param Type="void*" Name="pvDefaultData" />
+            <Param Type="DWORD" Name="dwDefaultDataSize" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHRegOpenUSKey" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszPath" />
+            <Param Type="REGSAM" Name="samDesired" />
+            <Param Type="HUSKEY" Name="hRelativeUSKey" />
+            <Param Type="PHUSKEY" Name="phNewUSKey" />
+            <Param Type="BOOL" Name="fIgnoreHKCU" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHRegQueryInfoUSKey" BothCharset="True">
+            <Param Type="HUSKEY" Name="hUSKey" />
+            <Param Type="LPDWORD" Name="pcSubKeys" />
+            <Param Type="LPDWORD" Name="pcchMaxSubKeyLen" />
+            <Param Type="LPDWORD" Name="pcValues" />
+            <Param Type="LPDWORD" Name="pcchMaxValueNameLen" />
+            <Param Type="SHREGENUM_FLAGS" Name="enumRegFlags" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHRegQueryUSValue" BothCharset="True">
+            <Param Type="HUSKEY" Name="hUSKey" />
+            <Param Type="LPCTSTR" Name="pszValue" />
+            <Param Type="[RegType*]" Display="LPDWORD" Name="pdwType" />
+            <Param Type="LPVOID" Name="pvData" PostLength="pcbData" />
+            <Param Type="LPDWORD" Name="pcbData" />
+            <Param Type="BOOL" Name="fIgnoreHKCU" />
+            <Param Type="LPVOID" Name="pvDefaultData" Length="dwDefaultDataSize" />
+            <Param Type="DWORD" Name="dwDefaultDataSize" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHRegSetPath" BothCharset="True">
+            <Param Type="HKEY" Name="hkey" />
+            <Param Type="LPCTSTR" Name="pszSubkey" />
+            <Param Type="LPCTSTR" Name="pszValue" />
+            <Param Type="LPCTSTR" Name="pszPath" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHRegSetUSValue" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszSubKey" />
+            <Param Type="LPCTSTR" Name="pszValue" />
+            <Param Type="DWORD" Name="dwType" />
+            <Param Type="LPVOID" Name="pvData" />
+            <Param Type="DWORD" Name="cbData" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHRegWriteUSValue" BothCharset="True">
+            <Param Type="HUSKEY" Name="hUSKey" />
+            <Param Type="LPCTSTR" Name="pszValue" />
+            <Param Type="DWORD" Name="dwType" />
+            <Param Type="LPVOID" Name="pvData" />
+            <Param Type="DWORD" Name="cbData" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHSetValue" BothCharset="True">
+            <Param Type="HKEY" Name="hkey" />
+            <Param Type="LPCTSTR" Name="pszSubKey" />
+            <Param Type="LPCTSTR" Name="pszValue" />
+            <Param Type="[RegType]" Display="DWORD" Name="dwType" />
+            <Param Type="LPCVOID" Name="pvData" Length="cbData" />
+            <Param Type="DWORD" Name="cbData" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <!-- Shell -->
+        <Category Name="Windows Environment Development/Windows Shell" />
+        <Api Name="SHAllocShared">
+            <Param Type="const void*" Name="pvData" />
+            <Param Type="DWORD" Name="dwSize" />
+            <Param Type="DWORD" Name="dwDestinationProcessId" />
+            <Return Type="HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <!-- Variable Arguments NOT supported
+    <Api Name="ShellMessageBox" BothCharset="True">
+        <Param Type="HINSTANCE" Name="hInst" />
+        <Param Type="HWND" Name="hWnd" />
+        <Param Type="LPCTSTR" Name="pszMsg" />
+        <Param Type="LPCTSTR" Name="pszTitle" />
+        <Param Type="UINT" Name="fuStyle" />
+        <Param Type="..." />
+        <Return Type="int" />
+        <Success Return="NotEqual" Value="0" />
+    </Api>
+     -->
+        <Api Name="SHGetViewStatePropertyBag">
+            <Param Type="PCIDLIST_ABSOLUTE" Name="pidl" />
+            <Param Type="LPCWSTR" Name="pszBagName" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppv" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHLockShared">
+            <Param Type="HANDLE*" Name="hData" />
+            <Param Type="DWORD" Name="dwOtherProcId" />
+            <Return Type="LPVOID" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SHFreeShared">
+            <Param Type="HANDLE" Name="hData" />
+            <Param Type="DWORD" Name="dwSourceProcId" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="StrStrNW">
+            <Param Type="LPCWSTR" Name="lpFirst" />
+            <Param Type="LPCWSTR" Name="lpSrch" />
+            <Param Type="UINT" Name="cchMax" />
+            <Return Type="LPCWSTR" />
+        </Api>
+        <Api Name="StrStrNIW">
+            <Param Type="LPCWSTR" Name="lpFirst" />
+            <Param Type="LPCWSTR" Name="lpSrch" />
+            <Param Type="UINT" Name="cchMax" />
+            <Return Type="LPCWSTR" />
+        </Api>
+    </Module>
+</ApiMonitor>

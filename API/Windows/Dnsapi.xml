@@ -1,0 +1,413 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+    
+TODO: DnsWriteQuestionToBuffer_UTF8?
+TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="Dnsapi.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
+        <!-- Variables -->
+        <Variable Name="PDNS_MESSAGE_BUFFER"             Type="Alias" Base="LPVOID" />
+        <Variable Name="PDNS_RECORD*"                    Type="Alias" Base="LPVOID" />
+        <Variable Name="DNS_PROXY_INFORMATION*"          Type="Alias" Base="LPVOID" />
+        <Variable Name="DNS_PROXY_COMPLETION_ROUTINE"    Type="Alias" Base="LPVOID" />
+        <Variable Name="PDNS_RECORD"                     Type="Alias" Base="LPVOID" />
+        <Variable Name="DNS_STATUS"                      Type="Alias" Base="LONG">
+            <Flag SingleValue="True">
+                <Set Name="DNS_ERROR_RCODE_NO_ERROR"                    Value="0" />
+                <Set Name="DNS_ERROR_RCODE_FORMAT_ERROR"                Value="9001" />
+                <Set Name="DNS_ERROR_RCODE_SERVER_FAILURE"              Value="9002" />
+                <Set Name="DNS_ERROR_RCODE_NAME_ERROR"                  Value="9003" />
+                <Set Name="DNS_ERROR_RCODE_NOT_IMPLEMENTED"             Value="9004" />
+                <Set Name="DNS_ERROR_RCODE_REFUSED"                     Value="9005" />
+                <Set Name="DNS_ERROR_RCODE_YXDOMAIN"                    Value="9006" />
+                <Set Name="DNS_ERROR_RCODE_YXRRSET"                     Value="9007" />
+                <Set Name="DNS_ERROR_RCODE_NXRRSET"                     Value="9008" />
+                <Set Name="DNS_ERROR_RCODE_NOTAUTH"                     Value="9009" />
+                <Set Name="DNS_ERROR_RCODE_NOTZONE"                     Value="9010" />
+                <Set Name="DNS_ERROR_RCODE_BADSIG"                      Value="9016" />
+                <Set Name="DNS_ERROR_RCODE_BADKEY"                      Value="9017" />
+                <Set Name="DNS_ERROR_RCODE_BADTIME"                     Value="9018" />
+                <Set Name="DNS_INFO_NO_RECORDS"                         Value="9501" />
+                <Set Name="DNS_ERROR_BAD_PACKET"                        Value="9502" />
+                <Set Name="DNS_ERROR_NO_PACKET"                         Value="9503" />
+                <Set Name="DNS_ERROR_RCODE"                             Value="9504" />
+                <Set Name="DNS_ERROR_UNSECURE_PACKET"                   Value="9505" />
+                <Set Name="DNS_ERROR_NO_MEMORY"                         Value="14" />
+                <Set Name="DNS_ERROR_INVALID_NAME"                      Value="123" />
+                <Set Name="DNS_ERROR_INVALID_DATA"                      Value="13" />
+                <Set Name="DNS_ERROR_INVALID_TYPE"                      Value="9551" />
+                <Set Name="DNS_ERROR_INVALID_IP_ADDRESS"                Value="9552" />
+                <Set Name="DNS_ERROR_INVALID_PROPERTY"                  Value="9553" />
+                <Set Name="DNS_ERROR_TRY_AGAIN_LATER"                   Value="9554" />
+                <Set Name="DNS_ERROR_NOT_UNIQUE"                        Value="9555" />
+                <Set Name="DNS_ERROR_NON_RFC_NAME"                      Value="9556" />
+                <Set Name="DNS_STATUS_FQDN"                             Value="9557" />
+                <Set Name="DNS_STATUS_DOTTED_NAME"                      Value="9558" />
+                <Set Name="DNS_STATUS_SINGLE_PART_NAME"                 Value="9559" />
+                <Set Name="DNS_ERROR_INVALID_NAME_CHAR"                 Value="9560" />
+                <Set Name="DNS_ERROR_NUMERIC_NAME"                      Value="9561" />
+                <Set Name="DNS_ERROR_NOT_ALLOWED_ON_ROOT_SERVER"        Value="9562" />
+                <Set Name="DNS_ERROR_NOT_ALLOWED_UNDER_DELEGATION"      Value="9563" />
+                <Set Name="DNS_ERROR_CANNOT_FIND_ROOT_HINTS"            Value="9564" />
+                <Set Name="DNS_ERROR_INCONSISTENT_ROOT_HINTS"           Value="9565" />
+                <Set Name="DNS_ERROR_DWORD_VALUE_TOO_SMALL"             Value="9566" />
+                <Set Name="DNS_ERROR_DWORD_VALUE_TOO_LARGE"             Value="9567" />
+                <Set Name="DNS_ERROR_BACKGROUND_LOADING"                Value="9568" />
+                <Set Name="DNS_ERROR_NOT_ALLOWED_ON_RODC"               Value="9569" />
+                <Set Name="DNS_ERROR_NOT_ALLOWED_UNDER_DNAME"           Value="9570" />
+                <Set Name="DNS_ERROR_ZONE_DOES_NOT_EXIST"               Value="9601" />
+                <Set Name="DNS_ERROR_NO_ZONE_INFO"                      Value="9602" />
+                <Set Name="DNS_ERROR_INVALID_ZONE_OPERATION"            Value="9603" />
+                <Set Name="DNS_ERROR_ZONE_CONFIGURATION_ERROR"          Value="9604" />
+                <Set Name="DNS_ERROR_ZONE_HAS_NO_SOA_RECORD"            Value="9605" />
+                <Set Name="DNS_ERROR_ZONE_HAS_NO_NS_RECORDS"            Value="9606" />
+                <Set Name="DNS_ERROR_ZONE_LOCKED"                       Value="9607" />
+                <Set Name="DNS_ERROR_ZONE_CREATION_FAILED"              Value="9608" />
+                <Set Name="DNS_ERROR_ZONE_ALREADY_EXISTS"               Value="9609" />
+                <Set Name="DNS_ERROR_AUTOZONE_ALREADY_EXISTS"           Value="9610" />
+                <Set Name="DNS_ERROR_INVALID_ZONE_TYPE"                 Value="9611" />
+                <Set Name="DNS_ERROR_SECONDARY_REQUIRES_MASTER_IP"      Value="9612" />
+                <Set Name="DNS_ERROR_ZONE_NOT_SECONDARY"                Value="9613" />
+                <Set Name="DNS_ERROR_NEED_SECONDARY_ADDRESSES"          Value="9614" />
+                <Set Name="DNS_ERROR_WINS_INIT_FAILED"                  Value="9615" />
+                <Set Name="DNS_ERROR_NEED_WINS_SERVERS"                 Value="9616" />
+                <Set Name="DNS_ERROR_NBSTAT_INIT_FAILED"                Value="9617" />
+                <Set Name="DNS_ERROR_SOA_DELETE_INVALID"                Value="9618" />
+                <Set Name="DNS_ERROR_FORWARDER_ALREADY_EXISTS"          Value="9619" />
+                <Set Name="DNS_ERROR_ZONE_REQUIRES_MASTER_IP"           Value="9620" />
+                <Set Name="DNS_ERROR_ZONE_IS_SHUTDOWN"                  Value="9621" />
+                <Set Name="DNS_ERROR_PRIMARY_REQUIRES_DATAFILE"         Value="9651" />
+                <Set Name="DNS_ERROR_INVALID_DATAFILE_NAME"             Value="9652" />
+                <Set Name="DNS_ERROR_DATAFILE_OPEN_FAILURE"             Value="9653" />
+                <Set Name="DNS_ERROR_FILE_WRITEBACK_FAILED"             Value="9654" />
+                <Set Name="DNS_ERROR_DATAFILE_PARSING"                  Value="9655" />
+                <Set Name="DNS_ERROR_RECORD_DOES_NOT_EXIST"             Value="9701" />
+                <Set Name="DNS_ERROR_RECORD_FORMAT"                     Value="9702" />
+                <Set Name="DNS_ERROR_NODE_CREATION_FAILED"              Value="9703" />
+                <Set Name="DNS_ERROR_UNKNOWN_RECORD_TYPE"               Value="9704" />
+                <Set Name="DNS_ERROR_RECORD_TIMED_OUT"                  Value="9705" />
+                <Set Name="DNS_ERROR_NAME_NOT_IN_ZONE"                  Value="9706" />
+                <Set Name="DNS_ERROR_CNAME_LOOP"                        Value="9707" />
+                <Set Name="DNS_ERROR_NODE_IS_CNAME"                     Value="9708" />
+                <Set Name="DNS_ERROR_CNAME_COLLISION"                   Value="9709" />
+                <Set Name="DNS_ERROR_RECORD_ONLY_AT_ZONE_ROOT"          Value="9710" />
+                <Set Name="DNS_ERROR_RECORD_ALREADY_EXISTS"             Value="9711" />
+                <Set Name="DNS_ERROR_SECONDARY_DATA"                    Value="9712" />
+                <Set Name="DNS_ERROR_NO_CREATE_CACHE_DATA"              Value="9713" />
+                <Set Name="DNS_ERROR_NAME_DOES_NOT_EXIST"               Value="9714" />
+                <Set Name="DNS_WARNING_PTR_CREATE_FAILED"               Value="9715" />
+                <Set Name="DNS_WARNING_DOMAIN_UNDELETED"                Value="9716" />
+                <Set Name="DNS_ERROR_DS_UNAVAILABLE"                    Value="9717" />
+                <Set Name="DNS_ERROR_DS_ZONE_ALREADY_EXISTS"            Value="9718" />
+                <Set Name="DNS_ERROR_NO_BOOTFILE_IF_DS_ZONE"            Value="9719" />
+                <Set Name="DNS_ERROR_NODE_IS_DNAME"                     Value="9720" />
+                <Set Name="DNS_ERROR_DNAME_COLLISION"                   Value="9721" />
+                <Set Name="DNS_ERROR_ALIAS_LOOP"                        Value="9722" />
+                <Set Name="DNS_INFO_AXFR_COMPLETE"                      Value="9751" />
+                <Set Name="DNS_ERROR_AXFR"                              Value="9752" />
+                <Set Name="DNS_INFO_ADDED_LOCAL_WINS"                   Value="9753" />
+                <Set Name="DNS_STATUS_CONTINUE_NEEDED"                  Value="9801" />
+                <Set Name="DNS_ERROR_NO_TCPIP"                          Value="9851" />
+                <Set Name="DNS_ERROR_NO_DNS_SERVERS"                    Value="9852" />
+                <Set Name="DNS_ERROR_DP_DOES_NOT_EXIST"                 Value="9901" />
+                <Set Name="DNS_ERROR_DP_ALREADY_EXISTS"                 Value="9902" />
+                <Set Name="DNS_ERROR_DP_NOT_ENLISTED"                   Value="9903" />
+                <Set Name="DNS_ERROR_DP_ALREADY_ENLISTED"               Value="9904" />
+                <Set Name="DNS_ERROR_DP_NOT_AVAILABLE"                  Value="9905" />
+                <Set Name="DNS_ERROR_DP_FSMO_ERROR"                     Value="9906" />
+            </Flag>
+        </Variable>
+
+        <!-- Flags -->
+        <Variable Name="DNS_FREE_TYPE" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="DnsFreeFlat"                 Value="0" />
+                <Set Name="DnsFreeRecordList"           Value="1" />
+                <Set Name="DnsFreeParsedMessageFields"  Value="2" />
+            </Flag>
+        </Variable>
+        <Variable Name="[DnsRecordType]" Type="Alias" Base="WORD">
+            <Flag SingleValue="True">
+                <Set Name="DNS_TYPE_A"          Value="0x0001" />
+                <Set Name="DNS_TYPE_NS"         Value="0x0002" />
+                <Set Name="DNS_TYPE_MD"         Value="0x0003" />
+                <Set Name="DNS_TYPE_MF"         Value="0x0004" />
+                <Set Name="DNS_TYPE_CNAME"      Value="0x0005" />
+                <Set Name="DNS_TYPE_SOA"        Value="0x0006" />
+                <Set Name="DNS_TYPE_MB"         Value="0x0007" />
+                <Set Name="DNS_TYPE_MG"         Value="0x0008" />
+                <Set Name="DNS_TYPE_MR"         Value="0x0009" />
+                <Set Name="DNS_TYPE_NULL"       Value="0x000a" />
+                <Set Name="DNS_TYPE_WKS"        Value="0x000b" />
+                <Set Name="DNS_TYPE_PTR"        Value="0x000c" />
+                <Set Name="DNS_TYPE_HINFO"      Value="0x000d" />
+                <Set Name="DNS_TYPE_MINFO"      Value="0x000e" />
+                <Set Name="DNS_TYPE_MX"         Value="0x000f" />
+                <Set Name="DNS_TYPE_TEXT"       Value="0x0010" />
+                <Set Name="DNS_TYPE_RP"         Value="0x0011" />
+                <Set Name="DNS_TYPE_AFSDB"      Value="0x0012" />
+                <Set Name="DNS_TYPE_X25"        Value="0x0013" />
+                <Set Name="DNS_TYPE_ISDN"       Value="0x0014" />
+                <Set Name="DNS_TYPE_RT"         Value="0x0015" />
+                <Set Name="DNS_TYPE_NSAP"       Value="0x0016" />
+                <Set Name="DNS_TYPE_NSAPPTR"    Value="0x0017" />
+                <Set Name="DNS_TYPE_SIG"        Value="0x0018" />
+                <Set Name="DNS_TYPE_KEY"        Value="0x0019" />
+                <Set Name="DNS_TYPE_PX"         Value="0x001a" />
+                <Set Name="DNS_TYPE_GPOS"       Value="0x001b" />
+                <Set Name="DNS_TYPE_AAAA"       Value="0x001c" />
+                <Set Name="DNS_TYPE_LOC"        Value="0x001d" />
+                <Set Name="DNS_TYPE_NXT"        Value="0x001e" />
+                <Set Name="DNS_TYPE_EID"        Value="0x001f" />
+                <Set Name="DNS_TYPE_NIMLOC"     Value="0x0020" />
+                <Set Name="DNS_TYPE_SRV"        Value="0x0021" />
+                <Set Name="DNS_TYPE_ATMA"       Value="0x0022" />
+                <Set Name="DNS_TYPE_NAPTR"      Value="0x0023" />
+                <Set Name="DNS_TYPE_KX"         Value="0x0024" />
+                <Set Name="DNS_TYPE_CERT"       Value="0x0025" />
+                <Set Name="DNS_TYPE_A6"         Value="0x0026" />
+                <Set Name="DNS_TYPE_DNAME"      Value="0x0027" />
+                <Set Name="DNS_TYPE_SINK"       Value="0x0028" />
+                <Set Name="DNS_TYPE_OPT"        Value="0x0029" />
+                <Set Name="DNS_TYPE_UINFO"      Value="0x0064" />
+                <Set Name="DNS_TYPE_UID"        Value="0x0065" />
+                <Set Name="DNS_TYPE_GID"        Value="0x0066" />
+                <Set Name="DNS_TYPE_UNSPEC"     Value="0x0067" />
+                <Set Name="DNS_TYPE_ADDRS"      Value="0x00f8" />
+                <Set Name="DNS_TYPE_TKEY"       Value="0x00f9" />
+                <Set Name="DNS_TYPE_TSIG"       Value="0x00fa" />
+                <Set Name="DNS_TYPE_IXFR"       Value="0x00fb" />
+                <Set Name="DNS_TYPE_AXFR"       Value="0x00fc" />
+                <Set Name="DNS_TYPE_MAILB"      Value="0x00fd" />
+                <Set Name="DNS_TYPE_MAILA"      Value="0x00fe" />
+                <Set Name="DNS_TYPE_ALL"        Value="0x00ff" />
+                <Set Name="DNS_TYPE_ANY"        Value="0x00ff" />
+                <Set Name="DNS_TYPE_WINS"       Value="0xff01" />
+                <Set Name="DNS_TYPE_WINSR"      Value="0xff02" />
+                <Set Name="DNS_TYPE_NBSTAT"     Value="0xff02" />
+            </Flag>
+        </Variable>
+        <Variable Name="[DnsQueryOptions]" Type="Alias" Base="DWORD">
+            <Flag>
+                <Set Name="DNS_QUERY_STANDARD"                      Value="0x00000000" />
+                <Set Name="DNS_QUERY_ACCEPT_TRUNCATED_RESPONSE"     Value="0x00000001" />
+                <Set Name="DNS_QUERY_USE_TCP_ONLY"                  Value="0x00000002" />
+                <Set Name="DNS_QUERY_NO_RECURSION"                  Value="0x00000004" />
+                <Set Name="DNS_QUERY_BYPASS_CACHE"                  Value="0x00000008" />
+                <Set Name="DNS_QUERY_NO_WIRE_QUERY"                 Value="0x00000010" />
+                <Set Name="DNS_QUERY_NO_LOCAL_NAME"                 Value="0x00000020" />
+                <Set Name="DNS_QUERY_NO_HOSTS_FILE"                 Value="0x00000040" />
+                <Set Name="DNS_QUERY_NO_NETBT"                      Value="0x00000080" />
+                <Set Name="DNS_QUERY_WIRE_ONLY"                     Value="0x00000100" />
+                <Set Name="DNS_QUERY_RETURN_MESSAGE"                Value="0x00000200" />
+                <Set Name="DNS_QUERY_MULTICAST_ONLY"                Value="0x00000400" />
+                <Set Name="DNS_QUERY_NO_MULTICAST"                  Value="0x00000800" />
+                <Set Name="DNS_QUERY_TREAT_AS_FQDN"                 Value="0x00001000" />
+                <Set Name="DNS_QUERY_DONT_RESET_TTL_VALUES"         Value="0x00100000" />
+                <Set Name="DNS_QUERY_RESERVED"                      Value="0xff000000" />
+            </Flag>
+        </Variable>
+        <Variable Name="DNS_NAME_FORMAT" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="DnsNameDomain"           Value="0" />
+                <Set Name="DnsNameDomainLabel"      Value="1" />
+                <Set Name="DnsNameHostnameFull"     Value="2" />
+                <Set Name="DnsNameHostnameLabel"    Value="3" />
+                <Set Name="DnsNameWildcard"         Value="4" />
+                <Set Name="DnsNameSrvRecord"        Value="5" />
+                <Set Name="DnsNameValidateTld"      Value="6" />
+            </Flag>
+        </Variable>
+        <Variable Name="DNS_CONFIG_TYPE" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="DnsConfigPrimaryDomainName_W"                    Value="0" />
+                <Set Name="DnsConfigPrimaryDomainName_A"                    Value="1" />
+                <Set Name="DnsConfigPrimaryDomainName_UTF8"                 Value="2" />
+                <Set Name="DnsConfigAdapterDomainName_W"                    Value="3" />
+                <Set Name="DnsConfigAdapterDomainName_A"                    Value="4" />
+                <Set Name="DnsConfigAdapterDomainName_UTF8"                 Value="5" />
+                <Set Name="DnsConfigDnsServerList"                          Value="6" />
+                <Set Name="DnsConfigSearchList"                             Value="7" />
+                <Set Name="DnsConfigAdapterInfo"                            Value="8" />
+                <Set Name="DnsConfigPrimaryHostNameRegistrationEnabled"     Value="9" />
+                <Set Name="DnsConfigAdapterHostNameRegistrationEnabled"     Value="10" />
+                <Set Name="DnsConfigAddressRegistrationMaxCount"            Value="11" />
+                <Set Name="DnsConfigHostName_W"                             Value="12" />
+                <Set Name="DnsConfigHostName_A"                             Value="13" />
+                <Set Name="DnsConfigHostName_UTF8"                          Value="14" />
+                <Set Name="DnsConfigFullHostName_W"                         Value="15" />
+                <Set Name="DnsConfigFullHostName_A"                         Value="16" />
+                <Set Name="DnsConfigFullHostName_UTF8"                      Value="17" />
+            </Flag>
+        </Variable>
+        <Variable Name="[DnsConfigFlags]" Type="Alias" Base="DWORD">
+            <Flag>
+                <Set Name="DNS_CONFIG_FLAG_ALLOC"   Value="0x00000001" />
+            </Flag>
+        </Variable>
+        <Variable Name="[DnsUpdateFlags]" Type="Alias" Base="DWORD">
+            <Flag>
+                <Set Name="DNS_UPDATE_SECURITY_USE_DEFAULT"         Value="0x00000000" />
+                <Set Name="DNS_UPDATE_SECURITY_OFF"                 Value="0x00000010" />
+                <Set Name="DNS_UPDATE_SECURITY_ON"                  Value="0x00000020" />
+                <Set Name="DNS_UPDATE_SECURITY_ONLY"                Value="0x00000100" />
+                <Set Name="DNS_UPDATE_CACHE_SECURITY_CONTEXT"       Value="0x00000200" />
+                <Set Name="DNS_UPDATE_TEST_USE_LOCAL_SYS_ACCT"      Value="0x00000400" />
+                <Set Name="DNS_UPDATE_FORCE_SECURITY_NEGO"          Value="0x00000800" />
+                <Set Name="DNS_UPDATE_TRY_ALL_MASTER_SERVERS"       Value="0x00001000" />
+                <Set Name="DNS_UPDATE_SKIP_NO_UPDATE_ADAPTERS"      Value="0x00002000" />
+                <Set Name="DNS_UPDATE_REMOTE_SERVER"                Value="0x00004000" />
+                <Set Name="DNS_UPDATE_RESERVED"                     Value="0xffff0000" />
+            </Flag>
+        </Variable>
+        <Variable Name="DNS_CHARSET" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="DnsCharSetUnknown"   Value="0" />
+                <Set Name="DnsCharSetUnicode"   Value="1" />
+                <Set Name="DnsCharSetUtf8"      Value="2" />
+                <Set Name="DnsCharSetAnsi"      Value="3" />
+            </Flag>
+        </Variable>
+        <!-- Domain Name System (DNS) -->
+        <Category Name="Networking/Network Protocols/Domain Name System (DNS)" />
+        <Api Name="DnsAcquireContextHandle_" BothCharset="True">
+            <Param Type="BOOL" Display="DWORD" Name="CredentialFlags" />
+            <Param Type="PVOID" Name="Credentials" />
+            <Param Type="PHANDLE" Name="pContext" />
+            <Return Type="DNS_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="DnsExtractRecordsFromMessage_W">
+            <Param Type="PDNS_MESSAGE_BUFFER" Name="pDnsBuffer" Length="wMessageLength" />
+            <Param Type="WORD" Name="wMessageLength" />
+            <Param Type="PDNS_RECORD*" Name="ppRecord" />
+            <Return Type="DNS_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="DnsFree">
+            <Param Type="PVOID" Name="pData" />
+            <Param Type="DNS_FREE_TYPE" Name="FreeType" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="DnsFreeProxyName">
+            <Param Type="PWSTR" Name="proxyName" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="DnsGetProxyInformation">
+            <Param Type="PCWSTR" Name="hostName" />
+            <Param Type="DNS_PROXY_INFORMATION*" Name="proxyInformation" />
+            <Param Type="DNS_PROXY_INFORMATION*" Name="defaultProxyInformation" />
+            <Param Type="DNS_PROXY_COMPLETION_ROUTINE" Name="completionRoutine" />
+            <Param Type="void*" Name="completionContext" />
+            <Return Type="DNS_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="DnsModifyRecordsInSet_" BothCharset="True">
+            <Param Type="PDNS_RECORD" Name="pAddRecords" />
+            <Param Type="PDNS_RECORD" Name="pDeleteRecords" />
+            <Param Type="DWORD" Name="Options" />
+            <Param Type="HANDLE" Name="hContext" />
+            <Param Type="PVOID" Name="pExtraList" />
+            <Param Type="PVOID" Name="pReserved" />
+            <Return Type="DNS_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="DnsNameCompare_" BothCharset="True">
+            <Param Type="PCTSTR" Name="pName1" />
+            <Param Type="PCTSTR" Name="pName2" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DnsQuery_" BothCharset="True">
+            <Param Type="PCTSTR" Name="lpstrName" />
+            <Param Type="[DnsRecordType]" Display="WORD" Name="wType" />
+            <Param Type="[DnsQueryOptions]" Display="DWORD" Name="Options" />
+            <Param Type="PVOID" Name="pExtra" />
+            <Param Type="PDNS_RECORD*" Name="ppQueryResultsSet" />
+            <Param Type="PVOID*" Name="pReserved" />
+            <Return Type="DNS_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="DnsQueryConfig">
+            <Param Type="DNS_CONFIG_TYPE" Name="Config" />
+            <Param Type="[DnsConfigFlags]" Display="DWORD" Name="Flag" />
+            <Param Type="PCWSTR" Name="pwsAdapterName" />
+            <Param Type="PVOID" Name="pReserved" />
+            <Param Type="PVOID" Name="pBuffer" PostLength="pBufferLength" />
+            <Param Type="PDWORD" Name="pBufferLength" />
+            <Return Type="DNS_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="DnsRecordCompare">
+            <Param Type="PDNS_RECORD" Name="pRecord1" />
+            <Param Type="PDNS_RECORD" Name="pRecord2" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DnsRecordCopyEx">
+            <Param Type="PDNS_RECORD" Name="pRecord" />
+            <Param Type="DNS_CHARSET" Name="CharSetIn" />
+            <Param Type="DNS_CHARSET" Name="CharSetOut" />
+            <Return Type="PDNS_RECORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DnsRecordListFree">
+            <Param Type="PDNS_RECORD" Name="pRecordList" />
+            <Param Type="DNS_FREE_TYPE" Name="FreeType" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="DnsRecordSetCompare">
+            <Param Type="PDNS_RECORD" Name="pRR1" />
+            <Param Type="PDNS_RECORD" Name="pRR2" />
+            <Param Type="PDNS_RECORD*" Name="ppDiff1" />
+            <Param Type="PDNS_RECORD*" Name="ppDiff2" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DnsRecordSetCopyEx">
+            <Param Type="PDNS_RECORD" Name="pRecordSet" />
+            <Param Type="DNS_CHARSET" Name="CharSetIn" />
+            <Param Type="DNS_CHARSET" Name="CharSetOut" />
+            <Return Type="PDNS_RECORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DnsRecordSetDetach">
+            <Param Type="PDNS_RECORD" Name="pRR" />
+            <Return Type="PDNS_RECORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DnsReleaseContextHandle">
+            <Param Type="HANDLE" Name="ContextHandle" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="DnsReplaceRecordSet" BothCharset="True">
+            <Param Type="PDNS_RECORD" Name="pNewSet" />
+            <Param Type="[DnsUpdateFlags]" Display="DWORD" Name="Options" />
+            <Param Type="HANDLE" Name="hContext" />
+            <Param Type="PVOID" Name="pExtraInfo" />
+            <Param Type="PVOID" Name="pReserved" />
+            <Return Type="DNS_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="DnsValidateName_" BothCharset="True">
+            <Param Type="PCTSTR" Name="pszName" />
+            <Param Type="DNS_NAME_FORMAT" Name="Format" />
+            <Return Type="DNS_STATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="DnsWriteQuestionToBuffer_W">
+            <Param Type="PDNS_MESSAGE_BUFFER" Name="pDnsBuffer" PostLength="pdwBufferSize" />
+            <Param Type="PDWORD" Name="pdwBufferSize" />
+            <Param Type="PCWSTR" Name="pszName" />
+            <Param Type="[DnsRecordType]" Display="WORD" Name="wType" />
+            <Param Type="WORD" Name="Xid" />
+            <Param Type="BOOL" Name="fRecursionDesired" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

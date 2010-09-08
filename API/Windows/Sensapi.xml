@@ -1,0 +1,36 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="Sensapi.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        <!-- Parameters -->
+        <Variable Name="LPQOCINFO" Type="Alias"        Base="LPVOID" />
+
+        <!-- Flags -->
+        <Variable Name="[NetworkAliveFlags]" Type="Alias" Base="DWORD">
+            <Flag>
+                <Set Name="NETWORK_ALIVE_LAN" Value="0x00000001" />
+                <Set Name="NETWORK_ALIVE_WAN" Value="0x00000002" />
+                <Set Name="NETWORK_ALIVE_AOL" Value="0x00000004" />
+            </Flag>
+        </Variable>
+        <Variable Name="[NetworkAliveFlags*]" Type="Pointer" Base="[NetworkAliveFlags]" />
+
+        <!-- System Event Notification Service (SENS) -->
+        <Category Name="Networking/Network Management/System Event Notification Service (SENS)" />
+        <Api Name="IsDestinationReachable" BothCharset="True">
+            <Param Type="LPCSTR" Name="lpszDestination" />
+            <Param Type="LPQOCINFO" Name="lpQOCInfo" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="IsNetworkAlive">
+            <Param Type="[NetworkAliveFlags*]" Display="LPDWORD" Name="lpdwFlags" />
+            <Return Type="Bool" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

@@ -1,0 +1,507 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\rpc.h.xml" />
+    <Module Name="Ntdsapi.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        <!-- Variables -->
+        <Variable Name="DS_NAME_FLAGS" Type="Alias" Base="DWORD">
+            <Flag>
+                <Set Name="DS_NAME_NO_FLAGS"                Value="0" />
+                <Set Name="DS_NAME_FLAG_SYNTACTICAL_ONLY"   Value="0x1" />
+                <Set Name="DS_NAME_FLAG_EVAL_AT_DC"         Value="0x2" />
+                <Set Name="DS_NAME_FLAG_GCVERIFY"           Value="0x4" />
+                <Set Name="DS_NAME_FLAG_TRUST_REFERRAL"     Value="0x8" />
+            </Flag>
+        </Variable>
+        <Variable Name="DS_NAME_FORMAT" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="DS_UNKNOWN_NAME"             Value="0" />
+                <Set Name="DS_FQDN_1779_NAME"           Value="1" />
+                <Set Name="DS_NT4_ACCOUNT_NAME"         Value="2" />
+                <Set Name="DS_DISPLAY_NAME"             Value="3" />
+                <Set Name="DS_DOMAIN_SIMPLE_NAME"       Value="4" />
+                <Set Name="DS_ENTERPRISE_SIMPLE_NAME"   Value="5" />
+                <Set Name="DS_UNIQUE_ID_NAME"           Value="6" />
+                <Set Name="DS_CANONICAL_NAME"           Value="7" />
+                <Set Name="DS_USER_PRINCIPAL_NAME"      Value="8" />
+                <Set Name="DS_CANONICAL_NAME_EX"        Value="9" />
+                <Set Name="DS_SERVICE_PRINCIPAL_NAME"   Value="10" />
+                <Set Name="DS_SID_OR_SID_HISTORY_NAME"  Value="11" />
+                <Set Name="DS_DNS_DOMAIN_NAME"          Value="12" />
+            </Flag>
+        </Variable>
+        <Variable Name="DS_MANGLE_FOR" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="DS_MANGLE_UNKNOWN"                       Value="0" />
+                <Set Name="DS_MANGLE_OBJECT_RDN_FOR_DELETION"       Value="1" />
+                <Set Name="DS_MANGLE_OBJECT_RDN_FOR_NAME_CONFLICT"  Value="2" />
+            </Flag>
+        </Variable>
+        <Variable Name="DS_MANGLE_FOR*" Type="Pointer" Base="DS_MANGLE_FOR" />
+        <Variable Name="DS_SPN_NAME_TYPE" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="DS_SPN_DNS_HOST"     Value="0" />
+                <Set Name="DS_SPN_DN_HOST"      Value="1" />
+                <Set Name="DS_SPN_NB_HOST"      Value="2" />
+                <Set Name="DS_SPN_DOMAIN"       Value="3" />
+                <Set Name="DS_SPN_NB_DOMAIN"    Value="4" />
+                <Set Name="DS_SPN_SERVICE"      Value="5" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="DS_KCC_TASKID" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="DS_KCC_TASKID_UPDATE_TOPOLOGY" Value="0" />
+            </Flag>
+        </Variable>
+        <Variable Name="DS_REPL_INFO_TYPE" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="DS_REPL_INFO_NEIGHBORS"                  Value="0" />
+                <Set Name="DS_REPL_INFO_CURSORS_FOR_NC"             Value="1" />
+                <Set Name="DS_REPL_INFO_METADATA_FOR_OBJ"           Value="2" />
+                <Set Name="DS_REPL_INFO_KCC_DSA_CONNECT_FAILURES"   Value="3" />
+                <Set Name="DS_REPL_INFO_KCC_DSA_LINK_FAILURES"      Value="4" />
+                <Set Name="DS_REPL_INFO_PENDING_OPS"                Value="5" />
+                <Set Name="DS_REPL_INFO_METADATA_FOR_ATTR_VALUE"    Value="6" />
+                <Set Name="DS_REPL_INFO_CURSORS_2_FOR_NC"           Value="7" />
+                <Set Name="DS_REPL_INFO_CURSORS_3_FOR_NC"           Value="8" />
+                <Set Name="DS_REPL_INFO_METADATA_2_FOR_OBJ"         Value="9" />
+                <Set Name="DS_REPL_INFO_METADATA_2_FOR_ATTR_VALUE"  Value="10" />
+            </Flag>
+        </Variable>
+        <Variable Name="DS_SPN_WRITE_OP" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="DS_SPN_ADD_SPN_OP"           Value="0" />
+                <Set Name="DS_SPN_REPLACE_SPN_OP"       Value="1" />
+                <Set Name="DS_SPN_DELETE_SPN_OP"        Value="2" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="PDS_NAME_RESULTW*"          Type="Alias"    Base="LPVOID" />
+        <Variable Name="DS_SCHEMA_GUID_MAP*"        Type="Alias"    Base="LPVOID" />
+        <Variable Name="DS_SCHEMA_GUID_MAP**"       Type="Pointer"  Base="DS_SCHEMA_GUID_MAP*" />
+        <Variable Name="PDS_SITE_COST_INFO"         Type="Alias"    Base="LPVOID" />
+        <Variable Name="PDS_SITE_COST_INFO*"        Type="Pointer"  Base="PDS_SITE_COST_INFO" />
+        <Variable Name="const PSCHEDULE"            Type="Alias"    Base="LPVOID" />
+        <Variable Name="PDS_REPSYNCALL_ERRINFO*"    Type="Alias"    Base="LPVOID" />
+        <Variable Name="PDS_REPSYNCALL_ERRINFO**"   Type="Pointer"  Base="PDS_REPSYNCALL_ERRINFO*" />
+        <Variable Name="PDS_NAME_RESULT*"           Type="Alias"    Base="LPVOID" />
+        <Variable Name="DS_NAME_RESULTW*"           Type="Alias"    Base="LPVOID" />
+        <Variable Name="PDS_SCHEMA_GUID_MAP"        Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPCWCH*"                    Type="Alias"    Base="WCHAR**" />
+
+        <!-- Active Directory Domain Services -->
+        <Category Name="Administration and Management/Directory, Identity, and Access Services/Directory Services/Directories/Active Directory Domain Services/Domain Controller and Replication Management" />
+        <Api Name="DsAddSidHistory" BothCharset="True">
+            <Param Type="HANDLE" Name="hDS" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="LPCTSTR" Name="SrcDomain" />
+            <Param Type="LPCTSTR" Name="SrcPrincipal" />
+            <Param Type="LPCTSTR" Name="SrcDomainController" />
+            <Param Type="RPC_AUTH_IDENTITY_HANDLE" Name="SrcDomainCreds" />
+            <Param Type="LPCTSTR" Name="DstDomain" />
+            <Param Type="LPCTSTR" Name="DstPrincipal" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsBind" BothCharset="True">
+            <Param Type="LPCTSTR" Name="DomainControllerName" />
+            <Param Type="LPCTSTR" Name="DnsDomainName" />
+            <Param Type="HANDLE*" Name="phDS" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsBindingSetTimeout">
+            <Param Type="HANDLE" Name="hDS" />
+            <Param Type="ULONG" Name="cTimeoutSecs" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsBindToISTG" BothCharset="True">
+            <Param Type="LPCTSTR" Name="SiteName" />
+            <Param Type="HANDLE*" Name="phDS" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsBindWithCred" BothCharset="True">
+            <Param Type="LPCTSTR" Name="DomainControllerName" />
+            <Param Type="LPCTSTR" Name="DnsDomainName" />
+            <Param Type="RPC_AUTH_IDENTITY_HANDLE" Name="AuthIdentity" />
+            <Param Type="HANDLE*" Name="phDS" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsBindWithSpn" BothCharset="True">
+            <Param Type="LPCTSTR" Name="DomainControllerName" />
+            <Param Type="LPCTSTR" Name="DnsDomainName" />
+            <Param Type="RPC_AUTH_IDENTITY_HANDLE" Name="AuthIdentity" />
+            <Param Type="LPCTSTR" Name="ServicePrincipalName" />
+            <Param Type="HANDLE*" Name="phDS" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsBindWithSpnEx" BothCharset="True">
+            <Param Type="LPCTSTR" Name="DomainControllerName" />
+            <Param Type="LPCTSTR" Name="DnsDomainName" />
+            <Param Type="RPC_AUTH_IDENTITY_HANDLE" Name="AuthIdentity" />
+            <Param Type="LPCTSTR" Name="ServicePrincipalName" />
+            <Param Type="DWORD" Name="BindFlags" />
+            <Param Type="HANDLE*" Name="phDS" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsClientMakeSpnForTargetServer" BothCharset="True">
+            <Param Type="LPCTSTR" Name="ServiceClass" />
+            <Param Type="LPCTSTR" Name="ServiceName" />
+            <Param Type="DWORD*" Name="pcSpnLength" />
+            <Param Type="LPTSTR" Name="pszSpn" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsCrackNames" BothCharset="True">
+            <Param Type="HANDLE" Name="hDS" />
+            <Param Type="DS_NAME_FLAGS" Name="flags" />
+            <Param Type="DS_NAME_FORMAT" Name="formatOffered" />
+            <Param Type="DS_NAME_FORMAT" Name="formatDesired" />
+            <Param Type="DWORD" Name="cNames" />
+            <Param Type="LPCTSTR*" Name="rpNames" />
+            <Param Type="PDS_NAME_RESULT*" Name="ppResult" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsCrackSpn" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszSPN" />
+            <Param Type="DWORD*" Name="pcServiceClass" />
+            <Param Type="LPTSTR" Name="ServiceClass" />
+            <Param Type="DWORD*" Name="pcServiceName" />
+            <Param Type="LPTSTR" Name="ServiceName" />
+            <Param Type="DWORD*" Name="pcInstanceName" />
+            <Param Type="LPTSTR" Name="InstanceName" />
+            <Param Type="USHORT*" Name="pInstancePort" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsCrackUnquotedMangledRdn" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszRDN" />
+            <Param Type="DWORD" Name="cchRDN" />
+            <Param Type="GUID*" Name="pGuid" />
+            <Param Type="DS_MANGLE_FOR*" Name="peDsMangleFor" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsFreeDomainControllerInfo" BothCharset="True">
+            <Param Type="DWORD" Name="InfoLevel" />
+            <Param Type="DWORD" Name="cInfo" />
+            <Param Type="VOID*" Name="pInfo" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="DsFreeNameResult" BothCharset="True">
+            <Param Type="DS_NAME_RESULTW*" Name="pResult" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="DsFreePasswordCredentials">
+            <Param Type="RPC_AUTH_IDENTITY_HANDLE" Name="AuthIdentity" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="DsFreeSchemaGuidMap" BothCharset="True">
+            <Param Type="PDS_SCHEMA_GUID_MAP" Name="pGuidMap" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="DsFreeSpnArray" BothCharset="True">
+            <Param Type="DWORD" Name="cSpn" />
+            <Param Type="LPTSTR*" Name="rpszSpn" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="DsGetDomainControllerInfo" BothCharset="True">
+            <Param Type="HANDLE" Name="hDs" />
+            <Param Type="LPTSTR" Name="DomainName" />
+            <Param Type="DWORD" Name="InfoLevel" />
+            <Param Type="DWORD*" Name="pcOut" />
+            <Param Type="VOID**" Name="ppInfo" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsGetRdnW">
+            <Param Type="LPCWCH*" Name="ppDN" />
+            <Param Type="DWORD*" Name="pcDN" />
+            <Param Type="LPCWCH*" Name="ppKey" />
+            <Param Type="DWORD*" Name="pcKey" />
+            <Param Type="LPCWCH*" Name="ppVal" />
+            <Param Type="DWORD*" Name="pcVal" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsGetSpn" BothCharset="True">
+            <Param Type="DS_SPN_NAME_TYPE" Name="ServiceType" />
+            <Param Type="LPCTSTR" Name="ServiceClass" />
+            <Param Type="LPCTSTR" Name="ServiceName" />
+            <Param Type="USHORT" Name="InstancePort" />
+            <Param Type="USHORT" Name="cInstanceNames" />
+            <Param Type="LPCTSTR*" Name="pInstanceNames" />
+            <Param Type="const USHORT*" Name="pInstancePorts" />
+            <Param Type="DWORD*" Name="pcSpn" />
+            <Param Type="LPTSTR**" Name="prpszSpn" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsInheritSecurityIdentity" BothCharset="True">
+            <Param Type="HANDLE" Name="hDS" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="LPCTSTR" Name="SrcPrincipal" />
+            <Param Type="LPCTSTR" Name="DstPrincipal" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsIsMangledDn" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszDn" />
+            <Param Type="DS_MANGLE_FOR" Name="eDsMangleFor" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsIsMangledRdnValue" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszRdn" />
+            <Param Type="DWORD" Name="cRdn" />
+            <Param Type="DS_MANGLE_FOR" Name="eDsMangleForDesired" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsListDomainsInSite" BothCharset="True">
+            <Param Type="HANDLE" Name="hDs" />
+            <Param Type="LPTSTR" Name="site" />
+            <Param Type="PDS_NAME_RESULT*" Name="ppDomains" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsListInfoForServer" BothCharset="True">
+            <Param Type="HANDLE" Name="hDs" />
+            <Param Type="LPTSTR" Name="server" />
+            <Param Type="PDS_NAME_RESULT*" Name="ppInfo" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsListRoles" BothCharset="True">
+            <Param Type="HANDLE" Name="hDs" />
+            <Param Type="PDS_NAME_RESULTW*" Name="ppRoles" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsListServersForDomainInSite" BothCharset="True">
+            <Param Type="HANDLE" Name="hDs" />
+            <Param Type="LPTSTR" Name="domain" />
+            <Param Type="LPTSTR" Name="site" />
+            <Param Type="PDS_NAME_RESULT*" Name="ppServers" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsListServersInSite" BothCharset="True">
+            <Param Type="HANDLE" Name="hDs" />
+            <Param Type="LPTSTR" Name="site" />
+            <Param Type="PDS_NAME_RESULT*" Name="ppServers" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsListSites" BothCharset="True">
+            <Param Type="HANDLE" Name="hDs" />
+            <Param Type="PDS_NAME_RESULT*" Name="ppSites" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsMakePasswordCredentials" BothCharset="True">
+            <Param Type="LPCTSTR" Name="User" />
+            <Param Type="LPCTSTR" Name="Domain" />
+            <Param Type="LPCTSTR" Name="Password" />
+            <Param Type="RPC_AUTH_IDENTITY_HANDLE*" Name="pAuthIdentity" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsMakeSpn" BothCharset="True">
+            <Param Type="LPCTSTR" Name="ServiceClass" />
+            <Param Type="LPCTSTR" Name="ServiceName" />
+            <Param Type="LPCTSTR" Name="InstanceName" />
+            <Param Type="USHORT" Name="InstancePort" />
+            <Param Type="LPCTSTR" Name="Referrer" />
+            <Param Type="DWORD*" Name="pcSpnLength" />
+            <Param Type="LPTSTR" Name="pszSpn" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsMapSchemaGuids" BothCharset="True">
+            <Param Type="HANDLE" Name="hDs" />
+            <Param Type="DWORD" Name="cGuids" />
+            <Param Type="GUID*" Name="rGuids" />
+            <Param Type="DS_SCHEMA_GUID_MAP**" Name="ppGuidMap" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsQuerySitesByCost" BothCharset="True">
+            <Param Type="HANDLE" Name="hDS" />
+            <Param Type="LPTSTR" Name="pwszFromSite" />
+            <Param Type="LPTSTR*" Name="rgwszToSites" />
+            <Param Type="DWORD" Name="cToSites" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="PDS_SITE_COST_INFO*" Name="prgSiteInfo" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsQuerySitesFree">
+            <Param Type="PDS_SITE_COST_INFO" Name="rgSiteInfo" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="DsQuoteRdnValue" BothCharset="True">
+            <Param Type="DWORD" Name="cUnquotedRdnValueLength" />
+            <Param Type="LPCTCH" Name="psUnquotedRdnValue" />
+            <Param Type="DWORD*" Name="pcQuotedRdnValueLength" />
+            <Param Type="LPTCH" Name="psQuotedRdnValue" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsRemoveDsDomain" BothCharset="True">
+            <Param Type="HANDLE" Name="hDs" />
+            <Param Type="LPTSTR" Name="DomainDN" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsRemoveDsServer" BothCharset="True">
+            <Param Type="HANDLE" Name="hDs" />
+            <Param Type="LPTSTR" Name="ServerDN" />
+            <Param Type="LPTSTR" Name="DomainDN" />
+            <Param Type="BOOL*" Name="fLastDcInDomain" />
+            <Param Type="BOOL" Name="fCommit" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsReplicaAdd" BothCharset="True">
+            <Param Type="HANDLE" Name="hDS" />
+            <Param Type="LPCTSTR" Name="NameContext" />
+            <Param Type="LPCTSTR" Name="SourceDsaDn" />
+            <Param Type="LPCTSTR" Name="TransportDn" />
+            <Param Type="LPCTSTR" Name="SourceDsaAddress" />
+            <Param Type="const PSCHEDULE" Name="pSchedule" />
+            <Param Type="DWORD" Name="Options" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsReplicaConsistencyCheck">
+            <Param Type="HANDLE" Name="hDS" />
+            <Param Type="DS_KCC_TASKID" Name="TaskID" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsReplicaDel" BothCharset="True">
+            <Param Type="HANDLE" Name="hDS" />
+            <Param Type="LPCTSTR" Name="NameContext" />
+            <Param Type="LPCTSTR" Name="DsaSrc" />
+            <Param Type="ULONG" Name="Options" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsReplicaFreeInfo">
+            <Param Type="DS_REPL_INFO_TYPE" Name="InfoType" />
+            <Param Type="VOID*" Name="pInfo" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="DsReplicaGetInfoW">
+            <Param Type="HANDLE" Name="hDS" />
+            <Param Type="DS_REPL_INFO_TYPE" Name="InfoType" />
+            <Param Type="LPCWSTR" Name="pszObject" />
+            <Param Type="UUID*" Name="puuidForSourceDsaObjGuid" />
+            <Param Type="VOID**" Name="ppInfo" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsReplicaGetInfo2W">
+            <Param Type="HANDLE" Name="hDS" />
+            <Param Type="DS_REPL_INFO_TYPE" Name="InfoType" />
+            <Param Type="LPCWSTR" Name="pszObject" />
+            <Param Type="UUID*" Name="puuidForSourceDsaObjGuid" />
+            <Param Type="LPCWSTR" Name="pszAttributeName" />
+            <Param Type="LPCWSTR" Name="pszValue" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="DWORD" Name="dwEnumerationContext" />
+            <Param Type="VOID**" Name="ppInfo" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsReplicaModify" BothCharset="True">
+            <Param Type="HANDLE" Name="hDS" />
+            <Param Type="LPCTSTR" Name="NameContext" />
+            <Param Type="const UUID*" Name="pUuidSourceDsa" />
+            <Param Type="LPCTSTR" Name="TransportDn" />
+            <Param Type="LPCTSTR" Name="SourceDsaAddress" />
+            <Param Type="const PSCHEDULE" Name="pSchedule" />
+            <Param Type="DWORD" Name="ReplicaFlags" />
+            <Param Type="DWORD" Name="ModifyFields" />
+            <Param Type="DWORD" Name="Options" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsReplicaSync" BothCharset="True">
+            <Param Type="HANDLE" Name="hDS" />
+            <Param Type="LPCTSTR" Name="NameContext" />
+            <Param Type="const UUID*" Name="pUuidDsaSrc" />
+            <Param Type="ULONG" Name="Options" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsReplicaSyncAll" BothCharset="True">
+            <Param Type="HANDLE" Name="hDS" />
+            <Param Type="LPTSTR" Name="pszNameContext" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="LPVOID" Name="pCallbackData" />
+            <Param Type="PDS_REPSYNCALL_ERRINFO**" Name="pErrors" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsReplicaUpdateRefs" BothCharset="True">
+            <Param Type="HANDLE" Name="hDS" />
+            <Param Type="LPCTSTR" Name="NameContext" />
+            <Param Type="LPCTSTR" Name="DsaDest" />
+            <Param Type="const UUID*" Name="pUuidDsaDest" />
+            <Param Type="ULONG" Name="Options" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsReplicaVerifyObjects" BothCharset="True">
+            <Param Type="HANDLE" Name="hDS" />
+            <Param Type="LPCTSTR" Name="NameContext" />
+            <Param Type="const UUID*" Name="pUuidDsaSrc" />
+            <Param Type="ULONG" Name="ulOptions" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsServerRegisterSpn" BothCharset="True">
+            <Param Type="DS_SPN_WRITE_OP" Name="Operation" />
+            <Param Type="LPCTSTR" Name="ServiceClass" />
+            <Param Type="LPCTSTR" Name="UserObjectDN" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsUnBind" BothCharset="True">
+            <Param Type="HANDLE*" Name="phDS" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsUnquoteRdnValue" BothCharset="True">
+            <Param Type="DWORD" Name="cQuotedRdnValueLength" />
+            <Param Type="LPCTCH" Name="psQuotedRdnValue" />
+            <Param Type="DWORD*" Name="pcUnquotedRdnValueLength" />
+            <Param Type="LPTCH" Name="psUnquotedRdnValue" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsWriteAccountSpn" BothCharset="True">
+            <Param Type="HANDLE" Name="hDS" />
+            <Param Type="DS_SPN_WRITE_OP" Name="Operation" />
+            <Param Type="LPCTSTR" Name="pszAccount" />
+            <Param Type="DWORD" Name="cSpn" />
+            <Param Type="LPCTSTR*" Name="rpszSpn" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

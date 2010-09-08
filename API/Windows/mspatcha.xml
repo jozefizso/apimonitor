@@ -1,0 +1,148 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\patch.h.xml" />
+    <Module Name="mspatcha.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        <!-- Flags -->
+        <Variable Name="[ApplyOptionFlags]" Type="Alias" Base="ULONG">
+            <Flag>
+                <Set Name="APPLY_OPTION_FAIL_IF_EXACT"      Value="0x00000001" />
+                <Set Name="APPLY_OPTION_FAIL_IF_CLOSE"      Value="0x00000002" />
+                <Set Name="APPLY_OPTION_TEST_ONLY"          Value="0x00000004" />
+            </Flag>
+        </Variable>
+        <!-- Delta Compression -->
+        <Category Name="Delta Compression" />
+        <Api Name="ApplyPatchToFile" BothCharset="True">
+            <Param Type="LPCTSTR" Name="PatchFileName" />
+            <Param Type="LPCTSTR" Name="OldFileName" />
+            <Param Type="LPCTSTR" Name="NewFileName" />
+            <Param Type="[ApplyOptionFlags]" Display="ULONG" Name="ApplyOptionFlags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ApplyPatchToFileByBuffers">
+            <Param Type="PBYTE" Name="PatchFileMapped" />
+            <Param Type="ULONG" Name="PatchFileSize" />
+            <Param Type="PBYTE" Name="OldFileMapped" />
+            <Param Type="ULONG" Name="OldFileSize" />
+            <Param Type="PBYTE*" Name="NewFileBuffer" />
+            <Param Type="ULONG" Name="NewFileBufferSize" />
+            <Param Type="ULONG*" Name="NewFileActualSize" />
+            <Param Type="FILETIME*" Name="NewFileTime" />
+            <Param Type="[ApplyOptionFlags]" Display="ULONG" Name="ApplyOptionFlags" />
+            <Param Type="PPATCH_PROGRESS_CALLBACK" Name="ProgressCallback" />
+            <Param Type="PVOID" Name="CallbackContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ApplyPatchToFileByHandles">
+            <Param Type="HANDLE" Name="PatchFileHandle" />
+            <Param Type="HANDLE" Name="OldFileHandle" />
+            <Param Type="HANDLE" Name="NewFileHandle" />
+            <Param Type="[ApplyOptionFlags]" Display="ULONG" Name="ApplyOptionFlags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ApplyPatchToFileByHandlesEx">
+            <Param Type="HANDLE" Name="PatchFileHandle" />
+            <Param Type="HANDLE" Name="OldFileHandle" />
+            <Param Type="HANDLE" Name="NewFileHandle" />
+            <Param Type="[ApplyOptionFlags]" Display="ULONG" Name="ApplyOptionFlags" />
+            <Param Type="PPATCH_PROGRESS_CALLBACK" Name="ProgressCallback" />
+            <Param Type="PVOID" Name="CallbackContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ApplyPatchToFileEx" BothCharset="True">
+            <Param Type="LPCTSTR" Name="PatchFileName" />
+            <Param Type="LPCTSTR" Name="OldFileName" />
+            <Param Type="LPCTSTR" Name="NewFileName" />
+            <Param Type="[ApplyOptionFlags]" Display="ULONG" Name="ApplyOptionFlags" />
+            <Param Type="PPATCH_PROGRESS_CALLBACK" Name="ProgressCallback" />
+            <Param Type="PVOID" Name="CallbackContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetFilePatchSignature" BothCharset="True">
+            <Param Type="LPCTSTR" Name="FileName" />
+            <Param Type="[PatchOptionFlags]" Display="ULONG" Name="OptionFlags" />
+            <Param Type="PVOID" Name="OptionData" />
+            <Param Type="ULONG" Name="IgnoreRangeCount" />
+            <Param Type="PPATCH_IGNORE_RANGE" Name="IgnoreRangeArray" />
+            <Param Type="ULONG" Name="RetainRangeCount" />
+            <Param Type="PPATCH_RETAIN_RANGE" Name="RetainRangeArray" />
+            <Param Type="ULONG" Name="SignatureBufferSize" />
+            <Param Type="PVOID" Name="SignatureBuffer" Length="SignatureBufferSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetFilePatchSignatureByBuffer">
+            <Param Type="PBYTE" Name="FileBufferWritable" />
+            <Param Type="ULONG" Name="FileSize" />
+            <Param Type="ULONG" Name="OptionFlags" />
+            <Param Type="PVOID" Name="OptionData" />
+            <Param Type="ULONG" Name="IgnoreRangeCount" />
+            <Param Type="PPATCH_IGNORE_RANGE" Name="IgnoreRangeArray" />
+            <Param Type="ULONG" Name="RetainRangeCount" />
+            <Param Type="PPATCH_RETAIN_RANGE" Name="RetainRangeArray" />
+            <Param Type="ULONG" Name="SignatureBufferSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetFilePatchSignatureByHandle">
+            <Param Type="HANDLE" Name="FileHandle" />
+            <Param Type="[PatchOptionFlags]" Display="ULONG" Name="OptionFlags" />
+            <Param Type="PVOID" Name="OptionData" />
+            <Param Type="ULONG" Name="IgnoreRangeCount" />
+            <Param Type="PPATCH_IGNORE_RANGE" Name="IgnoreRangeArray" />
+            <Param Type="ULONG" Name="RetainRangeCount" />
+            <Param Type="PPATCH_RETAIN_RANGE" Name="RetainRangeArray" />
+            <Param Type="ULONG" Name="SignatureBufferSize" />
+            <Param Type="PVOID" Name="SignatureBuffer" Length="SignatureBufferSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="NormalizeFileForPatchSignature">
+            <Param Type="PVOID" Name="FileBuffer" />
+            <Param Type="ULONG" Name="FileSize" />
+            <Param Type="ULONG" Name="OptionFlags" />
+            <Param Type="PATCH_OPTION_DATA*" Name="OptionData" />
+            <Param Type="ULONG" Name="NewFileCoffBase" />
+            <Param Type="ULONG" Name="NewFileCoffTime" />
+            <Param Type="ULONG" Name="IgnoreRangeCount" />
+            <Param Type="PPATCH_IGNORE_RANGE" Name="IgnoreRangeArray" />
+            <Param Type="ULONG" Name="RetainRangeCount" />
+            <Param Type="PPATCH_RETAIN_RANGE" Name="RetainRangeArray" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="TestApplyPatchToFile" BothCharset="True">
+            <Param Type="LPCTSTR" Name="PatchFileName" />
+            <Param Type="LPCTSTR" Name="OldFileName" />
+            <Param Type="[ApplyOptionFlags]" Display="ULONG" Name="ApplyOptionFlags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="TestApplyPatchToFileByBuffers">
+            <Param Type="PBYTE" Name="PatchFileBuffer" />
+            <Param Type="ULONG" Name="PatchFileSize" />
+            <Param Type="PBYTE" Name="OldFileBuffer" />
+            <Param Type="ULONG" Name="OldFileSize" />
+            <Param Type="ULONG*" Name="NewFileSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="TestApplyPatchToFileByHandles">
+            <Param Type="HANDLE" Name="PatchFileHandle" />
+            <Param Type="HANDLE" Name="OldFileHandle" />
+            <Param Type="[ApplyOptionFlags]" Display="ULONG" Name="ApplyOptionFlags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

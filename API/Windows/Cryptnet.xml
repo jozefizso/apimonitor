@@ -1,0 +1,75 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="Cryptnet.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        <!-- Parameters -->
+        <Variable Name="PCRYPT_URL_ARRAY"            Type="Alias" Base="LPVOID" />
+        <Variable Name="PCRYPT_URL_INFO"             Type="Alias" Base="LPVOID" />
+        <Variable Name="HCRYPTASYNC"                 Type="Alias" Base="HANDLE" />
+        <Variable Name="PCRYPT_CREDENTIALS"          Type="Alias" Base="LPVOID" />
+        <Variable Name="PCRYPT_RETRIEVE_AUX_INFO"    Type="Alias" Base="LPVOID" />
+
+        <!-- Flags -->
+        <Variable Name="[CryptRetrievalFlags]" Type="Alias" Base="DWORD">
+            <Flag>
+                <Set Name="CRYPT_RETRIEVE_MULTIPLE_OBJECTS"         Value="0x00000001" />
+                <Set Name="CRYPT_CACHE_ONLY_RETRIEVAL"              Value="0x00000002" />
+                <Set Name="CRYPT_WIRE_ONLY_RETRIEVAL"               Value="0x00000004" />
+                <Set Name="CRYPT_DONT_CACHE_RESULT"                 Value="0x00000008" />
+                <Set Name="CRYPT_ASYNC_RETRIEVAL"                   Value="0x00000010" />
+                <Set Name="CRYPT_STICKY_CACHE_RETRIEVAL"            Value="0x00001000" />
+                <Set Name="CRYPT_LDAP_SCOPE_BASE_ONLY_RETRIEVAL"    Value="0x00002000" />
+                <Set Name="CRYPT_OFFLINE_CHECK_RETRIEVAL"           Value="0x00004000" />
+                <Set Name="CRYPT_LDAP_INSERT_ENTRY_ATTRIBUTE"       Value="0x00008000" />
+                <Set Name="CRYPT_LDAP_SIGN_RETRIEVAL"               Value="0x00010000" />
+                <Set Name="CRYPT_NO_AUTH_RETRIEVAL"                 Value="0x00020000" />
+                <Set Name="CRYPT_LDAP_AREC_EXCLUSIVE_RETRIEVAL"     Value="0x00040000" />
+                <Set Name="CRYPT_AIA_RETRIEVAL"                     Value="0x00080000" />
+                <Set Name="CRYPT_HTTP_POST_RETRIEVAL"               Value="0x00100000" />
+                <Set Name="CRYPT_PROXY_CACHE_RETRIEVAL"             Value="0x00200000" />
+                <Set Name="CRYPT_NOT_MODIFIED_RETRIEVAL"            Value="0x00400000" />
+                <Set Name="CRYPT_VERIFY_CONTEXT_SIGNATURE"          Value="0x00000020" />
+                <Set Name="CRYPT_VERIFY_DATA_HASH"                  Value="0x00000040" />
+            </Flag>
+        </Variable>
+        <Variable Name="[CryptGetObjectUrlFlags]" Type="Alias" Base="DWORD">
+            <Flag>
+                <Set Name="CRYPT_GET_URL_FROM_PROPERTY"             Value="0x00000001" />
+                <Set Name="CRYPT_GET_URL_FROM_EXTENSION"            Value="0x00000002" />
+                <Set Name="CRYPT_GET_URL_FROM_UNAUTH_ATTRIBUTE"     Value="0x00000004" />
+                <Set Name="CRYPT_GET_URL_FROM_AUTH_ATTRIBUTE"       Value="0x00000008" />
+            </Flag>
+        </Variable>
+        <!-- Cryptography -->
+        <Category Name="Security/Cryptography/Remote Object Retrieval" />
+        <Api Name="CryptGetObjectUrl">
+            <Param Type="LPCSTR" Name="pszUrlOid" />
+            <Param Type="LPVOID" Name="pvPara" />
+            <Param Type="[CryptGetObjectUrlFlags]" Display="DWORD" Name="dwFlags" />
+            <Param Type="PCRYPT_URL_ARRAY" Name="pUrlArray" PostLength="pcbUrlArray" />
+            <Param Type="DWORD*" Name="pcbUrlArray" />
+            <Param Type="PCRYPT_URL_INFO" Name="pUrlInfo" PostLength="pcbUrlInfo" />
+            <Param Type="DWORD*" Name="pcbUrlInfo" />
+            <Param Type="LPVOID" Name="pvReserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CryptRetrieveObjectByUrl" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszUrl" />
+            <Param Type="LPCSTR" Name="pszObjectOid" />
+            <Param Type="[CryptRetrievalFlags]" Display="DWORD" Name="dwRetrievalFlags" />
+            <Param Type="DWORD" Name="dwTimeout" />
+            <Param Type="LPVOID*" Name="ppvObject" />
+            <Param Type="HCRYPTASYNC" Name="hAsyncRetrieve" />
+            <Param Type="PCRYPT_CREDENTIALS" Name="pCredentials" />
+            <Param Type="LPVOID" Name="pvVerify" />
+            <Param Type="PCRYPT_RETRIEVE_AUX_INFO" Name="pAuxInfo" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

@@ -1,0 +1,479 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\registry.h.xml" />
+    <Include Filename="Headers\events.h.xml" />
+    <Include Filename="Headers\services.h.xml" />
+    <Include Filename="Headers\cryptography.h.xml" />
+    <Include Filename="Headers\security.h.xml" />
+    <Include Filename="Headers\native.h.xml" />
+    <Include Filename="Headers\network.h.xml" />
+    <Module Name="Winbio.dll" CallingConvention="STDCALL" OnlineHelp="MSDN" ErrorFunc="HRESULT">
+        <!-- Variables -->
+        <Variable Name="WINBIO_SESSION_HANDLE"      Type="Alias"    Base="ULONG" />
+        <Variable Name="WINBIO_SESSION_HANDLE*"     Type="Pointer"  Base="WINBIO_SESSION_HANDLE" />
+        <Variable Name="WINBIO_UNIT_ID"             Type="Alias"    Base="ULONG" />
+        <Variable Name="WINBIO_UNIT_ID*"            Type="Pointer"  Base="WINBIO_UNIT_ID" />
+
+        <Variable Name="WINBIO_POOL_TYPE" Type="Alias" Base="ULONG">
+            <Flag SingleValue="True">
+                <Set Name="WINBIO_POOL_UNKNOWN"     Value="0" />
+                <Set Name="WINBIO_POOL_SYSTEM"      Value="1" />
+                <Set Name="WINBIO_POOL_PRIVATE"     Value="2" />
+                <Set Name="WINBIO_POOL_UNASSIGNED"  Value="3" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="WINBIO_PROPERTY_TYPE" Type="Alias" Base="ULONG">
+            <Flag SingleValue="True">
+                <Set Name="WINBIO_PROPERTY_TYPE_SESSION"        Value="1" />
+                <Set Name="WINBIO_PROPERTY_TYPE_UNIT"       	Value="2" />
+                <Set Name="WINBIO_PROPERTY_TYPE_TEMPLATE"   	Value="3" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="WINBIO_CREDENTIAL_FORMAT" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="WINBIO_PASSWORD_GENERIC"		Value="0x00000001" />
+                <Set Name="WINBIO_PASSWORD_PACKED"      Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="WINBIO_COMPONENT" Type="Alias" Base="ULONG">
+            <Flag SingleValue="True">
+                <Set Name="WINBIO_COMPONENT_SENSOR"     Value="1" />
+                <Set Name="WINBIO_COMPONENT_ENGINE"     Value="2" />
+                <Set Name="WINBIO_COMPONENT_STORAGE"    Value="3" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="WINBIO_BIR_PURPOSE" Type="Alias" Base="UCHAR">
+            <Flag>
+                <Set Name="WINBIO_NO_PURPOSE_AVAILABLE"                     Value="0x00" />
+                <Set Name="WINBIO_PURPOSE_VERIFY"                           Value="0x01" />
+                <Set Name="WINBIO_PURPOSE_IDENTIFY"                         Value="0x02" />
+                <Set Name="WINBIO_PURPOSE_ENROLL"                           Value="0x04" />
+                <Set Name="WINBIO_PURPOSE_ENROLL_FOR_VERIFICATION"          Value="0x08" />
+                <Set Name="WINBIO_PURPOSE_ENROLL_FOR_IDENTIFICATION"        Value="0x10" />
+                <Set Name="WINBIO_PURPOSE_AUDIT"                            Value="0x80" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="WINBIO_BIR_DATA_FLAGS" Type="Alias" Base="UCHAR">
+            <Flag>
+                <Set Name="WINBIO_DATA_FLAG_PRIVACY"            Value="0x02" />
+                <Set Name="WINBIO_DATA_FLAG_INTEGRITY"          Value="0x01" />
+                <Set Name="WINBIO_DATA_FLAG_SIGNED"             Value="0x04" />
+                <Set Name="WINBIO_DATA_FLAG_RAW"                Value="0x20" />
+                <Set Name="WINBIO_DATA_FLAG_INTERMEDIATE"       Value="0x40" />
+                <Set Name="WINBIO_DATA_FLAG_PROCESSED"          Value="0x80" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="WINBIO_BIOMETRIC_SUBTYPE" Type="Alias" Base="UCHAR">
+            <Flag SingleValue="True">
+                <Set Name="WINBIO_SUBTYPE_NO_INFORMATION"   Value="0x00" />
+                <Set Name="WINBIO_SUBTYPE_ANY"              Value="0xFF" />
+            </Flag>
+        </Variable>
+        <Variable Name="WINBIO_BIOMETRIC_SUBTYPE*" Type="Pointer" Base="WINBIO_BIOMETRIC_SUBTYPE" />
+        <Variable Name="WINBIO_BIOMETRIC_SUBTYPE**" Type="Pointer" Base="WINBIO_BIOMETRIC_SUBTYPE*" />
+
+        <Variable Name="WINBIO_REJECT_DETAIL" Type="Alias" Base="ULONG">
+            <Flag SingleValue="True">
+                <Set Name="WINBIO_FP_TOO_HIGH"          Value="1" />
+                <Set Name="WINBIO_FP_TOO_LOW"           Value="2" />
+                <Set Name="WINBIO_FP_TOO_LEFT"          Value="3" />
+                <Set Name="WINBIO_FP_TOO_RIGHT"         Value="4" />
+                <Set Name="WINBIO_FP_TOO_FAST"          Value="5" />
+                <Set Name="WINBIO_FP_TOO_SLOW"          Value="6" />
+                <Set Name="WINBIO_FP_POOR_QUALITY"      Value="7" />
+                <Set Name="WINBIO_FP_TOO_SKEWED"        Value="8" />
+                <Set Name="WINBIO_FP_TOO_SHORT"         Value="9" />
+                <Set Name="WINBIO_FP_MERGE_FAILURE"     Value="10" />
+            </Flag>
+        </Variable>
+        <Variable Name="WINBIO_REJECT_DETAIL*" Type="Pointer" Base="WINBIO_REJECT_DETAIL" />
+
+        <Variable Name="WINBIO_BIOMETRIC_TYPE" Type="Alias" Base="ULONG">
+            <Flag>
+            <Set Name="WINBIO_NO_TYPE_AVAILABLE"            	Value="0x00000000" />
+            <Set Name="WINBIO_TYPE_MULTIPLE"                	Value="0x00000001" />
+            <Set Name="WINBIO_TYPE_FACIAL_FEATURES"         	Value="0x00000002" />
+            <Set Name="WINBIO_TYPE_VOICE"                   	Value="0x00000004" />
+            <Set Name="WINBIO_TYPE_FINGERPRINT"             	Value="0x00000008" />
+            <Set Name="WINBIO_TYPE_IRIS"                    	Value="0x00000010" />
+            <Set Name="WINBIO_TYPE_RETINA"                  	Value="0x00000020" />
+            <Set Name="WINBIO_TYPE_HAND_GEOMETRY"           	Value="0x00000040" />
+            <Set Name="WINBIO_TYPE_SIGNATURE_DYNAMICS"      	Value="0x00000080" />
+            <Set Name="WINBIO_TYPE_KEYSTROKE_DYNAMICS"      	Value="0x00000100" />
+            <Set Name="WINBIO_TYPE_LIP_MOVEMENT"            	Value="0x00000200" />
+            <Set Name="WINBIO_TYPE_THERMAL_FACE_IMAGE"      	Value="0x00000400" />
+            <Set Name="WINBIO_TYPE_THERMAL_HAND_IMAGE"      	Value="0x00000800" />
+            <Set Name="WINBIO_TYPE_GAIT"                    	Value="0x00001000" />
+            <Set Name="WINBIO_TYPE_SCENT"                   	Value="0x00002000" />
+            <Set Name="WINBIO_TYPE_DNA"                     	Value="0x00004000" />
+            <Set Name="WINBIO_TYPE_EAR_SHAPE"               	Value="0x00008000" />
+            <Set Name="WINBIO_TYPE_FINGER_GEOMETRY"         	Value="0x00010000" />
+            <Set Name="WINBIO_TYPE_PALM_PRINT"              	Value="0x00020000" />
+            <Set Name="WINBIO_TYPE_VEIN_PATTERN"            	Value="0x00040000" />
+            <Set Name="WINBIO_TYPE_FOOT_PRINT"              	Value="0x00080000" />
+            <Set Name="WINBIO_TYPE_OTHER"                   	Value="0x40000000" />
+            <Set Name="WINBIO_TYPE_PASSWORD"                	Value="0x80000000" />
+            <Set Name="WINBIO_TYPE_ANY"                         Value="0xC0FFFFFF" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="WINBIO_EVENT_TYPE" Type="Alias" Base="ULONG">
+            <Flag SingleValue="True">
+            <Set Name="WINBIO_EVENT_ERROR"                  Value="0xFFFFFFFF" />
+            <Set Name="WINBIO_EVENT_FP_UNCLAIMED"		    Value="0x00000001" />
+            <Set Name="WINBIO_EVENT_FP_UNCLAIMED_IDENTIFY"	Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="WINBIO_SESSION_FLAGS" Type="Alias" Base="ULONG">
+            <Flag>
+                <Set Name="WINBIO_FLAG_DEFAULT"         Value="0x00000000" />
+                <Set Name="WINBIO_FLAG_BASIC"           Value="0x10000" />
+                <Set Name="WINBIO_FLAG_ADVANCED"        Value="0x20000" />
+                <Set Name="WINBIO_FLAG_RAW"             Value="1" />
+                <Set Name="WINBIO_FLAG_MAINTENANCE"     Value="2" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="WINBIO_CREDENTIAL_TYPE" Type="Alias" Base="UINT">
+            <Flag>
+                <Set Name="WINBIO_CREDENTIAL_PASSWORD"	    Value="0x00000001" />
+                <Set Name="WINBIO_CREDENTIAL_ALL"           Value="0xffffffff" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="WINBIO_SETTING_SOURCE_TYPE" Type="Alias" Base="ULONG">
+            <Flag SingleValue="True">
+                <Set Name="WINBIO_SETTING_SOURCE_INVALID"   Value="0" />
+                <Set Name="WINBIO_SETTING_SOURCE_DEFAULT"   Value="1" />
+                <Set Name="WINBIO_SETTING_SOURCE_POLICY"    Value="2" />
+                <Set Name="WINBIO_SETTING_SOURCE_LOCAL"     Value="3" />
+            </Flag>
+        </Variable>
+        <Variable Name="PWINBIO_SETTING_SOURCE_TYPE" Type="Pointer" Base="WINBIO_SETTING_SOURCE_TYPE" />
+
+        <Variable Name="WINBIO_PROPERTY_ID" Type="Alias" Base="ULONG">
+            <Flag SingleValue="True">
+                <Set Name="WINBIO_PROPERTY_SAMPLE_HINT" Value="1" />
+            </Flag>
+        </Variable>
+
+        <!-- TODO:
+        <Variable Name="WINBIO_IDENTITY"                   Type="Struct"    Size="?" />
+         -->
+        
+        <Variable Name="PWINBIO_BIR*"                       Type="Pointer"  Base="LPVOID" />
+        <Variable Name="WINBIO_UNIT_SCHEMA**"               Type="Pointer"  Base="LPVOID" />
+        <Variable Name="WINBIO_STORAGE_SCHEMA**"            Type="Pointer"  Base="LPVOID" />
+        <Variable Name="WINBIO_BSP_SCHEMA**"                Type="Pointer"  Base="LPVOID" />
+        <Variable Name="WINBIO_IDENTITY*"                   Type="Alias"    Base="LPVOID" />
+        <Variable Name="PWINBIO_ENROLL_CAPTURE_CALLBACK"    Type="Alias"    Base="LPVOID" />
+        <Variable Name="PWINBIO_IDENTIFY_CALLBACK"          Type="Alias"    Base="LPVOID" />
+        <Variable Name="PWINBIO_LOCATE_SENSOR_CALLBACK"     Type="Alias"    Base="LPVOID" />
+        <Variable Name="PWINBIO_EVENT_CALLBACK"             Type="Alias"    Base="LPVOID" />
+        <Variable Name="PWINBIO_CAPTURE_CALLBACK"           Type="Alias"    Base="LPVOID" />
+        <Variable Name="PWINBIO_VERIFY_CALLBACK"            Type="Alias"    Base="LPVOID" />
+        
+
+
+        <!-- APIs -->
+        <Category Name="Security/Security Devices/Windows Biometric Framework" />
+        <Api Name="WinBioAcquireFocus">
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioCancel">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioCaptureSample">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Param Type="WINBIO_BIR_PURPOSE" Name="Purpose" />
+            <Param Type="WINBIO_BIR_DATA_FLAGS" Name="Flags" />
+            <Param Type="WINBIO_UNIT_ID*" Name="UnitId" />
+            <Param Type="PWINBIO_BIR*" Name="Sample" />
+            <Param Type="SIZE_T*" Name="SampleSize" />
+            <Param Type="WINBIO_REJECT_DETAIL*" Name="RejectDetail" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioCaptureSampleWithCallback">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Param Type="WINBIO_BIR_PURPOSE" Name="Purpose" />
+            <Param Type="WINBIO_BIR_DATA_FLAGS" Name="Flags" />
+            <Param Type="PWINBIO_CAPTURE_CALLBACK" Name="CaptureCallback" />
+            <Param Type="PVOID" Name="CaptureCallbackContext" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioCloseSession">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioControlUnit">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Param Type="WINBIO_UNIT_ID" Name="UnitId" />
+            <Param Type="WINBIO_COMPONENT" Name="Component" />
+            <Param Type="ULONG" Name="ControlCode" />
+            <Param Type="PUCHAR" Name="SendBuffer" />
+            <Param Type="SIZE_T" Name="SendBufferSize" />
+            <Param Type="PUCHAR" Name="ReceiveBuffer" />
+            <Param Type="SIZE_T" Name="ReceiveBufferSize" />
+            <Param Type="SIZE_T*" Name="ReceiveDataSize" />
+            <Param Type="ULONG*" Name="OperationStatus" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioControlUnitPrivileged">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Param Type="WINBIO_UNIT_ID" Name="UnitId" />
+            <Param Type="WINBIO_COMPONENT" Name="Component" />
+            <Param Type="ULONG" Name="ControlCode" />
+            <Param Type="PUCHAR" Name="SendBuffer" />
+            <Param Type="SIZE_T" Name="SendBufferSize" />
+            <Param Type="PUCHAR" Name="ReceiveBuffer" />
+            <Param Type="SIZE_T" Name="ReceiveBufferSize" />
+            <Param Type="SIZE_T*" Name="ReceiveDataSize" />
+            <Param Type="ULONG*" Name="OperationStatus" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioDeleteTemplate">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Param Type="WINBIO_UNIT_ID" Name="UnitId" />
+            <Param Type="WINBIO_IDENTITY*" Name="Identity" />
+            <Param Type="WINBIO_BIOMETRIC_SUBTYPE" Name="SubFactor" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioEnrollBegin">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Param Type="WINBIO_BIOMETRIC_SUBTYPE" Name="SubFactor" />
+            <Param Type="WINBIO_UNIT_ID" Name="UnitId" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioEnrollCapture">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Param Type="WINBIO_REJECT_DETAIL*" Name="RejectDetail" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioEnrollCaptureWithCallback">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Param Type="PWINBIO_ENROLL_CAPTURE_CALLBACK" Name="EnrollCallback" />
+            <Param Type="PVOID" Name="EnrollCallbackContext" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioEnrollCommit">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Param Type="WINBIO_IDENTITY*" Name="Identity" />
+            <Param Type="BOOLEAN*" Name="IsNewTemplate" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioEnrollDiscard">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioEnumBiometricUnits">
+            <Param Type="WINBIO_BIOMETRIC_TYPE" Name="Factor" />
+            <Param Type="WINBIO_UNIT_SCHEMA**" Name="UnitSchemaArray" />
+            <Param Type="SIZE_T*" Name="UnitCount" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioEnumDatabases">
+            <Param Type="WINBIO_BIOMETRIC_TYPE" Name="Factor" />
+            <Param Type="WINBIO_STORAGE_SCHEMA**" Name="StorageSchemaArray" />
+            <Param Type="SIZE_T*" Name="StorageCount" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioEnumEnrollments">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Param Type="WINBIO_UNIT_ID" Name="UnitId" />
+            <Param Type="WINBIO_IDENTITY*" Name="Identity" />
+            <Param Type="WINBIO_BIOMETRIC_SUBTYPE**" Name="SubFactorArray" />
+            <Param Type="SIZE_T*" Name="SubFactorCount" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioEnumServiceProviders">
+            <Param Type="WINBIO_BIOMETRIC_TYPE" Name="Factor" />
+            <Param Type="WINBIO_BSP_SCHEMA**" Name="BspSchemaArray" />
+            <Param Type="SIZE_T*" Name="BspCount" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioFree">
+            <Param Type="PVOID" Name="Address" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <!-- TODO: Need to define WINBIO_IDENTITY first 
+        <Api Name="WinBioGetCredentialState">
+            <Param Type="WINBIO_IDENTITY" Name="Identity" />
+            <Param Type="WINBIO_CREDENTIAL_TYPE" Name="Type" />
+            <Param Type="WINBIO_CREDENTIAL_STATE*" Name="CredentialState" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        -->
+        <Api Name="WinBioGetDomainLogonSetting">
+            <Param Type="BOOLEAN*" Name="Value" />
+            <Param Type="PWINBIO_SETTING_SOURCE_TYPE" Name="Source" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioGetProperty">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Param Type="WINBIO_PROPERTY_TYPE" Name="PropertyType" />
+            <Param Type="WINBIO_PROPERTY_ID" Name="PropertyId" />
+            <Param Type="WINBIO_UNIT_ID" Name="UnitId" />
+            <Param Type="WINBIO_IDENTITY*" Name="Identity" />
+            <Param Type="WINBIO_BIOMETRIC_SUBTYPE" Name="SubFactor" />
+            <Param Type="PVOID*" Name="PropertyBuffer" />
+            <Param Type="SIZE_T*" Name="PropertyBufferSize" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioIdentify">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Param Type="WINBIO_UNIT_ID*" Name="UnitId" />
+            <Param Type="WINBIO_IDENTITY*" Name="Identity" />
+            <Param Type="WINBIO_BIOMETRIC_SUBTYPE*" Name="SubFactor" />
+            <Param Type="WINBIO_REJECT_DETAIL*" Name="RejectDetail" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioIdentifyWithCallback">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Param Type="PWINBIO_IDENTIFY_CALLBACK" Name="IdentifyCallback" />
+            <Param Type="PVOID" Name="IdentifyCallbackContext" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioLocateSensor">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Param Type="WINBIO_UNIT_ID*" Name="UnitId" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioLocateSensorWithCallback">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Param Type="PWINBIO_LOCATE_SENSOR_CALLBACK" Name="LocateCallback" />
+            <Param Type="PVOID" Name="LocateCallbackContext" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioLockUnit">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Param Type="WINBIO_UNIT_ID" Name="UnitId" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioLogonIdentifiedUser">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioOpenSession">
+            <Param Type="WINBIO_BIOMETRIC_TYPE" Name="Factor" />
+            <Param Type="WINBIO_POOL_TYPE" Name="PoolType" />
+            <Param Type="WINBIO_SESSION_FLAGS" Name="Flags" />
+            <Param Type="WINBIO_UNIT_ID*" Name="UnitArray" />
+            <Param Type="SIZE_T" Name="UnitCount" />
+            <Param Type="GUID*" Name="DatabaseId" />
+            <Param Type="WINBIO_SESSION_HANDLE*" Name="SessionHandle" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioReleaseFocus">
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioRegisterEventMonitor">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Param Type="WINBIO_EVENT_TYPE" Name="EventMask" />
+            <Param Type="PWINBIO_EVENT_CALLBACK" Name="EventCallback" />
+            <Param Type="PVOID" Name="EventCallbackContext" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioRemoveAllCredentials">
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioRemoveAllDomainCredentials">
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <!-- TODO: Need to define WINBIO_IDENTITY first 
+        <Api Name="WinBioRemoveCredential">
+            <Param Type="WINBIO_IDENTITY" Name="Identity" />
+            <Param Type="WINBIO_CREDENTIAL_TYPE" Name="Type" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        -->
+        <Api Name="WinBioSetCredential">
+            <Param Type="WINBIO_CREDENTIAL_TYPE" Name="Type" />
+            <Param Type="PUCHAR" Name="Credential" />
+            <Param Type="SIZE_T" Name="CredentialSize" />
+            <Param Type="WINBIO_CREDENTIAL_FORMAT" Name="Format" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioUnlockUnit">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Param Type="WINBIO_UNIT_ID" Name="UnitId" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioUnregisterEventMonitor">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioVerify">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Param Type="WINBIO_IDENTITY*" Name="Identity" />
+            <Param Type="WINBIO_BIOMETRIC_SUBTYPE" Name="SubFactor" />
+            <Param Type="WINBIO_UNIT_ID*" Name="UnitId" />
+            <Param Type="BOOLEAN*" Name="Match" />
+            <Param Type="WINBIO_REJECT_DETAIL*" Name="RejectDetail" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioVerifyWithCallback">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Param Type="WINBIO_IDENTITY*" Name="Identity" />
+            <Param Type="WINBIO_BIOMETRIC_SUBTYPE" Name="SubFactor" />
+            <Param Type="PWINBIO_VERIFY_CALLBACK" Name="VerifyCallback" />
+            <Param Type="PVOID" Name="VerifyCallbackContext" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WinBioWait">
+            <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

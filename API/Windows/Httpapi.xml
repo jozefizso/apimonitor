@@ -1,0 +1,328 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="Httpapi.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
+        <!-- Variables -->
+        <Variable Name="HTTPAPI_VERSION"                 Type="Alias" Base="UINT" />
+        <Variable Name="PHTTP_DATA_CHUNK"                Type="Alias" Base="LPVOID" />
+        <Variable Name="PHTTP_CACHE_POLICY"              Type="Alias" Base="LPVOID" />
+        <Variable Name="PHTTP_BYTE_RANGE"                Type="Alias" Base="LPVOID" />
+        <Variable Name="PHTTP_REQUEST"                   Type="Alias" Base="LPVOID" />
+        <Variable Name="PHTTP_RESPONSE"                  Type="Alias" Base="LPVOID" />
+        <Variable Name="PHTTP_LOG_DATA"                  Type="Alias" Base="LPVOID" />
+        <Variable Name="PHTTP_SSL_CLIENT_CERT_INFO"      Type="Alias" Base="LPVOID" />
+        <Variable Name="HTTP_URL_CONTEXT"                Type="Alias" Base="ULONGLONG" />
+        <Variable Name="PSECURITY_ATTRIBUTES"            Type="Alias" Base="LPVOID" />
+        <Variable Name="HTTP_OPAQUE_ID"                  Type="Alias" Base="ULONGLONG" />
+        <Variable Name="HTTP_REQUEST_ID"                 Type="Alias" Base="HTTP_OPAQUE_ID" />
+        <Variable Name="HTTP_CONNECTION_ID"              Type="Alias" Base="HTTP_OPAQUE_ID" />
+        <Variable Name="HTTP_SERVER_SESSION_ID"          Type="Alias" Base="HTTP_OPAQUE_ID" />
+        <Variable Name="PHTTP_SERVER_SESSION_ID"         Type="Pointer" Base="HTTP_SERVER_SESSION_ID" />
+        <Variable Name="HTTP_URL_GROUP_ID"               Type="Alias" Base="HTTP_OPAQUE_ID" />
+        <Variable Name="PHTTP_URL_GROUP_ID"              Type="Pointer" Base="HTTP_URL_GROUP_ID" />
+        <Variable Name="HTTP_SERVICE_CONFIG_ID" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="HttpServiceConfigIPListenList"   Value="0" />
+                <Set Name="HttpServiceConfigSSLCertInfo"    Value="1" />
+                <Set Name="HttpServiceConfigUrlAclInfo"     Value="2" />
+                <Set Name="HttpServiceConfigTimeout"        Value="3" />
+                <Set Name="HttpServiceConfigMax"            Value="4" />
+            </Flag>
+        </Variable>
+        <Variable Name="HTTP_SERVER_PROPERTY" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="HttpServerAuthenticationProperty"            Value="0" />
+                <Set Name="HttpServerLoggingProperty"                   Value="1" />
+                <Set Name="HttpServerQosProperty"                       Value="2" />
+                <Set Name="HttpServerTimeoutsProperty"                  Value="3" />
+                <Set Name="HttpServerQueueLengthProperty"               Value="4" />
+                <Set Name="HttpServerStateProperty"                     Value="5" />
+                <Set Name="HttpServer503VerbosityProperty"              Value="6" />
+                <Set Name="HttpServerBindingProperty"                   Value="7" />
+                <Set Name="HttpServerExtendedAuthenticationProperty"    Value="8" />
+                <Set Name="HttpServerListenEndpointProperty"            Value="9" />
+            </Flag>
+        </Variable>
+        <Variable Name="[HttpInitializeFlags]" Type="Alias" Base="ULONG">
+            <Flag>
+                <Set Name="HTTP_INITIALIZE_SERVER"  Value="0x00000001" />
+                <Set Name="HTTP_INITIALIZE_CONFIG"  Value="0x00000002" />
+            </Flag>
+        </Variable>
+        <!-- HTTP Server API -->
+        <Category Name="Networking/Network Protocols/HTTP Server API/Version 1.0/General" />
+        <Api Name="HttpCreateHttpHandle">
+            <Param Type="PHANDLE" Name="pReqQueueHandle" />
+            <Param Type="ULONG" Name="Reserved" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="HttpInitialize">
+            <Param Type="HTTPAPI_VERSION" Name="Version" />
+            <Param Type="[HttpInitializeFlags]" Display="ULONG" Name="Flags" />
+            <Param Type="PVOID" Name="pReserved" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="HttpTerminate">
+            <Param Type="[HttpInitializeFlags]" Display="ULONG" Name="Flags" />
+            <Param Type="PVOID" Name="pReserved" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Category Name="Networking/Network Protocols/HTTP Server API/Version 1.0/Cache Management" />
+        <Api Name="HttpAddFragmentToCache">
+            <Param Type="HANDLE" Name="ReqQueueHandle" />
+            <Param Type="PCWSTR" Name="pUrlPrefix" />
+            <Param Type="PHTTP_DATA_CHUNK" Name="pDataChunk" />
+            <Param Type="PHTTP_CACHE_POLICY" Name="pCachePolicy" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="HttpFlushResponseCache">
+            <Param Type="HANDLE" Name="ReqQueueHandle" />
+            <Param Type="PCWSTR" Name="pUrlPrefix" />
+            <Param Type="ULONG" Name="Flags" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="HttpReadFragmentFromCache">
+            <Param Type="HANDLE" Name="ReqQueueHandle" />
+            <Param Type="PCWSTR" Name="pUrlPrefix" />
+            <Param Type="PHTTP_BYTE_RANGE" Name="pByteRange" />
+            <Param Type="PVOID" Name="pBuffer" />
+            <Param Type="ULONG" Name="BufferLength" />
+            <Param Type="PULONG" Name="pBytesRead" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Category Name="Networking/Network Protocols/HTTP Server API/Version 1.0/Configuration" />
+        <Api Name="HttpDeleteServiceConfiguration">
+            <Param Type="HANDLE" Name="ServiceHandle" />
+            <Param Type="HTTP_SERVICE_CONFIG_ID" Name="ConfigId" />
+            <Param Type="PVOID" Name="pConfigInformation" />
+            <Param Type="ULONG" Name="ConfigInformationLength" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="HttpQueryServiceConfiguration">
+            <Param Type="HANDLE" Name="ServiceHandle" />
+            <Param Type="HTTP_SERVICE_CONFIG_ID" Name="ConfigId" />
+            <Param Type="PVOID" Name="pInputConfigInfo" />
+            <Param Type="ULONG" Name="InputConfigInfoLength" />
+            <Param Type="PVOID" Name="pOutputConfigInfo" />
+            <Param Type="ULONG" Name="OutputConfigInfoLength" />
+            <Param Type="PULONG" Name="pReturnLength" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="HttpSetServiceConfiguration">
+            <Param Type="HANDLE" Name="ServiceHandle" />
+            <Param Type="HTTP_SERVICE_CONFIG_ID" Name="ConfigId" />
+            <Param Type="PVOID" Name="pConfigInformation" />
+            <Param Type="ULONG" Name="ConfigInformationLength" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Category Name="Networking/Network Protocols/HTTP Server API/Version 1.0/Input and Output" />
+        <Api Name="HttpReceiveHttpRequest">
+            <Param Type="HANDLE" Name="ReqQueueHandle" />
+            <Param Type="HTTP_REQUEST_ID" Name="RequestId" />
+            <Param Type="ULONG" Name="Flags" />
+            <Param Type="PHTTP_REQUEST" Name="pRequestBuffer" />
+            <Param Type="ULONG" Name="RequestBufferLength" />
+            <Param Type="PULONG" Name="pBytesReceived" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="HttpReceiveRequestEntityBody">
+            <Param Type="HANDLE" Name="ReqQueueHandle" />
+            <Param Type="HTTP_REQUEST_ID" Name="RequestId" />
+            <Param Type="ULONG" Name="Flags" />
+            <Param Type="PVOID" Name="pBuffer" />
+            <Param Type="ULONG" Name="BufferLength" />
+            <Param Type="PULONG" Name="pBytesReceived" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="HttpSendHttpResponse">
+            <Param Type="HANDLE" Name="ReqQueueHandle" />
+            <Param Type="HTTP_REQUEST_ID" Name="RequestId" />
+            <Param Type="ULONG" Name="Flags" />
+            <Param Type="PHTTP_RESPONSE" Name="pHttpResponse" />
+            <Param Type="PHTTP_CACHE_POLICY" Name="pCachePolicy" />
+            <Param Type="PULONG" Name="pBytesSent" />
+            <Param Type="PVOID" Name="pReserved2" />
+            <Param Type="ULONG" Name="Reserved3" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Param Type="PHTTP_LOG_DATA" Name="pLogData" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="HttpSendResponseEntityBody">
+            <Param Type="HANDLE" Name="ReqQueueHandle" />
+            <Param Type="HTTP_REQUEST_ID" Name="RequestId" />
+            <Param Type="ULONG" Name="Flags" />
+            <Param Type="USHORT" Name="EntityChunkCount" />
+            <Param Type="PHTTP_DATA_CHUNK" Name="pEntityChunks" />
+            <Param Type="PULONG" Name="pBytesSent" />
+            <Param Type="PVOID" Name="pReserved1" />
+            <Param Type="ULONG" Name="Reserved2" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Param Type="PHTTP_LOG_DATA" Name="pLogData" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="HttpWaitForDisconnect">
+            <Param Type="HANDLE" Name="ReqQueueHandle" />
+            <Param Type="HTTP_CONNECTION_ID" Name="ConnectionId" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Category Name="Networking/Network Protocols/HTTP Server API/Version 1.0/SSL" />
+        <Api Name="HttpReceiveClientCertificate">
+            <Param Type="HANDLE" Name="ReqQueueHandle" />
+            <Param Type="HTTP_CONNECTION_ID" Name="ConnectionId" />
+            <Param Type="ULONG" Name="Flags" />
+            <Param Type="PHTTP_SSL_CLIENT_CERT_INFO" Name="pSslClientCertInfo" />
+            <Param Type="ULONG" Name="SslClientCertInfoSize" />
+            <Param Type="PULONG" Name="pBytesReceived" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Category Name="Networking/Network Protocols/HTTP Server API/Version 1.0/URL Registration" />
+        <Api Name="HttpAddUrl">
+            <Param Type="HANDLE" Name="ReqQueueHandle" />
+            <Param Type="PCWSTR" Name="pFullyQualifiedUrl" />
+            <Param Type="PVOID" Name="pReserved" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="HttpRemoveUrl">
+            <Param Type="HANDLE" Name="ReqQueueHandle" />
+            <Param Type="PCWSTR" Name="pFullyQualifiedUrl" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Category Name="Networking/Network Protocols/HTTP Server API/Version 2.0/Server Session" />
+        <Api Name="HttpCloseServerSession">
+            <Param Type="HTTP_SERVER_SESSION_ID" Name="ServerSessionId" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="HttpCreateServerSession">
+            <Param Type="HTTPAPI_VERSION" Name="Version" />
+            <Param Type="PHTTP_SERVER_SESSION_ID" Name="pServerSessionId" />
+            <Param Type="ULONG" Name="Reserved" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="HttpQueryServerSessionProperty">
+            <Param Type="HTTP_SERVER_SESSION_ID" Name="ServerSessionId" />
+            <Param Type="HTTP_SERVER_PROPERTY" Name="Property" />
+            <Param Type="PVOID" Name="pPropertyInformation" PostLength="pReturnLength" />
+            <Param Type="ULONG" Name="PropertyInformationLength" />
+            <Param Type="PULONG" Name="pReturnLength" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="HttpSetServerSessionProperty">
+            <Param Type="HTTP_SERVER_SESSION_ID" Name="ServerSessionId" />
+            <Param Type="HTTP_SERVER_PROPERTY" Name="Property" />
+            <Param Type="PVOID" Name="pPropertyInformation" Length="PropertyInformationLength" />
+            <Param Type="ULONG" Name="PropertyInformationLength" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Category Name="Networking/Network Protocols/HTTP Server API/Version 2.0/URL Groups" />
+        <Api Name="HttpAddUrlToUrlGroup">
+            <Param Type="HTTP_URL_GROUP_ID" Name="UrlGroupId" />
+            <Param Type="PCWSTR" Name="pFullyQualifiedUrl" />
+            <Param Type="HTTP_URL_CONTEXT" Name="UrlContext" />
+            <Param Type="ULONG" Name="Reserved" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="HttpCreateUrlGroup">
+            <Param Type="HTTP_SERVER_SESSION_ID" Name="ServerSessionId" />
+            <Param Type="PHTTP_URL_GROUP_ID" Name="pUrlGroupId" />
+            <Param Type="ULONG" Name="Reserved" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="HttpCloseUrlGroup">
+            <Param Type="HTTP_URL_GROUP_ID" Name="UrlGroupId" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="HttpQueryUrlGroupProperty">
+            <Param Type="HTTP_URL_GROUP_ID" Name="UrlGroupId" />
+            <Param Type="HTTP_SERVER_PROPERTY" Name="Property" />
+            <Param Type="PVOID" Name="pPropertyInformation" PostLength="pReturnLength" />
+            <Param Type="ULONG" Name="PropertyInformationLength" />
+            <Param Type="PULONG" Name="pReturnLength" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="HttpRemoveUrlFromUrlGroup">
+            <Param Type="HTTP_URL_GROUP_ID" Name="UrlGroupId" />
+            <Param Type="PCWSTR" Name="pFullyQualifiedUrl" />
+            <Param Type="ULONG" Name="Flags" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="HttpSetUrlGroupProperty">
+            <Param Type="HTTP_URL_GROUP_ID" Name="UrlGroupId" />
+            <Param Type="HTTP_SERVER_PROPERTY" Name="Property" />
+            <Param Type="PVOID" Name="pPropertyInformation" Length="PropertyInformationLength" />
+            <Param Type="ULONG" Name="PropertyInformationLength" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Category Name="Networking/Network Protocols/HTTP Server API/Version 2.0/Request Queue" />
+        <Api Name="HttpCloseRequestQueue">
+            <Param Type="HANDLE" Name="ReqQueueHandle" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="HttpCreateRequestQueue">
+            <Param Type="HTTPAPI_VERSION" Name="Version" />
+            <Param Type="PCWSTR" Name="pName" />
+            <Param Type="PSECURITY_ATTRIBUTES" Name="pSecurityAttributes" />
+            <Param Type="ULONG" Name="Flags" />
+            <Param Type="PHANDLE" Name="pReqQueueHandle" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="HttpSetRequestQueueProperty">
+            <Param Type="HANDLE" Name="Handle" />
+            <Param Type="HTTP_SERVER_PROPERTY" Name="Property" />
+            <Param Type="PVOID" Name="pPropertyInformation" Length="PropertyInformationLength" />
+            <Param Type="ULONG" Name="PropertyInformationLength" />
+            <Param Type="ULONG" Name="Reserved" />
+            <Param Type="PVOID" Name="pReserved" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="HttpWaitForDemandStart">
+            <Param Type="HANDLE" Name="ReqQueueHandle" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

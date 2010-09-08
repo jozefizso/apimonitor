@@ -1,0 +1,356 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="Imm32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        <!-- Parameters -->
+        <Variable Name="HIMC"                    Type="Alias"        Base="HANDLE" />
+        <Variable Name="IMCENUMPROC"             Type="Alias"        Base="LPVOID" />
+        <Variable Name="REGISTERWORDENUMPROC"    Type="Alias"        Base="LPVOID" />
+        <Variable Name="LPCANDIDATELIST"         Type="Alias"        Base="LPVOID" />
+        <Variable Name="LPCANDIDATEFORM"         Type="Alias"        Base="LPVOID" />
+        <Variable Name="LPCOMPOSITIONFORM"       Type="Alias"        Base="LPVOID" />
+        <Variable Name="LPIMEMENUITEMINFO"       Type="Alias"        Base="LPVOID" />
+        <Variable Name="LPSTYLEBUF"              Type="Alias"        Base="LPVOID" />
+
+        <Variable Name="[ImmNotifyAction]" Type="Alias" Base="DWORD">
+            <Flag SingleValue="True">
+                <Set Name="NI_OPENCANDIDATE"            Value="0x0010" />
+                <Set Name="NI_CLOSECANDIDATE"           Value="0x0011" />
+                <Set Name="NI_SELECTCANDIDATESTR"       Value="0x0012" />
+                <Set Name="NI_CHANGECANDIDATELIST"      Value="0x0013" />
+                <Set Name="NI_FINALIZECONVERSIONRESULT" Value="0x0014" />
+                <Set Name="NI_COMPOSITIONSTR"           Value="0x0015" />
+                <Set Name="NI_SETCANDIDATE_PAGESTART"   Value="0x0016" />
+                <Set Name="NI_SETCANDIDATE_PAGESIZE"    Value="0x0017" />
+                <Set Name="NI_IMEMENUSELECTED"          Value="0x0018" />
+            </Flag>
+        </Variable>
+        <Variable Name="[CompositionString]" Type="Alias" Base="DWORD">
+            <Flag SingleValue="True">
+                <Set Name="CPS_COMPLETE"    Value="0x0001" />
+                <Set Name="CPS_CONVERT"     Value="0x0002" />
+                <Set Name="CPS_REVERT"      Value="0x0003" />
+                <Set Name="CPS_CANCEL"      Value="0x0004" />
+            </Flag>
+        </Variable>
+        <Variable Name="[ImmGetPropertyIndex]" Type="Alias" Base="DWORD">
+            <Flag SingleValue="True">
+                <Set Name="IGP_GETIMEVERSION"   Value="-4" />
+                <Set Name="IGP_PROPERTY"        Value="0x00000004" />
+                <Set Name="IGP_CONVERSION"      Value="0x00000008" />
+                <Set Name="IGP_SENTENCE"        Value="0x0000000c" />
+                <Set Name="IGP_UI"              Value="0x00000010" />
+                <Set Name="IGP_SETCOMPSTR"      Value="0x00000014" />
+                <Set Name="IGP_SELECT"          Value="0x00000018" />
+            </Flag>
+        </Variable>
+        <!-- Input Method Manager -->
+        <Category Name="Windows Application UI Development/Internationalization for Windows Applications/Input Method Manager" />
+        <Api Name="ImmAssociateContext">
+            <Param Type="HWND" Name="hWnd" />
+            <Param Type="HIMC" Name="hIMC" />
+            <Return Type="HIMC" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmAssociateContextEx">
+            <Param Type="HWND" Name="hWnd" />
+            <Param Type="HIMC" Name="hIMC" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmConfigureIME" BothCharset="True">
+            <Param Type="HKL" Name="hKL" />
+            <Param Type="HWND" Name="hWnd" />
+            <Param Type="DWORD" Name="dwMode" />
+            <Param Type="LPVOID" Name="lpData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmCreateContext">
+            <Return Type="HIMC" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmDestroyContext">
+            <Param Type="HIMC" Name="hIMC" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmDisableIME">
+            <Param Type="DWORD" Name="idThread" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmDisableTextFrameService">
+            <Param Type="DWORD" Name="idThread" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmEnumInputContext">
+            <Param Type="DWORD" Name="idThread" />
+            <Param Type="IMCENUMPROC" Name="lpfn" />
+            <Param Type="LPARAM" Name="lParam" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmEnumRegisterWord" BothCharset="True">
+            <Param Type="HKL" Name="hKL" />
+            <Param Type="REGISTERWORDENUMPROC" Name="lpfnEnumProc" />
+            <Param Type="LPCTSTR" Name="lpszReading" />
+            <Param Type="DWORD" Name="dwStyle" />
+            <Param Type="LPCTSTR" Name="lpszRegister" />
+            <Param Type="LPVOID" Name="lpData" />
+            <Return Type="UINT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmEscape" BothCharset="True">
+            <Param Type="HKL" Name="hKL" />
+            <Param Type="HIMC" Name="hIMC" />
+            <Param Type="UINT" Name="uEscape" />
+            <Param Type="LPVOID" Name="lpData" />
+            <Return Type="LRESULT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmGetCandidateList" BothCharset="True">
+            <Param Type="HIMC" Name="hIMC" />
+            <Param Type="DWORD" Name="dwIndex" />
+            <Param Type="LPCANDIDATELIST" Name="lpCandList" />
+            <Param Type="DWORD" Name="dwBufLen" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmGetCandidateListCount" BothCharset="True">
+            <Param Type="HIMC" Name="hIMC" />
+            <Param Type="LPDWORD" Name="lpdwListCount" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmGetCandidateWindow">
+            <Param Type="HIMC" Name="hIMC" />
+            <Param Type="DWORD" Name="dwIndex" />
+            <Param Type="LPCANDIDATEFORM" Name="lpCandidate" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmGetCompositionFont" BothCharset="True">
+            <Param Type="HIMC" Name="hIMC" />
+            <Param Type="LPLOGFONT" Name="lplf" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmGetCompositionString" BothCharset="True">
+            <Param Type="HIMC" Name="hIMC" />
+            <Param Type="DWORD" Name="dwIndex" />
+            <Param Type="LPVOID" Name="lpBuf" />
+            <Param Type="DWORD" Name="dwBufLen" />
+            <Return Type="LONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmGetCompositionWindow">
+            <Param Type="HIMC" Name="hIMC" />
+            <Param Type="LPCOMPOSITIONFORM" Name="lpCompForm" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmGetContext">
+            <Param Type="HWND" Name="hWnd" />
+            <Return Type="HIMC" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmGetConversionList" BothCharset="True">
+            <Param Type="HKL" Name="hKL" />
+            <Param Type="HIMC" Name="hIMC" />
+            <Param Type="LPCTSTR" Name="lpSrc" />
+            <Param Type="LPCANDIDATELIST" Name="lpDst" />
+            <Param Type="DWORD" Name="dwBufLen" />
+            <Param Type="UINT" Name="uFlag" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmGetConversionStatus">
+            <Param Type="HIMC" Name="hIMC" />
+            <Param Type="LPDWORD" Name="lpfdwConversion" />
+            <Param Type="LPDWORD" Name="lpfdwSentence" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmGetDefaultIMEWnd">
+            <Param Type="HWND" Name="hWnd" />
+            <Return Type="HWND" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmGetDescription" BothCharset="True">
+            <Param Type="HKL" Name="hKL" />
+            <Param Type="LPTSTR" Name="lpszDescription" />
+            <Param Type="UINT" Name="uBufLen" />
+            <Return Type="UINT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmGetGuideLine" BothCharset="True">
+            <Param Type="HIMC" Name="hIMC" />
+            <Param Type="DWORD" Name="dwIndex" />
+            <Param Type="LPTSTR" Name="lpBuf" />
+            <Param Type="DWORD" Name="dwBufLen" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmGetIMEFileName" BothCharset="True">
+            <Param Type="HKL" Name="hKL" />
+            <Param Type="LPTSTR" Name="lpszFileName" />
+            <Param Type="UINT" Name="uBufLen" />
+            <Return Type="UINT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmGetImeMenuItems" BothCharset="True">
+            <Param Type="HIMC" Name="hIMC" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="DWORD" Name="dwType" />
+            <Param Type="LPIMEMENUITEMINFO" Name="lpImeParentMenu" />
+            <Param Type="LPIMEMENUITEMINFO" Name="lpImeMenu" />
+            <Param Type="DWORD" Name="dwSize" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmGetOpenStatus">
+            <Param Type="HIMC" Name="hIMC" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmGetProperty">
+            <Param Type="HKL" Name="hKL" />
+            <Param Type="[ImmGetPropertyIndex]" Display="DWORD" Name="fdwIndex" />
+            <Return Type="DWORD" />
+        </Api>
+        <Api Name="ImmGetRegisterWordStyle" BothCharset="True">
+            <Param Type="HKL" Name="hKL" />
+            <Param Type="UINT" Name="nItem" />
+            <Param Type="LPSTYLEBUF" Name="lpStyleBuf" />
+            <Return Type="UINT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmGetStatusWindowPos">
+            <Param Type="HIMC" Name="hIMC" />
+            <Param Type="LPPOINT" Name="lpptPos" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmGetVirtualKey">
+            <Param Type="HWND" Name="hWnd" />
+            <Return Type="UINT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmInstallIME" BothCharset="True">
+            <Param Type="LPCTSTR" Name="lpszIMEFileName" />
+            <Param Type="LPCTSTR" Name="lpszLayoutText" />
+            <Return Type="HKL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmIsIME">
+            <Param Type="HKL" Name="hKL" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmIsUIMessage" BothCharset="True">
+            <Param Type="HWND" Name="hWndIME" />
+            <Param Type="UINT" Name="msg" />
+            <Param Type="WPARAM" Name="wParam" />
+            <Param Type="LPARAM" Name="lParam" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmNotifyIME">
+            <Param Type="HIMC" Name="hIMC" />
+            <Param Type="[ImmNotifyAction]" Display="DWORD" Name="dwAction" />
+            <Param Type="[CompositionString]" Display="DWORD" Name="dwIndex" />
+            <Param Type="DWORD" Name="dwValue" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmRegisterWord" BothCharset="True">
+            <Param Type="HKL" Name="hKL" />
+            <Param Type="LPCTSTR" Name="lpszReading" />
+            <Param Type="DWORD" Name="dwStyle" />
+            <Param Type="LPCTSTR" Name="lpszRegister" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmReleaseContext">
+            <Param Type="HWND" Name="hWnd" />
+            <Param Type="HIMC" Name="hIMC" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmRequestMessage" BothCharset="True">
+            <Param Type="HIMC" Name="hIMC" />
+            <Param Type="WPARAM" Name="wParam" />
+            <Param Type="LPARAM" Name="lParam" />
+            <Return Type="LRESULT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmSetCandidateWindow">
+            <Param Type="HIMC" Name="hIMC" />
+            <Param Type="LPCANDIDATEFORM" Name="lpCandidate" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmSetCompositionFont" BothCharset="True">
+            <Param Type="HIMC" Name="hIMC" />
+            <Param Type="LPLOGFONT" Name="lplf" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmSetCompositionString" BothCharset="True">
+            <Param Type="HIMC" Name="hIMC" />
+            <Param Type="DWORD" Name="dwIndex" />
+            <Param Type="LPVOID" Name="lpComp" />
+            <Param Type="DWORD" Name="dwCompLen" />
+            <Param Type="LPVOID" Name="lpRead" />
+            <Param Type="DWORD" Name="dwReadLen" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmSetCompositionWindow">
+            <Param Type="HIMC" Name="hIMC" />
+            <Param Type="LPCOMPOSITIONFORM" Name="lpCompForm" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmSetConversionStatus">
+            <Param Type="HIMC" Name="hIMC" />
+            <Param Type="DWORD" Name="fdwConversion" />
+            <Param Type="DWORD" Name="fdwSentence" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmSetOpenStatus">
+            <Param Type="HIMC" Name="hIMC" />
+            <Param Type="BOOL" Name="fOpen" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmSetStatusWindowPos">
+            <Param Type="HIMC" Name="hIMC" />
+            <Param Type="LPPOINT" Name="lpptPos" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmSimulateHotKey">
+            <Param Type="HWND" Name="hWnd" />
+            <Param Type="DWORD" Name="dwHotKeyID" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImmUnregisterWord" BothCharset="True">
+            <Param Type="HKL" Name="hKL" />
+            <Param Type="LPCTSTR" Name="lpszReading" />
+            <Param Type="DWORD" Name="dwStyle" />
+            <Param Type="LPCTSTR" Name="lpszUnregister" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

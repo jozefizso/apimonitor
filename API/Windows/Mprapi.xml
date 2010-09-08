@@ -1,0 +1,831 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="Mprapi.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        <!-- Parameters -->
+        <Variable Name="RAS_SERVER_HANDLE"           Type="Alias" Base="HANDLE" />
+        <Variable Name="MPR_SERVER_HANDLE"           Type="Alias" Base="HANDLE" />
+        <Variable Name="MPR_SERVER_HANDLE*"          Type="Pointer" Base="MPR_SERVER_HANDLE" />
+        <Variable Name="PMPR_IPINIP_INTERFACE_0"     Type="Alias" Base="LPVOID" />
+        <Variable Name="MIB_SERVER_HANDLE"           Type="Alias" Base="HANDLE" />
+        <Variable Name="MIB_SERVER_HANDLE*"          Type="Pointer" Base="MIB_SERVER_HANDLE" />
+
+        <!-- Router Administration -->
+        <Category Name="Networking/Network Firewall and Routing/Routing and Remote Access Service/Routing/Router Management/Router Administration" />
+        <Api Name="MprAdminPortEnum">
+            <Param Type="RAS_SERVER_HANDLE" Name="hRasServer" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="HANDLE" Name="hConnection" />
+            <Param Type="LPBYTE*" Name="lplpbBuffer" />
+            <Param Type="DWORD" Name="dwPrefMaxLen" />
+            <Param Type="LPDWORD" Name="lpdwEntriesRead" />
+            <Param Type="LPDWORD" Name="lpdwTotalEntries" />
+            <Param Type="LPDWORD" Name="lpdwResumeHandle" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminConnectionGetInfo">
+            <Param Type="RAS_SERVER_HANDLE" Name="hRasServer" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="HANDLE" Name="hConnection" />
+            <Param Type="LPBYTE*" Name="lplpbBuffer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminPortGetInfo">
+            <Param Type="RAS_SERVER_HANDLE" Name="hRasServer" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="HANDLE" Name="hPort" />
+            <Param Type="LPBYTE*" Name="lplpbBuffer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminConnectionClearStats">
+            <Param Type="RAS_SERVER_HANDLE" Name="hRasServer" />
+            <Param Type="HANDLE" Name="hConnection" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminPortClearStats">
+            <Param Type="RAS_SERVER_HANDLE" Name="hRasServer" />
+            <Param Type="HANDLE" Name="hPort" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminPortReset">
+            <Param Type="RAS_SERVER_HANDLE" Name="hRasServer" />
+            <Param Type="HANDLE" Name="hPort" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminPortDisconnect">
+            <Param Type="RAS_SERVER_HANDLE" Name="hRasServer" />
+            <Param Type="HANDLE" Name="hPort" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminConnectionRemoveQuarantine">
+            <Param Type="HANDLE" Name="hRasServer" />
+            <Param Type="HANDLE" Name="hRasConnection" />
+            <Param Type="BOOL" Name="fIsIpAddress" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminUserGetInfo">
+            <Param Type="const WCHAR*" Name="lpszServer" />
+            <Param Type="const WCHAR*" Name="lpszUser" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="LPBYTE" Name="lpbBuffer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminUserSetInfo">
+            <Param Type="const WCHAR*" Name="lpszServer" />
+            <Param Type="const WCHAR*" Name="lpszUser" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="const LPBYTE" Name="lpbBuffer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminSendUserMessage">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="HANDLE" Name="hConnection" />
+            <Param Type="LPWSTR" Name="lpwszMessage" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminGetPDCServer">
+            <Param Type="const WCHAR*" Name="lpszDomain" />
+            <Param Type="const WCHAR*" Name="lpszServer" />
+            <Param Type="LPWSTR" Name="lpszPDCServer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminIsServiceRunning">
+            <Param Type="LPWSTR" Name="lpwsServerName" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminServerConnect">
+            <Param Type="LPWSTR" Name="lpwsServerName" />
+            <Param Type="MPR_SERVER_HANDLE*" Name="phMprServer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminServerDisconnect">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="MprAdminServerGetCredentials">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="LPBYTE*" Name="lplpbBuffer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminServerSetCredentials">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="LPBYTE" Name="lpbBuffer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminBufferFree">
+            <Param Type="LPVOID" Name="pBuffer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminGetErrorString">
+            <Param Type="DWORD" Name="dwError" />
+            <Param Type="LPWSTR*" Name="lpwsErrorString" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminServerGetInfo">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="LPBYTE*" Name="lplpbBuffer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminServerSetInfo">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="LPBYTE" Name="lpbBuffer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminEstablishDomainRasServer">
+            <Param Type="PWCHAR" Name="pszDomain" />
+            <Param Type="PWCHAR" Name="pszMachine" />
+            <Param Type="BOOL" Name="bEnable" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminIsDomainRasServer">
+            <Param Type="PWCHAR" Name="pszDomain" />
+            <Param Type="PWCHAR" Name="pszMachine" />
+            <Param Type="PBOOL" Name="pbIsRasServer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminTransportCreate">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="DWORD" Name="dwTransportId" />
+            <Param Type="LPWSTR" Name="lpwsTransportName" />
+            <Param Type="LPBYTE" Name="pGlobalInfo" />
+            <Param Type="DWORD" Name="dwGlobalInfoSize" />
+            <Param Type="LPBYTE" Name="pClientInterfaceInfo" />
+            <Param Type="DWORD" Name="dwClientInterfaceInfoSize" />
+            <Param Type="LPWSTR" Name="lpwsDLLPath" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminTransportSetInfo">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="DWORD" Name="dwTransportId" />
+            <Param Type="LPBYTE" Name="pGlobalInfo" />
+            <Param Type="DWORD" Name="dwGlobalInfoSize" />
+            <Param Type="LPBYTE" Name="pClientInterfaceInfo" />
+            <Param Type="DWORD" Name="dwClientInterfaceInfoSize" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminTransportGetInfo">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="DWORD" Name="dwTransportId" />
+            <Param Type="LPBYTE*" Name="ppGlobalInfo" />
+            <Param Type="LPDWORD" Name="lpdwGlobalInfoSize" />
+            <Param Type="LPBYTE*" Name="ppClientInterfaceInfo" />
+            <Param Type="LPDWORD" Name="lpdwClientInterfaceInfoSize" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminDeviceEnum">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="LPBYTE*" Name="lplpbBuffer" />
+            <Param Type="LPDWORD" Name="lpdwTotalEntries" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminInterfaceGetHandle">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="LPWSTR" Name="lpwsInterfaceName" />
+            <Param Type="HANDLE*" Name="phInterface" />
+            <Param Type="BOOL" Name="fIncludeClientInterfaces" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminInterfaceCreate">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="LPBYTE" Name="lpbBuffer" />
+            <Param Type="HANDLE*" Name="phInterface" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminInterfaceGetInfo">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="HANDLE" Name="hInterface" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="LPBYTE*" Name="lplpbBuffer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminInterfaceSetInfo">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="HANDLE" Name="hInterface" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="LPBYTE" Name="lpbBuffer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminInterfaceDelete">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="HANDLE" Name="hInterface" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminInterfaceDeviceGetInfo">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="HANDLE" Name="hInterface" />
+            <Param Type="DWORD" Name="dwIndex" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="LPBYTE*" Name="lplpBuffer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminInterfaceDeviceSetInfo">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="HANDLE" Name="hInterface" />
+            <Param Type="DWORD" Name="dwIndex" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="LPBYTE" Name="lplpBuffer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminInterfaceTransportRemove">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="HANDLE" Name="hInterface" />
+            <Param Type="DWORD" Name="dwTransportId" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminInterfaceTransportAdd">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="HANDLE" Name="hInterface" />
+            <Param Type="DWORD" Name="dwTransportId" />
+            <Param Type="LPBYTE" Name="pInterfaceInfo" />
+            <Param Type="DWORD" Name="dwInterfaceInfoSize" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminInterfaceTransportGetInfo">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="HANDLE" Name="hInterface" />
+            <Param Type="DWORD" Name="dwTransportId" />
+            <Param Type="LPBYTE*" Name="ppInterfaceInfo" />
+            <Param Type="LPDWORD" Name="lpdwpInterfaceInfoSize" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminInterfaceTransportSetInfo">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="HANDLE" Name="hInterface" />
+            <Param Type="DWORD" Name="dwTransportId" />
+            <Param Type="LPBYTE" Name="pInterfaceInfo" />
+            <Param Type="DWORD" Name="dwInterfaceInfoSize" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminInterfaceEnum">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="LPBYTE*" Name="lplpbBuffer" />
+            <Param Type="DWORD" Name="dwPrefMaxLen" />
+            <Param Type="LPDWORD" Name="lpdwEntriesRead" />
+            <Param Type="LPDWORD" Name="lpdwTotalEntries" />
+            <Param Type="LPDWORD" Name="lpdwResumeHandle" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprSetupIpInIpInterfaceFriendlyNameEnum">
+            <Param Type="PWCHAR" Name="pwszMachineName" />
+            <Param Type="LPBYTE*" Name="lplpBuffer" />
+            <Param Type="LPDWORD" Name="lpdwEntriesRead" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprSetupIpInIpInterfaceFriendlyNameFree">
+            <Param Type="LPVOID" Name="lpBuffer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprSetupIpInIpInterfaceFriendlyNameCreate">
+            <Param Type="PWCHAR" Name="pwszMachineName" />
+            <Param Type="PMPR_IPINIP_INTERFACE_0" Name="pNameInformation" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprSetupIpInIpInterfaceFriendlyNameDelete">
+            <Param Type="PWCHAR" Name="pwszMachineName" />
+            <Param Type="GUID*" Name="pGuid" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminInterfaceSetCredentials">
+            <Param Type="LPWSTR" Name="lpwsServer" />
+            <Param Type="LPWSTR" Name="lpwsInterfaceName" />
+            <Param Type="LPWSTR" Name="lpwsUserName" />
+            <Param Type="LPWSTR" Name="lpwsDomainName" />
+            <Param Type="LPWSTR" Name="lpwsPassword" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminInterfaceGetCredentials">
+            <Param Type="LPWSTR" Name="lpwsServer" />
+            <Param Type="LPWSTR" Name="lpwsInterfaceName" />
+            <Param Type="LPWSTR" Name="lpwsUserName" />
+            <Param Type="LPWSTR" Name="lpwsPassword" />
+            <Param Type="LPWSTR" Name="lpwsDomainName" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminInterfaceSetCredentialsEx">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="HANDLE" Name="hInterface" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="LPBYTE" Name="lpbBuffer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminInterfaceGetCredentialsEx">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="HANDLE" Name="hInterface" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="LPBYTE*" Name="lplpbBuffer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminInterfaceConnect">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="HANDLE" Name="hInterface" />
+            <Param Type="HANDLE" Name="hEvent" />
+            <Param Type="BOOL" Name="fSynchronous" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminInterfaceDisconnect">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="HANDLE" Name="hInterface" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminInterfaceUpdateRoutes">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="HANDLE" Name="hInterface" />
+            <Param Type="DWORD" Name="dwProtocolId" />
+            <Param Type="HANDLE" Name="hEvent" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminInterfaceQueryUpdateResult">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="HANDLE" Name="hInterface" />
+            <Param Type="DWORD" Name="dwProtocolId" />
+            <Param Type="LPDWORD" Name="lpdwUpdateResult" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminInterfaceUpdatePhonebookInfo">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="HANDLE" Name="hInterface" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminRegisterConnectionNotification">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="HANDLE" Name="hEventNotification" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminDeregisterConnectionNotification">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="HANDLE" Name="hEventNotification" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminMIBServerConnect">
+            <Param Type="LPWSTR" Name="lpwsServerName" />
+            <Param Type="MIB_SERVER_HANDLE*" Name="phMibServer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminMIBServerDisconnect">
+            <Param Type="MIB_SERVER_HANDLE" Name="hMibServer" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="MprAdminMIBEntryCreate">
+            <Param Type="MIB_SERVER_HANDLE" Name="hMibServer" />
+            <Param Type="DWORD" Name="dwPid" />
+            <Param Type="DWORD" Name="dwRoutingPid" />
+            <Param Type="LPVOID" Name="lpEntry" />
+            <Param Type="DWORD" Name="dwEntrySize" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminMIBEntryDelete">
+            <Param Type="MIB_SERVER_HANDLE" Name="hMibServer" />
+            <Param Type="DWORD" Name="dwProtocolId" />
+            <Param Type="DWORD" Name="dwRoutingPid" />
+            <Param Type="LPVOID" Name="lpEntry" />
+            <Param Type="DWORD" Name="dwEntrySize" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminMIBEntrySet">
+            <Param Type="MIB_SERVER_HANDLE" Name="hMibServer" />
+            <Param Type="DWORD" Name="dwProtocolId" />
+            <Param Type="DWORD" Name="dwRoutingPid" />
+            <Param Type="LPVOID" Name="lpEntry" />
+            <Param Type="DWORD" Name="dwEntrySize" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminMIBEntryGet">
+            <Param Type="MIB_SERVER_HANDLE" Name="hMibServer" />
+            <Param Type="DWORD" Name="dwProtocolId" />
+            <Param Type="DWORD" Name="dwRoutingPid" />
+            <Param Type="LPVOID" Name="lpInEntry" />
+            <Param Type="DWORD" Name="dwInEntrySize" />
+            <Param Type="LPVOID*" Name="lplpOutEntry" />
+            <Param Type="LPDWORD" Name="lpOutEntrySize" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminMIBEntryGetFirst">
+            <Param Type="MIB_SERVER_HANDLE" Name="hMibServer" />
+            <Param Type="DWORD" Name="dwProtocolId" />
+            <Param Type="DWORD" Name="dwRoutingPid" />
+            <Param Type="LPVOID" Name="lpInEntry" />
+            <Param Type="DWORD" Name="dwInEntrySize" />
+            <Param Type="LPVOID*" Name="lplpOutEntry" />
+            <Param Type="LPDWORD" Name="lpOutEntrySize" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminMIBEntryGetNext">
+            <Param Type="MIB_SERVER_HANDLE" Name="hMibServer" />
+            <Param Type="DWORD" Name="dwProtocolId" />
+            <Param Type="DWORD" Name="dwRoutingPid" />
+            <Param Type="LPVOID" Name="lpInEntry" />
+            <Param Type="DWORD" Name="dwInEntrySize" />
+            <Param Type="LPVOID*" Name="lplpOutEntry" />
+            <Param Type="LPDWORD" Name="lpOutEntrySize" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminMIBGetTrapInfo">
+            <Param Type="MIB_SERVER_HANDLE" Name="hMibServer" />
+            <Param Type="DWORD" Name="dwProtocolId" />
+            <Param Type="DWORD" Name="dwRoutingPid" />
+            <Param Type="LPVOID" Name="lpInData" />
+            <Param Type="DWORD" Name="dwInDataSize" />
+            <Param Type="LPVOID*" Name="lplpOutData" />
+            <Param Type="LPDWORD" Name="lpOutDataSize" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminMIBSetTrapInfo">
+            <Param Type="DWORD" Name="dwProtocolId" />
+            <Param Type="DWORD" Name="dwRoutingPid" />
+            <Param Type="HANDLE" Name="hEvent" />
+            <Param Type="LPVOID" Name="lpInData" />
+            <Param Type="DWORD" Name="dwInDataSize" />
+            <Param Type="LPVOID*" Name="lplpOutData" />
+            <Param Type="LPDWORD" Name="lpOutDataSize" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprAdminMIBBufferFree">
+            <Param Type="LPVOID" Name="pBuffer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigServerInstall">
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="PVOID" Name="pBuffer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigServerConnect">
+            <Param Type="LPWSTR" Name="lpwsServerName" />
+            <Param Type="HANDLE*" Name="phMprConfig" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigServerDisconnect">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="MprConfigServerRefresh">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigBufferFree">
+            <Param Type="LPVOID" Name="pBuffer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigServerGetInfo">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="LPBYTE*" Name="lplpbBuffer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigServerSetInfo">
+            <Param Type="MPR_SERVER_HANDLE" Name="hMprServer" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="LPBYTE" Name="lpbBuffer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigServerBackup">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Param Type="LPWSTR" Name="lpwsPath" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigServerRestore">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Param Type="LPWSTR" Name="lpwsPath" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigTransportCreate">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Param Type="DWORD" Name="dwTransportId" />
+            <Param Type="LPWSTR" Name="lpwsTransportName" />
+            <Param Type="LPBYTE" Name="pGlobalInfo" />
+            <Param Type="DWORD" Name="dwGlobalInfoSize" />
+            <Param Type="LPBYTE" Name="pClientInterfaceInfo" />
+            <Param Type="DWORD" Name="dwClientInterfaceInfoSize" />
+            <Param Type="LPWSTR" Name="lpwsDLLPath" />
+            <Param Type="HANDLE*" Name="phRouterTransport" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigTransportDelete">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Param Type="HANDLE" Name="hRouterTransport" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigTransportGetHandle">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Param Type="DWORD" Name="dwTransportId" />
+            <Param Type="HANDLE*" Name="phRouterTransport" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigTransportSetInfo">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Param Type="HANDLE" Name="hRouterTransport" />
+            <Param Type="LPBYTE" Name="pGlobalInfo" />
+            <Param Type="DWORD" Name="dwGlobalInfoSize" />
+            <Param Type="LPBYTE" Name="pClientInterfaceInfo" />
+            <Param Type="DWORD" Name="dwClientInterfaceInfoSize" />
+            <Param Type="LPWSTR" Name="lpwsDLLPath" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigTransportGetInfo">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Param Type="HANDLE" Name="hRouterTransport" />
+            <Param Type="LPBYTE*" Name="ppGlobalInfo" />
+            <Param Type="LPDWORD" Name="lpdwGlobalInfoSize" />
+            <Param Type="LPBYTE*" Name="ppClientInterfaceInfo" />
+            <Param Type="LPDWORD" Name="lpdwClientInterfaceInfoSize" />
+            <Param Type="LPWSTR*" Name="lplpwsDLLPath" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigTransportEnum">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="LPBYTE*" Name="lplpBuffer" />
+            <Param Type="DWORD" Name="dwPrefMaxLen" />
+            <Param Type="LPDWORD" Name="lpdwEntriesRead" />
+            <Param Type="LPDWORD" Name="lpdwTotalEntries" />
+            <Param Type="LPDWORD" Name="lpdwResumeHandle" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigInterfaceCreate">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="LPBYTE" Name="lpbBuffer" />
+            <Param Type="HANDLE*" Name="phRouterInterface" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigInterfaceDelete">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Param Type="HANDLE" Name="hRouterInterface" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigInterfaceGetHandle">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Param Type="LPWSTR" Name="lpwsInterfaceName" />
+            <Param Type="HANDLE*" Name="phRouterInterface" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigInterfaceGetInfo">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Param Type="HANDLE" Name="hRouterInterface" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="LPBYTE*" Name="lplpBuffer" />
+            <Param Type="LPDWORD" Name="lpdwBufferSize" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigInterfaceSetInfo">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Param Type="HANDLE" Name="hRouterInterface" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="LPBYTE" Name="lpbBuffer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigInterfaceEnum">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="LPBYTE*" Name="lplpBuffer" />
+            <Param Type="DWORD" Name="dwPrefMaxLen" />
+            <Param Type="LPDWORD" Name="lpdwEntriesRead" />
+            <Param Type="LPDWORD" Name="lpdwTotalEntries" />
+            <Param Type="LPDWORD" Name="lpdwResumeHandle" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigInterfaceTransportAdd">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Param Type="HANDLE" Name="hRouterInterface" />
+            <Param Type="DWORD" Name="dwTransportId" />
+            <Param Type="LPWSTR" Name="lpwsTransportName" />
+            <Param Type="LPBYTE" Name="pInterfaceInfo" />
+            <Param Type="DWORD" Name="dwInterfaceInfoSize" />
+            <Param Type="HANDLE*" Name="phRouterIfTransport" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigInterfaceTransportRemove">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Param Type="HANDLE" Name="hRouterInterface" />
+            <Param Type="HANDLE" Name="hRouterIfTransport" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigInterfaceTransportGetHandle">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Param Type="HANDLE" Name="hRouterInterface" />
+            <Param Type="DWORD" Name="dwTransportId" />
+            <Param Type="HANDLE*" Name="phRouterIfTransport" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigInterfaceTransportGetInfo">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Param Type="HANDLE" Name="hRouterInterface" />
+            <Param Type="HANDLE" Name="hRouterIfTransport" />
+            <Param Type="LPBYTE*" Name="ppInterfaceInfo" />
+            <Param Type="LPDWORD" Name="lpdwInterfaceInfoSize" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigInterfaceTransportSetInfo">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Param Type="HANDLE" Name="hRouterInterface" />
+            <Param Type="HANDLE" Name="hRouterIfTransport" />
+            <Param Type="LPBYTE" Name="pInterfaceInfo" />
+            <Param Type="DWORD" Name="dwInterfaceInfoSize" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigInterfaceTransportEnum">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Param Type="HANDLE" Name="hRouterInterface" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="LPBYTE*" Name="lplpBuffer" />
+            <Param Type="DWORD" Name="dwPrefMaxLen" />
+            <Param Type="LPDWORD" Name="lpdwEntriesRead" />
+            <Param Type="LPDWORD" Name="lpdwTotalEntries" />
+            <Param Type="LPDWORD" Name="lpdwResumeHandle" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigGetFriendlyName">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Param Type="PWCHAR" Name="pszGuidName" />
+            <Param Type="PWCHAR" Name="pszBuffer" />
+            <Param Type="DWORD" Name="dwBufferSize" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigGetGuidName">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Param Type="PWCHAR" Name="pszFriendlyName" />
+            <Param Type="PWCHAR" Name="pszBuffer" />
+            <Param Type="DWORD" Name="dwBufferSize" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigFilterGetInfo">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="LPBYTE" Name="lpBuffer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprConfigFilterSetInfo">
+            <Param Type="HANDLE" Name="hMprConfig" />
+            <Param Type="DWORD" Name="dwLevel" />
+            <Param Type="LPBYTE" Name="lpBuffer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprInfoCreate">
+            <Param Type="DWORD" Name="dwVersion" />
+            <Param Type="LPVOID*" Name="lplpNewHeader" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprInfoDelete">
+            <Param Type="LPVOID" Name="lpHeader" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprInfoRemoveAll">
+            <Param Type="LPVOID" Name="lpHeader" />
+            <Param Type="LPVOID*" Name="lplpNewHeader" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprInfoDuplicate">
+            <Param Type="LPVOID" Name="lpHeader" />
+            <Param Type="LPVOID*" Name="lplpNewHeader" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprInfoBlockAdd">
+            <Param Type="LPVOID" Name="lpHeader" />
+            <Param Type="DWORD" Name="dwInfoType" />
+            <Param Type="DWORD" Name="dwItemSize" />
+            <Param Type="DWORD" Name="dwItemCount" />
+            <Param Type="LPBYTE" Name="lpItemData" />
+            <Param Type="LPVOID*" Name="lplpNewHeader" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprInfoBlockRemove">
+            <Param Type="LPVOID" Name="lpHeader" />
+            <Param Type="DWORD" Name="dwInfoType" />
+            <Param Type="LPVOID*" Name="lplpNewHeader" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprInfoBlockSet">
+            <Param Type="LPVOID" Name="lpHeader" />
+            <Param Type="DWORD" Name="dwInfoType" />
+            <Param Type="DWORD" Name="dwItemSize" />
+            <Param Type="DWORD" Name="dwItemCount" />
+            <Param Type="LPBYTE" Name="lpItemData" />
+            <Param Type="LPVOID*" Name="lplpNewHeader" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprInfoBlockFind">
+            <Param Type="LPVOID" Name="lpHeader" />
+            <Param Type="DWORD" Name="dwInfoType" />
+            <Param Type="LPDWORD" Name="lpdwItemSize" />
+            <Param Type="LPDWORD" Name="lpdwItemCount" />
+            <Param Type="LPBYTE*" Name="lplpItemData" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MprInfoBlockQuerySize">
+            <Param Type="LPVOID" Name="lpHeader" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

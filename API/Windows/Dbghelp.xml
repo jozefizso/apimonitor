@@ -1,0 +1,918 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="DbgHelp.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        <!-- Parameters -->
+        <Variable Name="PENUMDIRTREE_CALLBACK"               Type="Alias" Base="LPVOID" />
+        <Variable Name="LPAPI_VERSION"                       Type="Alias" Base="LPVOID" />
+        <Variable Name="PENUMLOADED_MODULES_CALLBACK64"      Type="Alias" Base="LPVOID" />
+        <Variable Name="PENUMLOADED_MODULES_CALLBACKW64"     Type="Alias" Base="LPVOID" />
+        <Variable Name="PFIND_DEBUG_FILE_CALLBACK"           Type="Alias" Base="LPVOID" />
+        <Variable Name="PFIND_EXE_FILE_CALLBACK"             Type="Alias" Base="LPVOID" />
+        <Variable Name="LPSTACKFRAME64"                      Type="Alias" Base="LPVOID" />
+        <Variable Name="PREAD_PROCESS_MEMORY_ROUTINE64"      Type="Alias" Base="LPVOID" />
+        <Variable Name="PFUNCTION_TABLE_ACCESS_ROUTINE64"    Type="Alias" Base="LPVOID" />
+        <Variable Name="PGET_MODULE_BASE_ROUTINE64"          Type="Alias" Base="LPVOID" />
+        <Variable Name="PTRANSLATE_ADDRESS_ROUTINE64"        Type="Alias" Base="LPVOID" />
+        <Variable Name="PSYM_ENUMLINES_CALLBACK"             Type="Alias" Base="LPVOID" />
+        <Variable Name="PSYM_ENUMPROCESSES_CALLBACK"         Type="Alias" Base="LPVOID" />
+        <Variable Name="PSYM_ENUMSOURCEFILES_CALLBACK"       Type="Alias" Base="LPVOID" />
+        <Variable Name="PSYM_ENUMERATESYMBOLS_CALLBACK"      Type="Alias" Base="LPVOID" />
+        <Variable Name="PFINDFILEINPATHCALLBACK"             Type="Alias" Base="LPVOID" />
+        <Variable Name="PSYMBOL_INFO"                        Type="Alias" Base="LPVOID" />
+        <Variable Name="PIMAGEHLP_LINE64"                    Type="Alias" Base="LPVOID" />
+        <Variable Name="PIMAGEHLP_LINEW64"                   Type="Alias" Base="LPVOID" />
+        <Variable Name="PIMAGEHLP_MODULE64"                  Type="Alias" Base="LPVOID" />
+        <Variable Name="PIMAGEHLP_MODULEW64"                 Type="Alias" Base="LPVOID" />
+        <Variable Name="POMAP*"                              Type="Alias" Base="LPVOID" />
+        <Variable Name="IMAGEHLP_SYMBOL_TYPE_INFO" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="TI_GET_SYMTAG"                       Value="0" />
+                <Set Name="TI_GET_SYMNAME"                      Value="1" />
+                <Set Name="TI_GET_LENGTH"                       Value="2" />
+                <Set Name="TI_GET_TYPE"                         Value="3" />
+                <Set Name="TI_GET_TYPEID"                       Value="4" />
+                <Set Name="TI_GET_BASETYPE"                     Value="5" />
+                <Set Name="TI_GET_ARRAYINDEXTYPEID"             Value="6" />
+                <Set Name="TI_FINDCHILDREN"                     Value="7" />
+                <Set Name="TI_GET_DATAKIND"                     Value="8" />
+                <Set Name="TI_GET_ADDRESSOFFSET"                Value="9" />
+                <Set Name="TI_GET_OFFSET"                       Value="10" />
+                <Set Name="TI_GET_VALUE"                        Value="11" />
+                <Set Name="TI_GET_COUNT"                        Value="12" />
+                <Set Name="TI_GET_CHILDRENCOUNT"                Value="13" />
+                <Set Name="TI_GET_BITPOSITION"                  Value="14" />
+                <Set Name="TI_GET_VIRTUALBASECLASS"             Value="15" />
+                <Set Name="TI_GET_VIRTUALTABLESHAPEID"          Value="16" />
+                <Set Name="TI_GET_VIRTUALBASEPOINTEROFFSET"     Value="17" />
+                <Set Name="TI_GET_CLASSPARENTID"                Value="18" />
+                <Set Name="TI_GET_NESTED"                       Value="19" />
+                <Set Name="TI_GET_SYMINDEX"                     Value="20" />
+                <Set Name="TI_GET_LEXICALPARENT"                Value="21" />
+                <Set Name="TI_GET_ADDRESS"                      Value="22" />
+                <Set Name="TI_GET_THISADJUST"                   Value="23" />
+                <Set Name="TI_GET_UDTKIND"                      Value="24" />
+                <Set Name="TI_IS_EQUIV_TO"                      Value="25" />
+                <Set Name="TI_GET_CALLING_CONVENTION"           Value="26" />
+                <Set Name="TI_IS_CLOSE_EQUIV_TO"                Value="27" />
+                <Set Name="TI_GTIEX_REQS_VALID"                 Value="28" />
+                <Set Name="TI_GET_VIRTUALBASEOFFSET"            Value="29" />
+                <Set Name="TI_GET_VIRTUALBASEDISPINDEX"         Value="30" />
+                <Set Name="TI_GET_IS_REFERENCE"                 Value="31" />
+            </Flag>
+        </Variable>
+
+
+        <Variable Name="PIMAGEHLP_GET_TYPE_INFO_PARAMS"      Type="Alias" Base="LPVOID" />
+        <Variable Name="PMODLOAD_DATA"                       Type="Alias" Base="LPVOID" />
+        <Variable Name="PSYMBOL_REGISTERED_CALLBACK64"       Type="Alias" Base="LPVOID" />
+        <Variable Name="PSYMBOL_REGISTERED_CALLBACKW64"      Type="Alias" Base="LPVOID" />
+        <Variable Name="PSYMBOL_FUNCENTRY_CALLBACK64"        Type="Alias" Base="LPVOID" />
+        <Variable Name="PIMAGEHLP_STACK_FRAME"               Type="Alias" Base="LPVOID" />
+        <Variable Name="PIMAGEHLP_CONTEXT"                   Type="Alias" Base="LPVOID" />
+        <Variable Name="PIMAGEHLP_SYMBOL64"                  Type="Alias" Base="LPVOID" />
+        <Variable Name="PSYMSRV_INDEX_INFO"                  Type="Alias" Base="LPVOID" />
+        <Variable Name="PMINIDUMP_DIRECTORY*"                Type="Alias" Base="LPVOID" />
+
+        <Variable Name="MINIDUMP_TYPE" Type="Alias" Base="DWORD">
+            <Flag SingleValue="True">
+                <Set Name="MiniDumpNormal"                          Value="0x00000000"/>
+                <Set Name="MiniDumpWithDataSegs"                    Value="0x00000001"/>
+                <Set Name="MiniDumpWithFullMemory"                  Value="0x00000002"/>
+                <Set Name="MiniDumpWithHandleData"                  Value="0x00000004"/>
+                <Set Name="MiniDumpFilterMemory"                    Value="0x00000008"/>
+                <Set Name="MiniDumpScanMemory"                      Value="0x00000010"/>
+                <Set Name="MiniDumpWithUnloadedModules"             Value="0x00000020"/>
+                <Set Name="MiniDumpWithIndirectlyReferencedMemory"  Value="0x00000040"/>
+                <Set Name="MiniDumpFilterModulePaths"               Value="0x00000080"/>
+                <Set Name="MiniDumpWithProcessThreadData"           Value="0x00000100"/>
+                <Set Name="MiniDumpWithPrivateReadWriteMemory"      Value="0x00000200"/>
+                <Set Name="MiniDumpWithoutOptionalData"             Value="0x00000400"/>
+                <Set Name="MiniDumpWithFullMemoryInfo"              Value="0x00000800"/>
+                <Set Name="MiniDumpWithThreadInfo"                  Value="0x00001000"/>
+                <Set Name="MiniDumpWithCodeSegs"                    Value="0x00002000"/>
+                <Set Name="MiniDumpWithoutAuxiliaryState"           Value="0x00004000"/>
+                <Set Name="MiniDumpWithFullAuxiliaryState"          Value="0x00008000"/>
+            </Flag>
+        </Variable>
+        <Variable Name="PMINIDUMP_EXCEPTION_INFORMATION"     Type="Alias" Base="LPVOID" />
+        <Variable Name="PMINIDUMP_USER_STREAM_INFORMATION"   Type="Alias" Base="LPVOID" />
+        <Variable Name="PMINIDUMP_CALLBACK_INFORMATION"      Type="Alias" Base="LPVOID" />
+        <Variable Name="PIMAGE_DEBUG_INFORMATION"            Type="Alias" Base="LPVOID" />
+        <Variable Name="PSYM_ENUMSYMBOLS_CALLBACK64"         Type="Alias" Base="LPVOID" />
+        <Variable Name="PSYM_ENUMSYMBOLS_CALLBACKW64"        Type="Alias" Base="LPVOID" />
+
+        <!-- Debug Help -->
+        <Category Name="Diagnostics/Debugging and Error Handling/Debug Help Library" />
+        <Api Name="EnumDirTree" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PCTSTR" Name="RootPath" />
+            <Param Type="PCTSTR" Name="InputPathName" />
+            <Param Type="PTSTR" Name="OutputPathBuffer" />
+            <Param Type="PENUMDIRTREE_CALLBACK" Name="Callback" />
+            <Param Type="PVOID" Name="CallbackData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImagehlpApiVersion">
+            <Return Type="LPAPI_VERSION" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImagehlpApiVersionEx">
+            <Param Type="LPAPI_VERSION" Name="AppVersion" />
+            <Return Type="LPAPI_VERSION" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MakeSureDirectoryPathExists">
+            <Param Type="PCSTR" Name="DirPath" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SearchTreeForFile" SuffixA="" BothCharset="True">
+            <Param Type="PCTSTR" Name="RootPath" />
+            <Param Type="PCTSTR" Name="InputPathName" />
+            <Param Type="PTSTR" Name="OutputPathBuffer" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="EnumerateLoadedModules64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PENUMLOADED_MODULES_CALLBACK64" Name="EnumLoadedModulesCallback" />
+            <Param Type="PVOID" Name="UserContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="EnumerateLoadedModulesW64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PENUMLOADED_MODULES_CALLBACKW64" Name="EnumLoadedModulesCallback" />
+            <Param Type="PVOID" Name="UserContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="EnumerateLoadedModulesEx" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PENUMLOADED_MODULES_CALLBACK64" Name="EnumLoadedModulesCallback" />
+            <Param Type="PVOID" Name="UserContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="FindDebugInfoFile">
+            <Param Type="PCSTR" Name="FileName" />
+            <Param Type="PCSTR" Name="SymbolPath" />
+            <Param Type="PSTR" Name="DebugFilePath" />
+            <Return Type="HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="FindDebugInfoFileEx" SuffixA="" BothCharset="True">
+            <Param Type="PCTSTR" Name="FileName" />
+            <Param Type="PCTSTR" Name="SymbolPath" />
+            <Param Type="PTSTR" Name="DebugFilePath" />
+            <Param Type="PFIND_DEBUG_FILE_CALLBACK" Name="Callback" />
+            <Param Type="PVOID" Name="CallerData" />
+            <Return Type="HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="FindExecutableImage">
+            <Param Type="PCSTR" Name="FileName" />
+            <Param Type="PCSTR" Name="SymbolPath" />
+            <Param Type="PSTR" Name="ImageFilePath" />
+            <Return Type="HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="FindExecutableImageEx" SuffixA="" BothCharset="True">
+            <Param Type="PCTSTR" Name="FileName" />
+            <Param Type="PCTSTR" Name="SymbolPath" />
+            <Param Type="PTSTR" Name="ImageFilePath" />
+            <Param Type="PFIND_EXE_FILE_CALLBACK" Name="Callback" />
+            <Param Type="PVOID" Name="CallerData" />
+            <Return Type="HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="StackWalk64">
+            <Param Type="DWORD" Name="MachineType" />
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="HANDLE" Name="hThread" />
+            <Param Type="LPSTACKFRAME64" Name="StackFrame" />
+            <Param Type="PVOID" Name="ContextRecord" />
+            <Param Type="PREAD_PROCESS_MEMORY_ROUTINE64" Name="ReadMemoryRoutine" />
+            <Param Type="PFUNCTION_TABLE_ACCESS_ROUTINE64" Name="FunctionTableAccessRoutine" />
+            <Param Type="PGET_MODULE_BASE_ROUTINE64" Name="GetModuleBaseRoutine" />
+            <Param Type="PTRANSLATE_ADDRESS_ROUTINE64" Name="TranslateAddress" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymSetParentWindow">
+            <Param Type="HWND" Name="hwnd" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="UnDecorateSymbolName" SuffixA="" BothCharset="True">
+            <Param Type="PCTSTR" Name="DecoratedName" />
+            <Param Type="PTSTR" Name="UnDecoratedName" />
+            <Param Type="DWORD" Name="UndecoratedLength" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetTimestampForLoadedLibrary">
+            <Param Type="HMODULE" Name="ImageBase" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImageDirectoryEntryToData">
+            <Param Type="PVOID" Name="Base" />
+            <Param Type="BOOLEAN" Name="MappedAsImage" />
+            <Param Type="USHORT" Name="DirectoryEntry" />
+            <Param Type="PULONG" Name="Size" />
+            <Return Type="PVOID" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImageDirectoryEntryToDataEx">
+            <Param Type="PVOID" Name="Base" />
+            <Param Type="BOOLEAN" Name="MappedAsImage" />
+            <Param Type="USHORT" Name="DirectoryEntry" />
+            <Param Type="PULONG" Name="Size" />
+            <Param Type="PIMAGE_SECTION_HEADER*" Name="FoundHeader" />
+            <Return Type="PVOID" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImageNtHeader">
+            <Param Type="PVOID" Name="ImageBase" />
+            <Return Type="PIMAGE_NT_HEADERS" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImageRvaToSection">
+            <Param Type="PIMAGE_NT_HEADERS" Name="NtHeaders" />
+            <Param Type="PVOID" Name="Base" />
+            <Param Type="ULONG" Name="Rva" />
+            <Return Type="PIMAGE_SECTION_HEADER" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImageRvaToVa">
+            <Param Type="PIMAGE_NT_HEADERS" Name="NtHeaders" />
+            <Param Type="PVOID" Name="Base" />
+            <Param Type="ULONG" Name="Rva" />
+            <Param Type="PIMAGE_SECTION_HEADER*" Name="LastRvaSection" />
+            <Return Type="PVOID" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymAddSourceStream" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="ULONG64" Name="Base" />
+            <Param Type="PCTSTR" Name="StreamFile" />
+            <Param Type="PBYTE" Name="Buffer" />
+            <Param Type="size_t" Name="Size" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymAddSymbol" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="ULONG64" Name="BaseOfDll" />
+            <Param Type="PCTSTR" Name="Name" />
+            <Param Type="DWORD64" Name="Address" />
+            <Param Type="DWORD" Name="Size" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymDeleteSymbol" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="ULONG64" Name="BaseOfDll" />
+            <Param Type="PCTSTR" Name="Name" />
+            <Param Type="DWORD64" Name="Address" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymEnumLines" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="ULONG64" Name="Base" />
+            <Param Type="PCTSTR" Name="Obj" />
+            <Param Type="PCTSTR" Name="File" />
+            <Param Type="PSYM_ENUMLINES_CALLBACK" Name="EnumLinesCallback" />
+            <Param Type="PVOID" Name="UserContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymEnumProcesses">
+            <Param Type="PSYM_ENUMPROCESSES_CALLBACK" Name="EnumProcessesCallback" />
+            <Param Type="PVOID" Name="UserContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymEnumSourceFiles" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="ULONG64" Name="ModBase" />
+            <Param Type="PCTSTR" Name="Mask" />
+            <Param Type="PSYM_ENUMSOURCEFILES_CALLBACK" Name="EnumSymbolsCallback" />
+            <Param Type="PVOID" Name="UserContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymEnumSourceLines" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="ULONG64" Name="Base" />
+            <Param Type="PCTSTR" Name="Obj" />
+            <Param Type="PCTSTR" Name="File" />
+            <Param Type="DWORD" Name="Line" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="PSYM_ENUMLINES_CALLBACK" Name="EnumLinesCallback" />
+            <Param Type="PVOID" Name="UserContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymEnumSymbols" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="ULONG64" Name="BaseOfDll" />
+            <Param Type="PCTSTR" Name="Mask" />
+            <Param Type="PSYM_ENUMERATESYMBOLS_CALLBACK" Name="EnumSymbolsCallback" />
+            <Param Type="const PVOID" Name="UserContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymEnumSymbolsForAddr" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="DWORD64" Name="Address" />
+            <Param Type="PSYM_ENUMERATESYMBOLS_CALLBACK" Name="EnumSymbolsCallback" />
+            <Param Type="PVOID" Name="UserContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymEnumTypes" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="ULONG64" Name="BaseOfDll" />
+            <Param Type="PSYM_ENUMERATESYMBOLS_CALLBACK" Name="EnumSymbolsCallback" />
+            <Param Type="PVOID" Name="UserContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymEnumTypesByName" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="ULONG64" Name="BaseOfDll" />
+            <Param Type="PCSTR" Name="mask" />
+            <Param Type="PSYM_ENUMERATESYMBOLS_CALLBACK" Name="EnumSymbolsCallback" />
+            <Param Type="PVOID" Name="UserContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymFindDebugInfoFile" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PCTSTR" Name="FileName" />
+            <Param Type="PTSTR" Name="DebugFilePath" />
+            <Param Type="PFIND_DEBUG_FILE_CALLBACK" Name="Callback" />
+            <Param Type="PVOID" Name="CallerData" />
+            <Return Type="HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymFindExecutableImage" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PCTSTR" Name="FileName" />
+            <Param Type="PTSTR" Name="ImageFilePath" />
+            <Param Type="PFIND_EXE_FILE_CALLBACK" Name="Callback" />
+            <Param Type="PVOID" Name="CallerData" />
+            <Return Type="HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymFindFileInPath" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PCTSTR" Name="SearchPath" />
+            <Param Type="PCTSTR" Name="FileName" />
+            <Param Type="PVOID" Name="id" />
+            <Param Type="DWORD" Name="two" />
+            <Param Type="DWORD" Name="three" />
+            <Param Type="DWORD" Name="flags" />
+            <Param Type="PTSTR" Name="FilePath" />
+            <Param Type="PFINDFILEINPATHCALLBACK" Name="callback" />
+            <Param Type="PVOID" Name="context" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymFromAddr" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="DWORD64" Name="Address" />
+            <Param Type="PDWORD64" Name="Displacement" />
+            <Param Type="PSYMBOL_INFO" Name="Symbol" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymFromIndex" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="ULONG64" Name="BaseOfDll" />
+            <Param Type="DWORD" Name="Index" />
+            <Param Type="PSYMBOL_INFO" Name="Symbol" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymFromName" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PCTSTR" Name="Name" />
+            <Param Type="PSYMBOL_INFO" Name="Symbol" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymFromToken" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="DWORD64" Name="Base" />
+            <Param Type="DWORD" Name="Token" />
+            <Param Type="PSYMBOL_INFO" Name="Symbol" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymFunctionTableAccess64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="DWORD64" Name="AddrBase" />
+            <Return Type="PVOID" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetFileLineOffsets64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PCSTR" Name="ModuleName" />
+            <Param Type="PCSTR" Name="FileName" />
+            <Param Type="PDWORD64" Name="Buffer" />
+            <Param Type="ULONG" Name="BufferLines" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetHomeDirectory" SuffixA="" BothCharset="True">
+            <Param Type="DWORD" Name="type" />
+            <Param Type="PTSTR" Name="dir" />
+            <Param Type="size_t" Name="size" />
+            <Return Type="PTCHAR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetLineFromAddr64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="DWORD64" Name="dwAddr" />
+            <Param Type="PDWORD" Name="pdwDisplacement" />
+            <Param Type="PIMAGEHLP_LINE64" Name="Line" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetLineFromAddrW64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="DWORD64" Name="dwAddr" />
+            <Param Type="PDWORD" Name="pdwDisplacement" />
+            <Param Type="PIMAGEHLP_LINEW64" Name="Line" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetLineFromName64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PCSTR" Name="ModuleName" />
+            <Param Type="PCSTR" Name="FileName" />
+            <Param Type="DWORD" Name="dwLineNumber" />
+            <Param Type="PLONG" Name="lpDisplacement" />
+            <Param Type="PIMAGEHLP_LINE64" Name="Line" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetLineFromNameW64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PCWSTR" Name="ModuleName" />
+            <Param Type="PCWSTR" Name="FileName" />
+            <Param Type="DWORD" Name="dwLineNumber" />
+            <Param Type="PLONG" Name="lpDisplacement" />
+            <Param Type="PIMAGEHLP_LINEW64" Name="Line" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetLineNext64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PIMAGEHLP_LINE64" Name="Line" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetLineNextW64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PIMAGEHLP_LINEW64" Name="Line" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetLinePrev64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PIMAGEHLP_LINE64" Name="Line" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetLinePrevW64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PIMAGEHLP_LINEW64" Name="Line" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetModuleBase64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="DWORD64" Name="dwAddr" />
+            <Return Type="DWORD64" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetModuleInfo64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="DWORD64" Name="dwAddr" />
+            <Param Type="PIMAGEHLP_MODULE64" Name="ModuleInfo" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetModuleInfoW64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="DWORD64" Name="dwAddr" />
+            <Param Type="PIMAGEHLP_MODULEW64" Name="ModuleInfo" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetOmaps">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="ULONG64" Name="BaseOfDll" />
+            <Param Type="POMAP*" Name="OmapTo" />
+            <Param Type="PDWORD64" Name="cOmapTo" />
+            <Param Type="POMAP*" Name="OmapFrom" />
+            <Param Type="PDWORD64" Name="cOmapFrom" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetOptions">
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetScope" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="ULONG64" Name="BaseOfDll" />
+            <Param Type="DWORD" Name="Index" />
+            <Param Type="PSYMBOL_INFO" Name="Symbol" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetSearchPath" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PTSTR" Name="SearchPath" />
+            <Param Type="DWORD" Name="SearchPathLength" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetSymbolFile" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PCTSTR" Name="SymPath" />
+            <Param Type="PCTSTR" Name="ImageFile" />
+            <Param Type="DWORD" Name="Type" />
+            <Param Type="PTSTR" Name="SymbolFile" />
+            <Param Type="size_t" Name="cSymbolFile" />
+            <Param Type="PTSTR" Name="DbgFile" />
+            <Param Type="size_t" Name="cDbgFile" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetTypeFromName" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="ULONG64" Name="BaseOfDll" />
+            <Param Type="PCTSTR" Name="Name" />
+            <Param Type="PSYMBOL_INFO" Name="Symbol" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetTypeInfo">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="DWORD64" Name="ModBase" />
+            <Param Type="ULONG" Name="TypeId" />
+            <Param Type="IMAGEHLP_SYMBOL_TYPE_INFO" Name="GetType" />
+            <Param Type="PVOID" Name="pInfo" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetTypeInfoEx">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="DWORD64" Name="ModBase" />
+            <Param Type="PIMAGEHLP_GET_TYPE_INFO_PARAMS" Name="Params" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymInitialize" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PCTSTR" Name="UserSearchPath" />
+            <Param Type="BOOL" Name="fInvadeProcess" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymLoadModule64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="HANDLE" Name="hFile" />
+            <Param Type="PCSTR" Name="ImageName" />
+            <Param Type="PCSTR" Name="ModuleName" />
+            <Param Type="DWORD64" Name="BaseOfDll" />
+            <Param Type="DWORD" Name="SizeOfDll" />
+            <Return Type="DWORD64" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymLoadModuleEx" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="HANDLE" Name="hFile" />
+            <Param Type="PCTSTR" Name="ImageName" />
+            <Param Type="PCTSTR" Name="ModuleName" />
+            <Param Type="DWORD64" Name="BaseOfDll" />
+            <Param Type="DWORD" Name="DllSize" />
+            <Param Type="PMODLOAD_DATA" Name="Data" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="DWORD64" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymMatchFileName" SuffixA="" BothCharset="True">
+            <Param Type="PCTSTR" Name="FileName" />
+            <Param Type="PCTSTR" Name="Match" />
+            <Param Type="PTSTR*" Name="FileNameStop" />
+            <Param Type="PTSTR*" Name="MatchStop" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymMatchString" BothCharset="True">
+            <Param Type="PCTSTR" Name="string" />
+            <Param Type="PCTSTR" Name="expression" />
+            <Param Type="BOOL" Name="fCase" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymNext" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PSYMBOL_INFO" Name="Symbol" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymPrev" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PSYMBOL_INFO" Name="Symbol" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymRefreshModuleList">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymRegisterCallback64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PSYMBOL_REGISTERED_CALLBACK64" Name="CallbackFunction" />
+            <Param Type="ULONG64" Name="UserContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymRegisterCallbackW64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PSYMBOL_REGISTERED_CALLBACKW64" Name="CallbackFunction" />
+            <Param Type="ULONG64" Name="UserContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymRegisterFunctionEntryCallback64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PSYMBOL_FUNCENTRY_CALLBACK64" Name="CallbackFunction" />
+            <Param Type="ULONG64" Name="UserContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymSearch" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="ULONG64" Name="BaseOfDll" />
+            <Param Type="DWORD" Name="Index" />
+            <Param Type="DWORD" Name="SymTag" />
+            <Param Type="PCTSTR" Name="Mask" />
+            <Param Type="DWORD64" Name="Address" />
+            <Param Type="PSYM_ENUMERATESYMBOLS_CALLBACK" Name="EnumSymbolsCallback" />
+            <Param Type="PVOID" Name="UserContext" />
+            <Param Type="DWORD" Name="Options" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymSetContext">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PIMAGEHLP_STACK_FRAME" Name="StackFrame" />
+            <Param Type="PIMAGEHLP_CONTEXT" Name="Context" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymSetHomeDirectory" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PCTSTR" Name="dir" />
+            <Return Type="PTCHAR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymSetOptions">
+            <Param Type="DWORD" Name="SymOptions" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymSetScopeFromAddr">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="ULONG64" Name="Address" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymSetScopeFromIndex">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="ULONG64" Name="BaseOfDll" />
+            <Param Type="DWORD" Name="Index" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymSetSearchPath" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PCTSTR" Name="SearchPath" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymUnDName64">
+            <Param Type="PIMAGEHLP_SYMBOL64" Name="sym" />
+            <Param Type="PSTR" Name="UnDecName" />
+            <Param Type="DWORD" Name="UnDecNameLength" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymUnloadModule64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="DWORD64" Name="BaseOfDll" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymSrvDeltaName" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PCTSTR" Name="SymPath" />
+            <Param Type="PCTSTR" Name="Type" />
+            <Param Type="PCTSTR" Name="File1" />
+            <Param Type="PCTSTR" Name="File2" />
+            <Return Type="PCTSTR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymSrvGetFileIndexes" SuffixA="" BothCharset="True">
+            <Param Type="PCTSTR" Name="File" />
+            <Param Type="GUID*" Name="Id" />
+            <Param Type="DWORD*" Name="Val1" />
+            <Param Type="DWORD*" Name="Val2" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymSrvGetFileIndexInfo" SuffixA="" BothCharset="True">
+            <Param Type="PCTSTR" Name="File" />
+            <Param Type="PSYMSRV_INDEX_INFO" Name="Info" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymSrvGetFileIndexString" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PCTSTR" Name="SrvPath" />
+            <Param Type="PCTSTR" Name="File" />
+            <Param Type="PTSTR" Name="Index" />
+            <Param Type="size_t" Name="Size" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymSrvGetSupplement" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PCTSTR" Name="SymPath" />
+            <Param Type="PCTSTR" Name="Node" />
+            <Param Type="PCTSTR" Name="File" />
+            <Return Type="PCTSTR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymSrvIsStore" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PCTSTR" Name="path" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymSrvStoreFile" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PCTSTR" Name="SrvPath" />
+            <Param Type="PCTSTR" Name="File" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="PCTSTR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymSrvStoreSupplement" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="const PCTSTR" Name="SymPath" />
+            <Param Type="PCTSTR" Name="Node" />
+            <Param Type="PCTSTR" Name="File" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="PCTSTR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MiniDumpReadDumpStream">
+            <Param Type="PVOID" Name="BaseOfDump" />
+            <Param Type="ULONG" Name="StreamNumber" />
+            <Param Type="PMINIDUMP_DIRECTORY*" Name="Dir" />
+            <Param Type="PVOID*" Name="StreamPointer" />
+            <Param Type="ULONG*" Name="StreamSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MiniDumpWriteDump">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="DWORD" Name="ProcessId" />
+            <Param Type="HANDLE" Name="hFile" />
+            <Param Type="MINIDUMP_TYPE" Name="DumpType" />
+            <Param Type="PMINIDUMP_EXCEPTION_INFORMATION" Name="ExceptionParam" />
+            <Param Type="PMINIDUMP_USER_STREAM_INFORMATION" Name="UserStreamParam" />
+            <Param Type="PMINIDUMP_CALLBACK_INFORMATION" Name="CallbackParam" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetSourceFile" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="ULONG64" Name="Base" />
+            <Param Type="PCTSTR" Name="Params" />
+            <Param Type="PCTSTR" Name="FileSpec" />
+            <Param Type="PTSTR" Name="FilePath" />
+            <Param Type="DWORD" Name="Size" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetSourceFileFromToken" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PVOID" Name="Token" />
+            <Param Type="PCTSTR" Name="Params" />
+            <Param Type="PTSTR" Name="FilePath" />
+            <Param Type="DWORD" Name="Size" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetSourceFileToken" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="ULONG64" Name="Base" />
+            <Param Type="PCTSTR" Name="FileSpec" />
+            <Param Type="PVOID*" Name="Token" />
+            <Param Type="DWORD*" Name="Size" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetSourceVarFromToken" SuffixA="" BothCharset="True">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PVOID" Name="Token" />
+            <Param Type="PCTSTR" Name="Params" />
+            <Param Type="PCTSTR" Name="VarName" />
+            <Param Type="PTSTR" Name="Value" />
+            <Param Type="DWORD" Name="Size" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MapDebugInformation">
+            <Param Type="HANDLE" Name="FileHandle" />
+            <Param Type="PCSTR" Name="FileName" />
+            <Param Type="PCSTR" Name="SymbolPath" />
+            <Param Type="ULONG" Name="ImageBase" />
+            <Return Type="PIMAGE_DEBUG_INFORMATION" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymEnumerateSymbols64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="ULONG64" Name="BaseOfDll" />
+            <Param Type="PSYM_ENUMSYMBOLS_CALLBACK64" Name="EnumSymbolsCallback" />
+            <Param Type="PVOID" Name="UserContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymEnumerateSymbolsW64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="ULONG64" Name="BaseOfDll" />
+            <Param Type="PSYM_ENUMSYMBOLS_CALLBACKW64" Name="EnumSymbolsCallback" />
+            <Param Type="PVOID" Name="UserContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetSymFromAddr64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="DWORD64" Name="Address" />
+            <Param Type="PDWORD64" Name="Displacement" />
+            <Param Type="PIMAGEHLP_SYMBOL64" Name="Symbol" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetSymFromName64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PCSTR" Name="Name" />
+            <Param Type="PIMAGEHLP_SYMBOL64" Name="Symbol" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetSymNext64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PIMAGEHLP_SYMBOL64" Name="Symbol" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SymGetSymPrev64">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PIMAGEHLP_SYMBOL64" Name="Symbol" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="UnmapDebugInformation">
+            <Param Type="PIMAGE_DEBUG_INFORMATION" Name="DebugInfo" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

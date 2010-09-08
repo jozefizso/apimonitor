@@ -1,0 +1,232 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="Userenv.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        <!-- Parameters -->
+        <Variable Name="PGROUP_POLICY_OBJECT"        Type="Alias"        Base="LPVOID" />
+        <Variable Name="PGROUP_POLICY_OBJECT*"       Type="Pointer"        Base="PGROUP_POLICY_OBJECT" />
+        <Variable Name="REFGPEXTENSIONID"            Type="Alias"        Base="GUID*" />
+        <Variable Name="ASYNCCOMPLETIONHANDLE"       Type="Alias"        Base="UINT_PTR" />
+        <Variable Name="PRSOPTOKEN"                  Type="Alias"        Base="LPVOID" />
+        <Variable Name="IWbemServices*"              Type="Alias"        Base="LPVOID" />
+        <Variable Name="IWbemClassObject*"           Type="Alias"        Base="LPVOID" />
+        <Variable Name="POLICYSETTINGSTATUSINFO*"    Type="Alias"        Base="LPVOID" />
+        <Variable Name="LPPROFILEINFO"               Type="Alias"        Base="LPVOID" />
+
+        <!-- Flags -->
+        <Variable Name="[ProfileType]" Type="Alias" Base="DWORD">
+            <Flag>
+                <Set Name="PT_TEMPORARY"        Value="0x00000001" />
+                <Set Name="PT_ROAMING"          Value="0x00000002" />
+                <Set Name="PT_MANDATORY"        Value="0x00000004" />
+            </Flag>
+        </Variable>
+        <Variable Name="[ProfileType*]" Type="Pointer" Base="[ProfileType]" />
+        <!-- Group Policy -->
+        <Category Name="Administration and Management/Group Policy" />
+        <Api Name="EnterCriticalPolicySection">
+            <Param Type="BOOL" Name="bMachine" />
+            <Return Type="HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="FreeGPOList" BothCharset="True">
+            <Param Type="PGROUP_POLICY_OBJECT" Name="pGPOList" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetAppliedGPOList" BothCharset="True">
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="LPCTSTR" Name="pMachineName" />
+            <Param Type="PSID" Name="pSidUser" />
+            <Param Type="GUID*" Name="pGuidExtension" />
+            <Param Type="PGROUP_POLICY_OBJECT*" Name="ppGPOList" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetGPOList" BothCharset="True">
+            <Param Type="HANDLE" Name="hToken" />
+            <Param Type="LPCTSTR" Name="lpName" />
+            <Param Type="LPCTSTR" Name="lpHostName" />
+            <Param Type="LPCTSTR" Name="lpComputerName" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="PGROUP_POLICY_OBJECT*" Name="pGPOList" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="LeaveCriticalPolicySection">
+            <Param Type="HANDLE" Name="hSection" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ProcessGroupPolicyCompleted">
+            <Param Type="REFGPEXTENSIONID" Name="extensionId" />
+            <Param Type="ASYNCCOMPLETIONHANDLE" Name="pAsyncHandle" />
+            <Param Type="DWORD" Name="dwStatus" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ProcessGroupPolicyCompletedEx">
+            <Param Type="REFGPEXTENSIONID" Name="extensionId" />
+            <Param Type="ASYNCCOMPLETIONHANDLE" Name="pAsyncHandle" />
+            <Param Type="DWORD" Name="dwStatus" />
+            <Param Type="HRESULT" Name="RsopStatus" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RefreshPolicy">
+            <Param Type="BOOL" Name="bMachine" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RefreshPolicyEx">
+            <Param Type="BOOL" Name="bMachine" />
+            <Param Type="DWORD" Name="dwOptions" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RegisterGPNotification">
+            <Param Type="HANDLE" Name="hEvent" />
+            <Param Type="BOOL" Name="bMachine" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RsopAccessCheckByType">
+            <Param Type="PSECURITY_DESCRIPTOR" Name="pSecurityDescriptor" />
+            <Param Type="PSID" Name="pPrincipalSelfSid" />
+            <Param Type="PRSOPTOKEN" Name="pRsopToken" />
+            <Param Type="DWORD" Name="dwDesiredAccessMask" />
+            <Param Type="POBJECT_TYPE_LIST" Name="pObjectTypeList" />
+            <Param Type="DWORD" Name="ObjectTypeListLength" />
+            <Param Type="PGENERIC_MAPPING" Name="pGenericMapping" />
+            <Param Type="PPRIVILEGE_SET" Name="pPrivilegeSet" />
+            <Param Type="LPDWORD" Name="pdwPrivilegeSetLength" />
+            <Param Type="LPDWORD" Name="pdwGrantedAccessMask" />
+            <Param Type="LPBOOL" Name="pbAccessStatus" />
+            <Return Type="HRESULT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RsopFileAccessCheck">
+            <Param Type="LPWSTR" Name="pszFileName" />
+            <Param Type="PRSOPTOKEN" Name="pRsopToken" />
+            <Param Type="DWORD" Name="dwDesiredAccessMask" />
+            <Param Type="LPDWORD" Name="pdwGrantedAccessMask" />
+            <Param Type="LPBOOL" Name="pbAccessStatus" />
+            <Return Type="HRESULT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RsopResetPolicySettingStatus">
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="IWbemServices*" Name="pServices" />
+            <Param Type="IWbemClassObject*" Name="pSettingInstance" />
+            <Return Type="HRESULT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RsopSetPolicySettingStatus">
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="IWbemServices*" Name="pServices" />
+            <Param Type="IWbemClassObject*" Name="pSettingInstance" />
+            <Param Type="DWORD" Name="nInfo" />
+            <Param Type="POLICYSETTINGSTATUSINFO*" Name="pStatus" />
+            <Return Type="HRESULT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="UnregisterGPNotification">
+            <Param Type="HANDLE" Name="hEvent" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <!-- Shell -->
+        <Category Name="Windows Environment Development/Windows Shell" />
+        <Api Name="CreateEnvironmentBlock">
+            <Param Type="LPVOID*" Name="lpEnvironment" />
+            <Param Type="HANDLE" Name="hToken" />
+            <Param Type="BOOL" Name="bInherit" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CreateProfile">
+            <Param Type="LPCWSTR" Name="pszUserSid" />
+            <Param Type="LPCWSTR" Name="pszUserName" />
+            <Param Type="LPWSTR" Name="pszProfilePath" />
+            <Param Type="DWORD" Name="cchProfilePath" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CreateUserProfileEx" BothCharset="True" OrdinalA="153" OrdinalW="154">
+            <Param Type="PSID" Name="pSid" />
+            <Param Type="LPCTSTR" Name="lpUserName" />
+            <Param Type="LPCTSTR" Name="lpUserHive" />
+            <Param Type="LPTSTR" Name="lpProfileDir" />
+            <Param Type="DWORD" Name="dwDirSize" />
+            <Param Type="BOOL" Name="bWin9xUpg" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DeleteProfile" BothCharset="True">
+            <Param Type="LPCTSTR" Name="lpSidString" />
+            <Param Type="LPCTSTR" Name="lpProfilePath" />
+            <Param Type="LPCTSTR" Name="lpComputerName" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DestroyEnvironmentBlock">
+            <Param Type="LPVOID" Name="lpEnvironment" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ExpandEnvironmentStringsForUser" BothCharset="True">
+            <Param Type="HANDLE" Name="hToken" />
+            <Param Type="LPCTSTR" Name="lpSrc" />
+            <Param Type="LPTSTR" Name="lpDest" />
+            <Param Type="DWORD" Name="dwSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetAllUsersProfileDirectory" BothCharset="True">
+            <Param Type="LPTSTR" Name="lpProfileDir" />
+            <Param Type="LPDWORD" Name="lpcchSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetDefaultUserProfileDirectory" BothCharset="True">
+            <Param Type="LPTSTR" Name="lpProfileDir" />
+            <Param Type="LPDWORD" Name="lpcchSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetProfilesDirectory" BothCharset="True">
+            <Param Type="LPTSTR" Name="lpProfilesDir" />
+            <Param Type="LPDWORD" Name="lpcchSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetProfileType">
+            <Param Type="[ProfileType*]" Display="DWORD*" Name="pdwFlags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetUserProfileDirectory" BothCharset="True">
+            <Param Type="HANDLE" Name="hToken" />
+            <Param Type="LPTSTR" Name="lpProfileDir" />
+            <Param Type="LPDWORD" Name="lpcchSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="LoadUserProfile" BothCharset="True">
+            <Param Type="HANDLE" Name="hToken" />
+            <Param Type="LPPROFILEINFO" Name="lpProfileInfo" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="UnloadUserProfile">
+            <Param Type="HANDLE" Name="hToken" />
+            <Param Type="HANDLE" Name="hProfile" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

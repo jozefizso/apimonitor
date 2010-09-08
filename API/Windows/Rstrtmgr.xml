@@ -1,0 +1,99 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="Rstrtmgr.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        <!-- Variables -->
+        <Variable Name="RM_FILTER_ACTION" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="RmInvalidFilterAction"   Value="0" />
+                <Set Name="RmNoRestart"             Value="1" />
+                <Set Name="RmNoShutdown"            Value="2" />
+            </Flag>
+        </Variable>
+        <Variable Name="RM_UNIQUE_PROCESS*"          Type="Alias" Base="LPVOID" />
+        <Variable Name="RM_WRITE_STATUS_CALLBACK"    Type="Alias" Base="LPVOID" />
+
+        <!-- Restart Manager -->
+        <Category Name="Administration and Management/Application Installation and Servicing/Restart Manager" />
+        <Api Name="RmAddFilter">
+            <Param Type="DWORD" Name="dwSessionHandle" />
+            <Param Type="LPCWSTR" Name="strFilename" />
+            <Param Type="RM_UNIQUE_PROCESS*" Name="Application" />
+            <Param Type="LPCWSTR" Name="strShortServiceName" />
+            <Param Type="RM_FILTER_ACTION" Name="ActionType" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RmStartSession">
+            <Param Type="DWORD*" Name="pSessionHandle" />
+            <Param Type="DWORD" Name="dwSessionFlags" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RmJoinSession">
+            <Param Type="DWORD*" Name="pSessionHandle" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RmEndSession">
+            <Param Type="DWORD" Name="dwSessionHandle" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RmRegisterResources">
+            <Param Type="DWORD" Name="dwSessionHandle" />
+            <Param Type="UINT" Name="nFiles" />
+            <Param Type="UINT" Name="nApplications" />
+            <Param Type="UINT" Name="nServices" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RmGetList">
+            <Param Type="DWORD" Name="dwSessionHandle" />
+            <Param Type="UINT*" Name="pnProcInfoNeeded" />
+            <Param Type="UINT*" Name="pnProcInfo" />
+            <Param Type="LPDWORD" Name="lpdwRebootReasons" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RmGetFilterList">
+            <Param Type="DWORD" Name="dwSessionHandle" />
+            <Param Type="PBYTE" Name="pbFilterBuf" />
+            <Param Type="DWORD" Name="cbFilterBuf" />
+            <Param Type="LPDWORD" Name="cbFilterBufNeeded" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RmShutdown">
+            <Param Type="DWORD" Name="dwSessionHandle" />
+            <Param Type="ULONG" Name="lActionFlags" />
+            <Param Type="RM_WRITE_STATUS_CALLBACK" Name="fnStatus" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RmRemoveFilter">
+            <Param Type="DWORD" Name="dwSessionHandle" />
+            <Param Type="LPCWSTR" Name="strFilename" />
+            <Param Type="RM_UNIQUE_PROCESS*" Name="Application" />
+            <Param Type="LPCWSTR" Name="strShortServiceName" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RmRestart">
+            <Param Type="DWORD" Name="dwSessionHandle" />
+            <Param Type="DWORD" Name="dwRestartFlags" />
+            <Param Type="RM_WRITE_STATUS_CALLBACK" Name="fnStatus" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RmCancelCurrentTask">
+            <Param Type="DWORD" Name="dwSessionHandle" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

@@ -1,0 +1,153 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="Wer.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        <!-- Variables -->
+        <Variable Name="WER_DUMP_TYPE" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="WerDumpTypeMicroDump"    Value="1" />
+                <Set Name="WerDumpTypeMiniDump"     Value="2" />
+                <Set Name="WerDumpTypeHeapDump"     Value="3" />
+                <Set Name="WerDumpTypeMax"          Value="4" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="WER_FILE_TYPE" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="WerFileTypeMicrodump"        Value="1" />
+                <Set Name="WerFileTypeMinidump"         Value="2" />
+                <Set Name="WerFileTypeHeapdump"         Value="3" />
+                <Set Name="WerFileTypeUserDocument"     Value="4" />
+                <Set Name="WerFileTypeOther"            Value="5" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="WER_REPORT_TYPE" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="WerReportNonCritical"        Value="0" />
+                <Set Name="WerReportCritical"           Value="1" />
+                <Set Name="WerReportApplicationCrash"   Value="2" />
+                <Set Name="WerReportApplicationHang"    Value="3" />
+                <Set Name="WerReportKernel"             Value="4" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="WER_REPORT_UI" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="WerUIAdditionalDataDlgHeader"    Value="1" />
+                <Set Name="WerUIIconFilePath"               Value="2" />
+                <Set Name="WerUIConsentDlgHeader"           Value="3" />
+                <Set Name="WerUIConsentDlgBody"             Value="4" />
+                <Set Name="WerUIOnlineSolutionCheckText"    Value="5" />
+                <Set Name="WerUIOfflineSolutionCheckText"   Value="6" />
+                <Set Name="WerUICloseText"                  Value="7" />
+                <Set Name="WerUICloseDlgHeader"             Value="8" />
+                <Set Name="WerUICloseDlgBody"               Value="9" />
+                <Set Name="WerUICloseDlgButtonText"         Value="10" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="WER_CONSENT" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="WerConsentNotAsked"  Value="1" />
+                <Set Name="WerConsentApproved"  Value="2" />
+                <Set Name="WerConsentDenied"    Value="3" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="WER_SUBMIT_RESULT" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="WerReportQueued"     Value="1" />
+                <Set Name="WerReportUploaded"   Value="2" />
+                <Set Name="WerReportDebug"      Value="3" />
+                <Set Name="WerReportFailed"     Value="4" />
+                <Set Name="WerDisabled"         Value="5" />
+                <Set Name="WerReportCancelled"  Value="6" />
+                <Set Name="WerDisabledQueue"    Value="7" />
+                <Set Name="WerReportAsync"      Value="8" />
+            </Flag>
+        </Variable>
+        <Variable Name="PWER_SUBMIT_RESULT" Type="Pointer" Base="WER_SUBMIT_RESULT" />
+
+        <Variable Name="HREPORT"                        Type="Alias"    Base="HANDLE" />
+        <Variable Name="HREPORT*"                       Type="Pointer"  Base="HREPORT" />
+        <Variable Name="PWER_EXCEPTION_INFORMATION"     Type="Alias"    Base="LPVOID" />
+        <Variable Name="PWER_DUMP_CUSTOM_OPTIONS"       Type="Alias"    Base="LPVOID" />
+        <Variable Name="PWER_REPORT_INFORMATION"        Type="Alias"    Base="LPVOID" />
+
+
+        <!-- Windows Error Reporting -->
+        <Category Name="Diagnostics/Windows Error Reporting" />
+        <Api Name="WerAddExcludedApplication">
+            <Param Type="PCWSTR" Name="pwzExeName" />
+            <Param Type="BOOL" Name="bAllUsers" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WerRemoveExcludedApplication">
+            <Param Type="PCWSTR" Name="pwzExeName" />
+            <Param Type="BOOL" Name="bAllUsers" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WerReportAddDump">
+            <Param Type="HREPORT" Name="hReportHandle" />
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="HANDLE" Name="hThread" />
+            <Param Type="WER_DUMP_TYPE" Name="dumpType" />
+            <Param Type="PWER_EXCEPTION_INFORMATION" Name="pExceptionParam" />
+            <Param Type="PWER_DUMP_CUSTOM_OPTIONS" Name="pDumpCustomOptions" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WerReportAddFile">
+            <Param Type="HREPORT" Name="hReportHandle" />
+            <Param Type="PCWSTR" Name="pwzPath" />
+            <Param Type="WER_FILE_TYPE" Name="repFileType" />
+            <Param Type="DWORD" Name="dwFileFlags" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WerReportCloseHandle">
+            <Param Type="HREPORT" Name="hReportHandle" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WerReportCreate">
+            <Param Type="PCWSTR" Name="pwzEventType" />
+            <Param Type="WER_REPORT_TYPE" Name="repType" />
+            <Param Type="PWER_REPORT_INFORMATION" Name="pReportInformation" />
+            <Param Type="HREPORT*" Name="phReportHandle" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WerReportSetParameter">
+            <Param Type="HREPORT" Name="hReportHandle" />
+            <Param Type="DWORD" Name="dwparamID" />
+            <Param Type="PCWSTR" Name="pwzName" />
+            <Param Type="PCWSTR" Name="pwzValue" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WerReportSetUIOption">
+            <Param Type="HREPORT" Name="hReportHandle" />
+            <Param Type="WER_REPORT_UI" Name="repUITypeID" />
+            <Param Type="PCWSTR" Name="pwzValue" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WerReportSubmit">
+            <Param Type="HREPORT" Name="hReportHandle" />
+            <Param Type="WER_CONSENT" Name="consent" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="PWER_SUBMIT_RESULT" Name="pSubmitResult" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

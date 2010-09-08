@@ -1,0 +1,182 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\cryptography.h.xml" />
+    <Module Name="Cryptxml.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        <!-- Parameters -->
+        <Variable Name="HCRYPTXML"                               Type="Alias" Base="LPVOID" />
+        <Variable Name="HCRYPTXML*"                              Type="Pointer" Base="HCRYPTXML" />
+        <Variable Name="const CRYPT_XML_ALGORITHM*"              Type="Alias" Base="LPVOID" />
+
+        <Variable Name="CRYPT_XML_PROPERTY*"                     Type="Alias" Base="LPVOID" />
+        <Variable Name="const CRYPT_XML_PROPERTY*"               Type="Alias" Base="CRYPT_XML_PROPERTY*" />
+        <Variable Name="const PCRYPT_XML_BLOB"                   Type="Alias" Base="LPVOID" />
+        <Variable Name="CRYPT_XML_OBJECT*"                      Type="Alias" Base="LPVOID" />
+        <Variable Name="const CRYPT_XML_OBJECT**"                Type="Pointer" Base="CRYPT_XML_OBJECT*" />
+        <Variable Name="HXML"                                    Type="Alias" Base="LPVOID" />
+        <Variable Name="CRYPT_XML_DATA_PROVIDER*"                Type="Alias" Base="LPVOID" />
+        <Variable Name="CRYPT_XML_CHARSET"                       Type="Alias" Base="LPVOID" />
+        <Variable Name="PFN_CRYPT_XML_WRITE_CALLBACK"            Type="Alias" Base="LPVOID" />
+        <Variable Name="CRYPT_XML_ALGORITHM_INFO*"              Type="Alias" Base="LPVOID" />
+        <Variable Name="CRYPT_XML_ALGORITHM_INFO**"              Type="Pointer" Base="CRYPT_XML_ALGORITHM_INFO*" />
+
+        <Variable Name="CRYPT_XML_DOC_CTXT*"                    Type="Alias" Base="LPVOID" />
+        <Variable Name="const CRYPT_XML_DOC_CTXT**"              Type="Pointer" Base="CRYPT_XML_DOC_CTXT*" />
+        <Variable Name="CRYPT_XML_REFERENCE*"             Type="Alias" Base="LPVOID" />
+        <Variable Name="const CRYPT_XML_REFERENCE**"             Type="Pointer" Base="CRYPT_XML_REFERENCE*" />
+        <Variable Name="PCRYPT_XML_SIGNATURE*"            Type="Alias" Base="LPVOID" />
+        <Variable Name="const PCRYPT_XML_SIGNATURE**"            Type="Pointer" Base="PCRYPT_XML_SIGNATURE*" />
+        <Variable Name="CRYPT_XML_STATUS*"                       Type="Alias" Base="LPVOID" />
+        <Variable Name="CRYPT_XML_TRANSFORM_CHAIN_CONFIG*"       Type="Alias" Base="LPVOID" />
+        <Variable Name="PCRYPT_XML_TRANSFORM_CHAIN_CONFIG*"     Type="Pointer" Base="CRYPT_XML_TRANSFORM_CHAIN_CONFIG*" />
+        <Variable Name="PCRYPT_XML_TRANSFORM_CHAIN_CONFIG**"     Type="Pointer" Base="PCRYPT_XML_TRANSFORM_CHAIN_CONFIG*" />
+        <Variable Name="CRYPT_XML_KEY_VALUE*"                    Type="Alias" Base="LPVOID" />
+
+
+        <Variable Name="CRYPT_XML_BLOB*"                         Type="Alias" Base="LPVOID" />
+        <Variable Name="const CRYPT_XML_BLOB*"                   Type="Alias" Base="CRYPT_XML_BLOB*" />
+        <Variable Name="CRYPT_XML_KEYINFO_SPEC"                  Type="Alias" Base="LPVOID" />
+
+        <!-- Cryptography -->
+        <Category Name="Security/Cryptography/CryptXML" />
+        <Api Name="CryptXmlCreateReference">
+            <Param Type="HCRYPTXML" Name="hCryptXml" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="LPCWSTR" Name="wszId" />
+            <Param Type="LPCWSTR" Name="wszURI" />
+            <Param Type="LPCWSTR" Name="wszType" />
+            <Param Type="const CRYPT_XML_ALGORITHM*" Name="pDigestMethod" />
+            <Param Type="ULONG" Name="cTransform" />
+            <Param Type="const CRYPT_XML_ALGORITHM*" Name="rgTransform" />
+            <Param Type="HCRYPTXML*" Name="phReference" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CryptXmlAddObject">
+            <Param Type="HCRYPTXML" Name="hSignatureOrObject" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="const CRYPT_XML_PROPERTY*" Name="rgProperty" />
+            <Param Type="ULONG" Name="cProperty" />
+            <Param Type="const PCRYPT_XML_BLOB" Name="pEncoded" />
+            <Param Type="const CRYPT_XML_OBJECT**" Name="ppObject" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CryptXmlClose">
+            <Param Type="HXML" Name="hCryptXml" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CryptXmlDigestReference">
+            <Param Type="HCRYPTXML" Name="hReference" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="CRYPT_XML_DATA_PROVIDER*" Name="pDataProviderIn" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CryptXmlEncode">
+            <Param Type="HCRYPTXML" Name="hCryptXml" />
+            <Param Type="CRYPT_XML_CHARSET" Name="dwCharset" />
+            <Param Type="const CRYPT_XML_PROPERTY*" Name="rgProperty" />
+            <Param Type="ULONG" Name="cProperty" />
+            <Param Type="void*" Name="pvCallbackState" />
+            <Param Type="PFN_CRYPT_XML_WRITE_CALLBACK" Name="pfnWrite" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CryptXmlGetAlgorithmInfo">
+            <Param Type="const CRYPT_XML_ALGORITHM*" Name="pXmlAlgorithm" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="CRYPT_XML_ALGORITHM_INFO**" Name="ppAlgInfo" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CryptXmlGetDocContext">
+            <Param Type="HCRYPTXML" Name="hCryptXml" />
+            <Param Type="const CRYPT_XML_DOC_CTXT**" Name="ppStruct" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CryptXmlGetReference">
+            <Param Type="HCRYPTXML" Name="HCRYPTXML" />
+            <Param Type="const CRYPT_XML_REFERENCE**" Name="ppStruct" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CryptXmlGetSignature">
+            <Param Type="HCRYPTXML" Name="hCryptXml" />
+            <Param Type="const PCRYPT_XML_SIGNATURE**" Name="ppStruct" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CryptXmlGetStatus">
+            <Param Type="HCRYPTXML" Name="hCryptXml" />
+            <Param Type="CRYPT_XML_STATUS*" Name="pStatus" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CryptXmlGetTransforms">
+            <Param Type="PCRYPT_XML_TRANSFORM_CHAIN_CONFIG**" Name="pConfig" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CryptXmlImportPublicKey">
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="CRYPT_XML_KEY_VALUE*" Name="pKeyValue" />
+            <Param Type="BCRYPT_KEY_HANDLE*" Name="phKey" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CryptXmlOpenToEncode">
+            <Param Type="CRYPT_XML_TRANSFORM_CHAIN_CONFIG*" Name="pConfig" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="LPCWSTR" Name="wszId" />
+            <Param Type="CRYPT_XML_PROPERTY*" Name="rgProperty" />
+            <Param Type="ULONG" Name="cProperty" />
+            <Param Type="CRYPT_XML_BLOB*" Name="pEncoded" />
+            <Param Type="HCRYPTXML*" Name="phSignature" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CryptXmlOpenToDecode">
+            <Param Type="CRYPT_XML_TRANSFORM_CHAIN_CONFIG*" Name="pConfig" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="const CRYPT_XML_PROPERTY*" Name="rgProperty" />
+            <Param Type="ULONG" Name="cProperty" />
+            <Param Type="const CRYPT_XML_BLOB*" Name="pEncoded" />
+            <Param Type="HCRYPTXML" Name="phCryptXml" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CryptXmlSetHMACSecret">
+            <Param Type="HCRYPTXML" Name="hSignature" />
+            <Param Type="const BYTE*" Name="pbSecret" />
+            <Param Type="ULONG" Name="cbSecret" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CryptXmlVerifySignature">
+            <Param Type="HCRYPTXML" Name="hSignature" />
+            <Param Type="BCRYPT_KEY_HANDLE" Name="hKey" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CryptXmlSign">
+            <Param Type="HCRYPTXML" Name="hSignature" />
+            <Param Type="HCRYPTPROV_OR_NCRYPT_KEY_HANDLE" Name="hKey" />
+            <Param Type="DWORD" Name="dwKeySpec" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="CRYPT_XML_KEYINFO_SPEC" Name="dwKeyInfoSpec" />
+            <Param Type="const void*" Name="pvKeyInfoSpec" />
+            <Param Type="const CRYPT_XML_ALGORITHM*" Name="pSignatureMethod" />
+            <Param Type="const CRYPT_XML_ALGORITHM*" Name="pCanonicalization" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

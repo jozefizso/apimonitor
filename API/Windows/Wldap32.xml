@@ -1,0 +1,817 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="Wldap32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        <!-- Parameters -->
+        <Variable Name="LDAP*"                   Type="Alias"        Base="LPVOID" />
+        <Variable Name="PLDAP"                   Type="Alias"        Base="LPVOID" />
+
+        <Variable Name="PBERVAL*"                Type="Alias"        Base="LPVOID" />
+        <Variable Name="BERVAL*"                 Type="Alias"        Base="LPVOID" />
+        <Variable Name="const BERVAL*"           Type="Alias"        Base="LPVOID" />
+        <Variable Name="struct berval*"          Type="Alias"        Base="LPVOID" />
+        <Variable Name="struct berval**"         Type="Pointer"        Base="struct berval*" />
+
+        <Variable Name="PLDAPControlA"          Type="Alias"        Base="LPVOID" />
+        <Variable Name="PLDAPControlA*"          Type="Pointer"        Base="PLDAPControlA" />
+
+        <Variable Name="LDAP_TIMEVAL*"           Type="Alias"        Base="LPVOID" />
+        <Variable Name="PLDAPControl"            Type="Alias"        Base="LPVOID" />
+        <Variable Name="PLDAPControl*"           Type="Pointer"        Base="PLDAPControl" />
+
+        <Variable Name="LDAPMessage*"            Type="Alias"        Base="LPVOID" />
+        <Variable Name="LDAPMessage**"           Type="Pointer"        Base="LDAPMessage*" />
+        <Variable Name="PLDAPMessage"            Type="Alias"        Base="LPVOID" />
+
+        <Variable Name="PLDAPSortKey"           Type="Alias"        Base="LPVOID" />
+        <Variable Name="PLDAPSortKey*"           Type="Pointer"        Base="PLDAPSortKey" />
+        <Variable Name="LDAPVLVInfo*"            Type="Alias"        Base="LPVOID" />
+
+        <Variable Name="LDAPControl*"            Type="Alias"        Base="LPVOID" />
+        <Variable Name="LDAPControl**"           Type="Pointer"        Base="LDAPControl*" />
+        <Variable Name="PLDAPControl**"          Type="Pointer"        Base="LDAPControl**" />
+
+        <Variable Name="BerElement*"             Type="Alias"        Base="LPVOID" />
+        <Variable Name="BerElement**"            Type="Pointer"        Base="BerElement*" />
+
+        <Variable Name="PLDAPSearch"             Type="Alias"        Base="LPVOID" />
+        <Variable Name="struct l_timeval*"       Type="Alias"        Base="LPVOID" />
+        <!--
+    Lightweight Directory Access Protocol
+    -->
+        <Category Name="Administration and Management/Directory, Identity, and Access Services/Directory Services/Directory Access Technologies/Lightweight Directory Access Protocol (LDAP)/Starting and Stopping" />
+        <Api Name="cldap_open" BothCharset="True">
+            <Param Type="PCHAR" Name="HostName" />
+            <Param Type="ULONG" Name="PortNumber" />
+            <Return Type="LDAP*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_open" BothCharset="True">
+            <Param Type="PCHAR" Name="HostName" />
+            <Param Type="ULONG" Name="PortNumber" />
+            <Return Type="LDAP*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_bind" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="dn" />
+            <Param Type="PCHAR" Name="cred" />
+            <Param Type="ULONG" Name="method" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_bind_s" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="dn" />
+            <Param Type="PCHAR" Name="cred" />
+            <Param Type="ULONG" Name="method" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_simple_bind" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="dn" />
+            <Param Type="PCHAR" Name="passwd" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_simple_bind_s" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="dn" />
+            <Param Type="PCHAR" Name="passwd" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_sasl_bind" BothCharset="True">
+            <Param Type="LDAP*" Name="ExternalHandle" />
+            <Param Type="const PCHAR" Name="DistName" />
+            <Param Type="const PCHAR" Name="AuthMechanism" />
+            <Param Type="const BERVAL*" Name="cred" />
+            <Param Type="PLDAPControlA*" Name="ServerCtrls" />
+            <Param Type="PLDAPControlA*" Name="ClientCtrls" />
+            <Param Type="int*" Name="MessageNumber" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_sasl_bind_s" BothCharset="True">
+            <Param Type="LDAP*" Name="ExternalHandle" />
+            <Param Type="const PCHAR" Name="DistName" />
+            <Param Type="const PCHAR" Name="AuthMechanism" />
+            <Param Type="const BERVAL*" Name="cred" />
+            <Param Type="PLDAPControlA*" Name="ServerCtrls" />
+            <Param Type="PLDAPControlA*" Name="ClientCtrls" />
+            <Param Type="PBERVAL*" Name="ServerData" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_connect">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="LDAP_TIMEVAL*" Name="timeout" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_init" BothCharset="True">
+            <Param Type="PCHAR" Name="HostName" />
+            <Param Type="ULONG" Name="PortNumber" />
+            <Return Type="LDAP*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_sslinit" BothCharset="True">
+            <Param Type="PCHAR" Name="HostName" />
+            <Param Type="ULONG" Name="PortNumber" />
+            <Param Type="int" Name="secure" />
+            <Return Type="LDAP*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_get_option" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="int" Name="option" />
+            <Param Type="void*" Name="outvalue" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_set_option" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="int" Name="option" />
+            <Param Type="void*" Name="invalue" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_abandon">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="ULONG" Name="msgid" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_unbind">
+            <Param Type="LDAP*" Name="ld" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_unbind_s">
+            <Param Type="LDAP*" Name="ld" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Category Name="Administration and Management/Directory, Identity, and Access Services/Directory Services/Directory Access Technologies/Lightweight Directory Access Protocol (LDAP)/Modifying Directory Entries" />
+        <Api Name="ldap_add" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="dn" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_add_ext" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="dn" />
+            <Param Type="PLDAPControl*" Name="ServerControls" />
+            <Param Type="PLDAPControl*" Name="ClientControls" />
+            <Param Type="ULONG*" Name="MessageNumber" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_add_s" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="dn" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_add_ext_s" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="dn" />
+            <Param Type="PLDAPControl*" Name="ServerControls" />
+            <Param Type="PLDAPControl*" Name="ClientControls" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_compare" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="dn" />
+            <Param Type="PCHAR" Name="attr" />
+            <Param Type="PCHAR" Name="value" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_compare_ext" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="dn" />
+            <Param Type="PCHAR" Name="Attr" />
+            <Param Type="PCHAR" Name="Value" />
+            <Param Type="struct berval*" Name="Data" />
+            <Param Type="PLDAPControl*" Name="ServerControls" />
+            <Param Type="PLDAPControl*" Name="ClientControls" />
+            <Param Type="ULONG*" Name="MessageNumber" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_compare_s" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="dn" />
+            <Param Type="PCHAR" Name="attr" />
+            <Param Type="PCHAR" Name="value" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_compare_ext_s" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="dn" />
+            <Param Type="PCHAR" Name="Attr" />
+            <Param Type="PCHAR" Name="Value" />
+            <Param Type="struct berval*" Name="Data" />
+            <Param Type="PLDAPControl*" Name="ServerControls" />
+            <Param Type="PLDAPControl*" Name="ClientControls" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_delete" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="dn" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_delete_ext" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="dn" />
+            <Param Type="PLDAPControl*" Name="ServerControls" />
+            <Param Type="PLDAPControl*" Name="ClientControls" />
+            <Param Type="ULONG*" Name="MessageNumber" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_delete_s" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="dn" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_delete_ext_s" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="dn" />
+            <Param Type="PLDAPControl*" Name="ServerControls" />
+            <Param Type="PLDAPControl*" Name="ClientControls" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_extended_operation_s" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="Oid" />
+            <Param Type="struct berval*" Name="Data" />
+            <Param Type="PLDAPControl*" Name="ServerControls" />
+            <Param Type="PLDAPControl*" Name="ClientControls" />
+            <Param Type="PCHAR*" Name="ReturnedOid" />
+            <Param Type="struct berval**" Name="ReturnedData" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_extended_operation" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="Oid" />
+            <Param Type="struct berval*" Name="Data" />
+            <Param Type="PLDAPControl*" Name="ServerControls" />
+            <Param Type="PLDAPControl*" Name="ClientControls" />
+            <Param Type="ULONG*" Name="MessageNumber" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_close_extended_op">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="ULONG" Name="MessageNumber" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_modify" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="dn" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_modify_ext" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="dn" />
+            <Param Type="PLDAPControl*" Name="ServerControls" />
+            <Param Type="PLDAPControl*" Name="ClientControls" />
+            <Param Type="ULONG*" Name="MessageNumber" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_modify_s" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="dn" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_modify_ext_s" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="dn" />
+            <Param Type="PLDAPControl*" Name="ServerControls" />
+            <Param Type="PLDAPControl*" Name="ClientControls" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Category Name="Administration and Management/Directory, Identity, and Access Services/Directory Services/Directory Access Technologies/Lightweight Directory Access Protocol (LDAP)/Searching, Sorting, and Result Handling" />
+        <Api Name="ldap_check_filter" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PWCHAR" Name="SearchFilter" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_count_entries">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="LDAPMessage*" Name="res" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_count_references">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="LDAPMessage*" Name="res" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_count_values" BothCharset="True">
+            <Param Type="PCHAR*" Name="vals" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_count_values_len">
+            <Param Type="struct berval**" Name="vals" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_create_page_control" BothCharset="True">
+            <Param Type="PLDAP" Name="ExternalHandle" />
+            <Param Type="ULONG" Name="PageSize" />
+            <Param Type="struct berval*" Name="Cookie" />
+            <Param Type="UCHAR" Name="IsCritical" />
+            <Param Type="PLDAPControl*" Name="Control" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_create_sort_control" BothCharset="True">
+            <Param Type="PLDAP" Name="ExternalHandle" />
+            <Param Type="PLDAPSortKey*" Name="SortKeys" />
+            <Param Type="UCHAR" Name="IsCritical" />
+            <Param Type="PLDAPControl*" Name="Control" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_create_vlv_control" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="LDAPVLVInfo*" Name="Vlvinfop" />
+            <Param Type="char" Name="IsCritical" />
+            <Param Type="LDAPControl**" Name="ctrlp" />
+            <Return Type="INT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_encode_sort_control" BothCharset="True">
+            <Param Type="PLDAP" Name="ExternalHandle" />
+            <Param Type="PLDAPSortKey*" Name="SortKeys" />
+            <Param Type="PLDAPControl" Name="Control" />
+            <Param Type="BOOLEAN" Name="IsCritical" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_escape_filter_element" BothCharset="True">
+            <Param Type="PCHAR" Name="sourceFilterElement" />
+            <Param Type="ULONG" Name="sourceLength" />
+            <Param Type="PCHAR" Name="destFilterElement" />
+            <Param Type="ULONG" Name="destLength" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_first_attribute" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="LDAPMessage*" Name="entry" />
+            <Param Type="BerElement**" Name="ptr" />
+            <Return Type="PCHAR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_next_attribute" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="LDAPMessage*" Name="entry" />
+            <Param Type="BerElement*" Name="ptr" />
+            <Return Type="PCHAR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_first_entry">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="LDAPMessage*" Name="res" />
+            <Return Type="LDAPMessage*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_next_entry">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="LDAPMessage*" Name="entry" />
+            <Return Type="LDAPMessage*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_first_reference">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="LDAPMessage*" Name="res" />
+            <Return Type="LDAPMessage*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_next_reference">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="LDAPMessage*" Name="entry" />
+            <Return Type="LDAPMessage*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_get_next_page">
+            <Param Type="PLDAP" Name="ExternalHandle" />
+            <Param Type="PLDAPSearch" Name="SearchHandle" />
+            <Param Type="ULONG" Name="PageSize" />
+            <Param Type="ULONG*" Name="MessageNumber" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_get_next_page_s">
+            <Param Type="PLDAP" Name="ExternalHandle" />
+            <Param Type="PLDAPSearch" Name="SearchHandle" />
+            <Param Type="struct l_timeval*" Name="timeout" />
+            <Param Type="ULONG" Name="PageSize" />
+            <Param Type="ULONG*" Name="TotalCount" />
+            <Param Type="LDAPMessage**" Name="Results" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_get_paged_count">
+            <Param Type="PLDAP" Name="ExternalHandle" />
+            <Param Type="PLDAPSearch" Name="SearchBlock" />
+            <Param Type="ULONG*" Name="TotalCount" />
+            <Param Type="PLDAPMessage" Name="Results" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_get_values" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="LDAPMessage*" Name="entry" />
+            <Param Type="PCHAR" Name="attr" />
+            <Return Type="PCHAR*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_get_values_len" BothCharset="True">
+            <Param Type="LDAP*" Name="ExternalHandle" />
+            <Param Type="LDAPMessage*" Name="Message" />
+            <Param Type="PCHAR" Name="attr" />
+            <Return Type="struct berval**" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_parse_extended_result" BothCharset="True">
+            <Param Type="LDAP*" Name="Connection" />
+            <Param Type="LDAPMessage*" Name="ResultMessage" />
+            <Param Type="PCHAR*" Name="ResultOID" />
+            <Param Type="struct berval**" Name="ResultData" />
+            <Param Type="BOOLEAN" Name="Freeit" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_parse_page_control" BothCharset="True">
+            <Param Type="PLDAP" Name="ExternalHandle" />
+            <Param Type="PLDAPControl*" Name="ServerControls" />
+            <Param Type="ULONG*" Name="TotalCount" />
+            <Param Type="struct berval**" Name="Cookie" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_parse_reference" BothCharset="True">
+            <Param Type="LDAP*" Name="Connection" />
+            <Param Type="LDAPMessage*" Name="ResultMessage" />
+            <Param Type="PCHAR**" Name="Referrals" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_parse_result" BothCharset="True">
+            <Param Type="LDAP*" Name="Connection" />
+            <Param Type="LDAPMessage*" Name="ResultMessage" />
+            <Param Type="ULONG*" Name="ReturnCode" />
+            <Param Type="PWCHAR*" Name="MatchedDNs" />
+            <Param Type="PWCHAR*" Name="ErrorMessage" />
+            <Param Type="PWCHAR**" Name="Referrals" />
+            <Param Type="PLDAPControl**" Name="ServerControls" />
+            <Param Type="BOOLEAN" Name="Freeit" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_parse_sort_control" BothCharset="True">
+            <Param Type="PLDAP" Name="ExternalHandle" />
+            <Param Type="PLDAPControl*" Name="Control" />
+            <Param Type="ULONG*" Name="Result" />
+            <Param Type="PCHAR*" Name="Attribute" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_parse_vlv_control" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="LDAPControl**" Name="ctrls" />
+            <Param Type="unsigned long*" Name="target_posp" />
+            <Param Type="unsigned long*" Name="list_countp" />
+            <Param Type="struct berval**" Name="contextp" />
+            <Param Type="int*" Name="errcodep" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_result">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="ULONG" Name="msgid" />
+            <Param Type="ULONG" Name="all" />
+            <Param Type="struct l_timeval*" Name="timeout" />
+            <Param Type="LDAPMessage**" Name="res" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_search" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="base" />
+            <Param Type="ULONG" Name="scope" />
+            <Param Type="PCHAR" Name="filter" />
+            <Param Type="ULONG" Name="attrsonly" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_search_s" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="base" />
+            <Param Type="ULONG" Name="scope" />
+            <Param Type="PCHAR" Name="filter" />
+            <Param Type="ULONG" Name="attrsonly" />
+            <Param Type="LDAPMessage**" Name="res" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_search_st" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="base" />
+            <Param Type="ULONG" Name="scope" />
+            <Param Type="PCHAR" Name="filter" />
+            <Param Type="ULONG" Name="attrsonly" />
+            <Param Type="struct l_timeval*" Name="timeout" />
+            <Param Type="LDAPMessage**" Name="res" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_search_ext" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="base" />
+            <Param Type="ULONG" Name="scope" />
+            <Param Type="PCHAR" Name="filter" />
+            <Param Type="ULONG" Name="attrsonly" />
+            <Param Type="PLDAPControl*" Name="ServerControls" />
+            <Param Type="PLDAPControl*" Name="ClientControls" />
+            <Param Type="ULONG" Name="TimeLimit" />
+            <Param Type="ULONG" Name="SizeLimit" />
+            <Param Type="ULONG*" Name="MessageNumber" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_search_ext_s" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PCHAR" Name="base" />
+            <Param Type="ULONG" Name="scope" />
+            <Param Type="PCHAR" Name="filter" />
+            <Param Type="ULONG" Name="attrsonly" />
+            <Param Type="PLDAPControl*" Name="ServerControls" />
+            <Param Type="PLDAPControl*" Name="ClientControls" />
+            <Param Type="struct l_timeval*" Name="timeout" />
+            <Param Type="ULONG" Name="SizeLimit" />
+            <Param Type="LDAPMessage**" Name="res" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_search_init_page" BothCharset="True">
+            <Param Type="PLDAP" Name="ExternalHandle" />
+            <Param Type="PCHAR" Name="DistinguishedName" />
+            <Param Type="ULONG" Name="ScopeOfSearch" />
+            <Param Type="PCHAR" Name="SearchFilter" />
+            <Param Type="ULONG" Name="AttributesOnly" />
+            <Param Type="PLDAPControl*" Name="ServerControls" />
+            <Param Type="PLDAPControl*" Name="ClientControls" />
+            <Param Type="ULONG" Name="PageTimeLimit" />
+            <Param Type="ULONG" Name="TotalSizeLimit" />
+            <Param Type="PLDAPSortKey*" Name="SortKeys" />
+            <Return Type="PLDAPSearch" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_search_abandon_page">
+            <Param Type="PLDAP" Name="ExternalHandle" />
+            <Param Type="PLDAPSearch" Name="SearchBlock" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Category Name="Administration and Management/Directory, Identity, and Access Services/Directory Services/Directory Access Technologies/Lightweight Directory Access Protocol (LDAP)/Error Handling" />
+        <Api Name="ldap_err2string" BothCharset="True">
+            <Param Type="ULONG" Name="err" />
+            <Return Type="PCHAR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="LdapGetLastError">
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="LdapMapErrorToWin32">
+            <Param Type="ULONG" Name="LdapError" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_result2error">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="LDAPMessage*" Name="res" />
+            <Param Type="ULONG" Name="freeit" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Category Name="Administration and Management/Directory, Identity, and Access Services/Directory Services/Directory Access Technologies/Lightweight Directory Access Protocol (LDAP)/Memory Management" />
+        <Api Name="ldap_control_free" BothCharset="True">
+            <Param Type="LDAPControl*" Name="Control" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_controls_free" BothCharset="True">
+            <Param Type="LDAPControl**" Name="Controls" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_memfree" BothCharset="True">
+            <Param Type="PCHAR" Name="Block" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="ldap_msgfree">
+            <Param Type="LDAPMessage*" Name="res" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_value_free" BothCharset="True">
+            <Param Type="PCHAR*" Name="vals" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_value_free_len">
+            <Param Type="struct berval**" Name="vals" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Category Name="Administration and Management/Directory, Identity, and Access Services/Directory Services/Directory Access Technologies/Lightweight Directory Access Protocol (LDAP)/Miscellaneous" />
+        <Api Name="ldap_dn2ufn" BothCharset="True">
+            <Param Type="PCHAR" Name="dn" />
+            <Return Type="PCHAR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_ufn2dn" BothCharset="True">
+            <Param Type="PCHAR" Name="ufn" />
+            <Param Type="PCHAR*" Name="pDn" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_explode_dn" BothCharset="True">
+            <Param Type="PCHAR" Name="dn" />
+            <Param Type="ULONG" Name="notypes" />
+            <Return Type="PCHAR*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_get_dn" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="LDAPMessage*" Name="entry" />
+            <Return Type="PCHAR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_conn_from_msg">
+            <Param Type="LDAP*" Name="PrimaryConn" />
+            <Param Type="LDAPMessage*" Name="res" />
+            <Return Type="LDAP*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_modrdn2" BothCharset="True">
+            <Param Type="LDAP*" Name="ExternalHandle" />
+            <Param Type="PCHAR" Name="DistinguishedName" />
+            <Param Type="PCHAR" Name="NewDistinguishedName" />
+            <Param Type="INT" Name="DeleteOldRdn" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_modrdn2_s" BothCharset="True">
+            <Param Type="LDAP*" Name="ExternalHandle" />
+            <Param Type="PCHAR" Name="DistinguishedName" />
+            <Param Type="PCHAR" Name="NewDistinguishedName" />
+            <Param Type="INT" Name="DeleteOldRdn" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_rename_ext" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PWCHAR" Name="dn" />
+            <Param Type="PWCHAR" Name="NewRDN" />
+            <Param Type="PWCHAR" Name="NewParent" />
+            <Param Type="INT" Name="DeleteOldRdn" />
+            <Param Type="PLDAPControl*" Name="ServerControls" />
+            <Param Type="PLDAPControl*" Name="ClientControls" />
+            <Param Type="ULONG*" Name="MessageNumber" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ldap_rename_ext_s" BothCharset="True">
+            <Param Type="LDAP*" Name="ld" />
+            <Param Type="PWCHAR" Name="dn" />
+            <Param Type="PWCHAR" Name="NewRDN" />
+            <Param Type="PWCHAR" Name="NewParent" />
+            <Param Type="INT" Name="DeleteOldRdn" />
+            <Param Type="PLDAPControl*" Name="ServerControls" />
+            <Param Type="PLDAPControl*" Name="ClientControls" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="LdapUnicodeToUTF8">
+            <Param Type="LPCWSTR" Name="lpSrcStr" />
+            <Param Type="int" Name="cchSrc" />
+            <Param Type="LPSTR" Name="lpDestStr" />
+            <Param Type="int" Name="cchDest" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="LdapUTF8ToUnicode">
+            <Param Type="LPCSTR" Name="lpSrcStr" />
+            <Param Type="int" Name="cchSrc" />
+            <Param Type="LPWSTR" Name="lpDestStr" />
+            <Param Type="int" Name="cchDest" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ber_init">
+            <Param Type="BERVAL*" Name="pBerVal" />
+            <Return Type="BerElement*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ber_free">
+            <Param Type="BerElement*" Name="pBerElement" />
+            <Param Type="INT" Name="fbuf" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="ber_bvfree">
+            <Param Type="BERVAL*" Name="pBerVal" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="ber_bvecfree">
+            <Param Type="PBERVAL*" Name="pBerVal" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="ber_bvdup">
+            <Param Type="BERVAL*" Name="pBerVal" />
+            <Return Type="BERVAL*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ber_alloc_t">
+            <Param Type="INT" Name="options" />
+            <Return Type="BerElement*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ber_skip_tag">
+            <Param Type="BerElement*" Name="pBerElement" />
+            <Param Type="ULONG*" Name="pLen" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ber_peek_tag">
+            <Param Type="BerElement*" Name="pBerElement" />
+            <Param Type="ULONG*" Name="pLen" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ber_first_element">
+            <Param Type="BerElement*" Name="pBerElement" />
+            <Param Type="ULONG*" Name="pLen" />
+            <Param Type="CHAR**" Name="ppOpaque" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ber_next_element">
+            <Param Type="BerElement*" Name="pBerElement" />
+            <Param Type="ULONG*" Name="pLen" />
+            <Param Type="CHAR*" Name="opaque" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ber_flatten">
+            <Param Type="BerElement*" Name="pBerElement" />
+            <Param Type="PBERVAL*" Name="pBerVal" />
+            <Return Type="INT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <!-- Variable Arguments NOT Supported
+    <Api Name="ber_printf">
+        <Param Type="BerElement*" Name="pBerElement" />
+        <Param Type="PCHAR" Name="fmt" />
+        <Param Type="..." />
+        <Return Type="INT" />
+        <Success Return="NotEqual" Value="0" />
+    </Api>
+    <Api Name="ber_scanf">
+        <Param Type="BerElement*" Name="pBerElement" />
+        <Param Type="PCHAR" Name="fmt" />
+        <Param Type="..." />
+        <Return Type="INT" />
+        <Success Return="NotEqual" Value="0" />
+    </Api>
+    -->
+    </Module>
+</ApiMonitor>

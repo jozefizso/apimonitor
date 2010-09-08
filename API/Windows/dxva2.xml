@@ -1,0 +1,295 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="dxva2.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+
+        <Variable Name="IDirect3DDevice9" Type="Interface" />
+
+        <!-- Variables -->
+        <Variable Name="MC_COLOR_TEMPERATURE" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="MC_COLOR_TEMPERATURE_UNKNOWN"    Value="0" />
+                <Set Name="MC_COLOR_TEMPERATURE_4000K"      Value="1" />
+                <Set Name="MC_COLOR_TEMPERATURE_5000K"      Value="2" />
+                <Set Name="MC_COLOR_TEMPERATURE_6500K"      Value="3" />
+                <Set Name="MC_COLOR_TEMPERATURE_7500K"      Value="4" />
+                <Set Name="MC_COLOR_TEMPERATURE_8200K"      Value="5" />
+                <Set Name="MC_COLOR_TEMPERATURE_9300K"      Value="6" />
+                <Set Name="MC_COLOR_TEMPERATURE_10000K"     Value="7" />
+                <Set Name="MC_COLOR_TEMPERATURE_11500K"     Value="8" />
+            </Flag>
+        </Variable>
+        <Variable Name="LPMC_COLOR_TEMPERATURE" Type="Pointer" Base="MC_COLOR_TEMPERATURE" />
+        <Variable Name="MC_POSITION_TYPE" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="MC_HORIZONTAL_POSITION"      Value="0" />
+                <Set Name="MC_VERTICAL_POSITION"        Value="1" />
+            </Flag>
+        </Variable>
+        <Variable Name="MC_SIZE_TYPE" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="MC_WIDTH"        Value="0" />
+                <Set Name="MC_HEIGHT"       Value="1" />
+            </Flag>
+        </Variable>
+        <Variable Name="MC_DRIVE_TYPE" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="MC_RED_DRIVE"    Value="0" />
+                <Set Name="MC_GREEN_DRIVE"  Value="1" />
+                <Set Name="MC_BLUE_DRIVE"   Value="2" />
+            </Flag>
+        </Variable>
+        <Variable Name="MC_GAIN_TYPE" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="MC_RED_GAIN"     Value="0" />
+                <Set Name="MC_GREEN_GAIN"   Value="1" />
+                <Set Name="MC_BLUE_GAIN"    Value="2" />
+            </Flag>
+        </Variable>
+        <Variable Name="MC_DISPLAY_TECHNOLOGY_TYPE" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="MC_SHADOW_MASK_CATHODE_RAY_TUBE"     Value="0" />
+                <Set Name="MC_APERTURE_GRILL_CATHODE_RAY_TUBE"  Value="1" />
+                <Set Name="MC_THIN_FILM_TRANSISTOR"             Value="2" />
+                <Set Name="MC_LIQUID_CRYSTAL_ON_SILICON"        Value="3" />
+                <Set Name="MC_PLASMA"                           Value="4" />
+                <Set Name="MC_ORGANIC_LIGHT_EMITTING_DIODE"     Value="5" />
+                <Set Name="MC_ELECTROLUMINESCENT"               Value="6" />
+                <Set Name="MC_MICROELECTROMECHANICAL"           Value="7" />
+                <Set Name="MC_FIELD_EMISSION_DEVICE"            Value="8" />
+            </Flag>
+        </Variable>
+        <Variable Name="LPMC_DISPLAY_TECHNOLOGY_TYPE"    Type="Pointer" Base="MC_DISPLAY_TECHNOLOGY_TYPE" />
+        <Variable Name="MC_VCP_CODE_TYPE" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="MC_MOMENTARY"        Value="0" />
+                <Set Name="MC_SET_PARAMETER"    Value="1" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="LPMC_TIMING_REPORT"              Type="Alias" Base="LPVOID" />
+        <Variable Name="LPMC_VCP_CODE_TYPE"              Type="Pointer" Base="MC_VCP_CODE_TYPE" />
+        <Variable Name="LPPHYSICAL_MONITOR"              Type="Alias" Base="LPVOID" />
+
+        <!-- Api's -->
+        <Category Name="Monitor Configuration" />
+        <Api Name="DegaussMonitor">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetMonitorBrightness">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Param Type="LPDWORD" Name="pdwMinimumBrightness" />
+            <Param Type="LPDWORD" Name="pdwCurrentBrightness" />
+            <Param Type="LPDWORD" Name="pdwMaximumBrightness" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetMonitorCapabilities">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Param Type="LPDWORD" Name="pdwMonitorCapabilities" />
+            <Param Type="LPDWORD" Name="pdwSupportedColorTemperatures" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetMonitorColorTemperature">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Param Type="LPMC_COLOR_TEMPERATURE" Name="pctCurrentColorTemperature" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetMonitorContrast">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Param Type="LPDWORD" Name="pdwMinimumContrast" />
+            <Param Type="LPDWORD" Name="pdwCurrentContrast" />
+            <Param Type="LPDWORD" Name="pdwMaximumContrast" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetMonitorDisplayAreaPosition">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Param Type="MC_POSITION_TYPE" Name="ptPositionType" />
+            <Param Type="LPDWORD" Name="pdwMinimumPosition" />
+            <Param Type="LPDWORD" Name="pdwCurrentPosition" />
+            <Param Type="LPDWORD" Name="pdwMaximumPosition" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetMonitorDisplayAreaSize">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Param Type="MC_SIZE_TYPE" Name="stSizeType" />
+            <Param Type="LPDWORD" Name="pdwMinimumWidthOrHeight" />
+            <Param Type="LPDWORD" Name="pdwCurrentWidthOrHeight" />
+            <Param Type="LPDWORD" Name="pdwMaximumWidthOrHeight" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetMonitorRedGreenOrBlueDrive">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Param Type="MC_DRIVE_TYPE" Name="dtDriveType" />
+            <Param Type="LPDWORD" Name="pdwMinimumDrive" />
+            <Param Type="LPDWORD" Name="pdwCurrentDrive" />
+            <Param Type="LPDWORD" Name="pdwMaximumDrive" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetMonitorRedGreenOrBlueGain">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Param Type="MC_GAIN_TYPE" Name="gtGainType" />
+            <Param Type="LPDWORD" Name="pdwMinimumGain" />
+            <Param Type="LPDWORD" Name="pdwCurrentGain" />
+            <Param Type="LPDWORD" Name="pdwMaximumGain" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetMonitorTechnologyType">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Param Type="LPMC_DISPLAY_TECHNOLOGY_TYPE" Name="pdtyDisplayTechnologyType" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RestoreMonitorFactoryColorDefaults">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RestoreMonitorFactoryDefaults">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SaveCurrentMonitorSettings">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetMonitorBrightness">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Param Type="DWORD" Name="dwNewBrightness" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetMonitorColorTemperature">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Param Type="MC_COLOR_TEMPERATURE" Name="ctCurrentColorTemperature" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetMonitorContrast">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Param Type="DWORD" Name="dwNewContrast" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetMonitorDisplayAreaPosition">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Param Type="MC_POSITION_TYPE" Name="ptPositionType" />
+            <Param Type="DWORD" Name="dwNewPosition" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetMonitorDisplayAreaSize">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Param Type="MC_SIZE_TYPE" Name="stSizeType" />
+            <Param Type="DWORD" Name="dwNewDisplayAreaWidthOrHeight" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetMonitorRedGreenOrBlueDrive">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Param Type="MC_DRIVE_TYPE" Name="dtDriveType" />
+            <Param Type="DWORD" Name="dwNewDrive" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetMonitorRedGreenOrBlueGain">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Param Type="MC_GAIN_TYPE" Name="gtGainType" />
+            <Param Type="DWORD" Name="dwNewGain" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CapabilitiesRequestAndCapabilitiesReply">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Param Type="LPSTR" Name="pszASCIICapabilitiesString" />
+            <Param Type="DWORD" Name="dwCapabilitiesStringLengthInCharacters" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetCapabilitiesStringLength">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Param Type="LPDWORD" Name="pdwCapabilitiesStringLengthInCharacters" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetTimingReport">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Param Type="LPMC_TIMING_REPORT" Name="pmtrMonitorTimingReport" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetVCPFeatureAndVCPFeatureReply">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Param Type="BYTE" Name="bVCPCode" />
+            <Param Type="LPMC_VCP_CODE_TYPE" Name="pvct" />
+            <Param Type="LPDWORD" Name="pdwCurrentValue" />
+            <Param Type="LPDWORD" Name="pdwMaximumValue" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SaveCurrentSettings">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetVCPFeature">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Param Type="BYTE" Name="bVCPCode" />
+            <Param Type="DWORD" Name="dwNewValue" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DestroyPhysicalMonitor">
+            <Param Type="HANDLE" Name="hMonitor" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DestroyPhysicalMonitors">
+            <Param Type="DWORD" Name="dwPhysicalMonitorArraySize" />
+            <Param Type="LPPHYSICAL_MONITOR" Name="pPhysicalMonitorArray" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetNumberOfPhysicalMonitorsFromHMONITOR">
+            <Param Type="HMONITOR" Name="hMonitor" />
+            <Param Type="LPDWORD" Name="pdwNumberOfPhysicalMonitors" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetNumberOfPhysicalMonitorsFromIDirect3DDevice9">
+            <Param Type="IDirect3DDevice9*" Name="pDirect3DDevice9" />
+            <Param Type="LPDWORD" Name="pdwNumberOfPhysicalMonitors" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetPhysicalMonitorsFromHMONITOR">
+            <Param Type="HMONITOR" Name="hMonitor" />
+            <Param Type="DWORD" Name="dwPhysicalMonitorArraySize" />
+            <Param Type="LPPHYSICAL_MONITOR" Name="pPhysicalMonitorArray" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetPhysicalMonitorsFromIDirect3DDevice9">
+            <Param Type="IDirect3DDevice9*" Name="pDirect3DDevice9" />
+            <Param Type="DWORD" Name="dwPhysicalMonitorArraySize" />
+            <Param Type="LPPHYSICAL_MONITOR" Name="pPhysicalMonitorArray" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

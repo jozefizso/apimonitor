@@ -1,0 +1,147 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="Ntdsbcli.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
+        <!-- Parameters -->
+        <Variable Name="HBC"     Type="Alias"        Base="LPVOID" />
+        <Variable Name="HBC*"    Type="Pointer"      Base="HBC" />
+
+        <!-- Flags -->
+        <Variable Name="[NtdsBackupType]" Type="Alias" Base="ULONG">
+            <Flag>
+                <Set Name="BACKUP_TYPE_FULL"        Value="0x01" />
+                <Set Name="BACKUP_TYPE_LOGS_ONLY"   Value="0x02" />
+                <Set Name="BACKUP_TYPE_INCREMENTAL" Value="0x04" />
+            </Flag>
+        </Variable>
+        <Variable Name="[NtdsRestoreType]" Type="Alias" Base="ULONG">
+            <Flag>
+                <Set Name="RESTORE_TYPE_AUTHORATATIVE"  Value="0x01" />
+                <Set Name="RESTORE_TYPE_ONLINE"         Value="0x02" />
+                <Set Name="RESTORE_TYPE_CATCHUP"        Value="0x04" />
+            </Flag>
+        </Variable>
+        <!-- Active Directory Domain Services -->
+        <Category Name="Administration and Management/Directory, Identity, and Access Services/Directory Services/Directories/Active Directory Domain Services/Directory Backup" />
+        <Api Name="DsBackupClose">
+            <Param Type="HBC" Name="hbc" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="DsBackupEnd">
+            <Param Type="HBC" Name="hbc" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="DsBackupFree">
+            <Param Type="PVOID" Name="pvBuffer" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="DsBackupGetBackupLogs" BothCharset="True">
+            <Param Type="HBC" Name="hbc" />
+            <Param Type="LPTSTR*" Name="pszBackupLogFiles" />
+            <Param Type="LPDWORD" Name="pcbSize" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="DsBackupGetDatabaseNames" BothCharset="True">
+            <Param Type="HBC" Name="hbc" />
+            <Param Type="LPTSTR*" Name="pszAttachmentInfo" />
+            <Param Type="LPDWORD" Name="pcbSize" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="DsBackupOpenFile" BothCharset="True">
+            <Param Type="HBC" Name="hbc" />
+            <Param Type="LPCTSTR" Name="szAttachmentName" />
+            <Param Type="DWORD" Name="cbReadHintSize" />
+            <Param Type="LARGE_INTEGER*" Name="pliFileSize" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="DsBackupPrepare" BothCharset="True">
+            <Param Type="LPCTSTR" Name="szBackupServer" />
+            <Param Type="ULONG" Name="grbit" />
+            <Param Type="[NtdsBackupType]" Display="ULONG" Name="btBackupType" />
+            <Param Type="PVOID*" Name="ppvExpiryToken" />
+            <Param Type="LPDWORD" Name="pcbExpiryTokenSize" />
+            <Param Type="HBC*" Name="phbc" />
+            <Return Type="HRESULT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsBackupRead">
+            <Param Type="HBC" Name="hbc" />
+            <Param Type="PVOID" Name="pvBuffer" PostLength="pcbRead" />
+            <Param Type="DWORD" Name="cbBuffer" />
+            <Param Type="PDWORD" Name="pcbRead" />
+            <Return Type="HRESULT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsBackupTruncateLogs">
+            <Param Type="HBC" Name="hbc" />
+            <Return Type="HRESULT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsIsNTDSOnline" BothCharset="True">
+            <Param Type="LPCTSTR" Name="szServerName" />
+            <Param Type="BOOL*" Name="pfNTDSOnline" />
+            <Return Type="HRESULT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsRestoreEnd">
+            <Param Type="HBC" Name="hbc" />
+            <Return Type="HRESULT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsRestoreGetDatabaseLocations" BothCharset="True">
+            <Param Type="HBC" Name="hbc" />
+            <Param Type="LPWSTR*" Name="pszDatabaseLocationList" />
+            <Param Type="LPDWORD" Name="pcbSize" />
+            <Return Type="HRESULT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsRestorePrepare" BothCharset="True">
+            <Param Type="LPCWSTR" Name="szServerName" />
+            <Param Type="[NtdsRestoreType]" Display="ULONG" Name="rtFlag" />
+            <Param Type="PVOID" Name="pvExpiryToken" Length="cbExpiryTokenSize" />
+            <Param Type="DWORD" Name="cbExpiryTokenSize" />
+            <Param Type="HBC*" Name="phbc" />
+            <Return Type="HRESULT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsRestoreRegister" BothCharset="True">
+            <Param Type="HBC" Name="hbc" />
+            <Param Type="LPCTSTR" Name="szCheckPointFilePath" />
+            <Param Type="LPCTSTR" Name="szLogPath" />
+            <Param Type="LONG" Name="crstmap" />
+            <Param Type="LPCTSTR" Name="szBackupLogPath" />
+            <Param Type="ULONG" Name="genLow" />
+            <Param Type="ULONG" Name="genHigh" />
+            <Return Type="HRESULT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsRestoreRegisterComplete">
+            <Param Type="HBC" Name="hbc" />
+            <Param Type="HRESULT" Name="hrRestoreState" />
+            <Return Type="HRESULT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsSetAuthIdentity" BothCharset="True">
+            <Param Type="LPCTSTR" Name="szUserName" />
+            <Param Type="LPCTSTR" Name="szDomainName" />
+            <Param Type="LPCTSTR" Name="szPassword" />
+            <Return Type="HRESULT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DsSetCurrentBackupLog" BothCharset="True">
+            <Param Type="LPCWSTR" Name="szServerName" />
+            <Param Type="DWORD" Name="dwCurrentLog" />
+            <Return Type="HRESULT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

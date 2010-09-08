@@ -1,0 +1,171 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="Wecapi.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        <!-- Variables -->
+        <Variable Name="EC_SUBSCRIPTION_PROPERTY_ID" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="EcSubscriptionEnabled"                       Value="0" />
+                <Set Name="EcSubscriptionEventSources"                  Value="1" />
+                <Set Name="EcSubscriptionEventSourceAddress"            Value="2" />
+                <Set Name="EcSubscriptionEventSourceEnabled"            Value="3" />
+                <Set Name="EcSubscriptionEventSourceUserName"           Value="4" />
+                <Set Name="EcSubscriptionEventSourcePassword"           Value="5" />
+                <Set Name="EcSubscriptionDescription"                   Value="6" />
+                <Set Name="EcSubscriptionURI"                           Value="7" />
+                <Set Name="EcSubscriptionConfigurationMode"             Value="8" />
+                <Set Name="EcSubscriptionExpires"                       Value="9" />
+                <Set Name="EcSubscriptionQuery"                         Value="10" />
+                <Set Name="EcSubscriptionTransportName"                 Value="11" />
+                <Set Name="EcSubscriptionTransportPort"                 Value="12" />
+                <Set Name="EcSubscriptionDeliveryMode"                  Value="13" />
+                <Set Name="EcSubscriptionDeliveryMaxItems"              Value="14" />
+                <Set Name="EcSubscriptionDeliveryMaxLatencyTime"        Value="15" />
+                <Set Name="EcSubscriptionHeartbeatInterval"             Value="16" />
+                <Set Name="EcSubscriptionLocale"                        Value="17" />
+                <Set Name="EcSubscriptionContentFormat"                 Value="18" />
+                <Set Name="EcSubscriptionLogFile"                       Value="19" />
+                <Set Name="EcSubscriptionPublisherName"                 Value="20" />
+                <Set Name="EcSubscriptionCredentialsType"               Value="21" />
+                <Set Name="EcSubscriptionCommonUserName"                Value="22" />
+                <Set Name="EcSubscriptionCommonPassword"                Value="23" />
+                <Set Name="EcSubscriptionHostName"                      Value="24" />
+                <Set Name="EcSubscriptionReadExistingEvents"            Value="25" />
+                <Set Name="EcSubscriptionDialect"                       Value="26" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="EC_SUBSCRIPTION_RUNTIME_STATUS_INFO_ID" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="EcSubscriptionRunTimeStatusActive"           Value="0" />
+                <Set Name="EcSubscriptionRunTimeStatusLastError"        Value="1" />
+                <Set Name="EcSubscriptionRunTimeStatusLastErrorMessage" Value="2" />
+                <Set Name="EcSubscriptionRunTimeStatusLastErrorTime"    Value="3" />
+                <Set Name="EcSubscriptionRunTimeStatusNextRetryTime"    Value="4" />
+                <Set Name="EcSubscriptionRunTimeStatusInfoIdEND"        Value="5" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="EC_HANDLE"                          Type="Alias"    Base="HANDLE" />
+        <Variable Name="EC_OBJECT_ARRAY_PROPERTY_HANDLE"    Type="Alias"    Base="HANDLE" />
+        <Variable Name="PEC_VARIANT"                        Type="Alias"    Base="LPVOID" />
+
+        <!-- Windows Event Collector -->
+        <Category Name="Diagnostics/Windows Events/Windows Event Collector" />
+        <Api Name="EcClose">
+            <Param Type="EC_HANDLE" Name="Object" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="EcDeleteSubscription">
+            <Param Type="LPCWSTR" Name="SubscriptionName" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="EcEnumNextSubscription">
+            <Param Type="EC_HANDLE" Name="SubscriptionEnum" />
+            <Param Type="DWORD" Name="SubscriptionNameBufferSize" />
+            <Param Type="LPWSTR" Name="SubscriptionNameBuffer" />
+            <Param Type="PDWORD" Name="SubscriptionNameBufferUsed" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="EcGetObjectArrayProperty">
+            <Param Type="EC_OBJECT_ARRAY_PROPERTY_HANDLE" Name="ObjectArray" />
+            <Param Type="EC_SUBSCRIPTION_PROPERTY_ID" Name="PropertyId" />
+            <Param Type="DWORD" Name="ArrayIndex" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="DWORD" Name="PropertyValueBufferSize" />
+            <Param Type="PEC_VARIANT" Name="PropertyValueBuffer" />
+            <Param Type="PDWORD" Name="PropertyValueBufferUsed" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="EcGetObjectArraySize">
+            <Param Type="EC_OBJECT_ARRAY_PROPERTY_HANDLE" Name="ObjectArray" />
+            <Param Type="PDWORD" Name="ObjectArraySize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="EcGetSubscriptionProperty">
+            <Param Type="EC_HANDLE" Name="Subscription" />
+            <Param Type="EC_SUBSCRIPTION_PROPERTY_ID" Name="PropertyId" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="DWORD" Name="PropertyValueBufferSize" />
+            <Param Type="PEC_VARIANT" Name="PropertyValueBuffer" />
+            <Param Type="PDWORD" Name="PropertyValueBufferUsed" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="EcGetSubscriptionRunTimeStatus">
+            <Param Type="LPCWSTR" Name="SubscriptionName" />
+            <Param Type="EC_SUBSCRIPTION_RUNTIME_STATUS_INFO_ID" Name="StatusInfoId" />
+            <Param Type="LPCWSTR" Name="EventSourceName" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="DWORD" Name="StatusValueBufferSize" />
+            <Param Type="PEC_VARIANT" Name="StatusValueBuffer" />
+            <Param Type="PDWORD" Name="StatusValueBufferUsed" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="EcInsertObjectArrayElement">
+            <Param Type="EC_OBJECT_ARRAY_PROPERTY_HANDLE" Name="ObjectArray" />
+            <Param Type="DWORD" Name="ArrayIndex" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="EcOpenSubscriptionEnum">
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="EC_HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="EcOpenSubscription">
+            <Param Type="LPCWSTR" Name="SubscriptionName" />
+            <Param Type="DWORD" Name="AccessMask" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="EC_HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="EcSaveSubscription">
+            <Param Type="EC_HANDLE" Name="Subscription" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="EcSetObjectArrayProperty">
+            <Param Type="EC_OBJECT_ARRAY_PROPERTY_HANDLE" Name="ObjectArray" />
+            <Param Type="EC_SUBSCRIPTION_PROPERTY_ID" Name="PropertyId" />
+            <Param Type="DWORD" Name="ArrayIndex" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="PEC_VARIANT" Name="PropertyValue" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="EcSetSubscriptionProperty">
+            <Param Type="EC_HANDLE" Name="Subscription" />
+            <Param Type="EC_SUBSCRIPTION_PROPERTY_ID" Name="PropertyId" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="PEC_VARIANT" Name="PropertyValue" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="EcRemoveObjectArrayElement">
+            <Param Type="EC_OBJECT_ARRAY_PROPERTY_HANDLE" Name="ObjectArray" />
+            <Param Type="DWORD" Name="ArrayIndex" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="EcRetrySubscription">
+            <Param Type="LPCWSTR" Name="SubscriptionName" />
+            <Param Type="LPCWSTR" Name="EventSourceName" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

@@ -1,0 +1,83 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="Wdsmc.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        <!-- Variables -->
+        <Variable Name="TRANSPORTPROVIDER_CALLBACK_ID" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="WDS_TRANSPORTPROVIDER_CREATE_INSTANCE"           Value="0"/>
+                <Set Name="WDS_TRANSPORTPROVIDER_COMPARE_CONTENT"           Value="1"/>
+                <Set Name="WDS_TRANSPORTPROVIDER_OPEN_CONTENT"              Value="2"/>
+                <Set Name="WDS_TRANSPORTPROVIDER_USER_ACCESS_CHECK"         Value="3"/>
+                <Set Name="WDS_TRANSPORTPROVIDER_GET_CONTENT_SIZE"          Value="4"/>
+                <Set Name="WDS_TRANSPORTPROVIDER_READ_CONTENT"              Value="5"/>
+                <Set Name="WDS_TRANSPORTPROVIDER_CLOSE_CONTENT"             Value="6"/>
+                <Set Name="WDS_TRANSPORTPROVIDER_CLOSE_INSTANCE"            Value="7"/>
+                <Set Name="WDS_TRANSPORTPROVIDER_SHUTDOWN"                  Value="8"/>
+                <Set Name="WDS_TRANSPORTPROVIDER_DUMP_STATE"                Value="9"/>
+                <Set Name="WDS_TRANSPORTPROVIDER_REFRESH_SETTINGS"          Value="10"/>
+                <Set Name="WDS_TRANSPORTPROVIDER_GET_CONTENT_METADATA"      Value="11"/>
+                <Set Name="WDS_TRANSPORTPROVIDER_MAX_CALLBACKS"             Value="12"/>
+            </Flag>
+        </Variable>
+
+        <Variable Name="WDS_MC_SEVERITY" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="WDS_MC_TRACE_VERBOSE"    Value="0x00010000"/>
+                <Set Name="WDS_MC_TRACE_INFO"       Value="0x00020000"/>
+                <Set Name="WDS_MC_TRACE_WARNING"    Value="0x00040000"/>
+                <Set Name="WDS_MC_TRACE_ERROR"      Value="0x00080000"/>
+                <Set Name="WDS_MC_TRACE_FATAL"      Value="0x00010000"/>
+            </Flag>
+        </Variable>
+
+        <!-- Windows Deployment Services -->
+        <Category Name="Administration and Management/System Configuration and Servicing/Windows Deployment Services (WDS)/Transport Server" />
+        <Api Name="WdsTransportServerAllocateBuffer">
+            <Param Type="HANDLE" Name="hProvider" />
+            <Param Type="ULONG" Name="ulBufferSize" />
+            <Return Type="PVOID" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WdsTransportServerCompleteRead">
+            <Param Type="HANDLE" Name="hProvider" />
+            <Param Type="ULONG" Name="ulBytesRead" />
+            <Param Type="PVOID" Name="pvUserData" />
+            <Param Type="HRESULT" Name="hReadResult" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WdsTransportServerFreeBuffer">
+            <Param Type="HANDLE" Name="hProvider" />
+            <Param Type="PVOID" Name="pvBuffer" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WdsTransportServerRegisterCallback">
+            <Param Type="HANDLE" Name="hProvider" />
+            <Param Type="TRANSPORTPROVIDER_CALLBACK_ID" Name="CallbackId" />
+            <Param Type="PVOID" Name="pfnCallback" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WdsTransportServerTrace">
+            <Param Type="HANDLE" Name="hProvider" />
+            <Param Type="WDS_MC_SEVERITY" Name="Severity" />
+            <Param Type="LPCWSTR" Name="pwszFormat" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="WdsTransportServerTraceV">
+            <Param Type="HANDLE" Name="hProvider" />
+            <Param Type="WDS_MC_SEVERITY" Name="Severity" />
+            <Param Type="LPCWSTR" Name="pwszFormat" />
+            <Param Type="va_list" Name="Params" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

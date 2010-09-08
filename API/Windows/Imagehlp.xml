@@ -1,0 +1,184 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="ImageHlp.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        <!-- Parameters -->
+        <Variable Name="PLOADED_IMAGE"                   Type="Alias"        Base="LPVOID" />
+        <Variable Name="PIMAGE_LOAD_CONFIG_DIRECTORY"    Type="Alias"        Base="LPVOID" />
+        <Variable Name="LPWIN_CERTIFICATE"               Type="Alias"        Base="LPVOID" />
+        <Variable Name="DIGEST_FUNCTION"                 Type="Alias"        Base="LPVOID" />
+        <Variable Name="DIGEST_HANDLE"                   Type="Alias"        Base="LPVOID" />
+        <Variable Name="PIMAGEHLP_STATUS_ROUTINE"        Type="Alias"        Base="LPVOID" />
+
+        <Category Name="Diagnostics/Debugging and Error Handling/Debug Help Library/Image Help Library" />
+        <Api Name="GetImageConfigInformation">
+            <Param Type="PLOADED_IMAGE" Name="LoadedImage" />
+            <Param Type="PIMAGE_LOAD_CONFIG_DIRECTORY" Name="ImageConfigInformation" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetImageUnusedHeaderBytes">
+            <Param Type="PLOADED_IMAGE" Name="LoadedImage" />
+            <Param Type="PDWORD" Name="SizeUnusedHeaderBytes" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImageLoad">
+            <Param Type="PSTR" Name="DllName" />
+            <Param Type="PSTR" Name="DllPath" />
+            <Return Type="PLOADED_IMAGE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImageUnload">
+            <Param Type="PLOADED_IMAGE" Name="LoadedImage" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MapAndLoad">
+            <Param Type="PSTR" Name="ImageName" />
+            <Param Type="PSTR" Name="DllPath" />
+            <Param Type="PLOADED_IMAGE" Name="LoadedImage" />
+            <Param Type="BOOL" Name="DotDll" />
+            <Param Type="BOOL" Name="ReadOnly" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetImageConfigInformation">
+            <Param Type="PLOADED_IMAGE" Name="LoadedImage" />
+            <Param Type="PIMAGE_LOAD_CONFIG_DIRECTORY" Name="ImageConfigInformation" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="UnMapAndLoad">
+            <Param Type="PLOADED_IMAGE" Name="LoadedImage" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImageAddCertificate">
+            <Param Type="HANDLE" Name="FileHandle" />
+            <Param Type="LPWIN_CERTIFICATE" Name="Certificate" />
+            <Param Type="PDWORD" Name="Index" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImageEnumerateCertificates">
+            <Param Type="HANDLE" Name="FileHandle" />
+            <Param Type="WORD" Name="TypeFilter" />
+            <Param Type="PDWORD" Name="CertificateCount" />
+            <Param Type="PDWORD" Name="Indices" />
+            <Param Type="DWORD" Name="IndexCount" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImageGetCertificateData">
+            <Param Type="HANDLE" Name="FileHandle" />
+            <Param Type="DWORD" Name="CertificateIndex" />
+            <Param Type="LPWIN_CERTIFICATE" Name="Certificate" PostLength="RequiredLength" />
+            <Param Type="PDWORD" Name="RequiredLength" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImageGetCertificateHeader">
+            <Param Type="HANDLE" Name="FileHandle" />
+            <Param Type="DWORD" Name="CertificateIndex" />
+            <Param Type="LPWIN_CERTIFICATE" Name="CertificateHeader" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImageGetDigestStream">
+            <Param Type="HANDLE" Name="FileHandle" />
+            <Param Type="DWORD" Name="DigestLevel" />
+            <Param Type="DIGEST_FUNCTION" Name="DigestFunction" />
+            <Param Type="DIGEST_HANDLE" Name="DigestHandle" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ImageRemoveCertificate">
+            <Param Type="HANDLE" Name="FileHandle" />
+            <Param Type="DWORD" Name="Index" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="BindImage">
+            <Param Type="PSTR" Name="ImageName" />
+            <Param Type="PSTR" Name="DllPath" />
+            <Param Type="PSTR" Name="SymbolPath" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="BindImageEx">
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="PSTR" Name="ImageName" />
+            <Param Type="PSTR" Name="DllPath" />
+            <Param Type="PSTR" Name="SymbolPath" />
+            <Param Type="PIMAGEHLP_STATUS_ROUTINE" Name="StatusRoutine" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CheckSumMappedFile">
+            <Param Type="PVOID" Name="BaseAddress" />
+            <Param Type="DWORD" Name="FileLength" />
+            <Param Type="PDWORD" Name="HeaderSum" />
+            <Param Type="PDWORD" Name="CheckSum" />
+            <Return Type="PIMAGE_NT_HEADERS" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MapFileAndCheckSum" BothCharset="True" ErrorFunc="">
+            <Param Type="PTSTR" Name="Filename" />
+            <Param Type="PDWORD" Name="HeaderSum" />
+            <Param Type="PDWORD" Name="CheckSum" />
+            <Return Type="DWORD" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ReBaseImage">
+            <Param Type="PCSTR" Name="CurrentImageName" />
+            <Param Type="PCSTR" Name="SymbolPath" />
+            <Param Type="BOOL" Name="fReBase" />
+            <Param Type="BOOL" Name="fRebaseSysfileOk" />
+            <Param Type="BOOL" Name="fGoingDown" />
+            <Param Type="ULONG" Name="CheckImageSize" />
+            <Param Type="ULONG*" Name="OldImageSize" />
+            <Param Type="ULONG_PTR*" Name="OldImageBase" />
+            <Param Type="ULONG*" Name="NewImageSize" />
+            <Param Type="ULONG_PTR*" Name="NewImageBase" />
+            <Param Type="ULONG" Name="TimeStamp" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SplitSymbols">
+            <Param Type="PSTR" Name="ImageName" />
+            <Param Type="PSTR" Name="SymbolsPath" />
+            <Param Type="PSTR" Name="SymbolFilePath" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="TouchFileTimes">
+            <Param Type="HANDLE" Name="FileHandle" />
+            <Param Type="PSYSTEMTIME" Name="pSystemTime" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="UpdateDebugInfoFile">
+            <Param Type="PSTR" Name="ImageFileName" />
+            <Param Type="PSTR" Name="SymbolPath" />
+            <Param Type="PSTR" Name="DebugFilePath" />
+            <Param Type="PIMAGE_NT_HEADERS" Name="NtHeaders" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="UpdateDebugInfoFileEx">
+            <Param Type="PSTR" Name="ImageFileName" />
+            <Param Type="PSTR" Name="SymbolPath" />
+            <Param Type="PSTR" Name="DebugFilePath" />
+            <Param Type="PIMAGE_NT_HEADERS" Name="NtHeaders" />
+            <Param Type="DWORD" Name="OldChecksum" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

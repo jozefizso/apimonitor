@@ -1,0 +1,454 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="Clfsw32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        <!-- Variables -->
+        <Variable Name="CLFS_RECORD_TYPE" Type="Alias" Base="UINT8">
+            <Flag SingleValue="True">
+                <Set Name="ClfsNullRecord"      Value="0x00" />
+                <Set Name="ClfsDataRecord"      Value="0x01" />
+                <Set Name="ClfsRestartRecord"   Value="0x01" />
+            </Flag>
+        </Variable>
+        <Variable Name="PCLFS_RECORD_TYPE" Type="Pointer" Base="CLFS_RECORD_TYPE" />
+        <Variable Name="CLFS_IOSTATS_CLASS" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="ClfsIoStatsDefault"  Value="0x0000" />
+            </Flag>
+        </Variable>
+        <Variable Name="CLFS_CONTEXT_MODE" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="ClfsContextNone"         Value="0x00" />
+                <Set Name="ClfsContextUndoNext"     Value="0x01" />
+                <Set Name="ClfsContextPrevious"     Value="0x02" />
+                <Set Name="ClfsContextForward"      Value="0x03" />
+            </Flag>
+        </Variable>
+        <Variable Name="CLFS_SCAN_MODE" Type="Alias" Base="UINT8">
+            <Flag>
+                <Set Name="CLFS_SCAN_INIT"          Value="0x01" />
+                <Set Name="CLFS_SCAN_FORWARD"       Value="0x02" />
+                <Set Name="CLFS_SCAN_BACKWARD"      Value="0x04" />
+                <Set Name="CLFS_SCAN_CLOSE"         Value="0x08" />
+                <Set Name="CLFS_SCAN_INITIALIZED"   Value="0x10" />
+                <Set Name="CLFS_SCAN_BUFFERED"      Value="0x20" />
+            </Flag>
+        </Variable>
+        <Variable Name="CLFS_LOG_ARCHIVE_MODE" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="ClfsLogArchiveEnabled"   Value="0x01" />
+                <Set Name="ClfsLogArchiveDisabled"  Value="0x02" />
+            </Flag>
+        </Variable>
+        <Variable Name="CLFS_LSN"                        Type="Struct"      Size="8" />
+        <Variable Name="PCLFS_LSN"                       Type="Pointer"     Base="CLFS_LSN" />
+        <Variable Name="const PCLFS_LSN"                 Type="Alias"       Base="PCLFS_LSN" />
+        <Variable Name="const CLFS_LSN*"                 Type="Alias"       Base="PCLFS_LSN" />
+        <Variable Name="PFILE"                           Type="Alias"       Base="LPVOID" />
+        <Variable Name="CLFS_PRINT_RECORD_ROUTINE"       Type="Alias"       Base="LPVOID" />
+        <Variable Name="CLFS_BLOCK_ALLOCATION"           Type="Alias"       Base="LPVOID" />
+        <Variable Name="CLFS_BLOCK_DEALLOCATION"         Type="Alias"       Base="LPVOID" />
+        <Variable Name="PCLFS_WRITE_ENTRY"               Type="Alias"       Base="LPVOID" />
+        <Variable Name="PCLFS_INFORMATION"               Type="Alias"       Base="LPVOID" />
+        <Variable Name="PCLFS_SCAN_CONTEXT"              Type="Alias"       Base="LPVOID" />
+        <Variable Name="CLFS_CONTAINER_ID"               Type="Alias"       Base="ULONG" />
+        <Variable Name="CLFS_LOG_ARCHIVE_CONTEXT"        Type="Alias"       Base="LPVOID" />
+        <Variable Name="PCLFS_LOG_ARCHIVE_CONTEXT"       Type="Pointer"     Base="CLFS_LOG_ARCHIVE_CONTEXT" />
+        <Variable Name="CLFS_ARCHIVE_DESCRIPTOR"         Type="Alias"       Base="LPVOID" />
+
+        <!-- Common Log File System -->
+        <Category Name="System Services/File Services/Storage Management/Common Log File System (CLFS)" />
+        <Api Name="AlignReservedLog">
+            <Param Type="PVOID" Name="pvMarshal" />
+            <Param Type="ULONG" Name="cReservedRecords" />
+            <Param Type="LONGLONG" Name="rgcbReservation" />
+            <Param Type="PLONGLONG" Name="pcbAlignReservation" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="AllocReservedLog">
+            <Param Type="PVOID" Name="pvMarshal" />
+            <Param Type="ULONG" Name="cReservedRecords" />
+            <Param Type="PLONGLONG" Name="pcbAdjustment" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CloseAndResetLogFile">
+            <Param Type="HANDLE" Name="hLog" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CreateLogFile">
+            <Param Type="LPCWSTR" Name="pszLogFileName" />
+            <Param Type="ACCESS_MASK" Name="fDesiredAccess" />
+            <Param Type="DWORD" Name="dwShareMode" />
+            <Param Type="LPSECURITY_ATTRIBUTES" Name="psaLogFile" />
+            <Param Type="ULONG" Name="fCreateDisposition" />
+            <Param Type="ULONG" Name="fFlagsAndAttributes" />
+            <Return Type="HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DeleteLogByHandle">
+            <Param Type="HANDLE" Name="hLog" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DeleteLogFile">
+            <Param Type="LPCWSTR" Name="pszLogFileName" />
+            <Param Type="PVOID" Name="pvReserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DumpLogRecords">
+            <Param Type="PWSTR" Name="pwszLogFileName" />
+            <Param Type="CLFS_RECORD_TYPE" Name="fRecordType" />
+            <Param Type="PCLFS_LSN" Name="plsnStart" />
+            <Param Type="PCLFS_LSN" Name="plsnEnd" />
+            <Param Type="PFILE" Name="pstrmOut" />
+            <Param Type="CLFS_PRINT_RECORD_ROUTINE" Name="pfnPrintRecord" />
+            <Param Type="CLFS_BLOCK_ALLOCATION" Name="pfnAllocBlock" />
+            <Param Type="CLFS_BLOCK_DEALLOCATION" Name="pfnFreeBlock" />
+            <Param Type="PVOID" Name="pvBlockAllocContext" />
+            <Param Type="ULONG" Name="cbBlock" />
+            <Param Type="ULONG" Name="cMaxBlocks" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="FlushLogBuffers">
+            <Param Type="PVOID" Name="pvMarshal" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="FlushLogToLsn">
+            <Param Type="PVOID" Name="pvMarshalContext" />
+            <Param Type="PCLFS_LSN" Name="plsnFlush" />
+            <Param Type="PCLFS_LSN" Name="plsnLastFlushed" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="FreeReservedLog">
+            <Param Type="PVOID" Name="pvMarshal" />
+            <Param Type="ULONG" Name="cReservedRecords" />
+            <Param Type="PLONGLONG" Name="pcbAdjustment" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ReserveAndAppendLog">
+            <Param Type="PVOID" Name="pvMarshal" />
+            <Param Type="PCLFS_WRITE_ENTRY" Name="rgWriteEntries" />
+            <Param Type="ULONG" Name="cWriteEntries" />
+            <Param Type="PCLFS_LSN" Name="plsnUndoNext" />
+            <Param Type="PCLFS_LSN" Name="plsnPrevious" />
+            <Param Type="ULONG" Name="cReserveRecords" />
+            <Param Type="LONGLONG" Name="rgcbReservation" />
+            <Param Type="ULONG" Name="fFlags" />
+            <Param Type="PCLFS_LSN" Name="plsn" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ReserveAndAppendLogAligned">
+            <Param Type="PVOID" Name="pvMarshal" />
+            <Param Type="PCLFS_WRITE_ENTRY" Name="rgWriteEntries" />
+            <Param Type="ULONG" Name="cWriteEntries" />
+            <Param Type="ULONG" Name="cbEntryAlignment" />
+            <Param Type="PCLFS_LSN" Name="plsnUndoNext" />
+            <Param Type="PCLFS_LSN" Name="plsnPrevious" />
+            <Param Type="ULONG" Name="cReserveRecords" />
+            <Param Type="LONGLONG" Name="rgcbReservation" />
+            <Param Type="ULONG" Name="fFlags" />
+            <Param Type="PCLFS_LSN" Name="plsn" />
+            <Param Type="LPOVERLAPPED" Name="overlapped" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetLogFileInformation">
+            <Param Type="HANDLE" Name="hLog" />
+            <Param Type="PCLFS_INFORMATION" Name="pinfoBuffer" />
+            <Param Type="PULONG" Name="cbBuffer" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetLogIoStatistics">
+            <Param Type="HANDLE" Name="hLog" />
+            <Param Type="PVOID" Name="pvStatsBuffer" />
+            <Param Type="ULONG" Name="cbStatsBuffer" />
+            <Param Type="CLFS_IOSTATS_CLASS" Name="eStatsClass" />
+            <Param Type="PULONG" Name="pcbStatsWritten" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ReadLogRecord">
+            <Param Type="PVOID" Name="pvMarshal" />
+            <Param Type="PCLFS_LSN" Name="plsnFirst" />
+            <Param Type="CLFS_CONTEXT_MODE" Name="eContextMode" />
+            <Param Type="PVOID*" Name="ppvReadBuffer" />
+            <Param Type="PULONG" Name="pcbReadBuffer" />
+            <Param Type="PCLFS_RECORD_TYPE" Name="peRecordType" />
+            <Param Type="PCLFS_LSN" Name="plsnUndoNext" />
+            <Param Type="PCLFS_LSN" Name="plsnPrevious" />
+            <Param Type="PVOID*" Name="ppvReadContext" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ReadNextLogRecord">
+            <Param Type="PVOID" Name="pvReadContext" />
+            <Param Type="PVOID*" Name="ppvBuffer" />
+            <Param Type="PULONG" Name="pcbBuffer" />
+            <Param Type="PCLFS_RECORD_TYPE" Name="peRecordType" />
+            <Param Type="PCLFS_LSN" Name="plsnUser" />
+            <Param Type="PCLFS_LSN" Name="plsnUndoNext" />
+            <Param Type="PCLFS_LSN" Name="plsnPrevious" />
+            <Param Type="PCLFS_LSN" Name="plsnRecord" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetEndOfLog">
+            <Param Type="HANDLE" Name="hLog" />
+            <Param Type="PCLFS_LSN" Name="plsnEnd" />
+            <Param Type="LPOVERLAPPED" Name="lpOverlapped" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="TruncateLog">
+            <Param Type="PVOID" Name="pvMarshal" />
+            <Param Type="PCLFS_LSN" Name="plsnEnd" />
+            <Param Type="LPOVERLAPPED" Name="lpOverlapped" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="TerminateReadLog">
+            <Param Type="PVOID" Name="pvCursorContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="AddLogContainer">
+            <Param Type="HANDLE" Name="hLog" />
+            <Param Type="PULONGLONG" Name="pcbContainer" />
+            <Param Type="LPWSTR" Name="pwszContainerPath" />
+            <Param Type="LPVOID" Name="pReserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="AddLogContainerSet">
+            <Param Type="HANDLE" Name="hLog" />
+            <Param Type="USHORT" Name="cContainers" />
+            <Param Type="PULONGLONG" Name="pcbContainer" />
+            <Param Type="LPWSTR*" Name="rgwszContainerPath" />
+            <Param Type="PVOID" Name="Reserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CreateLogContainerScanContext">
+            <Param Type="HANDLE" Name="hLog" />
+            <Param Type="ULONG" Name="cFromContainer" />
+            <Param Type="ULONG" Name="cContainers" />
+            <Param Type="CLFS_SCAN_MODE" Name="eScanMode" />
+            <Param Type="PCLFS_SCAN_CONTEXT" Name="pcxScan" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ScanLogContainers">
+            <Param Type="PCLFS_SCAN_CONTEXT" Name="pcxScan" />
+            <Param Type="CLFS_SCAN_MODE" Name="eScanMode" />
+            <Param Type="LPVOID" Name="pReserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetLogContainerName">
+            <Param Type="HANDLE" Name="hLog" />
+            <Param Type="CLFS_CONTAINER_ID" Name="cidLogicalContainer" />
+            <Param Type="LPCWSTR" Name="pwstrContainerName" />
+            <Param Type="ULONG" Name="cLenContainerName" />
+            <Param Type="PULONG" Name="pcActualLenContainerName" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RemoveLogContainer">
+            <Param Type="HANDLE" Name="hLog" />
+            <Param Type="LPWSTR" Name="pwszContainerPath" />
+            <Param Type="BOOL" Name="fForce" />
+            <Param Type="LPVOID" Name="pReserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RemoveLogContainerSet">
+            <Param Type="HANDLE" Name="hLog" />
+            <Param Type="USHORT" Name="cContainers" />
+            <Param Type="LPWSTR*" Name="rgwszContainerPath" />
+            <Param Type="BOOL" Name="fForce" />
+            <Param Type="LPVOID" Name="pReserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="AdvanceLogBase">
+            <Param Type="PVOID" Name="pvMarshal" />
+            <Param Type="PCLFS_LSN" Name="plsnBase" />
+            <Param Type="ULONG" Name="fFlags" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ReadLogRestartArea">
+            <Param Type="PVOID" Name="pvMarshal" />
+            <Param Type="PVOID*" Name="ppvRestartBuffer" />
+            <Param Type="PULONG" Name="pcbRestartBuffer" />
+            <Param Type="PCLFS_LSN" Name="plsn" />
+            <Param Type="PVOID*" Name="ppvContext" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ReadPreviousLogRestartArea">
+            <Param Type="PVOID" Name="pvReadContext" />
+            <Param Type="PVOID*" Name="ppvRestartBuffer" />
+            <Param Type="PULONG" Name="pcbRestartBuffer" />
+            <Param Type="PCLFS_LSN" Name="plsnRestart" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WriteLogRestartArea">
+            <Param Type="PVOID" Name="pvMarshal" />
+            <Param Type="PVOID" Name="pvRestartBuffer" />
+            <Param Type="ULONG" Name="cbRestartBuffer" />
+            <Param Type="PCLFS_LSN" Name="plsnBase" />
+            <Param Type="ULONG" Name="fFlags" />
+            <Param Type="PULONG" Name="pcbWritten" />
+            <Param Type="PCLFS_LSN" Name="plsnNext" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetNextLogArchiveExtent">
+            <Param Type="CLFS_LOG_ARCHIVE_CONTEXT" Name="pvArchiveContext" />
+            <Param Type="CLFS_ARCHIVE_DESCRIPTOR" Name="rgadExtent" />
+            <Param Type="ULONG" Name="cDescriptors" />
+            <Param Type="PULONG" Name="pcDescriptorsReturned" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PrepareLogArchive">
+            <Param Type="HANDLE" Name="hLog" />
+            <Param Type="PWSTR" Name="pszBaseLogFileName" />
+            <Param Type="ULONG" Name="cLen" />
+            <Param Type="const PCLFS_LSN" Name="plsnLow" />
+            <Param Type="const PCLFS_LSN" Name="plsnHigh" />
+            <Param Type="PULONG" Name="pcActualLength" />
+            <Param Type="PULONGLONG" Name="poffBaseLogFileData" />
+            <Param Type="PULONGLONG" Name="pcbBaseLogFileLength" />
+            <Param Type="PCLFS_LSN" Name="plsnBase" />
+            <Param Type="PCLFS_LSN" Name="plsnLast" />
+            <Param Type="PCLFS_LSN" Name="plsnCurrentArchiveTail" />
+            <Param Type="PCLFS_LOG_ARCHIVE_CONTEXT" Name="ppvArchiveContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ReadLogArchiveMetadata">
+            <Param Type="CLFS_LOG_ARCHIVE_CONTEXT" Name="pvArchiveContext" />
+            <Param Type="ULONG" Name="cbOffset" />
+            <Param Type="ULONG" Name="cbBytesToRead" />
+            <Param Type="PBYTE" Name="pbReadBuffer" />
+            <Param Type="PULONG" Name="pcbBytesRead" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetLogArchiveMode">
+            <Param Type="HANDLE" Name="hLog" />
+            <Param Type="CLFS_LOG_ARCHIVE_MODE" Name="eMode" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetLogArchiveTail">
+            <Param Type="HANDLE" Name="hLog" />
+            <Param Type="PCLFS_LSN" Name="plsnArchiveTail" />
+            <Param Type="LPVOID" Name="pReserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="TerminateLogArchive">
+            <Param Type="CLFS_LOG_ARCHIVE_CONTEXT" Name="pvArchiveContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ValidateLog">
+            <Param Type="LPCWSTR" Name="pszLogFileName" />
+            <Param Type="LPSECURITY_ATTRIBUTES" Name="psaLogFile" />
+            <Param Type="PCLFS_INFORMATION" Name="pinfoBuffer" />
+            <Param Type="PULONG" Name="pcbBuffer" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CreateLogMarshallingArea">
+            <Param Type="HANDLE" Name="hLog" />
+            <Param Type="CLFS_BLOCK_ALLOCATION" Name="pfnAllocBuffer" />
+            <Param Type="CLFS_BLOCK_DEALLOCATION" Name="pfnFreeBuffer" />
+            <Param Type="PVOID" Name="pvBlockAllocContext" />
+            <Param Type="ULONG" Name="cbMarshallingBuffer" />
+            <Param Type="ULONG" Name="cMaxWriteBuffers" />
+            <Param Type="ULONG" Name="cMaxReadBuffers" />
+            <Param Type="PVOID*" Name="ppvMarshal" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DeleteLogMarshallingArea">
+            <Param Type="PVOID" Name="pvMarshal" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="LsnBlockOffset">
+            <Param Type="const CLFS_LSN*" Name="plsn" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="LsnContainer">
+            <Param Type="const CLFS_LSN*" Name="plsn" />
+            <Return Type="CLFS_CONTAINER_ID" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="LsnCreate">
+            <Param Type="CLFS_CONTAINER_ID" Name="cidContainer" />
+            <Param Type="ULONG" Name="offBlock" />
+            <Param Type="ULONG" Name="cRecord" />
+            <Return Type="CLFS_LSN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="LsnEqual">
+            <Param Type="const CLFS_LSN*" Name="plsn1" />
+            <Param Type="const CLFS_LSN*" Name="plsn2" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="LsnGreater">
+            <Param Type="const CLFS_LSN*" Name="plsn1" />
+            <Param Type="const CLFS_LSN*" Name="plsn2" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="LsnLess">
+            <Param Type="const CLFS_LSN*" Name="plsn1" />
+            <Param Type="const CLFS_LSN*" Name="plsn2" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="LsnNull">
+            <Param Type="const CLFS_LSN*" Name="plsn" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="LsnRecordSequence">
+            <Param Type="const CLFS_LSN*" Name="plsn" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

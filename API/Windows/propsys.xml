@@ -1,0 +1,319 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\shell.h.xml" />
+    <Module Name="propsys.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        <!-- Variables -->
+        <Variable Name="PKA_FLAGS" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="PKA_SET"     Value="0" />
+                <Set Name="PKA_APPEND"  Value="1" />
+                <Set Name="PKA_DELETE"  Value="2" />
+            </Flag>
+        </Variable>
+        <Variable Name="const PKA_FLAGS*" Type="Pointer" Base="PKA_FLAGS" />
+
+        <Variable Name="PROPDESC_FORMAT_FLAGS" Type="Alias" Base="DWORD">
+            <Flag>
+                <Set Name="PDFF_DEFAULT"                Value="0" />
+                <Set Name="PDFF_PREFIXNAME"             Value="0x1" />
+                <Set Name="PDFF_FILENAME"               Value="0x2" />
+                <Set Name="PDFF_ALWAYSKB"               Value="0x4" />
+                <Set Name="PDFF_RESERVED_RIGHTTOLEFT"   Value="0x8" />
+                <Set Name="PDFF_SHORTTIME"              Value="0x10" />
+                <Set Name="PDFF_LONGTIME"               Value="0x20" />
+                <Set Name="PDFF_HIDETIME"               Value="0x40" />
+                <Set Name="PDFF_SHORTDATE"              Value="0x80" />
+                <Set Name="PDFF_LONGDATE"               Value="0x100" />
+                <Set Name="PDFF_HIDEDATE"               Value="0x200" />
+                <Set Name="PDFF_RELATIVEDATE"           Value="0x400" />
+                <Set Name="PDFF_USEEDITINVITATION"      Value="0x800" />
+                <Set Name="PDFF_READONLY"               Value="0x1000" />
+                <Set Name="PDFF_NOAUTOREADINGORDER"     Value="0x2000" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="PROPDESC_ENUMFILTER" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="PDEF_ALL"                Value="0" />
+                <Set Name="PDEF_SYSTEM"             Value="1" />
+                <Set Name="PDEF_NONSYSTEM"          Value="2" />
+                <Set Name="PDEF_VIEWABLE"           Value="3" />
+                <Set Name="PDEF_QUERYABLE"          Value="4" />
+                <Set Name="PDEF_INFULLTEXTQUERY"    Value="5" />
+                <Set Name="PDEF_COLUMN"             Value="6" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="IDelayedPropertyStoreFactory*"       Type="Alias"        Base="LPVOID" />
+        <Variable Name="PSSTDAPI"                            Type="Alias"        Base="HRESULT" />
+        <Variable Name="IPropertyDescription*"               Type="Alias"        Base="LPVOID" />
+        <Variable Name="PCUSERIALIZEDPROPSTORAGE"            Type="Alias"        Base="LPVOID" />
+        <!-- Shell -->
+        <Category Name="Windows Environment Development/Windows Shell" />
+        <Api Name="InitPropVariantFromGUIDAsBuffer">
+            <Param Type="REFGUID" Name="guid" />
+            <Param Type="PROPVARIANT*" Name="ppropvar" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="InitPropVariantFromGUIDAsString">
+            <Param Type="REFGUID" Name="guid" />
+            <Param Type="PROPVARIANT*" Name="ppropvar" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="InitVariantFromGUIDAsBuffer">
+            <Param Type="REFGUID" Name="guid" />
+            <Param Type="VARIANT*" Name="pvar" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="InitVariantFromGUIDAsString">
+            <Param Type="REFGUID" Name="guid" />
+            <Param Type="VARIANT*" Name="pvar" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSCoerceToCanonicalValue">
+            <Param Type="REFPROPERTYKEY" Name="key" />
+            <Param Type="PROPVARIANT*" Name="ppropvar" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSCreateAdapterFromPropertyStore">
+            <Param Type="IPropertyStore*" Name="pps" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppv" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSCreateDelayedMultiplexPropertyStore">
+            <Param Type="GETPROPERTYSTOREFLAGS" Name="flags" />
+            <Param Type="IDelayedPropertyStoreFactory*" Name="pdpsf" />
+            <Param Type="const DWORD*" Name="rgStoreIds" />
+            <Param Type="DWORD" Name="cStores" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppv" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSCreateMemoryPropertyStore">
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppv" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSCreateMultiplexPropertyStore">
+            <Param Type="IUnknown**" Name="prgpunkStores" />
+            <Param Type="DWORD" Name="cStores" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppv" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSCreatePropertyChangeArray">
+            <Param Type="const PROPERTYKEY*" Name="rgpropkey" />
+            <Param Type="const PKA_FLAGS*" Name="rgflags" />
+            <Param Type="const PROPVARIANT*" Name="rgpropvar" />
+            <Param Type="UINT" Name="cChanges" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppv" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSCreatePropertyStoreFromObject">
+            <Param Type="IUnknown*" Name="punk" />
+            <Param Type="[StgmFlags]" Display="DWORD" Name="grfMode" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppv" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSCreatePropertyStoreFromPropertySetStorage">
+            <Param Type="IPropertySetStorage*" Name="ppss" />
+            <Param Type="[StgmFlags]" Display="DWORD" Name="grfMode" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppv" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSCreateSimplePropertyChange">
+            <Param Type="PKA_FLAGS" Name="flags" />
+            <Param Type="REFPROPERTYKEY" Name="key" />
+            <Param Type="REFPROPVARIANT" Name="propvar" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppv" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSEnumeratePropertyDescriptions">
+            <Param Type="PROPDESC_ENUMFILTER" Name="filterOn" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppv" InterfaceId="riid" />
+            <Return Type="PSSTDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSFormatForDisplay">
+            <Param Type="REFPROPERTYKEY" Name="propkey" />
+            <Param Type="REFPROPVARIANT" Name="propvar" />
+            <Param Type="PROPDESC_FORMAT_FLAGS" Name="pdfFlags"/>
+            <Param Type="LPWSTR" Name="pwszText" />
+            <Param Type="DWORD" Name="cchText" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSFormatForDisplayAlloc">
+            <Param Type="REFPROPERTYKEY" Name="key" />
+            <Param Type="REFPROPVARIANT" Name="propvar" />
+            <Param Type="PROPDESC_FORMAT_FLAGS" Name="pdfFlags"/>
+            <Param Type="PWSTR*" Name="ppszDisplay" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSFormatPropertyValue">
+            <Param Type="IPropertyStore*" Name="pps" />
+            <Param Type="IPropertyDescription*" Name="ppd" />
+            <Param Type="PROPDESC_FORMAT_FLAGS" Name="pdff" />
+            <Param Type="LPWSTR*" Name="ppszDisplay" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSGetItemPropertyHandler">
+            <Param Type="IUnknown*" Name="punkItem" />
+            <Param Type="BOOL" Name="fReadWrite" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppv" InterfaceId="riid" />
+            <Return Type="PSSTDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSGetItemPropertyHandlerWithCreateObject">
+            <Param Type="IUnknown*" Name="punkItem" />
+            <Param Type="BOOL" Name="fReadWrite" />
+            <Param Type="IUnknown*" Name="punkCreateObject" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppv" InterfaceId="riid" />
+            <Return Type="PSSTDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSGetNamedPropertyFromPropertyStorage">
+            <Param Type="PCUSERIALIZEDPROPSTORAGE" Name="psps" />
+            <Param Type="DWORD" Name="cb" />
+            <Param Type="LPCWSTR" Name="pszName" />
+            <Param Type="PROPVARIANT*" Name="ppropvar" />
+            <Return Type="PSSTDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSGetNameFromPropertyKey">
+            <Param Type="REFPROPERTYKEY" Name="propkey" />
+            <Param Type="PWSTR*" Name="ppszCanonicalName" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSGetPropertyDescription">
+            <Param Type="REFPROPERTYKEY" Name="propkey" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppv" InterfaceId="riid" />
+            <Return Type="PSSTDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSGetPropertyDescriptionByName">
+            <Param Type="LPCWSTR" Name="pszCanonicalName" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppv" InterfaceId="riid" />
+            <Return Type="PSSTDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSGetPropertyDescriptionListFromString">
+            <Param Type="LPCWSTR" Name="pszPropList" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppv" InterfaceId="riid" />
+            <Return Type="PSSTDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSGetPropertyFromPropertyStorage">
+            <Param Type="PCUSERIALIZEDPROPSTORAGE" Name="psps" />
+            <Param Type="DWORD" Name="cb" />
+            <Param Type="REFPROPERTYKEY" Name="rpkey" />
+            <Param Type="PROPVARIANT**" Name="ppropvar" />
+            <Return Type="PSSTDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSGetPropertyKeyFromName">
+            <Param Type="PCWSTR" Name="pszName" />
+            <Param Type="PROPERTYKEY*" Name="ppropkey" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSGetPropertySystem">
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppv" InterfaceId="riid" />
+            <Return Type="PSSTDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSGetPropertyValue">
+            <Param Type="IPropertyStore*" Name="pps" />
+            <Param Type="IPropertyDescription*" Name="ppd" />
+            <Param Type="PROPVARIANT*" Name="ppropvar" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSLookupPropertyHandlerCLSID">
+            <Param Type="PCWSTR" Name="pszFilePath" />
+            <Param Type="CLSID*" Name="pclsid" />
+            <Return Type="PSSTDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSPropertyKeyFromString">
+            <Param Type="LPCWSTR" Name="pszString" />
+            <Param Type="PROPERTYKEY*" Name="pkey" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSRegisterPropertySchema">
+            <Param Type="PCWSTR" Name="pszPath" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSSetPropertyValue">
+            <Param Type="IPropertyStore*" Name="pps" />
+            <Param Type="IPropertyDescription*" Name="ppd" />
+            <Param Type="REFPROPVARIANT" Name="propvar" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSStringFromPropertyKey">
+            <Param Type="REFPROPERTYKEY" Name="pkey" />
+            <Param Type="LPWSTR" Name="psz" />
+            <Param Type="UINT" Name="cch" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PSUnregisterPropertySchema">
+            <Param Type="PCWSTR" Name="pszPath" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <!-- Structured Storage -->
+        <Category Name="Component Development/COM/Structured Storage" />
+        <Api Name="StgDeserializePropVariant">
+            <Param Type="SERIALIZEDPROPERTYVALUE*" Name="pprop" />
+            <Param Type="SERIALIZEDPROPERTYVALUE*" Name="cbMax" />
+            <Param Type="PROPVARIANT*" Name="pvar" />
+            <Return Type="WINOLEAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="StgSerializePropVariant">
+            <Param Type="PROPVARIANT*" Name="pVar" />
+            <Param Type="SERIALIZEDPROPERTYVALUE**" Name="ppProp" />
+            <Param Type="SERIALIZEDPROPERTYVALUE*" Name="pcb" />
+            <Return Type="WINOLEAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>
+

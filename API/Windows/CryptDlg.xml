@@ -1,0 +1,40 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\cryptography.h.xml" />
+    <Module Name="CryptDlg.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        <!-- Parameters -->
+        <Variable Name="PCERT_SELECT_STRUCT"     Type="Alias" Base="LPVOID" />
+        <Variable Name="PCTL_MODIFY_REQUEST"     Type="Alias" Base="LPVOID" />
+
+        <!-- Cryptography -->
+        <Category Name="Security/Cryptography/Certificate" />
+        <Api Name="CertSelectCertificate" BothCharset="True">
+            <Param Type="PCERT_SELECT_STRUCT" Name="pCertSelectInfo" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetFriendlyNameOfCert" BothCharset="True">
+            <Param Type="PCCERT_CONTEXT" Name="pccert" />
+            <Param Type="LPTSTR" Name="pchBuffer" />
+            <Param Type="DWORD" Name="cchBuffer" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Category Name="Security/Cryptography/Certificate Trust List" />
+        <Api Name="CertModifyCertificatesToTrust">
+            <Param Type="int" Name="cCerts" />
+            <Param Type="PCTL_MODIFY_REQUEST" Name="rgCerts" />
+            <Param Type="LPCSTR" Name="szPurpose" />
+            <Param Type="HWND" Name="hwnd" />
+            <Param Type="HCERTSTORE" Name="hcertstoreTrust" />
+            <Param Type="PCCERT_CONTEXT" Name="pccertSigner" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

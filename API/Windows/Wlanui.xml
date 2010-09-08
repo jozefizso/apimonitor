@@ -1,0 +1,42 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="Wlanui.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
+        <!-- Variables -->
+        <Variable Name="[WlanVersion]" Type="Alias" Base="DWORD">
+            <Flag SingleValue="True">
+                <Set Name="WLAN_UI_API_VERSION" Value="1" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="WL_DISPLAY_PAGES"    Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="WLConnectionPage"    Value="0" />
+                <Set Name="WLSecurityPage"      Value="1" />
+            </Flag>
+        </Variable>
+
+        <!-- TODO: We can decode WLAN_REASON_CODE, however it is only used in a single API call
+    and there are lots of possible values, so we'll ignore it for now -->
+        <Variable Name="WLAN_REASON_CODE" Type="Alias" Base="DWORD" />
+        <Variable Name="PWLAN_REASON_CODE" Type="Pointer" Base="WLAN_REASON_CODE" />
+
+        <!-- Native Wifi -->
+        <Category Name="Networking/Wireless Networking/Native Wifi" />
+        <Api Name="WlanUIEditProfile">
+            <Param Type="[WlanVersion]" Display="DWORD" Name="dwClientVersion" />
+            <Param Type="LPCWSTR" Name="wstrProfileName" />
+            <Param Type="GUID*" Name="pInterfaceGuid" />
+            <Param Type="HWND" Name="hWnd" />
+            <Param Type="WL_DISPLAY_PAGES" Name="wlStartPage" />
+            <Param Type="PVOID" Name="pReserved" />
+            <Param Type="PWLAN_REASON_CODE" Name="pWlanReasonCode" />
+            <Return Type="DWORD" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

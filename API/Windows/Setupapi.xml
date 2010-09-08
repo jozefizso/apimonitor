@@ -1,0 +1,2700 @@
+<!--
+    API Monitor Definitions
+    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\setup.h.xml" />
+    <Module Name="Setupapi.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        <!-- Variables -->
+        <Variable Name="[DeviceInfoGetFlags]" Type="Alias" Base="DWORD">
+            <Flag>
+                <Set Name="DIGCF_DEFAULT"           Value="0x00000001" />
+                <Set Name="DIGCF_PRESENT"           Value="0x00000002" />
+                <Set Name="DIGCF_ALLCLASSES"        Value="0x00000004" />
+                <Set Name="DIGCF_PROFILE"           Value="0x00000008" />
+                <Set Name="DIGCF_DEVICEINTERFACE"   Value="0x00000010" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[OpenDeviceInterfaceFlags]" Type="Alias" Base="DWORD">
+            <Flag>
+                <Set Name="DIODI_NO_ADD"    Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[OpenDeviceInfoFlags]" Type="Alias" Base="DWORD">
+            <Flag>
+                <Set Name="DIOD_INHERIT_CLASSDRVS"  Value="0x00000002" />
+                <Set Name="DIOD_CANCEL_REMOVE"      Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[GetCustomDevicePropertyFlags]" Type="Alias" Base="DWORD">
+            <Flag>
+                <Set Name="DICUSTOMDEVPROP_MERGE_MULTISZ"  Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[DeviceInfoScope]" Type="Alias" Base="DWORD">
+            <Flag>
+                <Set Name="DICS_FLAG_GLOBAL"            Value="0x00000001" />
+                <Set Name="DICS_FLAG_CONFIGSPECIFIC"    Value="0x00000002" />
+                <Set Name="DICS_FLAG_CONFIGGENERAL"     Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[DeviceInfoKeyType]" Type="Alias" Base="DWORD">
+            <Flag>
+                <Set Name="DIREG_DEV"   Value="0x00000001" />
+                <Set Name="DIREG_DRV"   Value="0x00000002" />
+                <Set Name="DIREG_BOTH"  Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[SetupDiBuildClassInfoListFlags]" Type="Alias" Base="DWORD">
+            <Flag>
+                <Set Name="DIBCI_NOINSTALLCLASS"    Value="0x00000001" />
+                <Set Name="DIBCI_NODISPLAYCLASS"    Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[DiClassPropertyFlags]" Type="Alias" Base="DWORD">
+            <Flag>
+                <Set Name="DICLASSPROP_INSTALLER"   Value="0x00000001" />
+                <Set Name="DICLASSPROP_INTERFACE"   Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="DI_FUNCTION" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="DIF_SELECTDEVICE"                    Value="0x00000001" />
+                <Set Name="DIF_INSTALLDEVICE"                   Value="0x00000002" />
+                <Set Name="DIF_ASSIGNRESOURCES"                 Value="0x00000003" />
+                <Set Name="DIF_PROPERTIES"                      Value="0x00000004" />
+                <Set Name="DIF_REMOVE"                          Value="0x00000005" />
+                <Set Name="DIF_FIRSTTIMESETUP"                  Value="0x00000006" />
+                <Set Name="DIF_FOUNDDEVICE"                     Value="0x00000007" />
+                <Set Name="DIF_SELECTCLASSDRIVERS"              Value="0x00000008" />
+                <Set Name="DIF_VALIDATECLASSDRIVERS"            Value="0x00000009" />
+                <Set Name="DIF_INSTALLCLASSDRIVERS"             Value="0x0000000A" />
+                <Set Name="DIF_CALCDISKSPACE"                   Value="0x0000000B" />
+                <Set Name="DIF_DESTROYPRIVATEDATA"              Value="0x0000000C" />
+                <Set Name="DIF_VALIDATEDRIVER"                  Value="0x0000000D" />
+                <Set Name="DIF_DETECT"                          Value="0x0000000F" />
+                <Set Name="DIF_INSTALLWIZARD"                   Value="0x00000010" />
+                <Set Name="DIF_DESTROYWIZARDDATA"               Value="0x00000011" />
+                <Set Name="DIF_PROPERTYCHANGE"                  Value="0x00000012" />
+                <Set Name="DIF_ENABLECLASS"                     Value="0x00000013" />
+                <Set Name="DIF_DETECTVERIFY"                    Value="0x00000014" />
+                <Set Name="DIF_INSTALLDEVICEFILES"              Value="0x00000015" />
+                <Set Name="DIF_UNREMOVE"                        Value="0x00000016" />
+                <Set Name="DIF_SELECTBESTCOMPATDRV"             Value="0x00000017" />
+                <Set Name="DIF_ALLOW_INSTALL"                   Value="0x00000018" />
+                <Set Name="DIF_REGISTERDEVICE"                  Value="0x00000019" />
+                <Set Name="DIF_NEWDEVICEWIZARD_PRESELECT"       Value="0x0000001A" />
+                <Set Name="DIF_NEWDEVICEWIZARD_SELECT"          Value="0x0000001B" />
+                <Set Name="DIF_NEWDEVICEWIZARD_PREANALYZE"      Value="0x0000001C" />
+                <Set Name="DIF_NEWDEVICEWIZARD_POSTANALYZE"     Value="0x0000001D" />
+                <Set Name="DIF_NEWDEVICEWIZARD_FINISHINSTALL"   Value="0x0000001E" />
+                <Set Name="DIF_UNUSED1"                         Value="0x0000001F" />
+                <Set Name="DIF_INSTALLINTERFACES"               Value="0x00000020" />
+                <Set Name="DIF_DETECTCANCEL"                    Value="0x00000021" />
+                <Set Name="DIF_REGISTER_COINSTALLERS"           Value="0x00000022" />
+                <Set Name="DIF_ADDPROPERTYPAGE_ADVANCED"        Value="0x00000023" />
+                <Set Name="DIF_ADDPROPERTYPAGE_BASIC"           Value="0x00000024" />
+                <Set Name="DIF_RESERVED1"                       Value="0x00000025" />
+                <Set Name="DIF_TROUBLESHOOTER"                  Value="0x00000026" />
+                <Set Name="DIF_POWERMESSAGEWAKE"                Value="0x00000027" />
+                <Set Name="DIF_ADDREMOTEPROPERTYPAGE_ADVANCED"  Value="0x00000028" />
+                <Set Name="DIF_UPDATEDRIVER_UI"                 Value="0x00000029" />
+                <Set Name="DIF_FINISHINSTALL_ACTION"            Value="0x0000002A" />
+                <Set Name="DIF_RESERVED2"                       Value="0x00000030" />
+                <Set Name="DIF_MOVEDEVICE"                      Value="0x0000000E" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[CM_Locate_DevNode_Flags]" Type="Alias" Base="ULONG">
+            <Flag>
+                <Set Name="CM_LOCATE_DEVNODE_NORMAL"        Value="0x00000000" />
+                <Set Name="CM_LOCATE_DEVNODE_PHANTOM"       Value="0x00000001" />
+                <Set Name="CM_LOCATE_DEVNODE_CANCELREMOVE"  Value="0x00000002" />
+                <Set Name="CM_LOCATE_DEVNODE_NOVALIDATION"  Value="0x00000004" />
+                <Set Name="CM_LOCATE_DEVNODE_BITS"          Value="0x00000007" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[CsConfigFlags]" Type="Alias" Base="ULONG">
+            <Flag>
+                <Set Name="CSCONFIGFLAG_BITS"               Value="0x00000007" />
+                <Set Name="CSCONFIGFLAG_DISABLED"           Value="0x00000001" />
+                <Set Name="CSCONFIGFLAG_DO_NOT_CREATE"      Value="0x00000002" />
+                <Set Name="CSCONFIGFLAG_DO_NOT_START"       Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[CsConfigFlags*]" Type="Pointer" Base="[CsConfigFlags]" />
+        <Variable Name="[DiGetClassDevPropertySheetsType]" Type="Alias" Base="DWORD">
+            <Flag SingleValue="True">
+                <Set Name="DIGCDP_FLAG_BASIC"               Value="0x00000001" />
+                <Set Name="DIGCDP_FLAG_ADVANCED"            Value="0x00000002" />
+                <Set Name="DIGCDP_FLAG_REMOTE_BASIC"        Value="0x00000003" />
+                <Set Name="DIGCDP_FLAG_REMOTE_ADVANCED"     Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[LogicalConfigFlags]" Type="Alias" Base="ULONG">
+            <Flag SingleValue="True">
+                <Set Name="BASIC_LOG_CONF"          Value="0x00000000" />
+                <Set Name="FILTERED_LOG_CONF"       Value="0x00000001" />
+                <Set Name="ALLOC_LOG_CONF"          Value="0x00000002" />
+                <Set Name="BOOT_LOG_CONF"           Value="0x00000003" />
+                <Set Name="FORCED_LOG_CONF"         Value="0x00000004" />
+                <Set Name="OVERRIDE_LOG_CONF"       Value="0x00000005" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[DiDriverType]" Type="Alias" Base="DWORD">
+            <Flag>
+                <Set Name="SPDIT_NODRIVER"      Value="0x00000000" />
+                <Set Name="SPDIT_CLASSDRIVER"   Value="0x00000001" />
+                <Set Name="SPDIT_COMPATDRIVER"  Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[CmProblemNumber]" Type="Alias" Base="ULONG">
+            <Flag SingleValue="True">
+                <Set Name="CM_PROB_NOT_CONFIGURED"                  Value="0x00000001" />
+                <Set Name="CM_PROB_DEVLOADER_FAILED"                Value="0x00000002" />
+                <Set Name="CM_PROB_OUT_OF_MEMORY"                   Value="0x00000003" />
+                <Set Name="CM_PROB_ENTRY_IS_WRONG_TYPE"             Value="0x00000004" />
+                <Set Name="CM_PROB_LACKED_ARBITRATOR"               Value="0x00000005" />
+                <Set Name="CM_PROB_BOOT_CONFIG_CONFLICT"            Value="0x00000006" />
+                <Set Name="CM_PROB_FAILED_FILTER"                   Value="0x00000007" />
+                <Set Name="CM_PROB_DEVLOADER_NOT_FOUND"             Value="0x00000008" />
+                <Set Name="CM_PROB_INVALID_DATA"                    Value="0x00000009" />
+                <Set Name="CM_PROB_FAILED_START"                    Value="0x0000000A" />
+                <Set Name="CM_PROB_LIAR"                            Value="0x0000000B" />
+                <Set Name="CM_PROB_NORMAL_CONFLICT"                 Value="0x0000000C" />
+                <Set Name="CM_PROB_NOT_VERIFIED"                    Value="0x0000000D" />
+                <Set Name="CM_PROB_NEED_RESTART"                    Value="0x0000000E" />
+                <Set Name="CM_PROB_REENUMERATION"                   Value="0x0000000F" />
+                <Set Name="CM_PROB_PARTIAL_LOG_CONF"                Value="0x00000010" />
+                <Set Name="CM_PROB_UNKNOWN_RESOURCE"                Value="0x00000011" />
+                <Set Name="CM_PROB_REINSTALL"                       Value="0x00000012" />
+                <Set Name="CM_PROB_REGISTRY"                        Value="0x00000013" />
+                <Set Name="CM_PROB_VXDLDR"                          Value="0x00000014" />
+                <Set Name="CM_PROB_WILL_BE_REMOVED"                 Value="0x00000015" />
+                <Set Name="CM_PROB_DISABLED"                        Value="0x00000016" />
+                <Set Name="CM_PROB_DEVLOADER_NOT_READY"             Value="0x00000017" />
+                <Set Name="CM_PROB_DEVICE_NOT_THERE"                Value="0x00000018" />
+                <Set Name="CM_PROB_MOVED"                           Value="0x00000019" />
+                <Set Name="CM_PROB_TOO_EARLY"                       Value="0x0000001A" />
+                <Set Name="CM_PROB_NO_VALID_LOG_CONF"               Value="0x0000001B" />
+                <Set Name="CM_PROB_FAILED_INSTALL"                  Value="0x0000001C" />
+                <Set Name="CM_PROB_HARDWARE_DISABLED"               Value="0x0000001D" />
+                <Set Name="CM_PROB_CANT_SHARE_IRQ"                  Value="0x0000001E" />
+                <Set Name="CM_PROB_FAILED_ADD"                      Value="0x0000001F" />
+                <Set Name="CM_PROB_DISABLED_SERVICE"                Value="0x00000020" />
+                <Set Name="CM_PROB_TRANSLATION_FAILED"              Value="0x00000021" />
+                <Set Name="CM_PROB_NO_SOFTCONFIG"                   Value="0x00000022" />
+                <Set Name="CM_PROB_BIOS_TABLE"                      Value="0x00000023" />
+                <Set Name="CM_PROB_IRQ_TRANSLATION_FAILED"          Value="0x00000024" />
+                <Set Name="CM_PROB_FAILED_DRIVER_ENTRY"             Value="0x00000025" />
+                <Set Name="CM_PROB_DRIVER_FAILED_PRIOR_UNLOAD"      Value="0x00000026" />
+                <Set Name="CM_PROB_DRIVER_FAILED_LOAD"              Value="0x00000027" />
+                <Set Name="CM_PROB_DRIVER_SERVICE_KEY_INVALID"      Value="0x00000028" />
+                <Set Name="CM_PROB_LEGACY_SERVICE_NO_DEVICES"       Value="0x00000029" />
+                <Set Name="CM_PROB_DUPLICATE_DEVICE"                Value="0x0000002A" />
+                <Set Name="CM_PROB_FAILED_POST_START"               Value="0x0000002B" />
+                <Set Name="CM_PROB_HALTED"                          Value="0x0000002C" />
+                <Set Name="CM_PROB_PHANTOM"                         Value="0x0000002D" />
+                <Set Name="CM_PROB_SYSTEM_SHUTDOWN"                 Value="0x0000002E" />
+                <Set Name="CM_PROB_HELD_FOR_EJECT"                  Value="0x0000002F" />
+                <Set Name="CM_PROB_DRIVER_BLOCKED"                  Value="0x00000030" />
+                <Set Name="CM_PROB_REGISTRY_TOO_LARGE"              Value="0x00000031" />
+                <Set Name="CM_PROB_SETPROPERTIES_FAILED"            Value="0x00000032" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[CmProblemNumber*]" Type="Pointer" Base="[CmProblemNumber]" />
+        <Variable Name="[InfStyle]" Type="Alias" Base="DWORD">
+            <Flag>
+                <Set Name="INF_STYLE_NONE"      Value="0x00000000" />
+                <Set Name="INF_STYLE_OLDNT"     Value="0x00000001" />
+                <Set Name="INF_STYLE_WIN4"      Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[SetupDiCreateDeviceInfoFlags]" Type="Alias" Base="DWORD">
+            <Flag>
+                <Set Name="DICD_GENERATE_ID"        Value="0x00000001" />
+                <Set Name="DICD_INHERIT_CLASSDRVS"  Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[SetupDeviceRegistryProperty]" Type="Alias" Base="DWORD">
+            <Flag SingleValue="True">
+                <Set Name="SPDRP_DEVICEDESC"                    Value="0x00000000" />
+                <Set Name="SPDRP_HARDWAREID"                    Value="0x00000001" />
+                <Set Name="SPDRP_COMPATIBLEIDS"                 Value="0x00000002" />
+                <Set Name="SPDRP_UNUSED0"                       Value="0x00000003" />
+                <Set Name="SPDRP_SERVICE"                       Value="0x00000004" />
+                <Set Name="SPDRP_UNUSED1"                       Value="0x00000005" />
+                <Set Name="SPDRP_UNUSED2"                       Value="0x00000006" />
+                <Set Name="SPDRP_CLASS"                         Value="0x00000007" />
+                <Set Name="SPDRP_CLASSGUID"                     Value="0x00000008" />
+                <Set Name="SPDRP_DRIVER"                        Value="0x00000009" />
+                <Set Name="SPDRP_CONFIGFLAGS"                   Value="0x0000000A" />
+                <Set Name="SPDRP_MFG"                           Value="0x0000000B" />
+                <Set Name="SPDRP_FRIENDLYNAME"                  Value="0x0000000C" />
+                <Set Name="SPDRP_LOCATION_INFORMATION"          Value="0x0000000D" />
+                <Set Name="SPDRP_PHYSICAL_DEVICE_OBJECT_NAME"   Value="0x0000000E" />
+                <Set Name="SPDRP_CAPABILITIES"                  Value="0x0000000F" />
+                <Set Name="SPDRP_UI_NUMBER"                     Value="0x00000010" />
+                <Set Name="SPDRP_UPPERFILTERS"                  Value="0x00000011" />
+                <Set Name="SPDRP_LOWERFILTERS"                  Value="0x00000012" />
+                <Set Name="SPDRP_BUSTYPEGUID"                   Value="0x00000013" />
+                <Set Name="SPDRP_LEGACYBUSTYPE"                 Value="0x00000014" />
+                <Set Name="SPDRP_BUSNUMBER"                     Value="0x00000015" />
+                <Set Name="SPDRP_ENUMERATOR_NAME"               Value="0x00000016" />
+                <Set Name="SPDRP_SECURITY"                      Value="0x00000017" />
+                <Set Name="SPDRP_SECURITY_SDS"                  Value="0x00000018" />
+                <Set Name="SPDRP_DEVTYPE"                       Value="0x00000019" />
+                <Set Name="SPDRP_EXCLUSIVE"                     Value="0x0000001A" />
+                <Set Name="SPDRP_CHARACTERISTICS"               Value="0x0000001B" />
+                <Set Name="SPDRP_ADDRESS"                       Value="0x0000001C" />
+                <Set Name="SPDRP_UI_NUMBER_DESC_FORMAT"         Value="0X0000001D" />
+                <Set Name="SPDRP_DEVICE_POWER_DATA"             Value="0x0000001E" />
+                <Set Name="SPDRP_REMOVAL_POLICY"                Value="0x0000001F" />
+                <Set Name="SPDRP_REMOVAL_POLICY_HW_DEFAULT"     Value="0x00000020" />
+                <Set Name="SPDRP_REMOVAL_POLICY_OVERRIDE"       Value="0x00000021" />
+                <Set Name="SPDRP_INSTALL_STATE"                 Value="0x00000022" />
+                <Set Name="SPDRP_LOCATION_PATHS"                Value="0x00000023" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="LogSeverity" Type="Alias" Base="DWORD">
+            <Flag SingleValue="True">
+                <Set Name="LogSevInformation"   Value="0x00000000" />
+                <Set Name="LogSevWarning"       Value="0x00000001" />
+                <Set Name="LogSevError"         Value="0x00000002" />
+                <Set Name="LogSevFatalError"    Value="0x00000003" />
+                <Set Name="LogSevMaximum"       Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="SetupFileLogInfo" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="SetupFileLogSourceFilename"      Value="0" />
+                <Set Name="SetupFileLogChecksum"            Value="1" />
+                <Set Name="SetupFileLogDiskTagfile"         Value="2" />
+                <Set Name="SetupFileLogDiskDescription"     Value="3" />
+                <Set Name="SetupFileLogOtherInfo"           Value="4" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="DEVPROPTYPE" Type="Alias" Base="ULONG">
+            <Flag SingleValue="True">
+                <Set Name="DEVPROP_TYPE_EMPTY"                          Value="0x00000000" />
+                <Set Name="DEVPROP_TYPE_NULL"                           Value="0x00000001" />
+                <Set Name="DEVPROP_TYPE_SBYTE"                          Value="0x00000002" />
+                <Set Name="DEVPROP_TYPE_BYTE"                           Value="0x00000003" />
+                <Set Name="DEVPROP_TYPE_INT16"                          Value="0x00000004" />
+                <Set Name="DEVPROP_TYPE_UINT16"                         Value="0x00000005" />
+                <Set Name="DEVPROP_TYPE_INT32"                          Value="0x00000006" />
+                <Set Name="DEVPROP_TYPE_UINT32"                         Value="0x00000007" />
+                <Set Name="DEVPROP_TYPE_INT64"                          Value="0x00000008" />
+                <Set Name="DEVPROP_TYPE_UINT64"                         Value="0x00000009" />
+                <Set Name="DEVPROP_TYPE_FLOAT"                          Value="0x0000000A" />
+                <Set Name="DEVPROP_TYPE_DOUBLE"                         Value="0x0000000B" />
+                <Set Name="DEVPROP_TYPE_DECIMAL"                        Value="0x0000000C" />
+                <Set Name="DEVPROP_TYPE_GUID"                           Value="0x0000000D" />
+                <Set Name="DEVPROP_TYPE_CURRENCY"                       Value="0x0000000E" />
+                <Set Name="DEVPROP_TYPE_DATE"                           Value="0x0000000F" />
+                <Set Name="DEVPROP_TYPE_FILETIME"                       Value="0x00000010" />
+                <Set Name="DEVPROP_TYPE_BOOLEAN"                        Value="0x00000011" />
+                <Set Name="DEVPROP_TYPE_STRING"                         Value="0x00000012" />
+                <Set Name="DEVPROP_TYPE_STRING_LIST"                    Value="0x00002012" />
+                <Set Name="DEVPROP_TYPE_SECURITY_DESCRIPTOR"            Value="0x00000013" />
+                <Set Name="DEVPROP_TYPE_SECURITY_DESCRIPTOR_STRING"     Value="0x00000014" />
+                <Set Name="DEVPROP_TYPE_DEVPROPKEY"                     Value="0x00000015" />
+                <Set Name="DEVPROP_TYPE_DEVPROPTYPE"                    Value="0x00000016" />
+                <Set Name="DEVPROP_TYPE_BINARY"                         Value="0x00001003" />
+                <Set Name="DEVPROP_TYPE_ERROR"                          Value="0x00000017" />
+                <Set Name="DEVPROP_TYPE_NTSTATUS"                       Value="0x00000018" />
+                <Set Name="DEVPROP_TYPE_STRING_INDIRECT"                Value="0x00000019" />
+            </Flag>
+        </Variable>
+        <Variable Name="DEVPROPTYPE*" Type="Pointer" Base="DEVPROPTYPE" />
+
+        <Variable Name="PPNP_VETO_TYPE" Type="Alias" Base="UINT">
+            <Flag SingleValue="True">
+                <Set Name="PNP_VetoTypeUnknown"             Value="0" />
+                <Set Name="PNP_VetoLegacyDevice"            Value="1" />
+                <Set Name="PNP_VetoPendingClose"            Value="2" />
+                <Set Name="PNP_VetoWindowsApp"              Value="3" />
+                <Set Name="PNP_VetoWindowsService"          Value="4" />
+                <Set Name="PNP_VetoOutstandingOpen"         Value="5" />
+                <Set Name="PNP_VetoDevice"                  Value="6" />
+                <Set Name="PNP_VetoDriver"                  Value="7" />
+                <Set Name="PNP_VetoIllegalDeviceRequest"    Value="8" />
+                <Set Name="PNP_VetoInsufficientPower"       Value="9" />
+                <Set Name="PNP_VetoNonDisableable"          Value="10" />
+                <Set Name="PNP_VetoLegacyDriver"            Value="11" />
+                <Set Name="PNP_VetoInsufficientRights"      Value="12" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="DEVINSTID"                          Type="Alias"    Base="TCHAR*" />
+        <Variable Name="HDSKSPC"                            Type="Alias"    Base="LPVOID" />
+        <Variable Name="HINF"                               Type="Alias"    Base="LPVOID" />
+        <Variable Name="HSPFILEQ"                           Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSP_FILE_CALLBACK"                  Type="Alias"    Base="LPVOID" />
+        <Variable Name="PINFCONTEXT"                        Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSP_INF_INFORMATION"                Type="Alias"    Base="LPVOID" />
+        <Variable Name="HSPFILELOG"                         Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSP_ALTPLATFORM_INFO"               Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSP_ORIGINAL_FILE_INFO"             Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSP_FILE_COPY_PARAMS"               Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSP_ALTPLATFORM_FORM"               Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSP_INF_SIGNER_INFO_W"              Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSP_DEVICE_INTERFACE_DATA"          Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSP_CLASSIMAGELIST_DATA"            Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPPROPSHEETHEADER"                  Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSP_CLASSINSTALL_HEADER"            Type="Alias"    Base="LPVOID" />
+        <Variable Name="DEVPROPKEY*"                        Type="Alias"    Base="LPVOID" />
+        <Variable Name="CONST DEVPROPKEY*"                  Type="Alias"    Base="DEVPROPKEY*" />
+        <Variable Name="PSP_DEVINFO_LIST_DETAIL_DATA"       Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSP_DEVINSTALL_PARAMS"              Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSP_DEVICE_INTERFACE_DETAIL_DATA"   Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSP_DRVINFO_DETAIL_DATA"            Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSP_DRVINSTALL_PARAMS"              Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSP_DETSIG_CMPPROC"                 Type="Alias"    Base="LPVOID" />
+        <Variable Name="SP_LOG_TOKEN"                       Type="Alias"    Base="DWORDLONG" />
+        <Variable Name="LOG_CONF"                           Type="Alias"    Base="DWORD_PTR" />
+        <Variable Name="PLOG_CONF"                          Type="Pointer"  Base="LOG_CONF" />
+        <Variable Name="DEVINST"                            Type="Alias"    Base="DWORD" />
+        <Variable Name="PDEVINST"                           Type="Pointer"  Base="DWORD" />
+        <Variable Name="PRIORITY"                           Type="Alias"    Base="ULONG" />
+        <Variable Name="PPRIORITY"                          Type="Pointer"  Base="PRIORITY" />
+        <Variable Name="CONFIGRET"                          Type="Alias"    Base="DWORD" />
+        <Variable Name="RES_DES"                            Type="Alias"    Base="DWORD_PTR" />
+        <Variable Name="PRES_DES"                           Type="Pointer"  Base="RES_DES" />
+        <Variable Name="RESOURCEID"                         Type="Alias"    Base="ULONG" />
+        <Variable Name="PRESOURCEID"                        Type="Pointer"  Base="RESOURCEID" />
+        <Variable Name="HMACHINE"                           Type="Alias"    Base="HANDLE" />
+        <Variable Name="PHMACHINE"                          Type="Pointer"  Base="HMACHINE" />
+        <Variable Name="CONFLICT_LIST"                      Type="Alias"    Base="ULONG_PTR" />
+        <Variable Name="PCONFLICT_LIST"                     Type="Alias"    Base="LPVOID" />
+        <Variable Name="PCONFLICT_DETAILS"                  Type="Alias"    Base="LPVOID" />
+
+        <!-- Setup API -->
+        <Category Name="Administration and Management/Application Installation and Servicing/Setup API" />
+        <Api Name="InstallHinfSection" BothCharset="True">
+            <Param Type="HWND" Name="hwnd" />
+            <Param Type="HINSTANCE" Name="ModuleHandle" />
+            <Param Type="PCTSTR" Name="CmdLineBuffer" />
+            <Param Type="INT" Name="nCmdShow" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="SetupAddInstallSectionToDiskSpaceList" BothCharset="True">
+            <Param Type="HDSKSPC" Name="DiskSpace" />
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="HINF" Name="LayoutInfHandle" />
+            <Param Type="PCTSTR" Name="SectionName" />
+            <Param Type="PVOID" Name="Reserved1" />
+            <Param Type="UINT" Name="Reserved2" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupAddSectionToDiskSpaceList" BothCharset="True">
+            <Param Type="HDSKSPC" Name="DiskSpace" />
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="HINF" Name="ListInfHandle" />
+            <Param Type="PCTSTR" Name="SectionName" />
+            <Param Type="UINT" Name="Operation" />
+            <Param Type="PVOID" Name="Reserved1" />
+            <Param Type="UINT" Name="Reserved2" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupAddToDiskSpaceList" BothCharset="True">
+            <Param Type="HDSKSPC" Name="DiskSpace" />
+            <Param Type="PCTSTR" Name="TargetFilespec" />
+            <Param Type="LONGLONG" Name="FileSize" />
+            <Param Type="UINT" Name="Operation" />
+            <Param Type="PVOID" Name="Reserved1" />
+            <Param Type="UINT" Name="Reserved2" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupAddToSourceList" BothCharset="True">
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="PCTSTR" Name="Source" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupAdjustDiskSpaceList" BothCharset="True">
+            <Param Type="HDSKSPC" Name="DiskSpace" />
+            <Param Type="LPCTSTR" Name="DriveRoot" />
+            <Param Type="LONGLONG" Name="Amount" />
+            <Param Type="PVOID" Name="Reserved1" />
+            <Param Type="UINT" Name="Reserved2" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupBackupError" BothCharset="True">
+            <Param Type="HWND" Name="hwndParent" />
+            <Param Type="PCTSTR" Name="DialogTitle" />
+            <Param Type="PCTSTR" Name="SourceFile" />
+            <Param Type="PCTSTR" Name="TargetFile" />
+            <Param Type="UINT" Name="Win32ErrorCode" />
+            <Param Type="DWORD" Name="Style" />
+            <Return Type="UINT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupCancelTemporarySourceList">
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupCloseFileQueue">
+            <Param Type="HSPFILEQ" Name="QueueHandle" />
+            <Return Type="void" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupCloseInfFile">
+            <Param Type="HINF" Name="InfHandle" />
+            <Return Type="void" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupCommitFileQueue" BothCharset="True">
+            <Param Type="HWND" Name="Owner" />
+            <Param Type="HSPFILEQ" Name="QueueHandle" />
+            <Param Type="PSP_FILE_CALLBACK" Name="MsgHandler" />
+            <Param Type="PVOID" Name="Context" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupConfigureWmiFromInfSection" BothCharset="True">
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="PCWSTR" Name="SectionName" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupCopyError" BothCharset="True">
+            <Param Type="HWND" Name="hwndParent" />
+            <Param Type="PCTSTR" Name="DialogTitle" />
+            <Param Type="PCTSTR" Name="DiskName" />
+            <Param Type="PCTSTR" Name="PathToSource" />
+            <Param Type="PCTSTR" Name="SourceFile" />
+            <Param Type="PCTSTR" Name="TargetPathFile" />
+            <Param Type="UINT" Name="Win32ErrorCode" />
+            <Param Type="DWORD" Name="Style" />
+            <Param Type="PTSTR" Name="PathBuffer" />
+            <Param Type="DWORD" Name="PathBufferSize" />
+            <Param Type="PDWORD" Name="PathRequiredSize" />
+            <Return Type="UINT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupCopyOEMInf" BothCharset="True">
+            <Param Type="PCTSTR" Name="SourceInfFileName" />
+            <Param Type="PCTSTR" Name="OEMSourceMediaLocation" />
+            <Param Type="DWORD" Name="OEMSourceMediaType" />
+            <Param Type="DWORD" Name="CopyStyle" />
+            <Param Type="PTSTR" Name="DestinationInfFileName" />
+            <Param Type="DWORD" Name="DestinationInfFileNameSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Param Type="PTSTR" Name="DestinationInfFileNameComponent" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupCreateDiskSpaceList" BothCharset="True">
+            <Param Type="PVOID" Name="Reserved1" />
+            <Param Type="DWORD" Name="Reserved2" />
+            <Param Type="UINT" Name="Flags" />
+            <Return Type="HDSKSPC" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDecompressOrCopyFile" BothCharset="True">
+            <Param Type="PCTSTR" Name="SourceFileName" />
+            <Param Type="PCTSTR" Name="TargetFileName" />
+            <Param Type="PUINT" Name="CompressionType" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDefaultQueueCallback" BothCharset="True">
+            <Param Type="PVOID" Name="Context" />
+            <Param Type="UINT" Name="Notification" />
+            <Param Type="UINT" Name="Param1" />
+            <Param Type="UINT" Name="Param2" />
+            <Return Type="UINT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDeleteError" BothCharset="True">
+            <Param Type="HWND" Name="hwndParent" />
+            <Param Type="PCTSTR" Name="DialogTitle" />
+            <Param Type="PCTSTR" Name="File" />
+            <Param Type="UINT" Name="Win32ErrorCode" />
+            <Param Type="DWORD" Name="Style" />
+            <Return Type="UINT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDestroyDiskSpaceList">
+            <Param Type="HDSKSPC" Name="DiskSpace" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDuplicateDiskSpaceList" BothCharset="True">
+            <Param Type="HDSKSPC" Name="DiskSpace" />
+            <Param Type="PVOID" Name="Reserved1" />
+            <Param Type="DWORD" Name="Reserved2" />
+            <Param Type="UINT" Name="Flags" />
+            <Return Type="HDSKSPC" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupEnumInfSections" BothCharset="True">
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="UINT" Name="EnumerationIndex" />
+            <Param Type="PTSTR" Name="ReturnBuffer" />
+            <Param Type="DWORD" Name="ReturnBufferSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupFindFirstLine" BothCharset="True">
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="PCTSTR" Name="Section" />
+            <Param Type="PCTSTR" Name="Key" />
+            <Param Type="PINFCONTEXT" Name="Context" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupFindNextLine">
+            <Param Type="PINFCONTEXT" Name="ContextIn" />
+            <Param Type="PINFCONTEXT" Name="ContextOut" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupFindNextMatchLine" BothCharset="True">
+            <Param Type="PINFCONTEXT" Name="ContextIn" />
+            <Param Type="PCTSTR" Name="Key" />
+            <Param Type="PINFCONTEXT" Name="ContextOut" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupFreeSourceList" BothCharset="True">
+            <Param Type="PCTSTR**" Name="List" />
+            <Param Type="UINT" Name="Count" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupGetBinaryField">
+            <Param Type="PINFCONTEXT" Name="Context" />
+            <Param Type="DWORD" Name="FieldIndex" />
+            <Param Type="BYTE*" Name="ReturnBuffer" />
+            <Param Type="DWORD" Name="ReturnBufferSize" />
+            <Param Type="LPDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupGetFieldCount">
+            <Param Type="PINFCONTEXT" Name="Context" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupGetFileCompressionInfo" BothCharset="True">
+            <Param Type="PCTSTR" Name="SourceFileName" />
+            <Param Type="PTSTR*" Name="ActualSourceFileName" />
+            <Param Type="PDWORD" Name="SourceFileSize" />
+            <Param Type="PDWORD" Name="TargetFileSize" />
+            <Param Type="PUINT" Name="CompressionType" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupGetFileCompressionInfoEx" BothCharset="True">
+            <Param Type="PCTSTR" Name="SourceFileName" />
+            <Param Type="PTSTR" Name="ActualSourceFileNameBuffer" />
+            <Param Type="DWORD" Name="ActualSourceFileNameLen" />
+            <Param Type="PDWORD" Name="RequiredBufferLen" />
+            <Param Type="PDWORD" Name="SourceFileSize" />
+            <Param Type="PDWORD" Name="TargetFileSize" />
+            <Param Type="PUINT" Name="CompressionType" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupGetFileQueueCount">
+            <Param Type="HSPFILEQ" Name="FileQueue" />
+            <Param Type="UINT" Name="SubQueueFileOp" />
+            <Param Type="PUINT" Name="NumOperations" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupGetFileQueueFlags">
+            <Param Type="HSPFILEQ" Name="FileQueue" />
+            <Param Type="PDWORD" Name="Flags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupGetInfFileList" BothCharset="True">
+            <Param Type="PCTSTR" Name="DirectoryPath" />
+            <Param Type="[InfStyle]" Display="DWORD" Name="InfStyle" />
+            <Param Type="PTSTR" Name="ReturnBuffer" />
+            <Param Type="DWORD" Name="ReturnBufferSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupGetInfInformation" BothCharset="True">
+            <Param Type="LPCVOID" Name="InfSpec" />
+            <Param Type="DWORD" Name="SearchControl" />
+            <Param Type="PSP_INF_INFORMATION" Name="ReturnBuffer" />
+            <Param Type="DWORD" Name="ReturnBufferSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupGetIntField">
+            <Param Type="PINFCONTEXT" Name="Context" />
+            <Param Type="DWORD" Name="FieldIndex" />
+            <Param Type="PINT" Name="IntegerValue" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupGetLineByIndex" BothCharset="True">
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="PCTSTR" Name="Section" />
+            <Param Type="DWORD" Name="Index" />
+            <Param Type="PINFCONTEXT" Name="Context" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupGetLineCount" BothCharset="True">
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="PCTSTR" Name="Section" />
+            <Return Type="LONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupGetLineText" BothCharset="True">
+            <Param Type="PINFCONTEXT" Name="Context" />
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="PCTSTR" Name="Section" />
+            <Param Type="PCTSTR" Name="Key" />
+            <Param Type="PTSTR" Name="ReturnBuffer" />
+            <Param Type="DWORD" Name="ReturnBufferSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupGetMultiSzField" BothCharset="True">
+            <Param Type="PINFCONTEXT" Name="Context" />
+            <Param Type="DWORD" Name="FieldIndex" />
+            <Param Type="PTSTR" Name="ReturnBuffer" />
+            <Param Type="DWORD" Name="ReturnBufferSize" />
+            <Param Type="LPDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupGetSourceFileLocation" BothCharset="True">
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="PINFCONTEXT" Name="InfContext" />
+            <Param Type="PCTSTR" Name="FileName" />
+            <Param Type="PUINT" Name="SourceId" />
+            <Param Type="PTSTR" Name="ReturnBuffer" />
+            <Param Type="DWORD" Name="ReturnBufferSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupGetSourceFileSize" BothCharset="True">
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="PINFCONTEXT" Name="InfContext" />
+            <Param Type="PCTSTR" Name="FileName" />
+            <Param Type="PCTSTR" Name="Section" />
+            <Param Type="PDWORD" Name="FileSize" />
+            <Param Type="UINT" Name="RoundingFactor" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupGetSourceInfo" BothCharset="True">
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="UINT" Name="SourceId" />
+            <Param Type="UINT" Name="InfoDesired" />
+            <Param Type="PTSTR" Name="ReturnBuffer" />
+            <Param Type="DWORD" Name="ReturnBufferSize" />
+            <Param Type="LPDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupGetStringField" BothCharset="True">
+            <Param Type="PINFCONTEXT" Name="Context" />
+            <Param Type="DWORD" Name="FieldIndex" />
+            <Param Type="PTSTR" Name="ReturnBuffer" />
+            <Param Type="DWORD" Name="ReturnBufferSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupGetTargetPath" BothCharset="True">
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="PINFCONTEXT" Name="InfContext" />
+            <Param Type="PCTSTR" Name="Section" />
+            <Param Type="PTSTR" Name="ReturnBuffer" />
+            <Param Type="DWORD" Name="ReturnBufferSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupInitDefaultQueueCallback">
+            <Param Type="HWND" Name="OwnerWindow" />
+            <Return Type="PVOID" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupInitDefaultQueueCallbackEx">
+            <Param Type="HWND" Name="OwnerWindow" />
+            <Param Type="HWND" Name="AlternateProgressWindow" />
+            <Param Type="UINT" Name="ProgressMessage" />
+            <Param Type="DWORD" Name="Reserved1" />
+            <Param Type="PVOID" Name="Reserved2" />
+            <Return Type="PVOID" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupInitializeFileLog" BothCharset="True">
+            <Param Type="PCTSTR" Name="LogFileName" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="HSPFILELOG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupInstallFile" BothCharset="True">
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="PINFCONTEXT" Name="InfContext" />
+            <Param Type="PCTSTR" Name="SourceFile" />
+            <Param Type="PCTSTR" Name="SourcePathRoot" />
+            <Param Type="PCTSTR" Name="DestinationName" />
+            <Param Type="DWORD" Name="CopyStyle" />
+            <Param Type="PSP_FILE_CALLBACK" Name="CopyMsgHandler" />
+            <Param Type="PVOID" Name="Context" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupInstallFileEx" BothCharset="True">
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="PINFCONTEXT" Name="InfContext" />
+            <Param Type="PCTSTR" Name="SourceFile" />
+            <Param Type="PCTSTR" Name="SourcePathRoot" />
+            <Param Type="PCTSTR" Name="DestinationName" />
+            <Param Type="DWORD" Name="CopyStyle" />
+            <Param Type="PSP_FILE_CALLBACK" Name="CopyMsgHandler" />
+            <Param Type="PVOID" Name="Context" />
+            <Param Type="PBOOL" Name="FileWasInUse" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupInstallFilesFromInfSection" BothCharset="True">
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="HINF" Name="LayoutInfHandle" />
+            <Param Type="HSPFILEQ" Name="FileQueue" />
+            <Param Type="PCTSTR" Name="SectionName" />
+            <Param Type="PCTSTR" Name="SourceRootPath" />
+            <Param Type="UINT" Name="CopyFlags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupInstallFromInfSection" BothCharset="True">
+            <Param Type="HWND" Name="Owner" />
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="PCTSTR" Name="SectionName" />
+            <Param Type="UINT" Name="Flags" />
+            <Param Type="HKEY" Name="RelativeKeyRoot" />
+            <Param Type="PCTSTR" Name="SourceRootPath" />
+            <Param Type="UINT" Name="CopyFlags" />
+            <Param Type="PSP_FILE_CALLBACK" Name="MsgHandler" />
+            <Param Type="PVOID" Name="Context" />
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupInstallServicesFromInfSection" BothCharset="True">
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="PCTSTR" Name="SectionName" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupInstallServicesFromInfSectionEx" BothCharset="True">
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="PCTSTR" Name="SectionName" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="PVOID" Name="Reserved1" />
+            <Param Type="PVOID" Name="Reserved2" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupIterateCabinet" BothCharset="True">
+            <Param Type="PCTSTR" Name="CabinetFile" />
+            <Param Type="DWORD" Name="Reserved" />
+            <Param Type="PSP_FILE_CALLBACK" Name="MsgHandler" />
+            <Param Type="PVOID" Name="Context" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupLogFile" BothCharset="True">
+            <Param Type="HSPFILELOG" Name="FileLogHandle" />
+            <Param Type="PCTSTR" Name="LogSectionName" />
+            <Param Type="PCTSTR" Name="SourceFileName" />
+            <Param Type="PCTSTR" Name="TargetFileName" />
+            <Param Type="DWORD" Name="Checksum" />
+            <Param Type="PCTSTR" Name="DiskTagfile" />
+            <Param Type="PCTSTR" Name="DiskDescription" />
+            <Param Type="PCTSTR" Name="OtherInfo" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupLogError" BothCharset="True">
+            <Param Type="PCTSTR" Name="MessageString" />
+            <Param Type="LogSeverity" Name="Severity" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupOpenAppendInfFile" BothCharset="True">
+            <Param Type="PCTSTR" Name="FileName" />
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="PUINT" Name="ErrorLine" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupOpenFileQueue">
+            <Return Type="HSPFILEQ" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupOpenInfFile" BothCharset="True">
+            <Param Type="PCTSTR" Name="FileName" />
+            <Param Type="PCTSTR" Name="InfClass" />
+            <Param Type="[InfStyle]" Display="DWORD" Name="InfStyle" />
+            <Param Type="PUINT" Name="ErrorLine" />
+            <Return Type="HINF" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupOpenMasterInf">
+            <Return Type="HINF" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupPromptForDisk" BothCharset="True">
+            <Param Type="HWND" Name="hwndParent" />
+            <Param Type="PCTSTR" Name="DialogTitle" />
+            <Param Type="PCTSTR" Name="DiskName" />
+            <Param Type="PCTSTR" Name="PathToSource" />
+            <Param Type="PCTSTR" Name="FileSought" />
+            <Param Type="PCTSTR" Name="TagFile" />
+            <Param Type="DWORD" Name="DiskPromptStyle" />
+            <Param Type="PTSTR" Name="PathBuffer" />
+            <Param Type="DWORD" Name="PathBufferSize" />
+            <Param Type="PDWORD" Name="PathRequiredSize" />
+            <Return Type="UINT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupPromptReboot">
+            <Param Type="HSPFILEQ" Name="FileQueue" />
+            <Param Type="HWND" Name="Owner" />
+            <Param Type="BOOL" Name="ScanOnly" />
+            <Return Type="INT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupQueryDrivesInDiskSpaceList" BothCharset="True">
+            <Param Type="HDSKSPC" Name="DiskSpace" />
+            <Param Type="PSTR" Name="ReturnBuffer" />
+            <Param Type="DWORD" Name="ReturnBufferSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupQueryFileLog" BothCharset="True">
+            <Param Type="HSPFILELOG" Name="FileLogHandle" />
+            <Param Type="PCTSTR" Name="LogSectionName" />
+            <Param Type="PCTSTR" Name="TargetFileName" />
+            <Param Type="SetupFileLogInfo" Name="DesiredInfo" />
+            <Param Type="PTSTR" Name="DataOut" />
+            <Param Type="DWORD" Name="ReturnBufferSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupQueryInfFileInformation" BothCharset="True">
+            <Param Type="PSP_INF_INFORMATION" Name="InfInformation" />
+            <Param Type="UINT" Name="InfIndex" />
+            <Param Type="PTSTR" Name="ReturnBuffer" />
+            <Param Type="DWORD" Name="ReturnBufferSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupQueryInfOriginalFileInformation" BothCharset="True">
+            <Param Type="PSP_INF_INFORMATION" Name="InfInformation" />
+            <Param Type="UINT" Name="InfIndex" />
+            <Param Type="PSP_ALTPLATFORM_INFO" Name="AlternatePlatformInfo" />
+            <Param Type="PSP_ORIGINAL_FILE_INFO" Name="OriginalFileInfo" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupQueryInfVersionInformation" BothCharset="True">
+            <Param Type="PSP_INF_INFORMATION" Name="InfInformation" />
+            <Param Type="UINT" Name="InfIndex" />
+            <Param Type="PCTSTR" Name="Key" />
+            <Param Type="PTSTR" Name="ReturnBuffer" />
+            <Param Type="DWORD" Name="ReturnBufferSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupQuerySourceList" BothCharset="True">
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="PCTSTR**" Name="List" />
+            <Param Type="PUINT" Name="Count" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupQuerySpaceRequiredOnDrive" BothCharset="True">
+            <Param Type="HDSKSPC" Name="DiskSpace" />
+            <Param Type="PCTSTR" Name="DriveSpec" />
+            <Param Type="LONGLONG*" Name="SpaceRequired" />
+            <Param Type="PVOID" Name="Reserved1" />
+            <Param Type="UINT" Name="Reserved2" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupQueueCopy" BothCharset="True">
+            <Param Type="HSPFILEQ" Name="QueueHandle" />
+            <Param Type="PCTSTR" Name="SourceRootPath" />
+            <Param Type="PCTSTR" Name="SourcePath" />
+            <Param Type="PCTSTR" Name="SourceFileName" />
+            <Param Type="PCTSTR" Name="SourceDescription" />
+            <Param Type="PCTSTR" Name="SourceTagFile" />
+            <Param Type="PCTSTR" Name="TargetDirectory" />
+            <Param Type="PCTSTR" Name="TargetFileName" />
+            <Param Type="DWORD" Name="CopyStyle" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupQueueCopyIndirect" BothCharset="True">
+            <Param Type="PSP_FILE_COPY_PARAMS" Name="CopyParams" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupQueueCopySection" BothCharset="True">
+            <Param Type="HSPFILEQ" Name="QueueHandle" />
+            <Param Type="PCTSTR" Name="SourceRootPath" />
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="HINF" Name="ListInfHandle" />
+            <Param Type="PCTSTR" Name="Section" />
+            <Param Type="DWORD" Name="CopyStyle" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupQueueDefaultCopy" BothCharset="True">
+            <Param Type="HSPFILEQ" Name="QueueHandle" />
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="PCTSTR" Name="SourceRootPath" />
+            <Param Type="PCTSTR" Name="SourceFileName" />
+            <Param Type="PCTSTR" Name="TargetFileName" />
+            <Param Type="DWORD" Name="CopyStyle" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupQueueDelete" BothCharset="True">
+            <Param Type="HSPFILEQ" Name="QueueHandle" />
+            <Param Type="PCTSTR" Name="PathPart1" />
+            <Param Type="PCTSTR" Name="PathPart2" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupQueueDeleteSection" BothCharset="True">
+            <Param Type="HSPFILEQ" Name="QueueHandle" />
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="HINF" Name="ListInfHandle" />
+            <Param Type="PCTSTR" Name="Section" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupQueueRename" BothCharset="True">
+            <Param Type="HSPFILEQ" Name="QueueHandle" />
+            <Param Type="PCTSTR" Name="SourcePath" />
+            <Param Type="PCTSTR" Name="SourceFileName" />
+            <Param Type="PCTSTR" Name="TargetPath" />
+            <Param Type="PCTSTR" Name="TargetFileName" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupQueueRenameSection" BothCharset="True">
+            <Param Type="HSPFILEQ" Name="QueueHandle" />
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="HINF" Name="ListInfHandle" />
+            <Param Type="PCTSTR" Name="Section" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupRemoveFileLogEntry" BothCharset="True">
+            <Param Type="HSPFILELOG" Name="FileLogHandle" />
+            <Param Type="PCTSTR" Name="LogSectionName" />
+            <Param Type="PCTSTR" Name="TargetFileName" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupRemoveFromDiskSpaceList" BothCharset="True">
+            <Param Type="HDSKSPC" Name="DiskSpace" />
+            <Param Type="PCTSTR" Name="TargetFilespec" />
+            <Param Type="UINT" Name="Operation" />
+            <Param Type="PVOID" Name="Reserved1" />
+            <Param Type="UINT" Name="Reserved2" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupRemoveFromSourceList" BothCharset="True">
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="PCTSTR" Name="Source" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupRemoveInstallSectionFromDiskSpaceList" BothCharset="True">
+            <Param Type="HDSKSPC" Name="DiskSpace" />
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="HINF" Name="LayoutInfHandle" />
+            <Param Type="PCTSTR" Name="SectionName" />
+            <Param Type="PVOID" Name="Reserved1" />
+            <Param Type="UINT" Name="Reserved2" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupRemoveSectionFromDiskSpaceList" BothCharset="True">
+            <Param Type="HDSKSPC" Name="DiskSpace" />
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="HINF" Name="ListInfHandle" />
+            <Param Type="PCTSTR" Name="SectionName" />
+            <Param Type="UINT" Name="Operation" />
+            <Param Type="PVOID" Name="Reserved1" />
+            <Param Type="UINT" Name="Reserved2" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupRenameError" BothCharset="True">
+            <Param Type="HWND" Name="hwndParent" />
+            <Param Type="PCTSTR" Name="DialogTitle" />
+            <Param Type="PCTSTR" Name="SourceFile" />
+            <Param Type="PCTSTR" Name="TargetFile" />
+            <Param Type="UINT" Name="Win32ErrorCode" />
+            <Param Type="DWORD" Name="Style" />
+            <Return Type="UINT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupScanFileQueue" BothCharset="True">
+            <Param Type="HSPFILEQ" Name="FileQueue" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="HWND" Name="Window" />
+            <Param Type="PSP_FILE_CALLBACK" Name="CallbackRoutine" />
+            <Param Type="PVOID" Name="CallbackContext" />
+            <Param Type="PDWORD" Name="Result" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupSetDirectoryId" BothCharset="True">
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="DWORD" Name="Id" />
+            <Param Type="PCTSTR" Name="Directory" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupSetDirectoryIdEx" BothCharset="True">
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="DWORD" Name="Id" />
+            <Param Type="PCTSTR" Name="Directory" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="DWORD" Name="Reserved1" />
+            <Param Type="PVOID" Name="Reserved2" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupSetFileQueueAlternatePlatform" BothCharset="True">
+            <Param Type="HSPFILEQ" Name="QueueHandle" />
+            <Param Type="PSP_ALTPLATFORM_INFO" Name="AlternatePlatformInfo" />
+            <Param Type="PCWSTR" Name="AlternateDefaultCatalogFile" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupSetFileQueueFlags">
+            <Param Type="HSPFILEQ" Name="FileQueue" />
+            <Param Type="DWORD" Name="FlagMask" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupSetPlatformPathOverride" BothCharset="True">
+            <Param Type="PCTSTR" Name="Override" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupSetSourceList" BothCharset="True">
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="PCTSTR*" Name="SourceList" />
+            <Param Type="UINT" Name="SourceCount" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupTermDefaultQueueCallback">
+            <Param Type="PVOID" Name="Context" />
+            <Return Type="void" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupTerminateFileLog">
+            <Param Type="HSPFILELOG" Name="FileLogHandle" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupUninstallNewlyCopiedInfs">
+            <Param Type="HSPFILEQ" Name="QueueHandle" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="PVOID" Name="Reserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupUninstallOEMInf" BothCharset="True">
+            <Param Type="PCWSTR" Name="InfFileName" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="PVOID" Name="Reserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupVerifyInfFile" BothCharset="True">
+            <Param Type="PCWSTR" Name="InfName" />
+            <Param Type="PSP_ALTPLATFORM_FORM" Name="AltPlatformInfo" />
+            <Param Type="PSP_INF_SIGNER_INFO_W" Name="InfFileName" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <!-- Device and Driver Installation -->
+        <Category Name="Windows Driver Kit/Device and Driver Installation/SetupAPI/General Setup" />
+        <Api Name="SetupGetInfDriverStoreLocation" BothCharset="True">
+            <Param Type="PCTSTR" Name="FileName" />
+            <Param Type="PSP_ALTPLATFORM_INFO" Name="AlternatePlatformInfo" />
+            <Param Type="PCTSTR" Name="LocaleName" />
+            <Param Type="PTSTR" Name="ReturnBuffer" />
+            <Param Type="DWORD" Name="ReturnBufferSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupGetInfPublishedName" BothCharset="True">
+            <Param Type="PCTSTR" Name="DriverStoreLocation" />
+            <Param Type="PTSTR" Name="ReturnBuffer" />
+            <Param Type="DWORD" Name="ReturnBufferSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupGetNonInteractiveMode">
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupSetNonInteractiveMode">
+            <Param Type="BOOL" Name="NonInteractiveFlag" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <!-- Device and Driver Installation -->
+        <Category Name="Windows Driver Kit/Device and Driver Installation/SetupAPI/Device Installation" />
+        <Api Name="SetupDiAskForOEMDisk">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiBuildClassInfoList">
+            <Param Type="[SetupDiBuildClassInfoListFlags]" Display="DWORD" Name="Flags" />
+            <Param Type="LPGUID" Name="ClassGuidList" />
+            <Param Type="DWORD" Name="ClassGuidListSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiBuildClassInfoListEx" BothCharset="True">
+            <Param Type="[SetupDiBuildClassInfoListFlags]" Display="DWORD" Name="Flags" />
+            <Param Type="LPGUID" Name="ClassGuidList" />
+            <Param Type="DWORD" Name="ClassGuidListSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Param Type="PCTSTR" Name="MachineName" />
+            <Param Type="PVOID" Name="Reserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiBuildDriverInfoList">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="[DiDriverType]" Display="DWORD" Name="DriverType" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiCallClassInstaller">
+            <Param Type="DI_FUNCTION" Name="InstallFunction" />
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiCancelDriverInfoSearch">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiChangeState">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiClassGuidsFromName" BothCharset="True">
+            <Param Type="PCTSTR" Name="ClassName" />
+            <Param Type="LPGUID" Name="ClassGuidList" />
+            <Param Type="DWORD" Name="ClassGuidListSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiClassGuidsFromNameEx" BothCharset="True">
+            <Param Type="PCTSTR" Name="ClassName" />
+            <Param Type="LPGUID" Name="ClassGuidList" />
+            <Param Type="DWORD" Name="ClassGuidListSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Param Type="PCTSTR" Name="MachineName" />
+            <Param Type="PVOID" Name="Reserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiClassNameFromGuid" BothCharset="True">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="PTSTR" Name="ClassName" />
+            <Param Type="DWORD" Name="ClassNameSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiClassNameFromGuidEx" BothCharset="True">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="PTSTR" Name="ClassName" />
+            <Param Type="DWORD" Name="ClassNameSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Param Type="PCTSTR" Name="MachineName" />
+            <Param Type="PVOID" Name="Reserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiCreateDeviceInfo" BothCharset="True">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PCTSTR" Name="DeviceName" />
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="PCTSTR" Name="DeviceDescription" />
+            <Param Type="HWND" Name="hwndParent" />
+            <Param Type="[SetupDiCreateDeviceInfoFlags]" Display="DWORD" Name="CreationFlags" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiCreateDeviceInfoList">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="HWND" Name="hwndParent" />
+            <Return Type="HDEVINFO" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiCreateDeviceInfoListEx" BothCharset="True">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="HWND" Name="hwndParent" />
+            <Param Type="PCTSTR" Name="MachineName" />
+            <Param Type="PVOID" Name="Reserved" />
+            <Return Type="HDEVINFO" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiCreateDeviceInterface" BothCharset="True">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="LPGUID" Name="InterfaceClassGuid" />
+            <Param Type="PCTSTR" Name="ReferenceString" />
+            <Param Type="DWORD" Name="CreationFlags" />
+            <Param Type="PSP_DEVICE_INTERFACE_DATA" Name="DeviceInterfaceData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiCreateDeviceInterfaceRegKey" BothCharset="True">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVICE_INTERFACE_DATA" Name="DeviceInterfaceData" />
+            <Param Type="DWORD" Name="Reserved" />
+            <Param Type="REGSAM" Name="samDesired" />
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="PCTSTR" Name="InfSectionName" />
+            <Return Type="HKEY" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiCreateDevRegKey" BothCharset="True">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="[DeviceInfoScope]" Display="DWORD" Name="Scope" />
+            <Param Type="DWORD" Name="HwProfile" />
+            <Param Type="[DeviceInfoKeyType]" Display="DWORD" Name="KeyType" />
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="PCTSTR" Name="InfSectionName" />
+            <Return Type="HKEY" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiDeleteDeviceInfo">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiDeleteDeviceInterfaceData">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVICE_INTERFACE_DATA" Name="DeviceInterfaceData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiDeleteDeviceInterfaceRegKey">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVICE_INTERFACE_DATA" Name="DeviceInterfaceData" />
+            <Param Type="DWORD" Name="Reserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiDeleteDevRegKey">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="[DeviceInfoScope]" Display="DWORD" Name="Scope" />
+            <Param Type="DWORD" Name="HwProfile" />
+            <Param Type="[DeviceInfoKeyType]" Display="DWORD" Name="KeyType" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiDestroyClassImageList">
+            <Param Type="PSP_CLASSIMAGELIST_DATA" Name="ClassImageListData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiDestroyDeviceInfoList">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiDestroyDriverInfoList">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="[DiDriverType]" Display="DWORD" Name="DriverType" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiDrawMiniIcon">
+            <Param Type="HDC" Name="hdc" />
+            <Param Type="RECT" Name="rc" />
+            <Param Type="INT" Name="MiniIconIndex" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="INT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiEnumDeviceInfo">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="DWORD" Name="MemberIndex" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiEnumDeviceInterfaces">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="LPGUID" Name="InterfaceClassGuid" />
+            <Param Type="DWORD" Name="MemberIndex" />
+            <Param Type="PSP_DEVICE_INTERFACE_DATA" Name="DeviceInterfaceData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiEnumDriverInfo" BothCharset="True">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="[DiDriverType]" Display="DWORD" Name="DriverType" />
+            <Param Type="DWORD" Name="MemberIndex" />
+            <Param Type="PSP_DRVINFO_DATA" Name="DriverInfoData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetActualModelsSection" BothCharset="True">
+            <Param Type="PINFCONTEXT" Name="Context" />
+            <Param Type="PSP_ALTPLATFORM_INFO" Name="AlternatePlatformInfo" />
+            <Param Type="PTSTR" Name="DecoratedModelsSection" />
+            <Param Type="DWORD" Name="DecoratedModelsSectionSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Param Type="PVOID" Name="Reserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetActualSectionToInstall" BothCharset="True">
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="PCTSTR" Name="InfSectionName" />
+            <Param Type="PTSTR" Name="InfSectionWithExt" />
+            <Param Type="DWORD" Name="InfSectionWithExtSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Param Type="PTSTR*" Name="Extension" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetActualSectionToInstallEx" BothCharset="True">
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="PCTSTR" Name="InfSectionName" />
+            <Param Type="PSP_ALTPLATFORM_INFO" Name="AlternatePlatformInfo" />
+            <Param Type="PTSTR" Name="InfSectionWithExt" />
+            <Param Type="DWORD" Name="InfSectionWithExtSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Param Type="PTSTR*" Name="Extension" />
+            <Param Type="PVOID" Name="Reserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetClassBitmapIndex">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="PINT" Name="MiniIconIndex" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetClassDescription" BothCharset="True">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="PTSTR" Name="ClassDescription" />
+            <Param Type="DWORD" Name="ClassDescriptionSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetClassDescriptionEx" BothCharset="True">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="PTSTR" Name="ClassDescription" />
+            <Param Type="DWORD" Name="ClassDescriptionSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Param Type="PCTSTR" Name="MachineName" />
+            <Param Type="PVOID" Name="Reserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetClassDevPropertySheets" BothCharset="True">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="LPPROPSHEETHEADER" Name="PropertySheetHeader" />
+            <Param Type="DWORD" Name="PropertySheetHeaderPageListSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Param Type="[DiGetClassDevPropertySheetsType]" Display="DWORD" Name="PropertySheetType" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetClassDevs" BothCharset="True">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="PCTSTR" Name="Enumerator" />
+            <Param Type="HWND" Name="hwndParent" />
+            <Param Type="[DeviceInfoGetFlags]" Display="DWORD" Name="Flags" />
+            <Return Type="HDEVINFO" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetClassDevsEx" BothCharset="True">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="PCTSTR" Name="Enumerator" />
+            <Param Type="HWND" Name="hwndParent" />
+            <Param Type="[DeviceInfoGetFlags]" Display="DWORD" Name="Flags" />
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PCTSTR" Name="MachineName" />
+            <Param Type="PVOID" Name="Reserved" />
+            <Return Type="HDEVINFO" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetClassImageIndex">
+            <Param Type="PSP_CLASSIMAGELIST_DATA" Name="ClassImageListData" />
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="PINT" Name="ImageIndex" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetClassImageList">
+            <Param Type="PSP_CLASSIMAGELIST_DATA" Name="ClassImageListData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetClassImageListEx" BothCharset="True">
+            <Param Type="PSP_CLASSIMAGELIST_DATA" Name="ClassImageListData" />
+            <Param Type="PCTSTR" Name="MachineName" />
+            <Param Type="PVOID" Name="Reserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetClassInstallParams" BothCharset="True">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="PSP_CLASSINSTALL_HEADER" Name="ClassInstallParams" Length="ClassInstallParamsSize" />
+            <Param Type="DWORD" Name="ClassInstallParamsSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetClassPropertyW">
+            <Param Type="CONST GUID*" Name="ClassGuid" />
+            <Param Type="CONST DEVPROPKEY*" Name="PropertyKey" />
+            <Param Type="DEVPROPTYPE*" Name="PropertyType" />
+            <Param Type="PBYTE" Name="PropertyBuffer" PostLength="PropertyBufferSize" />
+            <Param Type="DWORD" Name="PropertyBufferSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Param Type="[DiClassPropertyFlags]" Display="DWORD" Name="Flags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetClassPropertyExW">
+            <Param Type="CONST GUID*" Name="ClassGuid" />
+            <Param Type="CONST DEVPROPKEY*" Name="PropertyKey" />
+            <Param Type="DEVPROPTYPE*" Name="PropertyType" />
+            <Param Type="PBYTE" Name="PropertyBuffer" Length="PropertyBufferSize" />
+            <Param Type="DWORD" Name="PropertyBufferSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Param Type="[DiClassPropertyFlags]" Display="DWORD" Name="Flags" />
+            <Param Type="PCWSTR" Name="MachineName" />
+            <Param Type="PVOID" Name="Reserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetClassPropertyKeys">
+            <Param Type="CONST GUID*" Name="ClassGuid" />
+            <Param Type="DEVPROPKEY*" Name="PropertyKeyArray" />
+            <Param Type="DWORD" Name="PropertyKeyCount" />
+            <Param Type="PDWORD" Name="RequiredPropertyKeyCount" />
+            <Param Type="[DiClassPropertyFlags]" Display="DWORD" Name="Flags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetClassPropertyKeysExW">
+            <Param Type="CONST GUID*" Name="ClassGuid" />
+            <Param Type="DEVPROPKEY*" Name="PropertyKeyArray" />
+            <Param Type="DWORD" Name="PropertyKeyCount" />
+            <Param Type="PDWORD" Name="RequiredPropertyKeyCount" />
+            <Param Type="[DiClassPropertyFlags]" Display="DWORD" Name="Flags" />
+            <Param Type="PCWSTR" Name="MachineName" />
+            <Param Type="PVOID" Name="Reserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetClassRegistryProperty" BothCharset="True">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="DWORD" Name="Property" />
+            <Param Type="[RegType*]" Display="PDWORD" Name="PropertyRegDataType" />
+            <Param Type="PBYTE" Name="PropertyBuffer" />
+            <Param Type="DWORD" Name="PropertyBufferSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Param Type="PCTSTR" Name="MachineName" />
+            <Param Type="PVOID" Name="Reserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetCustomDeviceProperty" BothCharset="True">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="PCTSTR" Name="CustomPropertyName" />
+            <Param Type="[GetCustomDevicePropertyFlags]" Display="DWORD" Name="Flags" />
+            <Param Type="[RegType*]" Display="PDWORD" Name="PropertyRegDataType" />
+            <Param Type="PBYTE" Name="PropertyBuffer" PostLength="RequiredSize" />
+            <Param Type="DWORD" Name="PropertyBufferSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetDeviceInfoListClass">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetDeviceInfoListDetail" BothCharset="True">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_LIST_DETAIL_DATA" Name="DeviceInfoSetDetailData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetDeviceInstallParams" BothCharset="True">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="PSP_DEVINSTALL_PARAMS" Name="DeviceInstallParams" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetDeviceInstanceId" BothCharset="True">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="PTSTR" Name="DeviceInstanceId" />
+            <Param Type="DWORD" Name="DeviceInstanceIdSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetDeviceInterfaceAlias">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVICE_INTERFACE_DATA" Name="DeviceInterfaceData" />
+            <Param Type="LPGUID" Name="AliasInterfaceClassGuid" />
+            <Param Type="PSP_DEVICE_INTERFACE_DATA" Name="AliasDeviceInterfaceData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetDeviceInterfaceDetail" BothCharset="True">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVICE_INTERFACE_DATA" Name="DeviceInterfaceData" />
+            <Param Type="PSP_DEVICE_INTERFACE_DETAIL_DATA" Name="DeviceInterfaceDetailData" />
+            <Param Type="DWORD" Name="DeviceInterfaceDetailDataSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetDeviceInterfacePropertyW">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVICE_INTERFACE_DATA" Name="DeviceInterfaceData" />
+            <Param Type="CONST DEVPROPKEY*" Name="PropertyKey" />
+            <Param Type="DEVPROPTYPE*" Name="PropertyType" />
+            <Param Type="PBYTE" Name="PropertyBuffer" />
+            <Param Type="DWORD" Name="PropertyBufferSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetDeviceInterfacePropertyKeys">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVICE_INTERFACE_DATA" Name="DeviceInterfaceData" />
+            <Param Type="DEVPROPKEY*" Name="PropertyKeyArray" />
+            <Param Type="DWORD" Name="PropertyKeyCount" />
+            <Param Type="PDWORD" Name="RequiredPropertyKeyCount" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetDevicePropertyW">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="CONST DEVPROPKEY*" Name="PropertyKey" />
+            <Param Type="DEVPROPTYPE*" Name="PropertyType" />
+            <Param Type="PBYTE" Name="PropertyBuffer" PostLength="PropertyBufferSize" />
+            <Param Type="DWORD" Name="PropertyBufferSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetDevicePropertyKeys">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="DEVPROPKEY*" Name="PropertyKeyArray" />
+            <Param Type="DWORD" Name="PropertyKeyCount" />
+            <Param Type="PDWORD" Name="RequiredPropertyKeyCount" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetDeviceRegistryProperty" BothCharset="True">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="[SetupDeviceRegistryProperty]" Display="DWORD" Name="Property" />
+            <Param Type="[RegType*]" Display="PDWORD" Name="PropertyRegDataType" />
+            <Param Type="PBYTE" Name="PropertyBuffer" PostLength="PropertyBufferSize" />
+            <Param Type="DWORD" Name="PropertyBufferSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetDriverInfoDetail" BothCharset="True">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="PSP_DRVINFO_DATA" Name="DriverInfoData" />
+            <Param Type="PSP_DRVINFO_DETAIL_DATA" Name="DriverInfoDetailData" />
+            <Param Type="DWORD" Name="DriverInfoDetailDataSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetDriverInstallParams" BothCharset="True">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="PSP_DRVINFO_DATA" Name="DriverInfoData" />
+            <Param Type="PSP_DRVINSTALL_PARAMS" Name="DriverInstallParams" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetHwProfileFriendlyName" BothCharset="True">
+            <Param Type="DWORD" Name="HwProfile" />
+            <Param Type="PTSTR" Name="FriendlyName" />
+            <Param Type="DWORD" Name="FriendlyNameSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetHwProfileFriendlyNameEx" BothCharset="True">
+            <Param Type="DWORD" Name="HwProfile" />
+            <Param Type="PTSTR" Name="FriendlyName" />
+            <Param Type="DWORD" Name="FriendlyNameSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Param Type="PCTSTR" Name="MachineName" />
+            <Param Type="PVOID" Name="Reserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetHwProfileList">
+            <Param Type="PDWORD" Name="HwProfileList" />
+            <Param Type="DWORD" Name="HwProfileListSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Param Type="PDWORD" Name="CurrentlyActiveIndex" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetHwProfileListEx" BothCharset="True">
+            <Param Type="PDWORD" Name="HwProfileList" />
+            <Param Type="DWORD" Name="HwProfileListSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Param Type="PDWORD" Name="CurrentlyActiveIndex" />
+            <Param Type="PCTSTR" Name="MachineName" />
+            <Param Type="PVOID" Name="Reserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetINFClass" BothCharset="True">
+            <Param Type="PCTSTR" Name="InfName" />
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="PTSTR" Name="ClassName" />
+            <Param Type="DWORD" Name="ClassNameSize" />
+            <Param Type="PDWORD" Name="RequiredSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetSelectedDevice">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiGetSelectedDriver" BothCharset="True">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="PSP_DRVINFO_DATA" Name="DriverInfoData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiInstallClass" BothCharset="True">
+            <Param Type="HWND" Name="hwndParent" />
+            <Param Type="PCTSTR" Name="InfFileName" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="HSPFILEQ" Name="FileQueue" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiInstallClassEx" BothCharset="True">
+            <Param Type="HWND" Name="hwndParent" />
+            <Param Type="PCTSTR" Name="InfFileName" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="HSPFILEQ" Name="FileQueue" />
+            <Param Type="LPGUID" Name="InterfaceClassGuid" />
+            <Param Type="PVOID" Name="Reserved1" />
+            <Param Type="PVOID" Name="Reserved2" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiInstallDevice">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiInstallDeviceInterfaces">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiInstallDriverFiles">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiLoadClassIcon">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="HICON*" Name="LargeIcon" />
+            <Param Type="LPINT" Name="MiniIconIndex" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiLoadDeviceIcon">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="UINT" Name="cxIcon" />
+            <Param Type="UINT" Name="cyIcon" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="HICON*" Name="hIcon" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiOpenClassRegKey">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="REGSAM" Name="samDesired" />
+            <Return Type="HKEY" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiOpenClassRegKeyEx" BothCharset="True">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="REGSAM" Name="samDesired" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="PCTSTR" Name="MachineName" />
+            <Param Type="PVOID" Name="Reserved" />
+            <Return Type="HKEY" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiOpenDeviceInfo" BothCharset="True">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PCTSTR" Name="DeviceInstanceId" />
+            <Param Type="HWND" Name="hwndParent" />
+            <Param Type="[OpenDeviceInfoFlags]" Display="DWORD" Name="OpenFlags" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiOpenDeviceInterface" BothCharset="True">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PCTSTR" Name="DevicePath" />
+            <Param Type="[OpenDeviceInterfaceFlags]" Display="DWORD" Name="OpenFlags" />
+            <Param Type="PSP_DEVICE_INTERFACE_DATA" Name="DeviceInterfaceData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiOpenDeviceInterfaceRegKey">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVICE_INTERFACE_DATA" Name="DeviceInterfaceData" />
+            <Param Type="DWORD" Name="Reserved" />
+            <Param Type="REGSAM" Name="samDesired" />
+            <Return Type="HKEY" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiOpenDevRegKey">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="[DeviceInfoScope]" Display="DWORD" Name="Scope" />
+            <Param Type="DWORD" Name="HwProfile" />
+            <Param Type="[DeviceInfoKeyType]" Display="DWORD" Name="KeyType" />
+            <Param Type="REGSAM" Name="samDesired" />
+            <Return Type="HKEY" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiRegisterCoDeviceInstallers">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiRegisterDeviceInfo">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="PSP_DETSIG_CMPPROC" Name="CompareProc" />
+            <Param Type="PVOID" Name="CompareContext" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DupDeviceInfoData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiRemoveDevice">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiRemoveDeviceInterface">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVICE_INTERFACE_DATA" Name="DeviceInterfaceData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiRestartDevices">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiSelectBestCompatDrv">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiSelectDevice">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiSelectOEMDrv">
+            <Param Type="HWND" Name="hwndParent" />
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiSetClassInstallParams" BothCharset="True">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="PSP_CLASSINSTALL_HEADER" Name="ClassInstallParams" Length="ClassInstallParamsSize" />
+            <Param Type="DWORD" Name="ClassInstallParamsSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiSetClassPropertyW">
+            <Param Type="CONST GUID*" Name="ClassGuid" />
+            <Param Type="CONST DEVPROPKEY*" Name="PropertyKey" />
+            <Param Type="DEVPROPTYPE" Name="PropertyType" />
+            <Param Type="CONST PBYTE" Name="PropertyBuffer" Length="PropertyBufferSize" />
+            <Param Type="DWORD" Name="PropertyBufferSize" />
+            <Param Type="[DiClassPropertyFlags]" Display="DWORD" Name="Flags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiSetClassPropertyExW">
+            <Param Type="CONST GUID*" Name="ClassGuid" />
+            <Param Type="CONST DEVPROPKEY*" Name="PropertyKey" />
+            <Param Type="DEVPROPTYPE" Name="PropertyType" />
+            <Param Type="CONST BYTE" Name="PropertyBuffer" />
+            <Param Type="DWORD" Name="PropertyBufferSize" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="PVOID" Name="Reserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiSetClassRegistryProperty" BothCharset="True">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="DWORD" Name="Property" />
+            <Param Type="CONST BYTE*" Name="PropertyBuffer" />
+            <Param Type="DWORD" Name="PropertyBufferSize" />
+            <Param Type="PCTSTR" Name="MachineName" />
+            <Param Type="PVOID" Name="Reserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiSetDeviceInstallParams" BothCharset="True">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="PSP_DEVINSTALL_PARAMS" Name="DeviceInstallParams" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiSetDeviceInterfaceDefault">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVICE_INTERFACE_DATA" Name="DeviceInterfaceData" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="PVOID" Name="Reserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiSetDeviceInterfacePropertyW">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVICE_INTERFACE_DATA" Name="DeviceInterfaceData" />
+            <Param Type="CONST DEVPROPKEY*" Name="PropertyKey" />
+            <Param Type="DEVPROPTYPE" Name="PropertyType" />
+            <Param Type="CONST PBYTE" Name="PropertyBuffer" />
+            <Param Type="DWORD" Name="PropertyBufferSize" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiSetDevicePropertyW">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="CONST DEVPROPKEY*" Name="PropertyKey" />
+            <Param Type="DEVPROPTYPE" Name="PropertyType" />
+            <Param Type="CONST PBYTE" Name="PropertyBuffer" />
+            <Param Type="DWORD" Name="PropertyBufferSize" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiSetDeviceRegistryProperty" BothCharset="True">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="[SetupDeviceRegistryProperty]" Display="DWORD" Name="Property" />
+            <Param Type="CONST BYTE*" Name="PropertyBuffer" Length="PropertyBufferSize" />
+            <Param Type="DWORD" Name="PropertyBufferSize" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiSetDriverInstallParams" BothCharset="True">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="PSP_DRVINFO_DATA" Name="DriverInfoData" />
+            <Param Type="PSP_DRVINSTALL_PARAMS" Name="DriverInstallParams" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiSetSelectedDevice">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiSetSelectedDriver" BothCharset="True">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Param Type="PSP_DRVINFO_DATA" Name="DriverInfoData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupDiUnremoveDevice">
+            <Param Type="HDEVINFO" Name="DeviceInfoSet" />
+            <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Category Name="Windows Driver Kit/Device and Driver Installation/SetupAPI/Logging" />
+        <Api Name="SetupGetThreadLogToken">
+            <Return Type="SP_LOG_TOKEN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetupSetThreadLogToken">
+            <Param Type="SP_LOG_TOKEN" Name="LogToken" />
+            <Return Type="VOID" />
+        </Api>
+        <!-- Variable Arguments NOT supported
+    <Api Name="SetupWriteTextLog">
+        <Param Type="SP_LOG_TOKEN" Name="LogToken" />
+        <Param Type="DWORD" Name="Category" />
+        <Param Type="DWORD" Name="Flags" />
+        <Param Type="PCTSTR" Name="MessageStr" />
+        <Param Type="..." />
+        <Return Type="VOID" />
+    </Api>
+    -->
+        <!-- Variable Arguments NOT supported
+    <Api Name="SetupWriteTextLogError">
+        <Param Type="SP_LOG_TOKEN" Name="LogToken" />
+        <Param Type="DWORD" Name="Category" />
+        <Param Type="DWORD" Name="LogFlags" />
+        <Param Type="DWORD" Name="Error" />
+        <Param Type="PCSTR" Name="MessageStr" />
+        <Param Type="..." />
+        <Return Type="VOID" />
+    </Api>
+    -->
+        <Api Name="SetupWriteTextLogInfLine">
+            <Param Type="SP_LOG_TOKEN" Name="LogToken" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="HINF" Name="InfHandle" />
+            <Param Type="PINFCONTEXT" Name="Context" />
+            <Return Type="VOID" />
+        </Api>
+        <!-- PnP Configuration Manager -->
+        <Category Name="Windows Driver Kit/Device and Driver Installation/PnP Configuration Manager" />
+        <Api Name="CM_Add_Empty_Log_Conf">
+            <Param Type="PLOG_CONF" Name="plcLogConf" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="PRIORITY" Name="Priority" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Add_Empty_Log_Conf_Ex">
+            <Param Type="PLOG_CONF" Name="plcLogConf" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="PRIORITY" Name="Priority" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Add_ID" BothCharset="True">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="PTSTR" Name="pszID" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Add_ID_Ex" BothCharset="True">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="PTSTR" Name="pszID" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Add_Res_Des">
+            <Param Type="PRES_DES" Name="prdResDes" />
+            <Param Type="LOG_CONF" Name="lcLogConf" />
+            <Param Type="RESOURCEID" Name="ResourceID" />
+            <Param Type="PCVOID" Name="ResourceData" />
+            <Param Type="ULONG" Name="ResourceLen" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Add_Res_Des_Ex">
+            <Param Type="PRES_DES" Name="prdResDes" />
+            <Param Type="LOG_CONF" Name="lcLogConf" />
+            <Param Type="RESOURCEID" Name="ResourceID" />
+            <Param Type="PCVOID" Name="ResourceData" />
+            <Param Type="ULONG" Name="ResourceLen" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Connect_Machine" BothCharset="True">
+            <Param Type="PCTSTR" Name="UNCServerName" />
+            <Param Type="PHMACHINE" Name="phMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CM_Disconnect_Machine">
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Enumerate_Classes">
+            <Param Type="ULONG" Name="ulClassIndex" />
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Enumerate_Classes_Ex">
+            <Param Type="ULONG" Name="ulClassIndex" />
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Enumerate_Enumerators" BothCharset="True">
+            <Param Type="ULONG" Name="ulEnumIndex" />
+            <Param Type="PTCHAR" Name="Buffer" />
+            <Param Type="PULONG" Name="pulLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Enumerate_Enumerators_Ex" BothCharset="True">
+            <Param Type="ULONG" Name="ulEnumIndex" />
+            <Param Type="PTCHAR" Name="Buffer" />
+            <Param Type="PULONG" Name="pulLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Free_Log_Conf">
+            <Param Type="LOG_CONF" Name="lcLogConfToBeFreed" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Free_Log_Conf_Ex">
+            <Param Type="LOG_CONF" Name="lcLogConfToBeFreed" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Free_Log_Conf_Handle">
+            <Param Type="LOG_CONF" Name="lcLogConf" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Free_Res_Des">
+            <Param Type="PRES_DES" Name="prdResDes" />
+            <Param Type="RES_DES" Name="rdResDes" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Free_Res_Des_Ex">
+            <Param Type="PRES_DES" Name="prdResDes" />
+            <Param Type="RES_DES" Name="rdResDes" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Free_Res_Des_Handle">
+            <Param Type="RES_DES" Name="rdResDes" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Free_Resource_Conflict_Handle">
+            <Param Type="CONFLICT_LIST" Name="clConflictList" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Child">
+            <Param Type="PDEVINST" Name="pdnDevInst" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Child_Ex">
+            <Param Type="PDEVINST" Name="pdnDevInst" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Class_Registry_Property" BothCharset="True">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="ULONG" Name="ulProperty" />
+            <Param Type="PULONG" Name="pulRegDataType" />
+            <Param Type="PVOID" Name="Buffer" />
+            <Param Type="PULONG" Name="pulLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Depth">
+            <Param Type="PULONG" Name="pulDepth" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Depth_Ex">
+            <Param Type="PULONG" Name="pulDepth" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Device_ID" BothCharset="True">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="PTCHAR" Name="Buffer" />
+            <Param Type="ULONG" Name="BufferLen" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Device_ID_Ex" BothCharset="True">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="PTCHAR" Name="Buffer" />
+            <Param Type="ULONG" Name="BufferLen" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Device_ID_List" BothCharset="True">
+            <Param Type="PCTSTR" Name="pszFilter" />
+            <Param Type="PTCHAR" Name="Buffer" />
+            <Param Type="ULONG" Name="BufferLen" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Device_ID_List_Ex" BothCharset="True">
+            <Param Type="PCTSTR" Name="pszFilter" />
+            <Param Type="PTCHAR" Name="Buffer" />
+            <Param Type="ULONG" Name="BufferLen" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Device_ID_List_Size" BothCharset="True">
+            <Param Type="PULONG" Name="pulLen" />
+            <Param Type="PCTSTR" Name="pszFilter" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Device_ID_List_Size_Ex" BothCharset="True">
+            <Param Type="PULONG" Name="pulLen" />
+            <Param Type="PCTSTR" Name="pszFilter" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Device_ID_Size">
+            <Param Type="PULONG" Name="pulLen" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Device_ID_Size_Ex">
+            <Param Type="PULONG" Name="pulLen" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Device_Interface_List" BothCharset="True">
+            <Param Type="LPGUID" Name="InterfaceClassGuid" />
+            <Param Type="DEVINSTID" Name="pDeviceID" />
+            <Param Type="PTCHAR" Name="Buffer" />
+            <Param Type="ULONG" Name="BufferLen" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Device_Interface_List_Size" BothCharset="True">
+            <Param Type="PULONG" Name="pulLen" />
+            <Param Type="LPGUID" Name="InterfaceClassGuid" />
+            <Param Type="DEVINSTID" Name="pDeviceID" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_DevNode_Status">
+            <Param Type="PULONG" Name="pulStatus" />
+            <Param Type="[CmProblemNumber*]" Display="PULONG" Name="pulProblemNumber" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_DevNode_Status_Ex">
+            <Param Type="PULONG" Name="pulStatus" />
+            <Param Type="[CmProblemNumber*]" Display="PULONG" Name="pulProblemNumber" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_First_Log_Conf">
+            <Param Type="PLOG_CONF" Name="plcLogConf" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="[LogicalConfigFlags]" Display="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_First_Log_Conf_Ex">
+            <Param Type="PLOG_CONF" Name="plcLogConf" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="[LogicalConfigFlags]" Display="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_HW_Prof_Flags" BothCharset="True">
+            <Param Type="DEVINSTID" Name="pDeviceID" />
+            <Param Type="[CsConfigFlags*]" Display="PULONG" Name="pulValue" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_HW_Prof_Flags_Ex" BothCharset="True">
+            <Param Type="DEVINSTID" Name="pDeviceID" />
+            <Param Type="ULONG" Name="ulHardwareProfile" />
+            <Param Type="[CsConfigFlags*]" Display="PULONG" Name="pulValue" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Log_Conf_Priority">
+            <Param Type="LOG_CONF" Name="lcLogConf" />
+            <Param Type="PPRIORITY" Name="pPriority" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Log_Conf_Priority_Ex">
+            <Param Type="LOG_CONF" Name="lcLogConf" />
+            <Param Type="PPRIORITY" Name="pPriority" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Next_Log_Conf">
+            <Param Type="PLOG_CONF" Name="plcLogConf" />
+            <Param Type="LOG_CONF" Name="lcLogConf" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Next_Log_Conf_Ex">
+            <Param Type="PLOG_CONF" Name="plcLogConf" />
+            <Param Type="LOG_CONF" Name="lcLogConf" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Next_Res_Des">
+            <Param Type="PRES_DES" Name="prdResDes" />
+            <Param Type="RES_DES" Name="rdResDes" />
+            <Param Type="RESOURCEID" Name="ForResource" />
+            <Param Type="PRESOURCEID" Name="pResourceID" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Next_Res_Des_Ex">
+            <Param Type="PRES_DES" Name="prdResDes" />
+            <Param Type="RES_DES" Name="rdResDes" />
+            <Param Type="RESOURCEID" Name="ForResource" />
+            <Param Type="PRESOURCEID" Name="pResourceID" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Parent">
+            <Param Type="PDEVINST" Name="pdnDevInst" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Parent_Ex">
+            <Param Type="PDEVINST" Name="pdnDevInst" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Res_Des_Data">
+            <Param Type="RES_DES" Name="rdResDes" />
+            <Param Type="PVOID" Name="Buffer" />
+            <Param Type="ULONG" Name="BufferLen" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Res_Des_Data_Ex">
+            <Param Type="RES_DES" Name="rdResDes" />
+            <Param Type="PVOID" Name="Buffer" />
+            <Param Type="ULONG" Name="BufferLen" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Res_Des_Data_Size">
+            <Param Type="PULONG" Name="pulSize" />
+            <Param Type="RES_DES" Name="rdResDes" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Res_Des_Data_Size_Ex">
+            <Param Type="PULONG" Name="pulSize" />
+            <Param Type="RES_DES" Name="rdResDes" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Resource_Conflict_Count">
+            <Param Type="CONFLICT_LIST" Name="clConflictList" />
+            <Param Type="PULONG" Name="pulCount" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Resource_Conflict_Details" BothCharset="True">
+            <Param Type="CONFLICT_LIST" Name="clConflictList" />
+            <Param Type="ULONG" Name="ulIndex" />
+            <Param Type="PCONFLICT_DETAILS" Name="pConflictDetails" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Sibling">
+            <Param Type="PDEVINST" Name="pdnDevInst" />
+            <Param Type="DEVINST" Name="DevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Sibling_Ex">
+            <Param Type="PDEVINST" Name="pdnDevInst" />
+            <Param Type="DEVINST" Name="DevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Version">
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Get_Version_Ex">
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Is_Dock_Station_Present">
+            <Param Type="PBOOL" Name="pbPresent" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Is_Dock_Station_Present_Ex">
+            <Param Type="PBOOL" Name="pbPresent" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Is_Version_Available">
+            <Param Type="WORD" Name="wVersion" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Is_Version_Available_Ex">
+            <Param Type="WORD" Name="wVersion" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Locate_DevNode" BothCharset="True">
+            <Param Type="PDEVINST" Name="pdnDevInst" />
+            <Param Type="DEVINSTID" Name="pDeviceID" />
+            <Param Type="[CM_Locate_DevNode_Flags]" Display="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Locate_DevNode_Ex" BothCharset="True">
+            <Param Type="PDEVINST" Name="pdnDevInst" />
+            <Param Type="DEVINSTID" Name="pDeviceID" />
+            <Param Type="[CM_Locate_DevNode_Flags]" Display="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Modify_Res_Des">
+            <Param Type="PRES_DES" Name="prdResDes" />
+            <Param Type="RES_DES" Name="rdResDes" />
+            <Param Type="RESOURCEID" Name="ResourceID" />
+            <Param Type="PCVOID" Name="ResourceData" />
+            <Param Type="ULONG" Name="ResourceLen" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Modify_Res_Des_Ex">
+            <Param Type="PRES_DES" Name="prdResDes" />
+            <Param Type="RES_DES" Name="rdResDes" />
+            <Param Type="RESOURCEID" Name="ResourceID" />
+            <Param Type="PCVOID" Name="ResourceData" />
+            <Param Type="ULONG" Name="ResourceLen" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Query_And_Remove_SubTree" BothCharset="True">
+            <Param Type="DEVINST" Name="dnAncestor" />
+            <Param Type="PPNP_VETO_TYPE" Name="pVetoType" />
+            <Param Type="LPTSTR" Name="pszVetoName" />
+            <Param Type="ULONG" Name="ulNameLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Query_And_Remove_SubTree_Ex" BothCharset="True">
+            <Param Type="DEVINST" Name="dnAncestor" />
+            <Param Type="PPNP_VETO_TYPE" Name="pVetoType" />
+            <Param Type="LPTSTR" Name="pszVetoName" />
+            <Param Type="ULONG" Name="ulNameLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Query_Resource_Conflict_List">
+            <Param Type="PCONFLICT_LIST" Name="pclConflictList" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="RESOURCEID" Name="ResourceID" />
+            <Param Type="PCVOID" Name="ResourceData" />
+            <Param Type="ULONG" Name="ResourceLen" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Reenumerate_DevNode">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Reenumerate_DevNode_Ex">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Request_Device_Eject" BothCharset="True">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="PPNP_VETO_TYPE" Name="pVetoType" />
+            <Param Type="LPTSTR" Name="pszVetoName" />
+            <Param Type="ULONG" Name="ulNameLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Request_Device_Eject_Ex" BothCharset="True">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="PPNP_VETO_TYPE" Name="pVetoType" />
+            <Param Type="LPTSTR" Name="pszVetoName" />
+            <Param Type="ULONG" Name="ulNameLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Request_Eject_PC">
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Request_Eject_PC_Ex">
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Set_Class_Registry_Property" BothCharset="True">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="ULONG" Name="ulProperty" />
+            <Param Type="PCVOID" Name="Buffer" />
+            <Param Type="ULONG" Name="ulLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Set_DevNode_Problem">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="[CmProblemNumber]" Display="ULONG" Name="ulProblem" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Set_DevNode_Problem_Ex">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="[CmProblemNumber]" Display="ULONG" Name="ulProblem" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CM_Setup_DevNode">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CMP_WaitNoPendingInstallEvents">
+            <Param Type="DWORD" Name="dwTimeout" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0xFFFFFFFF" />
+        </Api>
+    </Module>
+</ApiMonitor>
