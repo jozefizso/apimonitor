@@ -1,13 +1,17 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\shell.h.xml" />
+    <Include Filename="Headers\ole.h.xml" />
+    
     <Module Name="urlmon.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
         <!-- Variables -->
         <Variable Name="[CreateUriFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="Uri_CREATE_ALLOW_RELATIVE"                       Value="0x00000001" />
                 <Set Name="Uri_CREATE_ALLOW_IMPLICIT_WILDCARD_SCHEME"       Value="0x00000002" />
@@ -29,6 +33,7 @@
         </Variable>
 
         <Variable Name="[UriEncodingFlags]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
             <Flag>
                 <Set Name="Uri_ENCODING_USER_INFO_AND_PATH_IS_PERCENT_ENCODED_UTF8"     Value="0x00000001" />
                 <Set Name="Uri_ENCODING_USER_INFO_AND_PATH_IS_CP"                       Value="0x00000002" />
@@ -42,7 +47,7 @@
         </Variable>
 
         <Variable Name="INTERNETFEATURELIST" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="FEATURE_OBJECT_CACHING"                  Value="0" />
                 <Set Name="FEATURE_ZONE_ELEVATION"                  Value="1" />
                 <Set Name="FEATURE_MIME_HANDLING"                   Value="2" />
@@ -72,10 +77,11 @@
                 <Set Name="FEATURE_FEEDS"                           Value="26" />
                 <Set Name="FEATURE_BLOCK_INPUT_PROMPTS"             Value="27" />
                 <Set Name="FEATURE_ENTRY_COUNT"                     Value="28" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="[GetFeatureFlag]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="GET_FEATURE_FROM_THREAD"                 Value="0x00000001" />
                 <Set Name="GET_FEATURE_FROM_PROCESS"                Value="0x00000002" />
@@ -89,6 +95,7 @@
         </Variable>
 
         <Variable Name="[UrlFlags]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
             <Flag>
                 <Set Name="URL_UNESCAPE"                    Value="0x10000000" />
                 <Set Name="URL_ESCAPE_UNSAFE"               Value="0x20000000" />
@@ -113,7 +120,7 @@
         </Variable>
 
         <Variable Name="QUERYOPTION" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="QUERY_EXPIRATION_DATE"       Value="1" />
                 <Set Name="QUERY_TIME_OF_LAST_CHANGE"   Value="2" />
                 <Set Name="QUERY_CONTENT_ENCODING"      Value="3" />
@@ -129,18 +136,18 @@
                 <Set Name="QUERY_IS_SECURE"             Value="13" />
                 <Set Name="QUERY_IS_SAFE"               Value="14" />
                 <Set Name="QUERY_USES_HISTORYFOLDER"    Value="15" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="PSUACTION" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="PSU_DEFAULT"             Value="1" />
                 <Set Name="PSU_SECURITY_URL_ONLY"   Value="2" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="PARSEACTION" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="PARSE_CANONICALIZE"      Value="1" />
                 <Set Name="PARSE_FRIENDLY"          Value="2" />
                 <Set Name="PARSE_SECURITY_URL"      Value="3" />
@@ -160,7 +167,18 @@
                 <Set Name="PARSE_SECURITY_DOMAIN"   Value="17" />
                 <Set Name="PARSE_ESCAPE"            Value="18" />
                 <Set Name="PARSE_UNESCAPE"          Value="19" />
-            </Flag>
+            </Enum>
+        </Variable>
+
+        <Variable Name="[UrlMkSessionOption]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="URLMON_OPTION_USERAGENT"                 Value="0x10000001" />
+                <Set Name="URLMON_OPTION_USERAGENT_REFRESH"         Value="0x10000002" />
+                <Set Name="URLMON_OPTION_URL_ENCODING"              Value="0x10000004" />
+                <Set Name="URLMON_OPTION_USE_BINDSTRINGCREDS"       Value="0x10000008" />
+                <Set Name="URLMON_OPTION_USE_BROWSERAPPSDOCUMENTS"  Value="0x10000010" />
+            </Enum>
         </Variable>
 
         <Variable Name="IInternetSecurityManager*"          Type="Alias"    Base="LPVOID" />
@@ -185,7 +203,7 @@
             <Param Type="FORMATETC*" Name="rgfmtetc" />
             <Param Type="IEnumFORMATETC**" Name="ppenumfmtetc" />
             <Return Type="HRESULT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <!-- Security Zones -->
         <Category Name="Web Development/Internet Explorer Development/Security and Privacy/Security Zones" />
@@ -221,13 +239,13 @@
         </Api>
         <Api Name="CoInternetIsFeatureEnabled">
             <Param Type="INTERNETFEATURELIST" Name="FeatureEntry" />
-            <Param Type="[GetFeatureFlag]" Display="DWORD" Name="dwFlags" />
+            <Param Type="[GetFeatureFlag]" Name="dwFlags" />
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="CoInternetIsFeatureEnabledForIUri">
             <Param Type="INTERNETFEATURELIST" Name="FeatureEntry" />
-            <Param Type="[GetFeatureFlag]" Display="DWORD" Name="dwFlags" />
+            <Param Type="[GetFeatureFlag]" Name="dwFlags" />
             <Param Type="IUri*" Name="pIUri" />
             <Param Type="IInternetSecurityManagerEx2*" Name="pSecMgr" />
             <Return Type="STDAPI" />
@@ -235,7 +253,7 @@
         </Api>
         <Api Name="CoInternetIsFeatureEnabledForUrl">
             <Param Type="INTERNETFEATURELIST" Name="FeatureEntry" />
-            <Param Type="[GetFeatureFlag]" Display="DWORD" Name="dwFlags" />
+            <Param Type="[GetFeatureFlag]" Name="dwFlags" />
             <Param Type="LPCWSTR" Name="szURL" />
             <Param Type="IInternetSecurityManager*" Name="pSecMgr" />
             <Return Type="HRESULT" />
@@ -288,7 +306,7 @@
         <Api Name="CoInternetCombineIUri">
             <Param Type="IUri*" Name="pBaseUri" />
             <Param Type="IUri*" Name="pRelativeUri" />
-            <Param Type="[UrlFlags]" Display="DWORD" Name="dwCombineFlags" />
+            <Param Type="[UrlFlags]" Name="dwCombineFlags" />
             <Param Type="IUri**" Name="ppCombinedUri" />
             <Param Type="DWORD_PTR" Name="dwReserved" />
             <Return Type="HRESULT" />
@@ -297,7 +315,7 @@
         <Api Name="CoInternetCombineUrl">
             <Param Type="LPCWSTR" Name="pwzBaseUrl" />
             <Param Type="LPCWSTR" Name="pwzRelativeUrl" />
-            <Param Type="[UrlFlags]" Display="DWORD" Name="dwCombineFlags" />
+            <Param Type="[UrlFlags]" Name="dwCombineFlags" />
             <Param Type="LPWSTR" Name="pwzResult" />
             <Param Type="DWORD" Name="cchResult" />
             <Param Type="DWORD*" Name="pcchResult" />
@@ -308,7 +326,7 @@
         <Api Name="CoInternetCombineUrlEx">
             <Param Type="IUri*" Name="pBaseUri" />
             <Param Type="LPCWSTR" Name="pwzRelativeUrl" />
-            <Param Type="[UrlFlags]" Display="DWORD" Name="dwCombineFlags" />
+            <Param Type="[UrlFlags]" Name="dwCombineFlags" />
             <Param Type="IUri**" Name="ppCombinedUri" />
             <Param Type="DWORD_PTR" Name="dwReserved" />
             <Return Type="HRESULT" />
@@ -403,7 +421,7 @@
         </Api>
         <Api Name="CreateUri">
             <Param Type="LPCWSTR" Name="pwzURI" />
-            <Param Type="[CreateUriFlags]" Display="DWORD" Name="dwFlags" />
+            <Param Type="[CreateUriFlags]" Name="dwFlags" />
             <Param Type="DWORD_PTR" Name="dwReserved" />
             <Param Type="IUri**" Name="ppURI" />
             <Return Type="STDAPI" />
@@ -411,9 +429,9 @@
         </Api>
         <Api Name="CreateUriFromMultiByteString">
             <Param Type="LPCSTR" Name="pszANSIInputUri" />
-            <Param Type="[UriEncodingFlags]" Display="DWORD" Name="dwEncodingFlags" />
+            <Param Type="[UriEncodingFlags]" Name="dwEncodingFlags" />
             <Param Type="DWORD" Name="dwCodePage" />
-            <Param Type="[CreateUriFlags]" Display="DWORD" Name="dwCreateFlags" />
+            <Param Type="[CreateUriFlags]" Name="dwCreateFlags" />
             <Param Type="DWORD_PTR" Name="dwReserved" />
             <Param Type="IUri**" Name="ppURI" />
             <Return Type="HRESULT" />
@@ -422,7 +440,7 @@
         <Api Name="CreateUriWithFragment">
             <Param Type="LPCWSTR" Name="pwzURI" />
             <Param Type="LPCWSTR" Name="pwzFragment" />
-            <Param Type="[CreateUriFlags]" Display="DWORD" Name="dwFlags" />
+            <Param Type="[CreateUriFlags]" Name="dwFlags" />
             <Param Type="DWORD_PTR" Name="dwReserved" />
             <Param Type="IUri**" Name="ppURI" />
             <Return Type="STDAPI" />
@@ -601,7 +619,8 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="UrlMkGetSessionOption">
-            <Param Type="DWORD" Name="dwOption" />
+            <Param Type="[UrlMkSessionOption]" Name="dwOption" />
+            <Param Type="LPVOID" Name="pBuffer" PostLength="pdwBufferLengthOut" />
             <Param Type="DWORD" Name="dwBufferLength" />
             <Param Type="DWORD*" Name="pdwBufferLengthOut" />
             <Param Type="DWORD" Name="dwReserved" />
@@ -609,7 +628,8 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="UrlMkSetSessionOption">
-            <Param Type="DWORD" Name="dwOption" />
+            <Param Type="[UrlMkSessionOption]" Name="dwOption" />
+            <Param Type="LPVOID" Name="pBuffer" Length="dwBufferLength" />
             <Param Type="DWORD" Name="dwBufferLength" />
             <Param Type="DWORD" Name="dwReserved" />
             <Return Type="HRESULT" />

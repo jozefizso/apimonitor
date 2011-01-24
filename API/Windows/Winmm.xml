@@ -1,6 +1,6 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
@@ -9,7 +9,7 @@
     <Module Name="Winmm.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         <!-- Variables -->
         <Variable Name="MCIERROR" Type="Alias" Base="DWORD">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="MCIERR_INVALID_DEVICE_ID"            Value="257"/>
                 <Set Name="MCIERR_UNRECOGNIZED_KEYWORD"         Value="259"/>
                 <Set Name="MCIERR_UNRECOGNIZED_COMMAND"         Value="261"/>
@@ -85,7 +85,96 @@
                 <Set Name="MCIERR_FILE_READ"                    Value="348"/>
                 <Set Name="MCIERR_FILE_WRITE"                   Value="349"/>
                 <Set Name="MCIERR_NO_IDENTITY"                  Value="350"/>
+            </Enum>
+        </Variable>
+
+        <Variable Name="[waveInOutOpenFlags]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
+            <Flag>
+                <Set Name="WAVE_FORMAT_QUERY"                          	Value="0x0001" />
+                <Set Name="WAVE_ALLOWSYNC"                             	Value="0x0002" />
+                <Set Name="WAVE_MAPPED"                                	Value="0x0004" />
+                <Set Name="WAVE_FORMAT_DIRECT"                         	Value="0x0008" />
+                <Set Name="WAVE_FORMAT_DIRECT_QUERY"                   	Value="0x0009" />
+                <Set Name="WAVE_MAPPED_DEFAULT_COMMUNICATION_DEVICE"   	Value="0x0010" />
+                <Set Name="CALLBACK_TYPEMASK"   					    Value="0x00070000" />
+                <Set Name="CALLBACK_NULL"       					    Value="0x00000000" />
+                <Set Name="CALLBACK_WINDOW"     					    Value="0x00010000" />
+                <Set Name="CALLBACK_FUNCTION"   					    Value="0x00030000" />
+                <Set Name="CALLBACK_THREAD"     					    Value="0x00020000" />
+                <Set Name="CALLBACK_EVENT"      					    Value="0x00050000" />
             </Flag>
+        </Variable>
+
+        <Variable Name="[midiInOutOpenFlags]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
+            <Flag>
+                <Set Name="WAVE_FORMAT_QUERY"                          	Value="0x0001" />
+                <Set Name="WAVE_ALLOWSYNC"                             	Value="0x0002" />
+                <Set Name="WAVE_MAPPED"                                	Value="0x0004" />
+                <Set Name="WAVE_FORMAT_DIRECT"                         	Value="0x0008" />
+                <Set Name="WAVE_FORMAT_DIRECT_QUERY"                   	Value="0x0009" />
+                <Set Name="WAVE_MAPPED_DEFAULT_COMMUNICATION_DEVICE"   	Value="0x0010" />
+                <Set Name="MIDI_IO_STATUS"					            Value="0x00000020" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[mmioInstallIOProcFlags]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
+            <Flag>
+                <Set Name="MMIO_INSTALLPROC"    Value="0x00010000" />
+                <Set Name="MMIO_GLOBALPROC"     Value="0x10000000" />
+                <Set Name="MMIO_REMOVEPROC"     Value="0x00020000" />
+                <Set Name="MMIO_UNICODEPROC"    Value="0x01000000" />
+                <Set Name="MMIO_FINDPROC"       Value="0x00040000" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[mmioCloseFlags]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Flag>
+                <Set Name="MMIO_FHOPEN"         Value="0x0010" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[mmioFlushFlags]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Flag>
+                <Set Name="MMIO_EMPTYBUF"       Value="0x0010" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[mmioStringToFOURCCFlags]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Flag>
+                <Set Name="MMIO_TOUPPER"        Value="0x0010" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[mmioDescendFlags]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Flag>
+                <Set Name="MMIO_FINDCHUNK"      Value="0x0010" />
+                <Set Name="MMIO_FINDRIFF"       Value="0x0020" />
+                <Set Name="MMIO_FINDLIST"       Value="0x0040" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[mmioCreateChunkFlags]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Flag>
+                <Set Name="MMIO_CREATERIFF"     Value="0x0020" />
+                <Set Name="MMIO_CREATELIST"     Value="0x0040" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[mmioSeekOffset]" Type="Alias" Base="int">
+            <Display Name="int" />
+            <Enum>
+                <Set Name="SEEK_SET"	Value="0" />
+                <Set Name="SEEK_CUR"	Value="1" />
+                <Set Name="SEEK_END"    Value="2" />
+            </Enum>
         </Variable>
 
         <!-- TODO: Should we display FOURCC as String/Char ? -->
@@ -155,7 +244,7 @@
             <Param Type="UINT" Name="uMsg" />
             <Param Type="DWORD_PTR" Name="dwParam1" />
             <Param Type="DWORD_PTR" Name="dwParam2" />
-            <Return Type="DWORD" />
+            <Return Type="MMRESULT" />
         </Api>
         <Api Name="auxSetVolume">
             <Param Type="UINT" Name="uDeviceID" />
@@ -328,14 +417,14 @@
             <Param Type="UINT" Name="msg" />
             <Param Type="DWORD_PTR" Name="dw1" />
             <Param Type="DWORD_PTR" Name="dw2" />
-            <Return Type="DWORD" />
+            <Return Type="MMRESULT" />
         </Api>
         <Api Name="midiInOpen">
             <Param Type="LPHMIDIIN" Name="lphMidiIn" />
             <Param Type="UINT_PTR" Name="uDeviceID" />
             <Param Type="DWORD_PTR" Name="dwCallback" />
             <Param Type="DWORD_PTR" Name="dwCallbackInstance" />
-            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="[midiInOutOpenFlags]" Name="dwFlags" />
             <Return Type="MMRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -431,14 +520,14 @@
             <Param Type="UINT" Name="msg" />
             <Param Type="DWORD_PTR" Name="dw1" />
             <Param Type="DWORD_PTR" Name="dw2" />
-            <Return Type="DWORD" />
+            <Return Type="MMRESULT" />
         </Api>
         <Api Name="midiOutOpen">
             <Param Type="LPHMIDIOUT" Name="lphmo" />
             <Param Type="UINT_PTR" Name="uDeviceID" />
             <Param Type="DWORD_PTR" Name="dwCallback" />
             <Param Type="DWORD_PTR" Name="dwCallbackInstance" />
-            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="[midiInOutOpenFlags]" Name="dwFlags" />
             <Return Type="MMRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -607,14 +696,14 @@
         </Api>
         <Api Name="mmioClose">
             <Param Type="HMMIO" Name="hmmio" />
-            <Param Type="UINT" Name="wFlags" />
+            <Param Type="[mmioCloseFlags]" Name="wFlags" />
             <Return Type="MMRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="mmioCreateChunk">
             <Param Type="HMMIO" Name="hmmio" />
             <Param Type="LPMMCKINFO" Name="lpck" />
-            <Param Type="UINT" Name="wFlags" />
+            <Param Type="[mmioCreateChunkFlags]" Name="wFlags" />
             <Return Type="MMRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -622,13 +711,13 @@
             <Param Type="HMMIO" Name="hmmio" />
             <Param Type="LPMMCKINFO" Name="lpck" />
             <Param Type="LPMMCKINFO" Name="lpckParent" />
-            <Param Type="UINT" Name="wFlags" />
+            <Param Type="[mmioDescendFlags]" Name="wFlags" />
             <Return Type="MMRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="mmioFlush">
             <Param Type="HMMIO" Name="hmmio" />
-            <Param Type="UINT" Name="fuFlush" />
+            <Param Type="[mmioFlushFlags]" Name="fuFlush" />
             <Return Type="MMRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -642,7 +731,7 @@
         <Api Name="mmioInstallIOProc" BothCharset="True">
             <Param Type="FOURCC" Name="fccIOProc" />
             <Param Type="LPMMIOPROC" Name="pIOProc" />
-            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="[mmioInstallIOProcFlags]" Name="dwFlags" />
             <Return Type="LPMMIOPROC" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -671,7 +760,7 @@
         <Api Name="mmioSeek">
             <Param Type="HMMIO" Name="hmmio" />
             <Param Type="LONG" Name="lOffset" />
-            <Param Type="int" Name="iOrigin" />
+            <Param Type="[mmioSeekOffset]" Name="iOrigin" />
             <Return Type="LONG" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -700,7 +789,7 @@
         </Api>
         <Api Name="mmioStringToFOURCC" BothCharset="True">
             <Param Type="LPCTSTR" Name="sz" />
-            <Param Type="UINT" Name="wFlags" />
+            <Param Type="[mmioStringToFOURCCFlags]" Name="wFlags" />
             <Return Type="FOURCC" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -761,7 +850,7 @@
             <Param Type="LPTIMECALLBACK" Name="lpTimeProc" />
             <Param Type="DWORD_PTR" Name="dwUser" />
             <Param Type="UINT" Name="fuEvent" />
-            <Return Type="UINT" Display="MMRESULT" />
+            <Return Type="MMRESULT" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="waveInAddBuffer">
@@ -812,7 +901,7 @@
             <Param Type="UINT" Name="uMsg" />
             <Param Type="DWORD_PTR" Name="dwParam1" />
             <Param Type="DWORD_PTR" Name="dwParam2" />
-            <Return Type="DWORD" />
+            <Return Type="MMRESULT" />
         </Api>
         <Api Name="waveInOpen">
             <Param Type="LPHWAVEIN" Name="phwi" />
@@ -820,7 +909,7 @@
             <Param Type="LPWAVEFORMATEX" Name="pwfx" />
             <Param Type="DWORD_PTR" Name="dwCallback" />
             <Param Type="DWORD_PTR" Name="dwCallbackInstance" />
-            <Param Type="DWORD" Name="fdwOpen" />
+            <Param Type="[waveInOutOpenFlags]" Name="fdwOpen" />
             <Return Type="MMRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -917,7 +1006,7 @@
             <Param Type="UINT" Name="uMsg" />
             <Param Type="DWORD_PTR" Name="dwParam1" />
             <Param Type="DWORD_PTR" Name="dwParam2" />
-            <Return Type="DWORD" />
+            <Return Type="MMRESULT" />
         </Api>
         <Api Name="waveOutOpen">
             <Param Type="LPHWAVEOUT" Name="phwo" />
@@ -925,7 +1014,7 @@
             <Param Type="LPWAVEFORMATEX" Name="pwfx" />
             <Param Type="DWORD_PTR" Name="dwCallback" />
             <Param Type="DWORD_PTR" Name="dwCallbackInstance" />
-            <Param Type="DWORD" Name="fdwOpen" />
+            <Param Type="[waveInOutOpenFlags]" Name="fdwOpen" />
             <Return Type="MMRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>

@@ -1,0 +1,168 @@
+<!--
+    API Monitor Definitions
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="MAPI\mapi.h.xml" />
+    <Module Name="Mapi32.dll" CallingConvention="STDCALL" ErrorFunc="" OnlineHelp="MSDN">
+        <!-- Variables -->
+        <Variable Name="LHANDLE"            Type="Alias"    Base="ULONG_PTR" />
+        <Variable Name="LPLHANDLE"          Type="Pointer"  Base="LHANDLE" />
+        <Variable Name="lpMapiRecipDesc"    Type="Alias"    Base="LPVOID" />
+        <Variable Name="lpMapiRecipDesc*"   Type="Pointer"  Base="lpMapiRecipDesc" />
+        <Variable Name="lpMapiMessage"      Type="Alias"    Base="LPVOID" />
+        <Variable Name="lpMapiMessage*"     Type="Pointer"  Base="lpMapiMessage" />
+
+        <Variable Name="[MapiErrorCode]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="SUCCESS_SUCCESS"                 	Value="0" />
+                <Set Name="MAPI_E_USER_ABORT"               	Value="1" />
+                <Set Name="MAPI_E_FAILURE"                  	Value="2" />
+                <Set Name="MAPI_E_LOGON_FAILURE"            	Value="3" />
+                <Set Name="MAPI_E_DISK_FULL"                	Value="4" />
+                <Set Name="MAPI_E_INSUFFICIENT_MEMORY"      	Value="5" />
+                <Set Name="MAPI_E_ACCESS_DENIED"            	Value="6" />
+                <Set Name="MAPI_E_TOO_MANY_SESSIONS"        	Value="8" />
+                <Set Name="MAPI_E_TOO_MANY_FILES"           	Value="9" />
+                <Set Name="MAPI_E_TOO_MANY_RECIPIENTS"      	Value="10" />
+                <Set Name="MAPI_E_ATTACHMENT_NOT_FOUND"     	Value="11" />
+                <Set Name="MAPI_E_ATTACHMENT_OPEN_FAILURE"  	Value="12" />
+                <Set Name="MAPI_E_ATTACHMENT_WRITE_FAILURE"     Value="13" />
+                <Set Name="MAPI_E_UNKNOWN_RECIPIENT"        	Value="14" />
+                <Set Name="MAPI_E_BAD_RECIPTYPE"            	Value="15" />
+                <Set Name="MAPI_E_NO_MESSAGES"              	Value="16" />
+                <Set Name="MAPI_E_INVALID_MESSAGE"          	Value="17" />
+                <Set Name="MAPI_E_TEXT_TOO_LARGE"           	Value="18" />
+                <Set Name="MAPI_E_INVALID_SESSION"          	Value="19" />
+                <Set Name="MAPI_E_TYPE_NOT_SUPPORTED"       	Value="20" />
+                <Set Name="MAPI_E_AMBIGUOUS_RECIPIENT"      	Value="21" />
+                <Set Name="MAPI_E_MESSAGE_IN_USE"           	Value="22" />
+                <Set Name="MAPI_E_NETWORK_FAILURE"          	Value="23" />
+                <Set Name="MAPI_E_INVALID_EDITFIELDS"       	Value="24" />
+                <Set Name="MAPI_E_INVALID_RECIPS"           	Value="25" />
+                <Set Name="MAPI_E_NOT_SUPPORTED"            	Value="26" />
+            </Enum>
+        </Variable>
+
+        <!-- Messaging and Collaboration/Windows Messaging (MAPI)/Simple MAPI -->
+        <Category Name="Messaging and Collaboration/Windows Messaging (MAPI)/Simple MAPI" />
+        <Api Name="MAPIAddress">
+            <Param Type="LHANDLE" Name="lhSession" />
+            <Param Type="ULONG_PTR" Name="ulUIParam" />
+            <Param Type="LPSTR" Name="lpszCaption" />
+            <Param Type="ULONG" Name="nEditFields" />
+            <Param Type="LPSTR" Name="lpszLabels" />
+            <Param Type="ULONG" Name="nRecips" />
+            <Param Type="lpMapiRecipDesc" Name="lpRecips" />
+            <Param Type="FLAGS" Name="flFlags" />
+            <Param Type="ULONG" Name="ulReserved" />
+            <Param Type="LPULONG" Name="lpnNewRecips" />
+            <Param Type="lpMapiRecipDesc*" Name="lppNewRecips" />
+            <Return Type="[MapiErrorCode]" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="MAPIDeleteMail">
+            <Param Type="LHANDLE" Name="lhSession" />
+            <Param Type="ULONG_PTR" Name="ulUIParam" />
+            <Param Type="LPSTR" Name="lpszMessageID" />
+            <Param Type="FLAGS" Name="flFlags" />
+            <Param Type="ULONG" Name="ulReserved" />
+            <Return Type="[MapiErrorCode]" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="MAPIDetails">
+            <Param Type="LHANDLE" Name="lhSession" />
+            <Param Type="ULONG_PTR" Name="ulUIParam" />
+            <Param Type="lpMapiRecipDesc" Name="lpRecip" />
+            <Param Type="FLAGS" Name="flFlags" />
+            <Param Type="ULONG" Name="ulReserved" />
+            <Return Type="[MapiErrorCode]" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="MAPIFindNext">
+            <Param Type="LHANDLE" Name="lhSession" />
+            <Param Type="ULONG_PTR" Name="ulUIParam" />
+            <Param Type="LPSTR" Name="lpszMessageType" />
+            <Param Type="LPSTR" Name="lpszSeedMessageID" />
+            <Param Type="FLAGS" Name="flFlags" />
+            <Param Type="ULONG" Name="ulReserved" />
+            <Param Type="LPSTR" Name="lpszMessageID" />
+            <Return Type="[MapiErrorCode]" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="MAPIFreeBuffer">
+            <Param Type="LPVOID" Name="pv" />
+            <Return Type="[MapiErrorCode]" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="MAPILogoff">
+            <Param Type="LHANDLE" Name="lhSession" />
+            <Param Type="ULONG_PTR" Name="ulUIParam" />
+            <Param Type="FLAGS" Name="flFlags" />
+            <Param Type="ULONG" Name="ulReserved" />
+            <Return Type="[MapiErrorCode]" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="MAPILogon">
+            <Param Type="ULONG_PTR" Name="ulUIParam" />
+            <Param Type="LPSTR" Name="lpszProfileName" />
+            <Param Type="LPSTR" Name="lpszPassword" />
+            <Param Type="FLAGS" Name="flFlags" />
+            <Param Type="ULONG" Name="ulReserved" />
+            <Param Type="LPLHANDLE" Name="lplhSession" />
+            <Return Type="[MapiErrorCode]" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="MAPIReadMail">
+            <Param Type="LHANDLE" Name="lhSession" />
+            <Param Type="ULONG_PTR" Name="ulUIParam" />
+            <Param Type="LPSTR" Name="lpszMessageID" />
+            <Param Type="FLAGS" Name="flFlags" />
+            <Param Type="ULONG" Name="ulReserved" />
+            <Param Type="lpMapiMessage*" Name="lppMessage" />
+            <Return Type="[MapiErrorCode]" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="MAPIResolveName">
+            <Param Type="LHANDLE" Name="lhSession" />
+            <Param Type="ULONG_PTR" Name="ulUIParam" />
+            <Param Type="LPSTR" Name="lpszName" />
+            <Param Type="FLAGS" Name="flFlags" />
+            <Param Type="ULONG" Name="ulReserved" />
+            <Param Type="lpMapiRecipDesc*" Name="lppRecip" />
+            <Return Type="[MapiErrorCode]" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="MAPISaveMail">
+            <Param Type="LHANDLE" Name="lhSession" />
+            <Param Type="ULONG_PTR" Name="ulUIParam" />
+            <Param Type="lpMapiMessage" Name="lpMessage" />
+            <Param Type="FLAGS" Name="flFlags" />
+            <Param Type="ULONG" Name="ulReserved" />
+            <Param Type="LPSTR" Name="lpszMessageID" />
+            <Return Type="[MapiErrorCode]" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="MAPISendDocuments">
+            <Param Type="ULONG_PTR" Name="ulUIParam" />
+            <Param Type="LPSTR" Name="lpszDelimChar" />
+            <Param Type="LPSTR" Name="lpszFilePaths" />
+            <Param Type="LPSTR" Name="lpszFileNames" />
+            <Param Type="ULONG" Name="ulReserved" />
+            <Return Type="[MapiErrorCode]" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="MAPISendMail">
+            <Param Type="LHANDLE" Name="lhSession" />
+            <Param Type="ULONG_PTR" Name="ulUIParam" />
+            <Param Type="lpMapiMessage" Name="lpMessage" />
+            <Param Type="FLAGS" Name="flFlags" />
+            <Param Type="ULONG" Name="ulReserved" />
+            <Return Type="[MapiErrorCode]" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

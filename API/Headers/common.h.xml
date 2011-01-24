@@ -1,12 +1,12 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <HelpUrl Name="Google" Url="http://www.google.com/search?q={$QUERY}" />
     <HelpUrl Name="MSDN"   Url="http://www.google.com/search?hl=en&amp;btnI&amp;q=site%3Amsdn.microsoft.com+{$QUERY}" />
-    
+   
     <Headers>
         <!-- HMODULE -->
         <Variable Name="HMODULE"        Type="ModuleHandle" />
@@ -18,34 +18,45 @@
 
         <!-- void* -->
         <!-- If we define LPVOID to be a Pointer to VOID, buffers do not get encoded. We'll need to fix that -->
-        <!--<Variable Name="LPVOID"         Type="Pointer"  Base="VOID" />-->
-        <Variable Name="LPVOID" Type="Integer" Size="0" DisplayHex="True" Unsigned="True">
-            <Flag SingleValue="True">
-                <Set Name="NULL" Value="0" />
-            </Flag>
+        <Variable Name="LPVOID"         Type="Pointer"  Base="VOID" />
+
+        <Variable Name="LPVOID/DWORD*"  Type="Alias"    Base="LPVOID">
+            <Display Name="DWORD*" />
         </Variable>
+        
+        <Variable Name="LPVOID/char*"   Type="Alias"    Base="LPVOID">
+            <Display Name="char*" />
+        </Variable>
+
+        <!--
+        <Variable Name="LPVOID" Type="Integer" Size="0" DisplayHex="True" Unsigned="True">
+            <Enum>
+                <Set Name="NULL" Value="0" />
+            </Enum>
+        </Variable>
+        -->
         <Variable Name="LPCVOID"        Type="Alias"    Base="LPVOID" />
         <Variable Name="PVOID"          Type="Alias"    Base="LPVOID" />
         <Variable Name="PVOID*"         Type="Pointer"  Base="PVOID" />
-        <Variable Name="void*"          Type="Alias"    Base="LPVOID"/>
-        <Variable Name="const void*"    Type="Alias"    Base="void*" />
-        <Variable Name="const void**"   Type="Pointer"  Base="void*" />
-        <Variable Name="void**"         Type="Pointer"  Base="void*" />
         <Variable Name="VOID*"          Type="Alias"    Base="LPVOID" />
-        <Variable Name="const VOID*"    Type="Alias"    Base="VOID*" />
         <Variable Name="VOID**"         Type="Pointer"  Base="VOID*" />
         <Variable Name="PCVOID"         Type="Alias"    Base="LPVOID" />
         <Variable Name="LPVOID*"        Type="Pointer"  Base="LPVOID"/>
+        <Variable Name="const VOID*"    Type="Alias"    Base="VOID*" />
         <Variable Name="const PVOID"    Type="Alias"    Base="PVOID" />
         <Variable Name="CONST VOID*"    Type="Alias"    Base="VOID*" />
-        <Variable Name="CONST void*"    Type="Alias"    Base="VOID*" />
+
+        <Variable Name="void*"          Type="Pointer"  Base="void"/>
+        <Variable Name="const void*"    Type="Alias"    Base="void*" />
+        <Variable Name="const void**"   Type="Pointer"  Base="void*" />
+        <Variable Name="void**"         Type="Pointer"  Base="void*" />
+        <Variable Name="CONST void*"    Type="Alias"    Base="void*" />
 
         <!-- byte -->
-        <!-- TODO: LPBYTE should be Pointer to Byte and we should handle cases where buffer length is specified seperately -->
         <Variable Name="BYTE"           Type="Integer"  Size="1" Unsigned="True" />
         <Variable Name="CONST BYTE"     Type="Alias"    Base="BYTE" />
-        <Variable Name="CONST BYTE*"    Type="Pointer"    Base="CONST BYTE" />
-        <Variable Name="LPBYTE"         Type="Alias"    Base="LPVOID" />
+        <Variable Name="CONST BYTE*"    Type="Pointer"  Base="CONST BYTE" />
+        <Variable Name="LPBYTE"         Type="Pointer"  Base="BYTE" />
         <Variable Name="LPBYTE*"        Type="Pointer"  Base="LPBYTE" />
         <Variable Name="BYTE*"          Type="Alias"    Base="LPBYTE" />
         <Variable Name="BYTE**"         Type="Pointer"  Base="BYTE*" />
@@ -59,15 +70,15 @@
         <Variable Name="byte*"          Type="Alias"    Base="LPBYTE" />
         <Variable Name="byte**"         Type="Pointer"  Base="byte*" />
         
-
         <!-- 8-bit unsigned integer -->
         <Variable Name="UCHAR"              Type="Integer"  Size="1" Unsigned="True" />
-        <Variable Name="PUCHAR"             Type="Alias"    Base="LPVOID" />
-        <Variable Name="unsigned char*"     Type="Alias"    Base="LPVOID" />
-        <Variable Name="unsigned char**"    Type="Pointer"  Base="unsigned char*" />
-        <Variable Name="UCHAR*"             Type="Alias"    Base="LPVOID" />
+        <Variable Name="UCHAR*"             Type="Pointer"  Base="UCHAR" />
         <Variable Name="UCHAR**"            Type="Pointer"  Base="UCHAR*" />
+        <Variable Name="PUCHAR"             Type="Pointer"  Base="UCHAR" />
         <Variable Name="PUCHAR*"            Type="Pointer"  Base="PUCHAR" />
+        <Variable Name="unsigned char"      Type="Alias"    Base="UCHAR" />
+        <Variable Name="unsigned char*"     Type="Pointer"  Base="unsigned char" />
+        <Variable Name="unsigned char**"    Type="Pointer"  Base="unsigned char*" />
 
         <Variable Name="UINT8"              Type="Integer"  Size="1" Unsigned="True" />
         <Variable Name="PUINT8"             Type="Pointer"  Base="UINT8" />
@@ -112,9 +123,10 @@
 
         <!-- Boolean -->
         <Variable Name="BOOL" Type="Integer" Size="4">
-            <Flag SingleValue="True" DefaultName="TRUE">
+            <Enum DefaultName="TRUE">
+                <Set Name="TRUE"    Value="1" />
                 <Set Name="FALSE"   Value="0" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="PBOOL"          Type="Pointer"  Base="BOOL" />
         <Variable Name="LPBOOL"         Type="Alias"    Base="PBOOL" />
@@ -194,7 +206,13 @@
         <Variable Name="DWORDLONG*"         Type="Pointer"  Base="DWORDLONG" />
 
         <!-- DWORD -->
-        <Variable Name="DWORD"          Type="Integer" Size="4" Unsigned="True" />
+        <Variable Name="DWORD"          Type="Integer" Size="4" Unsigned="True">
+            <!--
+            <Enum>
+                <Set Name="MAXDWORD" Value="0xFFFFFFFF" />
+            </Enum>
+            -->
+        </Variable>
         <Variable Name="PDWORD"         Type="Pointer"  Base="DWORD" />
         <Variable Name="DWORD*"         Type="Alias"    Base="PDWORD" />
         <Variable Name="LPDWORD"        Type="Alias"    Base="PDWORD" />
@@ -203,46 +221,49 @@
         <Variable Name="CONST DWORD*"   Type="Alias"    Base="DWORD*" />
 
         <!-- LPSTR -->
-        <Variable Name="LPSTR"      Type="String" />
-        <Variable Name="LPSTR*"     Type="Pointer"  Base="LPSTR" />
-        <Variable Name="LPCSTR"     Type="String" />
-        <Variable Name="LPCSTR*"    Type="Pointer" Base="LPCSTR" />
-
-        <Variable Name="PCSTR"      Type="String" />
-        <Variable Name="PSTR"       Type="String" />
-        <Variable Name="PCHAR"     Type="String" />
-        <Variable Name="PCHAR*"     Type="Pointer" Base="PCHAR" />
-        <Variable Name="PCHAR**"    Type="Pointer" Base="PCHAR*" />
-        <Variable Name="CHAR*"     Type="String" />
-        <Variable Name="char*"     Type="String" />
-        <Variable Name="char**"    Type="Pointer" Base="char*" />
-        <Variable Name="CHAR**"    Type="Pointer" Base="CHAR*" />
-        <Variable Name="const char*" Type="String" />
-        <Variable Name="const PCHAR"             Type="Alias"        Base="PCHAR" />
+        <Variable Name="CHAR"           Type="Character" />
+        <Variable Name="LPSTR"          Type="Pointer"  Base="CHAR" />
+        <Variable Name="LPSTR*"         Type="Pointer"  Base="LPSTR" />
+        <Variable Name="LPCSTR"         Type="Alias"    Base="LPSTR" />
+        <Variable Name="LPCSTR*"        Type="Pointer"  Base="LPCSTR" />
+        <Variable Name="PCSTR"          Type="Alias"    Base="LPSTR" />
+        <Variable Name="PSTR"           Type="Alias"    Base="LPSTR" />
+        <Variable Name="PCHAR"          Type="Alias"    Base="LPSTR" />
+        <Variable Name="PCHAR*"         Type="Pointer"  Base="PCHAR" />
+        <Variable Name="PCHAR**"        Type="Pointer"  Base="PCHAR*" />
+        <Variable Name="CHAR*"          Type="Pointer"  Base="CHAR" />
+        <Variable Name="char"           Type="Alias"    Base="CHAR"/>
+        <Variable Name="char*"          Type="Pointer"  Base="char"/>
+        <Variable Name="char**"         Type="Pointer"  Base="char*" />
+        <Variable Name="CHAR**"         Type="Pointer"  Base="CHAR*" />
+        <Variable Name="const char*"    Type="Alias"    Base="char*" />
+        <Variable Name="const PCHAR"    Type="Alias"    Base="PCHAR" />
 
         <!-- LPWSTR -->
-        <Variable Name="LPWSTR"             Type="UnicodeString" />
-        <Variable Name="PWSTR"              Type="Alias"    Base="LPWSTR" />
-        <Variable Name="PCWSTR"             Type="Alias"    Base="PWSTR" />
-        <Variable Name="LPCWSTR"            Type="Alias"    Base="PWSTR" />
-        <Variable Name="LPCWSTR*"           Type="Pointer"  Base="LPCWSTR" />
-        <Variable Name="const WCHAR*"       Type="Alias"    Base="PWSTR" />
-        <Variable Name="WCHAR*"             Type="Alias"    Base="PWSTR" />
-        <Variable Name="const PWSTR"        Type="Alias"    Base="PWSTR" />
-        <Variable Name="PWCHAR"             Type="Alias"    Base="PWSTR" />
-        <Variable Name="PWCHAR*"            Type="Pointer"  Base="PWCHAR" />
-        <Variable Name="WCHAR**"            Type="Pointer"  Base="WCHAR*" />
-        <Variable Name="PWCHAR**"           Type="Pointer"  Base="PWCHAR*" />
-        <Variable Name="LPWSTR*"            Type="Pointer"  Base="LPWSTR" />
-        <Variable Name="LPWSTR**"           Type="Pointer"  Base="LPWSTR*" />
-        <Variable Name="PWSTR*"             Type="Pointer"  Base="PWSTR" />
-        <Variable Name="PWSTR**"            Type="Pointer"  Base="PWSTR*" />
-        <Variable Name="PCWSTR*"            Type="Alias"    Base="PWSTR*" />
-        <Variable Name="WCHAR const*"       Type="Alias"    Base="WCHAR*" />
-        <Variable Name="wchar_t*"           Type="Alias"    Base="WCHAR*" />
+        <Variable Name="WCHAR"          Type="UnicodeCharacter" />
+        <Variable Name="LPWSTR"         Type="Pointer"  Base="WCHAR" />
+        <Variable Name="PWSTR"          Type="Alias"    Base="LPWSTR" />
+        <Variable Name="PCWSTR"         Type="Alias"    Base="PWSTR" />
+        <Variable Name="LPCWSTR"        Type="Alias"    Base="PWSTR" />
+        <Variable Name="LPCWSTR*"       Type="Pointer"  Base="LPCWSTR" />
+        <Variable Name="const WCHAR*"   Type="Alias"    Base="PWSTR" />
+        <Variable Name="WCHAR*"         Type="Alias"    Base="PWSTR" />
+        <Variable Name="const PWSTR"    Type="Alias"    Base="PWSTR" />
+        <Variable Name="PWCHAR"         Type="Alias"    Base="PWSTR" />
+        <Variable Name="PWCHAR*"        Type="Pointer"  Base="PWCHAR" />
+        <Variable Name="WCHAR**"        Type="Pointer"  Base="WCHAR*" />
+        <Variable Name="PWCHAR**"       Type="Pointer"  Base="PWCHAR*" />
+        <Variable Name="LPWSTR*"        Type="Pointer"  Base="LPWSTR" />
+        <Variable Name="LPWSTR**"       Type="Pointer"  Base="LPWSTR*" />
+        <Variable Name="PWSTR*"         Type="Pointer"  Base="PWSTR" />
+        <Variable Name="PWSTR**"        Type="Pointer"  Base="PWSTR*" />
+        <Variable Name="PCWSTR*"        Type="Alias"    Base="PWSTR*" />
+        <Variable Name="WCHAR const*"   Type="Alias"    Base="WCHAR*" />
+        <Variable Name="wchar_t*"       Type="Alias"    Base="WCHAR*" />
 
         <!-- LPTSTR -->
-        <Variable Name="LPTSTR"         Type="TString" />
+        <Variable Name="TCHAR"          Type="TCharacter" />
+        <Variable Name="LPTSTR"         Type="Pointer"  Base="TCHAR" />
         <Variable Name="LPCTSTR"        Type="Alias"    Base="LPTSTR" />
         <Variable Name="PTSTR"          Type="Alias"    Base="LPTSTR"/>
         <Variable Name="const PCTSTR"   Type="Alias"    Base="LPTSTR"/>
@@ -269,17 +290,6 @@
         <Variable Name="SIZE_T*"    Type="Pointer"  Base="SIZE_T" />
         <Variable Name="PSIZE_T"    Type="Alias"    Base="SIZE_T*" />
 
-        <!-- 8-bit signed integer -->
-        <Variable Name="CHAR"               Type="Integer"  Size="1" />
-        <Variable Name="char"               Type="Alias"    Base="CHAR" />
-
-        <!-- TODO: Add Character Type? -->
-        <!-- wchar -->
-        <Variable Name="WCHAR"          Type="Alias" Base="UINT16" />
-
-        <!-- tchar TODO: -->
-        <Variable Name="TCHAR"  Type="Alias" Base="LPVOID" />
-
         <!-- float -->
         <Variable Name="float"          Type="Floating"     Size="4" />
         <Variable Name="float*"         Type="Pointer"      Base="float" />
@@ -287,14 +297,12 @@
         <Variable Name="FLOAT*"         Type="Pointer"      Base="FLOAT" />
         <Variable Name="PFLOAT"         Type="Pointer"      Base="FLOAT" />
         <Variable Name="CONST float*"   Type="Alias"        Base="float*" />
-        
 
         <!-- double -->
         <Variable Name="double"     Type="Floating" Size="8" />
         <Variable Name="double*"    Type="Pointer"  Base="double" />
         <Variable Name="DOUBLE"     Type="Alias"    Base="double" />
         <Variable Name="DOUBLE*"    Type="Pointer"  Base="DOUBLE" />
-
 
         <Variable Name="va_list"    Type="Alias"    Base="LPVOID" />
         <Variable Name="va_list*"   Type="Pointer"  Base="va_list" />

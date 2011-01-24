@@ -1,11 +1,10 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
-    <Include Filename="Headers\gdi.h.xml" />
     <Include Filename="Headers\vfw.h.xml" />
     <Headers>
         <Variable Name="HPROPSHEETPAGE"         Type="Alias"        Base="LPVOID" />
@@ -37,9 +36,10 @@
         <Variable Name="IPropertySetStorage*"   Type="Alias"        Base="LPVOID" />
         <Variable Name="IPropertySetStorage**"   Type="Pointer"        Base="IPropertySetStorage*" />
 
-        <Variable Name="IUnknown"               Type="Interface" />
+        <Variable Name="IUnknown"           Type="Interface" />
+        <Variable Name="IStream"            Type="Interface" />
 
-        <Variable Name="GETPROPERTYSTOREFLAGS"  Type="Alias"        Base="int">
+        <Variable Name="GETPROPERTYSTOREFLAGS"  Type="Alias" Base="UINT">
             <Flag>
                 <Set Name="GPS_DEFAULT"                 Value="0" />
                 <Set Name="GPS_HANDLERPROPERTIESONLY"   Value="0x1" />
@@ -82,22 +82,25 @@
         <Variable Name="uCLSSPEC*" Type="Alias" Base="LPVOID" />
         <Variable Name="QUERYCONTEXT*" Type="Alias" Base="LPVOID" />
 
-        <Variable Name="CLIPFORMAT"     Type="Alias"        Base="LPVOID" />
-        <Variable Name="CLIPFORMAT*"    Type="Pointer"        Base="CLIPFORMAT" />
+        <Variable Name="CLIPFORMAT"         Type="Alias"    Base="LPVOID" />
+        <Variable Name="CLIPFORMAT*"        Type="Pointer"  Base="CLIPFORMAT" />
 
-        <Variable Name="LPBC"                                Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPBC*"                                Type="Pointer"        Base="LPBC" />
+        <Variable Name="LPBC"               Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPBC*"              Type="Pointer"  Base="LPBC" />
 
-        <Variable Name="OLECHAR*"                       Type="TString" />
-        <Variable Name="const OLECHAR*"                 Type="Alias"      Base="OLECHAR*" />
-        <Variable Name="OLECHAR**"                      Type="Pointer"      Base="OLECHAR*" />
-        <Variable Name="MULTI_QI*"                      Type="Alias"        Base="LPVOID" />
+        <Variable Name="OLECHAR"            Type="Alias"    Base="WCHAR" />
+        <Variable Name="OLECHAR*"           Type="Pointer"  Base="OLECHAR" />
+        <Variable Name="const OLECHAR*"     Type="Alias"    Base="OLECHAR*" />
+        <Variable Name="OLECHAR**"          Type="Pointer"  Base="OLECHAR*" />
         
-        <Variable Name="STGMEDIUM*"                     Type="Alias"    Base="LPVOID" />
-        <Variable Name="const STGMEDIUM*"               Type="Alias"    Base="STGMEDIUM*" />
-        <Variable Name="LPSTGMEDIUM"                    Type="Alias"    Base="STGMEDIUM*" />
+        <Variable Name="MULTI_QI*"          Type="Alias"    Base="LPVOID" />
+        
+        <Variable Name="STGMEDIUM*"         Type="Alias"    Base="LPVOID" />
+        <Variable Name="const STGMEDIUM*"   Type="Alias"    Base="STGMEDIUM*" />
+        <Variable Name="LPSTGMEDIUM"        Type="Alias"    Base="STGMEDIUM*" />
 
         <Variable Name="[StgmFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="STGM_DIRECT"             Value="0x00000000" />
                 <Set Name="STGM_TRANSACTED"         Value="0x00010000" />
@@ -251,6 +254,10 @@
 
         <!-- TODO: Move to different file? -->
         <Variable Name="IClassFactory"					Type="Interface" />
+        <Variable Name="LPCLASSFACTORY"                 Type="Alias"    Base="IClassFactory*" />
+        <Variable Name="LPCLASSFACTORY FAR*"            Type="Pointer"  Base="LPCLASSFACTORY" />
+
+        <Variable Name="LPSTORAGE"                      Type="Alias"    Base="IStorage*" />
 
         <!-- TODO: Interface aliases are causing problems right now-->
         <!--
@@ -258,35 +265,19 @@
         -->
         <Variable Name="struct IStorage*"                  Type="Alias"    Base="LPVOID" />
 
-        <!-- TODO: Interface aliases are causing problems right now-->
-        <!--
         <Variable Name="LPMONIKER"              Type="Alias"        Base="IMoniker*" />
-        -->
-        <Variable Name="LPMONIKER"              Type="Alias"        Base="LPVOID" />
         <Variable Name="LPMONIKER*"             Type="Pointer"      Base="LPMONIKER" />
         
         
-        <!-- TODO: Interface aliases are causing problems right now-->
-        <!--
         <Variable Name="LPSTREAM"               Type="Alias"        Base="IStream*" />
-        -->
-        <Variable Name="LPSTREAM"               Type="Alias"        Base="LPVOID" />
         <Variable Name="LPSTREAM*"              Type="Pointer"      Base="LPSTREAM" />
 
 
-        <!-- TODO: Interface aliases are causing problems right now-->
-        <!--
         <Variable Name="LPDATAOBJECT"                   Type="Alias"        Base="IDataObject*" />
-        -->
-        <Variable Name="LPDATAOBJECT"                   Type="Alias"        Base="LPVOID" />
         <Variable Name="LPDATAOBJECT*"                  Type="Pointer"      Base="LPDATAOBJECT" />
 
 
-        <!-- TODO: Interface aliases are causing problems right now-->
-        <!--
         <Variable Name="LPBINDCTX"                     Type="Alias"        Base="IBindCtx*" />
-        -->
-        <Variable Name="LPBINDCTX"                     Type="Alias"        Base="LPVOID" />
         
         <Variable Name="BIND_OPTS*"                     Type="Alias"        Base="LPVOID" />
         <Variable Name="STATSTG*"                     Type="Alias"        Base="LPVOID" />
@@ -296,41 +287,44 @@
         <Variable Name="CPFLAGS" Type="Alias" Base="DWORD" />
         <Variable Name="CPFLAGS*" Type="Pointer" Base="CPFLAGS" />
 
+
+        <Variable Name="ALLOCATEMORE*"      Type="Alias"    Base="LPVOID" />
+
         <Variable Name="THDTYPE" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="THDTYPE_BLOCKMESSAGES"       Value="0" />
                 <Set Name="THDTYPE_PROCESSMESSAGES"		Value="1" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="THDTYPE*" Type="Pointer" Base="THDTYPE" />
 
         <Variable Name="GLOBALOPT_PROPERTIES" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="COMGLB_EXCEPTION_HANDLING"       Value="1" />
                 <Set Name="COMGLB_APPID"					Value="2" />
                 <Set Name="COMGLB_RPC_THREADPOOL_SETTING"	Value="3" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="RPCOPT_PROPERTIES" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="COMBND_RPCTIMEOUT"           Value="0x1" />
                 <Set Name="COMBND_SERVER_LOCALITY"		Value="0x2" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="ApplicationType" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="ServerApplication"       Value="0" />
                 <Set Name="LibraryApplication"		Value="1" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="ShutdownType" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="IdleShutdown"    Value="0" />
                 <Set Name="ForcedShutdown"	Value="1" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="HTASK" Type="Alias" Base="HANDLE" />
@@ -353,6 +347,7 @@
 
 
         <Variable Name="LOCKTYPE" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="LOCK_WRITE"      Value="1" />
                 <Set Name="LOCK_EXCLUSIVE"	Value="2" />
@@ -361,6 +356,7 @@
         </Variable>
 
         <Variable Name="ADVF" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="ADVF_NODATA"                 Value="1" />
                 <Set Name="ADVF_PRIMEFIRST"				Value="2" />
@@ -371,38 +367,30 @@
                 <Set Name="ADVFCACHE_ONSAVE"			Value="32" />
             </Flag>
         </Variable>
-        <Variable Name="ADVF*" Type="Pointer" Base="ADVF" />
-
-
-
-
-
-
-
-
-
-
+        <Variable Name="ADVF*" Type="Pointer" Base="ADVF">
+            <Display Name="DWORD*" />
+        </Variable>
 
         <Variable Name="APTTYPE" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="APTTYPE_CURRENT"     Value="-1" />
                 <Set Name="APTTYPE_STA"         Value="0" />
                 <Set Name="APTTYPE_MTA"         Value="1" />
                 <Set Name="APTTYPE_NA"          Value="2" />
                 <Set Name="APTTYPE_MAINSTA"     Value="3" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="APTTYPE*" Type="Pointer" Base="APTTYPE" />
 
         <Variable Name="APTTYPEQUALIFIER" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="APTTYPEQUALIFIER_NONE"               Value="0" />
                 <Set Name="APTTYPEQUALIFIER_IMPLICIT_MTA"       Value="1" />
                 <Set Name="APTTYPEQUALIFIER_NA_ON_MTA"          Value="2" />
                 <Set Name="APTTYPEQUALIFIER_NA_ON_STA"          Value="3" />
                 <Set Name="APTTYPEQUALIFIER_NA_ON_IMPLICIT_MTA" Value="4" />
                 <Set Name="APTTYPEQUALIFIER_NA_ON_MAINSTA"      Value="5"  />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="APTTYPEQUALIFIER*" Type="Pointer" Base="APTTYPEQUALIFIER" />
 

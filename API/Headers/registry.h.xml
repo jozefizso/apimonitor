@@ -1,13 +1,13 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Headers>
         <Variable Name="HKEY" Type="Alias" Base="HANDLE">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="HKEY_CLASSES_ROOT"           Value="0x80000000" />
                 <Set Name="HKEY_CURRENT_USER"           Value="0x80000001" />
                 <Set Name="HKEY_LOCAL_MACHINE"          Value="0x80000002" />
@@ -17,7 +17,7 @@
                 <Set Name="HKEY_PERFORMANCE_NLSTEXT"    Value="0x80000060" />
                 <Set Name="HKEY_CURRENT_CONFIG"         Value="0x80000005" />
                 <Set Name="HKEY_DYN_DATA"               Value="0x80000006" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="HKEY*"          Type="Pointer"  Base="HKEY" />
         <Variable Name="PHKEY"          Type="Alias"    Base="HKEY*"/>
@@ -45,7 +45,8 @@
             </Flag>
         </Variable>
         <Variable Name="[RegType]" Type="Alias" Base="DWORD">
-            <Flag SingleValue="True">
+            <Display Name="DWORD" />
+            <Enum>
                 <Set Name="REG_NONE"                        Value="0" />
                 <Set Name="REG_SZ"                          Value="1" />
                 <Set Name="REG_EXPAND_SZ"                   Value="2" />
@@ -58,10 +59,20 @@
                 <Set Name="REG_FULL_RESOURCE_DESCRIPTOR"    Value="9" />
                 <Set Name="REG_RESOURCE_REQUIREMENTS_LIST"  Value="10" />
                 <Set Name="REG_QWORD"                       Value="11" />
-            </Flag>
+            </Enum>
         </Variable>
-        <Variable Name="[RegType*]" Type="Pointer" Base="[RegType]" />
+        <Variable Name="[RegType*/LPDWORD]" Type="Pointer" Base="[RegType]">
+            <Display Name="LPDWORD" />
+        </Variable>
+        <Variable Name="[RegType*/PDWORD]" Type="Pointer" Base="[RegType]">
+            <Display Name="PDWORD" />
+        </Variable>
+        <Variable Name="[RegType*/PULONG]" Type="Pointer" Base="[RegType]">
+            <Display Name="PULONG" />
+        </Variable>
+
         <Variable Name="[RegOptions]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
                 <!-- <Set Name="REG_OPTION_NON_VOLATILE"     Value="0x00000000" /> -->
                 <Set Name="REG_OPTION_VOLATILE"         Value="0x00000001" />
@@ -70,19 +81,32 @@
                 <Set Name="REG_OPTION_OPEN_LINK"        Value="0x00000008" />
             </Flag>
         </Variable>
-        <Variable Name="[RegDisposition]" Type="Alias" Base="DWORD">
+        
+        <Variable Name="[RegDisposition/DWORD]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="REG_CREATED_NEW_KEY"         Value="0x00000001" />
                 <Set Name="REG_OPENED_EXISTING_KEY"     Value="0x00000002" />
             </Flag>
         </Variable>
-        <Variable Name="[RegDisposition*]" Type="Pointer" Base="[RegDisposition]" />
+        <Variable Name="[RegDisposition*/LPDWORD]" Type="Pointer" Base="[RegDisposition/DWORD]">
+            <Display Name="LPDWORD" />
+        </Variable>
+        <Variable Name="[RegDisposition/ULONG]" Type="Alias" Base="[RegDisposition/DWORD]">
+            <Display Name="ULONG" />
+        </Variable>
+        <Variable Name="[RegDisposition*/PULONG]" Type="Pointer" Base="[RegDisposition/ULONG]">
+            <Display Name="PULONG" />
+        </Variable>
+
         <Variable Name="[RegMuiFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="REG_MUI_STRING_TRUNCATE"     Value="0x00000001" />
             </Flag>
         </Variable>
         <Variable Name="[RegNotifyFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="REG_NOTIFY_CHANGE_NAME"          Value="0x00000001" />
                 <Set Name="REG_NOTIFY_CHANGE_ATTRIBUTES"    Value="0x00000002" />

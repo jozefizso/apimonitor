@@ -1,6 +1,6 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
@@ -20,7 +20,7 @@
         <Variable Name="PAUTHZ_SECURITY_ATTRUBUTES_INFORMATION" Type="Alias"    Base="LPVOID" />
         
         <Variable Name="AUTHZ_CONTEXT_INFORMATION_CLASS" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="AuthzContextInfoUserSid"             Value="1" />
                 <Set Name="AuthzContextInfoGroupsSids"          Value="2" />
                 <Set Name="AuthzContextInfoRestrictedSids"      Value="3" />
@@ -31,7 +31,7 @@
                 <Set Name="AuthzContextInfoSource"              Value="8" />
                 <Set Name="AuthzContextInfoAll"                 Value="9" />
                 <Set Name="AuthzContextInfoAuthenticationId"    Value="0" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="PFN_AUTHZ_DYNAMIC_ACCESS_CHECK"     Type="Alias"    Base="LPVOID" />
         <Variable Name="PFN_AUTHZ_COMPUTE_DYNAMIC_GROUPS"   Type="Alias"    Base="LPVOID" />
@@ -43,19 +43,22 @@
 
         <!-- Flags -->
         <Variable Name="[AuthzInitRMFlags]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
             <Flag>
                 <Set Name="AUTHZ_RM_FLAG_NO_AUDIT"                          Value="0x1" />
                 <Set Name="AUTHZ_RM_FLAG_INITIALIZE_UNDER_IMPERSONATION"    Value="0x2" />
             </Flag>
         </Variable>
-        
+
         <Variable Name="[AuthzAccessCheckFlags]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
             <Flag>
                 <Set Name="AUTHZ_ACCESS_CHECK_NO_DEEP_COPY_SD" Value="0x00000001" />
             </Flag>
         </Variable>
-        
+
         <Variable Name="[AuthzInitContextFlags]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
             <Flag>
                 <Set Name="AUTHZ_SKIP_TOKEN_GROUPS"     Value="0x2" />
                 <Set Name="AUTHZ_REQUIRE_S4U_LOGON"     Value="0x4" />
@@ -64,20 +67,20 @@
         </Variable>
 
         <Variable Name="AUTHZ_SECURITY_ATTRIBUTE_OPERATION" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="AUTHZ_SECURITY_ATTRIBUTE_OPERATION_NONE"		    Value="0" />
                 <Set Name="AUTHZ_SECURITY_ATTRIBUTE_OPERATION_REPLACE_ALL"  Value="1" />
                 <Set Name="AUTHZ_SECURITY_ATTRIBUTE_OPERATION_ADD"		    Value="2" />
                 <Set Name="AUTHZ_SECURITY_ATTRIBUTE_OPERATION_DELETE"	    Value="3" />
                 <Set Name="AUTHZ_SECURITY_ATTRIBUTE_OPERATION_REPLACE"      Value="4" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="PAUTHZ_SECURITY_ATTRIBUTE_OPERATION" Type="Pointer" Base="AUTHZ_SECURITY_ATTRIBUTE_OPERATION" />
 
         <!-- Authorization -->
         <Category Name="Security/Authorization/Basic Access Control" />
         <Api Name="AuthzAccessCheck">
-            <Param Type="[AuthzAccessCheckFlags]" Display="DWORD" Name="flags" />
+            <Param Type="[AuthzAccessCheckFlags]" Name="flags" />
             <Param Type="AUTHZ_CLIENT_CONTEXT_HANDLE" Name="AuthzClientContext" />
             <Param Type="PAUTHZ_ACCESS_REQUEST" Name="pRequest" />
             <Param Type="AUTHZ_AUDIT_EVENT_HANDLE" Name="AuditInfo" />
@@ -156,7 +159,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="AuthzInitializeContextFromSid">
-            <Param Type="[AuthzInitContextFlags]" Display="DWORD" Name="Flags" />
+            <Param Type="[AuthzInitContextFlags]" Name="Flags" />
             <Param Type="PSID" Name="UserSid" />
             <Param Type="AUTHZ_RESOURCE_MANAGER_HANDLE" Name="hAuthzResourceManager" />
             <Param Type="PLARGE_INTEGER" Name="pExpirationTime" />
@@ -207,7 +210,7 @@
     </Api>
     -->
         <Api Name="AuthzInitializeResourceManager">
-            <Param Type="[AuthzInitRMFlags]" Display="DWORD" Name="flags" />
+            <Param Type="[AuthzInitRMFlags]" Name="flags" />
             <Param Type="PFN_AUTHZ_DYNAMIC_ACCESS_CHECK" Name="pfnAccessCheck" />
             <Param Type="PFN_AUTHZ_COMPUTE_DYNAMIC_GROUPS" Name="pfnComputeDynamicGroups" />
             <Param Type="PFN_AUTHZ_FREE_DYNAMIC_GROUPS" Name="pfnFreeDynamicGroups" />

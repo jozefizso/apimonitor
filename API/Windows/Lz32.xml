@@ -1,6 +1,6 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
@@ -8,6 +8,7 @@
     <Module Name="Lz32.dll" CallingConvention="STDCALL" OnlineHelp="MSDN">
         <!-- Flags -->
         <Variable Name="[OpenFlags]" Type="Alias" Base="WORD">
+            <Display Name="WORD" />
             <Flag>
                 <Set Name="OF_READ"                 Value="0x00000000" />
                 <Set Name="OF_WRITE"                Value="0x00000001" />
@@ -27,6 +28,11 @@
                 <Set Name="OF_REOPEN"               Value="0x00008000" />
             </Flag>
         </Variable>
+
+        <Variable Name="LPBYTE/LPSTR" Type="Alias" Base="LPBYTE">
+            <Display Name="LPSTR" />
+        </Variable>
+        
         <Category Name="System Services/File Services/Local File Systems/File Management" />
         <Api Name="GetExpandedName" BothCharset="True">
             <Param Type="LPTSTR" Name="lpszSource" />
@@ -52,13 +58,13 @@
         <Api Name="LZOpenFile" BothCharset="True">
             <Param Type="LPTSTR" Name="lpFileName" />
             <Param Type="LPOFSTRUCT" Name="lpReOpenBuf" />
-            <Param Type="[OpenFlags]" Display="WORD" Name="wStyle" />
+            <Param Type="[OpenFlags]" Name="wStyle" />
             <Return Type="INT" />
             <Success Return="Greater" Value="-1" />
         </Api>
         <Api Name="LZRead">
             <Param Type="INT" Name="hFile" />
-            <Param Type="LPSTR" Name="lpBuffer" PostLength="[Retval]" />
+            <Param Type="LPBYTE/LPSTR" Name="lpBuffer" PostLength="[Retval]" />
             <Param Type="INT" Name="cbRead" />
             <Return Type="INT" />
             <Success Return="Greater" Value="-1" />

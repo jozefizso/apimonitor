@@ -1,10 +1,11 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\network.h.xml" />
     <Module Name="Netapi32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         <!-- Variables -->
         <Variable Name="PSOCKET_ADDRESS"                     Type="Alias"        Base="LPVOID" />
@@ -15,7 +16,7 @@
         <Variable Name="PDOMAIN_CONTROLLER_INFO*"            Type="Pointer"        Base="PDOMAIN_CONTROLLER_INFO" />
 
         <Variable Name="NET_API_STATUS" Type="Alias" Base="DWORD">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="NERR_Success"                             Value="0" />
                 <Set Name="NERR_NetNotStarted"                       Value="2102" />
                 <Set Name="NERR_UnknownServer"                       Value="2103" />
@@ -328,44 +329,45 @@
                 <Set Name="NERR_PasswordTooLong"                     Value="2703" />
                 <Set Name="NERR_PasswordNotComplexEnough"            Value="2704" />
                 <Set Name="NERR_PasswordFilterError"                 Value="2705" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="NET_COMPUTER_NAME_TYPE" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="NetPrimaryComputerName"      Value="0" />
                 <Set Name="NetAlternateComputerNames"   Value="1" />
                 <Set Name="NetAllComputerNames"         Value="2" />
                 <Set Name="NetComputerNameTypeMax"      Value="3" />
-            </Flag>
+            </Enum>
         </Variable>
-        <Variable Name="NETSETUP_NAME_TYPE" Type="Alias" Base="LPVOID">
-            <Flag SingleValue="True">
+        <Variable Name="NETSETUP_NAME_TYPE" Type="Alias" Base="UINT">
+            <Enum>
                 <Set Name="NetSetupUnknown"             Value="0" />
                 <Set Name="NetSetupMachine"             Value="1" />
                 <Set Name="NetSetupWorkgroup"           Value="2" />
                 <Set Name="NetSetupDomain"              Value="3" />
                 <Set Name="NetSetupNonExistentDomain"   Value="4" />
                 <Set Name="NetSetupDnsMachine"          Value="5" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="NET_VALIDATE_PASSWORD_TYPE" Type="Alias" Base="LPVOID">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="NetValidateAuthentication"   Value="1" />
                 <Set Name="NetValidatePasswordChange"   Value="2" />
                 <Set Name="NetValidatePasswordReset"    Value="3" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="PZPWSTR*"                            Type="Pointer"        Base="PWSTR" />
         <Variable Name="LMSTR"                               Type="Alias" Base="LPWSTR" />
 
         <Variable Name="DSROLE_PRIMARY_DOMAIN_INFO_LEVEL" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="DsRolePrimaryDomainInfoBasic"    Value="1" />
                 <Set Name="DsRoleUpgradeStatus"             Value="2" />
                 <Set Name="DsRoleOperationState"            Value="3" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="[ServerType]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="SV_TYPE_WORKSTATION"                 Value="0x00000001" />
                 <Set Name="SV_TYPE_SERVER"                      Value="0x00000002" />
@@ -411,11 +413,13 @@
         </Variable>
         <Variable Name="PNETSETUP_JOIN_STATUS" Type="Pointer" Base="NETSETUP_JOIN_STATUS" />
         <Variable Name="[NetUserGetLocalGroupsFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="LG_INCLUDE_INDIRECT"   Value="0x0001" />
             </Flag>
         </Variable>
-        <Variable Name="[DsGetDcNameFlags]" Type="Alias" Base="DWORD">
+        <Variable Name="[DsGetDcNameFlags]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
             <Flag>
                 <Set Name="DS_FORCE_REDISCOVERY"                Value="0x00000001" />
                 <Set Name="DS_DIRECTORY_SERVICE_REQUIRED"       Value="0x00000010" />
@@ -483,7 +487,7 @@
             <Param Type="LPCTSTR" Name="DomainName" />
             <Param Type="GUID*" Name="DomainGuid" />
             <Param Type="LPCTSTR" Name="SiteName" />
-            <Param Type="[DsGetDcNameFlags]" Display="ULONG" Name="Flags" />
+            <Param Type="[DsGetDcNameFlags]" Name="Flags" />
             <Param Type="PDOMAIN_CONTROLLER_INFO*" Name="DomainControllerInfo" />
             <Return Type="DWORD" />
             <Success Return="NotEqual" Value="0" />
@@ -1001,7 +1005,7 @@
             <Param Type="DWORD" Name="prefmaxlen" />
             <Param Type="LPDWORD" Name="entriesread" />
             <Param Type="LPDWORD" Name="totalentries" />
-            <Param Type="[ServerType]" Display="DWORD" Name="servertype" />
+            <Param Type="[ServerType]" Name="servertype" />
             <Param Type="LPCWSTR" Name="domain" />
             <Param Type="LPDWORD" Name="resume_handle" />
             <Return Type="NET_API_STATUS" />
@@ -1169,7 +1173,7 @@
             <Param Type="LPCWSTR" Name="servername" />
             <Param Type="LPCWSTR" Name="username" />
             <Param Type="DWORD" Name="level" />
-            <Param Type="[NetUserGetLocalGroupsFlags]" Display="DWORD" Name="flags" />
+            <Param Type="[NetUserGetLocalGroupsFlags]" Name="flags" />
             <Param Type="LPBYTE*" Name="bufptr" />
             <Param Type="DWORD" Name="prefmaxlen" />
             <Param Type="LPDWORD" Name="entriesread" />

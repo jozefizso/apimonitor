@@ -1,6 +1,6 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
@@ -8,7 +8,7 @@
     <Module Name="Pdh.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
         <!-- Variables -->
         <Variable Name="PDH_STATUS" Type="Alias" Base="LONG">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="PDH_CSTATUS_VALID_DATA"                          Value="0x00000000" />
                 <Set Name="PDH_CSTATUS_NEW_DATA"                            Value="0x00000001" />
                 <Set Name="PDH_CSTATUS_NO_MACHINE"                          Value="0x800007D0" />
@@ -95,9 +95,10 @@
                 <Set Name="PDH_UNMATCHED_APPEND_COUNTER"                    Value="0xC0000BFC" />
                 <Set Name="PDH_SQL_ALTER_DETAIL_FAILED"                     Value="0xC0000BFD" />
                 <Set Name="PDH_QUERY_PERF_DATA_TIMEOUT"                     Value="0xC0000BFE" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="[PdhFormatFlags]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
             <Flag>
                 <Set Name="PDH_FMT_RAW"         Value="0x00000010" />
                 <Set Name="PDH_FMT_ANSI"        Value="0x00000020" />
@@ -112,26 +113,30 @@
             </Flag>
         </Variable>
         <Variable Name="[PerfDetailLevel]" Type="Alias" Base="DWORD">
-            <Flag SingleValue="True">
+                <Display Name="DWORD" />
+            <Enum>
                 <Set Name="PERF_DETAIL_NOVICE"      Value="100" />
                 <Set Name="PERF_DETAIL_ADVANCED"    Value="200" />
                 <Set Name="PERF_DETAIL_EXPERT"      Value="300" />
                 <Set Name="PERF_DETAIL_WIZARD"      Value="400" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="[PdhExpandFlags]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
             <Flag>
                 <Set Name="PDH_NOEXPANDCOUNTERS"    Value="1" />
                 <Set Name="PDH_NOEXPANDINSTANCES"   Value="2" />
             </Flag>
         </Variable>
         <Variable Name="[PdhPathFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="PDH_PATH_WBEM_RESULT"    Value="0x00000001" />
                 <Set Name="PDH_PATH_WBEM_INPUT"     Value="0x00000002" />
             </Flag>
         </Variable>
         <Variable Name="[PdhOpenLogFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="PDH_LOG_READ_ACCESS"         Value="0x00010000" />
                 <Set Name="PDH_LOG_WRITE_ACCESS"        Value="0x00020000" />
@@ -144,7 +149,8 @@
             </Flag>
         </Variable>
         <Variable Name="[PdhLogType]" Type="Alias" Base="DWORD">
-            <Flag SingleValue="True">
+            <Display Name="DWORD" />
+            <Enum>
                 <Set Name="PDH_LOG_TYPE_UNDEFINED"          Value="0" />
                 <Set Name="PDH_LOG_TYPE_CSV"                Value="1" />
                 <Set Name="PDH_LOG_TYPE_TSV"                Value="2" />
@@ -153,8 +159,12 @@
                 <Set Name="PDH_LOG_TYPE_PERFMON"            Value="6" />
                 <Set Name="PDH_LOG_TYPE_SQL"                Value="7" />
                 <Set Name="PDH_LOG_TYPE_BINARY"             Value="8" />
-            </Flag>
+            </Enum>
         </Variable>
+        <Variable Name="[PdhLogType*]" Type="Pointer" Base="[PdhLogType]">
+            <Display Name="LPDWORD" />
+        </Variable>
+            
         <Variable Name="PDH_HQUERY"                      Type="Alias"       Base="HANDLE" />
         <Variable Name="PDH_HQUERY*"                     Type="Pointer"     Base="PDH_HQUERY" />
         <Variable Name="PDH_HCOUNTER"                    Type="Alias"       Base="HANDLE" />
@@ -207,7 +217,7 @@
         </Api>
         <Api Name="PdhCalculateCounterFromRawValue">
             <Param Type="PDH_HCOUNTER" Name="hCounter" />
-            <Param Type="[PdhFormatFlags]" Display="DWORD" Name="dwFormat" />
+            <Param Type="[PdhFormatFlags]" Name="dwFormat" />
             <Param Type="PPDH_RAW_COUNTER" Name="rawValue1" />
             <Param Type="PPDH_RAW_COUNTER" Name="rawValue2" />
             <Param Type="PPDH_FMT_COUNTERVALUE" Name="fmtValue" />
@@ -245,7 +255,7 @@
         </Api>
         <Api Name="PdhComputeCounterStatistics">
             <Param Type="PDH_HCOUNTER" Name="hCounter" />
-            <Param Type="[PdhFormatFlags]" Display="DWORD" Name="dwFormat" />
+            <Param Type="[PdhFormatFlags]" Name="dwFormat" />
             <Param Type="DWORD" Name="dwFirstEntry" />
             <Param Type="DWORD" Name="dwNumEntries" />
             <Param Type="PPDH_RAW_COUNTER" Name="lpRawValueArray" />
@@ -287,7 +297,7 @@
             <Param Type="LPDWORD" Name="pcchCounterListLength" />
             <Param Type="LPTSTR" Name="mszInstanceList" />
             <Param Type="LPDWORD" Name="pcchInstanceListLength" />
-            <Param Type="[PerfDetailLevel]" Display="DWORD" Name="dwDetailLevel" />
+            <Param Type="[PerfDetailLevel]" Name="dwDetailLevel" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="PDH_STATUS" />
             <Success Return="Equal" Value="0" />
@@ -300,7 +310,7 @@
             <Param Type="LPDWORD" Name="pcchCounterListLength" />
             <Param Type="LPTSTR" Name="mszInstanceList" />
             <Param Type="LPDWORD" Name="pcchInstanceListLength" />
-            <Param Type="[PerfDetailLevel]" Display="DWORD" Name="dwDetailLevel" />
+            <Param Type="[PerfDetailLevel]" Name="dwDetailLevel" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="PDH_STATUS" />
             <Success Return="Equal" Value="0" />
@@ -310,7 +320,7 @@
             <Param Type="LPCTSTR" Name="szMachineName" />
             <Param Type="LPTSTR" Name="mszObjectList" />
             <Param Type="LPDWORD" Name="pcchBufferLength" />
-            <Param Type="[PerfDetailLevel]" Display="DWORD" Name="dwDetailLevel" />
+            <Param Type="[PerfDetailLevel]" Name="dwDetailLevel" />
             <Param Type="BOOL" Name="bRefresh" />
             <Return Type="PDH_STATUS" />
             <Success Return="Equal" Value="0" />
@@ -320,7 +330,7 @@
             <Param Type="LPCTSTR" Name="szMachineName" />
             <Param Type="LPTSTR" Name="mszObjectList" />
             <Param Type="LPDWORD" Name="pcchBufferLength" />
-            <Param Type="[PerfDetailLevel]" Display="DWORD" Name="dwDetailLevel" />
+            <Param Type="[PerfDetailLevel]" Name="dwDetailLevel" />
             <Param Type="BOOL" Name="bRefresh" />
             <Return Type="PDH_STATUS" />
             <Success Return="Equal" Value="0" />
@@ -337,7 +347,7 @@
             <Param Type="LPCTSTR" Name="szWildCardPath" />
             <Param Type="LPTSTR" Name="mszExpandedPathList" />
             <Param Type="LPDWORD" Name="pcchPathListLength" />
-            <Param Type="[PdhExpandFlags]" Display="DWORD" Name="dwFlags" />
+            <Param Type="[PdhExpandFlags]" Name="dwFlags" />
             <Return Type="PDH_STATUS" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -346,13 +356,13 @@
             <Param Type="LPCTSTR" Name="szWildCardPath" />
             <Param Type="LPTSTR" Name="mszExpandedPathList" />
             <Param Type="LPDWORD" Name="pcchPathListLength" />
-            <Param Type="[PdhExpandFlags]" Display="DWORD" Name="dwFlags" />
+            <Param Type="[PdhExpandFlags]" Name="dwFlags" />
             <Return Type="PDH_STATUS" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhFormatFromRawValue">
             <Param Type="DWORD" Name="dwCounterType" />
-            <Param Type="[PdhFormatFlags]" Display="DWORD" Name="dwFormat" />
+            <Param Type="[PdhFormatFlags]" Name="dwFormat" />
             <Param Type="LONGLONG*" Name="pTimeBase" />
             <Param Type="PPDH_RAW_COUNTER" Name="rawValue1" />
             <Param Type="PPDH_RAW_COUNTER" Name="rawValue2" />
@@ -431,7 +441,7 @@
         </Api>
         <Api Name="PdhGetFormattedCounterArray" BothCharset="True">
             <Param Type="PDH_HCOUNTER" Name="hCounter" />
-            <Param Type="[PdhFormatFlags]" Display="DWORD" Name="dwFormat" />
+            <Param Type="[PdhFormatFlags]" Name="dwFormat" />
             <Param Type="LPDWORD" Name="lpdwBufferSize" />
             <Param Type="LPDWORD" Name="lpdwBufferCount" />
             <Param Type="PPDH_FMT_COUNTERVALUE_ITEM" Name="ItemBuffer" PostLength="lpdwBufferSize" />
@@ -440,7 +450,7 @@
         </Api>
         <Api Name="PdhGetFormattedCounterValue">
             <Param Type="PDH_HCOUNTER" Name="hCounter" />
-            <Param Type="[PdhFormatFlags]" Display="DWORD" Name="dwFormat" />
+            <Param Type="[PdhFormatFlags]" Name="dwFormat" />
             <Param Type="LPDWORD" Name="lpdwType" />
             <Param Type="PPDH_FMT_COUNTERVALUE" Name="pValue" />
             <Return Type="PDH_STATUS" />
@@ -491,14 +501,14 @@
             <Param Type="PDH_COUNTER_PATH_ELEMENTS*" Name="pCounterPathElements" />
             <Param Type="LPTSTR" Name="szFullPathBuffer" />
             <Param Type="LPDWORD" Name="pcchBufferSize" />
-            <Param Type="[PdhPathFlags]" Display="DWORD" Name="dwFlags" />
+            <Param Type="[PdhPathFlags]" Name="dwFlags" />
             <Return Type="PDH_STATUS" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhOpenLog" BothCharset="True">
             <Param Type="LPCTSTR" Name="szLogFileName" />
-            <Param Type="[PdhOpenLogFlags]" Display="DWORD" Name="dwAccessFlags" />
-            <Param Type="[PdhLogType]" Display="LPDWORD" Name="lpdwLogType" />
+            <Param Type="[PdhOpenLogFlags]" Name="dwAccessFlags" />
+            <Param Type="[PdhLogType*]" Name="lpdwLogType" />
             <Param Type="PDH_HQUERY" Name="hQuery" />
             <Param Type="DWORD" Name="dwMaxSize" />
             <Param Type="LPCTSTR" Name="szUserCaption" />

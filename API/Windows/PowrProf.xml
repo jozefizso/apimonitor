@@ -1,15 +1,17 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\power.h.xml" />
+    <Include Filename="Headers\registry.h.xml" />
+    
     <Module Name="PowrProf.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
         <!-- Variables -->
         <Variable Name="POWER_PLATFORM_ROLE" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="PlatformRoleUnspecified"         Value="0" />
                 <Set Name="PlatformRoleDesktop"             Value="1" />
                 <Set Name="PlatformRoleMobile"              Value="2" />
@@ -19,8 +21,17 @@
                 <Set Name="PlatformRoleAppliancePC"         Value="6" />
                 <Set Name="PlatformRolePerformanceServer"   Value="7" />
                 <Set Name="PlatformRoleMaximum"             Value="8" />
-            </Flag>
+            </Enum>
         </Variable>
+
+        <Variable Name="LPWSTR(PUCHAR)"                      Type="Alias"        Base="LPWSTR">
+            <Display Name="PUCHAR" />
+        </Variable>
+
+        <Variable Name="LPWSTR(UCHAR*)"                      Type="Alias"        Base="LPWSTR">
+            <Display Name="UCHAR*" />
+        </Variable>
+
         <Variable Name="PGLOBAL_POWER_POLICY"                Type="Alias"        Base="LPVOID" />
         <Variable Name="PPOWER_POLICY"                       Type="Alias"        Base="LPVOID" />
         <Variable Name="PWRSCHEMESENUMPROC"                  Type="Alias"        Base="LPVOID" />
@@ -137,7 +148,7 @@
             <Param Type="const GUID*" Name="SchemeGuid" />
             <Param Type="const GUID*" Name="SubGroupOfPowerSettingsGuid" />
             <Param Type="const GUID*" Name="PowerSettingGuid" />
-            <Param Type="[RegType*]" Display="PULONG" Name="Type" />
+            <Param Type="[RegType*/PULONG]" Name="Type" />
             <Param Type="LPBYTE" Name="Buffer" PostLength="BufferSize" />
             <Param Type="LPDWORD" Name="BufferSize" />
             <Return Type="DWORD" />
@@ -166,7 +177,7 @@
             <Param Type="const GUID*" Name="SchemeGuid" />
             <Param Type="const GUID*" Name="SubGroupOfPowerSettingsGuid" />
             <Param Type="const GUID*" Name="PowerSettingGuid" />
-            <Param Type="[RegType*]" Display="PULONG" Name="Type" />
+            <Param Type="[RegType*/PULONG]" Name="Type" />
             <Param Type="PUCHAR" Name="Buffer" PostLength="BufferSize" />
             <Param Type="LPDWORD" Name="BufferSize" />
             <Return Type="DWORD" />
@@ -186,7 +197,7 @@
             <Param Type="const GUID*" Name="SchemeGuid" />
             <Param Type="const GUID*" Name="SubGroupOfPowerSettingsGuid" />
             <Param Type="const GUID*" Name="PowerSettingGuid" />
-            <Param Type="LPWSTR" Display="PUCHAR" Name="Buffer" />
+            <Param Type="LPWSTR(PUCHAR)" Name="Buffer" />
             <Param Type="LPDWORD" Name="BufferSize" />
             <Return Type="DWORD" />
             <Success Return="Equal" Value="0" />
@@ -196,7 +207,7 @@
             <Param Type="const GUID*" Name="SchemeGuid" />
             <Param Type="const GUID*" Name="SubGroupOfPowerSettingsGuid" />
             <Param Type="const GUID*" Name="PowerSettingGuid" />
-            <Param Type="LPWSTR" Display="PUCHAR" Name="Buffer" />
+            <Param Type="LPWSTR(PUCHAR)" Name="Buffer" />
             <Param Type="LPDWORD" Name="BufferSize" />
             <Return Type="DWORD" />
             <Success Return="Equal" Value="0" />
@@ -235,7 +246,7 @@
             <Param Type="HKEY" Name="RootPowerKey" />
             <Param Type="const GUID*" Name="SubGroupOfPowerSettingsGuid" />
             <Param Type="const GUID*" Name="PowerSettingGuid" />
-            <Param Type="[RegType*]" Display="PULONG" Name="Type" />
+            <Param Type="[RegType*/PULONG]" Name="Type" />
             <Param Type="ULONG" Name="PossibleSettingIndex" />
             <Param Type="PUCHAR" Name="Buffer" PostLength="BufferSize" />
             <Param Type="LPDWORD" Name="BufferSize" />
@@ -276,7 +287,7 @@
             <Param Type="HKEY" Name="RootPowerKey" />
             <Param Type="const GUID*" Name="SubGroupOfPowerSettingsGuid" />
             <Param Type="const GUID*" Name="PowerSettingGuid" />
-            <Param Type="LPWSTR" Display="UCHAR*" Name="Buffer" />
+            <Param Type="LPWSTR(UCHAR*)" Name="Buffer" />
             <Param Type="LPDWORD" Name="BufferSize" />
             <Return Type="DWORD" />
             <Success Return="Equal" Value="0" />

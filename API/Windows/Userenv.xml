@@ -1,10 +1,12 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\security.h.xml" />
+    
     <Module Name="Userenv.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         <!-- Parameters -->
         <Variable Name="PGROUP_POLICY_OBJECT"        Type="Alias"        Base="LPVOID" />
@@ -25,7 +27,10 @@
                 <Set Name="PT_MANDATORY"        Value="0x00000004" />
             </Flag>
         </Variable>
-        <Variable Name="[ProfileType*]" Type="Pointer" Base="[ProfileType]" />
+        <Variable Name="[ProfileType*]" Type="Pointer" Base="[ProfileType]">
+            <Display Name="DWORD*" />
+        </Variable>
+        
         <!-- Group Policy -->
         <Category Name="Administration and Management/Group Policy" />
         <Api Name="EnterCriticalPolicySection">
@@ -181,7 +186,7 @@
         <Api Name="ExpandEnvironmentStringsForUser" BothCharset="True">
             <Param Type="HANDLE" Name="hToken" />
             <Param Type="LPCTSTR" Name="lpSrc" />
-            <Param Type="LPTSTR" Name="lpDest" />
+            <Param Type="LPTSTR" Name="lpDest" OutputOnly="True" />
             <Param Type="DWORD" Name="dwSize" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
@@ -205,7 +210,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetProfileType">
-            <Param Type="[ProfileType*]" Display="DWORD*" Name="pdwFlags" />
+            <Param Type="[ProfileType*]" Name="pdwFlags" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>

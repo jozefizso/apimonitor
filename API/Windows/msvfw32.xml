@@ -1,10 +1,12 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\gdi.h.xml" />
+    
     <Module Name="msvfw32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         <!-- Parameters -->
         <Variable Name="HDRAWDIB"                Type="Alias"        Base="HANDLE" />
@@ -15,7 +17,8 @@
 
         <!-- Flags -->
         <!-- TODO: ICOpenFlags is defined as WORD in one param and UINT in another - make sure it will not cause issues -->
-        <Variable Name="[ICOpenFlags]" Type="Alias" Base="WORD">
+        <Variable Name="[ICOpenFlags(UINT)]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
             <Flag>
                 <Set Name="ICMODE_COMPRESS"         Value="1" />
                 <Set Name="ICMODE_DECOMPRESS"       Value="2" />
@@ -25,8 +28,13 @@
                 <Set Name="ICMODE_DRAW"             Value="8" />
             </Flag>
         </Variable>
+        <Variable Name="[ICOpenFlags(WORD)]" Type="Alias" Base="[ICOpenFlags(UINT)]">
+            <Display Name="WORD" />
+        </Variable>
+            
         <Variable Name="[ICMessage]" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Display Name="UINT" />
+            <Enum>
                 <Set Name="ICM_COMPRESS_GET_FORMAT"         Value="0x00004004" />
                 <Set Name="ICM_COMPRESS_GET_SIZE"           Value="0x00004005" />
                 <Set Name="ICM_COMPRESS_QUERY"              Value="0x00004006" />
@@ -69,7 +77,7 @@
                 <Set Name="ICM_COMPRESS_FRAMES_INFO"        Value="0x00004046" />
                 <Set Name="ICM_COMPRESS_FRAMES"             Value="0x00004047" />
                 <Set Name="ICM_SET_STATUS_PROC"             Value="0x00004048" />
-            </Flag>
+            </Enum>
         </Variable>
         <!-- Multimedia -->
         <Category Name="Graphics and Multimedia/Audio and Video/Windows Multimedia" />
@@ -316,21 +324,21 @@
             <Param Type="DWORD" Name="fccHandler" />
             <Param Type="LPBITMAPINFOHEADER" Name="lpbiIn" />
             <Param Type="LPBITMAPINFOHEADER" Name="lpbiOut" />
-            <Param Type="[ICOpenFlags]" Display="WORD" Name="wFlags" />
+            <Param Type="[ICOpenFlags(WORD)]" Name="wFlags" />
             <Return Type="HIC" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="ICOpen">
             <Param Type="DWORD" Name="fccType" />
             <Param Type="DWORD" Name="fccHandler" />
-            <Param Type="[ICOpenFlags]" Display="UINT" Name="wMode" />
+            <Param Type="[ICOpenFlags(UINT)]" Name="wMode" />
             <Return Type="HIC" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="ICOpenFunction">
             <Param Type="DWORD" Name="fccType" />
             <Param Type="DWORD" Name="fccHandler" />
-            <Param Type="[ICOpenFlags]" Display="UINT" Name="wMode" />
+            <Param Type="[ICOpenFlags(UINT)]" Name="wMode" />
             <Param Type="FARPROC" Name="lpfnHandler" />
             <Return Type="HIC" />
             <Success Return="NotEqual" Value="0" />
@@ -344,7 +352,7 @@
         </Api>
         <Api Name="ICSendMessage">
             <Param Type="HIC" Name="hic" />
-            <Param Type="[ICMessage]" Display="UINT" Name="wMsg" />
+            <Param Type="[ICMessage]" Name="wMsg" />
             <Param Type="DWORD" Name="dw1" />
             <Param Type="DWORD" Name="dw2" />
             <Return Type="LRESULT" />

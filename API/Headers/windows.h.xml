@@ -1,18 +1,19 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\common.h.xml" />
     <Include Filename="Headers\ntstatus.h.xml" />
+    <Include Filename="Internal\internal.h.xml" />
     <Headers>
         <!-- Handle -->
         <Variable Name="HANDLE" Type="Integer" Size="0" DisplayHex="True" Unsigned="True">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="NULL" Value="0" />
                 <Set Name="INVALID_HANDLE_VALUE" Value="-1" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="PHANDLE"        Type="Pointer" Base="HANDLE" />
         <Variable Name="LPHANDLE"       Type="Alias" Base="PHANDLE" />
@@ -20,17 +21,19 @@
         <Variable Name="const HANDLE*"  Type="Alias" Base="HANDLE*" />
 
         <Variable Name="[ProcessHandle]" Type="Alias" Base="HANDLE">
-            <Flag SingleValue="True">
+            <Display Name="HANDLE" />
+            <Enum>
                 <Set Name="NULL" Value="0" />
                 <Set Name="GetCurrentProcess()" Value="-1" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="[ThreadHandle]" Type="Alias" Base="HANDLE">
-            <Flag SingleValue="True">
+            <Display Name="HANDLE" />
+            <Enum>
                 <Set Name="NULL" Value="0" />
                 <Set Name="GetCurrentThread()" Value="-2" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="HWND"           Type="Alias"    Base="HANDLE" />
@@ -38,10 +41,21 @@
         <Variable Name="const HWND*"    Type="Pointer"  Base="HWND" />
 
         <Variable Name="HRESULT"        Type="Integer" Size="4">
-            <Flag SingleValue="True">
-                <Set Name="S_OK"        Value="0" />
-                <Set Name="S_FALSE"     Value="1" />
-            </Flag>
+            <Enum>
+                <Set Name="S_OK"                Value="0" />
+                <Set Name="S_FALSE"             Value="1" />
+                <Set Name="E_ABORT"             Value="0x80004004" />
+                <Set Name="E_ACCESSDENIED"      Value="0x80070005" />
+                <Set Name="E_FAIL"              Value="0x80004005" />
+                <Set Name="E_HANDLE"            Value="0x80070006" />
+                <Set Name="E_INVALIDARG"        Value="0x80070057" />
+                <Set Name="E_NOINTERFACE"       Value="0x80004002" />
+                <Set Name="E_NOTIMPL"           Value="0x80004001" />
+                <Set Name="E_OUTOFMEMORY"       Value="0x8007000E" />
+                <Set Name="E_POINTER"           Value="0x80004003" />
+                <Set Name="E_UNEXPECTED"        Value="0x8000FFFF" />
+                <Set Name="CO_E_NOTINITIALIZED" Value="0x800401F0" />
+            </Enum>
         </Variable>
         <Variable Name="HRESULT*"        Type="Pointer" Base="HRESULT" />
         <Variable Name="PHRESULT"       Type="Pointer" Base="HRESULT" />
@@ -87,17 +101,17 @@
         <Variable Name="LPCLSID"            Type="Alias"    Base="CLSID*" />
         <Variable Name="const CLSID*"       Type="Alias"    Base="CLSID*" />
         <Variable Name="REFCLSID"           Type="Pointer"  Base="CLSID" />
-        
-        <Variable Name="UUID*"              Type="Alias"    Base="GUID*" />
-        <Variable Name="const UUID*"        Type="Alias"    Base="UUID*" />
-        
 
-        <Variable Name="IID"              Type="Alias"  Base="GUID"/>
-        <Variable Name="IID*"              Type="Pointer"  Base="IID"/>
-        <Variable Name="const IID*"        Type="Alias"  Base="IID*"/>
+        <Variable Name="UUID"               Type="Alias"    Base="GUID" />
+        <Variable Name="UUID*"              Type="Pointer"  Base="UUID" />
+        <Variable Name="const UUID*"        Type="Alias"    Base="UUID*" />
+
+        <Variable Name="IID"                Type="Alias"    Base="GUID"/>
+        <Variable Name="IID*"               Type="Pointer"  Base="IID"/>
+        <Variable Name="const IID*"         Type="Alias"    Base="IID*"/>
         <Variable Name="IID**"              Type="Pointer"  Base="IID*"/>
         
-        <Variable Name="REFIID"           Type="Pointer"    Base="IID" />
+        <Variable Name="REFIID"             Type="Pointer"  Base="IID" />
         <Variable Name="LPIID"              Type="Pointer"  Base="IID"/>
 
         <!-- LUID -->
@@ -109,7 +123,9 @@
 
         <!-- OLE -->
 
-        <Variable Name="HINSTANCE"      Type="Alias"    Base="HANDLE" />
+        <Variable Name="HINSTANCE"      Type="Alias"    Base="HMODULE">
+            <Display Name="HINSTANCE" />
+        </Variable>
 
         <Variable Name="WPARAM" Type="Alias" Base="UINT_PTR" />
         <Variable Name="LPARAM" Type="Alias" Base="LONG_PTR" />
@@ -211,7 +227,7 @@
         <Variable Name="FARPROC" Type="Alias" Base="LPVOID" />
 
         <Variable Name="JOBOBJECTINFOCLASS" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="JobObjectBasicAccountingInformation"         Value="1" />
                 <Set Name="JobObjectBasicLimitInformation"              Value="2" />
                 <Set Name="JobObjectBasicProcessIdList"                 Value="3" />
@@ -223,14 +239,14 @@
                 <Set Name="JobObjectExtendedLimitInformation"           Value="9" />
                 <Set Name="JobObjectJobSetInformation"                  Value="10" />
                 <Set Name="JobObjectGroupInformation"                   Value="11" />
-            </Flag>
+            </Enum>
         </Variable>
 
 
 
 
         <Variable Name="PROCESSINFOCLASS" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="ProcessBasicInformation"             Value="0" />
                 <Set Name="ProcessQuotaLimits"                  Value="1" />
                 <Set Name="ProcessIoCounters"                   Value="2" />
@@ -278,10 +294,10 @@
                 <Set Name="ProcessImageFileMapping"             Value="44" />
                 <Set Name="ProcessAffinityUpdateMode"           Value="45" />
                 <Set Name="ProcessMemoryAllocationMode"         Value="46" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="THREADINFOCLASS" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="ThreadBasicInformation"              Value="0" />
                 <Set Name="ThreadTimes"                         Value="1" />
                 <Set Name="ThreadPriority"                      Value="2" />
@@ -310,13 +326,13 @@
                 <Set Name="ThreadActualBasePriority"            Value="25" />
                 <Set Name="ThreadTebInformation"                Value="26" />
                 <Set Name="ThreadCSwitchMon"                    Value="27" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="GET_FILEEX_INFO_LEVELS" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="GetFileExInfoStandard"   Value="0" />
-            </Flag>
+            </Enum>
         </Variable>
 
 
@@ -361,8 +377,16 @@
         <Variable Name="const MSG*"                      Type="Alias"        Base="LPVOID" />
         <Variable Name="LPMSG"                           Type="Alias"        Base="LPVOID" />
 
+        <!--
+        <Variable Name="MSG"            Type="Struct"   Size="28" />
+        <Variable Name="MSG*"           Type="Pointer"  Base="MSG" />
+        <Variable Name="const MSG*"     Type="Alias"    Base="MSG*" />
+        <Variable Name="LPMSG"          Type="Alias"    Base="MSG*" />
+        -->
+
         <Variable Name="[WinMsg]" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Display Name="UINT" />
+            <Enum>
                 <Set Name="WM_CREATE"                       Value="0x0001" />
                 <Set Name="WM_DESTROY"                      Value="0x0002" />
                 <Set Name="WM_MOVE"                         Value="0x0003" />
@@ -494,7 +518,6 @@
                 <Set Name="WM_CTLCOLORSCROLLBAR"            Value="0x0137" />
                 <Set Name="WM_CTLCOLORSTATIC"               Value="0x0138" />
                 <Set Name="MN_GETHMENU"                     Value="0x01E1" />
-                <Set Name="WM_MOUSEFIRST"                   Value="0x0200" />
                 <Set Name="WM_MOUSEMOVE"                    Value="0x0200" />
                 <Set Name="WM_LBUTTONDOWN"                  Value="0x0201" />
                 <Set Name="WM_LBUTTONUP"                    Value="0x0202" />
@@ -548,8 +571,10 @@
                 <Set Name="WM_NCMOUSEHOVER"                 Value="0x02A0" />
                 <Set Name="WM_NCMOUSELEAVE"                 Value="0x02A2" />
                 <Set Name="WM_WTSSESSION_CHANGE"            Value="0x02B1" />
-                <Set Name="WM_TABLET_FIRST"                 Value="0x02c0" />
-                <Set Name="WM_TABLET_LAST"                  Value="0x02df" />
+                <Set Name="WM_TABLET_ADDED"                 Value="0x02c8" />
+                <Set Name="WM_TABLET_DELETED"               Value="0x02c9" />
+                <Set Name="WM_TABLET_FLICK"                 Value="0x02cb" />
+                <Set Name="WM_TABLET_QUERYSYSTEMGESTURESTATUS"  Value="0x02cc" />
                 <Set Name="WM_CUT"                          Value="0x0300" />
                 <Set Name="WM_COPY"                         Value="0x0301" />
                 <Set Name="WM_PASTE"                        Value="0x0302" />
@@ -628,17 +653,19 @@
                 <Set Name="BM_GETIMAGE"                     Value="0x00F6" />
                 <Set Name="BM_SETIMAGE"                     Value="0x00F7" />
                 <Set Name="BM_SETDONTCLICK"                 Value="0x00F8" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="[ImageType]" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Display Name="UINT" />
+            <Enum>
                 <Set Name="IMAGE_BITMAP"        Value="0" />
                 <Set Name="IMAGE_ICON"          Value="1" />
                 <Set Name="IMAGE_CURSOR"        Value="2" />
                 <Set Name="IMAGE_ENHMETAFILE"   Value="3" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="[LRFlags]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
             <Flag>
                 <Set Name="LR_DEFAULTCOLOR"     Value="0x00000000" />
                 <Set Name="LR_MONOCHROME"       Value="0x00000001" />
@@ -656,14 +683,15 @@
             </Flag>
         </Variable>
         <Variable Name="[SBType]" Type="Alias" Base="int">
-            <Flag SingleValue="True">
+            <Display Name="int" />
+            <Enum>
                 <Set Name="SB_HORZ"         Value="0" />
                 <Set Name="SB_VERT"         Value="1" />
                 <Set Name="SB_CTL"          Value="2" />
                 <Set Name="SB_BOTH"         Value="3" />
-            </Flag>
+            </Enum>
         </Variable>
-        <Variable Name="[IsTextUnicodeFlags]" Type="Alias" Base="INT">
+        <Variable Name="[IsTextUnicodeFlags]" Type="Alias" Base="UINT">
             <Flag>
                 <Set Name="IS_TEXT_UNICODE_ASCII16"             Value="0x0001" />
                 <Set Name="IS_TEXT_UNICODE_REVERSE_ASCII16"     Value="0x0010" />
@@ -683,15 +711,25 @@
                 <Set Name="IS_TEXT_UNICODE_NOT_ASCII_MASK"      Value="0xF000" />
             </Flag>
         </Variable>
-        <Variable Name="[IsTextUnicodeFlags*]" Type="Pointer" Base="[IsTextUnicodeFlags]" />
+        <Variable Name="[IsTextUnicodeFlags*/LPINT]" Type="Pointer" Base="[IsTextUnicodeFlags]">
+            <Display Name="LPINT" />
+        </Variable>
+        <Variable Name="[IsTextUnicodeFlags*/INT*]" Type="Pointer" Base="[IsTextUnicodeFlags]">
+            <Display Name="INT*" />
+        </Variable>
 
-        <Variable Name="[WaitTimeout]" Type="Alias" Base="ULONG">
-            <Flag SingleValue="True">
+        <Variable Name="[WaitTimeout(DWORD)]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
                 <Set Name="INFINITE"            Value="0xFFFFFFFF" />
-            </Flag>
+            </Enum>
+        </Variable>
+        <Variable Name="[WaitTimeout(ULONG)]" Type="Alias" Base="[WaitTimeout(DWORD)]">
+            <Display Name="ULONG" />
         </Variable>
 
         <Variable Name="[BorderFlag]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
             <Flag>
                 <Set Name="BF_LEFT"                     Value="0x0001" />
                 <Set Name="BF_TOP"                      Value="0x0002" />
@@ -715,7 +753,8 @@
             </Flag>
         </Variable>
         <Variable Name="[SysColorIndex]" Type="Alias" Base="int">
-            <Flag SingleValue="True">
+            <Display Name="int" />
+            <Enum>
                 <Set Name="COLOR_SCROLLBAR"                 Value="0" />
                 <Set Name="COLOR_BACKGROUND"                Value="1" />
                 <Set Name="COLOR_ACTIVECAPTION"             Value="2" />
@@ -746,9 +785,10 @@
                 <Set Name="COLOR_GRADIENTINACTIVECAPTION"   Value="28" />
                 <Set Name="COLOR_MENUHILIGHT"               Value="29" />
                 <Set Name="COLOR_MENUBAR"                   Value="30" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="[BorderEdge]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
             <Flag>
                 <Set Name="BDR_RAISEDOUTER"     Value="0x0001" />
                 <Set Name="BDR_SUNKENOUTER"     Value="0x0002" />
@@ -761,7 +801,8 @@
             </Flag>
         </Variable>
 
-        <Variable Name="[DrawTextFlags]" Type="Alias" Base="UINT">
+        <Variable Name="[DrawTextFlags(UINT)]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
             <Flag>
                 <Set Name="DT_TOP"                  Value="0x00000000" />
                 <Set Name="DT_LEFT"                 Value="0x00000000" />
@@ -789,6 +830,9 @@
                 <Set Name="DT_PREFIXONLY"           Value="0x00200000" />
             </Flag>
         </Variable>
+        <Variable Name="[DrawTextFlags(DWORD)]" Type="Alias" Base="[DrawTextFlags(UINT)]">
+            <Display Name="DWORD" />
+        </Variable>
 
         <!-- Forward declaration for IUnknown -->
         <Variable Name="IUnknown"           Type="Interface" />
@@ -802,6 +846,48 @@
         <Variable Name="HGESTUREINFO"       Type="Alias"    Base="HANDLE" />
         <Variable Name="PGESTURECONFIG"     Type="Alias"    Base="LPVOID" />
         <Variable Name="PGESTUREINFO"       Type="Alias"    Base="LPVOID" />
+
+        <Variable Name="LPRECT"             Type="Alias"    Base="LPVOID" />
+        <Variable Name="const LPRECT"       Type="Alias"    Base="LPVOID" />
+        <Variable Name="RECT*"              Type="Alias"    Base="LPRECT" />
+        <Variable Name="LPCRECT"            Type="Alias"    Base="LPRECT" />
+        <Variable Name="const RECT*"        Type="Alias"    Base="RECT*" />
+        <Variable Name="CONST RECT*"        Type="Alias"    Base="RECT*" />
+        <Variable Name="LPCRECTL"           Type="Alias"    Base="LPRECT" />
+        <Variable Name="RECTL*"             Type="Alias"    Base="LPRECT" />
+
+        <Variable Name="[CodePageEnum(UINT)]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Enum>
+                <Set Name="CP_ACP"                  Value="0" />
+                <Set Name="CP_OEMCP"                Value="1" />
+                <Set Name="CP_MACCP"                Value="2" />
+                <Set Name="CP_THREAD_ACP"           Value="3" />
+                <Set Name="CP_SYMBOL"               Value="42" />
+                <Set Name="MS-DOS Latin US"         Value="437" />
+                <Set Name="Thai"                    Value="874" />
+                <Set Name="Japanese (Shift-JIS)"    Value="932" />
+                <Set Name="Chinese Simplified"      Value="936" />
+                <Set Name="Korean"                  Value="949" />
+                <Set Name="Chinese Traditional"     Value="950" />
+                <Set Name="Unicode UTF-16 LE"       Value="1200" />
+                <Set Name="Unicode UTF-16 BE"       Value="1201" />
+                <Set Name="Central European"        Value="1250" />
+                <Set Name="Cyrillic"                Value="1251" />
+                <Set Name="Western European"        Value="1252" />
+                <Set Name="Greek"                   Value="1253" />
+                <Set Name="Turkish"                 Value="1254" />
+                <Set Name="Hebrew"                  Value="1255" />
+                <Set Name="Arabic"                  Value="1256" />
+                <Set Name="Baltic"                  Value="1257" />
+                <Set Name="Vietnamese"              Value="1258" />
+                <Set Name="CP_UTF7"                 Value="65000" />
+                <Set Name="CP_UTF8"                 Value="65001" />
+            </Enum>
+        </Variable>
+        <Variable Name="[CodePageEnum(WORD)]" Type="Alias" Base="[CodePageEnum(UINT)]">
+            <Display Name="WORD" />
+        </Variable>
 
     </Headers>
 </ApiMonitor>

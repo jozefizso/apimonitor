@@ -1,14 +1,17 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\registry.h.xml" />
+    <Include Filename="Headers\shell.h.xml" />
+    
     <Module Name="shlwapi.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" ErrorIsReturnValue="True" OnlineHelp="MSDN">
         <!-- Variables -->
         <Variable Name="ASSOCF" Type="Alias" Base="DWORD">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="ASSOCF_INIT_NOREMAPCLSID"        Value="0x00000001" />
                 <Set Name="ASSOCF_INIT_BYEXENAME"           Value="0x00000002" />
                 <Set Name="ASSOCF_INIT_DEFAULTTOSTAR"       Value="0x00000004" />
@@ -20,20 +23,20 @@
                 <Set Name="ASSOCF_NOFIXUPS"                 Value="0x00000100" />
                 <Set Name="ASSOCF_IGNOREBASECLASS"          Value="0x00000200" />
                 <Set Name="ASSOCF_INIT_IGNOREUNKNOWN"       Value="0x00000400" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="ASSOCKEY" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="ASSOCKEY_SHELLEXECCLASS" Value="1" />
                 <Set Name="ASSOCKEY_APP"            Value="2" />
                 <Set Name="ASSOCKEY_CLASS"          Value="3" />
                 <Set Name="ASSOCKEY_BASECLASS"      Value="4" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="ASSOCSTR" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="ASSOCSTR_COMMAND"            Value="1" />
                 <Set Name="ASSOCSTR_EXECUTABLE"         Value="2" />
                 <Set Name="ASSOCSTR_FRIENDLYDOCNAME"    Value="3" />
@@ -53,28 +56,29 @@
                 <Set Name="ASSOCSTR_DROPTARGET"         Value="17" />
                 <Set Name="ASSOCSTR_DELEGATEEXECUTE"    Value="18" />
                 <Set Name="ASSOCSTR_MAX"                Value="19" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="SHREGENUM_FLAGS" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="SHREGENUM_DEFAULT"   Value="0x00000000" />
                 <Set Name="SHREGENUM_HKCU"      Value="0x00000001" />
                 <Set Name="SHREGENUM_HKLM"      Value="0x00000010" />
                 <Set Name="SHREGENUM_BOTH"      Value="0x00000011" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="SHREGDEL_FLAGS" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="SHREGDEL_DEFAULT"    Value="0x00000000" />
                 <Set Name="SHREGDEL_HKCU"       Value="0x00000001" />
                 <Set Name="SHREGDEL_HKLM"       Value="0x00000010" />
                 <Set Name="SHREGDEL_BOTH"       Value="0x00000011" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="[ShRegSetFlags]" Type="Alias" Base="UINT">
+                <Display Name="DWORD" />
             <Flag>
                 <Set Name="SHREGSET_HKCU"           Value="0x00000001" />
                 <Set Name="SHREGSET_FORCE_HKCU"     Value="0x00000002" />
@@ -156,7 +160,7 @@
         <Api Name="SHEnumKeyEx" BothCharset="True">
             <Param Type="HKEY" Name="hkey" />
             <Param Type="DWORD" Name="dwIndex" />
-            <Param Type="LPTSTR" Name="pszName" />
+            <Param Type="LPTSTR" Name="pszName" OutputOnly="True" />
             <Param Type="LPDWORD" Name="pcchName" />
             <Return Type="LSTATUS" />
             <Success Return="Equal" Value="0" />
@@ -166,7 +170,7 @@
             <Param Type="DWORD" Name="dwIndex" />
             <Param Type="LPTSTR" Name="pszValueName" />
             <Param Type="LPDWORD" Name="pcchValueName" />
-            <Param Type="[RegType*]" Display="LPDWORD" Name="pdwType" />
+            <Param Type="[RegType*/LPDWORD]" Name="pdwType" />
             <Param Type="LPVOID" Name="pvData" />
             <Param Type="LPDWORD" Name="pcbData" />
             <Return Type="LSTATUS" />
@@ -176,7 +180,7 @@
             <Param Type="HKEY" Name="hkey" />
             <Param Type="LPCTSTR" Name="pszSubKey" />
             <Param Type="LPCTSTR" Name="pszValue" />
-            <Param Type="[RegType*]" Display="LPDWORD" Name="pdwType" />
+            <Param Type="[RegType*/LPDWORD]" Name="pdwType" />
             <Param Type="LPVOID" Name="pvData" />
             <Param Type="LPDWORD" Name="pcbData" />
             <Return Type="LSTATUS" />
@@ -195,7 +199,7 @@
             <Param Type="HKEY" Name="hkey" />
             <Param Type="LPCTSTR" Name="pszValue" />
             <Param Type="LPDWORD" Name="pdwReserved" />
-            <Param Type="[RegType*]" Display="LPDWORD" Name="pdwType" />
+            <Param Type="[RegType*/LPDWORD]" Name="pdwType" />
             <Param Type="LPVOID" Name="pvData" />
             <Param Type="LPDWORD" Name="pcbData" />
             <Return Type="DWORD" />
@@ -211,7 +215,7 @@
             <Param Type="REGSAM" Name="samDesired" />
             <Param Type="HUSKEY" Name="hRelativeUSKey" />
             <Param Type="PHUSKEY" Name="phNewUSKey" />
-            <Param Type="[ShRegSetFlags]" Display="DWORD" Name="dwFlags" />
+            <Param Type="[ShRegSetFlags]" Name="dwFlags" />
             <Return Type="LSTATUS" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -247,7 +251,7 @@
             <Param Type="DWORD" Name="dwIndex" />
             <Param Type="LPTSTR" Name="pszValueName" />
             <Param Type="LPDWORD" Name="pcchValueNameLen" />
-            <Param Type="[RegType*]" Display="LPDWORD" Name="pdwType" />
+            <Param Type="[RegType*/LPDWORD]" Name="pdwType" />
             <Param Type="void*" Name="pvData" />
             <Param Type="LPDWORD" Name="pcbData" />
             <Param Type="SHREGENUM_FLAGS" Name="enumRegFlags" />
@@ -310,7 +314,7 @@
         <Api Name="SHRegQueryUSValue" BothCharset="True">
             <Param Type="HUSKEY" Name="hUSKey" />
             <Param Type="LPCTSTR" Name="pszValue" />
-            <Param Type="[RegType*]" Display="LPDWORD" Name="pdwType" />
+            <Param Type="[RegType*/LPDWORD]" Name="pdwType" />
             <Param Type="LPVOID" Name="pvData" PostLength="pcbData" />
             <Param Type="LPDWORD" Name="pcbData" />
             <Param Type="BOOL" Name="fIgnoreHKCU" />
@@ -352,7 +356,7 @@
             <Param Type="HKEY" Name="hkey" />
             <Param Type="LPCTSTR" Name="pszSubKey" />
             <Param Type="LPCTSTR" Name="pszValue" />
-            <Param Type="[RegType]" Display="DWORD" Name="dwType" />
+            <Param Type="[RegType]" Name="dwType" />
             <Param Type="LPCVOID" Name="pvData" Length="cbData" />
             <Param Type="DWORD" Name="cbData" />
             <Return Type="LSTATUS" />

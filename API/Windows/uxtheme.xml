@@ -1,33 +1,36 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\shell.h.xml" />
+    <Include Filename="Headers\gdi.h.xml" />
+    
     <Module Name="UxTheme.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
         <!-- Variables -->
         <Variable Name="THEMESIZE" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="TS_MIN"      Value="0" />
                 <Set Name="TS_TRUE"     Value="1" />
                 <Set Name="TS_DRAW"     Value="2" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="PROPERTYORIGIN" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="PO_STATE"    Value="0" />
                 <Set Name="PO_PART"     Value="1" />
                 <Set Name="PO_CLASS"    Value="2" />
                 <Set Name="PO_GLOBAL"   Value="3" />
                 <Set Name="PO_NOTFOUND" Value="4" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="PROPERTYORIGIN*" Type="Pointer" Base="PROPERTYORIGIN" />
 
         <Variable Name="[EnableThemeDialogTextureFlags]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
             <Flag>
                 <Set Name="ETDT_DISABLE"                    Value="0x00000001" />
                 <Set Name="ETDT_ENABLE"                     Value="0x00000002" />
@@ -39,6 +42,7 @@
         </Variable>
 
         <Variable Name="[HitTestThemeBackgroundOptions]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
             <Flag>
                 <Set Name="HTTB_BACKGROUNDSEG"          Value="0x00000000" />
                 <Set Name="HTTB_FIXEDBORDER"            Value="0x00000002" />
@@ -54,7 +58,8 @@
         </Variable>
 
         <Variable Name="[HitTestReturnCode]" Type="Alias" Base="WORD">
-            <Flag SingleValue="True">
+            <Display Name="WORD" />
+            <Enum>
                 <Set Name="HTERROR"         Value="-2" />
                 <Set Name="HTTRANSPARENT"   Value="-1" />
                 <Set Name="HTNOWHERE"       Value="0" />
@@ -79,11 +84,14 @@
                 <Set Name="HTOBJECT"        Value="19" />
                 <Set Name="HTCLOSE"         Value="20" />
                 <Set Name="HTHELP"          Value="21" />
-            </Flag>
+            </Enum>
         </Variable>
-        <Variable Name="[HitTestReturnCode*]" Type="Pointer" Base="[HitTestReturnCode]" />
+        <Variable Name="[HitTestReturnCode*]" Type="Pointer" Base="[HitTestReturnCode]">
+            <Display Name="WORD*" />
+        </Variable>
 
         <Variable Name="[DrawThemeParentBackgroundFlags]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
             <Flag>
                 <Set Name="DTPB_WINDOWDC"           Value="0x00000001" />
                 <Set Name="DTPB_USECTLCOLORSTATIC"  Value="0x00000002" />
@@ -92,18 +100,18 @@
         </Variable>
 
         <Variable Name="BP_BUFFERFORMAT" Type="Alias" Base="DWORD">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="BPBF_COMPATIBLEBITMAP"   Value="0" />
                 <Set Name="BPBF_DIB"                Value="1" />
                 <Set Name="BPBF_TOPDOWNDIB"         Value="2" />
                 <Set Name="BPBF_TOPDOWNMONODIB"     Value="3" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="WINDOWTHEMEATTRIBUTETYPE" Type="Alias" Base="DWORD">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="WTA_NONCLIENT" Value="1" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="BP_PAINTPARAMS*"        Type="Alias"    Base="LPVOID" />
@@ -202,8 +210,8 @@
             <Param Type="int" Name="iPartId" />
             <Param Type="int" Name="iStateId" />
             <Param Type="LPCRECT" Name="pDestRect" />
-            <Param Type="[BorderEdge]" Display="UINT" Name="uEdge" />
-            <Param Type="[BorderFlag]" Display="UINT" Name="uFlags" />
+            <Param Type="[BorderEdge]" Name="uEdge" />
+            <Param Type="[BorderFlag]" Name="uFlags" />
             <Param Type="LPRECT" Name="pContentRect" />
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
@@ -229,7 +237,7 @@
         <Api Name="DrawThemeParentBackgroundEx">
             <Param Type="HWND" Name="hwnd" />
             <Param Type="HDC" Name="hdc" />
-            <Param Type="[DrawThemeParentBackgroundFlags]" Display="DWORD" Name="dwFlags" />
+            <Param Type="[DrawThemeParentBackgroundFlags]" Name="dwFlags" />
             <Param Type="const RECT*" Name="prc" />
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
@@ -241,7 +249,7 @@
             <Param Type="int" Name="iStateId" />
             <Param Type="LPCWSTR" Name="pszText" />
             <Param Type="int" Name="iCharCount" />
-            <Param Type="[DrawTextFlags]" Display="DWORD" Name="dwTextFlags"  />
+            <Param Type="[DrawTextFlags(DWORD)]" Name="dwTextFlags"  />
             <Param Type="DWORD" Name="dwTextFlags2" />
             <Param Type="LPCRECT" Name="pRect" />
             <Return Type="HRESULT" />
@@ -254,7 +262,7 @@
             <Param Type="int" Name="iStateId" />
             <Param Type="LPCWSTR" Name="pszText" />
             <Param Type="int" Name="iCharCount" />
-            <Param Type="[DrawTextFlags]" Display="DWORD" Name="dwFlags"  />
+            <Param Type="[DrawTextFlags(DWORD)]" Name="dwFlags"  />
             <Param Type="LPRECT" Name="pRect" />
             <Param Type="const DTTOPTS*" Name="pOptions" />
             <Return Type="HRESULT" />
@@ -262,7 +270,7 @@
         </Api>
         <Api Name="EnableThemeDialogTexture">
             <Param Type="HWND" Name="hwnd" />
-            <Param Type="[EnableThemeDialogTextureFlags]" Display="DWORD" Name="dwFlags" />
+            <Param Type="[EnableThemeDialogTextureFlags]" Name="dwFlags" />
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -307,11 +315,11 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="GetCurrentThemeName">
-            <Param Type="LPWSTR" Name="pszThemeFileName" />
+            <Param Type="LPWSTR" Name="pszThemeFileName" OutputOnly="True" />
             <Param Type="int" Name="dwMaxNameChars" />
-            <Param Type="LPWSTR" Name="pszColorBuff" />
+            <Param Type="LPWSTR" Name="pszColorBuff" OutputOnly="True" />
             <Param Type="int" Name="cchMaxColorChars" />
-            <Param Type="LPWSTR" Name="pszSizeBuff" />
+            <Param Type="LPWSTR" Name="pszSizeBuff" OutputOnly="True" />
             <Param Type="int" Name="cchMaxSizeChars" />
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
@@ -520,7 +528,7 @@
         </Api>
         <Api Name="GetThemeSysColor">
             <Param Type="HTHEME" Name="hTheme" />
-            <Param Type="[SysColorIndex]" Display="int" Name="iColorID" />
+            <Param Type="[SysColorIndex]" Name="iColorID" />
             <Return Type="COLORREF" />
         </Api>
         <Api Name="GetThemeSysColorBrush">
@@ -563,7 +571,7 @@
             <Param Type="int" Name="iStateId" />
             <Param Type="LPCWSTR" Name="pszText" />
             <Param Type="int" Name="iCharCount" />
-            <Param Type="[DrawTextFlags]" Display="DWORD" Name="dwTextFlags" />
+            <Param Type="[DrawTextFlags(DWORD)]" Name="dwTextFlags" />
             <Param Type="LPCRECT" Name="pBoundingRect" />
             <Param Type="LPRECT" Name="pExtentRect" />
             <Return Type="HRESULT" />
@@ -598,11 +606,11 @@
             <Param Type="HDC" Name="hdc" />
             <Param Type="int" Name="iPartId" />
             <Param Type="int" Name="iStateId" />
-            <Param Type="[HitTestThemeBackgroundOptions]" Display="DWORD" Name="dwOptions" />
+            <Param Type="[HitTestThemeBackgroundOptions]" Name="dwOptions" />
             <Param Type="LPCRECT" Name="pRect" />
             <Param Type="HRGN" Name="hrgn" />
             <Param Type="POINT" Name="ptTest" />
-            <Param Type="[HitTestReturnCode*]" Display="WORD*" Name="pwHitTestCode" />
+            <Param Type="[HitTestReturnCode*]" Name="pwHitTestCode" />
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>

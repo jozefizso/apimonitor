@@ -1,15 +1,17 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\processes.h.xml" />
+    
     <Module Name="Psapi.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         <!-- Process Status API (PSAPI) - These API's are also in Kernel32 for Window 7 -->
         <Category Name="System Services/DLLs, Processes, and Threads/Process Status API (PSAPI)" />
         <Api Name="EmptyWorkingSet">
-            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="[ProcessHandle]" Name="hProcess" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -27,14 +29,14 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="EnumProcesses">
-            <Param Type="LPVOID" Display="DWORD*" Name="pProcessIds" PostLength="pBytesReturned" />
+            <Param Type="LPVOID/DWORD*" Name="pProcessIds" PostLength="pBytesReturned" />
             <Param Type="DWORD" Name="cb" />
             <Param Type="DWORD*" Name="pBytesReturned" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="EnumProcessModules">
-            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="[ProcessHandle]" Name="hProcess" />
             <Param Type="HMODULE*" Name="lphModule" />
             <Param Type="DWORD" Name="cb" />
             <Param Type="LPDWORD" Name="lpcbNeeded" />
@@ -42,7 +44,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="EnumProcessModulesEx">
-            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="[ProcessHandle]" Name="hProcess" />
             <Param Type="HMODULE*" Name="lphModule" />
             <Param Type="DWORD" Name="cb" />
             <Param Type="LPDWORD" Name="lpcbNeeded" />
@@ -65,7 +67,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetMappedFileName" BothCharset="True">
-            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="[ProcessHandle]" Name="hProcess" />
             <Param Type="LPVOID" Name="lpv" />
             <Param Type="LPTSTR" Name="lpFilename" />
             <Param Type="DWORD" Name="nSize" />
@@ -73,7 +75,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetModuleBaseName" BothCharset="True">
-            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="[ProcessHandle]" Name="hProcess" />
             <Param Type="HMODULE" Name="hModule" />
             <Param Type="LPTSTR" Name="lpBaseName" />
             <Param Type="DWORD" Name="nSize" />
@@ -81,7 +83,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetModuleFileNameEx" BothCharset="True">
-            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="[ProcessHandle]" Name="hProcess" />
             <Param Type="HMODULE" Name="hModule" />
             <Param Type="LPTSTR" Name="lpFilename" />
             <Param Type="DWORD" Name="nSize" />
@@ -89,7 +91,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetModuleInformation">
-            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="[ProcessHandle]" Name="hProcess" />
             <Param Type="HMODULE" Name="hModule" />
             <Param Type="LPMODULEINFO" Name="lpmodinfo" PostLength="cb" />
             <Param Type="DWORD" Name="cb" />
@@ -103,7 +105,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetProcessImageFileName" BothCharset="True">
-            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="[ProcessHandle]" Name="hProcess" />
             <Param Type="LPTSTR" Name="lpImageFileName" />
             <Param Type="DWORD" Name="nSize" />
             <Return Type="DWORD" />
@@ -117,33 +119,33 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetWsChanges">
-            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="[ProcessHandle]" Name="hProcess" />
             <Param Type="PPSAPI_WS_WATCH_INFORMATION" Name="lpWatchInfo" />
             <Param Type="DWORD" Name="cb" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetWsChangesEx">
-            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="[ProcessHandle]" Name="hProcess" />
             <Param Type="PPSAPI_WS_WATCH_INFORMATION_EX" Name="lpWatchInfoEx" />
             <Param Type="DWORD" Name="cb" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InitializeProcessForWsWatch">
-            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="[ProcessHandle]" Name="hProcess" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="QueryWorkingSet">
-            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="[ProcessHandle]" Name="hProcess" />
             <Param Type="PVOID" Name="pv" />
             <Param Type="DWORD" Name="cb" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="QueryWorkingSetEx">
-            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="[ProcessHandle]" Name="hProcess" />
             <Param Type="PVOID" Name="pv" />
             <Param Type="DWORD" Name="cb" />
             <Return Type="BOOL" />

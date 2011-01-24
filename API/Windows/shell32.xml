@@ -1,14 +1,18 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\shell.h.xml" />
+    <Include Filename="Headers\gdi.h.xml" />
+    <Include Filename="Headers\registry.h.xml" />
+    
     <Module Name="Shell32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         <!-- Variables -->
-        <Variable Name="[CSIDL]" Type="Alias" Base="int">
+        <Variable Name="[CSIDL]" Type="Alias" Base="UINT">
+            <Display Name="int" />
             <Flag>
                 <Set Name="CSIDL_DESKTOP"                   Value="0x0000" />
                 <Set Name="CSIDL_INTERNET"                  Value="0x0001" />
@@ -75,11 +79,12 @@
         </Variable>
 
         <Variable Name="[SHGetDataFromIDListFormats]" Type="Alias" Base="int">
-            <Flag SingleValue="True">
+            <Display Name="int" />
+            <Enum>
                 <Set Name="SHGDFIL_FINDDATA"        Value="1" />
                 <Set Name="SHGDFIL_NETRESOURCE"     Value="2" />
                 <Set Name="SHGDFIL_DESCRIPTIONID"   Value="3" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="KNOWN_FOLDER_FLAG" Type="Alias" Base="DWORD">
@@ -95,14 +100,20 @@
             </Flag>
         </Variable>
 
-        <Variable Name="[SHGetFolderPathFlags]" Type="Alias" Base="DWORD">
-            <Flag SingleValue="True">
-                <Set Name="SHGFP_TYPE_CURRENT"      Value="0" />
-                <Set Name="SHGFP_TYPE_DEFAULT"      Value="1" />
-            </Flag>
+        <Variable Name="KNOWN_FOLDER_FLAG/DWORD" Type="Alias" Base="KNOWN_FOLDER_FLAG">
+            <Display Name="DWORD" />
         </Variable>
 
-        <Variable Name="[ShellChangeNotifyEvent]" Type="Alias" Base="LONG">
+        <Variable Name="[SHGetFolderPathFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="SHGFP_TYPE_CURRENT"      Value="0" />
+                <Set Name="SHGFP_TYPE_DEFAULT"      Value="1" />
+            </Enum>
+        </Variable>
+
+        <Variable Name="[ShellChangeNotifyEvent]" Type="Alias" Base="ULONG">
+            <Display Name="LONG" />
             <Flag>
                 <Set Name="SHCNE_RENAMEITEM"                  Value="0x00000001" />
                 <Set Name="SHCNE_CREATE"                      Value="0x00000002" />
@@ -133,6 +144,7 @@
         </Variable>
 
         <Variable Name="[ShellChangeNotifyFlag]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
             <Flag>
                 <Set Name="SHCNF_IDLIST"            Value="0x0000" />
                 <Set Name="SHCNF_PATHA"             Value="0x0001" />
@@ -148,17 +160,17 @@
         </Variable>
 
         <Variable Name="ASSOC_FILTER" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="ASSOC_FILTER_NONE"           Value="0" />
                 <Set Name="ASSOC_FILTER_RECOMMENDED"    Value="0x1" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="SCNRT_STATUS" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="SCNRT_ENABLE"    Value="0" />
                 <Set Name="SCNRT_DISABLE"   Value="1" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="DATAOBJ_GET_ITEM_FLAGS" Type="Alias" Base="DWORD">
@@ -180,7 +192,7 @@
         </Variable>
 
         <Variable Name="SHSTOCKICONID" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="SIID_DOCNOASSOC"             Value="0" />
                 <Set Name="SIID_DOCASSOC"               Value="1" />
                 <Set Name="SIID_APPLICATION"            Value="2" />
@@ -266,17 +278,17 @@
                 <Set Name="SIID_ZIPFILE"                Value="105" />
                 <Set Name="SIID_SETTINGS"               Value="106" />
                 <Set Name="SIID_MAX_ICONS"              Value="107" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="QUERY_USER_NOTIFICATION_STATE" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="QUNS_NOT_PRESENT"                Value="1"/>
                 <Set Name="QUNS_BUSY"                       Value="2"/>
                 <Set Name="QUNS_RUNNING_D3D_FULL_SCREEN"    Value="3"/>
                 <Set Name="QUNS_PRESENTATION_MODE"          Value="4"/>
                 <Set Name="QUNS_ACCEPTS_NOTIFICATIONS"      Value="5"/>
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="QUERY_USER_NOTIFICATION_STATE*" Type="Pointer" Base="QUERY_USER_NOTIFICATION_STATE" />
 
@@ -284,9 +296,20 @@
         <Variable Name="RESTRICTIONS" Type="Alias" Base="UINT" />
 
         <Variable Name="LIBRARYMANAGEDIALOGOPTIONS" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="LMD_DEFAULT"                             Value="0x00000000"/>
                 <Set Name="LMD_ALLOWUNINDEXABLENETWORKLOCATIONS"    Value="0x00000001"/>
+            </Enum>
+        </Variable>
+
+        <Variable Name="[RunFileDlgFlags]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Flag>
+                <Set Name="RFF_NOBROWSE"        Value="0x00000001"/>
+                <Set Name="RFF_NODEFAULT"       Value="0x00000002"/>
+                <Set Name="RFF_CALCDIRECTORY"   Value="0x00000004"/>
+                <Set Name="RFF_NOLABEL"         Value="0x00000008"/>
+                <Set Name="RFF_NOSEPARATEMEM"   Value="0x00000010"/>
             </Flag>
         </Variable>
 
@@ -648,8 +671,8 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SHChangeNotify">
-            <Param Type="[ShellChangeNotifyEvent]" Display="LONG" Name="wEventId" />
-            <Param Type="[ShellChangeNotifyFlag]" Display="UINT" Name="uFlags" />
+            <Param Type="[ShellChangeNotifyEvent]" Name="wEventId" />
+            <Param Type="[ShellChangeNotifyFlag]" Name="uFlags" />
             <Param Type="LPCVOID" Name="dwItem1" />
             <Param Type="LPCVOID" Name="dwItem2" />
             <Return Type="void" />
@@ -668,7 +691,7 @@
             <Param Type="HKEY" Name="hkey" />
             <Param Type="LPCWSTR" Name="pszSubkey" />
             <Param Type="LPCWSTR" Name="pszValue" />
-            <Param Type="[StgmFlags]" Display="DWORD" Name="grfMode" />
+            <Param Type="[StgmFlags]" Name="grfMode" />
             <Return Type="IStream*" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -913,7 +936,7 @@
         </Api>
         <Api Name="SHCloneSpecialIDList">
             <Param Type="HWND" Name="hwndOwner" />
-            <Param Type="[CSIDL]" Display="int" Name="csidl" />
+            <Param Type="[CSIDL]" Name="csidl" />
             <Param Type="BOOL" Name="fCreate" />
             <Return Type="PIDLIST_ABSOLUTE" />
             <Success Return="NotEqual" Value="0" />
@@ -1008,7 +1031,7 @@
         </Api>
         <Api Name="SHCreateItemInKnownFolder">
             <Param Type="REFKNOWNFOLDERID" Name="kfid" />
-            <Param Type="KNOWN_FOLDER_FLAG" Display="DWORD" Name="dwKFFlags" />
+            <Param Type="KNOWN_FOLDER_FLAG/DWORD" Name="dwKFFlags" />
             <Param Type="PCWSTR" Name="pszItem" />
             <Param Type="REFIID" Name="riid" />
             <Param Type="void**" Name="ppv" InterfaceId="riid" />
@@ -1273,7 +1296,7 @@
         <Api Name="SHGetDataFromIDList" BothCharset="True">
             <Param Type="IShellFolder*" Name="psf" />
             <Param Type="PCUITEMID_CHILD" Name="pidl" />
-            <Param Type="[SHGetDataFromIDListFormats]" Display="int" Name="nFormat" />
+            <Param Type="[SHGetDataFromIDListFormats]" Name="nFormat" />
             <Param Type="PVOID" Name="pv" />
             <Param Type="int" Name="cb" />
             <Return Type="HRESULT" />
@@ -1317,7 +1340,7 @@
         </Api>
         <Api Name="SHGetFolderLocation">
             <Param Type="HWND" Name="hwndOwner" />
-            <Param Type="[CSIDL]" Display="int" Name="nFolder" />
+            <Param Type="[CSIDL]" Name="nFolder" />
             <Param Type="HANDLE" Name="hToken" />
             <Param Type="DWORD" Name="dwReserved" />
             <Param Type="PIDLIST_ABSOLUTE*" Name="ppidl" />
@@ -1328,18 +1351,18 @@
             <Param Type="HWND" Name="hwndOwner" />
             <Param Type="int" Name="nFolder" />
             <Param Type="HANDLE" Name="hToken" />
-            <Param Type="[SHGetFolderPathFlags]" Display="DWORD" Name="dwFlags" />
-            <Param Type="LPTSTR" Name="pszPath" />
+            <Param Type="[SHGetFolderPathFlags]" Name="dwFlags" />
+            <Param Type="LPTSTR" Name="pszPath" OutputOnly="True" />
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SHGetFolderPathAndSubDir" BothCharset="True">
             <Param Type="HWND" Name="hwnd" />
-            <Param Type="[CSIDL]" Display="int" Name="csidl" />
+            <Param Type="[CSIDL]" Name="csidl" />
             <Param Type="HANDLE" Name="hToken" />
-            <Param Type="[SHGetFolderPathFlags]" Display="DWORD" Name="dwFlags" />
+            <Param Type="[SHGetFolderPathFlags]" Name="dwFlags" />
             <Param Type="LPCTSTR" Name="pszSubDir" />
-            <Param Type="LPTSTR" Name="pszPath" />
+            <Param Type="LPTSTR" Name="pszPath" OutputOnly="True" />
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -1384,7 +1407,7 @@
         </Api>
         <Api Name="SHGetKnownFolderIDList">
             <Param Type="REFKNOWNFOLDERID" Name="rfid" />
-            <Param Type="KNOWN_FOLDER_FLAG" Display="DWORD" Name="dwFlags" />
+            <Param Type="KNOWN_FOLDER_FLAG/DWORD" Name="dwFlags" />
             <Param Type="HANDLE" Name="hToken" />
             <Param Type="PIDLIST_ABSOLUTE*" Name="ppidl" />
             <Return Type="HRESULT" />
@@ -1511,15 +1534,15 @@
         </Api>
         <Api Name="SHGetSpecialFolderLocation">
             <Param Type="HWND" Name="hwndOwner" />
-            <Param Type="[CSIDL]" Display="int" Name="nFolder" />
+            <Param Type="[CSIDL]" Name="nFolder" />
             <Param Type="PIDLIST_ABSOLUTE*" Name="ppidl" />
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SHGetSpecialFolderPath" BothCharset="True">
             <Param Type="HWND" Name="hwndOwner" />
-            <Param Type="LPTSTR" Name="lpszPath" />
-            <Param Type="[CSIDL]" Display="int" Name="csidl" />
+            <Param Type="LPTSTR" Name="lpszPath" OutputOnly="True" />
+            <Param Type="[CSIDL]" Name="csidl" />
             <Param Type="BOOL" Name="fCreate" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
@@ -1681,7 +1704,7 @@
             <Param Type="REFFMTID" Name="fmtid" />
             <Param Type="const CLSID*" Name="pclsid" />
             <Param Type="DWORD" Name="grfFlags" />
-            <Param Type="[StgmFlags]" Display="DWORD" Name="grfMode" />
+            <Param Type="[StgmFlags]" Name="grfMode" />
             <Param Type="DWORD" Name="dwDisposition" />
             <Param Type="IPropertyStorage**" Name="ppstg" />
             <Param Type="UINT*" Name="puCodePage" />
@@ -1752,7 +1775,7 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SHSetFolderPath" BothCharset="True">
-            <Param Type="[CSIDL]" Display="int" Name="csidl" />
+            <Param Type="[CSIDL]" Name="csidl" />
             <Param Type="HANDLE" Name="hToken" />
             <Param Type="DWORD" Name="dwFlags" />
             <Param Type="LPCTSTR" Name="pszPath" />
@@ -1853,7 +1876,7 @@
         <Api Name="StgMakeUniqueName">
             <Param Type="IStorage*" Name="pstgParent" />
             <Param Type="PCWSTR" Name="pszFileSpec" />
-            <Param Type="[StgmFlags]" Display="DWORD" Name="grfMode" />
+            <Param Type="[StgmFlags]" Name="grfMode" />
             <Param Type="REFIID" Name="riid" />
             <Param Type="void**" Name="ppv" InterfaceId="riid" />
             <Return Type="HRESULT" />
@@ -1879,6 +1902,18 @@
             <Param Type="CABINETSTATE*" Name="pcs" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
+        </Api>
+
+        <!-- Undocumented -->
+        <Category Name="Windows Environment Development/Undocumented" />
+        <Api Name="RunFileDlg" Ordinal="61">
+            <Param Type="HWND" Name="hwndOwner" />
+            <Param Type="HICON" Name="hIcon" />
+            <Param Type="LPCWSTR" Name="lpszDirectory" />
+            <Param Type="LPCWSTR" Name="lpszTitle" />
+            <Param Type="LPCWSTR" Name="lpszDescription" />
+            <Param Type="[RunFileDlgFlags]" Name="uFlags" />
+            <Return Type="VOID" />
         </Api>
     </Module>
 </ApiMonitor>

@@ -1,6 +1,6 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
     
     Source: http://www.mozilla.org/projects/security/pki/nss/ref/ssl/sslfnc.html
@@ -9,7 +9,8 @@
     <Include Filename="Mozilla\nspr.h.xml" />
     <Module Name="SSL3.DLL" CallingConvention="CDECL" OnlineHelp="Mozilla SSL">
         <Variable Name="[SSLOption]" Type="Alias" Base="PRInt32">
-            <Flag SingleValue="True">
+            <Display Name="PRInt32" />
+            <Enum>
                 <Set Name="SSL_SECURITY"                Value="1" />
                 <Set Name="SSL_SOCKS"                   Value="2" />
                 <Set Name="SSL_REQUEST_CERTIFICATE"     Value="3" />
@@ -23,10 +24,11 @@
                 <Set Name="SSL_V2_COMPATIBLE_HELLO"     Value="12" />
                 <Set Name="SSL_ENABLE_TLS"              Value="13" />
                 <Set Name="SSL_ROLLBACK_DETECTION"      Value="14" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="[SSLCipher]" Type="Alias" Base="PRInt32">
-            <Flag SingleValue="True">
+            <Display Name="PRInt32" />
+            <Enum>
                 <Set Name="TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA"        Value="49162" />
                 <Set Name="TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA"          Value="49172" />
                 <Set Name="TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA"       Value="136" />
@@ -82,45 +84,49 @@
                 <Set Name="SSL_EN_DES_64_CBC_WITH_MD5"                  Value="0xFF06" />
                 <Set Name="SSL_EN_RC4_128_EXPORT40_WITH_MD5"            Value="0xFF02" />
                 <Set Name="SSL_EN_RC2_128_CBC_EXPORT40_WITH_MD5"        Value="0xFF04" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="[SSLPolicy]" Type="Alias" Base="PRInt32">
-            <Flag SingleValue="True">
+            <Display Name="PRInt32" />
+            <Enum>
                 <Set Name="SSL_ALLOWED"                 Value="0" />
                 <Set Name="SSL_RESTRICTED"              Value="1" />
                 <Set Name="SSL_NOT_ALLOWED"             Value="2" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="[SSLSecurityStatus]" Type="Alias" Base="int">
-            <Flag SingleValue="True">
+            <Display Name="int" />
+            <Enum>
                 <Set Name="SSL_SECURITY_STATUS_OFF"     Value="0" />
                 <Set Name="SSL_SECURITY_STATUS_ON_HIGH" Value="1" />
                 <Set Name="SSL_SECURITY_STATUS_ON_LOW"  Value="2" />
-            </Flag>
+            </Enum>
         </Variable>
-        <Variable Name="[SSLSecurityStatus*]" Type="Pointer" Base="[SSLSecurityStatus]" />
+        <Variable Name="[SSLSecurityStatus*]" Type="Pointer" Base="[SSLSecurityStatus]">
+            <Display Name="int*" />
+        </Variable>
         <!-- SSL Initialization Functions -->
         <Category Name="Network Security Services (NSS)/SSL/Initialization" />
         <Api Name="SSL_OptionSetDefault">
-            <Param Type="[SSLOption]" Display="PRInt32" Name="option" />
+            <Param Type="[SSLOption]" Name="option" />
             <Param Type="PRBool" Name="on" />
             <Return Type="SECStatus" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SSL_OptionGetDefault">
-            <Param Type="[SSLOption]" Display="PRInt32" Name="option" />
+            <Param Type="[SSLOption]" Name="option" />
             <Param Type="PRBool*" Name="on" />
             <Return Type="SECStatus" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SSL_CipherPrefSetDefault">
-            <Param Type="[SSLCipher]" Display="PRInt32" Name="cipher" />
+            <Param Type="[SSLCipher]" Name="cipher" />
             <Param Type="PRBool" Name="enabled" />
             <Return Type="SECStatus" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SSL_CipherPrefGetDefault">
-            <Param Type="[SSLCipher]" Display="PRInt32" Name="cipher" />
+            <Param Type="[SSLCipher]" Name="cipher" />
             <Param Type="PRBool*" Name="enabled" />
             <Return Type="SECStatus" />
             <Success Return="Equal" Value="0" />
@@ -164,14 +170,14 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SSL_CipherPolicySet">
-            <Param Type="[SSLCipher]" Display="PRInt32" Name="cipher" />
-            <Param Type="[SSLPolicy]" Display="PRInt32" Name="policy" />
+            <Param Type="[SSLCipher]" Name="cipher" />
+            <Param Type="[SSLPolicy]" Name="policy" />
             <Return Type="SECStatus" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SSL_CipherPolicyGet">
-            <Param Type="[SSLCipher]" Display="PRInt32" Name="cipher" />
-            <Param Type="[SSLPolicy]" Display="PRInt32*" Name="policy" />
+            <Param Type="[SSLCipher]" Name="cipher" />
+            <Param Type="[SSLPolicy]" Name="policy" />
             <Return Type="SECStatus" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -185,28 +191,28 @@
         </Api>
         <Api Name="SSL_OptionSet">
             <Param Type="PRFileDesc*" Name="fd" />
-            <Param Type="[SSLOption]" Display="PRInt32" Name="option" />
+            <Param Type="[SSLOption]" Name="option" />
             <Param Type="PRBool" Name="on" />
             <Return Type="SECStatus" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SSL_OptionGet">
             <Param Type="PRFileDesc*" Name="fd" />
-            <Param Type="[SSLOption]" Display="PRInt32" Name="option" />
+            <Param Type="[SSLOption]" Name="option" />
             <Param Type="PRBool*" Name="on" />
             <Return Type="SECStatus" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SSL_CipherPrefSet">
             <Param Type="PRFileDesc*" Name="fd" />
-            <Param Type="[SSLCipher]" Display="PRInt32" Name="cipher" />
+            <Param Type="[SSLCipher]" Name="cipher" />
             <Param Type="PRBool" Name="enabled" />
             <Return Type="SECStatus" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SSL_CipherPrefGet">
             <Param Type="PRFileDesc*" Name="fd" />
-            <Param Type="[SSLCipher]" Display="PRInt32" Name="cipher" />
+            <Param Type="[SSLCipher]" Name="cipher" />
             <Param Type="PRBool*" Name="enabled" />
             <Return Type="SECStatus" />
             <Success Return="Equal" Value="0" />
@@ -292,7 +298,7 @@
         </Api>
         <Api Name="SSL_SecurityStatus">
             <Param Type="PRFileDesc*" Name="fd" />
-            <Param Type="[SSLSecurityStatus*]" Display="int*" Name="on" />
+            <Param Type="[SSLSecurityStatus*]" Name="on" />
             <Param Type="char**" Name="cipher" />
             <Param Type="int*" Name="keysize" />
             <Param Type="int*" Name="secretKeySize" />

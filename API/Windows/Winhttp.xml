@@ -1,6 +1,6 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
@@ -9,6 +9,7 @@
     <Module Name="Winhttp.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         <!-- Flags -->
         <Variable Name="[CallbackNotificationFlags]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
             <Flag>
                 <Set Name="WINHTTP_CALLBACK_FLAG_RESOLVE_NAME"          Value="0x00000003" />
                 <Set Name="WINHTTP_CALLBACK_FLAG_CONNECT_TO_SERVER"     Value="0x0000000c" />
@@ -31,18 +32,21 @@
             </Flag>
         </Variable>
         <Variable Name="[HttpOpenAccessType]" Type="Alias" Base="DWORD">
-            <Flag SingleValue="True">
+                <Display Name="DWORD" />
+            <Enum>
                 <Set Name="WINHTTP_ACCESS_TYPE_DEFAULT_PROXY"   Value="0" />
                 <Set Name="WINHTTP_ACCESS_TYPE_NO_PROXY"        Value="1" />
                 <Set Name="WINHTTP_ACCESS_TYPE_NAMED_PROXY"     Value="3" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="[WinHttpOpenFlags]" Type="Alias" Base="DWORD">
-            <Flag SingleValue="True">
+                <Display Name="DWORD" />
+            <Enum>
                 <Set Name="WINHTTP_FLAG_ASYNC"  Value="0x10000000" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="[WinHttpOpenRequestFlags]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
             <Flag>
                 <Set Name="WINHTTP_FLAG_SECURE"                 Value="0x00800000" />
                 <Set Name="WINHTTP_FLAG_ESCAPE_PERCENT"         Value="0x00000004" />
@@ -53,7 +57,8 @@
             </Flag>
         </Variable>
         <Variable Name="[WinHttpOption]" Type="Alias" Base="DWORD">
-            <Flag SingleValue="True">
+            <Display Name="DWORD" />
+            <Enum>
                 <Set Name="WINHTTP_OPTION_CALLBACK"                         Value="1" />
                 <Set Name="WINHTTP_OPTION_RESOLVE_TIMEOUT"                  Value="2" />
                 <Set Name="WINHTTP_OPTION_CONNECT_TIMEOUT"                  Value="3" />
@@ -108,9 +113,10 @@
                 <Set Name="WINHTTP_OPTION_PASSWORD"                         Value="0x1001" />
                 <Set Name="WINHTTP_OPTION_PROXY_USERNAME"                   Value="0x1002" />
                 <Set Name="WINHTTP_OPTION_PROXY_PASSWORD"                   Value="0x1003" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="[WinHttpAddReqFlag]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="WINHTTP_ADDREQ_FLAG_ADD_IF_NEW"              Value="0x10000000" />
                 <Set Name="WINHTTP_ADDREQ_FLAG_ADD"                     Value="0x20000000" />
@@ -119,7 +125,9 @@
                 <Set Name="WINHTTP_ADDREQ_FLAG_REPLACE"                 Value="0x80000000" />
             </Flag>
         </Variable>
+        <!-- TODO: Below is Flag or Enum? -->
         <Variable Name="[WinHttpQueryLevelFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="WINHTTP_QUERY_MIME_VERSION"                  Value="0" />
                 <Set Name="WINHTTP_QUERY_CONTENT_TYPE"                  Value="1" />
@@ -208,7 +216,7 @@
             <Param Type="HINTERNET" Name="hRequest" />
             <Param Type="LPCWSTR" Name="pwszHeaders" />
             <Param Type="DWORD" Name="dwHeadersLength" />
-            <Param Type="[WinHttpAddReqFlag]" Display="DWORD" Name="dwModifiers" />
+            <Param Type="[WinHttpAddReqFlag]" Name="dwModifiers" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -232,7 +240,7 @@
         <Api Name="WinHttpCrackUrl">
             <Param Type="LPCWSTR" Name="pwszUrl" />
             <Param Type="DWORD" Name="dwUrlLength" />
-            <Param Type="[InternetCanonicalizeUrlFlags]" Display="DWORD" Name="dwFlags" />
+            <Param Type="[InternetCanonicalizeUrlFlags]" Name="dwFlags" />
             <Param Type="LPURL_COMPONENTS" Name="lpUrlComponents" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
@@ -271,10 +279,10 @@
         </Api>
         <Api Name="WinHttpOpen">
             <Param Type="LPCWSTR" Name="pwszUserAgent" />
-            <Param Type="[HttpOpenAccessType]" Display="DWORD" Name="dwAccessType" />
+            <Param Type="[HttpOpenAccessType]" Name="dwAccessType" />
             <Param Type="LPCWSTR" Name="pwszProxyName" />
             <Param Type="LPCWSTR" Name="pwszProxyBypass" />
-            <Param Type="[WinHttpOpenFlags]" Display="DWORD" Name="dwFlags" />
+            <Param Type="[WinHttpOpenFlags]" Name="dwFlags" />
             <Return Type="HINTERNET" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -285,7 +293,7 @@
             <Param Type="LPCWSTR" Name="pwszVersion" />
             <Param Type="LPCWSTR" Name="pwszReferrer" />
             <Param Type="LPCWSTR*" Name="ppwszAcceptTypes" />
-            <Param Type="[WinHttpOpenRequestFlags]" Display="DWORD" Name="dwFlags" />
+            <Param Type="[WinHttpOpenRequestFlags]" Name="dwFlags" />
             <Return Type="HINTERNET" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -313,7 +321,7 @@
         </Api>
         <Api Name="WinHttpQueryHeaders">
             <Param Type="HINTERNET" Name="hRequest" />
-            <Param Type="[WinHttpQueryLevelFlags]" Display="DWORD" Name="dwInfoLevel" />
+            <Param Type="[WinHttpQueryLevelFlags]" Name="dwInfoLevel" />
             <Param Type="LPCWSTR" Name="pwszName" />
             <Param Type="LPVOID" Name="lpBuffer" PostLength="lpdwBufferLength" />
             <Param Type="LPDWORD" Name="lpdwBufferLength" />
@@ -323,7 +331,7 @@
         </Api>
         <Api Name="WinHttpQueryOption">
             <Param Type="HINTERNET" Name="hInternet" />
-            <Param Type="[WinHttpOption]" Display="DWORD" Name="dwOption" />
+            <Param Type="[WinHttpOption]" Name="dwOption" />
             <Param Type="LPVOID" Name="lpBuffer" PostLength="lpdwBufferLength" />
             <Param Type="LPDWORD" Name="lpdwBufferLength" />
             <Return Type="BOOL" />
@@ -363,7 +371,7 @@
         </Api>
         <Api Name="WinHttpSetOption">
             <Param Type="HINTERNET" Name="hInternet" />
-            <Param Type="[WinHttpOption]" Display="DWORD" Name="dwOption" />
+            <Param Type="[WinHttpOption]" Name="dwOption" />
             <Param Type="LPVOID" Name="lpBuffer" Length="dwBufferLength" />
             <Param Type="DWORD" Name="dwBufferLength" />
             <Return Type="BOOL" />
@@ -372,7 +380,7 @@
         <Api Name="WinHttpSetStatusCallback">
             <Param Type="HINTERNET" Name="hInternet" />
             <Param Type="WINHTTP_STATUS_CALLBACK" Name="lpfnInternetCallback" />
-            <Param Type="[CallbackNotificationFlags]" Display="DWORD" Name="dwNotificationFlags" />
+            <Param Type="[CallbackNotificationFlags]" Name="dwNotificationFlags" />
             <Param Type="DWORD_PTR" Name="dwReserved" />
             <Return Type="WINHTTP_STATUS_CALLBACK" />
             <Success Return="NotEqual" Value="0" />

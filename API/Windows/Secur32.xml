@@ -1,14 +1,16 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\security.h.xml" />
+    
     <Module Name="Secur32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         <!-- Variables -->
         <Variable Name="SECURITY_LOGON_TYPE" Type="Alias" Base="DWORD">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="UndefinedLogonType"          Value="0" />
                 <!-- Interactive Starts at 2 -->
                 <Set Name="Interactive"                 Value="2" />
@@ -23,11 +25,11 @@
                 <Set Name="CachedInteractive"           Value="11" />
                 <Set Name="CachedRemoteInteractive"     Value="12" />
                 <Set Name="CachedUnlock"                Value="13" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="EXTENDED_NAME_FORMAT" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="NameUnknown"             Value="0" />
                 <Set Name="NameFullyQualifiedDN"    Value="1" />
                 <Set Name="NameSamCompatible"       Value="2" />
@@ -38,11 +40,11 @@
                 <Set Name="NameCanonicalEx"         Value="9" />
                 <Set Name="NameServicePrincipal"    Value="10" />
                 <Set Name="NameDnsDomain"           Value="12" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="POLICY_NOTIFICATION_INFORMATION_CLASS" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="PolicyNotifyAuditEventsInformation"              Value="1" />
                 <Set Name="PolicyNotifyAccountDomainInformation"            Value="2" />
                 <Set Name="PolicyNotifyServerRoleInformation"               Value="3" />
@@ -50,7 +52,7 @@
                 <Set Name="PolicyNotifyDomainEfsInformation"                Value="5" />
                 <Set Name="PolicyNotifyDomainKerberosTicketInformation"     Value="6" />
                 <Set Name="PolicyNotifyMachineAccountPasswordInformation"   Value="7" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="LSA_OPERATIONAL_MODE" Type="Alias" Base="ULONG">
@@ -64,7 +66,8 @@
         <Variable Name="PLSA_OPERATIONAL_MODE"  Type="Pointer"  Base="LSA_OPERATIONAL_MODE" />
 
         <Variable Name="[SecCredentialUse]" Type="Alias" Base="DWORD">
-            <Flag SingleValue="True">
+            <Display Name="ULONG" />
+            <Enum>
                 <Set Name="SECPKG_CRED_INBOUND"         		Value="0x00000001" />
                 <Set Name="SECPKG_CRED_OUTBOUND"        		Value="0x00000002" />
                 <Set Name="SECPKG_CRED_BOTH"            		Value="0x00000003" />
@@ -72,10 +75,11 @@
                 <Set Name="SECPKG_CRED_RESERVED"        		Value="0xF0000000" />
                 <Set Name="SECPKG_CRED_AUTOLOGON_RESTRICTED"    Value="0x00000010" />
                 <Set Name="SECPKG_CRED_PROCESS_POLICY_ONLY"     Value="0x00000020" />
-            </Flag>
+            </Enum>
         </Variable>
 
-        <Variable Name="[InitializeSecurityContextRequestFlags]" Type="Alias" Base="ULONG">
+        <Variable Name="[InitializeSecurityContextRequestFlags(ULONG)]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
             <Flag>
                 <Set Name="ISC_REQ_DELEGATE"                	Value="0x00000001" />
                 <Set Name="ISC_REQ_MUTUAL_AUTH"             	Value="0x00000002" />
@@ -104,8 +108,12 @@
                 <Set Name="ISC_REQ_USE_HTTP_STYLE"          	Value="0x01000000" />
             </Flag>
         </Variable>
+        <Variable Name="[InitializeSecurityContextRequestFlags(unsigned long)]" Type="Alias" Base="[InitializeSecurityContextRequestFlags(ULONG)]">
+            <Display Name="unsigned long" />
+        </Variable>
 
         <Variable Name="[InitializeSecurityContextRetFlags]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
             <Flag>
                 <Set Name="ISC_RET_DELEGATE"                	Value="0x00000001" />
                 <Set Name="ISC_RET_MUTUAL_AUTH"             	Value="0x00000002" />
@@ -135,9 +143,15 @@
                 <Set Name="ISC_RET_REAUTHENTICATION"        	Value="0x08000000" />
             </Flag>
         </Variable>
-        <Variable Name="[InitializeSecurityContextRetFlags*]" Type="Pointer" Base="[InitializeSecurityContextRetFlags]" />
+        <Variable Name="[InitializeSecurityContextRetFlags*/PULONG]" Type="Pointer" Base="[InitializeSecurityContextRetFlags]">
+            <Display Name="PULONG" />
+        </Variable>
+        <Variable Name="[InitializeSecurityContextRetFlags*/unsigned long SEC_FAR*]" Type="Pointer" Base="[InitializeSecurityContextRetFlags]">
+            <Display Name="unsigned long SEC_FAR*" />
+        </Variable>
 
-        <Variable Name="[AcceptSecurityContextRequestFlags]" Type="Alias" Base="ULONG">
+        <Variable Name="[AcceptSecurityContextRequestFlags(ULONG)]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
             <Flag>
                 <Set Name="ASC_REQ_DELEGATE"                	Value="0x00000001" />
                 <Set Name="ASC_REQ_MUTUAL_AUTH"             	Value="0x00000002" />
@@ -165,8 +179,13 @@
                 <Set Name="ASC_REQ_ALLOW_MISSING_BINDINGS"      Value="0x10000000" />
             </Flag>
         </Variable>
+        <Variable Name="[AcceptSecurityContextRequestFlags(unsigned long)]" Type="Alias" Base="[AcceptSecurityContextRequestFlags(ULONG)]">
+            <Display Name="unsigned long" />
+        </Variable>
+
 
         <Variable Name="[AcceptSecurityContextRetFlags]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
             <Flag>
                 <Set Name="ASC_RET_DELEGATE"                		Value="0x00000001" />
                 <Set Name="ASC_RET_MUTUAL_AUTH"             		Value="0x00000002" />
@@ -196,10 +215,16 @@
                 <Set Name="ASC_RET_MISSING_BINDINGS"        		Value="0x10000000" />
             </Flag>
         </Variable>
-        <Variable Name="[AcceptSecurityContextRetFlags*]" Type="Pointer" Base="[AcceptSecurityContextRetFlags]" />
+        <Variable Name="[AcceptSecurityContextRetFlags*/PULONG]" Type="Pointer" Base="[AcceptSecurityContextRetFlags]">
+            <Display Name="PULONG" />
+        </Variable>
+        <Variable Name="[AcceptSecurityContextRetFlags*/unsigned long SEC_FAR*]" Type="Pointer" Base="[AcceptSecurityContextRetFlags]">
+            <Display Name="unsigned long SEC_FAR*" />
+        </Variable>
 
         <Variable Name="[SecContextAttr]" Type="Alias" Base="ULONG">
-            <Flag SingleValue="True">
+            <Display Name="ULONG" />
+            <Enum>
                 <Set Name="SECPKG_ATTR_SIZES"           		    Value="0" />
                 <Set Name="SECPKG_ATTR_NAMES"           		    Value="1" />
                 <Set Name="SECPKG_ATTR_LIFESPAN"        		    Value="2" />
@@ -255,7 +280,7 @@
                 <Set Name="SECPKG_ATTR_EAP_PRF_INFO"         		Value="0x65" />
                 <Set Name="SECPKG_ATTR_SUPPORTED_SIGNATURES" 		Value="0x66" />
                 <Set Name="SECPKG_ATTR_SUBJECT_SECURITY_ATTRIBUTES" Value="128" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="SEC_WCHAR*"                         Type="Alias"    Base="WCHAR*" />
@@ -321,7 +346,7 @@
         <Api Name="AcquireCredentialsHandle" BothCharset="True">
             <Param Type="SEC_CHAR*" Name="pszPrincipal" />
             <Param Type="SEC_CHAR*" Name="pszPackage" />
-            <Param Type="[SecCredentialUse]" Display="ULONG" Name="fCredentialUse" />
+            <Param Type="[SecCredentialUse]" Name="fCredentialUse" />
             <Param Type="PLUID" Name="pvLogonID" />
             <Param Type="PVOID" Name="pAuthData" />
             <Param Type="SEC_GET_KEY_FN" Name="pGetKeyFn" />
@@ -364,11 +389,11 @@
             <Param Type="PCredHandle" Name="phCredential" />
             <Param Type="PCtxtHandle" Name="phContext" />
             <Param Type="PSecBufferDesc" Name="pInput" />
-            <Param Type="[AcceptSecurityContextRequestFlags]" Display="ULONG" Name="fContextReq" />
+            <Param Type="[AcceptSecurityContextRequestFlags(ULONG)]" Name="fContextReq" />
             <Param Type="ULONG" Name="TargetDataRep" />
             <Param Type="PCtxtHandle" Name="phNewContext" />
             <Param Type="PSecBufferDesc" Name="pOutput" />
-            <Param Type="[AcceptSecurityContextRetFlags*]" Display="PULONG" Name="pfContextAttr" />
+            <Param Type="[AcceptSecurityContextRetFlags*/PULONG]" Name="pfContextAttr" />
             <Param Type="PTimeStamp" Name="ptsTimeStamp" />
             <Return Type="SECURITY_STATUS" />
             <Success Return="Equal" Value="0" />
@@ -404,21 +429,21 @@
             <Param Type="PCredHandle" Name="phCredential" />
             <Param Type="PCtxtHandle" Name="phContext" />
             <Param Type="SEC_CHAR*" Name="pszTargetName" />
-            <Param Type="[InitializeSecurityContextRequestFlags]" Display="ULONG" Name="fContextReq" />
+            <Param Type="[InitializeSecurityContextRequestFlags(ULONG)]" Name="fContextReq" />
             <Param Type="ULONG" Name="Reserved1" />
             <Param Type="ULONG" Name="TargetDataRep" />
             <Param Type="PSecBufferDesc" Name="pInput" />
             <Param Type="ULONG" Name="Reserved2" />
             <Param Type="PCtxtHandle" Name="phNewContext" />
             <Param Type="PSecBufferDesc" Name="pOutput" />
-            <Param Type="[InitializeSecurityContextRetFlags*]" Display="PULONG" Name="pfContextAttr" />
+            <Param Type="[InitializeSecurityContextRetFlags*/PULONG]" Name="pfContextAttr" />
             <Param Type="PTimeStamp" Name="ptsExpiry" />
             <Return Type="SECURITY_STATUS" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="QueryContextAttributes" BothCharset="True">
             <Param Type="PCtxtHandle" Name="phContext" />
-            <Param Type="[SecContextAttr]" Display="ULONG" Name="ulAttribute" />
+            <Param Type="[SecContextAttr]" Name="ulAttribute" />
             <Param Type="PVOID" Name="pBuffer" />
             <Return Type="SECURITY_STATUS" />
             <Success Return="Equal" Value="0" />
@@ -431,7 +456,7 @@
         </Api>
         <Api Name="SetContextAttributes" BothCharset="True">
             <Param Type="PCtxtHandle" Name="phContext" />
-            <Param Type="[SecContextAttr]" Display="ULONG" Name="ulAttribute" />
+            <Param Type="[SecContextAttr]" Name="ulAttribute" />
             <Param Type="void*" Name="pBuffer" Length="cbBuffer" />
             <Param Type="ULONG" Name="cbBuffer" />
             <Return Type="SECURITY_STATUS" />
@@ -551,11 +576,11 @@
             <Param Type="PCredHandle" Name="phCredential" />
             <Param Type="PCtxtHandle" Name="phContext" />
             <Param Type="PSecBufferDesc" Name="pInput" />
-            <Param Type="[AcceptSecurityContextRequestFlags]" Display="unsigned long" Name="fContextReq" />
+            <Param Type="[AcceptSecurityContextRequestFlags(unsigned long)]" Name="fContextReq" />
             <Param Type="unsigned long" Name="TargetDataRep" />
             <Param Type="PCtxtHandle" Name="phNewContext" />
             <Param Type="PSecBufferDesc" Name="pOutput" />
-            <Param Type="[AcceptSecurityContextRetFlags*]" Display="unsigned long SEC_FAR*" Name="pfContextAttr" />
+            <Param Type="[AcceptSecurityContextRetFlags*/unsigned long SEC_FAR*]" Name="pfContextAttr" />
             <Param Type="PTimeStamp" Name="ptsExpiry" />
             <Return Type="SECURITY_STATUS" />
             <Success Return="Equal" Value="0" />
@@ -591,14 +616,14 @@
             <Param Type="PCredHandle" Name="phCredential" />
             <Param Type="PCtxtHandle" Name="phContext" />
             <Param Type="LPTSTR" Name="pszTargetName" />
-            <Param Type="[InitializeSecurityContextRequestFlags]" Display="unsigned long" Name="fContextReq" />
+            <Param Type="[InitializeSecurityContextRequestFlags(unsigned long)]" Name="fContextReq" />
             <Param Type="unsigned long" Name="Reserved1" />
             <Param Type="unsigned long" Name="TargetDataRep" />
             <Param Type="PSecBufferDesc" Name="pInput" />
             <Param Type="unsigned long" Name="Reserved2" />
             <Param Type="PCtxtHandle" Name="phNewContext" />
             <Param Type="PSecBufferDesc" Name="pOutput" />
-            <Param Type="[InitializeSecurityContextRetFlags*]" Display="unsigned long SEC_FAR*" Name="pfContextAttr" />
+            <Param Type="[InitializeSecurityContextRetFlags*/unsigned long SEC_FAR*]" Name="pfContextAttr" />
             <Param Type="PTimeStamp" Name="ptsExpiry" />
             <Return Type="SECURITY_STATUS" />
             <Success Return="Equal" Value="0" />

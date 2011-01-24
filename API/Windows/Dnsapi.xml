@@ -1,6 +1,6 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
     
 TODO: DnsWriteQuestionToBuffer_UTF8?
@@ -16,7 +16,7 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
         <Variable Name="DNS_PROXY_COMPLETION_ROUTINE"    Type="Alias" Base="LPVOID" />
         <Variable Name="PDNS_RECORD"                     Type="Alias" Base="LPVOID" />
         <Variable Name="DNS_STATUS"                      Type="Alias" Base="LONG">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="DNS_ERROR_RCODE_NO_ERROR"                    Value="0" />
                 <Set Name="DNS_ERROR_RCODE_FORMAT_ERROR"                Value="9001" />
                 <Set Name="DNS_ERROR_RCODE_SERVER_FAILURE"              Value="9002" />
@@ -119,19 +119,20 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
                 <Set Name="DNS_ERROR_DP_ALREADY_ENLISTED"               Value="9904" />
                 <Set Name="DNS_ERROR_DP_NOT_AVAILABLE"                  Value="9905" />
                 <Set Name="DNS_ERROR_DP_FSMO_ERROR"                     Value="9906" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <!-- Flags -->
         <Variable Name="DNS_FREE_TYPE" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="DnsFreeFlat"                 Value="0" />
                 <Set Name="DnsFreeRecordList"           Value="1" />
                 <Set Name="DnsFreeParsedMessageFields"  Value="2" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="[DnsRecordType]" Type="Alias" Base="WORD">
-            <Flag SingleValue="True">
+            <Display Name="WORD" />
+            <Enum>
                 <Set Name="DNS_TYPE_A"          Value="0x0001" />
                 <Set Name="DNS_TYPE_NS"         Value="0x0002" />
                 <Set Name="DNS_TYPE_MD"         Value="0x0003" />
@@ -189,9 +190,10 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
                 <Set Name="DNS_TYPE_WINS"       Value="0xff01" />
                 <Set Name="DNS_TYPE_WINSR"      Value="0xff02" />
                 <Set Name="DNS_TYPE_NBSTAT"     Value="0xff02" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="[DnsQueryOptions]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="DNS_QUERY_STANDARD"                      Value="0x00000000" />
                 <Set Name="DNS_QUERY_ACCEPT_TRUNCATED_RESPONSE"     Value="0x00000001" />
@@ -212,7 +214,7 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
             </Flag>
         </Variable>
         <Variable Name="DNS_NAME_FORMAT" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="DnsNameDomain"           Value="0" />
                 <Set Name="DnsNameDomainLabel"      Value="1" />
                 <Set Name="DnsNameHostnameFull"     Value="2" />
@@ -220,10 +222,10 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
                 <Set Name="DnsNameWildcard"         Value="4" />
                 <Set Name="DnsNameSrvRecord"        Value="5" />
                 <Set Name="DnsNameValidateTld"      Value="6" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="DNS_CONFIG_TYPE" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="DnsConfigPrimaryDomainName_W"                    Value="0" />
                 <Set Name="DnsConfigPrimaryDomainName_A"                    Value="1" />
                 <Set Name="DnsConfigPrimaryDomainName_UTF8"                 Value="2" />
@@ -242,14 +244,16 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
                 <Set Name="DnsConfigFullHostName_W"                         Value="15" />
                 <Set Name="DnsConfigFullHostName_A"                         Value="16" />
                 <Set Name="DnsConfigFullHostName_UTF8"                      Value="17" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="[DnsConfigFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="DNS_CONFIG_FLAG_ALLOC"   Value="0x00000001" />
             </Flag>
         </Variable>
         <Variable Name="[DnsUpdateFlags]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
             <Flag>
                 <Set Name="DNS_UPDATE_SECURITY_USE_DEFAULT"         Value="0x00000000" />
                 <Set Name="DNS_UPDATE_SECURITY_OFF"                 Value="0x00000010" />
@@ -265,17 +269,22 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
             </Flag>
         </Variable>
         <Variable Name="DNS_CHARSET" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="DnsCharSetUnknown"   Value="0" />
                 <Set Name="DnsCharSetUnicode"   Value="1" />
                 <Set Name="DnsCharSetUtf8"      Value="2" />
                 <Set Name="DnsCharSetAnsi"      Value="3" />
-            </Flag>
+            </Enum>
         </Variable>
+
+        <Variable Name="BOOL(DWORD)" Type="Alias" Base="BOOL">
+            <Display Name="DWORD" />
+        </Variable>
+        
         <!-- Domain Name System (DNS) -->
         <Category Name="Networking/Network Protocols/Domain Name System (DNS)" />
         <Api Name="DnsAcquireContextHandle_" BothCharset="True">
-            <Param Type="BOOL" Display="DWORD" Name="CredentialFlags" />
+            <Param Type="BOOL(DWORD)" Name="CredentialFlags" />
             <Param Type="PVOID" Name="Credentials" />
             <Param Type="PHANDLE" Name="pContext" />
             <Return Type="DNS_STATUS" />
@@ -320,12 +329,11 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
             <Param Type="PCTSTR" Name="pName1" />
             <Param Type="PCTSTR" Name="pName2" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="DnsQuery_" BothCharset="True">
             <Param Type="PCTSTR" Name="lpstrName" />
-            <Param Type="[DnsRecordType]" Display="WORD" Name="wType" />
-            <Param Type="[DnsQueryOptions]" Display="DWORD" Name="Options" />
+            <Param Type="[DnsRecordType]" Name="wType" />
+            <Param Type="[DnsQueryOptions]" Name="Options" />
             <Param Type="PVOID" Name="pExtra" />
             <Param Type="PDNS_RECORD*" Name="ppQueryResultsSet" />
             <Param Type="PVOID*" Name="pReserved" />
@@ -334,7 +342,7 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
         </Api>
         <Api Name="DnsQueryConfig">
             <Param Type="DNS_CONFIG_TYPE" Name="Config" />
-            <Param Type="[DnsConfigFlags]" Display="DWORD" Name="Flag" />
+            <Param Type="[DnsConfigFlags]" Name="Flag" />
             <Param Type="PCWSTR" Name="pwsAdapterName" />
             <Param Type="PVOID" Name="pReserved" />
             <Param Type="PVOID" Name="pBuffer" PostLength="pBufferLength" />
@@ -386,7 +394,7 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
         </Api>
         <Api Name="DnsReplaceRecordSet" BothCharset="True">
             <Param Type="PDNS_RECORD" Name="pNewSet" />
-            <Param Type="[DnsUpdateFlags]" Display="DWORD" Name="Options" />
+            <Param Type="[DnsUpdateFlags]" Name="Options" />
             <Param Type="HANDLE" Name="hContext" />
             <Param Type="PVOID" Name="pExtraInfo" />
             <Param Type="PVOID" Name="pReserved" />
@@ -403,7 +411,7 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
             <Param Type="PDNS_MESSAGE_BUFFER" Name="pDnsBuffer" PostLength="pdwBufferSize" />
             <Param Type="PDWORD" Name="pdwBufferSize" />
             <Param Type="PCWSTR" Name="pszName" />
-            <Param Type="[DnsRecordType]" Display="WORD" Name="wType" />
+            <Param Type="[DnsRecordType]" Name="wType" />
             <Param Type="WORD" Name="Xid" />
             <Param Type="BOOL" Name="fRecursionDesired" />
             <Return Type="BOOL" />

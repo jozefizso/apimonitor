@@ -1,6 +1,6 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
@@ -80,14 +80,17 @@
         <Variable Name="PMIB_UDP6TABLE"                          Type="Alias"        Base="LPVOID" />
         <Variable Name="PMIB_UDPSTATS"                           Type="Alias"        Base="LPVOID" />
         <Variable Name="PMIB_UDPTABLE"                           Type="Alias"        Base="LPVOID" />
+        <Variable Name="LPBYTE/PULONG"                           Type="Alias"        Base="LPBYTE">
+            <Display Name="PULONG" />
+        </Variable>
 
         <Variable Name="TCPIP_OWNER_MODULE_INFO_CLASS" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="TCPIP_OWNER_MODULE_INFO_BASIC" Value="0" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="TCP_ESTATS_TYPE" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="TcpConnectionEstatsSynOpts"      Value="0" />
                 <Set Name="TcpConnectionEstatsData"         Value="1" />
                 <Set Name="TcpConnectionEstatsSndCong"      Value="2" />
@@ -98,23 +101,23 @@
                 <Set Name="TcpConnectionEstatsBandwidth"    Value="7" />
                 <Set Name="TcpConnectionEstatsFineRtt"      Value="8" />
                 <Set Name="TcpConnectionEstatsMaximum"      Value="9" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="MIB_IF_TABLE_LEVEL" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="MibIfTableNormal"    Value="0" />
                 <Set Name="MibIfTableRaw"       Value="1" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="NETIO_STATUS" Type="Alias" Base="DWORD">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="NO_ERROR" Value="0" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="TCP_TABLE_CLASS" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="TCP_TABLE_BASIC_LISTENER"            Value="0" />
                 <Set Name="TCP_TABLE_BASIC_CONNECTIONS"         Value="1" />
                 <Set Name="TCP_TABLE_BASIC_ALL"                 Value="2" />
@@ -124,19 +127,19 @@
                 <Set Name="TCP_TABLE_OWNER_MODULE_LISTENER"     Value="6" />
                 <Set Name="TCP_TABLE_OWNER_MODULE_CONNECTIONS"  Value="7" />
                 <Set Name="TCP_TABLE_OWNER_MODULE_ALL"          Value="8" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="UDP_TABLE_CLASS" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="UDP_TABLE_BASIC"         Value="0" />
                 <Set Name="UDP_TABLE_OWNER_PID"     Value="1" />
                 <Set Name="UDP_TABLE_OWNER_MODULE"  Value="2" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="NET_IFINDEX"                             Type="Alias"        Base="ULONG" />
         <Variable Name="PNET_IFINDEX"                            Type="Pointer"        Base="NET_IFINDEX" />
         <Variable Name="ADDRESS_FAMILY" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="AF_UNSPEC"           Value="0" />
                 <Set Name="AF_UNIX"             Value="1" />
                 <Set Name="AF_INET"             Value="2" />
@@ -169,9 +172,17 @@
                 <Set Name="AF_TCNMESSAGE"       Value="30" />
                 <Set Name="AF_ICLFXBM"          Value="31" />
                 <Set Name="AF_BTH"              Value="32" />
-            </Flag>
+            </Enum>
         </Variable>
+        <Variable Name="ADDRESS_FAMILY(ULONG)" Type="Alias" Base="ADDRESS_FAMILY">
+            <Display Name="ULONG" />
+        </Variable>
+        <Variable Name="ADDRESS_FAMILY(DWORD)" Type="Alias" Base="ADDRESS_FAMILY">
+            <Display Name="DWORD" />
+        </Variable>
+
         <Variable Name="[GetAdaptersAddressesFlags]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
             <Flag>
                 <Set Name="GAA_FLAG_SKIP_UNICAST"                   Value="0x0001" />
                 <Set Name="GAA_FLAG_SKIP_ANYCAST"                   Value="0x0002" />
@@ -195,8 +206,8 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="GetAdaptersAddresses">
-            <Param Type="ADDRESS_FAMILY" Display="ULONG" Name="Family" />
-            <Param Type="[GetAdaptersAddressesFlags]" Display="ULONG" Name="Flags" />
+            <Param Type="ADDRESS_FAMILY(ULONG)" Name="Family" />
+            <Param Type="[GetAdaptersAddressesFlags]" Name="Flags" />
             <Param Type="PVOID" Name="Reserved" />
             <Param Type="PIP_ADAPTER_ADDRESSES" Name="AdapterAddresses" />
             <Param Type="PULONG" Name="SizePointer" />
@@ -261,7 +272,7 @@
         <Api Name="SendARP">
             <Param Type="IPAddr" Name="DestIP" />
             <Param Type="IPAddr" Name="SrcIP" />
-            <Param Type="LPBYTE" Display="PULONG" Name="pMacAddr" PostLength="PhyAddrLen" />
+            <Param Type="LPBYTE/PULONG" Name="pMacAddr" PostLength="PhyAddrLen" />
             <Param Type="PULONG" Name="PhyAddrLen" />
             <Return Type="DWORD" />
             <Success Return="Equal" Value="0" />
@@ -872,7 +883,7 @@
             <Param Type="PVOID" Name="pTcpTable" PostLength="pdwSize" />
             <Param Type="PDWORD" Name="pdwSize" />
             <Param Type="BOOL" Name="bOrder" />
-            <Param Type="ADDRESS_FAMILY" Display="ULONG" Name="ulAf" />
+            <Param Type="ADDRESS_FAMILY(ULONG)" Name="ulAf" />
             <Param Type="TCP_TABLE_CLASS" Name="TableClass" />
             <Param Type="ULONG" Name="Reserved" />
             <Return Type="DWORD" />
@@ -882,7 +893,7 @@
             <Param Type="PVOID" Name="pUdpTable" PostLength="pdwSize" />
             <Param Type="PDWORD" Name="pdwSize" />
             <Param Type="BOOL" Name="bOrder" />
-            <Param Type="ADDRESS_FAMILY" Display="ULONG" Name="ulAf" />
+            <Param Type="ADDRESS_FAMILY(ULONG)" Name="ulAf" />
             <Param Type="UDP_TABLE_CLASS" Name="TableClass" />
             <Param Type="ULONG" Name="Reserved" />
             <Return Type="DWORD" />
@@ -957,7 +968,7 @@
         </Api>
         <Api Name="GetTcpStatisticsEx">
             <Param Type="PMIB_TCPSTATS" Name="pStats" />
-            <Param Type="ADDRESS_FAMILY" Display="DWORD" Name="dwFamily" />
+            <Param Type="ADDRESS_FAMILY(DWORD)" Name="dwFamily" />
             <Return Type="DWORD" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -1028,7 +1039,7 @@
         </Api>
         <Api Name="GetUdpStatisticsEx">
             <Param Type="PMIB_UDPSTATS" Name="pStats" />
-            <Param Type="ADDRESS_FAMILY" Display="DWORD" Name="dwFamily" />
+            <Param Type="ADDRESS_FAMILY(DWORD)" Name="dwFamily" />
             <Return Type="DWORD" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -1044,7 +1055,7 @@
             <Param Type="BOOL" Name="bOrder" />
             <Param Type="HANDLE" Name="hHeap" />
             <Param Type="DWORD" Name="dwFlags" />
-            <Param Type="ADDRESS_FAMILY" Display="DWORD" Name="dwFamily" />
+            <Param Type="ADDRESS_FAMILY(DWORD)" Name="dwFamily" />
             <Return Type="DWORD" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -1053,7 +1064,7 @@
             <Param Type="BOOL" Name="bOrder" />
             <Param Type="HANDLE" Name="hHeap" />
             <Param Type="DWORD" Name="dwFlags" />
-            <Param Type="ADDRESS_FAMILY" Display="DWORD" Name="dwFamily" />
+            <Param Type="ADDRESS_FAMILY(DWORD)" Name="dwFamily" />
             <Return Type="DWORD" />
             <Success Return="Equal" Value="0" />
         </Api>

@@ -1,14 +1,16 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\registry.h.xml" />
     <Module Name="Winspool.drv" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         <!-- Variables -->
         <Variable Name="[DeviceCapability]" Type="Alias" Base="WORD">
-            <Flag SingleValue="True">
+            <Display Name="WORD" />
+            <Enum>
                 <Set Name="DC_FIELDS"               Value="1" />
                 <Set Name="DC_PAPERS"               Value="2" />
                 <Set Name="DC_PAPERSIZE"            Value="3" />
@@ -44,10 +46,11 @@
                 <Set Name="DC_NUP"                  Value="33" />
                 <Set Name="DC_MEDIATYPENAMES"       Value="34" />
                 <Set Name="DC_MEDIATYPES"           Value="35" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="[EnumPrintersFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="PRINTER_ENUM_DEFAULT"             Value="0x00000001" />
                 <Set Name="PRINTER_ENUM_LOCAL"               Value="0x00000002" />
@@ -73,6 +76,7 @@
         </Variable>
 
         <Variable Name="[DocumentMode]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="DM_IN_BUFFER"        Value="8" />
                 <Set Name="DM_IN_PROMPT"        Value="4" />
@@ -82,6 +86,7 @@
         </Variable>
 
         <Variable Name="[PrinterChangeFlags]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
             <Flag>
                 <Set Name="PRINTER_CHANGE_ADD_PRINTER"                  Value="0x00000001" />
                 <Set Name="PRINTER_CHANGE_SET_PRINTER"                  Value="0x00000002" />
@@ -112,10 +117,13 @@
                 <Set Name="PRINTER_CHANGE_ALL"                          Value="0x7777FFFF" />
             </Flag>
         </Variable>
-        <Variable Name="[PrinterChangeFlags*]" Type="Pointer" Base="[PrinterChangeFlags]" />
+        <Variable Name="[PrinterChangeFlags*]" Type="Pointer" Base="[PrinterChangeFlags]">
+                <Display Name="PDWORD" />
+        </Variable>
 
         <Variable Name="[JobControl]" Type="Alias" Base="DWORD">
-            <Flag SingleValue="True">
+                <Display Name="DWORD" />
+            <Enum>
                 <Set Name="JOB_CONTROL_PAUSE"               Value="1" />
                 <Set Name="JOB_CONTROL_RESUME"              Value="2" />
                 <Set Name="JOB_CONTROL_CANCEL"              Value="3" />
@@ -125,27 +133,28 @@
                 <Set Name="JOB_CONTROL_LAST_PAGE_EJECTED"   Value="7" />
                 <Set Name="JOB_CONTROL_RETAIN"              Value="8" />
                 <Set Name="JOB_CONTROL_RELEASE"             Value="9" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="[PrinterControl]" Type="Alias" Base="DWORD">
-            <Flag SingleValue="True">
+                <Display Name="DWORD" />
+            <Enum>
                 <Set Name="PRINTER_CONTROL_PAUSE"           Value="1" />
                 <Set Name="PRINTER_CONTROL_RESUME"          Value="2" />
                 <Set Name="PRINTER_CONTROL_PURGE"           Value="3" />
                 <Set Name="PRINTER_CONTROL_SET_STATUS"      Value="4" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="EPrintXPSJobOperation" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="kJobProduction"  Value="1" />
                 <Set Name="kJobConsumption" Value="2" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="EPrintXPSJobProgress" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="kAddingDocumentSequence"         Value="0" />
                 <Set Name="kDocumentSequenceAdded"          Value="1" />
                 <Set Name="kAddingFixedDocument"            Value="2" />
@@ -156,21 +165,21 @@
                 <Set Name="kFontAdded"                      Value="7" />
                 <Set Name="kImageAdded"                     Value="8" />
                 <Set Name="kXpsDocumentCommitted"           Value="9" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="PrintAsyncNotifyUserFilter" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="kPerUser"  Value="0" />
                 <Set Name="kAllUsers" Value="1" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="PrintAsyncNotifyConversationStyle" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="kBiDirectional"  Value="0" />
                 <Set Name="kUniDirectional" Value="1" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="LPPRINTER_DEFAULTS"                 Type="Alias"    Base="LPVOID" />
@@ -181,6 +190,9 @@
         <Variable Name="IPrintAsyncNotifyChannel**"         Type="Pointer"  Base="IPrintAsyncNotifyChannel*" />
         <Variable Name="PPRINTER_NOTIFY_INFO"               Type="Alias"    Base="LPVOID" />
         <Variable Name="PPRINTER_OPTIONS"                   Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPWSTR/LPBYTE"                      Type="Alias"    Base="LPWSTR">
+            <Display Name="LPBYTE" />
+        </Variable>
 
         <!-- Printing and Print Spooler -->
         <Category Name="Documents and Printing/Printing/Print Spooler API" />
@@ -417,7 +429,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="EnumPrinters" BothCharset="True">
-            <Param Type="[EnumPrintersFlags]" Display="DWORD" Name="Flags" />
+            <Param Type="[EnumPrintersFlags]" Name="Flags" />
             <Param Type="LPTSTR" Name="Name" />
             <Param Type="DWORD" Name="Level" />
             <Param Type="LPBYTE" Name="pPrinterEnum" PostLength="pcbNeeded" />
@@ -490,7 +502,7 @@
         <Api Name="GetPrinterData" BothCharset="True">
             <Param Type="HANDLE" Name="hPrinter" />
             <Param Type="LPTSTR" Name="pValueName" />
-            <Param Type="[RegType*]" Display="LPDWORD" Name="pType" />
+            <Param Type="[RegType*/LPDWORD]" Name="pType" />
             <Param Type="LPBYTE" Name="pData" PostLength="pcbNeeded" />
             <Param Type="DWORD" Name="nSize" />
             <Param Type="LPDWORD" Name="pcbNeeded" />
@@ -501,7 +513,7 @@
             <Param Type="HANDLE" Name="hPrinter" />
             <Param Type="LPCTSTR" Name="pKeyName" />
             <Param Type="LPCTSTR" Name="pValueName" />
-            <Param Type="[RegType*]" Display="LPDWORD" Name="pType" />
+            <Param Type="[RegType*/LPDWORD]" Name="pType" />
             <Param Type="LPBYTE" Name="pData" PostLength="pcbNeeded" />
             <Param Type="DWORD" Name="nSize" />
             <Param Type="LPDWORD" Name="pcbNeeded" />
@@ -522,7 +534,7 @@
             <Param Type="LPTSTR" Name="pName" />
             <Param Type="LPTSTR" Name="pEnvironment" />
             <Param Type="DWORD" Name="Level" />
-            <Param Type="LPWSTR" Display="LPBYTE" Name="pDriverDirectory" />
+            <Param Type="LPWSTR/LPBYTE" Name="pDriverDirectory" />
             <Param Type="DWORD" Name="cbBuf" />
             <Param Type="LPDWORD" Name="pcbNeeded" />
             <Return Type="BOOL" />
@@ -571,7 +583,7 @@
             <Param Type="DWORD" Name="JobId" />
             <Param Type="DWORD" Name="Level" />
             <Param Type="LPBYTE" Name="pJob" />
-            <Param Type="[JobControl]" Display="DWORD" Name="Command" />
+            <Param Type="[JobControl]" Name="Command" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -587,14 +599,14 @@
             <Param Type="HANDLE" Name="hPrinter" />
             <Param Type="DWORD" Name="Level" />
             <Param Type="LPBYTE" Name="pPrinter" />
-            <Param Type="[PrinterControl]" Display="DWORD" Name="Command" />
+            <Param Type="[PrinterControl]" Name="Command" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SetPrinterData" BothCharset="True">
             <Param Type="HANDLE" Name="hPrinter" />
             <Param Type="LPTSTR" Name="pValueName" />
-            <Param Type="[RegType]" Display="DWORD" Name="Type" />
+            <Param Type="[RegType]" Name="Type" />
             <Param Type="LPBYTE" Name="pData" Length="cbData" />
             <Param Type="DWORD" Name="cbData" />
             <Return Type="DWORD" />
@@ -604,7 +616,7 @@
             <Param Type="HANDLE" Name="hPrinter" />
             <Param Type="LPCTSTR" Name="pKeyName" />
             <Param Type="LPCTSTR" Name="pValueName" />
-            <Param Type="[RegType]" Display="DWORD" Name="Type" />
+            <Param Type="[RegType]" Name="Type" />
             <Param Type="LPBYTE" Name="pData" Length="cbData" />
             <Param Type="DWORD" Name="cbData" />
             <Return Type="DWORD" />
@@ -613,7 +625,7 @@
         <Api Name="DeviceCapabilities" BothCharset="True">
             <Param Type="LPCTSTR" Name="pDevice" />
             <Param Type="LPCTSTR" Name="pPort" />
-            <Param Type="[DeviceCapability]" Display="WORD" Name="fwCapability" />
+            <Param Type="[DeviceCapability]" Name="fwCapability" />
             <Param Type="LPTSTR" Name="pOutput" />
             <Param Type="const DEVMODE*" Name="pDevMode" />
             <Return Type="DWORD" />
@@ -736,7 +748,7 @@
             <Param Type="LPTSTR" Name="pDeviceName" />
             <Param Type="PDEVMODE" Name="pDevModeOutput" />
             <Param Type="PDEVMODE" Name="pDevModeInput" />
-            <Param Type="[DocumentMode]" Display="DWORD" Name="fMode" />
+            <Param Type="[DocumentMode]" Name="fMode" />
             <Return Type="LONG" />
             <Success Return="Greater" Value="-1" />
         </Api>
@@ -757,7 +769,7 @@
         </Api>
         <Api Name="FindFirstPrinterChangeNotification">
             <Param Type="HANDLE" Name="hPrinter" />
-            <Param Type="[PrinterChangeFlags]" Display="DWORD" Name="fdwFilter" />
+            <Param Type="[PrinterChangeFlags]" Name="fdwFilter" />
             <Param Type="DWORD" Name="fdwOptions" />
             <Param Type="LPVOID" Name="pPrinterNotifyOptions" />
             <Return Type="HANDLE" />
@@ -765,7 +777,7 @@
         </Api>
         <Api Name="FindNextPrinterChangeNotification">
             <Param Type="HANDLE" Name="hChange" />
-            <Param Type="[PrinterChangeFlags*]" Display="PDWORD" Name="pdwChange" />
+            <Param Type="[PrinterChangeFlags*]" Name="pdwChange" />
             <Param Type="LPVOID" Name="pPrinterNotifyOptions" />
             <Param Type="LPVOID*" Name="ppPrinterNotifyInfo" />
             <Return Type="BOOL" />

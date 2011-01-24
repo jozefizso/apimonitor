@@ -1,19 +1,21 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\shell.h.xml" />
+    <Include Filename="Headers\ole.h.xml" />
+    
     <Module Name="propsys.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         <!-- Variables -->
         <Variable Name="PKA_FLAGS" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="PKA_SET"     Value="0" />
                 <Set Name="PKA_APPEND"  Value="1" />
                 <Set Name="PKA_DELETE"  Value="2" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="const PKA_FLAGS*" Type="Pointer" Base="PKA_FLAGS" />
 
@@ -38,7 +40,7 @@
         </Variable>
 
         <Variable Name="PROPDESC_ENUMFILTER" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="PDEF_ALL"                Value="0" />
                 <Set Name="PDEF_SYSTEM"             Value="1" />
                 <Set Name="PDEF_NONSYSTEM"          Value="2" />
@@ -46,7 +48,7 @@
                 <Set Name="PDEF_QUERYABLE"          Value="4" />
                 <Set Name="PDEF_INFULLTEXTQUERY"    Value="5" />
                 <Set Name="PDEF_COLUMN"             Value="6" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="IDelayedPropertyStoreFactory*"       Type="Alias"        Base="LPVOID" />
@@ -128,7 +130,7 @@
         </Api>
         <Api Name="PSCreatePropertyStoreFromObject">
             <Param Type="IUnknown*" Name="punk" />
-            <Param Type="[StgmFlags]" Display="DWORD" Name="grfMode" />
+            <Param Type="[StgmFlags]" Name="grfMode" />
             <Param Type="REFIID" Name="riid" />
             <Param Type="void**" Name="ppv" InterfaceId="riid" />
             <Return Type="HRESULT" />
@@ -136,7 +138,7 @@
         </Api>
         <Api Name="PSCreatePropertyStoreFromPropertySetStorage">
             <Param Type="IPropertySetStorage*" Name="ppss" />
-            <Param Type="[StgmFlags]" Display="DWORD" Name="grfMode" />
+            <Param Type="[StgmFlags]" Name="grfMode" />
             <Param Type="REFIID" Name="riid" />
             <Param Type="void**" Name="ppv" InterfaceId="riid" />
             <Return Type="HRESULT" />
@@ -162,7 +164,7 @@
             <Param Type="REFPROPERTYKEY" Name="propkey" />
             <Param Type="REFPROPVARIANT" Name="propvar" />
             <Param Type="PROPDESC_FORMAT_FLAGS" Name="pdfFlags"/>
-            <Param Type="LPWSTR" Name="pwszText" />
+            <Param Type="LPWSTR" Name="pwszText" OutputOnly="True" />
             <Param Type="DWORD" Name="cchText" />
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
@@ -288,7 +290,7 @@
         </Api>
         <Api Name="PSStringFromPropertyKey">
             <Param Type="REFPROPERTYKEY" Name="pkey" />
-            <Param Type="LPWSTR" Name="psz" />
+            <Param Type="LPWSTR" Name="psz" OutputOnly="True" />
             <Param Type="UINT" Name="cch" />
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />

@@ -1,10 +1,12 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\gdi.h.xml" />
+    
     <Module Name="Imm32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         <!-- Parameters -->
         <Variable Name="HIMC"                    Type="Alias"        Base="HANDLE" />
@@ -17,7 +19,8 @@
         <Variable Name="LPSTYLEBUF"              Type="Alias"        Base="LPVOID" />
 
         <Variable Name="[ImmNotifyAction]" Type="Alias" Base="DWORD">
-            <Flag SingleValue="True">
+                <Display Name="DWORD" />
+            <Enum>
                 <Set Name="NI_OPENCANDIDATE"            Value="0x0010" />
                 <Set Name="NI_CLOSECANDIDATE"           Value="0x0011" />
                 <Set Name="NI_SELECTCANDIDATESTR"       Value="0x0012" />
@@ -27,18 +30,20 @@
                 <Set Name="NI_SETCANDIDATE_PAGESTART"   Value="0x0016" />
                 <Set Name="NI_SETCANDIDATE_PAGESIZE"    Value="0x0017" />
                 <Set Name="NI_IMEMENUSELECTED"          Value="0x0018" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="[CompositionString]" Type="Alias" Base="DWORD">
-            <Flag SingleValue="True">
+                <Display Name="DWORD" />
+            <Enum>
                 <Set Name="CPS_COMPLETE"    Value="0x0001" />
                 <Set Name="CPS_CONVERT"     Value="0x0002" />
                 <Set Name="CPS_REVERT"      Value="0x0003" />
                 <Set Name="CPS_CANCEL"      Value="0x0004" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="[ImmGetPropertyIndex]" Type="Alias" Base="DWORD">
-            <Flag SingleValue="True">
+                <Display Name="DWORD" />
+            <Enum>
                 <Set Name="IGP_GETIMEVERSION"   Value="-4" />
                 <Set Name="IGP_PROPERTY"        Value="0x00000004" />
                 <Set Name="IGP_CONVERSION"      Value="0x00000008" />
@@ -46,7 +51,7 @@
                 <Set Name="IGP_UI"              Value="0x00000010" />
                 <Set Name="IGP_SETCOMPSTR"      Value="0x00000014" />
                 <Set Name="IGP_SELECT"          Value="0x00000018" />
-            </Flag>
+            </Enum>
         </Variable>
         <!-- Input Method Manager -->
         <Category Name="Windows Application UI Development/Internationalization for Windows Applications/Input Method Manager" />
@@ -178,7 +183,7 @@
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="ImmGetDefaultIMEWnd">
+        <Api Name="ImmGetDefaultIMEWnd" ErrorFunc="">
             <Param Type="HWND" Name="hWnd" />
             <Return Type="HWND" />
             <Success Return="NotEqual" Value="0" />
@@ -222,7 +227,7 @@
         </Api>
         <Api Name="ImmGetProperty">
             <Param Type="HKL" Name="hKL" />
-            <Param Type="[ImmGetPropertyIndex]" Display="DWORD" Name="fdwIndex" />
+            <Param Type="[ImmGetPropertyIndex]" Name="fdwIndex" />
             <Return Type="DWORD" />
         </Api>
         <Api Name="ImmGetRegisterWordStyle" BothCharset="True">
@@ -264,8 +269,8 @@
         </Api>
         <Api Name="ImmNotifyIME">
             <Param Type="HIMC" Name="hIMC" />
-            <Param Type="[ImmNotifyAction]" Display="DWORD" Name="dwAction" />
-            <Param Type="[CompositionString]" Display="DWORD" Name="dwIndex" />
+            <Param Type="[ImmNotifyAction]" Name="dwAction" />
+            <Param Type="[CompositionString]" Name="dwIndex" />
             <Param Type="DWORD" Name="dwValue" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />

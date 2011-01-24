@@ -1,12 +1,17 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\cryptography.h.xml" />
+    <Include Filename="Headers\registry.h.xml" />
+    
+    <!-- TODO: Return type is [SystemErrorCode] instead of UINT -->
     <Module Name="Msi.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        <ErrorDecode ErrorFunc="GetLastError" ErrorIsReturnValue="True" />
+        
         <!-- Parameters -->
         <Variable Name="INSTALLUI_HANDLER"           Type="Alias" Base="LPVOID" />
         <Variable Name="PINSTALLUI_HANDLER_RECORD"   Type="Alias" Base="LPVOID" />
@@ -15,13 +20,13 @@
         <Variable Name="MSIHANDLE**"                 Type="Pointer" Base="MSIHANDLE*" />
 
         <Variable Name="USERINFOSTATE" Type="Alias" Base="int">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="USERINFOSTATE_MOREDATA"      Value="-3" />
                 <Set Name="USERINFOSTATE_INVALIDARG"    Value="-2" />
                 <Set Name="USERINFOSTATE_UNKNOWN"       Value="-1" />
                 <Set Name="USERINFOSTATE_ABSENT"        Value="0" />
                 <Set Name="USERINFOSTATE_PRESENT"       Value="1" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="PMSIPATCHSEQUENCEINFO"       Type="Alias" Base="LPVOID" />
         <Variable Name="PMSIFILEHASHINFO"            Type="Alias" Base="LPVOID" />
@@ -52,8 +57,12 @@
             </Flag>
         </Variable>
         <Variable Name="MSIINSTALLCONTEXT*" Type="Pointer" Base="MSIINSTALLCONTEXT" />
+        <Variable Name="MSIINSTALLCONTEXT(DWORD)" Type="Alias" Base="MSIINSTALLCONTEXT">
+            <Display Name="DWORD" />
+        </Variable>
+        
         <Variable Name="INSTALLSTATE" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="INSTALLSTATE_NOTUSED"        Value="-7" />
                 <Set Name="INSTALLSTATE_BADCONFIG"      Value="-6" />
                 <Set Name="INSTALLSTATE_INCOMPLETE"     Value="-5" />
@@ -68,17 +77,19 @@
                 <Set Name="INSTALLSTATE_LOCAL"          Value="3" />
                 <Set Name="INSTALLSTATE_SOURCE"         Value="4" />
                 <Set Name="INSTALLSTATE_DEFAULT"        Value="5" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="INSTALLSTATE*" Type="Pointer" Base="INSTALLSTATE" />
         <Variable Name="[MsiInstallLevel]" Type="Alias" Base="int">
-            <Flag SingleValue="True">
+            <Display Name="int" />
+            <Enum>
                 <Set Name="INSTALLLEVEL_DEFAULT"    Value="0" />
                 <Set Name="INSTALLLEVEL_MINIMUM"    Value="1" />
                 <Set Name="INSTALLLEVEL_MAXIMUM"    Value="0xFFFF" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="[MsiReinstallMode]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
             <Flag>
                 <Set Name="REINSTALLMODE_REPAIR"            Value="0x00000001" />
                 <Set Name="REINSTALLMODE_FILEMISSING"       Value="0x00000002" />
@@ -94,13 +105,14 @@
             </Flag>
         </Variable>
         <Variable Name="[MsiInstallMode]" Type="Alias" Base="DWORD">
-            <Flag SingleValue="True">
+                <Display Name="DWORD" />
+            <Enum>
                 <Set Name="INSTALLMODE_NODETECTION_ANY"     Value="-4" />
                 <Set Name="INSTALLMODE_NOSOURCERESOLUTION"  Value="-3" />
                 <Set Name="INSTALLMODE_NODETECTION"         Value="-2" />
                 <Set Name="INSTALLMODE_EXISTING"            Value="-1" />
                 <Set Name="INSTALLMODE_DEFAULT"             Value="0" />
-            </Flag>
+            </Enum>
         </Variable>
         <Variable Name="INSTALLTYPE" Type="Alias" Base="UINT">
             <Flag>
@@ -110,6 +122,7 @@
             </Flag>
         </Variable>
         <Variable Name="[MsiInstallLogMode]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
             <Flag>
                 <Set Name="INSTALLLOGMODE_FATALEXIT"        Value="0x00000001" />
                 <Set Name="INSTALLLOGMODE_ERROR"            Value="0x00000002" />
@@ -134,18 +147,20 @@
             </Flag>
         </Variable>
         <Variable Name="[MsiInstallLogAttributes]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
             <Flag>
                 <Set Name="INSTALLLOGATTRIBUTES_APPEND"         Value="0x00000001" />
                 <Set Name="INSTALLLOGATTRIBUTES_FLUSHEACHLINE"  Value="0x00000002" />
             </Flag>
         </Variable>
         <!--
-    <Flag Name="ADVERTISEFLAGS" SingleValue="True">
+    <Enum Name="ADVERTISEFLAGS">
         <Set Name="ADVERTISEFLAGS_MACHINEASSIGN"    Value="0" />
         <Set Name="ADVERTISEFLAGS_USERASSIGN"       Value="1" />
-    </Flag>
+    </Enum>
     -->
         <Variable Name="[MsiArchFlags]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
             <Flag>
                 <Set Name="MSIARCHITECTUREFLAGS_X86"    Value="0x00000001" />
                 <Set Name="MSIARCHITECTUREFLAGS_IA64"   Value="0x00000002" />
@@ -153,11 +168,13 @@
             </Flag>
         </Variable>
         <Variable Name="[MsiAdOptions]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
             <Flag>
                 <Set Name="MSIADVERTISEOPTIONS_INSTANCE"    Value="1" />
             </Flag>
         </Variable>
         <Variable Name="[MsiSourceType]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
             <Flag>
                 <Set Name="MSISOURCETYPE_UNKNOWN"   Value="0x00000000" />
                 <Set Name="MSISOURCETYPE_NETWORK"   Value="0x00000001" />
@@ -167,12 +184,14 @@
             </Flag>
         </Variable>
         <Variable Name="[MsiCode]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
             <Flag>
                 <Set Name="MSICODE_PRODUCT"         Value="0x00000000" />
                 <Set Name="MSICODE_PATCH"           Value="0x40000000" />
             </Flag>
         </Variable>
         <Variable Name="[MsiAssemblyInfo]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
             <Flag>
                 <Set Name="MSIASSEMBLYINFO_NETASSEMBLY"     Value="0" />
                 <Set Name="MSIASSEMBLYINFO_WIN32ASSEMBLY"   Value="1" />
@@ -184,6 +203,7 @@
             </Flag>
         </Variable>
         <Variable Name="[MsiPatchState]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="MSIPATCHSTATE_INVALID"       Value="0" />
                 <Set Name="MSIPATCHSTATE_APPLIED"       Value="1" />
@@ -194,17 +214,20 @@
             </Flag>
         </Variable>
         <Variable Name="[MsiHashFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="MSI_INVALID_HASH_IS_FATAL" Value="0x1" />
             </Flag>
         </Variable>
         <Variable Name="[MsiTransactionAttributes]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="MSITRANSACTION_CHAIN_EMBEDDEDUI"         Value="0x00000001" />
                 <Set Name="MSITRANSACTION_JOIN_EXISTING_EMBEDDEDUI" Value="0x00000002" />
             </Flag>
         </Variable>
         <Variable Name="[MsiScriptFlags]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
             <Flag>
                 <Set Name="SCRIPTFLAGS_CACHEINFO"                   Value="0x00000001" />
                 <Set Name="SCRIPTFLAGS_SHORTCUTS"                   Value="0x00000004" />
@@ -219,6 +242,7 @@
             </Flag>
         </Variable>
         <Variable Name="[MsiInstallFeatureAttr]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="INSTALLFEATUREATTRIBUTE_FAVORLOCAL"              Value="0x00000001" />
                 <Set Name="INSTALLFEATUREATTRIBUTE_FAVORSOURCE"             Value="0x00000002" />
@@ -228,12 +252,15 @@
                 <Set Name="INSTALLFEATUREATTRIBUTE_NOUNSUPPORTEDADVERTISE"  Value="0x00000020" />
             </Flag>
         </Variable>
-        <Variable Name="[MsiInstallFeatureAttr*]" Type="Pointer" Base="[MsiInstallFeatureAttr]" />
+        <Variable Name="[MsiInstallFeatureAttr*]" Type="Pointer" Base="[MsiInstallFeatureAttr]">
+            <Display Name="LPDWORD" />
+        </Variable>
         <Variable Name="[MsiTransactionState]" Type="Alias" Base="DWORD">
-            <Flag SingleValue="True">
+            <Display Name="DWORD" />
+            <Enum>
                 <Set Name="MSITRANSACTIONSTATE_ROLLBACK"    Value="0" />
                 <Set Name="MSITRANSACTIONSTATE_COMMIT"      Value="1" />
-            </Flag>
+            </Enum>
         </Variable>
         <!-- Windows Installer -->
         <Category Name="Administration and Management/Application Installation and Servicing/Windows Installer" />
@@ -245,34 +272,34 @@
         </Api>
         <Api Name="MsiSetExternalUI" BothCharset="True">
             <Param Type="INSTALLUI_HANDLER" Name="puiHandler" />
-            <Param Type="[MsiInstallLogMode]" Display="DWORD" Name="dwMessageFilter" />
+            <Param Type="[MsiInstallLogMode]" Name="dwMessageFilter" />
             <Param Type="LPVOID" Name="pvContext" />
             <Return Type="INSTALLUI_HANDLER" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="MsiSetExternalUIRecord">
             <Param Type="PINSTALLUI_HANDLER_RECORD" Name="puiHandler" />
-            <Param Type="[MsiInstallLogMode]" Display="DWORD" Name="dwMessageFilter" />
+            <Param Type="[MsiInstallLogMode]" Name="dwMessageFilter" />
             <Param Type="LPVOID" Name="pvContext" />
             <Param Type="PINSTALLUI_HANDLER_RECORD" Name="ppuiPrevHandler" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiEnableLog" BothCharset="True">
-            <Param Type="[MsiInstallLogMode]" Display="DWORD" Name="dwLogMode" />
+            <Param Type="[MsiInstallLogMode]" Name="dwLogMode" />
             <Param Type="LPCTSTR" Name="szLogFile" />
-            <Param Type="[MsiInstallLogAttributes]" Display="DWORD" Name="dwLogAttributes" />
+            <Param Type="[MsiInstallLogAttributes]" Name="dwLogAttributes" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiCloseHandle">
             <Param Type="MSIHANDLE" Name="hAny" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiCloseAllHandles">
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiAdvertiseProduct" BothCharset="True">
             <Param Type="LPCTSTR" Name="szPackagePath" />
@@ -280,85 +307,85 @@
             <Param Type="LPCTSTR" Name="szTransforms" />
             <Param Type="LANGID" Name="lgidLanguage" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiAdvertiseProductEx" BothCharset="True">
             <Param Type="LPCTSTR" Name="szPackagePath" />
             <Param Type="LPCTSTR" Name="szScriptfilePath" />
             <Param Type="LPCTSTR" Name="szTransforms" />
             <Param Type="LANGID" Name="lgidLanguage" />
-            <Param Type="[MsiArchFlags]" Display="DWORD" Name="dwPlatform" />
-            <Param Type="[MsiAdOptions]" Display="DWORD" Name="dwOptions" />
+            <Param Type="[MsiArchFlags]" Name="dwPlatform" />
+            <Param Type="[MsiAdOptions]" Name="dwOptions" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiAdvertiseScript" BothCharset="True">
             <Param Type="LPCTSTR" Name="szScriptFile" />
-            <Param Type="[MsiScriptFlags]" Display="DWORD" Name="dwFlags" />
+            <Param Type="[MsiScriptFlags]" Name="dwFlags" />
             <Param Type="PHKEY" Name="phRegData" />
             <Param Type="BOOL" Name="fRemoveItems" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiInstallProduct" BothCharset="True">
             <Param Type="LPCTSTR" Name="szPackagePath" />
             <Param Type="LPCTSTR" Name="szCommandLine" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiConfigureProduct" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProduct" />
-            <Param Type="[MsiInstallLevel]" Display="int" Name="iInstallLevel" />
+            <Param Type="[MsiInstallLevel]" Name="iInstallLevel" />
             <Param Type="INSTALLSTATE" Name="eInstallState" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiConfigureProductEx" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProduct" />
-            <Param Type="[MsiInstallLevel]" Display="int" Name="iInstallLevel" />
+            <Param Type="[MsiInstallLevel]" Name="iInstallLevel" />
             <Param Type="INSTALLSTATE" Name="eInstallState" />
             <Param Type="LPCTSTR" Name="szCommandLine" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiReinstallProduct" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProduct" />
-            <Param Type="[MsiReinstallMode]" Display="DWORD" Name="dwReinstallMode" />
+            <Param Type="[MsiReinstallMode]" Name="dwReinstallMode" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiConfigureFeature" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProduct" />
             <Param Type="LPCTSTR" Name="szFeature" />
             <Param Type="INSTALLSTATE" Name="eInstallState" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiReinstallFeature" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProduct" />
             <Param Type="LPCTSTR" Name="szFeature" />
-            <Param Type="[MsiReinstallMode]" Display="DWORD" Name="dwReinstallMode" />
+            <Param Type="[MsiReinstallMode]" Name="dwReinstallMode" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiInstallMissingComponent" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProduct" />
             <Param Type="LPCTSTR" Name="szComponent" />
             <Param Type="INSTALLSTATE" Name="eInstallState" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiInstallMissingFile" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProduct" />
             <Param Type="LPCTSTR" Name="szFile" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiNotifySidChange" BothCharset="True">
             <Param Type="LPCTSTR" Name="szOldSid" />
             <Param Type="LPCTSTR" Name="szNewSid" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiProcessAdvertiseScript" BothCharset="True">
             <Param Type="LPCTSTR" Name="szScriptFile" />
@@ -367,7 +394,7 @@
             <Param Type="BOOL" Name="fShortcuts" />
             <Param Type="BOOL" Name="fRemoveItems" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiSourceListAddSource" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProduct" />
@@ -375,83 +402,83 @@
             <Param Type="DWORD" Name="dwReserved" />
             <Param Type="LPCTSTR" Name="szSource" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiSourceListAddSourceEx" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProductCodeOrPatchCode" />
             <Param Type="LPCTSTR" Name="szUserSid" />
             <Param Type="MSIINSTALLCONTEXT" Name="dwContext" />
-            <Param Type="[MsiSourceType]" Display="DWORD" Name="dwOptions" />
+            <Param Type="[MsiSourceType]" Name="dwOptions" />
             <Param Type="LPCTSTR" Name="szSource" />
             <Param Type="DWORD" Name="dwIndex" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiSourceListClearSource" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProductCodeOrPatchCode" />
             <Param Type="LPCTSTR" Name="szUserSid" />
             <Param Type="MSIINSTALLCONTEXT" Name="dwContext" />
-            <Param Type="[MsiSourceType]" Display="DWORD" Name="dwOptions" />
+            <Param Type="[MsiSourceType]" Name="dwOptions" />
             <Param Type="LPCTSTR" Name="szSource" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiSourceListClearAll" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProduct" />
             <Param Type="LPCTSTR" Name="szUserName" />
             <Param Type="DWORD" Name="dwReserved" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiSourceListClearAllEx" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProductCodeOrPatchCode" />
             <Param Type="LPCTSTR" Name="szUserSid" />
             <Param Type="MSIINSTALLCONTEXT" Name="dwContext" />
-            <Param Type="[MsiSourceType]" Display="DWORD" Name="dwOptions" />
+            <Param Type="[MsiSourceType]" Name="dwOptions" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiSourceListForceResolution" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProduct" />
             <Param Type="LPCTSTR" Name="szUserName" />
             <Param Type="DWORD" Name="dwReserved" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiSourceListForceResolutionEx" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProductCodeOrPatchCode" />
             <Param Type="LPCTSTR" Name="szUserSid" />
             <Param Type="MSIINSTALLCONTEXT" Name="dwContext" />
-            <Param Type="[MsiCode]" Display="DWORD" Name="dwOptions" />
+            <Param Type="[MsiCode]" Name="dwOptions" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiSourceListGetInfo" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProductCodeOrPatchCode" />
             <Param Type="LPCTSTR" Name="szUserSid" />
             <Param Type="MSIINSTALLCONTEXT" Name="dwContext" />
-            <Param Type="[MsiCode]" Display="DWORD" Name="dwOptions" />
+            <Param Type="[MsiCode]" Name="dwOptions" />
             <Param Type="LPCTSTR" Name="szProperty" />
             <Param Type="LPTSTR" Name="szValue" />
             <Param Type="LPDWORD" Name="pcchValue" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiSourceListSetInfo" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProductCodeOrPatchCode" />
             <Param Type="LPCTSTR" Name="szUserSid" />
             <Param Type="MSIINSTALLCONTEXT" Name="dwContext" />
-            <Param Type="[MsiSourceType]" Display="DWORD" Name="dwOptions" />
+            <Param Type="[MsiSourceType]" Name="dwOptions" />
             <Param Type="LPCTSTR" Name="szProperty" />
             <Param Type="LPCTSTR" Name="szValue" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiSourceListEnumMediaDisks" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProductCodeOrPatchCode" />
             <Param Type="LPCTSTR" Name="szUserSID" />
             <Param Type="MSIINSTALLCONTEXT" Name="dwContext" />
-            <Param Type="[MsiCode]" Display="DWORD" Name="dwOptions" />
+            <Param Type="[MsiCode]" Name="dwOptions" />
             <Param Type="DWORD" Name="dwIndex" />
             <Param Type="LPWORD" Name="pdwDiskId" />
             <Param Type="LPTSTR" Name="szVolumeLabel" />
@@ -459,79 +486,79 @@
             <Param Type="LPTSTR" Name="szDiskPrompt" />
             <Param Type="LPDWORD" Name="pcchDiskPrompt" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiSourceListAddMediaDisk" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProductCodeOrPatchCode" />
             <Param Type="LPCTSTR" Name="szUserSid" />
             <Param Type="MSIINSTALLCONTEXT" Name="dwContext" />
-            <Param Type="[MsiCode]" Display="DWORD" Name="dwOptions"  />
+            <Param Type="[MsiCode]" Name="dwOptions"  />
             <Param Type="DWORD" Name="dwDiskId" />
             <Param Type="LPCTSTR" Name="szVolumeLabel" />
             <Param Type="LPCTSTR" Name="szDiskPrompt" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiSourceListClearMediaDisk" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProductCodeOrPatchCode" />
             <Param Type="LPCTSTR" Name="szUserSid" />
             <Param Type="MSIINSTALLCONTEXT" Name="dwContext" />
-            <Param Type="[MsiCode]" Display="DWORD" Name="dwOptions" />
+            <Param Type="[MsiCode]" Name="dwOptions" />
             <Param Type="DWORD" Name="dwDiskID" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiSourceListEnumSources" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProductCodeOrPatchCode" />
             <Param Type="LPCTSTR" Name="szUserSid" />
             <Param Type="MSIINSTALLCONTEXT" Name="dwContext" />
-            <Param Type="[MsiSourceType]" Display="DWORD" Name="dwOptions" />
+            <Param Type="[MsiSourceType]" Name="dwOptions" />
             <Param Type="DWORD" Name="dwIndex" />
             <Param Type="LPTSTR" Name="szSource" />
             <Param Type="LPDWORD" Name="pcchSource" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiProvideAssembly" BothCharset="True">
             <Param Type="LPCTSTR" Name="szAssemblyName" />
             <Param Type="LPCTSTR" Name="szAppContext" />
-            <Param Type="[MsiInstallMode]" Display="DWORD" Name="dwInstallMode" />
-            <Param Type="[MsiAssemblyInfo]" Display="DWORD" Name="dwAssemblyInfo" />
+            <Param Type="[MsiInstallMode]" Name="dwInstallMode" />
+            <Param Type="[MsiAssemblyInfo]" Name="dwAssemblyInfo" />
             <Param Type="LPTSTR" Name="lpPathBuf" />
             <Param Type="DWORD*" Name="pcchPathBuf" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiProvideComponent" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProduct" />
             <Param Type="LPCTSTR" Name="szFeature" />
             <Param Type="LPCTSTR" Name="szComponent" />
-            <Param Type="[MsiInstallMode]" Display="DWORD" Name="dwInstallMode" />
+            <Param Type="[MsiInstallMode]" Name="dwInstallMode" />
             <Param Type="LPTSTR" Name="lpPathBuf" />
             <Param Type="DWORD*" Name="pcchPathBuf" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiProvideQualifiedComponent" BothCharset="True">
             <Param Type="LPCTSTR" Name="szComponent" />
             <Param Type="LPCTSTR" Name="szQualifier" />
-            <Param Type="[MsiInstallMode]" Display="DWORD" Name="dwInstallMode" />
+            <Param Type="[MsiInstallMode]" Name="dwInstallMode" />
             <Param Type="LPTSTR" Name="lpPathBuf" />
             <Param Type="DWORD*" Name="pcchPathBuf" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiProvideQualifiedComponentEx" BothCharset="True">
             <Param Type="LPCTSTR" Name="szComponent" />
             <Param Type="LPCTSTR" Name="szQualifier" />
-            <Param Type="[MsiInstallMode]" Display="DWORD" Name="dwInstallMode" />
+            <Param Type="[MsiInstallMode]" Name="dwInstallMode" />
             <Param Type="LPTSTR" Name="szProduct" />
             <Param Type="DWORD" Name="dwUnused1" />
             <Param Type="DWORD" Name="dwUnused2" />
             <Param Type="LPTSTR" Name="lpPathBuf" />
             <Param Type="DWORD*" Name="pcchPathBuf" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiGetComponentPath" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProduct" />
@@ -565,12 +592,12 @@
             <Param Type="LPCTSTR" Name="szComponent" />
             <Param Type="INSTALLSTATE*" Name="pdwState" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiCollectUserInfo" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProduct" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiUseFeature" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProduct" />
@@ -581,33 +608,33 @@
         <Api Name="MsiUseFeatureEx" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProduct" />
             <Param Type="LPCTSTR" Name="szFeature" />
-            <Param Type="[MsiInstallMode]" Display="DWORD" Name="dwInstallMode" />
+            <Param Type="[MsiInstallMode]" Name="dwInstallMode" />
             <Param Type="DWORD" Name="dwReserved" />
             <Return Type="INSTALLSTATE" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="MsiGetProductCode" BothCharset="True">
             <Param Type="LPCTSTR" Name="szComponent" />
-            <Param Type="LPTSTR" Name="lpProductBuf" />
+            <Param Type="LPTSTR" Name="lpProductBuf" OutputOnly="True" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiEnumProducts" BothCharset="True">
             <Param Type="DWORD" Name="iProductIndex" />
-            <Param Type="LPTSTR" Name="lpProductBuf" />
+            <Param Type="LPTSTR" Name="lpProductBuf" OutputOnly="True" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiEnumProductsEx" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProductCode" />
             <Param Type="LPCTSTR" Name="szUserSid" />
-            <Param Type="MSIINSTALLCONTEXT" Display="DWORD" Name="dwContext" />
+            <Param Type="MSIINSTALLCONTEXT(DWORD)" Name="dwContext" />
             <Param Type="DWORD" Name="dwIndex" />
             <Param Type="MSIINSTALLCONTEXT*" Name="pdwInstalledContext" />
             <Param Type="LPTSTR" Name="szSid" />
             <Param Type="LPDWORD" Name="pcchSid" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiEnumRelatedProducts" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpUpgradeCode" />
@@ -615,7 +642,7 @@
             <Param Type="DWORD" Name="iProductIndex" />
             <Param Type="LPTSTR" Name="lpProductBuf" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiEnumFeatures" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProduct" />
@@ -623,42 +650,42 @@
             <Param Type="LPTSTR" Name="lpFeatureBuf" />
             <Param Type="LPTSTR" Name="lpParentBuf" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiEnumComponents" BothCharset="True">
             <Param Type="DWORD" Name="iComponentIndex" />
             <Param Type="LPTSTR" Name="lpComponentBuf" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiEnumComponentsEx" BothCharset="True">
             <Param Type="LPCTSTR" Name="szUserSid" />
-            <Param Type="MSIINSTALLCONTEXT" Display="DWORD" Name="dwContext" />
+            <Param Type="MSIINSTALLCONTEXT(DWORD)" Name="dwContext" />
             <Param Type="DWORD" Name="dwIndex" />
             <Param Type="MSIINSTALLCONTEXT*" Name="pdwInstalledContext" />
             <Param Type="LPTSTR" Name="szSid" />
             <Param Type="LPDWORD" Name="pcchSid" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiEnumClients" BothCharset="True">
             <Param Type="LPCTSTR" Name="szComponent" />
             <Param Type="DWORD" Name="iProductIndex" />
             <Param Type="LPTSTR" Name="lpProductBuf" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiEnumClientsEx" BothCharset="True">
             <Param Type="LPCTSTR" Name="szComponent" />
             <Param Type="LPCTSTR" Name="szUserSid" />
-            <Param Type="MSIINSTALLCONTEXT" Display="DWORD" Name="dwContext" />
+            <Param Type="MSIINSTALLCONTEXT(DWORD)" Name="dwContext" />
             <Param Type="DWORD" Name="dwProductIndex" />
             <Param Type="LPTSTR" Name="szProductBuf" />
             <Param Type="MSIINSTALLCONTEXT*" Name="pdwInstalledContext" />
             <Param Type="LPTSTR" Name="szSid" />
             <Param Type="LPDWORD" Name="pcchSid" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiEnumComponentQualifiers" BothCharset="True">
             <Param Type="LPTSTR" Name="szComponent" />
@@ -668,7 +695,7 @@
             <Param Type="LPTSTR" Name="lpApplicationDataBuf" />
             <Param Type="DWORD*" Name="pcchApplicationDataBuf" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiQueryFeatureState" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProduct" />
@@ -683,7 +710,7 @@
             <Param Type="LPCTSTR" Name="szFeature" />
             <Param Type="INSTALLSTATE*" Name="pdwState" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiQueryProductState" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProduct" />
@@ -696,25 +723,25 @@
             <Param Type="DWORD*" Name="pdwUseCount" />
             <Param Type="WORD*" Name="pwDateUsed" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiGetProductInfo" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProduct" />
             <Param Type="LPCTSTR" Name="szProperty" />
-            <Param Type="LPTSTR" Name="lpValueBuf" />
+            <Param Type="LPTSTR" Name="lpValueBuf" OutputOnly="True" />
             <Param Type="DWORD*" Name="pcchValueBuf" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiGetProductInfoEx" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProductCode" />
             <Param Type="LPCTSTR" Name="szUserSid" />
             <Param Type="MSIINSTALLCONTEXT" Name="dwContext" />
             <Param Type="LPCTSTR" Name="szProperty" />
-            <Param Type="LPTSTR" Name="lpValue" />
+            <Param Type="LPTSTR" Name="lpValue" OutputOnly="True" />
             <Param Type="LPDWORD" Name="pcchValue" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiGetUserInfo" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProduct" />
@@ -731,38 +758,38 @@
             <Param Type="LPCTSTR" Name="szProduct" />
             <Param Type="MSIHANDLE*" Name="hProduct" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiOpenPackage" BothCharset="True">
             <Param Type="LPCTSTR" Name="szPackagePath" />
             <Param Type="MSIHANDLE*" Name="hProduct" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiOpenPackageEx" BothCharset="True">
             <Param Type="LPCTSTR" Name="szPackagePath" />
-            <Param Type="[MsiAssemblyInfo]" Display="DWORD" Name="dwOptions" />
+            <Param Type="[MsiAssemblyInfo]" Name="dwOptions" />
             <Param Type="MSIHANDLE*" Name="hProduct" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiIsProductElevated" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProductCode" />
             <Param Type="BOOL*" Name="pfElevated" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiGetProductInfoFromScript" BothCharset="True">
             <Param Type="LPCTSTR" Name="szScriptFile" />
-            <Param Type="LPTSTR" Name="lpProductBuf39" />
+            <Param Type="LPTSTR" Name="lpProductBuf39" OutputOnly="True" />
             <Param Type="LANGID*" Name="plgidLanguage" />
             <Param Type="DWORD*" Name="pdwVersion" />
-            <Param Type="LPTSTR" Name="lpNameBuf" />
+            <Param Type="LPTSTR" Name="lpNameBuf" OutputOnly="True" />
             <Param Type="DWORD*" Name="pcchNameBuf" />
-            <Param Type="LPTSTR" Name="lpPackageBuf" />
+            <Param Type="LPTSTR" Name="lpPackageBuf" OutputOnly="True" />
             <Param Type="DWORD*" Name="pcchPackageBuf" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiGetProductProperty" BothCharset="True">
             <Param Type="MSIHANDLE" Name="hProduct" />
@@ -770,7 +797,7 @@
             <Param Type="LPTSTR" Name="lpValueBuf" />
             <Param Type="DWORD*" Name="pcchValueBuf" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiGetShortcutTarget" BothCharset="True">
             <Param Type="LPCTSTR" Name="szShortcutTarget" />
@@ -778,23 +805,23 @@
             <Param Type="LPTSTR" Name="szFeatureId" />
             <Param Type="LPTSTR" Name="szComponentCode" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiGetFeatureInfo" BothCharset="True">
             <Param Type="MSIHANDLE" Name="hProduct" />
             <Param Type="LPCTSTR" Name="szFeature" />
-            <Param Type="[MsiInstallFeatureAttr*]" Display="LPDWORD" Name="lpAttributes" />
+            <Param Type="[MsiInstallFeatureAttr*]" Name="lpAttributes" />
             <Param Type="LPTSTR" Name="lpTitleBuf" />
             <Param Type="LPDWORD" Name="pcchTitleBuf" />
             <Param Type="LPTSTR" Name="lpHelpBuf" />
             <Param Type="LPDWORD" Name="pcchHelpBuf" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiVerifyPackage" BothCharset="True">
             <Param Type="LPCTSTR" Name="szPackagePath" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiApplyPatch" BothCharset="True">
             <Param Type="LPCTSTR" Name="szPatchPackage" />
@@ -802,7 +829,7 @@
             <Param Type="INSTALLTYPE" Name="eInstallType" />
             <Param Type="LPCTSTR" Name="szCommandLine" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiEnumPatches" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProduct" />
@@ -811,7 +838,7 @@
             <Param Type="LPTSTR" Name="lpTransformsBuf" />
             <Param Type="DWORD*" Name="pcchTransformsBuf" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiGetPatchInfo" BothCharset="True">
             <Param Type="LPCTSTR" Name="szPatch" />
@@ -819,7 +846,7 @@
             <Param Type="LPTSTR" Name="lpValueBuf" />
             <Param Type="DWORD*" Name="pcchValueBuf" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiRemovePatches" BothCharset="True">
             <Param Type="LPCTSTR" Name="szPatchList" />
@@ -827,7 +854,7 @@
             <Param Type="INSTALLTYPE" Name="eUninstallType" />
             <Param Type="LPCTSTR" Name="szPropertyList" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiDeterminePatchSequence" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProductCode" />
@@ -836,26 +863,26 @@
             <Param Type="DWORD" Name="cPatchInfo" />
             <Param Type="PMSIPATCHSEQUENCEINFO" Name="pPatchInfo" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiApplyMultiplePatches" BothCharset="True">
             <Param Type="LPCTSTR" Name="szPatchPackages" />
             <Param Type="LPCTSTR" Name="szProductCode" />
             <Param Type="LPCTSTR" Name="szPropertiesList" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiEnumPatchesEx" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProductCode" />
             <Param Type="LPCTSTR" Name="szUserSid" />
-            <Param Type="MSIINSTALLCONTEXT" Display="DWORD" Name="dwContext" />
-            <Param Type="[MsiPatchState]" Display="DWORD" Name="dwFilter" />
+            <Param Type="MSIINSTALLCONTEXT(DWORD)" Name="dwContext" />
+            <Param Type="[MsiPatchState]" Name="dwFilter" />
             <Param Type="DWORD" Name="dwIndex" />
             <Param Type="MSIINSTALLCONTEXT*" Name="pdwTargetProductContext" />
             <Param Type="LPTSTR" Name="szTargetUserSid" />
             <Param Type="LPDWORD" Name="pcchTargetUserSid" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiGetPatchFileList" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProductCode" />
@@ -863,7 +890,7 @@
             <Param Type="LPDWORD" Name="pcFiles" />
             <Param Type="MSIHANDLE**" Name="pphFileRecords" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiGetPatchInfoEx" BothCharset="True">
             <Param Type="LPCTSTR" Name="szPatchCode" />
@@ -874,7 +901,7 @@
             <Param Type="LPTSTR" Name="lpValue" />
             <Param Type="DWORD*" Name="pcchValue" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiExtractPatchXMLData" BothCharset="True">
             <Param Type="LPCTSTR" Name="szPatchPath" />
@@ -898,14 +925,14 @@
             <Return Type="UINT" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="MsiGetFileSignatureInformation" BothCharset="True">
+        <Api Name="MsiGetFileSignatureInformation" BothCharset="True" ErrorFunc="HRESULT">
             <Param Type="LPCTSTR" Name="szSignedObjectPath" />
-            <Param Type="[MsiHashFlags]" Display="DWORD" Name="dwFlags" />
+            <Param Type="[MsiHashFlags]" Name="dwFlags" />
             <Param Type="PCCERT_CONTEXT*" Name="ppcCertContext" />
             <Param Type="BYTE*" Name="pbHashData" PostLength="pcbHashData" />
             <Param Type="DWORD*" Name="pcbHashData" />
             <Return Type="HRESULT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiGetFileVersion" BothCharset="True">
             <Param Type="LPCTSTR" Name="szFilePath" />
@@ -914,27 +941,27 @@
             <Param Type="LPTSTR" Name="lpLangBuf" />
             <Param Type="DWORD*" Name="pcchLangBuf" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiBeginTransaction" BothCharset="True">
             <Param Type="LPCWSTR" Name="szTransactionName" />
-            <Param Type="[MsiTransactionAttributes]" Display="DWORD" Name="dwTransactionAttributes" />
+            <Param Type="[MsiTransactionAttributes]" Name="dwTransactionAttributes" />
             <Param Type="MSIHANDLE*" Name="hTransactionID" />
             <Param Type="HANDLE*" Name="phChangeOfOwnerEvent" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiJoinTransaction">
             <Param Type="MSIHANDLE" Name="hTransactionID" />
-            <Param Type="[MsiTransactionAttributes]" Display="DWORD" Name="dwTransactionAttributes" />
+            <Param Type="[MsiTransactionAttributes]" Name="dwTransactionAttributes" />
             <Param Type="HANDLE*" Name="phChangeOfOwnerEvent" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MsiEndTransaction">
-            <Param Type="[MsiTransactionState]" Display="DWORD" Name="dwTransactionState" />
+            <Param Type="[MsiTransactionState]" Name="dwTransactionState" />
             <Return Type="UINT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
     </Module>
 </ApiMonitor>

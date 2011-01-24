@@ -1,32 +1,33 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Headers>
         <Variable Name="RPC_NOTIFICATIONS" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="RpcNotificationCallNone"             Value="0" />
                 <Set Name="RpcNotificationClientDisconnect"     Value="1" />
                 <Set Name="RpcNotificationCallCancel"           Value="2" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <Variable Name="RPC_NOTIFICATION_TYPES" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+            <Enum>
                 <Set Name="RpcNotificationTypeNone"         Value="0" />
                 <Set Name="RpcNotificationTypeEvent"        Value="1" />
                 <Set Name="RpcNotificationTypeApc"          Value="2" />
                 <Set Name="RpcNotificationTypeIoc"          Value="3" />
                 <Set Name="RpcNotificationTypeHwnd"         Value="4" />
                 <Set Name="RpcNotificationTypeCallback"     Value="5" />
-            </Flag>
+            </Enum>
         </Variable>
 
-        <Variable Name="[AuthenticationLevel]" Type="Alias" Base="DWORD">
-            <Flag SingleValue="True">
+        <Variable Name="[AuthenticationLevel/DWORD]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
                 <Set Name="RPC_C_AUTHN_LEVEL_DEFAULT"       Value="0" />
                 <Set Name="RPC_C_AUTHN_LEVEL_NONE"          Value="1" />
                 <Set Name="RPC_C_AUTHN_LEVEL_CONNECT"       Value="2" />
@@ -34,22 +35,37 @@
                 <Set Name="RPC_C_AUTHN_LEVEL_PKT"           Value="4" />
                 <Set Name="RPC_C_AUTHN_LEVEL_PKT_INTEGRITY" Value="5" />
                 <Set Name="RPC_C_AUTHN_LEVEL_PKT_PRIVACY"   Value="6" />
-            </Flag>
+            </Enum>
         </Variable>
-        <Variable Name="[AuthenticationLevel*]" Type="Pointer" Base="[AuthenticationLevel]" />
+        <Variable Name="[AuthenticationLevel/unsigned long]" Type="Alias" Base="[AuthenticationLevel/DWORD]">
+            <Display Name="unsigned long" />
+        </Variable>
+        <Variable Name="[AuthenticationLevel*/unsigned long*]" Type="Pointer" Base="[AuthenticationLevel/unsigned long]">
+            <Display Name="unsigned long*" />
+        </Variable>
+        <Variable Name="[AuthenticationLevel*/unsigned int*]" Type="Alias" Base="[AuthenticationLevel*/unsigned long*]">
+            <Display Name="unsigned int*" />
+        </Variable>
 
-        <Variable Name="[AuthorizationService]" Type="Alias" Base="DWORD">
-            <Flag SingleValue="True">
+        <Variable Name="[AuthorizationService/unsigned long]" Type="Alias" Base="unsigned long">
+            <Display Name="unsigned long" />
+            <Enum>
                 <Set Name="RPC_C_AUTHZ_NONE"        Value="0" />
                 <Set Name="RPC_C_AUTHZ_NAME"        Value="1" />
                 <Set Name="RPC_C_AUTHZ_DCE"         Value="2" />
                 <Set Name="RPC_C_AUTHZ_DEFAULT"     Value="0xffffffff" />
-            </Flag>
+            </Enum>
         </Variable>
-        <Variable Name="[AuthorizationService*]" Type="Pointer" Base="[AuthorizationService]" />
+        <Variable Name="[AuthorizationService*/unsigned long*]" Type="Pointer" Base="[AuthorizationService/unsigned long]">
+            <Display Name="unsigned long*" />
+        </Variable>
+        <Variable Name="[AuthorizationService(DWORD)]" Type="Alias" Base="[AuthorizationService/unsigned long]">
+            <Display Name="DWORD" />
+        </Variable>
 
-        <Variable Name="[AuthenticationService]" Type="Alias" Base="DWORD">
-            <Flag SingleValue="True">
+        <Variable Name="[AuthenticationService/DWORD]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
                 <Set Name="RPC_C_AUTHN_NONE"            Value="0" />
                 <Set Name="RPC_C_AUTHN_DCE_PRIVATE"     Value="1" />
                 <Set Name="RPC_C_AUTHN_DCE_PUBLIC"      Value="2" />
@@ -63,19 +79,44 @@
                 <Set Name="RPC_C_AUTHN_DIGEST"          Value="21" />
                 <Set Name="RPC_C_AUTHN_MQ"              Value="100" />
                 <Set Name="RPC_C_AUTHN_DEFAULT"         Value="0xFFFFFFFF" />
-            </Flag>
+            </Enum>
         </Variable>
-        <Variable Name="[AuthenticationService*]" Type="Pointer" Base="[AuthenticationService]" />
+        <Variable Name="[AuthenticationService/unsigned long]" Type="Alias" Base="[AuthenticationService/DWORD]">
+            <Display Name="unsigned long" />
+        </Variable>
+        <Variable Name="[AuthenticationService/unsigned int]" Type="Alias" Base="[AuthenticationService/DWORD]">
+            <Display Name="unsigned int" />
+        </Variable>
+        <Variable Name="[AuthenticationService*/unsigned long*]" Type="Pointer" Base="[AuthenticationService/unsigned long]">
+            <Display Name="unsigned long*" />
+        </Variable>
 
-        <Variable Name="RPC_TSTR"                       Type="TString" />
+        <Variable Name="RPC_STATUS" Type="Alias" Base="long">
+            <Enum>
+                <Set Name="RPC_S_OK"                        Value="0" />
+                <Set Name="RPC_S_INVALID_ARG"               Value="87" />
+                <Set Name="RPC_S_OUT_OF_MEMORY"             Value="14" />
+                <Set Name="RPC_S_OUT_OF_THREADS"            Value="164" />
+                <Set Name="RPC_S_BUFFER_TOO_SMALL"          Value="122" />
+                <Set Name="RPC_S_INVALID_SECURITY_DESC"     Value="1338" />
+                <Set Name="RPC_S_ACCESS_DENIED"             Value="5" />
+                <Set Name="RPC_S_SERVER_OUT_OF_MEMORY"      Value="1130" />
+                <Set Name="RPC_S_ASYNC_CALL_PENDING"        Value="997" />
+                <Set Name="RPC_S_UNKNOWN_PRINCIPAL"         Value="1332" />
+                <Set Name="RPC_S_TIMEOUT"                   Value="1460" />
+                <Set Name="RPC_S_NOT_ENOUGH_QUOTA"          Value="1816" />
+            </Enum>
+        </Variable>
+        <Variable Name="RPC_STATUS*" Type="Pointer" Base="RPC_STATUS" />
+
+
+        <Variable Name="RPC_TSTR"                       Type="Alias"    Base="LPTSTR" />
         <Variable Name="RPC_TSTR*"                      Type="Pointer"  Base="RPC_TSTR" />
         <Variable Name="RPC_BINDING_HANDLE"             Type="Alias"    Base="LPVOID" />
         <Variable Name="RPC_BINDING_HANDLE*"            Type="Pointer"  Base="RPC_BINDING_HANDLE" />
         <Variable Name="RPC_BINDING_VECTOR*"            Type="Alias"    Base="LPVOID" />
         <Variable Name="RPC_BINDING_VECTOR**"           Type="Pointer"  Base="RPC_BINDING_VECTOR*" />
         <Variable Name="RPC_IF_HANDLE"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="RPC_STATUS"                     Type="Alias"    Base="long" />
-        <Variable Name="RPC_STATUS*"                    Type="Pointer"  Base="RPC_STATUS" />
         <Variable Name="RPC_NS_HANDLE"                  Type="Alias"    Base="LPVOID" />
         <Variable Name="RPC_NS_HANDLE*"                 Type="Pointer"  Base="RPC_NS_HANDLE" />
         <Variable Name="RPC_IF_ID*"                     Type="Alias"    Base="LPVOID" />

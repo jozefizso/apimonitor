@@ -1,6 +1,6 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
@@ -8,13 +8,17 @@
     <Module Name="NSPR4.DLL" CallingConvention="CDECL" OnlineHelp="Mozilla">
         <!-- Variables -->
         <Variable Name="[PrAddressFamily]" Type="Alias" Base="PRIntn">
-            <Flag SingleValue="True">
+            <Display Name="PRIntn" />
+            <Enum>
                 <Set Name="PR_AF_UNSPEC"    Value="0" />
                 <Set Name="PR_AF_LOCAL"     Value="1" />
                 <Set Name="PR_AF_INET"      Value="2" />
                 <Set Name="PR_AF_INET6"     Value="100" />
-            </Flag>
+            </Enum>
         </Variable>
+
+        <Variable Name="void (*)(void*)" Type="Alias" Base="LPVOID" />
+        
         <!-- Threads -->
         <Category Name="Netscape Portable Runtime/Threads" />
         <Api Name="PR_JoinThread">
@@ -24,6 +28,7 @@
         </Api>
         <Api Name="PR_CreateThread">
             <Param Type="PRThreadType" Name="type" />
+            <Param Type="void (*)(void*)" Name="start" />
             <Param Type="void*" Name="arg" />
             <Param Type="PRThreadPriority" Name="priority" />
             <Param Type="PRThreadScope" Name="scope" />
@@ -243,6 +248,7 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PR_Read">
+            <Param Type="PRFileDesc*" Name="fd" />
             <Param Type="void*" Name="buf" Length="[Retval]" />
             <Param Type="PRInt32" Name="amount" />
             <Return Type="PRInt32" />
@@ -305,10 +311,12 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PR_GetDescType">
+            <Param Type="PRFileDesc*" Name="file" />
             <Return Type="PRDescType" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="PR_GetSpecialFD">
+            <Param Type="PRSpecialFD" Name="id" />
             <Return Type="PRFileDesc*" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -348,7 +356,7 @@
         </Api>
         <Category Name="Netscape Portable Runtime/IO Functions/Socket Manipulation" />
         <Api Name="PR_OpenUDPSocket">
-            <Param Type="[PrAddressFamily]" Display="PRIntn" Name="af" />
+            <Param Type="[PrAddressFamily]" Name="af" />
             <Return Type="PRFileDesc*" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -357,7 +365,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="PR_OpenTCPSocket">
-            <Param Type="[PrAddressFamily]" Display="PRIntn" Name="af" />
+            <Param Type="[PrAddressFamily]" Name="af" />
             <Return Type="PRFileDesc*" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -708,12 +716,10 @@
         <Api Name="PR_LocalTimeParameters">
             <Param Type="const PRExplodedTime*" Name="gmt" />
             <Return Type="PRTimeParameters" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="PR_GMTParameters">
             <Param Type="const PRExplodedTime*" Name="gmt" />
             <Return Type="PRTimeParameters" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="PR_Now">
             <Return Type="PRTime" />
@@ -744,7 +750,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="PR_Realloc">
-            <Param Type="void*" Name="ptr" />
+            <Param Type="void*" Name="ptr" Length="size" />
             <Param Type="PRUint32" Name="size" />
             <Return Type="void*" />
             <Success Return="NotEqual" Value="0" />
@@ -759,7 +765,6 @@
             <Param Type="const char*" Name="s00" />
             <Param Type="char**" Name="se" />
             <Return Type="PRFloat64" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="PR_dtoa">
             <Param Type="PRFloat64" Name="d" />

@@ -1,6 +1,6 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
     
     TODO: Check return values since most API's fail when return is -1. We are currently checking for 0
@@ -10,6 +10,7 @@
     <Include Filename="Headers\sockets.h.xml" />
     <Module Name="Ws2_32.dll" CallingConvention="STDCALL" ErrorFunc="WSAGetLastError" OnlineHelp="MSDN">
         <Variable Name="[LookupServiceFlags]" Type="Alias" Base="DWORD">
+                <Display Name="DWORD" />
             <Flag>
                 <Set Name="LUP_DEEP"                        Value="0x0001" />
                 <Set Name="LUP_CONTAINERS"                  Value="0x0002" />
@@ -35,6 +36,7 @@
             </Flag>
         </Variable>
         <Variable Name="[WsaFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="WSA_FLAG_OVERLAPPED"             Value="0x01" />
                 <Set Name="WSA_FLAG_MULTIPOINT_C_ROOT"      Value="0x02" />
@@ -44,7 +46,8 @@
                 <Set Name="WSA_FLAG_ACCESS_SYSTEM_SECURITY" Value="0x40" />
             </Flag>
         </Variable>
-        <Variable Name="[FDEvents]" Type="Alias" Base="long">
+        <Variable Name="[FDEvents]" Type="Alias" Base="ULONG">
+            <Display Name="long" />
             <Flag>
                 <Set Name="FD_READ"                     Value="0x00000001" />
                 <Set Name="FD_WRITE"                    Value="0x00000002" />
@@ -72,12 +75,12 @@
             <Param Type="const struct sockaddr*" Name="name" Length="namelen" />
             <Param Type="int" Name="namelen" />
             <Return Type="int" />
-            <Success Return="Equal" Value="0" />
+            <Success Return="Equal" Value="-1" />
         </Api>
         <Api Name="closesocket" Ordinal="3">
             <Param Type="SOCKET" Name="s" />
             <Return Type="int" />
-            <Success Return="NotEqual" Value="-1" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="connect" Ordinal="4">
             <Param Type="SOCKET" Name="s" />
@@ -126,7 +129,7 @@
             <Param Type="const ADDRINFOW*" Name="pHints" />
             <Param Type="PADDRINFOW*" Name="ppResult" />
             <Return Type="int" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="gethostbyaddr" Ordinal="51">
             <Param Type="const char*" Name="addr" />
@@ -141,17 +144,17 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="gethostname" Ordinal="57">
-            <Param Type="char*" Name="name" />
+            <Param Type="char*" Name="name" OutputOnly="True" />
             <Param Type="int" Name="namelen" />
             <Return Type="int" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="getnameinfo" Ordinal="164">
             <Param Type="const struct sockaddr*" Name="sa" Length="salen" />
             <Param Type="socklen_t" Name="salen" />
-            <Param Type="char*" Name="host" />
+            <Param Type="char*" Name="host" OutputOnly="True" />
             <Param Type="DWORD" Name="hostlen" />
-            <Param Type="char*" Name="serv" />
+            <Param Type="char*" Name="serv" OutputOnly="True" />
             <Param Type="DWORD" Name="servlen" />
             <Param Type="int" Name="flags" />
             <Return Type="int" />
@@ -206,9 +209,9 @@
         </Api>
         <Api Name="getsockopt" Ordinal="7">
             <Param Type="SOCKET" Name="s" />
-            <Param Type="[SocketLevel]" Display="int" Name="level" />
-            <Param Type="[SocketOption]" Display="int" Name="optname" />
-            <Param Type="LPVOID" Display="char*" Name="optval" PostLength="optlen" />
+            <Param Type="[SocketLevel]" Name="level" />
+            <Param Type="[SocketOption]" Name="optname" />
+            <Param Type="LPVOID/char*" Name="optval" PostLength="optlen" />
             <Param Type="int*" Name="optlen" />
             <Return Type="int" />
             <Success Return="NotEqual" Value="0" />
@@ -284,21 +287,21 @@
         </Api>
         <Api Name="recv" Ordinal="16">
             <Param Type="SOCKET" Name="s" />
-            <Param Type="LPVOID" Display="char*" Name="buf" Length="[Retval]" />
+            <Param Type="LPVOID/char*" Name="buf" Length="[Retval]" />
             <Param Type="int" Name="len" />
-            <Param Type="[SendRecvFlags]" Display="int" Name="flags" />
+            <Param Type="[SendRecvFlags/int]" Name="flags" />
             <Return Type="int" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="NotEqual" Value="-1" />
         </Api>
         <Api Name="recvfrom" Ordinal="17">
             <Param Type="SOCKET" Name="s" />
-            <Param Type="char*" Name="buf" />
+            <Param Type="LPVOID/char*" Name="buf" Length="[Retval]" />
             <Param Type="int" Name="len" />
             <Param Type="int" Name="flags" />
             <Param Type="struct sockaddr*" Name="from" />
             <Param Type="int*" Name="fromlen" />
             <Return Type="int" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="NotEqual" Value="-1" />
         </Api>
         <Api Name="select" Ordinal="18">
             <Param Type="int" Name="nfds" />
@@ -311,15 +314,15 @@
         </Api>
         <Api Name="send" Ordinal="19">
             <Param Type="SOCKET" Name="s" />
-            <Param Type="LPVOID" Display="const char*" Name="buf" Length="len" />
+            <Param Type="LPVOID/const char*" Name="buf" Length="len" />
             <Param Type="int" Name="len" />
-            <Param Type="[SendRecvFlags]" Display="int" Name="flags" />
+            <Param Type="[SendRecvFlags/int]" Name="flags" />
             <Return Type="int" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="NotEqual" Value="-1" />
         </Api>
         <Api Name="sendto" Ordinal="20">
             <Param Type="SOCKET" Name="s" />
-            <Param Type="const char*" Name="buf" />
+            <Param Type="LPVOID/const char*" Name="buf" Length="len" />
             <Param Type="int" Name="len" />
             <Param Type="int" Name="flags" />
             <Param Type="const struct sockaddr*" Name="to" />
@@ -345,9 +348,9 @@
         </Api>
         <Api Name="setsockopt" Ordinal="21">
             <Param Type="SOCKET" Name="s" />
-            <Param Type="[SocketLevel]" Display="int" Name="level" />
-            <Param Type="[SocketOption]" Display="int" Name="optname" />
-            <Param Type="LPVOID" Display="const char*" Name="optval" Length="optlen" />
+            <Param Type="[SocketLevel]" Name="level" />
+            <Param Type="[SocketOption]" Name="optname" />
+            <Param Type="LPVOID/const char*" Name="optval" Length="optlen" />
             <Param Type="int" Name="optlen" />
             <Return Type="int" />
             <Success Return="Equal" Value="0" />
@@ -359,9 +362,9 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="socket" Ordinal="23">
-            <Param Type="[AddressFamily]" Display="int" Name="af" />
-            <Param Type="[SocketType]" Display="int" Name="type" />
-            <Param Type="[SocketProtocol]" Display="int" Name="protocol" />
+            <Param Type="[AddressFamily]" Name="af" />
+            <Param Type="[SocketType]" Name="type" />
+            <Param Type="[SocketProtocol]" Name="protocol" />
             <Return Type="SOCKET" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -539,7 +542,7 @@
         <Api Name="WSAEventSelect" Ordinal="63">
             <Param Type="SOCKET" Name="s" />
             <Param Type="WSAEVENT" Name="hEventObject" />
-            <Param Type="[FDEvents]" Display="long" Name="lNetworkEvents" />
+            <Param Type="[FDEvents]" Name="lNetworkEvents" />
             <Return Type="int" />
             <Success Return="NotEqual" Value="-1" />
         </Api>
@@ -616,7 +619,7 @@
         </Api>
         <Api Name="WSALookupServiceBegin" BothCharset="True" OrdinalA="76" OrdinalW="77">
             <Param Type="LPWSAQUERYSET" Name="lpqsRestrictions" />
-            <Param Type="[LookupServiceFlags]" Display="DWORD" Name="dwControlFlags" />
+            <Param Type="[LookupServiceFlags]" Name="dwControlFlags" />
             <Param Type="LPHANDLE" Name="lphLookup" />
             <Return Type="INT" />
             <Success Return="NotEqual" Value="0" />
@@ -628,11 +631,11 @@
         </Api>
         <Api Name="WSALookupServiceNext" BothCharset="True" OrdinalA="79" OrdinalW="80">
             <Param Type="HANDLE" Name="hLookup" />
-            <Param Type="[LookupServiceFlags]" Display="DWORD" Name="dwControlFlags" />
+            <Param Type="[LookupServiceFlags]" Name="dwControlFlags" />
             <Param Type="LPDWORD" Name="lpdwBufferLength" />
             <Param Type="LPWSAQUERYSET" Name="lpqsResults" />
             <Return Type="INT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="WSANtohl" Ordinal="82">
             <Param Type="SOCKET" Name="s" />
@@ -666,7 +669,7 @@
             <Param Type="LPWSABUF" Name="lpBuffers" />
             <Param Type="DWORD" Name="dwBufferCount" />
             <Param Type="LPDWORD" Name="lpNumberOfBytesRecvd" />
-            <Param Type="[SendRecvFlags*]" Display="LPDWORD" Name="lpFlags" />
+            <Param Type="[SendRecvFlags*/LPDWORD]" Name="lpFlags" />
             <Param Type="LPWSAOVERLAPPED" Name="lpOverlapped" />
             <Param Type="LPWSAOVERLAPPED_COMPLETION_ROUTINE" Name="lpCompletionRoutine" />
             <Return Type="int" />
@@ -706,7 +709,7 @@
             <Param Type="LPWSABUF" Name="lpBuffers" />
             <Param Type="DWORD" Name="dwBufferCount" />
             <Param Type="LPDWORD" Name="lpNumberOfBytesSent" />
-            <Param Type="[SendRecvFlags]" Display="DWORD" Name="dwFlags" />
+            <Param Type="[SendRecvFlags/DWORD]" Name="dwFlags" />
             <Param Type="LPWSAOVERLAPPED" Name="lpOverlapped" />
             <Param Type="LPWSAOVERLAPPED_COMPLETION_ROUTINE" Name="lpCompletionRoutine" />
             <Return Type="int" />
@@ -758,12 +761,12 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WSASocket" BothCharset="True" OrdinalA="99" OrdinalW="100">
-            <Param Type="[AddressFamily]" Display="int" Name="af" />
-            <Param Type="[SocketType]" Display="int" Name="type" />
-            <Param Type="[SocketProtocol]" Display="int" Name="protocol" />
+            <Param Type="[AddressFamily]" Name="af" />
+            <Param Type="[SocketType]" Name="type" />
+            <Param Type="[SocketProtocol]" Name="protocol" />
             <Param Type="LPWSAPROTOCOL_INFO" Name="lpProtocolInfo" />
             <Param Type="GROUP" Name="g" />
-            <Param Type="[WsaFlags]" Display="DWORD" Name="dwFlags" />
+            <Param Type="[WsaFlags]" Name="dwFlags" />
             <Return Type="SOCKET" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -775,7 +778,7 @@
         </Api>
         <Api Name="WSAStringToAddress" BothCharset="True" OrdinalA="117" OrdinalW="118">
             <Param Type="LPTSTR" Name="AddressString" />
-            <Param Type="[AddressFamily]" Display="INT" Name="AddressFamily" />
+            <Param Type="[AddressFamily]" Name="AddressFamily" />
             <Param Type="LPWSAPROTOCOL_INFO" Name="lpProtocolInfo" />
             <Param Type="LPSOCKADDR" Name="lpAddress" Length="lpAddressLength" />
             <Param Type="LPINT" Name="lpAddressLength" />

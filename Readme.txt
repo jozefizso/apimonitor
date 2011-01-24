@@ -1,5 +1,5 @@
 API Monitor v2 (Portable Edition)
-(c) 2000-2010 Rohitab Batra.
+(c) 2000-2011 Rohitab Batra.
 All rights reserved.
 
 
@@ -16,5 +16,5 @@ Useful Links
 Homepage: 		http://www.rohitab.com/
 Product Info:		http://www.rohitab.com/apimonitor/
 Tutorials:		http://www.rohitab.com/category/api-monitor-tutorials
-Support Forum:		http://www.rohitab.com/discuss/index.php?showforum=1
+Support Forum:		http://www.rohitab.com/discuss/forum/1-api-monitor/
 IRC Channel:		http://irc.rohitab.com/

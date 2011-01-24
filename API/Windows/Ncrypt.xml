@@ -1,11 +1,12 @@
 <!--
     API Monitor Definitions
-    (c) 2010, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\cryptography.h.xml" />
+    <Include Filename="Headers\security.h.xml" />
     <Module Name="NCrypt.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
         <!-- Variables -->
         <Variable Name="NCRYPT_HANDLE"                      Type="Alias"    Base="ULONG_PTR" />
@@ -27,13 +28,14 @@
         <Variable Name="NCRYPT_SSL_CIPHER_LENGTHS*"         Type="Alias"    Base="LPVOID" />
         <Variable Name="WCHAR[NCRYPT_SSL_MAX_NAME_SIZE]"    Type="Alias"    Base="WCHAR*" />
 
-        <Variable Name="[SslContentType]" Type="Alias" Base="UINT">
-            <Flag SingleValue="True">
+        <Variable Name="[SslContentType]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
                 <Set Name="CT_CHANGE_CIPHER_SPEC"   Value="20" />
                 <Set Name="CT_ALERT"                Value="21" />
                 <Set Name="CT_HANDSHAKE"            Value="22" />
                 <Set Name="CT_APPLICATIONDATA"      Value="23" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <!-- API -->
@@ -350,7 +352,7 @@
             <Param Type="DWORD" Name="cbOutput" />
             <Param Type="DWORD*" Name="pcbResult" />
             <Param Type="ULONGLONG" Name="SequenceNumber" />
-            <Param Type="[SslContentType]" Display="DWORD" Name="dwContentType" />
+            <Param Type="[SslContentType]" Name="dwContentType" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
             <Success Return="Equal" Value="0" />
