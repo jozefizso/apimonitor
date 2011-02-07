@@ -6,8 +6,103 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Iscsidsc.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
-        <!-- Variables -->
-        <Variable Name="ISDSC_STATUS"                       Type="Alias"        Base="ULONG">
+        
+        <!-- TODO: Structures -->
+        <Variable Name="PISCSI_TARGET_PORTAL"                   Type="Alias"    Base="LPVOID" />
+        <Variable Name="PISCSI_TARGET_PORTALW"                  Type="Alias"    Base="LPVOID" />
+        <Variable Name="PISCSI_TARGET_PORTAL_GROUP"             Type="Alias"    Base="LPVOID" />
+        <Variable Name="PISCSI_TARGET_PORTAL_INFO"              Type="Alias"    Base="LPVOID" />
+        <Variable Name="PISCSI_TARGET_PORTAL_INFO_EX"           Type="Alias"    Base="LPVOID" />
+        <Variable Name="PISCSI_TARGET_MAPPING"                  Type="Alias"    Base="LPVOID" />
+        <Variable Name="PISCSI_DEVICE_ON_SESSION"               Type="Alias"    Base="LPVOID" />
+        <Variable Name="PISCSI_SESSION_INFO"                    Type="Alias"    Base="LPVOID" />
+        <Variable Name="PPERSISTENT_ISCSI_LOGIN_INFO"           Type="Alias"    Base="LPVOID" />
+        <Variable Name="PIKE_AUTHENTICATION_INFORMATION"        Type="Alias"    Base="LPVOID" />
+        <Variable Name="PIKE_AUTHENTICATION_INFORMATION*"       Type="Pointer"  Base="PIKE_AUTHENTICATION_INFORMATION" />
+
+        <!-- ISCSI_UNIQUE_SESSION_ID -->
+        <Variable Name="ISCSI_UNIQUE_SESSION_ID" Type="Struct">
+            <Field Type="ULONGLONG" 	Name="AdapterUnique" />
+            <Field Type="ULONGLONG" 	Name="AdapterSpecific" />
+        </Variable>
+        <Variable Name="PISCSI_UNIQUE_SESSION_ID"   Type="Pointer" Base="ISCSI_UNIQUE_SESSION_ID" />
+        <Variable Name="PISCSI_UNIQUE_SESSION_ID*"  Type="Pointer" Base="PISCSI_UNIQUE_SESSION_ID" />
+
+        <!-- ISCSI_UNIQUE_CONNECTION_ID -->
+        <Variable Name="ISCSI_UNIQUE_CONNECTION_ID"     Type="Alias"    Base="ISCSI_UNIQUE_SESSION_ID" />
+        <Variable Name="PISCSI_UNIQUE_CONNECTION_ID"    Type="Pointer"  Base="ISCSI_UNIQUE_CONNECTION_ID" />
+
+        <!-- ISCSI_LOGIN_OPTIONS_INFO_SPECIFIED -->
+        <Variable Name="ISCSI_LOGIN_OPTIONS_INFO_SPECIFIED" Type="Alias" Base="ULONG">
+            <Flag>
+                <Set Name="ISCSI_LOGIN_OPTIONS_HEADER_DIGEST"           Value="0x00000001" />
+                <Set Name="ISCSI_LOGIN_OPTIONS_DATA_DIGEST"             Value="0x00000002" />
+                <Set Name="ISCSI_LOGIN_OPTIONS_MAXIMUM_CONNECTIONS"     Value="0x00000004" />
+                <Set Name="ISCSI_LOGIN_OPTIONS_DEFAULT_TIME_2_WAIT"     Value="0x00000008" />
+                <Set Name="ISCSI_LOGIN_OPTIONS_DEFAULT_TIME_2_RETAIN"   Value="0x00000010" />
+                <Set Name="ISCSI_LOGIN_OPTIONS_USERNAME"                Value="0x00000020" />
+                <Set Name="ISCSI_LOGIN_OPTIONS_PASSWORD"                Value="0x00000040" />
+                <Set Name="ISCSI_LOGIN_OPTIONS_AUTH_TYPE"               Value="0x00000080" />
+            </Flag>
+        </Variable>
+
+        <!-- ISCSI_LOGIN_FLAGS -->
+        <Variable Name="ISCSI_LOGIN_FLAGS" Type="Alias" Base="ULONG">
+            <Flag>
+                <Set Name="ISCSI_LOGIN_FLAG_REQUIRE_IPSEC"              Value="0x00000001" />
+                <Set Name="ISCSI_LOGIN_FLAG_MULTIPATH_ENABLED"          Value="0x00000002" />
+                <Set Name="ISCSI_LOGIN_FLAG_RESERVED1"                  Value="0x00000004" />
+                <Set Name="ISCSI_LOGIN_FLAG_ALLOW_PORTAL_HOPPING"       Value="0x00000008" />
+                <Set Name="ISCSI_LOGIN_FLAG_USE_RADIUS_RESPONSE"        Value="0x00000010" />
+                <Set Name="ISCSI_LOGIN_FLAG_USE_RADIUS_VERIFICATION"    Value="0x00000020" />
+            </Flag>
+        </Variable>
+
+        <!-- ISCSI_AUTH_TYPES -->
+        <Variable Name="ISCSI_AUTH_TYPES" Type="Alias" Base="UINT32">
+            <Enum>
+                <Set Name="ISCSI_NO_AUTH_TYPE"          Value="0" />
+                <Set Name="ISCSI_CHAP_AUTH_TYPE"        Value="1" />
+                <Set Name="ISCSI_MUTUAL_CHAP_AUTH_TYPE" Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- ISCSI_DIGEST_TYPES -->
+        <Variable Name="ISCSI_DIGEST_TYPES" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="ISCSI_DIGEST_TYPE_NONE"      Value="0" />
+                <Set Name="ISCSI_DIGEST_TYPE_CRC32C"    Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- ISCSI_LOGIN_OPTIONS -->
+        <Variable Name="ISCSI_LOGIN_OPTIONS" Type="Struct">
+            <Field Type="ULONG" 	            Name="Version" />
+            <Field Type="ISCSI_LOGIN_OPTIONS_INFO_SPECIFIED" Name="InformationSpecified" />
+            <Field Type="ISCSI_LOGIN_FLAGS" 	Name="LoginFlags" />
+            <Field Type="ISCSI_AUTH_TYPES" 	    Name="AuthType" />
+            <Field Type="ISCSI_DIGEST_TYPES" 	Name="HeaderDigest" />
+            <Field Type="ISCSI_DIGEST_TYPES" 	Name="DataDigest" />
+            <Field Type="ULONG" 	            Name="MaximumConnections" />
+            <Field Type="ULONG" 	            Name="DefaultTime2Wait" />
+            <Field Type="ULONG" 	            Name="DefaultTime2Retain" />
+            <Field Type="ULONG" 	            Name="UsernameLength" />
+            <Field Type="ULONG" 	            Name="PasswordLength" />
+            <Field Type="PUCHAR" 	            Name="Username" Length="UsernameLength" />
+            <Field Type="PUCHAR" 	            Name="Password" Length="PasswordLength" />
+        </Variable>
+        <Variable Name="PISCSI_LOGIN_OPTIONS" Type="Pointer" Base="ISCSI_LOGIN_OPTIONS" />
+
+        <!-- ISCSI_VERSION_INFO -->
+        <Variable Name="ISCSI_VERSION_INFO" Type="Struct">
+            <Field Type="ULONG" 	Name="MajorVersion" />
+            <Field Type="ULONG" 	Name="MinorVersion" />
+            <Field Type="ULONG" 	Name="BuildNumber" />
+        </Variable>
+        <Variable Name="PISCSI_VERSION_INFO" Type="Pointer" Base="ISCSI_VERSION_INFO" />
+
+        <!-- ISDSC_STATUS -->
+        <Variable Name="ISDSC_STATUS" Type="Alias" Base="ULONG">
             <Enum>
                 <Set Name="ISDSC_NON_SPECIFIC_ERROR"                        Value="0xEFFF0001" />
                 <Set Name="ISDSC_LOGIN_FAILED"                              Value="0xEFFF0002" />
@@ -114,28 +209,7 @@
             </Enum>
         </Variable>
 
-        <Variable Name="PISCSI_UNIQUE_SESSION_ID"            Type="Alias"        Base="LPVOID" />
-        <Variable Name="PISCSI_UNIQUE_SESSION_ID*"           Type="Pointer"      Base="PISCSI_UNIQUE_SESSION_ID" />
-        <Variable Name="PISCSI_TARGET_PORTAL"                Type="Alias"        Base="LPVOID" />
-        <Variable Name="PSCSI_LOGIN_OPTIONS"                 Type="Alias"        Base="LPVOID" />
-        <Variable Name="PISCSI_UNIQUE_CONNECTION_ID"         Type="Alias"        Base="LPVOID" />
-        <!-- TODO -->
-        <Variable Name="PISCSI_TARGET_MAPPING"               Type="Alias"        Base="LPVOID" />
-        <Variable Name="PISCSI_LOGIN_OPTIONS"                Type="Alias"        Base="LPVOID" />
-        <Variable Name="PISCSI_TARGET_PORTAL_GROUP"          Type="Alias"        Base="LPVOID" />
-
-        <Variable Name="PISCSI_DEVICE_ON_SESSION"            Type="Alias"        Base="LPVOID" />
-        <Variable Name="PIKE_AUTHENTICATION_INFORMATION*"    Type="Alias"        Base="LPVOID" />
-        <Variable Name="PISCSI_SESSION_INFO"                 Type="Alias"        Base="LPVOID" />
-
-
-        <Variable Name="PISCSI_VERSION_INFO"                 Type="Alias"        Base="LPVOID" />
-        <Variable Name="PPERSISTENT_ISCSI_LOGIN_INFO"        Type="Alias"        Base="LPVOID" />
-        <Variable Name="PISCSI_TARGET_PORTAL_INFO"           Type="Alias"        Base="LPVOID" />
-        <Variable Name="PISCSI_TARGET_PORTAL_INFO_EX"        Type="Alias"        Base="LPVOID" />
-        <Variable Name="PISCSI_TARGET_PORTALW"               Type="Alias"        Base="LPVOID" />
-
-        <Variable Name="PIKE_AUTHENTICATION_INFORMATION"     Type="Alias"        Base="LPVOID" />
+        <!-- ISCSI_SECURITY_FLAGS -->
         <Variable Name="ISCSI_SECURITY_FLAGS" Type="Alias" Base="UINT">
             <Flag>
                 <Set Name="ISCSI_SECURITY_FLAG_TUNNEL_MODE_PREFERRED"       Value="0x00000040" />
@@ -148,13 +222,15 @@
             </Flag>
         </Variable>
 
-        <!-- Flags -->
+        <!-- ISCSI_TARGET_FLAGS -->
         <Variable Name="ISCSI_TARGET_FLAGS" Type="Alias" Base="UINT">
             <Flag>
                 <Set Name="ISCSI_TARGET_FLAG_HIDE_STATIC_TARGET"            Value="0x00000002" />
                 <Set Name="ISCSI_TARGET_FLAG_MERGE_TARGET_INFORMATION"      Value="0x00000004" />
             </Flag>
         </Variable>
+        
+        <!-- TARGET_INFORMATION_CLASS -->
         <Variable Name="TARGET_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="ProtocolType"                Value="0" />
@@ -167,6 +243,7 @@
                 <Set Name="LoginOptions"                Value="7" />
             </Enum>
         </Variable>
+        
         <!-- iSCSI Discovery Library -->
         <Category Name="System Services/Device Services/iSCSI Discovery Library" />
         <Api Name="AddISNSServer" BothCharset="True">
@@ -180,7 +257,7 @@
             <Param Type="ULONG" Name="InitiatorPortNumber" />
             <Param Type="PISCSI_TARGET_PORTAL" Name="TargetPortal" />
             <Param Type="ISCSI_SECURITY_FLAGS" Name="SecurityFlags" />
-            <Param Type="PSCSI_LOGIN_OPTIONS" Name="LoginOptions" />
+            <Param Type="PISCSI_LOGIN_OPTIONS" Name="LoginOptions" />
             <Param Type="ULONG" Name="KeySize" />
             <Param Type="PCHAR" Name="Key" />
             <Param Type="PISCSI_UNIQUE_CONNECTION_ID" Name="ConnectionId" />

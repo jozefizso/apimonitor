@@ -7,14 +7,25 @@
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\native.h.xml" />
     <Module Name="DbgHelp.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        <!-- Parameters -->
+        
+        <!-- TODO: Structures -->
+        <Variable Name="LPSTACKFRAME64"                      Type="Alias" Base="LPVOID" />
+        <Variable Name="PSYMBOL_INFO"                        Type="Alias" Base="LPVOID" />
+        <Variable Name="PIMAGEHLP_MODULE64"                  Type="Alias" Base="LPVOID" />
+        <Variable Name="PIMAGEHLP_MODULEW64"                 Type="Alias" Base="LPVOID" />
+        <Variable Name="PIMAGEHLP_STACK_FRAME"               Type="Alias" Base="LPVOID" />
+        <Variable Name="PIMAGEHLP_CONTEXT"                   Type="Alias" Base="LPVOID" />
+        <Variable Name="PIMAGEHLP_SYMBOL64"                  Type="Alias" Base="LPVOID" />
+        <Variable Name="PSYMSRV_INDEX_INFO"                  Type="Alias" Base="LPVOID" />
+        <Variable Name="PIMAGE_DEBUG_INFORMATION"            Type="Alias" Base="LPVOID" />
+
+        <!-- Variables -->
+        <Variable Name="RVA"                                 Type="Alias" Base="DWORD" />
         <Variable Name="PENUMDIRTREE_CALLBACK"               Type="Alias" Base="LPVOID" />
-        <Variable Name="LPAPI_VERSION"                       Type="Alias" Base="LPVOID" />
         <Variable Name="PENUMLOADED_MODULES_CALLBACK64"      Type="Alias" Base="LPVOID" />
         <Variable Name="PENUMLOADED_MODULES_CALLBACKW64"     Type="Alias" Base="LPVOID" />
         <Variable Name="PFIND_DEBUG_FILE_CALLBACK"           Type="Alias" Base="LPVOID" />
         <Variable Name="PFIND_EXE_FILE_CALLBACK"             Type="Alias" Base="LPVOID" />
-        <Variable Name="LPSTACKFRAME64"                      Type="Alias" Base="LPVOID" />
         <Variable Name="PREAD_PROCESS_MEMORY_ROUTINE64"      Type="Alias" Base="LPVOID" />
         <Variable Name="PFUNCTION_TABLE_ACCESS_ROUTINE64"    Type="Alias" Base="LPVOID" />
         <Variable Name="PGET_MODULE_BASE_ROUTINE64"          Type="Alias" Base="LPVOID" />
@@ -24,12 +35,51 @@
         <Variable Name="PSYM_ENUMSOURCEFILES_CALLBACK"       Type="Alias" Base="LPVOID" />
         <Variable Name="PSYM_ENUMERATESYMBOLS_CALLBACK"      Type="Alias" Base="LPVOID" />
         <Variable Name="PFINDFILEINPATHCALLBACK"             Type="Alias" Base="LPVOID" />
-        <Variable Name="PSYMBOL_INFO"                        Type="Alias" Base="LPVOID" />
-        <Variable Name="PIMAGEHLP_LINE64"                    Type="Alias" Base="LPVOID" />
-        <Variable Name="PIMAGEHLP_LINEW64"                   Type="Alias" Base="LPVOID" />
-        <Variable Name="PIMAGEHLP_MODULE64"                  Type="Alias" Base="LPVOID" />
-        <Variable Name="PIMAGEHLP_MODULEW64"                 Type="Alias" Base="LPVOID" />
-        <Variable Name="POMAP*"                              Type="Alias" Base="LPVOID" />
+        <Variable Name="PSYMBOL_REGISTERED_CALLBACK64"       Type="Alias" Base="LPVOID" />
+        <Variable Name="PSYMBOL_REGISTERED_CALLBACKW64"      Type="Alias" Base="LPVOID" />
+        <Variable Name="PSYMBOL_FUNCENTRY_CALLBACK64"        Type="Alias" Base="LPVOID" />
+        <Variable Name="PSYM_ENUMSYMBOLS_CALLBACK64"         Type="Alias" Base="LPVOID" />
+        <Variable Name="PSYM_ENUMSYMBOLS_CALLBACKW64"        Type="Alias" Base="LPVOID" />
+        <Variable Name="MINIDUMP_CALLBACK_ROUTINE"        Type="Alias" Base="LPVOID" />
+
+        <!-- API_VERSION -->
+        <Variable Name="API_VERSION" Type="Struct" Pack="8">
+            <Field Type="USHORT"  	Name="MajorVersion" />
+            <Field Type="USHORT"  	Name="MinorVersion" />
+            <Field Type="USHORT"  	Name="Revision" />
+            <Field Type="USHORT"  	Name="Reserved" />
+        </Variable>
+        <Variable Name="LPAPI_VERSION" Type="Pointer" Base="API_VERSION" />
+
+        <!-- IMAGEHLP_LINE64 -->
+        <Variable Name="IMAGEHLP_LINE64" Type="Struct" Pack="8">
+            <Field Type="DWORD"    	Name="SizeOfStruct" />
+            <Field Type="PVOID"    	Name="Key" />
+            <Field Type="DWORD"    	Name="LineNumber" />
+            <Field Type="PCHAR"    	Name="FileName" />
+            <Field Type="DWORD64"  	Name="Address" />
+        </Variable>
+        <Variable Name="PIMAGEHLP_LINE64" Type="Pointer" Base="IMAGEHLP_LINE64" />
+
+        <!-- IMAGEHLP_LINEW64 -->
+        <Variable Name="IMAGEHLP_LINEW64" Type="Struct" Pack="8">
+            <Field Type="DWORD"    	Name="SizeOfStruct" />
+            <Field Type="PVOID"    	Name="Key" />
+            <Field Type="DWORD"    	Name="LineNumber" />
+            <Field Type="PWSTR"    	Name="FileName" />
+            <Field Type="DWORD64"  	Name="Address" />
+        </Variable>
+        <Variable Name="PIMAGEHLP_LINEW64" Type="Pointer" Base="IMAGEHLP_LINEW64" />
+
+        <!-- OMAP -->
+        <Variable Name="OMAP" Type="Struct" Pack="8">
+            <Field Type="ULONG"  	Name="rva" />
+            <Field Type="ULONG"  	Name="rvaTo" />
+        </Variable>
+        <Variable Name="POMAP"  Type="Pointer" Base="OMAP" />
+        <Variable Name="POMAP*" Type="Pointer" Base="POMAP" />
+
+        <!-- IMAGEHLP_SYMBOL_TYPE_INFO -->
         <Variable Name="IMAGEHLP_SYMBOL_TYPE_INFO" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="TI_GET_SYMTAG"                       Value="0" />
@@ -66,18 +116,84 @@
                 <Set Name="TI_GET_IS_REFERENCE"                 Value="31" />
             </Enum>
         </Variable>
+        <Variable Name="IMAGEHLP_SYMBOL_TYPE_INFO*" Type="Pointer" Base="IMAGEHLP_SYMBOL_TYPE_INFO" />
 
+        <!-- IMAGEHLP_GET_TYPE_INFO_PARAMS -->
+        <Variable Name="IMAGEHLP_GET_TYPE_INFO_PARAMS" Type="Struct" Pack="8">
+            <Field Type="ULONG"    	                    Name="SizeOfStruct" />
+            <Field Type="ULONG"    	                    Name="Flags" />
+            <Field Type="ULONG"    	                    Name="NumIds" />
+            <Field Type="PULONG"   	                    Name="TypeIds" />
+            <Field Type="ULONG64"  	                    Name="TagFilter" />
+            <Field Type="ULONG"    	                    Name="NumReqs" />
+            <Field Type="IMAGEHLP_SYMBOL_TYPE_INFO*" 	Name="ReqKinds" />
+            <Field Type="PULONG_PTR" 	                Name="ReqOffsets" />
+            <Field Type="PULONG"   	                    Name="ReqSizes" />
+            <Field Type="ULONG_PTR" 	                Name="ReqStride" />
+            <Field Type="ULONG_PTR" 	                Name="BufferSize" />
+            <Field Type="PVOID"    	                    Name="Buffer" />
+            <Field Type="ULONG"    	                    Name="EntriesMatched" />
+            <Field Type="ULONG"    	                    Name="EntriesFilled" />
+            <Field Type="ULONG64"  	                    Name="TagsFound" />
+            <Field Type="ULONG64"  	                    Name="AllReqsValid" />
+            <Field Type="ULONG"    	                    Name="NumReqsValid" />
+            <Field Type="PULONG64" 	                    Name="ReqsValid"  />
+        </Variable>
+        <Variable Name="PIMAGEHLP_GET_TYPE_INFO_PARAMS" Type="Pointer" Base="IMAGEHLP_GET_TYPE_INFO_PARAMS" />
 
-        <Variable Name="PIMAGEHLP_GET_TYPE_INFO_PARAMS"      Type="Alias" Base="LPVOID" />
-        <Variable Name="PMODLOAD_DATA"                       Type="Alias" Base="LPVOID" />
-        <Variable Name="PSYMBOL_REGISTERED_CALLBACK64"       Type="Alias" Base="LPVOID" />
-        <Variable Name="PSYMBOL_REGISTERED_CALLBACKW64"      Type="Alias" Base="LPVOID" />
-        <Variable Name="PSYMBOL_FUNCENTRY_CALLBACK64"        Type="Alias" Base="LPVOID" />
-        <Variable Name="PIMAGEHLP_STACK_FRAME"               Type="Alias" Base="LPVOID" />
-        <Variable Name="PIMAGEHLP_CONTEXT"                   Type="Alias" Base="LPVOID" />
-        <Variable Name="PIMAGEHLP_SYMBOL64"                  Type="Alias" Base="LPVOID" />
-        <Variable Name="PSYMSRV_INDEX_INFO"                  Type="Alias" Base="LPVOID" />
-        <Variable Name="PMINIDUMP_DIRECTORY*"                Type="Alias" Base="LPVOID" />
+        <!-- MODLOAD_DATA -->
+        <Variable Name="MODLOAD_DATA" Type="Struct" Pack="8">
+            <Field Type="DWORD"   	Name="ssize" />
+            <Field Type="DWORD"   	Name="ssig" />
+            <Field Type="PVOID"   	Name="data" />
+            <Field Type="DWORD"   	Name="size" />
+            <Field Type="DWORD"   	Name="flags" />
+        </Variable>
+        <Variable Name="PMODLOAD_DATA" Type="Pointer" Base="MODLOAD_DATA" />
+
+        <!-- MINIDUMP_LOCATION_DESCRIPTOR -->
+        <Variable Name="MINIDUMP_LOCATION_DESCRIPTOR" Type="Struct" Pack="4">
+            <Field Type="ULONG32" 	Name="DataSize" />
+            <Field Type="RVA" 	    Name="Rva" />
+        </Variable>
+
+        <!-- MINIDUMP_DIRECTORY -->
+        <Variable Name="MINIDUMP_DIRECTORY" Type="Struct" Pack="4">
+            <Field Type="ULONG32" 	                    Name="StreamType" />
+            <Field Type="MINIDUMP_LOCATION_DESCRIPTOR" 	Name="Location" />
+        </Variable>
+        <Variable Name="PMINIDUMP_DIRECTORY"    Type="Pointer" Base="MINIDUMP_DIRECTORY" />
+        <Variable Name="PMINIDUMP_DIRECTORY*"   Type="Pointer" Base="PMINIDUMP_DIRECTORY" />
+
+        <!-- MINIDUMP_EXCEPTION_INFORMATION -->
+        <Variable Name="MINIDUMP_EXCEPTION_INFORMATION" Type="Struct" Pack="4">
+            <Field Type="DWORD" 	            Name="ThreadId" />
+            <Field Type="PEXCEPTION_POINTERS" 	Name="ExceptionPointers" />
+            <Field Type="BOOL" 	                Name="ClientPointers" />
+        </Variable>
+        <Variable Name="PMINIDUMP_EXCEPTION_INFORMATION" Type="Pointer" Base="MINIDUMP_EXCEPTION_INFORMATION" />
+
+        <!-- MINIDUMP_USER_STREAM -->
+        <Variable Name="MINIDUMP_USER_STREAM" Type="Struct" Pack="4">
+            <Field Type="ULONG32" 	Name="Type" />
+            <Field Type="ULONG" 	Name="BufferSize" />
+            <Field Type="PVOID" 	Name="Buffer" />
+        </Variable>
+        <Variable Name="PMINIDUMP_USER_STREAM" Type="Pointer" Base="MINIDUMP_USER_STREAM" />
+
+        <!-- MINIDUMP_USER_STREAM_INFORMATION -->
+        <Variable Name="MINIDUMP_USER_STREAM_INFORMATION" Type="Struct" Pack="4">
+            <Field Type="ULONG" 	                Name="UserStreamCount" />
+            <Field Type="PMINIDUMP_USER_STREAM" 	Name="UserStreamArray" />
+        </Variable>
+        <Variable Name="PMINIDUMP_USER_STREAM_INFORMATION" Type="Pointer" Base="MINIDUMP_USER_STREAM_INFORMATION" />
+
+        <!-- MINIDUMP_CALLBACK_INFORMATION -->
+        <Variable Name="MINIDUMP_CALLBACK_INFORMATION" Type="Struct" Pack="4">
+            <Field Type="MINIDUMP_CALLBACK_ROUTINE" 	Name="CallbackRoutine" />
+            <Field Type="PVOID" 	                    Name="CallbackParam" />
+        </Variable>
+        <Variable Name="PMINIDUMP_CALLBACK_INFORMATION" Type="Pointer" Base="MINIDUMP_CALLBACK_INFORMATION" />
 
         <!-- TODO: Is this really an enumeration or are these flags?-->
         <Variable Name="MINIDUMP_TYPE" Type="Alias" Base="DWORD">
@@ -101,12 +217,6 @@
                 <Set Name="MiniDumpWithFullAuxiliaryState"          Value="0x00008000"/>
             </Enum>
         </Variable>
-        <Variable Name="PMINIDUMP_EXCEPTION_INFORMATION"     Type="Alias" Base="LPVOID" />
-        <Variable Name="PMINIDUMP_USER_STREAM_INFORMATION"   Type="Alias" Base="LPVOID" />
-        <Variable Name="PMINIDUMP_CALLBACK_INFORMATION"      Type="Alias" Base="LPVOID" />
-        <Variable Name="PIMAGE_DEBUG_INFORMATION"            Type="Alias" Base="LPVOID" />
-        <Variable Name="PSYM_ENUMSYMBOLS_CALLBACK64"         Type="Alias" Base="LPVOID" />
-        <Variable Name="PSYM_ENUMSYMBOLS_CALLBACKW64"        Type="Alias" Base="LPVOID" />
 
         <!-- Debug Help -->
         <Category Name="Diagnostics/Debugging and Error Handling/Debug Help Library" />
@@ -181,7 +291,7 @@
         <Api Name="FindExecutableImage">
             <Param Type="PCSTR" Name="FileName" />
             <Param Type="PCSTR" Name="SymbolPath" />
-            <Param Type="PSTR" Name="ImageFilePath" />
+            <Param Type="PSTR" Name="ImageFilePath" OutputOnly="True" />
             <Return Type="HANDLE" />
             <Success Return="NotEqual" Value="0" />
         </Api>

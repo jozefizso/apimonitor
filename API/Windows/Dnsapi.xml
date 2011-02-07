@@ -9,13 +9,35 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Dnsapi.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
-        <!-- Variables -->
+        
+        <!-- TODO: Structures -->
         <Variable Name="PDNS_MESSAGE_BUFFER"             Type="Alias" Base="LPVOID" />
-        <Variable Name="PDNS_RECORD*"                    Type="Alias" Base="LPVOID" />
-        <Variable Name="DNS_PROXY_INFORMATION*"          Type="Alias" Base="LPVOID" />
-        <Variable Name="DNS_PROXY_COMPLETION_ROUTINE"    Type="Alias" Base="LPVOID" />
-        <Variable Name="PDNS_RECORD"                     Type="Alias" Base="LPVOID" />
-        <Variable Name="DNS_STATUS"                      Type="Alias" Base="LONG">
+        
+        <!-- Variables -->
+        <Variable Name="PDNS_RECORD"                    Type="Alias"    Base="PVOID" />
+        <Variable Name="PDNS_RECORD*"                   Type="Pointer"  Base="PDNS_RECORD" />
+        <Variable Name="DNS_PROXY_COMPLETION_ROUTINE"   Type="Alias"    Base="LPVOID" />
+
+        <!-- DNS_PROXY_INFORMATION_TYPE -->
+        <Variable Name="DNS_PROXY_INFORMATION_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DNS_PROXY_INFORMATION_DIRECT"            Value="0" />
+                <Set Name="DNS_PROXY_INFORMATION_DEFAULT_SETTINGS"  Value="1" />
+                <Set Name="DNS_PROXY_INFORMATION_PROXY_NAME"        Value="2" />
+                <Set Name="DNS_PROXY_INFORMATION_DOES_NOT_EXIST"    Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- DNS_PROXY_INFORMATION -->
+        <Variable Name="DNS_PROXY_INFORMATION" Type="Struct">
+            <Field Type="ULONG" 	                    Name="version" />
+            <Field Type="DNS_PROXY_INFORMATION_TYPE" 	Name="proxyInformationType" />
+            <Field Type="PWSTR" 	                    Name="proxyName" />
+        </Variable>
+        <Variable Name="DNS_PROXY_INFORMATION*" Type="Pointer" Base="DNS_PROXY_INFORMATION" />
+
+        <!-- DNS_STATUS -->
+        <Variable Name="DNS_STATUS" Type="Alias" Base="LONG">
             <Enum>
                 <Set Name="DNS_ERROR_RCODE_NO_ERROR"                    Value="0" />
                 <Set Name="DNS_ERROR_RCODE_FORMAT_ERROR"                Value="9001" />
@@ -122,7 +144,6 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
             </Enum>
         </Variable>
 
-        <!-- Flags -->
         <Variable Name="DNS_FREE_TYPE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="DnsFreeFlat"                 Value="0" />
@@ -130,6 +151,7 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
                 <Set Name="DnsFreeParsedMessageFields"  Value="2" />
             </Enum>
         </Variable>
+
         <Variable Name="[DnsRecordType]" Type="Alias" Base="WORD">
             <Display Name="WORD" />
             <Enum>
@@ -192,6 +214,7 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
                 <Set Name="DNS_TYPE_NBSTAT"     Value="0xff02" />
             </Enum>
         </Variable>
+
         <Variable Name="[DnsQueryOptions]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -213,6 +236,7 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
                 <Set Name="DNS_QUERY_RESERVED"                      Value="0xff000000" />
             </Flag>
         </Variable>
+
         <Variable Name="DNS_NAME_FORMAT" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="DnsNameDomain"           Value="0" />
@@ -224,6 +248,7 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
                 <Set Name="DnsNameValidateTld"      Value="6" />
             </Enum>
         </Variable>
+
         <Variable Name="DNS_CONFIG_TYPE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="DnsConfigPrimaryDomainName_W"                    Value="0" />
@@ -246,14 +271,16 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
                 <Set Name="DnsConfigFullHostName_UTF8"                      Value="17" />
             </Enum>
         </Variable>
+
         <Variable Name="[DnsConfigFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
                 <Set Name="DNS_CONFIG_FLAG_ALLOC"   Value="0x00000001" />
             </Flag>
         </Variable>
+
         <Variable Name="[DnsUpdateFlags]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="DNS_UPDATE_SECURITY_USE_DEFAULT"         Value="0x00000000" />
                 <Set Name="DNS_UPDATE_SECURITY_OFF"                 Value="0x00000010" />
@@ -268,6 +295,7 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
                 <Set Name="DNS_UPDATE_RESERVED"                     Value="0xffff0000" />
             </Flag>
         </Variable>
+
         <Variable Name="DNS_CHARSET" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="DnsCharSetUnknown"   Value="0" />
@@ -277,14 +305,10 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
             </Enum>
         </Variable>
 
-        <Variable Name="BOOL(DWORD)" Type="Alias" Base="BOOL">
-            <Display Name="DWORD" />
-        </Variable>
-        
         <!-- Domain Name System (DNS) -->
         <Category Name="Networking/Network Protocols/Domain Name System (DNS)" />
         <Api Name="DnsAcquireContextHandle_" BothCharset="True">
-            <Param Type="BOOL(DWORD)" Name="CredentialFlags" />
+            <Param Type="BOOL" Display="DWORD" Name="CredentialFlags" />
             <Param Type="PVOID" Name="Credentials" />
             <Param Type="PHANDLE" Name="pContext" />
             <Return Type="DNS_STATUS" />

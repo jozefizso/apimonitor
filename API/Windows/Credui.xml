@@ -9,7 +9,7 @@
     <Module Name="Credui.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         <!-- Variables -->
         <Variable Name="[CredUIFlags]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="CREDUI_FLAGS_INCORRECT_PASSWORD"             Value="0x00001" />
                 <Set Name="CREDUI_FLAGS_DO_NOT_PERSIST"                 Value="0x00002" />
@@ -30,12 +30,46 @@
                 <Set Name="CREDUI_FLAGS_KEEP_USERNAME"                  Value="0x100000" />
             </Flag>
         </Variable>
-        <Variable Name="PCREDUI_INFO"                       Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSEC_WINNT_CREDUI_CONTEXT_VECTOR"   Type="Alias"    Base="LPVOID" />
+
+        <!-- CREDUI_INFO -->
+        <Variable Name="CREDUI_INFO" Type="Struct">
+            <Field Type="DWORD" 	Name="cbSize" />
+            <Field Type="HWND"      Name="hwndParent" />
+            <Field Type="PCTSTR" 	Name="pszMessageText" />
+            <Field Type="PCTSTR" 	Name="pszCaptionText" />
+            <Field Type="HBITMAP" 	Name="hbmBanner" />
+        </Variable>
+        <Variable Name="PCREDUI_INFO" Type="Pointer" Base="CREDUI_INFO" />
+
+        <!-- SEC_WINNT_CREDUI_CONTEXT_VECTOR -->
+        <Variable Name="SEC_WINNT_CREDUI_CONTEXT_VECTOR" Type="Struct">
+            <Field Type="ULONG" 	Name="CredUIContextArrayOffset" />
+            <Field Type="USHORT" 	Name="CredUIContextCount" />
+        </Variable>
+        <Variable Name="PSEC_WINNT_CREDUI_CONTEXT_VECTOR"   Type="Pointer"  Base="SEC_WINNT_CREDUI_CONTEXT_VECTOR" />
         <Variable Name="PSEC_WINNT_CREDUI_CONTEXT_VECTOR*"  Type="Pointer"  Base="PSEC_WINNT_CREDUI_CONTEXT_VECTOR" />
-        <Variable Name="PSEC_WINNT_CREDUI_CONTEXT"          Type="Alias"    Base="LPVOID" />
+
+        <!-- CREDUI_INFOW -->
+        <Variable Name="CREDUI_INFOW" Type="Struct">
+            <Field Type="DWORD" 	Name="cbSize" />
+            <Field Type="HWND"      Name="hwndParent" />
+            <Field Type="PCWSTR" 	Name="pszMessageText" />
+            <Field Type="PCWSTR" 	Name="pszCaptionText" />
+            <Field Type="HBITMAP" 	Name="hbmBanner" />
+        </Variable>
+        <Variable Name="PCREDUI_INFOW" Type="Pointer" Base="CREDUI_INFOW" />
+
+        <!-- SEC_WINNT_CREDUI_CONTEXT -->
+        <Variable Name="SEC_WINNT_CREDUI_CONTEXT" Type="Struct">
+            <Field Type="USHORT"                            Name="cbHeaderLength" />
+            <Field Type="HANDLE"                            Name="CredUIContextHandle" />
+            <Field Type="PCREDUI_INFOW" 	                Name="UIInfo" />
+            <Field Type="ULONG"                             Name="dwAuthError" />
+            <Field Type="PSEC_WINNT_AUTH_IDENTITY_OPAQUE" 	Name="pInputAuthIdentity" />
+            <Field Type="PUNICODE_STRING"                   Name="TargetName" />
+        </Variable>
+        <Variable Name="PSEC_WINNT_CREDUI_CONTEXT"          Type="Pointer"  Base="SEC_WINNT_CREDUI_CONTEXT" />
         <Variable Name="PSEC_WINNT_CREDUI_CONTEXT*"         Type="Pointer"  Base="PSEC_WINNT_CREDUI_CONTEXT" />
-        <Variable Name="PCREDUI_INFOW"                      Type="Alias"    Base="LPVOID" />
 
         <!-- Authentication -->
         <Category Name="Security/Authentication/Credentials Management UI" />

@@ -6,9 +6,42 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Wdstptc.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        <!-- Parameters -->
-        <Variable Name="PWDS_TRANSPORTCLIENT_REQUEST"    Type="Alias"        Base="LPVOID" />
-        <Variable Name="TRANSPORTCLIENT_CALLBACK_ID"     Type="Alias"        Base="LPVOID" />
+        <!-- Variables -->
+
+        <!-- [WdsAuthLevel] -->
+        <Variable Name="[WdsAuthLevel]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="WDS_TRANSPORTCLIENT_AUTH"    Value="0x1" />
+                <Set Name="WDS_TRANSPORTCLIENT_NO_AUTH" Value="0x2" />
+            </Enum>
+        </Variable>
+
+        <!-- WDS_TRANSPORTCLIENT_REQUEST -->
+        <Variable Name="WDS_TRANSPORTCLIENT_REQUEST" Type="Struct">
+            <Field Type="ULONG" 	        Name="ulLength" />
+            <Field Type="ULONG" 	        Name="ulApiVersion" />
+            <Field Type="[WdsAuthLevel]" 	Name="ulAuthLevel" />
+            <Field Type="LPCWSTR" 	        Name="pwszServer" />
+            <Field Type="LPCWSTR" 	        Name="pwszNamespace" />
+            <Field Type="LPCWSTR" 	        Name="pwszObjectName" />
+            <Field Type="ULONG" 	        Name="ulCacheSize" />
+            <Field Type="ULONG" 	        Name="ulProtocol" />
+            <Field Type="PVOID" 	        Name="pvProtocolData" Length="ulProtocolDataLength" />
+            <Field Type="ULONG" 	        Name="ulProtocolDataLength" />
+        </Variable>
+        <Variable Name="PWDS_TRANSPORTCLIENT_REQUEST" Type="Pointer" Base="WDS_TRANSPORTCLIENT_REQUEST" />
+
+        <!-- TRANSPORTCLIENT_CALLBACK_ID -->
+        <Variable Name="TRANSPORTCLIENT_CALLBACK_ID" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="WDS_TRANSPORTCLIENT_SESSION_START"       Value="0" />
+                <Set Name="WDS_TRANSPORTCLIENT_RECEIVE_CONTENTS"    Value="1" />
+                <Set Name="WDS_TRANSPORTCLIENT_SESSION_COMPLETE"    Value="2" />
+                <Set Name="WDS_TRANSPORTCLIENT_RECEIVE_METADATA"    Value="3" />
+                <Set Name="WDS_TRANSPORTCLIENT_SESSION_STARTEX"     Value="4" />
+            </Enum>
+        </Variable>
 
         <Category Name="Administration and Management/System Configuration and Servicing/Windows Deployment Services (WDS)/Transport Client" />
         <Api Name="WdsTransportClientAddRefBuffer">

@@ -7,9 +7,127 @@
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\shell.h.xml" />
     <Include Filename="Headers\gdi.h.xml" />
-    
+
     <Module Name="UxTheme.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
         <!-- Variables -->
+        <Variable Name="HANIMATIONBUFFER"       Type="Alias"    Base="HANDLE" />
+        <Variable Name="HPAINTBUFFER"           Type="Alias"    Base="HANDLE" />
+        <Variable Name="DTT_CALLBACK_PROC"      Type="Alias"    Base="LPVOID" />
+        
+        <!-- TODO: Structures -->
+        <Variable Name="INTLIST*"               Type="Alias"    Base="LPVOID" />
+
+        <!-- [BPPF_Flags] -->
+        <Variable Name="[BPPF_Flags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="BPPF_ERASE"      Value="0x0001" />
+                <Set Name="BPPF_NOCLIP"     Value="0x0002" />
+                <Set Name="BPPF_NONCLIENT"  Value="0x0004" />
+            </Flag>
+        </Variable>
+
+        <!-- BP_PAINTPARAMS -->
+        <Variable Name="BP_PAINTPARAMS" Type="Struct">
+            <Field Type="DWORD"                 Name="cbSize" />
+            <Field Type="[BPPF_Flags]"          Name="dwFlags" />
+            <Field Type="const RECT*"           Name="prcExclude" />
+            <Field Type="const BLENDFUNCTION*"  Name="pBlendFunction" />
+        </Variable>
+        <Variable Name="BP_PAINTPARAMS*" Type="Pointer" Base="BP_PAINTPARAMS" />
+
+        <!-- BP_ANIMATIONSTYLE -->
+        <Variable Name="BP_ANIMATIONSTYLE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="BPAS_NONE"       Value="0" />
+                <Set Name="BPAS_LINEAR"     Value="1" />
+                <Set Name="BPAS_CUBIC"      Value="2" />
+                <Set Name="BPAS_SINE"       Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- BP_ANIMATIONPARAMS -->
+        <Variable Name="BP_ANIMATIONPARAMS" Type="Struct">
+            <Field Type="DWORD"               	Name="cbSize" />
+            <Field Type="DWORD"               	Name="dwFlags" />
+            <Field Type="BP_ANIMATIONSTYLE"   	Name="style" />
+            <Field Type="DWORD"               	Name="dwDuration" />
+        </Variable>
+        <Variable Name="BP_ANIMATIONPARAMS*" Type="Pointer" Base="BP_ANIMATIONPARAMS" />
+
+        <!-- [DTBG_Flags] -->
+        <Variable Name="[DTBG_Flags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="DTBG_CLIPRECT"           Value="0x00000001" />
+                <Set Name="DTBG_DRAWSOLID"          Value="0x00000002" />
+                <Set Name="DTBG_OMITBORDER"         Value="0x00000004" />
+                <Set Name="DTBG_OMITCONTENT"        Value="0x00000008" />
+                <Set Name="DTBG_COMPUTINGREGION"    Value="0x00000010" />
+                <Set Name="DTBG_MIRRORDC"           Value="0x00000020" />
+                <Set Name="DTBG_NOMIRROR"           Value="0x00000040" />
+            </Flag>
+        </Variable>
+
+        <!-- DTBGOPTS -->
+        <Variable Name="DTBGOPTS" Type="Struct">
+            <Field Type="DWORD" 	    Name="dwSize" />
+            <Field Type="[DTBG_Flags]"  Name="dwFlags" />
+            <Field Type="RECT" 	        Name="rcClip" />
+        </Variable>
+        <Variable Name="const DTBGOPTS*" Type="Pointer" Base="DTBGOPTS" />
+
+        <!-- [DTT_Flags] -->
+        <Variable Name="[DTT_Flags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="DTT_TEXTCOLOR"       Value="0x1" />
+                <Set Name="DTT_BORDERCOLOR"     Value="0x2" />
+                <Set Name="DTT_SHADOWCOLOR"     Value="0x4" />
+                <Set Name="DTT_SHADOWTYPE"      Value="0x8" />
+                <Set Name="DTT_SHADOWOFFSET"    Value="0x10" />
+                <Set Name="DTT_BORDERSIZE"      Value="0x20" />
+                <Set Name="DTT_FONTPROP"        Value="0x40" />
+                <Set Name="DTT_COLORPROP"       Value="0x80" />
+                <Set Name="DTT_STATEID"         Value="0x100" />
+                <Set Name="DTT_CALCRECT"        Value="0x200" />
+                <Set Name="DTT_APPLYOVERLAY"    Value="0x400" />
+                <Set Name="DTT_GLOWSIZE"        Value="0x800" />
+                <Set Name="DTT_CALLBACK"        Value="0x1000" />
+                <Set Name="DTT_COMPOSITED"      Value="0x1000" />
+            </Flag>
+        </Variable>
+
+        <!-- TEXTSHADOWTYPE -->
+        <Variable Name="TEXTSHADOWTYPE" Type="Alias" Base="int">
+            <Display Name="int" />
+            <Enum>
+                <Set Name="TST_NONE"        Value="0" />
+                <Set Name="TST_SINGLE"      Value="1" />
+                <Set Name="TST_CONTINUOUS"  Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- DTTOPTS -->
+        <Variable Name="DTTOPTS" Type="Struct">
+            <Field Type="DWORD"             	Name="dwSize" />
+            <Field Type="[DTT_Flags]"             	Name="dwFlags" />
+            <Field Type="COLORREF"          	Name="crText" />
+            <Field Type="COLORREF"          	Name="crBorder" />
+            <Field Type="COLORREF"          	Name="crShadow" />
+            <Field Type="TEXTSHADOWTYPE"        Name="iTextShadowType" />
+            <Field Type="POINT"             	Name="ptShadowOffset" />
+            <Field Type="int"               	Name="iBorderSize" />
+            <Field Type="int"               	Name="iFontPropId" />
+            <Field Type="int"               	Name="iColorPropId" />
+            <Field Type="int"               	Name="iStateId" />
+            <Field Type="BOOL"              	Name="fApplyOverlay" />
+            <Field Type="int"               	Name="iGlowSize" />
+            <Field Type="DTT_CALLBACK_PROC" 	Name="pfnDrawTextCallback" />
+            <Field Type="LPARAM"            	Name="lParam" />
+        </Variable>
+        <Variable Name="const DTTOPTS*" Type="Pointer" Base="DTTOPTS" />
+
         <Variable Name="THEMESIZE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="TS_MIN"      Value="0" />
@@ -30,7 +148,7 @@
         <Variable Name="PROPERTYORIGIN*" Type="Pointer" Base="PROPERTYORIGIN" />
 
         <Variable Name="[EnableThemeDialogTextureFlags]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="ETDT_DISABLE"                    Value="0x00000001" />
                 <Set Name="ETDT_ENABLE"                     Value="0x00000002" />
@@ -42,7 +160,7 @@
         </Variable>
 
         <Variable Name="[HitTestThemeBackgroundOptions]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="HTTB_BACKGROUNDSEG"          Value="0x00000000" />
                 <Set Name="HTTB_FIXEDBORDER"            Value="0x00000002" />
@@ -91,7 +209,7 @@
         </Variable>
 
         <Variable Name="[DrawThemeParentBackgroundFlags]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="DTPB_WINDOWDC"           Value="0x00000001" />
                 <Set Name="DTPB_USECTLCOLORSTATIC"  Value="0x00000002" />
@@ -113,16 +231,6 @@
                 <Set Name="WTA_NONCLIENT" Value="1" />
             </Enum>
         </Variable>
-
-        <Variable Name="BP_PAINTPARAMS*"        Type="Alias"    Base="LPVOID" />
-        <Variable Name="BP_ANIMATIONPARAMS*"    Type="Alias"    Base="LPVOID" />
-        <Variable Name="HANIMATIONBUFFER"       Type="Alias"    Base="HANDLE" />
-        <Variable Name="HPAINTBUFFER"           Type="Alias"    Base="HANDLE" />
-        <Variable Name="const DTBGOPTS*"        Type="Alias"    Base="LPVOID" />
-        <Variable Name="const DTTOPTS*"         Type="Alias"    Base="LPVOID" />
-        <Variable Name="INTLIST*"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="MARGINS*"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="TEXTMETRIC*"            Type="Alias"    Base="LPVOID" />
 
         <!-- Visual Styles -->
         <Category Name="Windows Application UI Development/Windows Controls/Visual Styles" />
@@ -249,7 +357,7 @@
             <Param Type="int" Name="iStateId" />
             <Param Type="LPCWSTR" Name="pszText" />
             <Param Type="int" Name="iCharCount" />
-            <Param Type="[DrawTextFlags(DWORD)]" Name="dwTextFlags"  />
+            <Param Type="[DrawTextFlags]" Name="dwTextFlags"  />
             <Param Type="DWORD" Name="dwTextFlags2" />
             <Param Type="LPCRECT" Name="pRect" />
             <Return Type="HRESULT" />
@@ -262,7 +370,7 @@
             <Param Type="int" Name="iStateId" />
             <Param Type="LPCWSTR" Name="pszText" />
             <Param Type="int" Name="iCharCount" />
-            <Param Type="[DrawTextFlags(DWORD)]" Name="dwFlags"  />
+            <Param Type="[DrawTextFlags]" Name="dwFlags"  />
             <Param Type="LPRECT" Name="pRect" />
             <Param Type="const DTTOPTS*" Name="pOptions" />
             <Return Type="HRESULT" />
@@ -571,7 +679,7 @@
             <Param Type="int" Name="iStateId" />
             <Param Type="LPCWSTR" Name="pszText" />
             <Param Type="int" Name="iCharCount" />
-            <Param Type="[DrawTextFlags(DWORD)]" Name="dwTextFlags" />
+            <Param Type="[DrawTextFlags]" Name="dwTextFlags" />
             <Param Type="LPCRECT" Name="pBoundingRect" />
             <Param Type="LPRECT" Name="pExtentRect" />
             <Return Type="HRESULT" />

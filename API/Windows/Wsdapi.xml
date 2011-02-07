@@ -6,50 +6,83 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Wsdapi.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
-        <!-- Parameters -->
-        <Variable Name="IWSDXMLContext*"                 Type="Alias"        Base="LPVOID" />
-        <Variable Name="IWSDXMLContext**"                Type="Pointer"        Base="IWSDXMLContext*" />
-
-        <Variable Name="IWSDDeviceHost*"                Type="Alias"        Base="LPVOID" />
-        <Variable Name="IWSDDeviceHost**"                Type="Pointer"        Base="IWSDDeviceHost*" />
-
-        <Variable Name="IWSDAddress*"                    Type="Alias"        Base="LPVOID" />
-        <Variable Name="IWSDAddress**"                   Type="Pointer"        Base="IWSDAddress*" />
-
-        <Variable Name="IWSDDeviceProxy*"               Type="Alias"        Base="LPVOID" />
-        <Variable Name="IWSDDeviceProxy**"               Type="Pointer"        Base="IWSDDeviceProxy*" />
-
-        <Variable Name="IWSDiscoveryProvider*"          Type="Alias"        Base="LPVOID" />
-        <Variable Name="IWSDiscoveryProvider**"          Type="Pointer"        Base="IWSDiscoveryProvider*" />
-        <Variable Name="WSD_CONFIG_PARAM*"               Type="Alias"        Base="LPVOID" />
-
-        <Variable Name="IWSDiscoveryPublisher*"         Type="Alias"        Base="LPVOID" />
-        <Variable Name="IWSDiscoveryPublisher**"         Type="Pointer"        Base="IWSDiscoveryPublisher*" />
-
-        <Variable Name="IWSDHttpAddress*"               Type="Alias"        Base="LPVOID" />
-        <Variable Name="IWSDHttpAddress**"               Type="Pointer"        Base="IWSDHttpAddress*" />
-
-        <Variable Name="IWSDHttpMessageParameters*"     Type="Alias"        Base="LPVOID" />
-        <Variable Name="IWSDHttpMessageParameters**"     Type="Pointer"        Base="IWSDHttpMessageParameters*" />
-
-        <Variable Name="IWSDOutboundAttachment*"        Type="Alias"        Base="LPVOID" />
-        <Variable Name="IWSDOutboundAttachment**"        Type="Pointer"        Base="IWSDOutboundAttachment*" />
-
-        <Variable Name="IWSDUdpAddress*"                Type="Alias"        Base="LPVOID" />
-        <Variable Name="IWSDUdpAddress**"                Type="Pointer"        Base="IWSDUdpAddress*" />
-
-        <Variable Name="IWSDUdpMessageParameters*"      Type="Alias"        Base="LPVOID" />
-        <Variable Name="IWSDUdpMessageParameters**"      Type="Pointer"        Base="IWSDUdpMessageParameters*" />
-
-        <Variable Name="WSD_SOAP_FAULT*"                Type="Alias"        Base="LPVOID" />
-        <Variable Name="WSD_SOAP_FAULT**"                Type="Pointer"        Base="WSD_SOAP_FAULT*" />
-        <Variable Name="WSDXML_NAME*"                    Type="Alias"        Base="LPVOID" />
-        <Variable Name="WSDXML_NAME**"                   Type="Pointer"        Base="WSDXML_NAME*" />
-        <Variable Name="WSD_LOCALIZED_STRING_LIST*"      Type="Alias"        Base="LPVOID" />
-        <Variable Name="WSDXML_ELEMENT*"                 Type="Alias"        Base="LPVOID" />
-        <Variable Name="WSDXML_ELEMENT**"                Type="Pointer"        Base="WSDXML_ELEMENT*" />
+        
+        <!-- Variables -->
+        <Variable Name="IWSDAddress"                    Type="Interface" />
+        <Variable Name="IWSDUdpAddress"                 Type="Interface" />
+        <Variable Name="IWSDXMLContext"                 Type="Interface" />
+        <Variable Name="IWSDDeviceHost"                 Type="Interface" />
+        <Variable Name="IWSDHttpAddress"                Type="Interface" />
+        <Variable Name="IWSDDeviceProxy"                Type="Interface" />
+        <Variable Name="IWSDiscoveryProvider"           Type="Interface" />
+        <Variable Name="IWSDiscoveryPublisher"          Type="Interface" />
+        <Variable Name="IWSDOutboundAttachment"         Type="Interface" />
+        <Variable Name="IWSDHttpMessageParameters"      Type="Interface" />
+        <Variable Name="IWSDUdpMessageParameters"       Type="Interface" />
+        
+        <!-- TODO: Structures -->
+        <Variable Name="WSD_SOAP_FAULT_SUBCODE*"        Type="Alias"    Base="LPVOID" />
+        <Variable Name="WSD_LOCALIZED_STRING_LIST*"     Type="Alias"    Base="LPVOID" />
+        <Variable Name="WSDXML_NAMESPACE*"              Type="Alias"    Base="LPVOID" />
+        <Variable Name="WSDXML_ELEMENT*"                Type="Alias"    Base="LPVOID" />
+        <Variable Name="WSDXML_ELEMENT**"               Type="Pointer"  Base="WSDXML_ELEMENT*" />
 
 
+        <!-- WSD_CONFIG_PARAM_TYPE -->
+        <Variable Name="WSD_CONFIG_PARAM_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="WSD_CONFIG_MAX_INBOUND_MESSAGE_SIZE"         Value="1" />
+                <Set Name="WSD_CONFIG_MAX_OUTBOUND_MESSAGE_SIZE"        Value="2" />
+                <Set Name="WSD_SECURITY_SSL_CERT_FOR_CLIENT_AUTH"       Value="3" />
+                <Set Name="WSD_SECURITY_SSL_SERVER_CERT_VALIDATION"     Value="4" />
+                <Set Name="WSD_SECURITY_SSL_CLIENT_CERT_VALIDATION"     Value="5" />
+                <Set Name="WSD_SECURITY_SSL_NEGOTIATE_CLIENT_CERT"      Value="6" />
+                <Set Name="WSD_SECURITY_COMPACTSIG_SIGNING_CERT"        Value="7" />
+                <Set Name="WSD_SECURITY_COMPACTSIG_VALIDATION"          Value="8" />
+                <Set Name="WSD_CONFIG_HOSTING_ADDRESSES"                Value="9" />
+                <Set Name="WSD_CONFIG_DEVICE_ADDRESSES"                 Value="10" />
+            </Enum>
+        </Variable>
+
+        <!-- WSD_CONFIG_PARAM -->
+        <Variable Name="WSD_CONFIG_PARAM" Type="Struct">
+            <Field Type="WSD_CONFIG_PARAM_TYPE" 	Name="configParamType" />
+            <Field Type="PVOID" 	                Name="pConfigData" />
+            <Field Type="DWORD" 	                Name="dwConfigDataSize" />
+        </Variable>
+        <Variable Name="WSD_CONFIG_PARAM*" Type="Pointer" Base="WSD_CONFIG_PARAM" />
+
+        <!-- WSDXML_NAME -->
+        <Variable Name="WSDXML_NAME" Type="Struct">
+            <Field Type="WSDXML_NAMESPACE*" 	Name="Space" />
+            <Field Type="WCHAR*" 	            Name="LocalName" />
+        </Variable>
+        <Variable Name="WSDXML_NAME*"  Type="Pointer" Base="WSDXML_NAME" />
+        <Variable Name="WSDXML_NAME**" Type="Pointer" Base="WSDXML_NAME*" />
+
+        <!-- WSD_SOAP_FAULT_CODE -->
+        <Variable Name="WSD_SOAP_FAULT_CODE" Type="Struct">
+            <Field Type="WSDXML_NAME*" 	            Name="Value" />
+            <Field Type="WSD_SOAP_FAULT_SUBCODE*" 	Name="Subcode" />
+        </Variable>
+        <Variable Name="WSD_SOAP_FAULT_CODE*" Type="Pointer" Base="WSD_SOAP_FAULT_CODE" />
+
+        <!-- WSD_SOAP_FAULT_REASON -->
+        <Variable Name="WSD_SOAP_FAULT_REASON" Type="Struct">
+            <Field Type="WSD_LOCALIZED_STRING_LIST*" Name="Text" />
+        </Variable>
+        <Variable Name="WSD_SOAP_FAULT_REASON*" Type="Pointer" Base="WSD_SOAP_FAULT_REASON" />
+
+        <!-- WSD_SOAP_FAULT -->
+        <Variable Name="WSD_SOAP_FAULT" Type="Struct">
+            <Field Type="WSD_SOAP_FAULT_CODE*" 	    Name="Code" />
+            <Field Type="WSD_SOAP_FAULT_REASON*" 	Name="Reason" />
+            <Field Type="const WCHAR*" 	            Name="Node" />
+            <Field Type="const WCHAR*" 	            Name="Role" />
+            <Field Type="WSDXML_ELEMENT*" 	        Name="Detail" />
+        </Variable>
+        <Variable Name="WSD_SOAP_FAULT*"    Type="Pointer" Base="WSD_SOAP_FAULT" />
+        <Variable Name="WSD_SOAP_FAULT**"   Type="Pointer" Base="WSD_SOAP_FAULT*" />
 
         <!-- Web Services on Devices -->
         <Category Name="System Services/Device Services/Web Services on Devices" />

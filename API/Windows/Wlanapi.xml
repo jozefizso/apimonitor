@@ -7,6 +7,74 @@
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Wlanapi.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
         <!-- Variables -->
+        <Variable Name="WLAN_NOTIFICATION_CALLBACK"         Type="Alias"    Base="LPVOID" />
+
+        <!-- TODO: Structures -->
+        <Variable Name="PDOT11_SSID"                        Type="Alias"    Base="LPVOID" />
+        <Variable Name="const PDOT11_SSID"                  Type="Alias"    Base="LPVOID" />
+        <Variable Name="PDOT11_BSSID_LIST"                  Type="Alias"    Base="LPVOID" />
+        <Variable Name="PWLAN_INTERFACE_INFO_LIST"          Type="Alias"    Base="LPVOID" />
+        <Variable Name="PWLAN_INTERFACE_INFO_LIST*"         Type="Pointer"  Base="PWLAN_INTERFACE_INFO_LIST" />
+        <Variable Name="const PWLAN_RAW_DATA_LIST"          Type="Alias"    Base="LPVOID" />
+        <Variable Name="PWLAN_RAW_DATA_LIST*"               Type="Pointer"  Base="const PWLAN_RAW_DATA_LIST" />
+        <Variable Name="PWLAN_AVAILABLE_NETWORK_LIST"       Type="Alias"    Base="LPVOID" />
+        <Variable Name="PWLAN_AVAILABLE_NETWORK_LIST*"      Type="Pointer"  Base="PWLAN_AVAILABLE_NETWORK_LIST" />
+        <Variable Name="const PDOT11_NETWORK_LIST"          Type="Alias"    Base="LPVOID" />
+        <Variable Name="PDOT11_NETWORK_LIST*"               Type="Pointer"  Base="const PDOT11_NETWORK_LIST" />
+        <Variable Name="PWLAN_INTERFACE_CAPABILITY"         Type="Alias"    Base="LPVOID" />
+        <Variable Name="PWLAN_INTERFACE_CAPABILITY*"        Type="Pointer"  Base="PWLAN_INTERFACE_CAPABILITY" />
+        <Variable Name="PWLAN_BSS_LIST"                     Type="Alias"    Base="LPVOID" />
+        <Variable Name="PWLAN_BSS_LIST*"                    Type="Pointer"  Base="PWLAN_BSS_LIST" />
+        <Variable Name="PWLAN_PROFILE_INFO_LIST"            Type="Alias"    Base="LPVOID" />
+        <Variable Name="PWLAN_PROFILE_INFO_LIST*"           Type="Pointer"  Base="PWLAN_PROFILE_INFO_LIST" />
+        <Variable Name="PWLAN_HOSTED_NETWORK_STATUS"        Type="Alias"    Base="LPVOID" />
+        <Variable Name="PWLAN_HOSTED_NETWORK_STATUS*"       Type="Pointer"  Base="PWLAN_HOSTED_NETWORK_STATUS" />
+        <Variable Name="const PWLAN_RAW_DATA"               Type="Alias"    Base="LPVOID" />
+
+        <!-- WLAN_CONNECTION_MODE -->
+        <Variable Name="WLAN_CONNECTION_MODE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="wlan_connection_mode_profile"                Value="0" />
+                <Set Name="wlan_connection_mode_temporary_profile"      Value="1" />
+                <Set Name="wlan_connection_mode_discovery_secure"       Value="2" />
+                <Set Name="wlan_connection_mode_discovery_unsecure"     Value="3" />
+                <Set Name="wlan_connection_mode_auto"                   Value="4" />
+                <Set Name="wlan_connection_mode_invalid"                Value="5" />
+            </Enum>
+        </Variable>
+
+        <!-- DOT11_BSS_TYPE -->
+        <Variable Name="DOT11_BSS_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="dot11_BSS_type_infrastructure"   Value="1" />
+                <Set Name="dot11_BSS_type_independent"      Value="2" />
+                <Set Name="dot11_BSS_type_any"              Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- [WlanConnectionFlags] -->
+        <Variable Name="[WlanConnectionFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="WLAN_CONNECTION_HIDDEN_NETWORK"     Value="0x00000001" />
+                <Set Name="WLAN_CONNECTION_ADHOC_JOIN_ONLY"    Value="0x00000002" />
+                <Set Name="WLAN_CONNECTION_IGNORE_PRIVACY_BIT" Value="0x00000004" />
+                <Set Name="WLAN_CONNECTION_EAPOL_PASSTHROUGH"  Value="0x00000008" />
+            </Flag>
+        </Variable>
+
+        <!-- WLAN_CONNECTION_PARAMETERS -->
+        <Variable Name="WLAN_CONNECTION_PARAMETERS" Type="Struct">
+            <Field Type="WLAN_CONNECTION_MODE" 	    Name="wlanConnectionMode" />
+            <Field Type="LPCWSTR" 	                Name="strProfile" />
+            <Field Type="PDOT11_SSID" 	            Name="pDot11Ssid" />
+            <Field Type="PDOT11_BSSID_LIST"         Name="pDesiredBssidList" />
+            <Field Type="DOT11_BSS_TYPE" 	        Name="dot11BssType" />
+            <Field Type="[WlanConnectionFlags]" 	Name="dwFlags" />
+        </Variable>
+        <Variable Name="const PWLAN_CONNECTION_PARAMETERS" Type="Pointer" Base="WLAN_CONNECTION_PARAMETERS" />
+
+        <!-- WLAN_OPCODE_VALUE_TYPE -->
         <Variable Name="WLAN_OPCODE_VALUE_TYPE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="wlan_opcode_value_type_query_only"               Value="0" />
@@ -15,7 +83,10 @@
                 <Set Name="wlan_opcode_value_type_invalid"                  Value="3" />
             </Enum>
         </Variable>
+        <Variable Name="PWLAN_OPCODE_VALUE_TYPE"    Type="Pointer"  Base="WLAN_OPCODE_VALUE_TYPE" />
+        <Variable Name="PWLAN_OPCODE_VALUE_TYPE*"   Type="Pointer"  Base="PWLAN_OPCODE_VALUE_TYPE" />
 
+        <!-- WLAN_FILTER_LIST_TYPE -->
         <Variable Name="WLAN_FILTER_LIST_TYPE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="wlan_filter_list_type_gp_permit"     Value="0" />
@@ -25,14 +96,7 @@
             </Enum>
         </Variable>
 
-        <Variable Name="DOT11_BSS_TYPE" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="dot11_BSS_type_infrastructure"   Value="1" />
-                <Set Name="dot11_BSS_type_independent"      Value="2" />
-                <Set Name="dot11_BSS_type_any"              Value="3" />
-            </Enum>
-        </Variable>
-
+        <!-- WLAN_SECURABLE_OBJECT -->
         <Variable Name="WLAN_SECURABLE_OBJECT" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="wlan_secure_permit_list"                     Value="0" />
@@ -51,6 +115,7 @@
             </Enum>
         </Variable>
 
+        <!-- WLAN_HOSTED_NETWORK_REASON -->
         <Variable Name="WLAN_HOSTED_NETWORK_REASON" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="wlan_hosted_network_reason_success"                              Value="0" />
@@ -86,6 +151,7 @@
         </Variable>
         <Variable Name="PWLAN_HOSTED_NETWORK_REASON" Type="Pointer" Base="WLAN_HOSTED_NETWORK_REASON" />
 
+        <!-- WLAN_HOSTED_NETWORK_OPCODE -->
         <Variable Name="WLAN_HOSTED_NETWORK_OPCODE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="wlan_hosted_network_opcode_connection_settings"  Value="0" />
@@ -95,6 +161,7 @@
             </Enum>
         </Variable>
 
+        <!-- WLAN_IHV_CONTROL_TYPE -->
         <Variable Name="WLAN_IHV_CONTROL_TYPE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="wlan_ihv_control_type_service"   Value="0" />
@@ -102,6 +169,7 @@
             </Enum>
         </Variable>
 
+        <!-- WLAN_AUTOCONF_OPCODE -->
         <Variable Name="WLAN_AUTOCONF_OPCODE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="wlan_autoconf_opcode_start"                                      Value="0" />
@@ -115,7 +183,8 @@
             </Enum>
         </Variable>
 
-        <!-- TODO: Below is flag or enum -->
+        <!-- TODO: Below is flag or enum
+<!-- WLAN_INTF_OPCODE --> -->
         <Variable Name="WLAN_INTF_OPCODE" Type="Alias" Base="UINT">
             <Flag>
                 <Set Name="wlan_intf_opcode_autoconf_enabled"                           Value="1" />
@@ -139,7 +208,7 @@
         </Variable>
 
         <Variable Name="[WlanNotificationSource]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="WLAN_NOTIFICATION_SOURCE_NONE"       Value="0" />
                 <Set Name="WLAN_NOTIFICATION_SOURCE_ALL"        Value="0x0000FFFF" />
@@ -152,7 +221,7 @@
             </Flag>
         </Variable>
         <Variable Name="[WlanNotificationSource*]" Type="Pointer" Base="[WlanNotificationSource]">
-                <Display Name="PDWORD" />
+            <Display Name="PDWORD" />
         </Variable>
 
         <Variable Name="[WlanAvailableFlags]" Type="Alias" Base="DWORD">
@@ -176,7 +245,7 @@
         </Variable>
 
         <Variable Name="[WlanProfileFlags]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="WLAN_PROFILE_GROUP_POLICY"                   Value="0x00000001" />
                 <Set Name="WLAN_PROFILE_USER"                           Value="0x00000002" />
@@ -186,36 +255,18 @@
             </Flag>
         </Variable>
         <Variable Name="[WlanProfileFlags*]" Type="Pointer" Base="[WlanProfileFlags]">
-                <Display Name="DWORD*" />
+            <Display Name="DWORD*" />
         </Variable>
 
+        <Variable Name="EAP_TYPE" Type="Struct">
+            <Field Type="BYTE"  Name="type" />
+            <Field Type="DWORD" Name="dwVendorId" />
+            <Field Type="DWORD" Name="dwVendorType" />
+        </Variable>
 
-
-        <Variable Name="const PWLAN_CONNECTION_PARAMETERS"  Type="Alias"    Base="LPVOID" />
-        <Variable Name="PWLAN_INTERFACE_INFO_LIST"          Type="Alias"    Base="LPVOID" />
-        <Variable Name="PWLAN_INTERFACE_INFO_LIST*"         Type="Pointer"  Base="PWLAN_INTERFACE_INFO_LIST" />
-        <Variable Name="const PWLAN_RAW_DATA_LIST"          Type="Alias"    Base="LPVOID" />
-        <Variable Name="PWLAN_RAW_DATA_LIST*"               Type="Pointer"  Base="const PWLAN_RAW_DATA_LIST" />
-        <Variable Name="PWLAN_AVAILABLE_NETWORK_LIST"       Type="Alias"    Base="LPVOID" />
-        <Variable Name="PWLAN_AVAILABLE_NETWORK_LIST*"      Type="Pointer"  Base="PWLAN_AVAILABLE_NETWORK_LIST" />
-        <Variable Name="const PDOT11_NETWORK_LIST"          Type="Alias"    Base="LPVOID" />
-        <Variable Name="PDOT11_NETWORK_LIST*"               Type="Pointer"  Base="const PDOT11_NETWORK_LIST" />
-        <Variable Name="PWLAN_INTERFACE_CAPABILITY"         Type="Alias"    Base="LPVOID" />
-        <Variable Name="PWLAN_INTERFACE_CAPABILITY*"        Type="Pointer"  Base="PWLAN_INTERFACE_CAPABILITY" />
-        <Variable Name="const PDOT11_SSID"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="PWLAN_BSS_LIST"                     Type="Alias"    Base="LPVOID" />
-        <Variable Name="PWLAN_BSS_LIST*"                    Type="Pointer"  Base="PWLAN_BSS_LIST" />
-        <Variable Name="PWLAN_PROFILE_INFO_LIST"            Type="Alias"    Base="LPVOID" />
-        <Variable Name="PWLAN_PROFILE_INFO_LIST*"           Type="Pointer"  Base="PWLAN_PROFILE_INFO_LIST" />
-        <Variable Name="PWLAN_OPCODE_VALUE_TYPE"            Type="Pointer"  Base="WLAN_OPCODE_VALUE_TYPE" />
-        <Variable Name="PWLAN_OPCODE_VALUE_TYPE*"           Type="Pointer"  Base="PWLAN_OPCODE_VALUE_TYPE" />
-        <Variable Name="PWLAN_HOSTED_NETWORK_STATUS"        Type="Alias"    Base="LPVOID" />
-        <Variable Name="PWLAN_HOSTED_NETWORK_STATUS*"       Type="Pointer"  Base="PWLAN_HOSTED_NETWORK_STATUS" />
-        <Variable Name="WLAN_NOTIFICATION_CALLBACK"         Type="Alias"    Base="LPVOID" />
-        <Variable Name="const PWLAN_RAW_DATA"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="EAP_METHOD_TYPE"                    Type="Struct"   Size="16" />
-        <Variable Name="LPBYTE/PUCHAR"                      Type="Alias"    Base="LPBYTE">
-            <Display Name="PUCHAR" />
+        <Variable Name="EAP_METHOD_TYPE" Type="Struct">
+            <Field Type="EAP_TYPE"  Name="eapType" />
+            <Field Type="DWORD"     Name="dwAuthorId" />
         </Variable>
 
         <!-- Native Wifi -->
@@ -418,7 +469,7 @@
         <Api Name="WlanHostedNetworkSetSecondaryKey">
             <Param Type="HANDLE" Name="hClientHandle" />
             <Param Type="DWORD" Name="dwKeyLength" />
-            <Param Type="LPBYTE/PUCHAR" Name="pucKeyData" Length="dwKeyLength" />
+            <Param Type="PUCHAR" Name="pucKeyData" Length="dwKeyLength" />
             <Param Type="BOOL" Name="bIsPassPhrase" />
             <Param Type="BOOL" Name="bPersistent" />
             <Param Type="PWLAN_HOSTED_NETWORK_REASON" Name="pFailReason" />

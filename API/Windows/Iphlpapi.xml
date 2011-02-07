@@ -9,6 +9,12 @@
     <Include Filename="Headers\sockets.h.xml" />
     <Module Name="Iphlpapi.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
         <!-- Variables -->
+        <Variable Name="NET_IFINDEX"                            Type="Alias"    Base="ULONG" />
+        <Variable Name="PNET_IFINDEX"                           Type="Pointer"  Base="NET_IFINDEX" />
+        <Variable Name="IPMask"                                 Type="Alias"    Base="ULONG" />
+        <Variable Name="const CHAR*"                            Type="Alias"    Base="CHAR*" />
+
+        <!-- TODO: Structures -->
         <Variable Name="PIP_ADAPTER_ADDRESSES"                   Type="Alias"        Base="LPVOID" />
         <Variable Name="PIP_ADAPTER_INFO"                        Type="Alias"        Base="LPVOID" />
         <Variable Name="PIP_PER_ADAPTER_INFO"                    Type="Alias"        Base="LPVOID" />
@@ -17,7 +23,7 @@
         <Variable Name="PMIB_IPNETTABLE"                         Type="Alias"        Base="LPVOID" />
         <Variable Name="PNET_LUID"                               Type="Alias"        Base="LPVOID" />
         <Variable Name="const NET_LUID*"                         Type="Alias"        Base="LPVOID" />
-        <Variable Name="const CHAR*"                             Type="Alias"        Base="CHAR*" />
+        
         <Variable Name="PMIB_IFROW"                              Type="Alias"        Base="LPVOID" />
         <Variable Name="PMIB_IF_ROW2"                            Type="Alias"        Base="LPVOID" />
         <Variable Name="NETIOAPI_API"                            Type="Alias"        Base="LPVOID" />
@@ -31,7 +37,7 @@
         <Variable Name="PMIB_ICMP"                               Type="Alias"        Base="LPVOID" />
         <Variable Name="PMIB_IPSTATS"                            Type="Alias"        Base="LPVOID" />
         <Variable Name="struct sockaddr_in6*"                    Type="Alias"        Base="LPVOID" />
-        <Variable Name="IPMask"                                  Type="Alias"        Base="ULONG" />
+        
         <Variable Name="const MIB_ANYCASTIPADDRESS_ROW*"         Type="Alias"        Base="LPVOID" />
         <Variable Name="const MIB_UNICASTIPADDRESS_ROW*"         Type="Alias"        Base="LPVOID" />
         <Variable Name="PMIB_ANYCASTIPADDRESS_ROW"               Type="Alias"        Base="LPVOID" />
@@ -80,15 +86,13 @@
         <Variable Name="PMIB_UDP6TABLE"                          Type="Alias"        Base="LPVOID" />
         <Variable Name="PMIB_UDPSTATS"                           Type="Alias"        Base="LPVOID" />
         <Variable Name="PMIB_UDPTABLE"                           Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPBYTE/PULONG"                           Type="Alias"        Base="LPBYTE">
-            <Display Name="PULONG" />
-        </Variable>
 
         <Variable Name="TCPIP_OWNER_MODULE_INFO_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="TCPIP_OWNER_MODULE_INFO_BASIC" Value="0" />
             </Enum>
         </Variable>
+        
         <Variable Name="TCP_ESTATS_TYPE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="TcpConnectionEstatsSynOpts"      Value="0" />
@@ -103,6 +107,7 @@
                 <Set Name="TcpConnectionEstatsMaximum"      Value="9" />
             </Enum>
         </Variable>
+        
         <Variable Name="MIB_IF_TABLE_LEVEL" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="MibIfTableNormal"    Value="0" />
@@ -129,6 +134,7 @@
                 <Set Name="TCP_TABLE_OWNER_MODULE_ALL"          Value="8" />
             </Enum>
         </Variable>
+        
         <Variable Name="UDP_TABLE_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="UDP_TABLE_BASIC"         Value="0" />
@@ -136,8 +142,7 @@
                 <Set Name="UDP_TABLE_OWNER_MODULE"  Value="2" />
             </Enum>
         </Variable>
-        <Variable Name="NET_IFINDEX"                             Type="Alias"        Base="ULONG" />
-        <Variable Name="PNET_IFINDEX"                            Type="Pointer"        Base="NET_IFINDEX" />
+        
         <Variable Name="ADDRESS_FAMILY" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="AF_UNSPEC"           Value="0" />
@@ -174,12 +179,6 @@
                 <Set Name="AF_BTH"              Value="32" />
             </Enum>
         </Variable>
-        <Variable Name="ADDRESS_FAMILY(ULONG)" Type="Alias" Base="ADDRESS_FAMILY">
-            <Display Name="ULONG" />
-        </Variable>
-        <Variable Name="ADDRESS_FAMILY(DWORD)" Type="Alias" Base="ADDRESS_FAMILY">
-            <Display Name="DWORD" />
-        </Variable>
 
         <Variable Name="[GetAdaptersAddressesFlags]" Type="Alias" Base="ULONG">
             <Display Name="ULONG" />
@@ -206,7 +205,7 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="GetAdaptersAddresses">
-            <Param Type="ADDRESS_FAMILY(ULONG)" Name="Family" />
+            <Param Type="ADDRESS_FAMILY" Display="ULONG" Name="Family" />
             <Param Type="[GetAdaptersAddressesFlags]" Name="Flags" />
             <Param Type="PVOID" Name="Reserved" />
             <Param Type="PIP_ADAPTER_ADDRESSES" Name="AdapterAddresses" />
@@ -272,7 +271,7 @@
         <Api Name="SendARP">
             <Param Type="IPAddr" Name="DestIP" />
             <Param Type="IPAddr" Name="SrcIP" />
-            <Param Type="LPBYTE/PULONG" Name="pMacAddr" PostLength="PhyAddrLen" />
+            <Param Type="PULONG" Name="pMacAddr" PostLength="PhyAddrLen" />
             <Param Type="PULONG" Name="PhyAddrLen" />
             <Return Type="DWORD" />
             <Success Return="Equal" Value="0" />
@@ -883,7 +882,7 @@
             <Param Type="PVOID" Name="pTcpTable" PostLength="pdwSize" />
             <Param Type="PDWORD" Name="pdwSize" />
             <Param Type="BOOL" Name="bOrder" />
-            <Param Type="ADDRESS_FAMILY(ULONG)" Name="ulAf" />
+            <Param Type="ADDRESS_FAMILY" Display="ULONG" Name="ulAf" />
             <Param Type="TCP_TABLE_CLASS" Name="TableClass" />
             <Param Type="ULONG" Name="Reserved" />
             <Return Type="DWORD" />
@@ -893,7 +892,7 @@
             <Param Type="PVOID" Name="pUdpTable" PostLength="pdwSize" />
             <Param Type="PDWORD" Name="pdwSize" />
             <Param Type="BOOL" Name="bOrder" />
-            <Param Type="ADDRESS_FAMILY(ULONG)" Name="ulAf" />
+            <Param Type="ADDRESS_FAMILY" Display="ULONG" Name="ulAf" />
             <Param Type="UDP_TABLE_CLASS" Name="TableClass" />
             <Param Type="ULONG" Name="Reserved" />
             <Return Type="DWORD" />
@@ -968,7 +967,7 @@
         </Api>
         <Api Name="GetTcpStatisticsEx">
             <Param Type="PMIB_TCPSTATS" Name="pStats" />
-            <Param Type="ADDRESS_FAMILY(DWORD)" Name="dwFamily" />
+            <Param Type="ADDRESS_FAMILY" Display="DWORD" Name="dwFamily" />
             <Return Type="DWORD" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -1039,7 +1038,7 @@
         </Api>
         <Api Name="GetUdpStatisticsEx">
             <Param Type="PMIB_UDPSTATS" Name="pStats" />
-            <Param Type="ADDRESS_FAMILY(DWORD)" Name="dwFamily" />
+            <Param Type="ADDRESS_FAMILY" Display="DWORD" Name="dwFamily" />
             <Return Type="DWORD" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -1055,7 +1054,7 @@
             <Param Type="BOOL" Name="bOrder" />
             <Param Type="HANDLE" Name="hHeap" />
             <Param Type="DWORD" Name="dwFlags" />
-            <Param Type="ADDRESS_FAMILY(DWORD)" Name="dwFamily" />
+            <Param Type="ADDRESS_FAMILY" Display="DWORD" Name="dwFamily" />
             <Return Type="DWORD" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -1064,7 +1063,7 @@
             <Param Type="BOOL" Name="bOrder" />
             <Param Type="HANDLE" Name="hHeap" />
             <Param Type="DWORD" Name="dwFlags" />
-            <Param Type="ADDRESS_FAMILY(DWORD)" Name="dwFamily" />
+            <Param Type="ADDRESS_FAMILY" Display="DWORD" Name="dwFamily" />
             <Return Type="DWORD" />
             <Success Return="Equal" Value="0" />
         </Api>

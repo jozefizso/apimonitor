@@ -6,16 +6,83 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Cryptnet.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        <!-- Parameters -->
-        <Variable Name="PCRYPT_URL_ARRAY"            Type="Alias" Base="LPVOID" />
-        <Variable Name="PCRYPT_URL_INFO"             Type="Alias" Base="LPVOID" />
+        <!-- Variables -->
         <Variable Name="HCRYPTASYNC"                 Type="Alias" Base="HANDLE" />
-        <Variable Name="PCRYPT_CREDENTIALS"          Type="Alias" Base="LPVOID" />
-        <Variable Name="PCRYPT_RETRIEVE_AUX_INFO"    Type="Alias" Base="LPVOID" />
 
-        <!-- Flags -->
+        <!-- CRYPT_URL_ARRAY -->
+        <Variable Name="CRYPT_URL_ARRAY" Type="Struct">
+            <Field Type="DWORD"     Name="cUrl" />
+            <Field Type="LPWSTR*"	Name="rgwszUrl" />
+        </Variable>
+        <Variable Name="PCRYPT_URL_ARRAY" Type="Pointer" Base="CRYPT_URL_ARRAY" />
+
+        <!-- CRYPT_URL_INFO -->
+        <Variable Name="CRYPT_URL_INFO" Type="Struct">
+            <Field Type="DWORD"   	Name="cbSize" />
+            <Field Type="DWORD"   	Name="dwSyncDeltaTime" />
+            <Field Type="DWORD"   	Name="cGroup" />
+            <Field Type="DWORD*"   	Name="rgcGroupEntry" />
+        </Variable>
+        <Variable Name="PCRYPT_URL_INFO" Type="Pointer" Base="CRYPT_URL_INFO" />
+
+        <!-- CRYPT_CREDENTIALS -->
+        <Variable Name="CRYPT_CREDENTIALS" Type="Struct">
+            <Field Type="DWORD"  	Name="cbSize" />
+            <Field Type="LPCSTR" 	Name="pszCredentialsOid" />
+            <Field Type="LPVOID" 	Name="pvCredentials" />
+        </Variable>
+        <Variable Name="PCRYPT_CREDENTIALS" Type="Pointer" Base="CRYPT_CREDENTIALS" />
+
+        <!-- CRYPTNET_URL_CACHE_PRE_FETCH_INFO -->
+        <Variable Name="CRYPTNET_URL_CACHE_PRE_FETCH_INFO" Type="Struct">
+            <Field Type="DWORD"     Name="cbSize" />
+            <Field Type="DWORD"	    Name="dwObjectType" />
+            <Field Type="DWORD"	    Name="dwError" />
+            <Field Type="DWORD"	    Name="dwReserved" />
+            <Field Type="FILETIME"	Name="ThisUpdateTime" />
+            <Field Type="FILETIME"	Name="NextUpdateTime" />
+            <Field Type="FILETIME"	Name="PublishTime" />
+        </Variable>
+        <Variable Name="PCRYPTNET_URL_CACHE_PRE_FETCH_INFO" Type="Pointer" Base="CRYPTNET_URL_CACHE_PRE_FETCH_INFO" />
+
+        <!-- CRYPTNET_URL_CACHE_FLUSH_INFO -->
+        <Variable Name="CRYPTNET_URL_CACHE_FLUSH_INFO" Type="Struct">
+            <Field Type="DWORD"     Name="cbSize" />
+            <Field Type="DWORD"     Name="dwExemptSeconds" />
+            <Field Type="FILETIME"  Name="ExpireTime" />
+        </Variable>
+        <Variable Name="PCRYPTNET_URL_CACHE_FLUSH_INFO" Type="Pointer" Base="CRYPTNET_URL_CACHE_FLUSH_INFO" />
+
+        <!-- CRYPTNET_URL_CACHE_RESPONSE_INFO -->
+        <Variable Name="CRYPTNET_URL_CACHE_RESPONSE_INFO" Type="Struct">
+            <Field Type="DWORD"         Name="cbSize" />
+            <Field Type="WORD"          Name="wResponseType" />
+            <Field Type="WORD"          Name="wResponseFlags" />
+            <Field Type="FILETIME"      Name="LastModifiedTime" />
+            <Field Type="DWORD"         Name="dwMaxAge" />
+            <Field Type="LPCWSTR"       Name="pwszETag" />
+            <Field Type="DWORD"         Name="dwProxyId" />
+        </Variable>
+        <Variable Name="PCRYPTNET_URL_CACHE_RESPONSE_INFO"  Type="Pointer" Base="CRYPTNET_URL_CACHE_RESPONSE_INFO" />
+        <Variable Name="PCRYPTNET_URL_CACHE_RESPONSE_INFO*" Type="Pointer" Base="PCRYPTNET_URL_CACHE_RESPONSE_INFO" />
+
+        <!-- CRYPT_RETRIEVE_AUX_INFO -->
+        <Variable Name="CRYPT_RETRIEVE_AUX_INFO" Type="Struct">
+            <Field Type="DWORD"                               	Name="cbSize" />
+            <Field Type="FILETIME*"                            	Name="pLastSyncTime" />
+            <Field Type="DWORD"                               	Name="dwMaxUrlRetrievalByteCount" />
+            <Field Type="PCRYPTNET_URL_CACHE_PRE_FETCH_INFO"  	Name="pPreFetchInfo" />
+            <Field Type="PCRYPTNET_URL_CACHE_FLUSH_INFO"      	Name="pFlushInfo" />
+            <Field Type="PCRYPTNET_URL_CACHE_RESPONSE_INFO*"   	Name="ppResponseInfo" />
+            <Field Type="LPWSTR"                              	Name="pwszCacheFileNamePrefix" />
+            <Field Type="LPFILETIME"                          	Name="pftCacheResync" />
+            <Field Type="BOOL"                                	Name="fProxyCacheRetrieval" />
+            <Field Type="DWORD"                               	Name="dwHttpStatusCode" />
+        </Variable>
+        <Variable Name="PCRYPT_RETRIEVE_AUX_INFO" Type="Pointer" Base="CRYPT_RETRIEVE_AUX_INFO" />
+
         <Variable Name="[CryptRetrievalFlags]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="CRYPT_RETRIEVE_MULTIPLE_OBJECTS"         Value="0x00000001" />
                 <Set Name="CRYPT_CACHE_ONLY_RETRIEVAL"              Value="0x00000002" />
@@ -37,8 +104,9 @@
                 <Set Name="CRYPT_VERIFY_DATA_HASH"                  Value="0x00000040" />
             </Flag>
         </Variable>
+        
         <Variable Name="[CryptGetObjectUrlFlags]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="CRYPT_GET_URL_FROM_PROPERTY"             Value="0x00000001" />
                 <Set Name="CRYPT_GET_URL_FROM_EXTENSION"            Value="0x00000002" />
@@ -46,15 +114,16 @@
                 <Set Name="CRYPT_GET_URL_FROM_AUTH_ATTRIBUTE"       Value="0x00000008" />
             </Flag>
         </Variable>
+        
         <!-- Cryptography -->
         <Category Name="Security/Cryptography/Remote Object Retrieval" />
         <Api Name="CryptGetObjectUrl">
             <Param Type="LPCSTR" Name="pszUrlOid" />
             <Param Type="LPVOID" Name="pvPara" />
             <Param Type="[CryptGetObjectUrlFlags]" Name="dwFlags" />
-            <Param Type="PCRYPT_URL_ARRAY" Name="pUrlArray" PostLength="pcbUrlArray" />
+            <Param Type="PCRYPT_URL_ARRAY" Name="pUrlArray" Disabled_PostLength="pcbUrlArray" />
             <Param Type="DWORD*" Name="pcbUrlArray" />
-            <Param Type="PCRYPT_URL_INFO" Name="pUrlInfo" PostLength="pcbUrlInfo" />
+            <Param Type="PCRYPT_URL_INFO" Name="pUrlInfo" Disabled_PostLength="pcbUrlInfo" />
             <Param Type="DWORD*" Name="pcbUrlInfo" />
             <Param Type="LPVOID" Name="pvReserved" />
             <Return Type="BOOL" />

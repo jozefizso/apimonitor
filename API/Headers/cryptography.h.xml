@@ -6,6 +6,26 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Headers>
+        <!-- Variables -->
+        <Variable Name="HCRYPTPROV"                         Type="Alias"    Base="ULONG_PTR" />
+        <Variable Name="HCRYPTPROV*"                        Type="Pointer"  Base="HCRYPTPROV" />
+        <Variable Name="HCRYPTHASH"                         Type="Alias"    Base="ULONG_PTR" />
+        <Variable Name="HCRYPTHASH*"                        Type="Pointer"  Base="HCRYPTHASH" />
+        <Variable Name="HCRYPTKEY"                          Type="Alias"    Base="ULONG_PTR" />
+        <Variable Name="HCRYPTKEY*"                         Type="Pointer"  Base="HCRYPTKEY" />
+        <Variable Name="HCERTSTORE"                         Type="Alias"    Base="void*" />
+        <Variable Name="HCERTSTORE*"                        Type="Pointer"  Base="HCERTSTORE" />
+        <Variable Name="BCRYPT_KEY_HANDLE"                  Type="Alias"    Base="PVOID" />
+        <Variable Name="BCRYPT_KEY_HANDLE*"                 Type="Pointer"  Base="BCRYPT_KEY_HANDLE" />
+        <Variable Name="HCRYPTPROV_OR_NCRYPT_KEY_HANDLE"    Type="Alias"    Base="ULONG_PTR" />
+        
+        <!-- TODO: Structures -->
+        <Variable Name="SIGNER_SUBJECT_INFO*"       Type="Alias"    Base="LPVOID" />
+        <Variable Name="SIGNER_CERT*"               Type="Alias"    Base="LPVOID" />
+        <Variable Name="SIGNER_SIGNATURE_INFO*"     Type="Alias"    Base="LPVOID" />
+        <Variable Name="SIGNER_PROVIDER_INFO*"      Type="Alias"    Base="LPVOID" />
+
+        <!-- ALG_ID -->
         <Variable Name="ALG_ID" Type="Alias" Base="unsigned int">
             <Enum>
                 <Set Name="CALG_MD2"                    Value="0x00008001" />
@@ -58,6 +78,7 @@
             </Enum>
         </Variable>
         <Variable Name="ALG_ID*" Type="Pointer" Base="ALG_ID" />
+
         <Variable Name="[CryptAcquireContextFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -69,6 +90,7 @@
                 <Set Name="CRYPT_DEFAULT_CONTAINER_OPTIONAL"    Value="0x00000080" />
             </Flag>
         </Variable>
+
         <Variable Name="[CryptProv]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>
@@ -100,18 +122,21 @@
         <Variable Name="[CryptProv*]" Type="Pointer" Base="[CryptProv]">
             <Display Name="DWORD*" />
         </Variable>
+
         <Variable Name="[CryptCreateHashFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>
                 <Set Name="CRYPT_SECRETDIGEST"  Value="0x00000001" />
             </Enum>
         </Variable>
+
         <Variable Name="[CryptHashDataFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>
                 <Set Name="CRYPT_USERDATA"  Value="1" />
             </Enum>
         </Variable>
+
         <Variable Name="[CryptBlobType]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>
@@ -125,6 +150,7 @@
                 <Set Name="KEYSTATEBLOB"            Value="0xC" />
             </Enum>
         </Variable>
+
         <Variable Name="[CryptExportKeyFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -135,6 +161,7 @@
                 <Set Name="CRYPT_BLOB_VER3"         Value="0x00000080" />
             </Flag>
         </Variable>
+
         <Variable Name="[CryptKeyParam]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>
@@ -182,6 +209,7 @@
                 <Set Name="KP_GET_USE_COUNT"        Value="42" />
             </Enum>
         </Variable>
+
         <Variable Name="[CryptImportKeyFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -192,6 +220,7 @@
                 <Set Name="CRYPT_IPSEC_HMAC_KEY"    Value="0x00000100" />
             </Flag>
         </Variable>
+
         <Variable Name="[CryptSignFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -200,6 +229,7 @@
                 <Set Name="CRYPT_X931_FORMAT"       Value="0x00000004" />
             </Flag>
         </Variable>
+
         <Variable Name="[CryptKeySpec]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>
@@ -207,6 +237,7 @@
                 <Set Name="AT_SIGNATURE"            Value="2" />
             </Enum>
         </Variable>
+
         <Variable Name="[CryptSetProvParam]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>
@@ -230,6 +261,7 @@
                 <Set Name="PP_SECURE_SIGNATURE_PIN"         Value="48" />
             </Enum>
         </Variable>
+
         <Variable Name="[CryptGetProvParam]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>
@@ -270,6 +302,7 @@
                 <Set Name="PP_ROOT_CERTSTORE"               Value="46" />
             </Enum>
         </Variable>
+
         <Variable Name="[CryptHashParam]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>
@@ -282,32 +315,150 @@
             </Enum>
         </Variable>
 
-        <Variable Name="HCRYPTPROV"         Type="Alias"        Base="ULONG_PTR" />
-        <Variable Name="HCRYPTPROV*"        Type="Pointer"      Base="HCRYPTPROV" />
+        <!-- DATA_BLOB -->
+        <Variable Name="DATA_BLOB" Type="Struct">
+            <Field Type="DWORD" Name="cbData" />
+            <Field Type="BYTE*" Name="pbData" Length="cbData" />
+        </Variable>
+        <Variable Name="DATA_BLOB*"             Type="Pointer"  Base="DATA_BLOB" />
+        <Variable Name="CRYPT_INTEGER_BLOB"     Type="Alias"    Base="DATA_BLOB" />
+        <Variable Name="PCRYPT_INTEGER_BLOB"    Type="Pointer"  Base="CRYPT_INTEGER_BLOB" />
+        <Variable Name="CRYPT_DIGEST_BLOB"      Type="Alias"    Base="DATA_BLOB" />
+        <Variable Name="CRYPT_DER_BLOB"         Type="Alias"    Base="DATA_BLOB" />
+        <Variable Name="PCRYPT_DER_BLOB"        Type="Pointer"  Base="CRYPT_DER_BLOB" />
+        <Variable Name="CERT_NAME_BLOB"         Type="Alias"    Base="DATA_BLOB" />
+        <Variable Name="PCERT_NAME_BLOB"        Type="Pointer"  Base="CERT_NAME_BLOB" />
+        <Variable Name="CRYPT_OBJID_BLOB"       Type="Alias"    Base="DATA_BLOB" />
+        <Variable Name="PCRYPT_ATTR_BLOB"       Type="Pointer"  Base="DATA_BLOB" />
+        <Variable Name="CERT_RDN_VALUE_BLOB"    Type="Alias"    Base="DATA_BLOB" />
+        <Variable Name="PCERT_RDN_VALUE_BLOB"   Type="Pointer"  Base="CERT_RDN_VALUE_BLOB" />
+        <Variable Name="CRYPT_HASH_BLOB"        Type="Alias"    Base="DATA_BLOB" />
+        <Variable Name="const CRYPT_HASH_BLOB*" Type="Pointer"  Base="CRYPT_HASH_BLOB" />
+        <Variable Name="CRYPT_DATA_BLOB"        Type="Alias"    Base="DATA_BLOB" />
+        <Variable Name="PCRYPT_DATA_BLOB"       Type="Pointer"  Base="CRYPT_DATA_BLOB" />
+        <Variable Name="CRYPT_DATA_BLOB*"       Type="Pointer"  Base="PCRYPT_DATA_BLOB" />
+        <Variable Name="CRYPT_ATTR_BLOB"        Type="Alias"    Base="DATA_BLOB" />
 
-        <Variable Name="HCRYPTHASH"         Type="Alias"        Base="ULONG_PTR" />
-        <Variable Name="HCRYPTHASH*"        Type="Pointer"      Base="HCRYPTHASH" />
+        <!-- BCryptBuffer -->
+        <Variable Name="BCryptBuffer" Type="Struct">
+            <Field Type="ULONG"   	Name="cbBuffer" />
+            <Field Type="ULONG"   	Name="BufferType" />
+            <Field Type="PVOID"   	Name="pvBuffer" />
+        </Variable>
+        <Variable Name="PBCryptBuffer" Type="Pointer" Base="BCryptBuffer" />
 
-        <Variable Name="HCRYPTKEY"          Type="Alias"        Base="ULONG_PTR" />
-        <Variable Name="HCRYPTKEY*"         Type="Pointer"      Base="HCRYPTKEY" />
+        <!-- BCryptBufferDesc -->
+        <Variable Name="BCryptBufferDesc" Type="Struct">
+            <Field Type="ULONG"   	    Name="ulVersion" />
+            <Field Type="ULONG"         Name="cBuffers" />
+            <Field Type="PBCryptBuffer" Name="pBuffers" />
+        </Variable>
+        <Variable Name="BCryptBufferDesc*" Type="Pointer" Base="BCryptBufferDesc" />
 
-        <Variable Name="HCERTSTORE"         Type="Alias"        Base="LPVOID" />
-        <Variable Name="HCERTSTORE*"        Type="Pointer"      Base="HCERTSTORE" />
+        <!-- CRYPT_ATTRIBUTE_TYPE_VALUE -->
+        <Variable Name="CRYPT_ATTRIBUTE_TYPE_VALUE" Type="Struct">
+            <Field Type="LPSTR"             Name="pszObjId" />
+            <Field Type="CRYPT_OBJID_BLOB"  Name="Value" />
+        </Variable>
 
-        <Variable Name="PCCERT_CONTEXT"     Type="Alias"        Base="LPVOID" />
-        <Variable Name="PCCERT_CONTEXT*"    Type="Pointer"      Base="PCCERT_CONTEXT" />
+        <!-- CRYPT_ALGORITHM_IDENTIFIER -->
+        <Variable Name="CRYPT_ALGORITHM_IDENTIFIER" Type="Struct">
+            <Field Type="LPSTR"             Name="pszObjId" />
+            <Field Type="CRYPT_OBJID_BLOB"  Name="Parameters" />
+        </Variable>
+        <Variable Name="PCRYPT_ALGORITHM_IDENTIFIER" Type="Pointer" Base="CRYPT_ALGORITHM_IDENTIFIER" />
 
-        <Variable Name="BCRYPT_KEY_HANDLE"  Type="Alias"        Base="PVOID" />
-        <Variable Name="BCRYPT_KEY_HANDLE*" Type="Pointer"      Base="BCRYPT_KEY_HANDLE" />
+        <!-- SIP_INDIRECT_DATA -->
+        <Variable Name="SIP_INDIRECT_DATA" Type="Struct">
+            <Field Type="CRYPT_ATTRIBUTE_TYPE_VALUE"    	Name="Data" />
+            <Field Type="CRYPT_ALGORITHM_IDENTIFIER"    	Name="DigestAlgorithm" />
+            <Field Type="CRYPT_HASH_BLOB"               	Name="Digest" />
+        </Variable>
+        <Variable Name="SIP_INDIRECT_DATA*" Type="Pointer" Base="SIP_INDIRECT_DATA" />
 
-        <Variable Name="HCRYPTPROV_OR_NCRYPT_KEY_HANDLE"    Type="Alias"        Base="ULONG_PTR" />
+        <!-- CERT_EXTENSION -->
+        <Variable Name="CERT_EXTENSION" Type="Struct">
+            <Field Type="LPSTR"             Name="pszObjId" />
+            <Field Type="BOOL"              Name="fCritical" />
+            <Field Type="CRYPT_OBJID_BLOB"  Name="Value" />
+        </Variable>
+        <Variable Name="PCERT_EXTENSION"    Type="Pointer"  Base="CERT_EXTENSION" />
+        <Variable Name="CERT_EXTENSION[]"   Type="Pointer"  Base="CERT_EXTENSION" />
 
-        <Variable Name="SIGNER_CONTEXT*"            Type="Alias"    Base="LPVOID" />
-        <Variable Name="SIGNER_CONTEXT**"           Type="Pointer"  Base="SIGNER_CONTEXT*" />
-        <Variable Name="SIGNER_SUBJECT_INFO*"       Type="Alias"    Base="LPVOID" />
-        <Variable Name="SIGNER_CERT*"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="SIGNER_SIGNATURE_INFO*"     Type="Alias"    Base="LPVOID" />
-        <Variable Name="SIGNER_PROVIDER_INFO*"      Type="Alias"    Base="LPVOID" />
-        <Variable Name="PCRYPT_ATTRIBUTES"          Type="Alias"    Base="LPVOID" />
+        <!-- CERT_EXTENSIONS -->
+        <Variable Name="CERT_EXTENSIONS" Type="Struct">
+            <Field Type="DWORD"           	Name="cExtension" />
+            <Field Type="PCERT_EXTENSION"   Name="rgExtension" />
+        </Variable>
+        <Variable Name="PCERT_EXTENSIONS" Type="Pointer" Base="CERT_EXTENSIONS" />
+
+        <!-- CRYPT_BIT_BLOB -->
+        <Variable Name="CRYPT_BIT_BLOB" Type="Struct">
+            <Field Type="DWORD"   	Name="cbData" />
+            <Field Type="BYTE*"    	Name="pbData" />
+            <Field Type="DWORD"   	Name="cUnusedBits" />
+        </Variable>
+
+        <!-- CERT_PUBLIC_KEY_INFO -->
+        <Variable Name="CERT_PUBLIC_KEY_INFO" Type="Struct">
+            <Field Type="CRYPT_ALGORITHM_IDENTIFIER"    Name="Algorithm" />
+            <Field Type="CRYPT_BIT_BLOB"                Name="PublicKey" />
+        </Variable>
+        <Variable Name="PCERT_PUBLIC_KEY_INFO" Type="Pointer" Base="CERT_PUBLIC_KEY_INFO" />
+
+        <!-- CERT_INFO -->
+        <Variable Name="CERT_INFO" Type="Struct">
+            <Field Type="DWORD"                       	Name="dwVersion" />
+            <Field Type="CRYPT_INTEGER_BLOB"          	Name="SerialNumber" />
+            <Field Type="CRYPT_ALGORITHM_IDENTIFIER"  	Name="SignatureAlgorithm" />
+            <Field Type="CERT_NAME_BLOB"              	Name="Issuer" />
+            <Field Type="FILETIME"                    	Name="NotBefore" />
+            <Field Type="FILETIME"                    	Name="NotAfter" />
+            <Field Type="CERT_NAME_BLOB"              	Name="Subject" />
+            <Field Type="CERT_PUBLIC_KEY_INFO"        	Name="SubjectPublicKeyInfo" />
+            <Field Type="CRYPT_BIT_BLOB"              	Name="IssuerUniqueId" />
+            <Field Type="CRYPT_BIT_BLOB"              	Name="SubjectUniqueId" />
+            <Field Type="DWORD"                       	Name="cExtension" />
+            <Field Type="PCERT_EXTENSION"             	Name="rgExtension" />
+        </Variable>
+        <Variable Name="CERT_INFO*" Type="Pointer" Base="CERT_INFO" />
+        <Variable Name="PCERT_INFO" Type="Pointer" Base="CERT_INFO" />
+
+        <!-- CERT_CONTEXT -->
+        <Variable Name="CERT_CONTEXT" Type="Struct">
+            <Field Type="DWORD"         Name="dwCertEncodingType" />
+            <Field Type="BYTE*"         Name="pbCertEncoded" />
+            <Field Type="DWORD"         Name="cbCertEncoded" />
+            <Field Type="PCERT_INFO"    Name="pCertInfo" />
+            <Field Type="HCERTSTORE"    Name="hCertStore" />
+        </Variable>
+        <Variable Name="PCCERT_CONTEXT"  Type="Pointer" Base="CERT_CONTEXT" />
+        <Variable Name="PCCERT_CONTEXT*" Type="Pointer" Base="PCCERT_CONTEXT" />
+
+        <!-- SIGNER_CONTEXT -->
+        <Variable Name="SIGNER_CONTEXT" Type="Struct">
+            <Field Type="DWORD" 	Name="cbSize" />
+            <Field Type="DWORD" 	Name="cbBlob" />
+            <Field Type="BYTE*"  	Name="pbBlob" Length="cbBlob" />
+        </Variable>
+        <Variable Name="SIGNER_CONTEXT*"    Type="Pointer" Base="SIGNER_CONTEXT" />
+        <Variable Name="SIGNER_CONTEXT**"   Type="Pointer"  Base="SIGNER_CONTEXT*" />
+
+        <!-- CRYPT_ATTRIBUTE -->
+        <Variable Name="CRYPT_ATTRIBUTE" Type="Struct">
+            <Field Type="LPSTR"             Name="pszObjId" />
+            <Field Type="DWORD"             Name="cValue" />
+            <Field Type="PCRYPT_ATTR_BLOB"  Name="rgValue" />
+        </Variable>
+        <Variable Name="PCRYPT_ATTRIBUTE"   Type="Pointer"  Base="CRYPT_ATTRIBUTE" />
+        <Variable Name="CRYPT_ATTRIBUTE[]"  Type="Pointer"    Base="CRYPT_ATTRIBUTE" />
+
+        <!-- CRYPT_ATTRIBUTES -->
+        <Variable Name="CRYPT_ATTRIBUTES" Type="Struct">
+            <Field Type="DWORD"             Name="cAttr" />
+            <Field Type="PCRYPT_ATTRIBUTE"  Name="rgAttr" />
+        </Variable>
+        <Variable Name="PCRYPT_ATTRIBUTES" Type="Pointer" Base="CRYPT_ATTRIBUTES" />
+
     </Headers>
 </ApiMonitor>

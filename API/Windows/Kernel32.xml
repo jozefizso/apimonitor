@@ -725,34 +725,6 @@
             </Flag>
         </Variable>
 
-        <Variable Name="[ProcessCreationFlags]" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
-            <Flag>
-                <Set Name="CREATE_BREAKAWAY_FROM_JOB"           Value="0x01000000" />
-                <Set Name="CREATE_DEFAULT_ERROR_MODE "          Value="0x04000000" />
-                <Set Name="CREATE_NEW_CONSOLE"                  Value="0x00000010" />
-                <Set Name="CREATE_NEW_PROCESS_GROUP"            Value="0x00000200" />
-                <Set Name="CREATE_NO_WINDOW"                    Value="0x08000000" />
-                <Set Name="CREATE_PROTECTED_PROCESS"            Value="0x00040000" />
-                <Set Name="CREATE_PRESERVE_CODE_AUTHZ_LEVEL"    Value="0x02000000" />
-                <Set Name="CREATE_SEPARATE_WOW_VDM"             Value="0x00000800" />
-                <Set Name="CREATE_SHARED_WOW_VDM"               Value="0x00001000" />
-                <Set Name="CREATE_SUSPENDED"                    Value="0x00000004" />
-                <Set Name="CREATE_UNICODE_ENVIRONMENT"          Value="0x00000400" />
-                <Set Name="DEBUG_ONLY_THIS_PROCESS"             Value="0x00000002" />
-                <Set Name="DEBUG_PROCESS"                       Value="0x00000001" />
-                <Set Name="DETACHED_PROCESS"                    Value="0x00000008" />
-                <Set Name="EXTENDED_STARTUPINFO_PRESENT"        Value="0x00080000" />
-                <Set Name="INHERIT_PARENT_AFFINITY"             Value="0x00010000" />
-                <Set Name="ABOVE_NORMAL_PRIORITY_CLASS"         Value="0x00008000" />
-                <Set Name="BELOW_NORMAL_PRIORITY_CLASS"         Value="0x00004000" />
-                <Set Name="HIGH_PRIORITY_CLASS"                 Value="0x00000080" />
-                <Set Name="IDLE_PRIORITY_CLASS"                 Value="0x00000040" />
-                <Set Name="NORMAL_PRIORITY_CLASS"               Value="0x00000020" />
-                <Set Name="REALTIME_PRIORITY_CLASS"             Value="0x00000100" />
-            </Flag>
-        </Variable>
-
         <Variable Name="[Protection]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -1601,13 +1573,74 @@
                 <Set Name="COMMON_LVB_SBCSDBCS"        		Value="0x0300" />
             </Flag>
         </Variable>
-        <Variable Name="[ConsoleAttribute*/LPDWORD]" Type="Pointer" Base="[ConsoleAttribute]">
+        <Variable Name="[ConsoleAttribute*]" Type="Pointer" Base="[ConsoleAttribute]">
             <Display Name="LPWORD" />
         </Variable>
-        <Variable Name="[ConsoleAttribute*/const WORD*]" Type="Pointer" Base="[ConsoleAttribute]">
-            <Display Name="const WORD*" />
+
+        <Variable Name="[FileType]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="FILE_TYPE_UNKNOWN"   Value="0x0000" />
+                <Set Name="FILE_TYPE_DISK"      Value="0x0001" />
+                <Set Name="FILE_TYPE_CHAR"      Value="0x0002" />
+                <Set Name="FILE_TYPE_PIPE"      Value="0x0003" />
+                <Set Name="FILE_TYPE_REMOTE"    Value="0x8000" />
+            </Enum>
         </Variable>
 
+        <Variable Name="POWER_REQUEST_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="PowerRequestDisplayRequired"     Value="0" />
+                <Set Name="PowerRequestSystemRequired"      Value="1" />
+                <Set Name="PowerRequestAwayModeRequired"    Value="2" />
+            </Enum>
+        </Variable>
+
+        <Variable Name="LATENCY_TIME" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="LT_DONT_CARE"        Value="0" />
+                <Set Name="LT_LOWEST_LATENCY"   Value="1" />
+            </Enum>
+        </Variable>
+
+        <Variable Name="COMPUTER_NAME_FORMAT" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="ComputerNameNetBIOS"                     Value="0" />
+                <Set Name="ComputerNameDnsHostname"                 Value="1" />
+                <Set Name="ComputerNameDnsDomain"                   Value="2" />
+                <Set Name="ComputerNameDnsFullyQualified"           Value="3" />
+                <Set Name="ComputerNamePhysicalNetBIOS"             Value="4" />
+                <Set Name="ComputerNamePhysicalDnsHostname"         Value="5" />
+                <Set Name="ComputerNamePhysicalDnsDomain"           Value="6" />
+                <Set Name="ComputerNamePhysicalDnsFullyQualified"   Value="7" />
+            </Enum>
+        </Variable>
+
+        <!-- COORD -->
+        <Variable Name="COORD" Type="Struct">
+            <Field Type="SHORT" Name="X" />
+            <Field Type="SHORT" Name="Y" />
+        </Variable>
+        <Variable Name="PCOORD" Type="Pointer" Base="COORD" />
+
+        <!-- SMALL_RECT -->
+        <Variable Name="SMALL_RECT" Type="Struct">
+            <Field Type="SHORT" Name="Left" />
+            <Field Type="SHORT" Name="Top" />
+            <Field Type="SHORT" Name="Right" />
+            <Field Type="SHORT" Name="Bottom" />
+        </Variable>
+        <Variable Name="PSMALL_RECT"        Type="Pointer" Base="SMALL_RECT" />
+        <Variable Name="const SMALL_RECT*"  Type="Pointer" Base="SMALL_RECT" />
+
+        <Variable Name="CHAR_INFO" Type="Struct">
+            <Field Type="SHORT" Display="union" Name="Char" />
+            <Field Type="[ConsoleAttribute]" Name="Attributes" />
+        </Variable>
+        <Variable Name="PCHAR_INFO"         Type="Pointer" Base="CHAR_INFO" />
+        <Variable Name="const CHAR_INFO*"   Type="Pointer" Base="CHAR_INFO" />
+
+        <!-- TODO: Structures -->
         <Variable Name="PCONTEXT_EX"                                Type="Alias"    Base="LPVOID" />
         <Variable Name="PCONTEXT_EX*"                               Type="Pointer"  Base="PCONTEXT_EX" />
         <Variable Name="LPCONTEXT"                                  Type="Alias"    Base="LPVOID" />
@@ -1616,31 +1649,390 @@
         <Variable Name="PWOW64_LDT_ENTRY"                           Type="Alias"    Base="LPVOID" />
         <Variable Name="LPLDT_ENTRY"                                Type="Alias"    Base="LPVOID" />
         <Variable Name="LPDEBUG_EVENT"                              Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPHEAPENTRY32"                              Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPHEAPLIST32"                               Type="Alias"    Base="LPVOID" />
         <Variable Name="LPMODULEENTRY32"                            Type="Alias"    Base="LPVOID" />
         <Variable Name="LPPROCESSENTRY32"                           Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPTHREADENTRY32"                            Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPFILE_ID_DESCRIPTOR"                       Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPPROCESS_HEAP_ENTRY"                       Type="Alias"    Base="LPVOID"/>
+        <Variable Name="PGROUP_AFFINITY"                            Type="Alias"    Base="LPVOID" />
+        <Variable Name="const GROUP_AFFINITY*"                      Type="Alias"    Base="PGROUP_AFFINITY" />
+        <Variable Name="PTP_CALLBACK_ENVIRON"                       Type="Alias"    Base="LPVOID" />
+        <Variable Name="PCRITICAL_SECTION"                          Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSYSTEM_LOGICAL_PROCESSOR_INFORMATION"      Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX"   Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPDCB"                                      Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPCOMSTAT"                                  Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPCOMMCONFIG"                               Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPCOMMPROP"                                 Type="Alias"    Base="LPVOID" />
+        <Variable Name="PCONSOLE_SCREEN_BUFFER_INFOEX"              Type="Alias"    Base="LPVOID" />
+        <Variable Name="PCONSOLE_FONT_INFOEX"                       Type="Alias"    Base="LPVOID" />
+        <Variable Name="PINPUT_RECORD"                              Type="Alias"    Base="LPVOID" />
+        <Variable Name="const INPUT_RECORD*"                        Type="Alias"    Base="PINPUT_RECORD" />
+        <Variable Name="PUNWIND_HISTORY_TABLE"                      Type="Alias"    Base="LPVOID" />
+        <Variable Name="PKNONVOLATILE_CONTEXT_POINTERS"             Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPCPINFO"                                   Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPCPINFOEX"                                 Type="Alias"    Base="LPVOID" />
+        <Variable Name="PREASON_CONTEXT"                            Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPCRITICAL_SECTION"                         Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPSYSTEM_INFO"                              Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPOSVERSIONINFO"                            Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPOSVERSIONINFOEX"                          Type="Alias"    Base="LPVOID" />
+        <Variable Name="PDYNAMIC_TIME_ZONE_INFORMATION"             Type="Alias"    Base="LPVOID" />
+        <Variable Name="const DYNAMIC_TIME_ZONE_INFORMATION*"       Type="Alias"    Base="PDYNAMIC_TIME_ZONE_INFORMATION" />
+        <Variable Name="LPTIME_ZONE_INFORMATION"                    Type="Alias"    Base="LPVOID" />
+        <Variable Name="const TIME_ZONE_INFORMATION*"               Type="Alias"    Base="LPTIME_ZONE_INFORMATION" />
+
+        <!-- HEAPENTRY32 -->
+        <Variable Name="[HeapEntryFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <!-- The following is an Enum, not Flags -->
+            <Enum>
+                <Set Name="LF32_FIXED"      Value="0x00000001" />
+                <Set Name="LF32_FREE"       Value="0x00000002" />
+                <Set Name="LF32_MOVEABLE"   Value="0x00000004" />
+            </Enum>
+        </Variable>
+        <Variable Name="HEAPENTRY32" Type="Struct">
+            <Field Type="SIZE_T" 	        Name="dwSize" />
+            <Field Type="HANDLE" 	        Name="hHandle" />
+            <Field Type="ULONG_PTR"         Name="dwAddress" />
+            <Field Type="SIZE_T" 	        Name="dwBlockSize" />
+            <Field Type="[HeapEntryFlags]"  Name="dwFlags" />
+            <Field Type="DWORD"  	        Name="dwLockCount" />
+            <Field Type="DWORD"  	        Name="dwResvd" />
+            <Field Type="DWORD"  	        Name="th32ProcessID" />
+            <Field Type="ULONG_PTR"         Name="th32HeapID" />
+        </Variable>
+        <Variable Name="LPHEAPENTRY32" Type="Pointer" Base="HEAPENTRY32" />
+
+        <!-- HEAPLIST32 -->
+        <Variable Name="[HeapListFlags]" Type="Alias" Base="DWORD">
+            <!-- The following is an Enum, not Flags -->
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="HF32_DEFAULT"      Value="1" />
+                <Set Name="HF32_SHARED"       Value="2" />
+            </Enum>
+        </Variable>
+        <Variable Name="HEAPLIST32" Type="Struct">
+            <Field Type="SIZE_T" 	        Name="dwSize" />
+            <Field Type="DWORD"  	        Name="th32ProcessID" />
+            <Field Type="ULONG_PTR"         Name="th32HeapID" />
+            <Field Type="[HeapListFlags]"  	Name="dwFlags" />
+        </Variable>
+        <Variable Name="LPHEAPLIST32" Type="Pointer" Base="HEAPLIST32" />
+
+        <!-- THREADENTRY32 -->
+        <Variable Name="THREADENTRY32" Type="Struct">
+            <Field Type="DWORD"   	Name="dwSize" />
+            <Field Type="DWORD"   	Name="cntUsage" />
+            <Field Type="DWORD"   	Name="th32ThreadID" />
+            <Field Type="DWORD"   	Name="th32OwnerProcessID" />
+            <Field Type="LONG"    	Name="tpBasePri" />
+            <Field Type="LONG"    	Name="tpDeltaPri" />
+            <Field Type="DWORD"   	Name="dwFlags" />
+        </Variable>
+        <Variable Name="LPTHREADENTRY32" Type="Pointer" Base="THREADENTRY32" />
+
+        <!-- BY_HANDLE_FILE_INFORMATION -->
+        <Variable Name="BY_HANDLE_FILE_INFORMATION" Type="Struct">
+            <Field Type="DWORD" 	Name="dwFileAttributes" />
+            <Field Type="FILETIME" 	Name="ftCreationTime" />
+            <Field Type="FILETIME" 	Name="ftLastAccessTime" />
+            <Field Type="FILETIME" 	Name="ftLastWriteTime" />
+            <Field Type="DWORD" 	Name="dwVolumeSerialNumber" />
+            <Field Type="DWORD" 	Name="nFileSizeHigh" />
+            <Field Type="DWORD" 	Name="nFileSizeLow" />
+            <Field Type="DWORD" 	Name="nNumberOfLinks" />
+            <Field Type="DWORD" 	Name="nFileIndexHigh" />
+            <Field Type="DWORD"     Name="nFileIndexLow" />
+        </Variable>
+        <Variable Name="LPBY_HANDLE_FILE_INFORMATION" Type="Pointer" Base="BY_HANDLE_FILE_INFORMATION" />
+
+        <!-- OVERLAPPED_ENTRY -->
+        <Variable Name="OVERLAPPED_ENTRY" Type="Struct">
+            <Field Type="ULONG_PTR" 	Name="lpCompletionKey" />
+            <Field Type="LPOVERLAPPED" 	Name="lpOverlapped" />
+            <Field Type="ULONG_PTR" 	Name="Internal" />
+            <Field Type="DWORD"         Name="dwNumberOfBytesTransferred" />
+        </Variable>
+        <Variable Name="LPOVERLAPPED_ENTRY" Type="Pointer" Base="OVERLAPPED_ENTRY" />
+
+        <!-- MEMORYSTATUSEX -->
+        <Variable Name="MEMORYSTATUSEX" Type="Struct">
+            <Field Type="DWORD" 	    Name="dwLength" />
+            <Field Type="DWORD"         Name="dwMemoryLoad" />
+            <Field Type="DWORDLONG" 	Name="ullTotalPhys" />
+            <Field Type="DWORDLONG" 	Name="ullAvailPhys" />
+            <Field Type="DWORDLONG" 	Name="ullTotalPageFile" />
+            <Field Type="DWORDLONG" 	Name="ullAvailPageFile" />
+            <Field Type="DWORDLONG" 	Name="ullTotalVirtual" />
+            <Field Type="DWORDLONG" 	Name="ullAvailVirtual" />
+            <Field Type="DWORDLONG" 	Name="ullAvailExtendedVirtual" />
+        </Variable>
+        <Variable Name="LPMEMORYSTATUSEX" Type="Pointer" Base="MEMORYSTATUSEX" />
+
+        <!-- MEMORY_BASIC_INFORMATION -->
+        <Variable Name="[MemoryType]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="MEM_IMAGE"   Value="0x1000000" />
+                <Set Name="MEM_MAPPED"  Value="0x40000" />
+                <Set Name="MEM_PRIVATE" Value="0x20000" />
+            </Flag>
+        </Variable>
+        <Variable Name="MEMORY_BASIC_INFORMATION" Type="Struct">
+            <Field Type="PVOID" 	            Name="BaseAddress" />
+            <Field Type="PVOID" 	            Name="AllocationBase" />
+            <Field Type="[Protection]" 	        Name="AllocationProtect" />
+            <Field Type="SIZE_T" 	            Name="RegionSize" />
+            <Field Type="[MemoryFlags]" 	    Name="State" />
+            <Field Type="[Protection]" 	        Name="Protect" />
+            <Field Type="[MemoryType]"          Name="Type" />
+        </Variable>
+        <Variable Name="PMEMORY_BASIC_INFORMATION" Type="Pointer" Base="MEMORY_BASIC_INFORMATION"/>
+
+        <!-- MEMORYSTATUS -->
+        <Variable Name="MEMORYSTATUS" Type="Struct">
+            <Field Type="DWORD" 	Name="dwLength" />
+            <Field Type="DWORD" 	Name="dwMemoryLoad" />
+            <Field Type="SIZE_T" 	Name="dwTotalPhys" />
+            <Field Type="SIZE_T" 	Name="dwAvailPhys" />
+            <Field Type="SIZE_T" 	Name="dwTotalPageFile" />
+            <Field Type="SIZE_T" 	Name="dwAvailPageFile" />
+            <Field Type="SIZE_T"    Name="dwTotalVirtual" />
+            <Field Type="SIZE_T" 	Name="dwAvailVirtual" />
+        </Variable>
+        <Variable Name="LPMEMORYSTATUS" Type="Pointer" Base="MEMORYSTATUS" />
+
+        <!-- IO_COUNTERS -->
+        <Variable Name="IO_COUNTERS" Type="Struct">
+            <Field Type="ULONGLONG"     Name="ReadOperationCount" />
+            <Field Type="ULONGLONG"     Name="WriteOperationCount" />
+            <Field Type="ULONGLONG"     Name="OtherOperationCount" />
+            <Field Type="ULONGLONG"     Name="ReadTransferCount" />
+            <Field Type="ULONGLONG"     Name="WriteTransferCount" />
+            <Field Type="ULONGLONG"     Name="OtherTransferCount" />
+        </Variable>
+        <Variable Name="PIO_COUNTERS" Type="Pointer" Base="IO_COUNTERS" />
+
+        <!-- SYSTEM_PROCESSOR_CYCLE_TIME_INFORMATION -->
+        <Variable Name="SYSTEM_PROCESSOR_CYCLE_TIME_INFORMATION" Type="Struct">
+            <Field Type="DWORD64" Name="CycleTime" />
+        </Variable>
+        <Variable Name="PSYSTEM_PROCESSOR_CYCLE_TIME_INFORMATION" Type="Pointer" Base="SYSTEM_PROCESSOR_CYCLE_TIME_INFORMATION" />
+
+        <!-- PROCESSOR_NUMBER -->
+        <Variable Name="PROCESSOR_NUMBER" Type="Struct">
+            <Field Type="WORD"   	Name="Group" />
+            <Field Type="BYTE"  	Name="Number" />
+            <Field Type="BYTE"  	Name="Reserved" />
+        </Variable>
+        <Variable Name="PPROCESSOR_NUMBER" Type="Pointer" Base="PROCESSOR_NUMBER" />
+
+        <!-- TP_POOL_STACK_INFORMATION -->
+        <Variable Name="TP_POOL_STACK_INFORMATION" Type="Struct">
+            <Field Type="SIZE_T" 	Name="StackReserve" />
+            <Field Type="SIZE_T" 	Name="StackCommit" />
+        </Variable>
+        <Variable Name="PTP_POOL_STACK_INFORMATION" Type="Pointer" Base="TP_POOL_STACK_INFORMATION" />
+
+        <!-- UMS_SCHEDULER_STARTUP_INFO -->
+        <Variable Name="PUMS_COMPLETION_LIST"           Type="Alias"    Base="LPVOID" />
+        <Variable Name="PUMS_COMPLETION_LIST*"          Type="Pointer"  Base="PUMS_COMPLETION_LIST" />
+        <Variable Name="PUMS_SCHEDULER_ENTRY_POINT"     Type="Pointer"  Base="PUMS_COMPLETION_LIST" />
+        <Variable Name="UMS_SCHEDULER_STARTUP_INFO" Type="Struct">
+            <Field Type="ULONG"                         Name="UmsVersion" />
+            <Field Type="PUMS_COMPLETION_LIST" 	        Name="CompletionList" />
+            <Field Type="PUMS_SCHEDULER_ENTRY_POINT" 	Name="SchedulerProc" />
+            <Field Type="PVOID" 	                    Name="SchedulerParam" />
+        </Variable>
+        <Variable Name="PUMS_SCHEDULER_STARTUP_INFO" Type="Pointer" Base="UMS_SCHEDULER_STARTUP_INFO" />
+
+        <!-- ACTCTX -->
+        <Variable Name="ACTCTX" Type="Struct">
+            <Field Type="ULONG"       	Name="cbSize" />
+            <Field Type="DWORD"       	Name="dwFlags" />
+            <Field Type="LPCTSTR"      	Name="lpSource" />
+            <Field Type="USHORT"      	Name="wProcessorArchitecture" />
+            <Field Type="LANGID"      	Name="wLangId" />
+            <Field Type="LPCTSTR"      	Name="lpAssemblyDirectory" />
+            <Field Type="LPCTSTR"      	Name="lpResourceName" />
+            <Field Type="LPCTSTR"      	Name="lpApplicationName" />
+            <Field Type="HMODULE"     	Name="hModule" />
+        </Variable>
+        <Variable Name="PACTCTX" Type="Pointer" Base="ACTCTX" />
+
+        <!-- ACTCTX_SECTION_KEYED_DATA_ASSEMBLY_METADATA -->
+        <Variable Name="ACTCTX_SECTION_KEYED_DATA_ASSEMBLY_METADATA" Type="Struct">
+            <Field Type="PVOID" 	Name="lpInformation" />
+            <Field Type="PVOID" 	Name="lpSectionBase" />
+            <Field Type="ULONG" 	Name="ulSectionLength" />
+            <Field Type="PVOID" 	Name="lpSectionGlobalDataBase" />
+            <Field Type="ULONG" 	Name="ulSectionGlobalDataLength" />
+        </Variable>
+
+        <!-- ACTCTX_SECTION_KEYED_DATA -->
+        <Variable Name="ACTCTX_SECTION_KEYED_DATA" Type="Struct">
+            <Field Type="ULONG" 	Name="cbSize" />
+            <Field Type="ULONG" 	Name="ulDataFormatVersion" />
+            <Field Type="PVOID" 	Name="lpData" />
+            <Field Type="ULONG" 	Name="ulLength" />
+            <Field Type="PVOID" 	Name="lpSectionGlobalData" />
+            <Field Type="ULONG" 	Name="ulSectionGlobalDataLength" />
+            <Field Type="PVOID" 	Name="lpSectionBase" />
+            <Field Type="ULONG" 	Name="ulSectionTotalLength" />
+            <Field Type="HANDLE" 	Name="hActCtx" />
+            <Field Type="ULONG" 	Name="ulAssemblyRosterIndex" />
+            <Field Type="ULONG" 	Name="ulFlags" />
+            <Field Type="ACTCTX_SECTION_KEYED_DATA_ASSEMBLY_METADATA" Name="AssemblyMetadata" />
+        </Variable>
+        <Variable Name="PACTCTX_SECTION_KEYED_DATA" Type="Pointer" Base="ACTCTX_SECTION_KEYED_DATA" />
+
+        <!-- COMMTIMEOUTS -->
+        <Variable Name="COMMTIMEOUTS" Type="Struct">
+            <Field Type="DWORD" 	Name="ReadIntervalTimeout" />
+            <Field Type="DWORD" 	Name="ReadTotalTimeoutMultiplier" />
+            <Field Type="DWORD" 	Name="ReadTotalTimeoutConstant" />
+            <Field Type="DWORD" 	Name="WriteTotalTimeoutMultiplier" />
+            <Field Type="DWORD" 	Name="WriteTotalTimeoutConstant" />
+        </Variable>
+        <Variable Name="LPCOMMTIMEOUTS" Type="Pointer" Base="COMMTIMEOUTS" />
+
+        <!-- CONSOLE_CURSOR_INFO -->
+        <Variable Name="CONSOLE_CURSOR_INFO" Type="Struct">
+            <Field Type="DWORD"  	Name="dwSize" />
+            <Field Type="BOOL"   	Name="bVisible" />
+        </Variable>
+        <Variable Name="PCONSOLE_CURSOR_INFO" Type="Pointer" Base="CONSOLE_CURSOR_INFO" />
+        <Variable Name="const CONSOLE_CURSOR_INFO*" Type="Alias" Base="PCONSOLE_CURSOR_INFO" />
+
+        <!-- CONSOLE_HISTORY_INFO -->
+        <Variable Name="CONSOLE_HISTORY_INFO" Type="Struct">
+            <Field Type="UINT" 	Name="cbSize" />
+            <Field Type="UINT" 	Name="HistoryBufferSize" />
+            <Field Type="UINT" 	Name="NumberOfHistoryBuffers" />
+            <Field Type="DWORD" Name="dwFlags" />
+        </Variable>
+        <Variable Name="PCONSOLE_HISTORY_INFO" Type="Pointer" Base="CONSOLE_HISTORY_INFO" />
+
+        <!-- CONSOLE_SCREEN_BUFFER_INFO -->
+        <Variable Name="CONSOLE_SCREEN_BUFFER_INFO" Type="Struct">
+            <Field Type="COORD" 	    Name="dwSize" />
+            <Field Type="COORD" 	    Name="dwCursorPosition" />
+            <Field Type="WORD"  	    Name="wAttributes" />
+            <Field Type="SMALL_RECT"    Name="srWindow" />
+            <Field Type="COORD" 	    Name="dwMaximumWindowSize" />
+        </Variable>
+        <Variable Name="PCONSOLE_SCREEN_BUFFER_INFO" Type="Pointer" Base="CONSOLE_SCREEN_BUFFER_INFO" />
+
+        <!-- CONSOLE_SELECTION_INFO -->
+        <Variable Name="CONSOLE_SELECTION_INFO" Type="Struct">
+            <Field Type="DWORD" 	    Name="dwFlags" />
+            <Field Type="COORD" 	    Name="dwSelectionAnchor" />
+            <Field Type="SMALL_RECT"    Name="srSelection" />
+        </Variable>
+        <Variable Name="PCONSOLE_SELECTION_INFO" Type="Pointer" Base="CONSOLE_SELECTION_INFO" />
+
+        <!-- CONSOLE_FONT_INFO -->
+        <Variable Name="CONSOLE_FONT_INFO" Type="Struct">
+            <Field Type="DWORD"  	Name="nFont" />
+            <Field Type="COORD"  	Name="dwFontSize" />
+        </Variable>
+        <Variable Name="PCONSOLE_FONT_INFO" Type="Pointer" Base="CONSOLE_FONT_INFO" />
+
+        <!-- FRAME_POINTERS -->
+        <Variable Name="FRAME_POINTERS" Type="Struct">
+            <Field Type="ULONGLONG" 	Name="MemoryStackFp" />
+            <Field Type="ULONGLONG" 	Name="BackingStoreFp" />
+        </Variable>
+        <Variable Name="PFRAME_POINTERS" Type="Pointer" Base="FRAME_POINTERS" />
+
+        <!-- RUNTIME_FUNCTION -->
+        <Variable Name="RUNTIME_FUNCTION" Type="Struct">
+            <Field Type="DWORD" 	Name="BeginAddress" />
+            <Field Type="DWORD" 	Name="EndAddress" />
+            <Field Type="DWORD" 	Name="UnwindData" />
+        </Variable>
+        <Variable Name="PRUNTIME_FUNCTION" Type="Pointer" Base="RUNTIME_FUNCTION" />
+
+        <!-- CALDATETIME -->
+        <Variable Name="CALDATETIME" Type="Struct">
+            <Field Type="CALID" 	Name="CalId" />
+            <Field Type="UINT"  	Name="Era" />
+            <Field Type="UINT"  	Name="Year" />
+            <Field Type="UINT"  	Name="Month" />
+            <Field Type="UINT"  	Name="Day" />
+            <Field Type="UINT"  	Name="DayOfWeek" />
+            <Field Type="UINT"  	Name="Hour" />
+            <Field Type="UINT"  	Name="Minute" />
+            <Field Type="UINT"  	Name="Second" />
+            <Field Type="ULONG" 	Name="Tick" />
+        </Variable>
+        <Variable Name="LPCALDATETIME" Type="Pointer" Base="CALDATETIME" />
+        <Variable Name="const LPCALDATETIME" Type="Alias" Base="LPCALDATETIME" />
+
+        <!-- NLSVERSIONINFO -->
+        <Variable Name="NLSVERSIONINFO" Type="Struct">
+            <Field Type="DWORD" 	Name="dwNLSVersionInfoSize" />
+            <Field Type="DWORD" 	Name="dwNLSVersion" />
+            <Field Type="DWORD" 	Name="dwDefinedVersion" />
+        </Variable>
+        <Variable Name="LPNLSVERSIONINFO" Type="Pointer" Base="NLSVERSIONINFO" />
+
+        <!-- NLSVERSIONINFOEX -->
+        <Variable Name="NLSVERSIONINFOEX" Type="Struct">
+            <Field Type="DWORD" 	Name="dwNLSVersionInfoSize" />
+            <Field Type="DWORD" 	Name="dwNLSVersion" />
+            <Field Type="DWORD" 	Name="dwDefinedVersion" />
+            <Field Type="DWORD" 	Name="dwEffectiveId" />
+            <Field Type="GUID"  	Name="guidCustomVersion" />
+        </Variable>
+        <Variable Name="LPNLSVERSIONINFOEX" Type="Pointer" Base="NLSVERSIONINFOEX" />
+
+        <!-- CURRENCYFMT -->
+        <Variable Name="CURRENCYFMT" Type="Struct">
+            <Field Type="UINT"    	Name="NumDigits" />
+            <Field Type="UINT"    	Name="LeadingZero" />
+            <Field Type="UINT"    	Name="Grouping" />
+            <Field Type="LPTSTR"  	Name="lpDecimalSep" />
+            <Field Type="LPTSTR"  	Name="lpThousandSep" />
+            <Field Type="UINT"    	Name="NegativeOrder" />
+            <Field Type="UINT"    	Name="PositiveOrder" />
+            <Field Type="LPTSTR"  	Name="lpCurrencySymbol" />
+        </Variable>
+        <Variable Name="const CURRENCYFMT*" Type="Pointer" Base="CURRENCYFMT" />
+
+        <!-- NUMBERFMT -->
+        <Variable Name="NUMBERFMT" Type="Struct">
+            <Field Type="UINT"    	Name="NumDigits" />
+            <Field Type="UINT"    	Name="LeadingZero" />
+            <Field Type="UINT"    	Name="Grouping" />
+            <Field Type="LPTSTR"   	Name="lpDecimalSep" />
+            <Field Type="LPTSTR"   	Name="lpThousandSep" />
+            <Field Type="UINT"    	Name="NegativeOrder" />
+        </Variable>
+        <Variable Name="const NUMBERFMT*" Type="Pointer" Base="NUMBERFMT" />
+
+        <!-- SYSTEM_POWER_STATUS -->
+        <Variable Name="SYSTEM_POWER_STATUS" Type="Struct">
+            <Field Type="BYTE" 	Name="ACLineStatus" />
+            <Field Type="BYTE" 	Name="BatteryFlag" />
+            <Field Type="BYTE" 	Name="BatteryLifePercent" />
+            <Field Type="BYTE"  Name="Reserved1" />
+            <Field Type="DWORD" Name="BatteryLifeTime" />
+            <Field Type="DWORD" Name="BatteryFullLifeTime" />
+        </Variable>
+        <Variable Name="LPSYSTEM_POWER_STATUS" Type="Pointer" Base="SYSTEM_POWER_STATUS" />
+        
+        <!-- Variables -->
+        <Variable Name="HLOCAL"                                     Type="Alias"    Base="HANDLE" />
         <Variable Name="APPLICATION_RECOVERY_CALLBACK"              Type="Alias"    Base="LPVOID" />
         <Variable Name="APPLICATION_RECOVERY_CALLBACK*"             Type="Pointer"  Base="APPLICATION_RECOVERY_CALLBACK" />
         <Variable Name="LPPROGRESS_ROUTINE"                         Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPBY_HANDLE_FILE_INFORMATION"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPFILE_ID_DESCRIPTOR"                       Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPOVERLAPPED_ENTRY"                         Type="Alias"    Base="LPVOID" />
         <Variable Name="LPOVERLAPPED_COMPLETION_ROUTINE"            Type="Alias"    Base="LPVOID" />
         <Variable Name="PSECURE_MEMORY_CACHE_CALLBACK"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPMEMORYSTATUSEX"                           Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPPROCESS_HEAP_ENTRY"                       Type="Alias"    Base="LPVOID"/>
-        <Variable Name="PMEMORY_BASIC_INFORMATION"                  Type="Alias"    Base="LPVOID"/>
-        <Variable Name="HLOCAL"                                     Type="Alias"    Base="HANDLE" />
-        <Variable Name="LPMEMORYSTATUS"                             Type="Alias"    Base="HANDLE" />
-        <Variable Name="PIO_COUNTERS"                               Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSYSTEM_PROCESSOR_CYCLE_TIME_INFORMATION"   Type="Alias"    Base="LPVOID" />
         <Variable Name="LPTHREAD_START_ROUTINE"                     Type="Alias"    Base="LPVOID" />
         <Variable Name="LPPROC_THREAD_ATTRIBUTE_LIST"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="PGROUP_AFFINITY"                            Type="Alias"    Base="LPVOID" />
-        <Variable Name="const GROUP_AFFINITY*"                      Type="Alias"    Base="PGROUP_AFFINITY" />
-        <Variable Name="PPROCESSOR_NUMBER"                          Type="Alias"    Base="LPVOID" />
         <Variable Name="PTP_CALLBACK_INSTANCE"                      Type="Alias"    Base="LPVOID" />
         <Variable Name="PTP_IO"                                     Type="Alias"    Base="LPVOID" />
         <Variable Name="PTP_POOL"                                   Type="Alias"    Base="LPVOID" />
@@ -1649,53 +2041,15 @@
         <Variable Name="PTP_WAIT"                                   Type="Alias"    Base="LPVOID" />
         <Variable Name="PTP_WORK"                                   Type="Alias"    Base="LPVOID" />
         <Variable Name="PTP_WIN32_IO_CALLBACK"                      Type="Alias"    Base="LPVOID" />
-        <Variable Name="PTP_CALLBACK_ENVIRON"                       Type="Alias"    Base="LPVOID" />
         <Variable Name="PTP_TIMER_CALLBACK"                         Type="Alias"    Base="LPVOID" />
         <Variable Name="PTP_WAIT_CALLBACK"                          Type="Alias"    Base="LPVOID" />
         <Variable Name="PTP_WORK_CALLBACK"                          Type="Alias"    Base="LPVOID" />
-        <Variable Name="PCRITICAL_SECTION"                          Type="Alias"    Base="LPVOID" />
-        <Variable Name="PTP_POOL_STACK_INFORMATION"                 Type="Alias"    Base="LPVOID" />
         <Variable Name="PTP_SIMPLE_CALLBACK"                        Type="Alias"    Base="LPVOID" />
         <Variable Name="LPFIBER_START_ROUTINE"                      Type="Alias"    Base="LPVOID" />
         <Variable Name="PFLS_CALLBACK_FUNCTION"                     Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSYSTEM_LOGICAL_PROCESSOR_INFORMATION"      Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX"   Type="Alias"    Base="LPVOID" />
-        <Variable Name="PUMS_COMPLETION_LIST"                       Type="Alias"    Base="LPVOID" />
-        <Variable Name="PUMS_COMPLETION_LIST*"                      Type="Pointer"  Base="PUMS_COMPLETION_LIST" />
         <Variable Name="PUMS_CONTEXT"                               Type="Alias"    Base="LPVOID" />
         <Variable Name="PUMS_CONTEXT*"                              Type="Pointer"  Base="PUMS_CONTEXT" />
-        <Variable Name="PUMS_SCHEDULER_STARTUP_INFO"                Type="Alias"    Base="LPVOID" />
-        <Variable Name="PACTCTX"                                    Type="Alias"    Base="LPVOID" />
-        <Variable Name="PACTCTX_SECTION_KEYED_DATA"                 Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPDCB"                                      Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPCOMMTIMEOUTS"                             Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPCOMSTAT"                                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPCOMMCONFIG"                               Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPCOMMPROP"                                 Type="Alias"    Base="LPVOID" />
-        <Variable Name="COORD"                                      Type="Struct"   Size="4" />
-        <Variable Name="PCOORD"                                     Type="Pointer"  Base="COORD" />
-        <Variable Name="PCONSOLE_CURSOR_INFO"                       Type="Alias"    Base="LPVOID" />
-        <Variable Name="PCONSOLE_HISTORY_INFO"                      Type="Alias"    Base="LPVOID" />
-        <Variable Name="PCONSOLE_SCREEN_BUFFER_INFO"                Type="Alias"    Base="LPVOID" />
-        <Variable Name="PCONSOLE_SCREEN_BUFFER_INFOEX"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="PCONSOLE_SELECTION_INFO"                    Type="Alias"    Base="LPVOID" />
-        <Variable Name="PCONSOLE_FONT_INFO"                         Type="Alias"    Base="LPVOID" />
-        <Variable Name="PCONSOLE_FONT_INFOEX"                       Type="Alias"    Base="LPVOID" />
-        <Variable Name="PINPUT_RECORD"                              Type="Alias"    Base="LPVOID" />
-        <Variable Name="PCHAR_INFO"                                 Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSMALL_RECT"                                Type="Alias"    Base="LPVOID" />
-        <Variable Name="const SMALL_RECT*"                          Type="Alias"    Base="LPVOID" />
-        <Variable Name="const CHAR_INFO*"                           Type="Alias"    Base="LPVOID" />
         <Variable Name="PHANDLER_ROUTINE"                           Type="Alias"    Base="LPVOID" />
-        <Variable Name="const CONSOLE_CURSOR_INFO*"                 Type="Alias"    Base="LPVOID" />
-        <Variable Name="const INPUT_RECORD*"                        Type="Alias"    Base="LPVOID" />
-        <Variable Name="FRAME_POINTERS"                             Type="Alias"    Base="LPVOID" />
-        <Variable Name="PUNWIND_HISTORY_TABLE"                      Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRUNTIME_FUNCTION"                          Type="Alias"    Base="LPVOID" />
-        <Variable Name="PFRAME_POINTERS"                            Type="Alias"    Base="LPVOID" />
-        <Variable Name="PKNONVOLATILE_CONTEXT_POINTERS"             Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPCALDATETIME"                              Type="Alias"    Base="LPVOID" />
-        <Variable Name="const LPCALDATETIME"                        Type="Alias"    Base="LPVOID" />
         <Variable Name="CALINFO_ENUMPROC"                           Type="Alias"    Base="LPVOID" />
         <Variable Name="CALINFO_ENUMPROCEX"                         Type="Alias"    Base="LPVOID" />
         <Variable Name="CALINFO_ENUMPROCEXEX"                       Type="Alias"    Base="LPVOID" />
@@ -1710,42 +2064,19 @@
         <Variable Name="LOCALE_ENUMPROCEX"                          Type="Alias"    Base="LPVOID" />
         <Variable Name="TIMEFMT_ENUMPROC"                           Type="Alias"    Base="LPVOID" />
         <Variable Name="TIMEFMT_ENUMPROCEX"                         Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPNLSVERSIONINFO"                           Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPCPINFO"                                   Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPCPINFOEX"                                 Type="Alias"    Base="LPVOID" />
-        <Variable Name="const CURRENCYFMT*"                         Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPNLSVERSIONINFOEX"                         Type="Alias"    Base="LPVOID" />
-        <Variable Name="const NUMBERFMT*"                           Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPSYSTEM_POWER_STATUS"                      Type="Alias"    Base="LPVOID" />
-        <Variable Name="POWER_REQUEST_TYPE"                         Type="Alias"    Base="LPVOID" />
-        <Variable Name="PREASON_CONTEXT"                            Type="Alias"    Base="LPVOID" />
-        <Variable Name="LATENCY_TIME"                               Type="Alias"    Base="LPVOID" />
         <Variable Name="ENUMRESLANGPROC"                            Type="Alias"    Base="LPVOID" />
         <Variable Name="ENUMRESNAMEPROC"                            Type="Alias"    Base="LPVOID" />
         <Variable Name="ENUMRESTYPEPROC"                            Type="Alias"    Base="LPVOID" />
-        <Variable Name="HRSRC"                                      Type="Alias"    Base="LPVOID" />
         <Variable Name="LPTOP_LEVEL_EXCEPTION_FILTER"               Type="Alias"    Base="LPVOID" />
         <Variable Name="PGET_RUNTIME_FUNCTION_CALLBACK"             Type="Alias"    Base="LPVOID" />
         <Variable Name="PAPCFUNC"                                   Type="Alias"    Base="LPVOID" />
         <Variable Name="PSRWLOCK"                                   Type="Alias"    Base="LPVOID" />
         <Variable Name="PCONDITION_VARIABLE"                        Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPCRITICAL_SECTION"                         Type="Alias"    Base="LPVOID" />
         <Variable Name="LPINIT_ONCE"                                Type="Alias"    Base="LPVOID" />
-        <Variable Name="PINIT_ONCE"                                 Type="Alias"    Base="LPVOID" />
+        <Variable Name="PINIT_ONCE"                                 Type="Alias"    Base="LPINIT_ONCE" />
         <Variable Name="PINIT_ONCE_FN"                              Type="Alias"    Base="LPVOID" />
         <Variable Name="WAITORTIMERCALLBACK"                        Type="Alias"    Base="LPVOID" />
         <Variable Name="PTIMERAPCROUTINE"                           Type="Alias"    Base="LPVOID" />
-        <Variable Name="COMPUTER_NAME_FORMAT"                       Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPSYSTEM_INFO"                              Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPOSVERSIONINFO"                            Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPOSVERSIONINFOEX"                          Type="Alias"    Base="LPVOID" />
-        <Variable Name="PDYNAMIC_TIME_ZONE_INFORMATION"             Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPTIME_ZONE_INFORMATION"                    Type="Alias"    Base="LPVOID" />
-        <Variable Name="const DYNAMIC_TIME_ZONE_INFORMATION*"       Type="Alias"    Base="LPVOID" />
-        <Variable Name="const TIME_ZONE_INFORMATION*"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPCTSTR/const VOID*"                        Type="Alias"    Base="LPCTSTR">
-            <Display Name="const VOID*" />
-        </Variable>
 
         <!-- Debugging -->
         <Category Name="Diagnostics/Debugging and Error Handling/Basic Debugging" />
@@ -1877,7 +2208,7 @@
         </Api>
         <Api Name="WaitForDebugEvent">
             <Param Type="LPDEBUG_EVENT" Name="lpDebugEvent" />
-            <Param Type="[WaitTimeout(DWORD)]" Name="dwMilliseconds" />
+            <Param Type="[WaitTimeout]" Name="dwMilliseconds" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -2353,7 +2684,7 @@
         <Api Name="CreateFile" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpFileName" />
             <Param Type="[FileAccess]" Name="dwDesiredAccess" />
-            <Param Type="[FileShareMode(DWORD)]" Name="dwShareMode" />
+            <Param Type="[FileShareMode]" Name="dwShareMode" />
             <Param Type="LPSECURITY_ATTRIBUTES" Name="lpSecurityAttributes" />
             <Param Type="[CreationDisposition]" Name="dwCreationDisposition" />
             <Param Type="[FlagsAndAttributes]" Name="dwFlagsAndAttributes" />
@@ -2364,7 +2695,7 @@
         <Api Name="CreateFileTransacted" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpFileName" />
             <Param Type="[FileAccess]" Name="dwDesiredAccess" />
-            <Param Type="[FileShareMode(DWORD)]" Name="dwShareMode" />
+            <Param Type="[FileShareMode]" Name="dwShareMode" />
             <Param Type="LPSECURITY_ATTRIBUTES" Name="lpSecurityAttributes" />
             <Param Type="[CreationDisposition]" Name="dwCreationDisposition" />
             <Param Type="[FlagsAndAttributes]" Name="dwFlagsAndAttributes" />
@@ -2576,7 +2907,7 @@
         </Api>
         <Api Name="GetFileType">
             <Param Type="HANDLE" Name="hFile" />
-            <Return Type="DWORD" />
+            <Return Type="[FileType]" />
         </Api>
         <Api Name="GetFinalPathNameByHandle" BothCharset="True">
             <Param Type="HANDLE" Name="hFile" />
@@ -2682,7 +3013,7 @@
             <Param Type="HANDLE" Name="hFile" />
             <Param Type="LPFILE_ID_DESCRIPTOR" Name="lpFileID" />
             <Param Type="[FileAccess]" Name="dwDesiredAccess" />
-            <Param Type="[FileShareMode(DWORD)]" Name="dwShareMode" />
+            <Param Type="[FileShareMode]" Name="dwShareMode" />
             <Param Type="LPSECURITY_ATTRIBUTES" Name="lpSecurityAttributes" />
             <Param Type="[FlagsAndAttributes]" Name="dwFlags" />
             <Return Type="HANDLE" />
@@ -2691,7 +3022,7 @@
         <Api Name="ReOpenFile">
             <Param Type="HANDLE" Name="hOriginalFile" />
             <Param Type="[FileAccess]" Name="dwDesiredAccess" />
-            <Param Type="[FileShareMode(DWORD)]" Name="dwShareMode" />
+            <Param Type="[FileShareMode]" Name="dwShareMode" />
             <Param Type="[FlagsAndAttributes]" Name="dwFlags" />
             <Return Type="HANDLE" />
             <Success Return="NotEqual" Value="-1" />
@@ -2865,7 +3196,7 @@
         </Api>
         <Api Name="ReadFileScatter">
             <Param Type="HANDLE" Name="hFile" />
-            <Param Type="FILE_SEGMENT_ELEMENT" Name="aSegmentArray[]" />
+            <Param Type="FILE_SEGMENT_ELEMENT[]" Name="aSegmentArray" />
             <Param Type="DWORD" Name="nNumberOfBytesToRead" />
             <Param Type="LPDWORD" Name="lpReserved" />
             <Param Type="LPOVERLAPPED" Name="lpOverlapped" />
@@ -2944,7 +3275,7 @@
         </Api>
         <Api Name="WriteFileGather">
             <Param Type="HANDLE" Name="hFile" />
-            <Param Type="FILE_SEGMENT_ELEMENT" Name="aSegmentArray[]" />
+            <Param Type="FILE_SEGMENT_ELEMENT[]" Name="aSegmentArray" />
             <Param Type="DWORD" Name="nNumberOfBytesToWrite" />
             <Param Type="LPDWORD" Name="lpReserved" />
             <Param Type="LPOVERLAPPED" Name="lpOverlapped" />
@@ -3254,7 +3585,7 @@
         <Api Name="VirtualAlloc">
             <Param Type="LPVOID" Name="lpAddress" />
             <Param Type="SIZE_T" Name="dwSize" />
-            <Param Type="[MemoryFlags(DWORD)]" Name="flAllocationType" />
+            <Param Type="[MemoryFlags]" Name="flAllocationType"/>
             <Param Type="[Protection]" Name="flProtect" />
             <Return Type="LPVOID" />
             <Success Return="NotEqual" Value="0" />
@@ -3263,7 +3594,7 @@
             <Param Type="[ProcessHandle]" Name="hProcess" />
             <Param Type="LPVOID" Name="lpAddress" />
             <Param Type="SIZE_T" Name="dwSize" />
-            <Param Type="[MemoryFlags(DWORD)]" Name="flAllocationType" />
+            <Param Type="[MemoryFlags]" Name="flAllocationType" />
             <Param Type="[Protection]" Name="flProtect" />
             <Return Type="LPVOID" />
             <Success Return="NotEqual" Value="0" />
@@ -3281,7 +3612,7 @@
         <Api Name="VirtualFree">
             <Param Type="LPVOID" Name="lpAddress" />
             <Param Type="SIZE_T" Name="dwSize" />
-            <Param Type="[MemoryFlags(DWORD)]" Name="dwFreeType" />
+            <Param Type="[MemoryFlags]" Name="dwFreeType" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -3289,7 +3620,7 @@
             <Param Type="[ProcessHandle]" Name="hProcess" />
             <Param Type="LPVOID" Name="lpAddress" />
             <Param Type="SIZE_T" Name="dwSize" />
-            <Param Type="[MemoryFlags(DWORD)]" Name="dwFreeType" />
+            <Param Type="[MemoryFlags]" Name="dwFreeType" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -3318,7 +3649,7 @@
         </Api>
         <Api Name="VirtualQuery">
             <Param Type="LPCVOID" Name="lpAddress" />
-            <Param Type="PMEMORY_BASIC_INFORMATION" Name="lpBuffer" PostLength="dwLength" />
+            <Param Type="PMEMORY_BASIC_INFORMATION" Name="lpBuffer" />
             <Param Type="SIZE_T" Name="dwLength" />
             <Return Type="SIZE_T" />
             <Success Return="NotEqual" Value="0" />
@@ -3326,7 +3657,7 @@
         <Api Name="VirtualQueryEx">
             <Param Type="[ProcessHandle]" Name="hProcess" />
             <Param Type="LPCVOID" Name="lpAddress" />
-            <Param Type="PMEMORY_BASIC_INFORMATION" Name="lpBuffer" PostLength="dwLength" />
+            <Param Type="PMEMORY_BASIC_INFORMATION" Name="lpBuffer" />
             <Param Type="SIZE_T" Name="dwLength" />
             <Return Type="SIZE_T" />
             <Success Return="NotEqual" Value="0" />
@@ -3457,7 +3788,7 @@
             <Param Type="LPSECURITY_ATTRIBUTES" Name="lpProcessAttributes" />
             <Param Type="LPSECURITY_ATTRIBUTES" Name="lpThreadAttributes" />
             <Param Type="BOOL" Name="bInheritHandles" />
-            <Param Type="[ProcessCreationFlags]" Name="dwCreationFlags" />
+            <Param Type="[CreateProcessFlags]" Name="dwCreationFlags" />
             <Param Type="LPVOID" Name="lpEnvironment" />
             <Param Type="LPCTSTR" Name="lpCurrentDirectory" />
             <Param Type="LPSTARTUPINFO" Name="lpStartupInfo" />
@@ -3851,7 +4182,7 @@
             <Return Type="VOID" />
         </Api>
         <Api Name="SleepEx">
-            <Param Type="[WaitTimeout(DWORD)]" Name="dwMilliseconds" />
+            <Param Type="[WaitTimeout]" Name="dwMilliseconds" />
             <Param Type="BOOL" Name="bAlertable" />
             <Return Type="DWORD" />
         </Api>
@@ -4796,7 +5127,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetConsoleCP">
-            <Return Type="[CodePageEnum(UINT)]" />
+            <Return Type="[CodePageEnum]" />
         </Api>
         <Api Name="GetConsoleCursorInfo">
             <Param Type="HANDLE" Name="hConsoleOutput" />
@@ -4939,7 +5270,7 @@
         </Api>
         <Api Name="ReadConsoleOutputAttribute">
             <Param Type="HANDLE" Name="hConsoleOutput" />
-            <Param Type="[ConsoleAttribute*/LPDWORD]" Name="lpAttribute" />
+            <Param Type="[ConsoleAttribute*]" Name="lpAttribute" />
             <Param Type="DWORD" Name="nLength" />
             <Param Type="COORD" Name="dwReadCoord" />
             <Param Type="LPDWORD" Name="lpNumberOfAttrsRead" />
@@ -4970,7 +5301,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SetConsoleCP">
-            <Param Type="[CodePageEnum(UINT)]" Name="wCodePageID" />
+            <Param Type="[CodePageEnum]" Name="wCodePageID" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -5011,7 +5342,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SetConsoleOutputCP">
-            <Param Type="[CodePageEnum(UINT)]" Name="wCodePageID" />
+            <Param Type="[CodePageEnum]" Name="wCodePageID" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -5060,7 +5391,7 @@
         </Api>
         <Api Name="WriteConsole" BothCharset="True">
             <Param Type="HANDLE" Name="hConsoleOutput" />
-            <Param Type="LPCTSTR/const VOID*" Name="lpBuffer" />
+            <Param Type="LPCTSTR" Display="const VOID*" Name="lpBuffer" />
             <Param Type="DWORD" Name="nNumberOfCharsToWrite" />
             <Param Type="LPDWORD" Name="lpNumberOfCharsWritten" />
             <Param Type="LPVOID" Name="lpReserved" />
@@ -5086,7 +5417,7 @@
         </Api>
         <Api Name="WriteConsoleOutputAttribute">
             <Param Type="HANDLE" Name="hConsoleOutput" />
-            <Param Type="[ConsoleAttribute*/const WORD*]" Name="lpAttribute" />
+            <Param Type="[ConsoleAttribute*]" Display="const WORD*" Name="lpAttribute" />
             <Param Type="DWORD" Name="nLength" />
             <Param Type="COORD" Name="dwWriteCoord" />
             <Param Type="LPDWORD" Name="lpNumberOfAttrsWritten" />
@@ -5507,13 +5838,13 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetCPInfo">
-            <Param Type="[CodePageEnum(UINT)]" Name="CodePage" />
+            <Param Type="[CodePageEnum]" Name="CodePage" />
             <Param Type="LPCPINFO" Name="lpCPInfo" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetCPInfoEx" BothCharset="True">
-            <Param Type="[CodePageEnum(UINT)]" Name="CodePage" />
+            <Param Type="[CodePageEnum]" Name="CodePage" />
             <Param Type="DWORD" Name="dwFlags" />
             <Param Type="LPCPINFOEX" Name="lpCPInfoEx" />
             <Return Type="BOOL" />
@@ -5728,7 +6059,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="IsValidCodePage">
-            <Param Type="[CodePageEnum(UINT)]" Name="CodePage" />
+            <Param Type="[CodePageEnum]" Name="CodePage" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -6537,7 +6868,7 @@
             <Param Type="HANDLE" Name="hObject" />
             <Param Type="WAITORTIMERCALLBACK" Name="Callback" />
             <Param Type="PVOID" Name="Context" />
-            <Param Type="[WaitTimeout(ULONG)]" Name="dwMilliseconds" />
+            <Param Type="[WaitTimeout]" Display="ULONG" Name="dwMilliseconds" />
             <Param Type="[WorkItemFlags]" Name="dwFlags" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
@@ -6545,7 +6876,7 @@
         <Api Name="SignalObjectAndWait">
             <Param Type="HANDLE" Name="hObjectToSignal" />
             <Param Type="HANDLE" Name="hObjectToWaitOn" />
-            <Param Type="[WaitTimeout(DWORD)]" Name="dwMilliseconds" />
+            <Param Type="[WaitTimeout]" Name="dwMilliseconds" />
             <Param Type="BOOL" Name="bAlertable" />
             <Return Type="DWORD" />
             <Success Return="NotEqual" Value="0" />
@@ -6565,7 +6896,7 @@
             <Param Type="DWORD" Name="nCount" />
             <Param Type="const HANDLE*" Name="lpHandles" />
             <Param Type="BOOL" Name="bWaitAll" />
-            <Param Type="[WaitTimeout(DWORD)]" Name="dwMilliseconds" />
+            <Param Type="[WaitTimeout]" Name="dwMilliseconds" />
             <Return Type="DWORD" />
             <Success Return="NotEqual" Value="-1" />
         </Api>
@@ -6573,20 +6904,20 @@
             <Param Type="DWORD" Name="nCount" />
             <Param Type="const HANDLE*" Name="lpHandles" />
             <Param Type="BOOL" Name="bWaitAll" />
-            <Param Type="[WaitTimeout(DWORD)]" Name="dwMilliseconds" />
+            <Param Type="[WaitTimeout]" Name="dwMilliseconds" />
             <Param Type="BOOL" Name="bAlertable" />
             <Return Type="DWORD" />
             <Success Return="NotEqual" Value="-1" />
         </Api>
         <Api Name="WaitForSingleObject">
             <Param Type="HANDLE" Name="hHandle" />
-            <Param Type="[WaitTimeout(DWORD)]" Name="dwMilliseconds" />
+            <Param Type="[WaitTimeout]" Name="dwMilliseconds" />
             <Return Type="DWORD" />
             <Success Return="NotEqual" Value="-1" />
         </Api>
         <Api Name="WaitForSingleObjectEx">
             <Param Type="HANDLE" Name="hHandle" />
-            <Param Type="[WaitTimeout(DWORD)]" Name="dwMilliseconds" />
+            <Param Type="[WaitTimeout]" Name="dwMilliseconds" />
             <Param Type="BOOL" Name="bAlertable" />
             <Return Type="DWORD" />
             <Success Return="NotEqual" Value="-1" />
@@ -6773,14 +7104,14 @@
         </Api>
         <Api Name="VerifyVersionInfo" BothCharset="True">
             <Param Type="LPOSVERSIONINFOEX" Name="lpVersionInfo" />
-            <Param Type="[NtVerType/DWORD]" Name="dwTypeMask" />
+            <Param Type="[NtVerType]" Name="dwTypeMask" />
             <Param Type="DWORDLONG" Name="dwlConditionMask" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="VerSetConditionMask">
             <Param Type="ULONGLONG" Name="dwlConditionMask" />
-            <Param Type="[NtVerType/DWORD]" Name="dwTypeBitMask" />
+            <Param Type="[NtVerType]" Name="dwTypeBitMask" />
             <Param Type="[VerOperator]" Name="dwConditionMask" />
             <Return Type="ULONGLONG" />
             <Success Return="NotEqual" Value="0" />
@@ -7072,12 +7403,12 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="IsDBCSLeadByteEx">
-            <Param Type="[CodePageEnum(UINT)]" Name="CodePage" />
+            <Param Type="[CodePageEnum]" Name="CodePage" />
             <Param Type="BYTE" Name="TestChar" />
             <Return Type="BOOL" />
         </Api>
         <Api Name="MultiByteToWideChar">
-            <Param Type="[CodePageEnum(UINT)]" Name="CodePage" />
+            <Param Type="[CodePageEnum]" Name="CodePage" />
             <Param Type="[MultiByteFlags]" Name="dwFlags" />
             <Param Type="LPCSTR" Name="lpMultiByteStr" />
             <Param Type="int" Name="cbMultiByte" />
@@ -7087,7 +7418,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WideCharToMultiByte">
-            <Param Type="[CodePageEnum(UINT)]" Name="CodePage" />
+            <Param Type="[CodePageEnum]" Name="CodePage" />
             <Param Type="[WideCharFlags]" Name="dwFlags" />
             <Param Type="LPCWSTR" Name="lpWideCharStr" />
             <Param Type="int" Name="cchWideChar" />
@@ -7275,7 +7606,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="EnumProcesses">
-            <Param Type="LPVOID/DWORD*" Name="pProcessIds" PostLength="pBytesReturned" />
+            <Param Type="DWORD*" Name="pProcessIds" />
             <Param Type="DWORD" Name="cb" />
             <Param Type="DWORD*" Name="pBytesReturned" />
             <Return Type="BOOL" />
@@ -7339,7 +7670,7 @@
         <Api Name="GetModuleInformation">
             <Param Type="[ProcessHandle]" Name="hProcess" />
             <Param Type="HMODULE" Name="hModule" />
-            <Param Type="LPMODULEINFO" Name="lpmodinfo" PostLength="cb" />
+            <Param Type="LPMODULEINFO" Name="lpmodinfo" Diabled_PostLength="cb" />
             <Param Type="DWORD" Name="cb" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />

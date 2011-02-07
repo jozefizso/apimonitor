@@ -6,22 +6,82 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Headers>
-        <Variable Name="WINHTTP_PROXY_INFO*"                        Type="Alias"        Base="LPVOID" />
-        <Variable Name="WINHTTP_CURRENT_USER_IE_PROXY_CONFIG*"      Type="Alias"        Base="LPVOID" />
-        <Variable Name="WINHTTP_AUTOPROXY_OPTIONS*"                 Type="Alias"        Base="LPVOID" />
-        <Variable Name="WINHTTP_STATUS_CALLBACK"                    Type="Alias"        Base="LPVOID" />
-        <Variable Name="GROUPID"                                    Type="Alias"        Base="LONGLONG" />
-        <Variable Name="GROUPID*"                                   Type="Pointer"      Base="GROUPID" />
-        <Variable Name="LPINTERNET_CACHE_ENTRY_INFO"                Type="Alias"        Base="LPVOID" />
+        <!-- Variables -->
         <Variable Name="HINTERNET"                                  Type="Alias"        Base="LPVOID" />
         <Variable Name="HINTERNET*"                                 Type="Pointer"      Base="HINTERNET" />
-        <Variable Name="LPINTERNET_CACHE_GROUP_INFO"                Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPGOPHER_FIND_DATA"                         Type="Alias"        Base="LPVOID" />
+        <Variable Name="GROUPID"                                    Type="Alias"        Base="LONGLONG" />
+        <Variable Name="GROUPID*"                                   Type="Pointer"      Base="GROUPID" />
+        <Variable Name="WINHTTP_STATUS_CALLBACK"                    Type="Alias"        Base="LPVOID" />
         <Variable Name="GOPHER_ATTRIBUTE_ENUMERATOR"                Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPINTERNET_BUFFERS"                         Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPURL_COMPONENTS"                           Type="Alias"        Base="LPVOID" />
         <Variable Name="INTERNET_STATUS_CALLBACK"                   Type="Alias"        Base="LPVOID" />
 
+        <!-- TODO: Structures -->
+        <Variable Name="LPINTERNET_CACHE_ENTRY_INFO"                Type="Alias"        Base="LPVOID" />
+        <Variable Name="LPINTERNET_CACHE_GROUP_INFO"                Type="Alias"        Base="LPVOID" />
+        <Variable Name="LPGOPHER_FIND_DATA"                         Type="Alias"        Base="LPVOID" />
+        <Variable Name="LPINTERNET_BUFFERS"                         Type="Alias"        Base="LPVOID" />
+
+        <!-- [ProxyAccessType] -->
+        <Variable Name="[ProxyAccessType]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="WINHTTP_ACCESS_TYPE_DEFAULT_PROXY"   Value="0" />
+                <Set Name="WINHTTP_ACCESS_TYPE_NO_PROXY"        Value="1" />
+                <Set Name="WINHTTP_ACCESS_TYPE_NAMED_PROXY"     Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- WINHTTP_PROXY_INFO -->
+        <Variable Name="WINHTTP_PROXY_INFO" Type="Struct">
+            <Field Type="[ProxyAccessType]"  	Name="dwAccessType" />
+            <Field Type="LPWSTR" 	            Name="lpszProxy" />
+            <Field Type="LPWSTR" 	            Name="lpszProxyBypass" />
+        </Variable>
+        <Variable Name="WINHTTP_PROXY_INFO*" Type="Pointer" Base="WINHTTP_PROXY_INFO" />
+
+        <!-- WINHTTP_CURRENT_USER_IE_PROXY_CONFIG -->
+        <Variable Name="WINHTTP_CURRENT_USER_IE_PROXY_CONFIG" Type="Struct">
+            <Field Type="BOOL"    	Name="fAutoDetect" />
+            <Field Type="LPWSTR"  	Name="lpszAutoConfigUrl" />
+            <Field Type="LPWSTR"  	Name="lpszProxy" />
+            <Field Type="LPWSTR"  	Name="lpszProxyBypass" />
+        </Variable>
+        <Variable Name="WINHTTP_CURRENT_USER_IE_PROXY_CONFIG*" Type="Pointer" Base="WINHTTP_CURRENT_USER_IE_PROXY_CONFIG" />
+
+        <!-- [AutoProxyFlags] -->
+        <Variable Name="[AutoProxyFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="WINHTTP_AUTOPROXY_AUTO_DETECT"           Value="0x00000001" />
+                <Set Name="WINHTTP_AUTOPROXY_CONFIG_URL"            Value="0x00000002" />
+                <Set Name="WINHTTP_AUTOPROXY_HOST_KEEPCASE"         Value="0x00000004" />
+                <Set Name="WINHTTP_AUTOPROXY_HOST_LOWERCASE"        Value="0x00000008" />
+                <Set Name="WINHTTP_AUTOPROXY_RUN_INPROCESS"         Value="0x00010000" />
+                <Set Name="WINHTTP_AUTOPROXY_RUN_OUTPROCESS_ONLY"   Value="0x00020000" />
+            </Flag>
+        </Variable>
+
+        <!-- [AutoDetectFlags] -->
+        <Variable Name="[AutoDetectFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="WINHTTP_AUTO_DETECT_TYPE_DHCP"           Value="0x00000001" />
+                <Set Name="WINHTTP_AUTO_DETECT_TYPE_DNS_A"          Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <!-- WINHTTP_AUTOPROXY_OPTIONS -->
+        <Variable Name="WINHTTP_AUTOPROXY_OPTIONS" Type="Struct">
+            <Field Type="[AutoProxyFlags]"  Name="dwFlags" />
+            <Field Type="[AutoDetectFlags]" Name="dwAutoDetectFlags" />
+            <Field Type="LPCWSTR" 	        Name="lpszAutoConfigUrl" />
+            <Field Type="LPVOID"  	        Name="lpvReserved" />
+            <Field Type="DWORD"   	        Name="dwReserved" />
+            <Field Type="BOOL"    	        Name="fAutoLogonIfChallenged" />
+        </Variable>
+        <Variable Name="WINHTTP_AUTOPROXY_OPTIONS*" Type="Pointer" Base="WINHTTP_AUTOPROXY_OPTIONS" />
+
+        <!-- INTERNET_PORT -->
         <Variable Name="INTERNET_PORT" Type="Alias" Base="WORD">
             <Enum>
                 <Set Name="INTERNET_DEFAULT_FTP_PORT"       Value="21" />
@@ -33,6 +93,47 @@
             </Enum>
         </Variable>
 
+        <!-- INTERNET_SCHEME -->
+        <Variable Name="INTERNET_SCHEME" Type="Alias" Base="INT">
+            <Enum>
+                <Set Name="INTERNET_SCHEME_PARTIAL"			Value="-2" />
+                <Set Name="INTERNET_SCHEME_UNKNOWN"			Value="-1" />
+                <Set Name="INTERNET_SCHEME_DEFAULT"			Value="0" />
+                <Set Name="INTERNET_SCHEME_FTP"			    Value="1" />
+                <Set Name="INTERNET_SCHEME_GOPHER"			Value="2" />
+                <Set Name="INTERNET_SCHEME_HTTP"			Value="3" />
+                <Set Name="INTERNET_SCHEME_HTTPS"			Value="4" />
+                <Set Name="INTERNET_SCHEME_FILE"			Value="5" />
+                <Set Name="INTERNET_SCHEME_NEWS"			Value="6" />
+                <Set Name="INTERNET_SCHEME_MAILTO"			Value="7" />
+                <Set Name="INTERNET_SCHEME_SOCKS"			Value="8" />
+                <Set Name="INTERNET_SCHEME_JAVASCRIPT"		Value="9" />
+                <Set Name="INTERNET_SCHEME_VBSCRIPT"		Value="10" />
+                <Set Name="INTERNET_SCHEME_RES"			    Value="11" />
+            </Enum>
+        </Variable>
+
+        <!-- URL_COMPONENTS -->
+        <Variable Name="URL_COMPONENTS" Type="Struct">
+            <Field Type="DWORD"   	        Name="dwStructSize" />
+            <Field Type="LPTSTR"  	        Name="lpszScheme" />
+            <Field Type="DWORD"   	        Name="dwSchemeLength" />
+            <Field Type="INTERNET_SCHEME" 	Name="nScheme" />
+            <Field Type="LPTSTR"  	        Name="lpszHostName" />
+            <Field Type="DWORD"   	        Name="dwHostNameLength" />
+            <Field Type="INTERNET_PORT" 	Name="nPort" />
+            <Field Type="LPTSTR"  	        Name="lpszUserName" />
+            <Field Type="DWORD"   	        Name="dwUserNameLength" />
+            <Field Type="LPTSTR"  	        Name="lpszPassword" />
+            <Field Type="DWORD"   	        Name="dwPasswordLength" />
+            <Field Type="LPTSTR"  	        Name="lpszUrlPath" />
+            <Field Type="DWORD"   	        Name="dwUrlPathLength" />
+            <Field Type="LPTSTR"  	        Name="lpszExtraInfo" />
+            <Field Type="DWORD"   	        Name="dwExtraInfoLength" />
+        </Variable>
+        <Variable Name="LPURL_COMPONENTS" Type="Pointer" Base="URL_COMPONENTS" />
+
+        <!-- [InternetCanonicalizeUrlFlags] -->
         <Variable Name="[InternetCanonicalizeUrlFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>

@@ -8,12 +8,33 @@
     <Include Filename="Headers\ole.h.xml" />
     
     <Module Name="wab32.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
-        <!-- Parameters -->
-        <Variable Name="LPADRBOOK*"          Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPWABOBJECT*"        Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPWAB_PARAM"         Type="Alias"        Base="LPVOID" />
-        <Variable Name="ALLOCATEBUFFER*"     Type="Alias"        Base="LPVOID" />
-        <Variable Name="FREEBUFFER*"         Type="Alias"        Base="LPVOID" />
+        <!-- Variables -->
+        <Variable Name="IAddrBook"          Type="Interface" />
+        <Variable Name="IWABObject"         Type="Interface" />
+        <Variable Name="ALLOCATEBUFFER*"    Type="Alias" Base="LPVOID" />
+        <Variable Name="FREEBUFFER*"        Type="Alias" Base="LPVOID" />
+        <Variable Name="LPADRBOOK*"         Type="Alias" Base="IAddrBook**" />
+        <Variable Name="LPWABOBJECT*"       Type="Alias" Base="IWABObject**" />
+
+        <!-- [WAB_PARAM_Flags] -->
+        <Variable Name="[WAB_PARAM_Flags]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="WAB_USE_OE_SENDMAIL" Value="0x00000001" />
+                <Set Name="WAB_ENABLE_PROFILES" Value="0x00400000" />
+            </Flag>
+        </Variable>
+
+        <!-- WAB_PARAM -->
+        <Variable Name="WAB_PARAM" Type="Struct">
+            <Field Type="ULONG"   	            Name="cbSize" />
+            <Field Type="HWND"    	            Name="hwnd" />
+            <Field Type="LPSTR"   	            Name="szFileName" />
+            <Field Type="[WAB_PARAM_Flags]"   	Name="ulFlags" />
+            <Field Type="GUID"    	            Name="guidPSExt" />
+        </Variable>
+        <Variable Name="LPWAB_PARAM" Type="Pointer" Base="WAB_PARAM" />
+        
 
         <!-- Windows Address Book -->
         <Category Name="Messaging and Collaboration/Windows Address Book" />

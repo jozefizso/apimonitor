@@ -7,7 +7,43 @@
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\registry.h.xml" />
     <Module Name="Winspool.drv" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+
         <!-- Variables -->
+        <Variable Name="IPrintAsyncNotifyCallback"          Type="Interface" />
+        <Variable Name="IPrintAsyncNotifyChannel"           Type="Interface" />
+        <Variable Name="PCORE_PRINTER_DRIVER"               Type="Alias"    Base="LPVOID" />
+        <Variable Name="PrintAsyncNotificationType*"        Type="Alias"    Base="GUID*" />
+
+        <!-- TODO: Structures -->
+       
+        <Variable Name="PPRINTER_NOTIFY_INFO"               Type="Alias"    Base="LPVOID" />
+        <Variable Name="PPRINTER_OPTIONS"                   Type="Alias"    Base="LPVOID" />
+
+        <Variable Name="[PrinterAccessRights]" Type="Alias" Base="ACCESS_MASK">
+            <Display Name="ACCESS_MASK" />
+            <Flag>
+                <Set Name="DELETE"                          Value="0x00010000" />
+                <Set Name="READ_CONTROL"                    Value="0x00020000" />
+                <Set Name="SYNCHRONIZE"                     Value="0x00100000" />
+                <Set Name="WRITE_DAC"                       Value="0x00040000" />
+                <Set Name="WRITE_OWNER"                     Value="0x00080000" />
+                <Set Name="STANDARD_RIGHTS_ALL"             Value="0x001F0000" />
+                <Set Name="STANDARD_RIGHTS_REQUIRED"        Value="0x000F0000" />
+                <Set Name="PRINTER_ACCESS_ADMINISTER"       Value="0x00000004" />
+                <Set Name="PRINTER_ACCESS_USE"              Value="0x00000008" />
+                <Set Name="PRINTER_ALL_ACCESS"              Value="0x000F000C" />
+            </Flag>
+        </Variable>
+
+        <!-- PRINTER_DEFAULTS -->
+        <Variable Name="PRINTER_DEFAULTS" Type="Struct">
+            <Field Type="LPTSTR"                    Name="pDatatype" />
+            <Field Type="LPDEVMODE"                 Name="pDevMode" />
+            <Field Type="[PrinterAccessRights]"     Name="DesiredAccess" />
+        </Variable>
+        <Variable Name="LPPRINTER_DEFAULTS" Type="Pointer" Base="PRINTER_DEFAULTS" />
+
+        <!-- [DeviceCapability] -->
         <Variable Name="[DeviceCapability]" Type="Alias" Base="WORD">
             <Display Name="WORD" />
             <Enum>
@@ -49,6 +85,7 @@
             </Enum>
         </Variable>
 
+        <!-- [EnumPrintersFlags] -->
         <Variable Name="[EnumPrintersFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -75,6 +112,7 @@
             </Flag>
         </Variable>
 
+        <!-- [DocumentMode] -->
         <Variable Name="[DocumentMode]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -85,8 +123,9 @@
             </Flag>
         </Variable>
 
+        <!-- [PrinterChangeFlags] -->
         <Variable Name="[PrinterChangeFlags]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="PRINTER_CHANGE_ADD_PRINTER"                  Value="0x00000001" />
                 <Set Name="PRINTER_CHANGE_SET_PRINTER"                  Value="0x00000002" />
@@ -118,11 +157,12 @@
             </Flag>
         </Variable>
         <Variable Name="[PrinterChangeFlags*]" Type="Pointer" Base="[PrinterChangeFlags]">
-                <Display Name="PDWORD" />
+            <Display Name="PDWORD" />
         </Variable>
 
+        <!-- [JobControl] -->
         <Variable Name="[JobControl]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Enum>
                 <Set Name="JOB_CONTROL_PAUSE"               Value="1" />
                 <Set Name="JOB_CONTROL_RESUME"              Value="2" />
@@ -136,8 +176,9 @@
             </Enum>
         </Variable>
 
+        <!-- [PrinterControl] -->
         <Variable Name="[PrinterControl]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Enum>
                 <Set Name="PRINTER_CONTROL_PAUSE"           Value="1" />
                 <Set Name="PRINTER_CONTROL_RESUME"          Value="2" />
@@ -146,6 +187,7 @@
             </Enum>
         </Variable>
 
+        <!-- EPrintXPSJobOperation -->
         <Variable Name="EPrintXPSJobOperation" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="kJobProduction"  Value="1" />
@@ -153,6 +195,7 @@
             </Enum>
         </Variable>
 
+        <!-- EPrintXPSJobProgress -->
         <Variable Name="EPrintXPSJobProgress" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="kAddingDocumentSequence"         Value="0" />
@@ -168,6 +211,7 @@
             </Enum>
         </Variable>
 
+        <!-- PrintAsyncNotifyUserFilter -->
         <Variable Name="PrintAsyncNotifyUserFilter" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="kPerUser"  Value="0" />
@@ -175,6 +219,7 @@
             </Enum>
         </Variable>
 
+        <!-- PrintAsyncNotifyConversationStyle -->
         <Variable Name="PrintAsyncNotifyConversationStyle" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="kBiDirectional"  Value="0" />
@@ -182,17 +227,44 @@
             </Enum>
         </Variable>
 
-        <Variable Name="LPPRINTER_DEFAULTS"                 Type="Alias"    Base="LPVOID" />
-        <Variable Name="PCORE_PRINTER_DRIVER"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="PrintAsyncNotificationType*"        Type="Alias"    Base="GUID*" />
-        <Variable Name="IPrintAsyncNotifyCallback*"         Type="Alias"    Base="LPVOID" />
-        <Variable Name="IPrintAsyncNotifyChannel*"          Type="Alias"    Base="LPVOID" />
-        <Variable Name="IPrintAsyncNotifyChannel**"         Type="Pointer"  Base="IPrintAsyncNotifyChannel*" />
-        <Variable Name="PPRINTER_NOTIFY_INFO"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="PPRINTER_OPTIONS"                   Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPWSTR/LPBYTE"                      Type="Alias"    Base="LPWSTR">
-            <Display Name="LPBYTE" />
+        <!-- [PrinterNotifyType] -->
+        <Variable Name="[PrinterNotifyType]" Type="Alias" Base="WORD">
+            <Display Name="WORD" />
+            <Flag>
+                <Set Name="PRINTER_NOTIFY_TYPE"     Value="0x00" />
+                <Set Name="JOB_NOTIFY_TYPE"         Value="0x01" />
+                <Set Name="SERVER_NOTIFY_TYPE"      Value="0x02" />
+            </Flag>
         </Variable>
+
+        <!-- PRINTER_NOTIFY_OPTIONS_TYPE -->
+        <!-- TODO: pFields = PRINTER_NOTIFY_INFO_DATA -->
+        <Variable Name="PRINTER_NOTIFY_OPTIONS_TYPE" Type="Struct">
+            <Field Type="[PrinterNotifyType]"       Name="Type" />
+            <Field Type="WORD"                      Name="Reserved0" />
+            <Field Type="DWORD"                     Name="Reserved1" />
+            <Field Type="DWORD"                     Name="Reserved2" />
+            <Field Type="DWORD"                     Name="Count" />
+            <Field Type="PWORD"                     Name="pFields" />
+        </Variable>
+        <Variable Name="PPRINTER_NOTIFY_OPTIONS_TYPE" Type="Pointer" Base="PRINTER_NOTIFY_OPTIONS_TYPE" />
+
+        <!-- [PrinterNotifyFlags] -->
+        <Variable Name="[PrinterNotifyFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="PRINTER_NOTIFY_OPTIONS_REFRESH" Value="0x01" />
+            </Flag>
+        </Variable>
+
+        <!-- PRINTER_NOTIFY_OPTIONS -->
+        <Variable Name="PRINTER_NOTIFY_OPTIONS" Type="Struct">
+            <Field Type="DWORD"                         Name="Version" />
+            <Field Type="[PrinterNotifyFlags]"          Name="Flags" />
+            <Field Type="DWORD"                         Name="Count" />
+            <Field Type="PPRINTER_NOTIFY_OPTIONS_TYPE"  Name="pTypes" Count="Count" />
+        </Variable>
+        <Variable Name="PPRINTER_NOTIFY_OPTIONS" Type="Pointer" Base="PRINTER_NOTIFY_OPTIONS" />
 
         <!-- Printing and Print Spooler -->
         <Category Name="Documents and Printing/Printing/Print Spooler API" />
@@ -432,7 +504,7 @@
             <Param Type="[EnumPrintersFlags]" Name="Flags" />
             <Param Type="LPTSTR" Name="Name" />
             <Param Type="DWORD" Name="Level" />
-            <Param Type="LPBYTE" Name="pPrinterEnum" PostLength="pcbNeeded" />
+            <Param Type="LPBYTE" Name="pPrinterEnum" Disabled_PostLength="pcbNeeded" />
             <Param Type="DWORD" Name="cbBuf" />
             <Param Type="LPDWORD" Name="pcbNeeded" />
             <Param Type="LPDWORD" Name="pcReturned" />
@@ -502,7 +574,7 @@
         <Api Name="GetPrinterData" BothCharset="True">
             <Param Type="HANDLE" Name="hPrinter" />
             <Param Type="LPTSTR" Name="pValueName" />
-            <Param Type="[RegType*/LPDWORD]" Name="pType" />
+            <Param Type="[RegType*]" Name="pType" />
             <Param Type="LPBYTE" Name="pData" PostLength="pcbNeeded" />
             <Param Type="DWORD" Name="nSize" />
             <Param Type="LPDWORD" Name="pcbNeeded" />
@@ -513,7 +585,7 @@
             <Param Type="HANDLE" Name="hPrinter" />
             <Param Type="LPCTSTR" Name="pKeyName" />
             <Param Type="LPCTSTR" Name="pValueName" />
-            <Param Type="[RegType*/LPDWORD]" Name="pType" />
+            <Param Type="[RegType*]" Name="pType" />
             <Param Type="LPBYTE" Name="pData" PostLength="pcbNeeded" />
             <Param Type="DWORD" Name="nSize" />
             <Param Type="LPDWORD" Name="pcbNeeded" />
@@ -534,7 +606,7 @@
             <Param Type="LPTSTR" Name="pName" />
             <Param Type="LPTSTR" Name="pEnvironment" />
             <Param Type="DWORD" Name="Level" />
-            <Param Type="LPWSTR/LPBYTE" Name="pDriverDirectory" />
+            <Param Type="LPWSTR" Display="LPBYTE" Name="pDriverDirectory" />
             <Param Type="DWORD" Name="cbBuf" />
             <Param Type="LPDWORD" Name="pcbNeeded" />
             <Return Type="BOOL" />
@@ -771,14 +843,15 @@
             <Param Type="HANDLE" Name="hPrinter" />
             <Param Type="[PrinterChangeFlags]" Name="fdwFilter" />
             <Param Type="DWORD" Name="fdwOptions" />
-            <Param Type="LPVOID" Name="pPrinterNotifyOptions" />
+            <Param Type="PPRINTER_NOTIFY_OPTIONS" Name="pPrinterNotifyOptions" />
             <Return Type="HANDLE" />
             <Success Return="NotEqual" Value="0" />
         </Api>
+        <!-- TODO: ppPrinterNotifyInfo = PPRINTER_NOTIFY_INFO* -->
         <Api Name="FindNextPrinterChangeNotification">
             <Param Type="HANDLE" Name="hChange" />
             <Param Type="[PrinterChangeFlags*]" Name="pdwChange" />
-            <Param Type="LPVOID" Name="pPrinterNotifyOptions" />
+            <Param Type="PPRINTER_NOTIFY_OPTIONS" Name="pPrinterNotifyOptions" />
             <Param Type="LPVOID*" Name="ppPrinterNotifyInfo" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />

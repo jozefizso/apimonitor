@@ -8,18 +8,53 @@
     <Include Filename="Headers\security.h.xml" />
     
     <Module Name="Userenv.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        <!-- Parameters -->
-        <Variable Name="PGROUP_POLICY_OBJECT"        Type="Alias"        Base="LPVOID" />
-        <Variable Name="PGROUP_POLICY_OBJECT*"       Type="Pointer"        Base="PGROUP_POLICY_OBJECT" />
-        <Variable Name="REFGPEXTENSIONID"            Type="Alias"        Base="GUID*" />
-        <Variable Name="ASYNCCOMPLETIONHANDLE"       Type="Alias"        Base="UINT_PTR" />
-        <Variable Name="PRSOPTOKEN"                  Type="Alias"        Base="LPVOID" />
-        <Variable Name="IWbemServices*"              Type="Alias"        Base="LPVOID" />
-        <Variable Name="IWbemClassObject*"           Type="Alias"        Base="LPVOID" />
-        <Variable Name="POLICYSETTINGSTATUSINFO*"    Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPPROFILEINFO"               Type="Alias"        Base="LPVOID" />
+        <!-- Variables -->
+        <Variable Name="IWbemServices"              Type="Interface" />
+        <Variable Name="IWbemClassObject*"          Type="Interface" />
+        <Variable Name="REFGPEXTENSIONID"           Type="Alias"    Base="GUID*" />
+        <Variable Name="ASYNCCOMPLETIONHANDLE"      Type="Alias"    Base="UINT_PTR" />
+        <Variable Name="PRSOPTOKEN"                 Type="Alias"    Base="PVOID" />
 
-        <!-- Flags -->
+        <!-- TODO: Structures -->
+        <Variable Name="PGROUP_POLICY_OBJECT"       Type="Alias"    Base="LPVOID" />
+        <Variable Name="PGROUP_POLICY_OBJECT*"      Type="Pointer"  Base="PGROUP_POLICY_OBJECT" />
+
+        <!-- SETTINGSTATUS -->
+        <Variable Name="SETTINGSTATUS" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="RSOPUnspecified"         Value="0" />
+                <Set Name="RSOPApplied"             Value="1" />
+                <Set Name="RSOPIgnored"             Value="2" />
+                <Set Name="RSOPFailed"              Value="3" />
+                <Set Name="RSOPSubsettingFailed"    Value="4" />
+            </Enum>
+        </Variable>
+
+        <!-- POLICYSETTINGSTATUSINFO -->
+        <Variable Name="POLICYSETTINGSTATUSINFO" Type="Struct">
+            <Field Type="LPWSTR"            Name="szKey" />
+            <Field Type="LPWSTR"            Name="szEventSource" />
+            <Field Type="LPWSTR"            Name="szEventLogName" />
+            <Field Type="DWORD"             Name="dwEventID" />
+            <Field Type="DWORD"             Name="dwErrorCode" />
+            <Field Type="SETTINGSTATUS"     Name="status" />
+            <Field Type="SYSTEMTIME"        Name="timeLogged" />
+        </Variable>
+        <Variable Name="POLICYSETTINGSTATUSINFO*" Type="Pointer" Base="POLICYSETTINGSTATUSINFO" />
+
+        <!-- PROFILEINFO -->
+        <Variable Name="PROFILEINFO" Type="Struct">
+            <Field Type="DWORD"       	Name="dwSize" />
+            <Field Type="DWORD"       	Name="dwFlags" />
+            <Field Type="LPTSTR"      	Name="lpUserName" />
+            <Field Type="LPTSTR"      	Name="lpProfilePath" />
+            <Field Type="LPTSTR"      	Name="lpDefaultPath" />
+            <Field Type="LPTSTR"      	Name="lpServerName" />
+            <Field Type="LPTSTR"      	Name="lpPolicyPath" />
+            <Field Type="HANDLE"      	Name="hProfile" />
+        </Variable>
+        <Variable Name="LPPROFILEINFO" Type="Pointer" Base="PROFILEINFO" />
+
         <Variable Name="[ProfileType]" Type="Alias" Base="DWORD">
             <Flag>
                 <Set Name="PT_TEMPORARY"        Value="0x00000001" />
@@ -204,7 +239,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetProfilesDirectory" BothCharset="True">
-            <Param Type="LPTSTR" Name="lpProfilesDir" />
+            <Param Type="LPTSTR" Name="lpProfilesDir" OutputOnly="True" />
             <Param Type="LPDWORD" Name="lpcchSize" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />

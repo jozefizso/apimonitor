@@ -11,6 +11,159 @@
     
     <Module Name="Setupapi.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         <!-- Variables -->
+        <Variable Name="DEVINSTID"                          Type="Alias"    Base="TCHAR*" />
+        <Variable Name="HDSKSPC"                            Type="Alias"    Base="PVOID" />
+        <Variable Name="HINF"                               Type="Alias"    Base="PVOID" />
+        <Variable Name="HSPFILEQ"                           Type="Alias"    Base="PVOID" />
+        <Variable Name="PSP_FILE_CALLBACK"                  Type="Alias"    Base="LPVOID" />
+        <Variable Name="HSPFILELOG"                         Type="Alias"    Base="PVOID" />
+        <Variable Name="DEVPROPGUID"                        Type="Alias"    Base="GUID" />
+        <Variable Name="DEVPROPID"                          Type="Alias"    Base="ULONG" />
+        <Variable Name="PSP_DETSIG_CMPPROC"                 Type="Alias"    Base="LPVOID" />
+        <Variable Name="SP_LOG_TOKEN"                       Type="Alias"    Base="DWORDLONG" />
+        <Variable Name="LOG_CONF"                           Type="Alias"    Base="DWORD_PTR" />
+        <Variable Name="PLOG_CONF"                          Type="Pointer"  Base="LOG_CONF" />
+        <Variable Name="DEVINST"                            Type="Alias"    Base="DWORD" />
+        <Variable Name="PDEVINST"                           Type="Pointer"  Base="DWORD" />
+        <Variable Name="PRIORITY"                           Type="Alias"    Base="ULONG" />
+        <Variable Name="PPRIORITY"                          Type="Pointer"  Base="PRIORITY" />
+        <Variable Name="CONFIGRET"                          Type="Alias"    Base="DWORD" />
+        <Variable Name="RES_DES"                            Type="Alias"    Base="DWORD_PTR" />
+        <Variable Name="PRES_DES"                           Type="Pointer"  Base="RES_DES" />
+        <Variable Name="RESOURCEID"                         Type="Alias"    Base="ULONG" />
+        <Variable Name="PRESOURCEID"                        Type="Pointer"  Base="RESOURCEID" />
+        <Variable Name="HMACHINE"                           Type="Alias"    Base="HANDLE" />
+        <Variable Name="PHMACHINE"                          Type="Pointer"  Base="HMACHINE" />
+        <Variable Name="CONFLICT_LIST"                      Type="Alias"    Base="ULONG_PTR" />
+        <Variable Name="PCONFLICT_LIST"                     Type="Pointer"  Base="CONFLICT_LIST" />
+
+        <!-- TODO: Structures -->
+        <Variable Name="PSP_INF_INFORMATION"                Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSP_ALTPLATFORM_INFO"               Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSP_ORIGINAL_FILE_INFO"             Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSP_INF_SIGNER_INFO_W"              Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSP_DEVINFO_LIST_DETAIL_DATA"       Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSP_DEVINSTALL_PARAMS"              Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSP_DEVICE_INTERFACE_DETAIL_DATA"   Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSP_DRVINFO_DETAIL_DATA"            Type="Alias"    Base="LPVOID" />
+        <Variable Name="PCONFLICT_DETAILS"                  Type="Alias"    Base="LPVOID" />
+
+        <!-- INFCONTEXT -->
+        <Variable Name="INFCONTEXT" Type="Struct">
+            <Field Type="PVOID" 	Name="Inf" />
+            <Field Type="PVOID" 	Name="CurrentInf" />
+            <Field Type="UINT" 	    Name="Section" />
+            <Field Type="UINT" 	    Name="Line" />
+        </Variable>
+        <Variable Name="PINFCONTEXT" Type="Pointer" Base="INFCONTEXT" />
+
+        <!-- SP_FILE_COPY_PARAMS -->
+        <Variable Name="SP_FILE_COPY_PARAMS" Type="Struct">
+            <Field Type="DWORD"    	Name="cbSize" />
+            <Field Type="HSPFILEQ" 	Name="QueueHandle" />
+            <Field Type="PCTSTR"    Name="SourceRootPath" />
+            <Field Type="PCTSTR"    Name="SourcePath" />
+            <Field Type="PCTSTR"    Name="SourceFilename" />
+            <Field Type="PCTSTR"    Name="SourceDescription" />
+            <Field Type="PCTSTR"    Name="SourceTagfile" />
+            <Field Type="PCTSTR"    Name="TargetDirectory" />
+            <Field Type="PCTSTR"    Name="TargetFilename" />
+            <Field Type="DWORD"    	Name="CopyStyle" />
+            <Field Type="HINF"     	Name="LayoutInf" />
+            <Field Type="PCTSTR"    Name="SecurityDescriptor" />
+        </Variable>
+        <Variable Name="PSP_FILE_COPY_PARAMS" Type="Pointer" Base="SP_FILE_COPY_PARAMS" />
+
+        <!-- SP_DEVICE_INTERFACE_DATA -->
+        <Variable Name="SP_DEVICE_INTERFACE_DATA" Type="Struct">
+            <Field Type="DWORD" 	Name="cbSize" />
+            <Field Type="GUID"  	Name="InterfaceClassGuid" />
+            <Field Type="DWORD" 	Name="Flags" />
+            <Field Type="ULONG_PTR" Name="Reserved" />
+        </Variable>
+        <Variable Name="PSP_DEVICE_INTERFACE_DATA" Type="Pointer" Base="SP_DEVICE_INTERFACE_DATA" />
+
+        <!-- SP_CLASSIMAGELIST_DATA -->
+        <Variable Name="SP_CLASSIMAGELIST_DATA" Type="Struct">
+            <Field Type="DWORD"      	Name="cbSize" />
+            <Field Type="HIMAGELIST" 	Name="ImageList" />
+            <Field Type="ULONG_PTR"  	Name="Reserved" />
+        </Variable>
+        <Variable Name="PSP_CLASSIMAGELIST_DATA" Type="Pointer" Base="SP_CLASSIMAGELIST_DATA" />
+
+        <Variable Name="DI_FUNCTION" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DIF_SELECTDEVICE"                    Value="0x00000001" />
+                <Set Name="DIF_INSTALLDEVICE"                   Value="0x00000002" />
+                <Set Name="DIF_ASSIGNRESOURCES"                 Value="0x00000003" />
+                <Set Name="DIF_PROPERTIES"                      Value="0x00000004" />
+                <Set Name="DIF_REMOVE"                          Value="0x00000005" />
+                <Set Name="DIF_FIRSTTIMESETUP"                  Value="0x00000006" />
+                <Set Name="DIF_FOUNDDEVICE"                     Value="0x00000007" />
+                <Set Name="DIF_SELECTCLASSDRIVERS"              Value="0x00000008" />
+                <Set Name="DIF_VALIDATECLASSDRIVERS"            Value="0x00000009" />
+                <Set Name="DIF_INSTALLCLASSDRIVERS"             Value="0x0000000A" />
+                <Set Name="DIF_CALCDISKSPACE"                   Value="0x0000000B" />
+                <Set Name="DIF_DESTROYPRIVATEDATA"              Value="0x0000000C" />
+                <Set Name="DIF_VALIDATEDRIVER"                  Value="0x0000000D" />
+                <Set Name="DIF_DETECT"                          Value="0x0000000F" />
+                <Set Name="DIF_INSTALLWIZARD"                   Value="0x00000010" />
+                <Set Name="DIF_DESTROYWIZARDDATA"               Value="0x00000011" />
+                <Set Name="DIF_PROPERTYCHANGE"                  Value="0x00000012" />
+                <Set Name="DIF_ENABLECLASS"                     Value="0x00000013" />
+                <Set Name="DIF_DETECTVERIFY"                    Value="0x00000014" />
+                <Set Name="DIF_INSTALLDEVICEFILES"              Value="0x00000015" />
+                <Set Name="DIF_UNREMOVE"                        Value="0x00000016" />
+                <Set Name="DIF_SELECTBESTCOMPATDRV"             Value="0x00000017" />
+                <Set Name="DIF_ALLOW_INSTALL"                   Value="0x00000018" />
+                <Set Name="DIF_REGISTERDEVICE"                  Value="0x00000019" />
+                <Set Name="DIF_NEWDEVICEWIZARD_PRESELECT"       Value="0x0000001A" />
+                <Set Name="DIF_NEWDEVICEWIZARD_SELECT"          Value="0x0000001B" />
+                <Set Name="DIF_NEWDEVICEWIZARD_PREANALYZE"      Value="0x0000001C" />
+                <Set Name="DIF_NEWDEVICEWIZARD_POSTANALYZE"     Value="0x0000001D" />
+                <Set Name="DIF_NEWDEVICEWIZARD_FINISHINSTALL"   Value="0x0000001E" />
+                <Set Name="DIF_UNUSED1"                         Value="0x0000001F" />
+                <Set Name="DIF_INSTALLINTERFACES"               Value="0x00000020" />
+                <Set Name="DIF_DETECTCANCEL"                    Value="0x00000021" />
+                <Set Name="DIF_REGISTER_COINSTALLERS"           Value="0x00000022" />
+                <Set Name="DIF_ADDPROPERTYPAGE_ADVANCED"        Value="0x00000023" />
+                <Set Name="DIF_ADDPROPERTYPAGE_BASIC"           Value="0x00000024" />
+                <Set Name="DIF_RESERVED1"                       Value="0x00000025" />
+                <Set Name="DIF_TROUBLESHOOTER"                  Value="0x00000026" />
+                <Set Name="DIF_POWERMESSAGEWAKE"                Value="0x00000027" />
+                <Set Name="DIF_ADDREMOTEPROPERTYPAGE_ADVANCED"  Value="0x00000028" />
+                <Set Name="DIF_UPDATEDRIVER_UI"                 Value="0x00000029" />
+                <Set Name="DIF_FINISHINSTALL_ACTION"            Value="0x0000002A" />
+                <Set Name="DIF_RESERVED2"                       Value="0x00000030" />
+                <Set Name="DIF_MOVEDEVICE"                      Value="0x0000000E" />
+            </Enum>
+        </Variable>
+
+        <!-- SP_CLASSINSTALL_HEADER -->
+        <Variable Name="SP_CLASSINSTALL_HEADER" Type="Struct">
+            <Field Type="DWORD"       	Name="cbSize" />
+            <Field Type="DI_FUNCTION" 	Name="InstallFunction" />
+        </Variable>
+        <Variable Name="PSP_CLASSINSTALL_HEADER" Type="Pointer" Base="SP_CLASSINSTALL_HEADER" />
+
+        <!-- DEVPROPKEY -->
+        <Variable Name="DEVPROPKEY" Type="Struct">
+            <Field Type="DEVPROPGUID" 	Name="fmtid" />
+            <Field Type="DEVPROPID"   	Name="pid" />
+        </Variable>
+        <Variable Name="DEVPROPKEY*"        Type="Pointer" Base="DEVPROPKEY" />
+        <Variable Name="CONST DEVPROPKEY*"  Type="Pointer" Base="DEVPROPKEY" />
+
+        <!-- SP_DRVINSTALL_PARAMS -->
+        <Variable Name="SP_DRVINSTALL_PARAMS" Type="Struct">
+            <Field Type="DWORD" 	Name="cbSize" />
+            <Field Type="DWORD" 	Name="Rank" />
+            <Field Type="DWORD" 	Name="Flags" />
+            <Field Type="DWORD_PTR" Name="PrivateData" />
+            <Field Type="DWORD" 	Name="Reserved" />
+        </Variable>
+        <Variable Name="PSP_DRVINSTALL_PARAMS" Type="Pointer" Base="SP_DRVINSTALL_PARAMS" />
+
         <Variable Name="[DeviceInfoGetFlags]" Type="Alias" Base="DWORD">
                 <Display Name="DWORD" />
             <Flag>
@@ -76,54 +229,6 @@
                 <Set Name="DICLASSPROP_INSTALLER"   Value="0x00000001" />
                 <Set Name="DICLASSPROP_INTERFACE"   Value="0x00000002" />
             </Flag>
-        </Variable>
-
-        <Variable Name="DI_FUNCTION" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="DIF_SELECTDEVICE"                    Value="0x00000001" />
-                <Set Name="DIF_INSTALLDEVICE"                   Value="0x00000002" />
-                <Set Name="DIF_ASSIGNRESOURCES"                 Value="0x00000003" />
-                <Set Name="DIF_PROPERTIES"                      Value="0x00000004" />
-                <Set Name="DIF_REMOVE"                          Value="0x00000005" />
-                <Set Name="DIF_FIRSTTIMESETUP"                  Value="0x00000006" />
-                <Set Name="DIF_FOUNDDEVICE"                     Value="0x00000007" />
-                <Set Name="DIF_SELECTCLASSDRIVERS"              Value="0x00000008" />
-                <Set Name="DIF_VALIDATECLASSDRIVERS"            Value="0x00000009" />
-                <Set Name="DIF_INSTALLCLASSDRIVERS"             Value="0x0000000A" />
-                <Set Name="DIF_CALCDISKSPACE"                   Value="0x0000000B" />
-                <Set Name="DIF_DESTROYPRIVATEDATA"              Value="0x0000000C" />
-                <Set Name="DIF_VALIDATEDRIVER"                  Value="0x0000000D" />
-                <Set Name="DIF_DETECT"                          Value="0x0000000F" />
-                <Set Name="DIF_INSTALLWIZARD"                   Value="0x00000010" />
-                <Set Name="DIF_DESTROYWIZARDDATA"               Value="0x00000011" />
-                <Set Name="DIF_PROPERTYCHANGE"                  Value="0x00000012" />
-                <Set Name="DIF_ENABLECLASS"                     Value="0x00000013" />
-                <Set Name="DIF_DETECTVERIFY"                    Value="0x00000014" />
-                <Set Name="DIF_INSTALLDEVICEFILES"              Value="0x00000015" />
-                <Set Name="DIF_UNREMOVE"                        Value="0x00000016" />
-                <Set Name="DIF_SELECTBESTCOMPATDRV"             Value="0x00000017" />
-                <Set Name="DIF_ALLOW_INSTALL"                   Value="0x00000018" />
-                <Set Name="DIF_REGISTERDEVICE"                  Value="0x00000019" />
-                <Set Name="DIF_NEWDEVICEWIZARD_PRESELECT"       Value="0x0000001A" />
-                <Set Name="DIF_NEWDEVICEWIZARD_SELECT"          Value="0x0000001B" />
-                <Set Name="DIF_NEWDEVICEWIZARD_PREANALYZE"      Value="0x0000001C" />
-                <Set Name="DIF_NEWDEVICEWIZARD_POSTANALYZE"     Value="0x0000001D" />
-                <Set Name="DIF_NEWDEVICEWIZARD_FINISHINSTALL"   Value="0x0000001E" />
-                <Set Name="DIF_UNUSED1"                         Value="0x0000001F" />
-                <Set Name="DIF_INSTALLINTERFACES"               Value="0x00000020" />
-                <Set Name="DIF_DETECTCANCEL"                    Value="0x00000021" />
-                <Set Name="DIF_REGISTER_COINSTALLERS"           Value="0x00000022" />
-                <Set Name="DIF_ADDPROPERTYPAGE_ADVANCED"        Value="0x00000023" />
-                <Set Name="DIF_ADDPROPERTYPAGE_BASIC"           Value="0x00000024" />
-                <Set Name="DIF_RESERVED1"                       Value="0x00000025" />
-                <Set Name="DIF_TROUBLESHOOTER"                  Value="0x00000026" />
-                <Set Name="DIF_POWERMESSAGEWAKE"                Value="0x00000027" />
-                <Set Name="DIF_ADDREMOTEPROPERTYPAGE_ADVANCED"  Value="0x00000028" />
-                <Set Name="DIF_UPDATEDRIVER_UI"                 Value="0x00000029" />
-                <Set Name="DIF_FINISHINSTALL_ACTION"            Value="0x0000002A" />
-                <Set Name="DIF_RESERVED2"                       Value="0x00000030" />
-                <Set Name="DIF_MOVEDEVICE"                      Value="0x0000000E" />
-            </Enum>
         </Variable>
 
         <Variable Name="[CM_Locate_DevNode_Flags]" Type="Alias" Base="ULONG">
@@ -370,49 +475,6 @@
                 <Set Name="PNP_VetoInsufficientRights"      Value="12" />
             </Enum>
         </Variable>
-
-        <Variable Name="DEVINSTID"                          Type="Alias"    Base="TCHAR*" />
-        <Variable Name="HDSKSPC"                            Type="Alias"    Base="LPVOID" />
-        <Variable Name="HINF"                               Type="Alias"    Base="LPVOID" />
-        <Variable Name="HSPFILEQ"                           Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSP_FILE_CALLBACK"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="PINFCONTEXT"                        Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSP_INF_INFORMATION"                Type="Alias"    Base="LPVOID" />
-        <Variable Name="HSPFILELOG"                         Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSP_ALTPLATFORM_INFO"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSP_ORIGINAL_FILE_INFO"             Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSP_FILE_COPY_PARAMS"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSP_ALTPLATFORM_FORM"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSP_INF_SIGNER_INFO_W"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSP_DEVICE_INTERFACE_DATA"          Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSP_CLASSIMAGELIST_DATA"            Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPPROPSHEETHEADER"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSP_CLASSINSTALL_HEADER"            Type="Alias"    Base="LPVOID" />
-        <Variable Name="DEVPROPKEY*"                        Type="Alias"    Base="LPVOID" />
-        <Variable Name="CONST DEVPROPKEY*"                  Type="Alias"    Base="DEVPROPKEY*" />
-        <Variable Name="PSP_DEVINFO_LIST_DETAIL_DATA"       Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSP_DEVINSTALL_PARAMS"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSP_DEVICE_INTERFACE_DETAIL_DATA"   Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSP_DRVINFO_DETAIL_DATA"            Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSP_DRVINSTALL_PARAMS"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSP_DETSIG_CMPPROC"                 Type="Alias"    Base="LPVOID" />
-        <Variable Name="SP_LOG_TOKEN"                       Type="Alias"    Base="DWORDLONG" />
-        <Variable Name="LOG_CONF"                           Type="Alias"    Base="DWORD_PTR" />
-        <Variable Name="PLOG_CONF"                          Type="Pointer"  Base="LOG_CONF" />
-        <Variable Name="DEVINST"                            Type="Alias"    Base="DWORD" />
-        <Variable Name="PDEVINST"                           Type="Pointer"  Base="DWORD" />
-        <Variable Name="PRIORITY"                           Type="Alias"    Base="ULONG" />
-        <Variable Name="PPRIORITY"                          Type="Pointer"  Base="PRIORITY" />
-        <Variable Name="CONFIGRET"                          Type="Alias"    Base="DWORD" />
-        <Variable Name="RES_DES"                            Type="Alias"    Base="DWORD_PTR" />
-        <Variable Name="PRES_DES"                           Type="Pointer"  Base="RES_DES" />
-        <Variable Name="RESOURCEID"                         Type="Alias"    Base="ULONG" />
-        <Variable Name="PRESOURCEID"                        Type="Pointer"  Base="RESOURCEID" />
-        <Variable Name="HMACHINE"                           Type="Alias"    Base="HANDLE" />
-        <Variable Name="PHMACHINE"                          Type="Pointer"  Base="HMACHINE" />
-        <Variable Name="CONFLICT_LIST"                      Type="Alias"    Base="ULONG_PTR" />
-        <Variable Name="PCONFLICT_LIST"                     Type="Alias"    Base="LPVOID" />
-        <Variable Name="PCONFLICT_DETAILS"                  Type="Alias"    Base="LPVOID" />
 
         <!-- Setup API -->
         <Category Name="Administration and Management/Application Installation and Servicing/Setup API" />
@@ -1191,7 +1253,7 @@
         </Api>
         <Api Name="SetupVerifyInfFile" BothCharset="True">
             <Param Type="PCWSTR" Name="InfName" />
-            <Param Type="PSP_ALTPLATFORM_FORM" Name="AltPlatformInfo" />
+            <Param Type="PSP_ALTPLATFORM_INFO" Name="AltPlatformInfo" />
             <Param Type="PSP_INF_SIGNER_INFO_W" Name="InfFileName" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
@@ -1553,7 +1615,7 @@
         <Api Name="SetupDiGetClassInstallParams" BothCharset="True">
             <Param Type="HDEVINFO" Name="DeviceInfoSet" />
             <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
-            <Param Type="PSP_CLASSINSTALL_HEADER" Name="ClassInstallParams" Length="ClassInstallParamsSize" />
+            <Param Type="PSP_CLASSINSTALL_HEADER" Name="ClassInstallParams" Disabled_Length="ClassInstallParamsSize" />
             <Param Type="DWORD" Name="ClassInstallParamsSize" />
             <Param Type="PDWORD" Name="RequiredSize" />
             <Return Type="BOOL" />
@@ -1606,7 +1668,7 @@
         <Api Name="SetupDiGetClassRegistryProperty" BothCharset="True">
             <Param Type="LPGUID" Name="ClassGuid" />
             <Param Type="DWORD" Name="Property" />
-            <Param Type="[RegType*/PDWORD]" Name="PropertyRegDataType" />
+            <Param Type="[RegType*]" Display="PDWORD" Name="PropertyRegDataType" />
             <Param Type="PBYTE" Name="PropertyBuffer" />
             <Param Type="DWORD" Name="PropertyBufferSize" />
             <Param Type="PDWORD" Name="RequiredSize" />
@@ -1620,7 +1682,7 @@
             <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
             <Param Type="PCTSTR" Name="CustomPropertyName" />
             <Param Type="[GetCustomDevicePropertyFlags]" Name="Flags" />
-            <Param Type="[RegType*/PDWORD]" Name="PropertyRegDataType" />
+            <Param Type="[RegType*]" Display="PDWORD" Name="PropertyRegDataType" />
             <Param Type="PBYTE" Name="PropertyBuffer" PostLength="RequiredSize" />
             <Param Type="DWORD" Name="PropertyBufferSize" />
             <Param Type="PDWORD" Name="RequiredSize" />
@@ -1721,7 +1783,7 @@
             <Param Type="HDEVINFO" Name="DeviceInfoSet" />
             <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
             <Param Type="[SetupDeviceRegistryProperty]" Name="Property" />
-            <Param Type="[RegType*/PDWORD]" Name="PropertyRegDataType" />
+            <Param Type="[RegType*]" Display="PDWORD" Name="PropertyRegDataType" />
             <Param Type="PBYTE" Name="PropertyBuffer" PostLength="PropertyBufferSize" />
             <Param Type="DWORD" Name="PropertyBufferSize" />
             <Param Type="PDWORD" Name="RequiredSize" />
@@ -1964,7 +2026,7 @@
         <Api Name="SetupDiSetClassInstallParams" BothCharset="True">
             <Param Type="HDEVINFO" Name="DeviceInfoSet" />
             <Param Type="PSP_DEVINFO_DATA" Name="DeviceInfoData" />
-            <Param Type="PSP_CLASSINSTALL_HEADER" Name="ClassInstallParams" Length="ClassInstallParamsSize" />
+            <Param Type="PSP_CLASSINSTALL_HEADER" Name="ClassInstallParams" Disabled_Length="ClassInstallParamsSize" />
             <Param Type="DWORD" Name="ClassInstallParamsSize" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />

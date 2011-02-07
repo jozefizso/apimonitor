@@ -7,11 +7,81 @@
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\ole.h.xml" />
     <Module Name="Dsprop.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        <!-- Parameters -->
-        <Variable Name="const PADS_ATTR_INFO"    Type="Alias" Base="LPVOID" />
-        <Variable Name="PADSPROPINITPARAMS"      Type="Alias" Base="LPVOID" />
-        <Variable Name="PADSPROPERROR"           Type="Alias" Base="LPVOID" />
+        <!-- Variables -->
+        <Variable Name="IDirectoryObject" Type="Interface" />
+        
+        <!-- TODO: Structures -->
+        <Variable Name="PADSVALUE"  Type="Alias" Base="LPVOID" />
 
+        <!-- ADSTYPE -->
+        <Variable Name="ADSTYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="ADSTYPE_INVALID"                 Value="0" />
+                <Set Name="ADSTYPE_DN_STRING"               Value="1" />
+                <Set Name="ADSTYPE_CASE_EXACT_STRING"       Value="2" />
+                <Set Name="ADSTYPE_CASE_IGNORE_STRING"      Value="3" />
+                <Set Name="ADSTYPE_PRINTABLE_STRING"        Value="4" />
+                <Set Name="ADSTYPE_NUMERIC_STRING"          Value="5" />
+                <Set Name="ADSTYPE_BOOLEAN"                 Value="6" />
+                <Set Name="ADSTYPE_INTEGER"                 Value="7" />
+                <Set Name="ADSTYPE_OCTET_STRING"            Value="8" />
+                <Set Name="ADSTYPE_UTC_TIME"                Value="9" />
+                <Set Name="ADSTYPE_LARGE_INTEGER"           Value="10" />
+                <Set Name="ADSTYPE_PROV_SPECIFIC"           Value="11" />
+                <Set Name="ADSTYPE_OBJECT_CLASS"            Value="12" />
+                <Set Name="ADSTYPE_CASEIGNORE_LIST"         Value="13" />
+                <Set Name="ADSTYPE_OCTET_LIST"              Value="14" />
+                <Set Name="ADSTYPE_PATH"                    Value="15" />
+                <Set Name="ADSTYPE_POSTALADDRESS"           Value="16" />
+                <Set Name="ADSTYPE_TIMESTAMP"               Value="17" />
+                <Set Name="ADSTYPE_BACKLINK"                Value="18" />
+                <Set Name="ADSTYPE_TYPEDNAME"               Value="19" />
+                <Set Name="ADSTYPE_HOLD"                    Value="20" />
+                <Set Name="ADSTYPE_NETADDRESS"              Value="21" />
+                <Set Name="ADSTYPE_REPLICAPOINTER"          Value="22" />
+                <Set Name="ADSTYPE_FAXNUMBER"               Value="23" />
+                <Set Name="ADSTYPE_EMAIL"                   Value="24" />
+                <Set Name="ADSTYPE_NT_SECURITY_DESCRIPTOR"  Value="25" />
+                <Set Name="ADSTYPE_UNKNOWN"                 Value="26" />
+                <Set Name="ADSTYPE_DN_WITH_BINARY"          Value="27" />
+                <Set Name="ADSTYPE_DN_WITH_STRING"          Value="28" />
+            </Enum>
+        </Variable>
+
+        <!-- ADS_ATTR_INFO -->
+        <Variable Name="ADS_ATTR_INFO" Type="Struct">
+            <Field Type="LPWSTR" 	Name="pszAttrName" />
+            <Field Type="DWORD" 	Name="dwControlCode" />
+            <Field Type="ADSTYPE" 	Name="dwADsType" />
+            <Field Type="PADSVALUE" Name="pADsValues" />
+            <Field Type="DWORD" 	Name="dwNumValues" />
+        </Variable>
+        <Variable Name="PADS_ATTR_INFO"         Type="Pointer" Base="ADS_ATTR_INFO" />
+        <Variable Name="const PADS_ATTR_INFO"   Type="Pointer" Base="ADS_ATTR_INFO" />
+
+        <!-- ADSPROPINITPARAMS -->
+        <Variable Name="ADSPROPINITPARAMS" Type="Struct">
+            <Field Type="DWORD"              	Name="dwSize" />
+            <Field Type="DWORD"              	Name="dwFlags" />
+            <Field Type="HRESULT"            	Name="hr" />
+            <Field Type="IDirectoryObject*"  	Name="pDsObj" />
+            <Field Type="LPWSTR"             	Name="pwzCN" />
+            <Field Type="PADS_ATTR_INFO"     	Name="pWritableAttrs" />
+        </Variable>
+        <Variable Name="PADSPROPINITPARAMS" Type="Pointer" Base="ADSPROPINITPARAMS" />
+
+        <!-- ADSPROPERROR -->
+        <Variable Name="ADSPROPERROR" Type="Struct">
+            <Field Type="HWND"          Name="hwndPage" />
+            <Field Type="PWSTR"         Name="pszPageTitle" />
+            <Field Type="PWSTR"         Name="pszObjPath" />
+            <Field Type="PWSTR"         Name="pszObjClass" />
+            <Field Type="HRESULT"       Name="hr" />
+            <Field Type="PWSTR"         Name="pszError" />
+        </Variable>
+        <Variable Name="PADSPROPERROR" Type="Pointer" Base="ADSPROPERROR" />
+
+        <!-- API's -->
         <Category Name="Administration and Management/Directory, Identity, and Access Services/Directory Services/Directories/Active Directory Domain Services/MMC Property Page" />
         <Api Name="ADsPropCheckIfWritable">
             <Param Type="const PWSTR" Name="pwzAttr" />

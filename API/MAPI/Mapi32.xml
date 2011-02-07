@@ -10,11 +10,79 @@
         <!-- Variables -->
         <Variable Name="LHANDLE"            Type="Alias"    Base="ULONG_PTR" />
         <Variable Name="LPLHANDLE"          Type="Pointer"  Base="LHANDLE" />
-        <Variable Name="lpMapiRecipDesc"    Type="Alias"    Base="LPVOID" />
-        <Variable Name="lpMapiRecipDesc*"   Type="Pointer"  Base="lpMapiRecipDesc" />
-        <Variable Name="lpMapiMessage"      Type="Alias"    Base="LPVOID" />
-        <Variable Name="lpMapiMessage*"     Type="Pointer"  Base="lpMapiMessage" />
 
+        <!-- [MapiRecipClass] -->
+        <Variable Name="[MapiRecipClass]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="MAPI_ORIG"       Value="0" />
+                <Set Name="MAPI_TO"         Value="1" />
+                <Set Name="MAPI_CC"         Value="2" />
+                <Set Name="MAPI_BCC"        Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- MapiRecipDesc -->
+        <Variable Name="MapiRecipDesc" Type="Struct">
+            <Field Type="ULONG"             Name="ulReserved" />
+            <Field Type="[MapiRecipClass]"  Name="ulRecipClass" />
+            <Field Type="LPSTR"             Name="lpszName" />
+            <Field Type="LPSTR"             Name="lpszAddress" />
+            <Field Type="ULONG"             Name="ulEIDSize" />
+            <Field Type="LPVOID"            Name="lpEntryID" Length="ulEIDSize" />
+        </Variable>
+        <Variable Name="lpMapiRecipDesc"  Type="Pointer" Base="MapiRecipDesc" />
+        <Variable Name="lpMapiRecipDesc*" Type="Pointer" Base="lpMapiRecipDesc" />
+
+        <!-- [MapiFileDescFlags] -->
+        <Variable Name="[MapiFileDescFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="MAPI_OLE"            Value="0x00000001" />
+                <Set Name="MAPI_OLE_STATIC"     Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <!-- MapiFileDesc -->
+        <Variable Name="MapiFileDesc" Type="Struct">
+            <Field Type="ULONG"                 Name="ulReserved" />
+            <Field Type="[MapiFileDescFlags]"   Name="flFlags" />
+            <Field Type="ULONG"                 Name="nPosition" />
+            <Field Type="LPSTR"                 Name="lpszPathName" />
+            <Field Type="LPSTR"                 Name="lpszFileName" />
+            <Field Type="LPVOID"                Name="lpFileType" />
+        </Variable>
+        <Variable Name="lpMapiFileDesc" Type="Pointer" Base="MapiFileDesc" />
+
+        <!-- [MapiMessageFlags] -->
+        <Variable Name="[MapiMessageFlags]" Type="Alias" Base="unsigned long">
+            <Display Name="FLAGS" />
+            <Flag>
+                <Set Name="MAPI_UNREAD"             Value="0x00000001" />
+                <Set Name="MAPI_RECEIPT_REQUESTED"  Value="0x00000002" />
+                <Set Name="MAPI_SENT"               Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <!-- MapiMessage -->
+        <Variable Name="MapiMessage" Type="Struct">
+            <Field Type="ULONG"                 Name="ulReserved" />
+            <Field Type="LPSTR"                 Name="lpszSubject" />
+            <Field Type="LPSTR"                 Name="lpszNoteText" />
+            <Field Type="LPSTR"                 Name="lpszMessageType" />
+            <Field Type="LPSTR"                 Name="lpszDateReceived" />
+            <Field Type="LPSTR"                 Name="lpszConversationID" />
+            <Field Type="[MapiMessageFlags]"    Name="flFlags" />
+            <Field Type="lpMapiRecipDesc"       Name="lpOriginator" />
+            <Field Type="ULONG"                 Name="nRecipCount" />
+            <Field Type="lpMapiRecipDesc"       Name="lpRecips" />
+            <Field Type="ULONG"                 Name="nFileCount" />
+            <Field Type="lpMapiFileDesc"        Name="lpFiles" />
+        </Variable>
+        <Variable Name="lpMapiMessage"  Type="Pointer" Base="MapiMessage" />
+        <Variable Name="lpMapiMessage*" Type="Pointer" Base="lpMapiMessage" />
+
+        <!-- [MapiErrorCode] -->
         <Variable Name="[MapiErrorCode]" Type="Alias" Base="ULONG">
             <Display Name="ULONG" />
             <Enum>

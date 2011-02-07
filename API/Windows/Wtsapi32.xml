@@ -6,18 +6,45 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Wtsapi32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+
         <!-- Variables -->
-        <Variable Name="LPVOID/PCHAR" Type="Alias" Base="LPVOID">
-            <Display Name="PCHAR" />
+
+        <!-- WTS_PROCESS_INFO -->
+        <Variable Name="WTS_PROCESS_INFO" Type="Struct">
+            <Field Type="DWORD" 	Name="SessionId" />
+            <Field Type="DWORD" 	Name="ProcessId" />
+            <Field Type="LPTSTR" 	Name="pProcessName" />
+            <Field Type="PSID"  	Name="pUserSid" />
         </Variable>
-        
-        <Variable Name="PWTS_PROCESS_INFO"      Type="Alias"    Base="LPVOID" />
-        <Variable Name="PWTS_PROCESS_INFO*"     Type="Pointer"  Base="PWTS_PROCESS_INFO"/>
+        <Variable Name="PWTS_PROCESS_INFO"      Type="Pointer" Base="WTS_PROCESS_INFO" />
+        <Variable Name="PWTS_PROCESS_INFO*"     Type="Pointer" Base="PWTS_PROCESS_INFO"/>
 
-        <Variable Name="PWTS_SESSION_INFO"      Type="Alias"    Base="LPVOID" />
-        <Variable Name="PWTS_SESSION_INFO*"     Type="Pointer"  Base="PWTS_SESSION_INFO"/>
+        <!-- WTS_CONNECTSTATE_CLASS -->
+        <Variable Name="WTS_CONNECTSTATE_CLASS" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="WTSActive"			Value="0" />
+                <Set Name="WTSConnected"		Value="1" />
+                <Set Name="WTSConnectQuery"		Value="2" />
+                <Set Name="WTSShadow"			Value="3" />
+                <Set Name="WTSDisconnected"		Value="4" />
+                <Set Name="WTSIdle"			    Value="5" />
+                <Set Name="WTSListen"			Value="6" />
+                <Set Name="WTSReset"			Value="7" />
+                <Set Name="WTSDown"			    Value="8" />
+                <Set Name="WTSInit"			    Value="9" />
+            </Enum>
+        </Variable>
 
-        <Variable Name="WTS_INFO_CLASS"         Type="Alias"    Base="UINT">
+        <!-- WTS_SESSION_INFO -->
+        <Variable Name="WTS_SESSION_INFO" Type="Struct">
+            <Field Type="DWORD" 	                Name="SessionId" />
+            <Field Type="LPTSTR" 	                Name="pWinStationName" />
+            <Field Type="WTS_CONNECTSTATE_CLASS" 	Name="State" />
+        </Variable>
+        <Variable Name="PWTS_SESSION_INFO"      Type="Pointer" Base="WTS_SESSION_INFO" />
+        <Variable Name="PWTS_SESSION_INFO*"     Type="Pointer" Base="PWTS_SESSION_INFO"/>
+
+        <Variable Name="WTS_INFO_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="WTSInitialProgram"       Value="0" />
                 <Set Name="WTSApplicationName"      Value="1" />
@@ -45,10 +72,7 @@
             </Enum>
         </Variable>
 
-
-
-
-        <Variable Name="WTS_CONFIG_CLASS"       Type="Alias"    Base="UINT">
+        <Variable Name="WTS_CONFIG_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="WTSUserConfigInitialProgram"                 Value="0" />
                 <Set Name="WTSUserConfigWorkingDirectory"               Value="1" />
@@ -72,20 +96,13 @@
             </Enum>
         </Variable>
 
-
-
-
-
-
-
-        <Variable Name="WTS_VIRTUAL_CLASS"      Type="Alias"    Base="UINT">
+        <Variable Name="WTS_VIRTUAL_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="WTSVirtualClientData"    Value="0" />
                 <Set Name="WTSVirtualFileHandle"    Value="1" />
             </Enum>
         </Variable>
 
-        <!-- Flags -->
         <Variable Name="[ConsoleNotificationFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>
@@ -93,12 +110,14 @@
                 <Set Name="NOTIFY_FOR_THIS_SESSION" Value="0" />
             </Enum>
         </Variable>
+        
         <Variable Name="[WtsServerHandle]" Type="Alias" Base="HANDLE">
             <Display Name="HANDLE" />
             <Enum>
                 <Set Name="WTS_CURRENT_SERVER_HANDLE" Value="0" />
             </Enum>
         </Variable>
+        
         <Variable Name="[WtsEventFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -116,9 +135,11 @@
                 <Set Name="WTS_EVENT_FLUSH"         Value="0x80000000" />
             </Flag>
         </Variable>
+        
         <Variable Name="[WtsEventFlags*]" Type="Pointer" Base="[WtsEventFlags]">
             <Display Name="DWORD*" />
         </Variable>
+        
         <!-- Terminal Services API -->
         <Category Name="System Services/Remote Desktop Services" />
         <Api Name="WTSCloseServer">
@@ -304,7 +325,7 @@
         <Api Name="WTSVirtualChannelRead">
             <Param Type="HANDLE" Name="hChannelHandle" />
             <Param Type="ULONG" Name="TimeOut" />
-            <Param Type="LPVOID/PCHAR" Name="Buffer" PostLength="pBytesRead" />
+            <Param Type="LPVOID" Display="PCHAR" Name="Buffer" PostLength="pBytesRead" />
             <Param Type="ULONG" Name="BufferSize" />
             <Param Type="PULONG" Name="pBytesRead" />
             <Return Type="BOOL" />
@@ -312,7 +333,7 @@
         </Api>
         <Api Name="WTSVirtualChannelWrite">
             <Param Type="HANDLE" Name="hChannelHandle" />
-            <Param Type="LPVOID/PCHAR" Name="Buffer" Length="Length" />
+            <Param Type="LPVOID" Display="PCHAR" Name="Buffer" Length="Length" />
             <Param Type="ULONG" Name="Length" />
             <Param Type="PULONG" Name="pBytesWritten" />
             <Return Type="BOOL" />

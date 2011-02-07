@@ -6,15 +6,41 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Headers>
-        <Variable Name="SNMPAPI"                 Type="Alias"        Base="INT" />
-        <Variable Name="LPSNMP_MGR_SESSION"      Type="Alias"        Base="LPVOID" />
-        <Variable Name="AsnObjectIdentifier*"    Type="Alias"        Base="LPVOID" />
-        <Variable Name="AsnNetworkAddress*"      Type="Alias"        Base="LPVOID" />
-        <Variable Name="AsnInteger*"             Type="Alias"        Base="LPVOID" />
-        <Variable Name="AsnTimeticks*"           Type="Alias"        Base="LPVOID" />
-        <Variable Name="SnmpVarBindList*"        Type="Alias"        Base="LPVOID" />
-        <Variable Name="AsnOctetString*"         Type="Alias"        Base="LPVOID" />
-        <Variable Name="AsnAny*"                 Type="Alias"        Base="LPVOID" />
-        <Variable Name="SnmpVarBind*"            Type="Alias"        Base="LPVOID" />
+        <!-- Variables -->
+        <Variable Name="SNMPAPI"                Type="Alias"    Base="INT" />
+        <Variable Name="LPSNMP_MGR_SESSION"     Type="Alias"    Base="PVOID" />
+        <Variable Name="AsnInteger"             Type="Alias"    Base="LONG" />
+        <Variable Name="AsnInteger*"            Type="Pointer"  Base="AsnInteger" />
+        <Variable Name="AsnTimeticks"           Type="Alias"    Base="ULONG" />
+        <Variable Name="AsnTimeticks*"          Type="Pointer"  Base="AsnTimeticks" />
+
+        <!-- TODO: Structures -->
+        <Variable Name="AsnAny*"                Type="Alias"    Base="LPVOID" />
+        <Variable Name="SnmpVarBind*"           Type="Alias"    Base="LPVOID" />
+
+        <!-- AsnObjectIdentifier -->
+        <Variable Name="AsnObjectIdentifier" Type="Struct" Pack="4">
+            <Field Type="UINT"      Name="idLength" />
+            <Field Type="UINT*"     Name="ids" />
+        </Variable>
+        <Variable Name="AsnObjectIdentifier*" Type="Pointer" Base="AsnObjectIdentifier" />
+
+        <!-- AsnOctetString -->
+        <Variable Name="AsnOctetString" Type="Struct" Pack="4">
+            <Field Type="BYTE*"  	Name="stream" />
+            <Field Type="UINT"   	Name="length" />
+            <Field Type="BOOL"      Name="dynamic" />
+        </Variable>
+        <Variable Name="AsnOctetString*"    Type="Pointer"  Base="AsnOctetString" />
+        <Variable Name="AsnNetworkAddress"  Type="Alias"    Base="AsnOctetString" />
+        <Variable Name="AsnNetworkAddress*" Type="Pointer"  Base="AsnNetworkAddress" />
+
+        <!-- SnmpVarBindList -->
+        <Variable Name="SnmpVarBindList" Type="Struct" Pack="4">
+            <Field Type="SnmpVarBind*"  Name="list" />
+            <Field Type="UINT"          Name="len" />
+        </Variable>
+        <Variable Name="SnmpVarBindList*" Type="Pointer" Base="SnmpVarBindList" />
+        
     </Headers>
 </ApiMonitor>

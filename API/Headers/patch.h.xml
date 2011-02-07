@@ -6,14 +6,87 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Headers>
-        <Variable Name="PPATCH_PROGRESS_CALLBACK"    Type="Alias" Base="LPVOID" />
-        <Variable Name="PPATCH_IGNORE_RANGE"         Type="Alias" Base="LPVOID" />
-        <Variable Name="PPATCH_RETAIN_RANGE"         Type="Alias" Base="LPVOID" />
-        <Variable Name="PPATCH_OPTION_DATA"          Type="Alias" Base="LPVOID" />
-        <Variable Name="PATCH_OPTION_DATA*"          Type="Alias" Base="PPATCH_OPTION_DATA" />
-        <Variable Name="PPATCH_OLD_FILE_INFO_H"      Type="Alias" Base="LPVOID" />
-        <Variable Name="PPATCH_OLD_FILE_INFO_A"      Type="Alias" Base="LPVOID" />
+        <!-- Variables -->
+        <Variable Name="PPATCH_PROGRESS_CALLBACK"   Type="Alias" Base="LPVOID" />
+        <Variable Name="PPATCH_SYMLOAD_CALLBACK"    Type="Alias" Base="LPVOID" />
 
+        <!-- TODO: Structures -->
+        <Variable Name="PPATCH_INTERLEAVE_MAP"      Type="Alias"    Base="LPVOID" />
+        <Variable Name="PPATCH_INTERLEAVE_MAP*"     Type="Pointer"  Base="PPATCH_INTERLEAVE_MAP" />
+
+        <!-- PATCH_IGNORE_RANGE -->
+        <Variable Name="PATCH_IGNORE_RANGE" Type="Struct">
+            <Field Type="ULONG" 	Name="OffsetInOldFile" />
+            <Field Type="ULONG" 	Name="LengthInBytes" />
+        </Variable>
+        <Variable Name="PPATCH_IGNORE_RANGE" Type="Pointer" Base="PATCH_IGNORE_RANGE" />
+
+        <!-- PATCH_RETAIN_RANGE -->
+        <Variable Name="PATCH_RETAIN_RANGE" Type="Struct">
+            <Field Type="ULONG" 	Name="OffsetInOldFile" />
+            <Field Type="ULONG" 	Name="LengthInBytes" />
+            <Field Type="ULONG" 	Name="OffsetInNewFile" />
+        </Variable>
+        <Variable Name="PPATCH_RETAIN_RANGE" Type="Pointer" Base="PATCH_RETAIN_RANGE" />
+
+        <!-- [PatchSymbolOptions] -->
+        <Variable Name="[PatchSymbolOptions]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="PATCH_SYMBOL_NO_IMAGEHLP"        Value="0x00000001" />
+                <Set Name="PATCH_SYMBOL_NO_FAILURES"        Value="0x00000002" />
+                <Set Name="PATCH_SYMBOL_UNDECORATED_TOO"    Value="0x00000004" />
+                <Set Name="PATCH_SYMBOL_RESERVED1"          Value="0x80000000" />
+            </Flag>
+        </Variable>
+
+        <!-- [PatchExtendedOptions] -->
+        <Variable Name="[PatchExtendedOptions]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="PATCH_TRANSFORM_PE_RESOURCE_2"   Value="0x00000100" />
+                <Set Name="PATCH_TRANSFORM_PE_IRELOC_2"     Value="0x00000200" />
+            </Flag>
+        </Variable>
+
+        <!-- PATCH_OPTION_DATA -->
+        <Variable Name="PATCH_OPTION_DATA" Type="Struct">
+            <Field Type="ULONG"                   	Name="SizeOfThisStruct" />
+            <Field Type="[PatchSymbolOptions]"      Name="SymbolOptionFlags" />
+            <Field Type="LPCSTR"                  	Name="NewFileSymbolPath" />
+            <Field Type="LPCSTR*"                 	Name="OldFileSymbolPathArray" />
+            <Field Type="[PatchExtendedOptions]"    Name="ExtendedOptionFlags" />
+            <Field Type="PPATCH_SYMLOAD_CALLBACK" 	Name="SymLoadCallback" />
+            <Field Type="PVOID"                   	Name="SymLoadContext" />
+            <Field Type="PPATCH_INTERLEAVE_MAP*"  	Name="InterleaveMapArray" />
+            <Field Type="ULONG"                   	Name="MaxLzxWindowSize" />
+        </Variable>
+        <Variable Name="PATCH_OPTION_DATA*"  Type="Pointer" Base="PATCH_OPTION_DATA" />
+        <Variable Name="PPATCH_OPTION_DATA"  Type="Pointer" Base="PATCH_OPTION_DATA" />
+
+        <!-- PATCH_OLD_FILE_INFO_H -->
+        <Variable Name="PATCH_OLD_FILE_INFO_H" Type="Struct">
+            <Field Type="ULONG"               	Name="SizeOfThisStruct" />
+            <Field Type="HANDLE"              	Name="OldFileHandle" />
+            <Field Type="ULONG"               	Name="IgnoreRangeCount" />
+            <Field Type="PPATCH_IGNORE_RANGE" 	Name="IgnoreRangeArray" />
+            <Field Type="ULONG"               	Name="RetainRangeCount" />
+            <Field Type="PPATCH_RETAIN_RANGE" 	Name="RetainRangeArray" />
+        </Variable>
+        <Variable Name="PPATCH_OLD_FILE_INFO_H" Type="Pointer" Base="PATCH_OLD_FILE_INFO_H" />
+
+        <!-- PATCH_OLD_FILE_INFO -->
+        <Variable Name="PATCH_OLD_FILE_INFO" Type="Struct">
+            <Field Type="ULONG"               	Name="SizeOfThisStruct" />
+            <Field Type="LPCTSTR"              	Name="OldFileName" />
+            <Field Type="ULONG"               	Name="IgnoreRangeCount" />
+            <Field Type="PPATCH_IGNORE_RANGE" 	Name="IgnoreRangeArray" />
+            <Field Type="ULONG"               	Name="RetainRangeCount" />
+            <Field Type="PPATCH_RETAIN_RANGE" 	Name="RetainRangeArray" />
+        </Variable>
+        <Variable Name="PPATCH_OLD_FILE_INFO" Type="Pointer" Base="PATCH_OLD_FILE_INFO" />
+
+        <!-- [PatchOptionFlags] -->
         <Variable Name="[PatchOptionFlags]" Type="Alias" Base="ULONG">
             <Display Name="ULONG" />
             <Flag>

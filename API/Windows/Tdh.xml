@@ -6,17 +6,18 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Tdh.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        <!-- Parameters -->
+        
+        <!-- Variables -->
+        
+        <!-- TODO: Structures -->
         <Variable Name="PPROVIDER_FIELD_INFOARRAY"       Type="Alias"        Base="LPVOID" />
-        <Variable Name="PTDH_CONTEXT"                    Type="Alias"        Base="LPVOID" />
         <Variable Name="PPROVIDER_FILTER_INFO*"          Type="Alias"        Base="LPVOID" />
         <Variable Name="PPROVIDER_ENUMERATION_INFO"      Type="Alias"        Base="LPVOID" />
         <Variable Name="PTRACE_EVENT_INFO"               Type="Alias"        Base="LPVOID" />
         <Variable Name="PEVENT_MAP_INFO"                 Type="Alias"        Base="LPVOID" />
         <Variable Name="PEVENT_RECORD"                   Type="Alias"        Base="LPVOID" />
-        <Variable Name="PPROPERTY_DATA_DESCRIPTOR"       Type="Alias"        Base="LPVOID" />
 
-        <!-- Flags -->
+        <!-- EVENT_FIELD_TYPE -->
         <Variable Name="EVENT_FIELD_TYPE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="EventKeywordInformation"     Value="0" />
@@ -26,6 +27,40 @@
                 <Set Name="EventOpcodeInformation"      Value="4" />
             </Enum>
         </Variable>
+
+        <!-- PROVIDER_FIELD_INFO -->
+        <Variable Name="PROVIDER_FIELD_INFO" Type="Struct">
+            <Field Type="ULONG" 	    Name="NameOffset" />
+            <Field Type="ULONG" 	    Name="DescriptionOffset" />
+            <Field Type="ULONGLONG" 	Name="Value" />
+        </Variable>
+
+        <!-- TDH_CONTEXT_TYPE -->
+        <Variable Name="TDH_CONTEXT_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="TDH_CONTEXT_WPP_TMFFILE"         Value="0" />
+                <Set Name="TDH_CONTEXT_WPP_TMFSEARCHPATH"   Value="1" />
+                <Set Name="TDH_CONTEXT_WPP_GMT"             Value="2" />
+                <Set Name="TDH_CONTEXT_POINTERSIZE"         Value="3" />
+            </Enum>
+        </Variable>
+        
+        <!-- TDH_CONTEXT -->
+        <Variable Name="TDH_CONTEXT" Type="Struct">
+            <Field Type="ULONGLONG" 	    Name="ParameterValue" />
+            <Field Type="TDH_CONTEXT_TYPE" 	Name="ParameterType" />
+            <Field Type="ULONG" 	        Name="ParameterSize" />
+        </Variable>
+        <Variable Name="PTDH_CONTEXT" Type="Pointer" Base="TDH_CONTEXT" />
+
+        <!-- PROPERTY_DATA_DESCRIPTOR -->
+        <Variable Name="PROPERTY_DATA_DESCRIPTOR" Type="Struct">
+            <Field Type="ULONGLONG" 	Name="PropertyName" />
+            <Field Type="ULONG" 	    Name="ArrayIndex" />
+            <Field Type="ULONG" 	    Name="Reserved" />
+        </Variable>
+        <Variable Name="PPROPERTY_DATA_DESCRIPTOR" Type="Pointer" Base="PROPERTY_DATA_DESCRIPTOR" />
+
         <!-- Event Tracing -->
         <Category Name="Diagnostics/Windows Events/Event Tracing" />
         <Api Name="TdhEnumerateProviderFieldInformation">

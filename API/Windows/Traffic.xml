@@ -6,12 +6,34 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Traffic.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        <!-- Parameters -->
-        <Variable Name="PTC_GEN_FILTER"          Type="Alias"        Base="LPVOID" />
+        <!-- Variables -->
+        <Variable Name="TCI_NOTIFY_HANDLER"             Type="Alias" Base="LPVOID" />
+        <Variable Name="TCI_ADD_FLOW_COMPLETE_HANDLER"  Type="Alias" Base="LPVOID" />
+        <Variable Name="TCI_MOD_FLOW_COMPLETE_HANDLER"  Type="Alias" Base="LPVOID" />
+        <Variable Name="TCI_DEL_FLOW_COMPLETE_HANDLER"  Type="Alias" Base="LPVOID" />
+
+        <!-- TC_GEN_FILTER -->
+        <Variable Name="TC_GEN_FILTER" Type="Struct">
+            <Field Type="USHORT"  	Name="AddressType" />
+            <Field Type="ULONG"   	Name="PatternSize" />
+            <Field Type="PVOID"   	Name="Pattern" Length="PatternSize" />
+            <Field Type="PVOID"   	Name="Mask" Length="PatternSize" />
+        </Variable>
+        <Variable Name="PTC_GEN_FILTER" Type="Pointer" Base="TC_GEN_FILTER" />
+        
+        <!-- TODO: Structures -->
         <Variable Name="PTC_GEN_FLOW"            Type="Alias"        Base="LPVOID" />
         <Variable Name="PENUMERATION_BUFFER"     Type="Alias"        Base="LPVOID" />
         <Variable Name="PTC_IFC_DESCRIPTOR"      Type="Alias"        Base="LPVOID" />
-        <Variable Name="PTCI_CLIENT_FUNC_LIST"   Type="Alias"        Base="LPVOID" />
+
+        <!-- TCI_CLIENT_FUNC_LIST -->
+        <Variable Name="TCI_CLIENT_FUNC_LIST" Type="Struct">
+            <Field Type="TCI_NOTIFY_HANDLER"              	Name="ClNotifyHandler" />
+            <Field Type="TCI_ADD_FLOW_COMPLETE_HANDLER"   	Name="ClAddFlowCompleteHandler" />
+            <Field Type="TCI_MOD_FLOW_COMPLETE_HANDLER"   	Name="ClModifyFlowCompleteHandler" />
+            <Field Type="TCI_DEL_FLOW_COMPLETE_HANDLER"   	Name="ClDeleteFlowCompleteHandler" />
+        </Variable>
+        <Variable Name="PTCI_CLIENT_FUNC_LIST" Type="Pointer" Base="TCI_CLIENT_FUNC_LIST" />
 
         <!-- Traffic Control -->
         <Category Name="Networking/Network Protocols/Quality of Service (QOS)/Traffic Control" />

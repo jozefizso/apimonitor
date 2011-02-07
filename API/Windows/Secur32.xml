@@ -9,6 +9,65 @@
     
     <Module Name="Secur32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         <!-- Variables -->
+        <Variable Name="SEC_CHAR*"                  Type="Alias"    Base="CHAR*" />
+        <Variable Name="SEC_WCHAR*"                 Type="Alias"    Base="WCHAR*" />
+        <Variable Name="SEC_TCHAR*"                 Type="Alias"    Base="TCHAR*" />
+        <Variable Name="void SEC_FAR*"              Type="Alias"    Base="LPVOID" />
+        <Variable Name="SECURITY_STRING"            Type="Alias"    Base="UNICODE_STRING" />
+        <Variable Name="PSECURITY_STRING"           Type="Pointer"  Base="SECURITY_STRING" />
+        <Variable Name="LSA_STRING"                 Type="Alias"    Base="STRING" />
+        <Variable Name="PLSA_STRING"                Type="Pointer"  Base="LSA_STRING" />
+        <Variable Name="unsigned long SEC_FAR*"     Type="Alias"    Base="unsigned long*" />
+        <Variable Name="TimeStamp"                  Type="Alias"    Base="LARGE_INTEGER" />
+        <Variable Name="PTimeStamp"                 Type="Pointer"  Base="TimeStamp" />
+        <Variable Name="SEC_GET_KEY_FN"             Type="Alias"    Base="LPVOID" />
+
+        <!-- TODO: Structures -->
+        <Variable Name="PSecurityFunctionTable"             Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSECURITY_LOGON_SESSION_DATA*"      Type="Alias"    Base="LPVOID" />
+
+        <!-- SecPkgInfo -->
+        <Variable Name="SecPkgInfo" Type="Struct">
+            <Field Type="unsigned long" 	Name="fCapabilities" />
+            <Field Type="unsigned short" 	Name="wVersion" />
+            <Field Type="unsigned short" 	Name="wRPCID" />
+            <Field Type="unsigned long" 	Name="cbMaxToken" />
+            <Field Type="SEC_TCHAR*"  	    Name="Name" />
+            <Field Type="SEC_TCHAR*"  	    Name="Comment" />
+        </Variable>
+        <Variable Name="PSecPkgInfo"  Type="Pointer" Base="SecPkgInfo" />
+        <Variable Name="PSecPkgInfo*" Type="Pointer" Base="PSecPkgInfo" />
+
+        <!-- SecBuffer -->
+        <Variable Name="SecBuffer" Type="Struct">
+            <Field Type="unsigned long" 	Name="cbBuffer" />
+            <Field Type="unsigned long" 	Name="BufferType" />
+            <Field Type="void SEC_FAR*"		Name="pvBuffer" />
+        </Variable>
+        <Variable Name="PSecBuffer" Type="Pointer" Base="SecBuffer" />
+
+        <!-- CredHandle-->
+        <Variable Name="CredHandle"         Type="Alias"    Base="SecHandle" />
+        <Variable Name="PCredHandle"        Type="Pointer"  Base="CredHandle" />
+
+        <!-- SecBufferDesc -->
+        <Variable Name="SecBufferDesc" Type="Struct">
+            <Field Type="unsigned long"     Name="ulVersion" />
+            <Field Type="unsigned long"     Name="cBuffers" />
+            <Field Type="PSecBuffer" 	    Name="pBuffers" />
+        </Variable>
+        <Variable Name="PSecBufferDesc" Type="Pointer" Base="SecBufferDesc" />
+
+        <!-- SECURITY_PACKAGE_OPTIONS -->
+        <Variable Name="SECURITY_PACKAGE_OPTIONS" Type="Struct">
+            <Field Type="unsigned long"   	Name="Size" />
+            <Field Type="unsigned long"   	Name="Type" />
+            <Field Type="unsigned long"   	Name="Flags" />
+            <Field Type="unsigned long"   	Name="SignatureSize" />
+            <Field Type="void*"             Name="Signature" />
+        </Variable>
+        <Variable Name="PSECURITY_PACKAGE_OPTIONS" Type="Pointer" Base="SECURITY_PACKAGE_OPTIONS" />
+
         <Variable Name="SECURITY_LOGON_TYPE" Type="Alias" Base="DWORD">
             <Enum>
                 <Set Name="UndefinedLogonType"          Value="0" />
@@ -78,8 +137,8 @@
             </Enum>
         </Variable>
 
-        <Variable Name="[InitializeSecurityContextRequestFlags(ULONG)]" Type="Alias" Base="ULONG">
-            <Display Name="ULONG" />
+        <Variable Name="[InitializeSecurityContextRequestFlags]" Type="Alias" Base="unsigned long">
+            <Display Name="unsigned long" />
             <Flag>
                 <Set Name="ISC_REQ_DELEGATE"                	Value="0x00000001" />
                 <Set Name="ISC_REQ_MUTUAL_AUTH"             	Value="0x00000002" />
@@ -107,9 +166,6 @@
                 <Set Name="ISC_REQ_NO_INTEGRITY"            	Value="0x00800000" />
                 <Set Name="ISC_REQ_USE_HTTP_STYLE"          	Value="0x01000000" />
             </Flag>
-        </Variable>
-        <Variable Name="[InitializeSecurityContextRequestFlags(unsigned long)]" Type="Alias" Base="[InitializeSecurityContextRequestFlags(ULONG)]">
-            <Display Name="unsigned long" />
         </Variable>
 
         <Variable Name="[InitializeSecurityContextRetFlags]" Type="Alias" Base="ULONG">
@@ -143,15 +199,18 @@
                 <Set Name="ISC_RET_REAUTHENTICATION"        	Value="0x08000000" />
             </Flag>
         </Variable>
-        <Variable Name="[InitializeSecurityContextRetFlags*/PULONG]" Type="Pointer" Base="[InitializeSecurityContextRetFlags]">
+        <Variable Name="[InitializeSecurityContextRetFlags*]" Type="Pointer" Base="[InitializeSecurityContextRetFlags]">
             <Display Name="PULONG" />
         </Variable>
-        <Variable Name="[InitializeSecurityContextRetFlags*/unsigned long SEC_FAR*]" Type="Pointer" Base="[InitializeSecurityContextRetFlags]">
-            <Display Name="unsigned long SEC_FAR*" />
+        <Variable Name="[InitializeSecurityContextRetFlags-unsigned-long]" Type="Pointer" Base="[InitializeSecurityContextRetFlags]">
+            <Display Name="unsigned long" />
+        </Variable>
+        <Variable Name="[InitializeSecurityContextRetFlags-unsigned-long*]" Type="Pointer" Base="[InitializeSecurityContextRetFlags-unsigned-long]">
+            <Display Name="unsigned long*" />
         </Variable>
 
-        <Variable Name="[AcceptSecurityContextRequestFlags(ULONG)]" Type="Alias" Base="ULONG">
-            <Display Name="ULONG" />
+        <Variable Name="[AcceptSecurityContextRequestFlags]" Type="Alias" Base="unsigned long">
+            <Display Name="unsigned long" />
             <Flag>
                 <Set Name="ASC_REQ_DELEGATE"                	Value="0x00000001" />
                 <Set Name="ASC_REQ_MUTUAL_AUTH"             	Value="0x00000002" />
@@ -179,13 +238,9 @@
                 <Set Name="ASC_REQ_ALLOW_MISSING_BINDINGS"      Value="0x10000000" />
             </Flag>
         </Variable>
-        <Variable Name="[AcceptSecurityContextRequestFlags(unsigned long)]" Type="Alias" Base="[AcceptSecurityContextRequestFlags(ULONG)]">
+
+        <Variable Name="[AcceptSecurityContextRetFlags]" Type="Alias" Base="unsigned long">
             <Display Name="unsigned long" />
-        </Variable>
-
-
-        <Variable Name="[AcceptSecurityContextRetFlags]" Type="Alias" Base="ULONG">
-            <Display Name="ULONG" />
             <Flag>
                 <Set Name="ASC_RET_DELEGATE"                		Value="0x00000001" />
                 <Set Name="ASC_RET_MUTUAL_AUTH"             		Value="0x00000002" />
@@ -215,11 +270,8 @@
                 <Set Name="ASC_RET_MISSING_BINDINGS"        		Value="0x10000000" />
             </Flag>
         </Variable>
-        <Variable Name="[AcceptSecurityContextRetFlags*/PULONG]" Type="Pointer" Base="[AcceptSecurityContextRetFlags]">
-            <Display Name="PULONG" />
-        </Variable>
-        <Variable Name="[AcceptSecurityContextRetFlags*/unsigned long SEC_FAR*]" Type="Pointer" Base="[AcceptSecurityContextRetFlags]">
-            <Display Name="unsigned long SEC_FAR*" />
+        <Variable Name="[AcceptSecurityContextRetFlags*]" Type="Pointer" Base="[AcceptSecurityContextRetFlags]">
+            <Display Name="unsigned long*" />
         </Variable>
 
         <Variable Name="[SecContextAttr]" Type="Alias" Base="ULONG">
@@ -282,22 +334,6 @@
                 <Set Name="SECPKG_ATTR_SUBJECT_SECURITY_ATTRIBUTES" Value="128" />
             </Enum>
         </Variable>
-
-        <Variable Name="SEC_WCHAR*"                         Type="Alias"    Base="WCHAR*" />
-        <Variable Name="PSecPkgInfo"                        Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSecPkgInfo*"                       Type="Pointer"  Base="PSecPkgInfo" />
-        <Variable Name="PSecurityFunctionTable"             Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSecBuffer"                         Type="Alias"    Base="LPVOID" />
-        <Variable Name="PCredHandle"                        Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSECURITY_STRING*"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSecBufferDesc"                     Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSECURITY_LOGON_SESSION_DATA*"      Type="Alias"    Base="LPVOID" />
-        <Variable Name="PLSA_STRING"                        Type="Alias"    Base="LPVOID" />
-        <Variable Name="unsigned long SEC_FAR*"             Type="Alias"    Base="PULONG" />
-        <Variable Name="PTimeStamp"                         Type="Alias"    Base="LPVOID" />
-        <Variable Name="SEC_CHAR*"                          Type="Alias"    Base="LPTSTR" />
-        <Variable Name="SEC_GET_KEY_FN"                     Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSECURITY_PACKAGE_OPTIONS"          Type="Alias"    Base="LPVOID" />
 
         <!-- System Information -->
         <Category Name="System Services/Windows System Information/System Information" />
@@ -370,7 +406,7 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="ImportSecurityContext" BothCharset="True">
-            <Param Type="PSECURITY_STRING*" Name="pszPackage" />
+            <Param Type="PSECURITY_STRING" Name="pszPackage" />
             <Param Type="PSecBuffer" Name="pPackedContext" />
             <Param Type="HANDLE" Name="pToken" />
             <Param Type="PCtxtHandle" Name="phContext" />
@@ -389,11 +425,11 @@
             <Param Type="PCredHandle" Name="phCredential" />
             <Param Type="PCtxtHandle" Name="phContext" />
             <Param Type="PSecBufferDesc" Name="pInput" />
-            <Param Type="[AcceptSecurityContextRequestFlags(ULONG)]" Name="fContextReq" />
+            <Param Type="[AcceptSecurityContextRequestFlags]" Name="fContextReq" />
             <Param Type="ULONG" Name="TargetDataRep" />
             <Param Type="PCtxtHandle" Name="phNewContext" />
             <Param Type="PSecBufferDesc" Name="pOutput" />
-            <Param Type="[AcceptSecurityContextRetFlags*/PULONG]" Name="pfContextAttr" />
+            <Param Type="[AcceptSecurityContextRetFlags*]" Name="pfContextAttr" />
             <Param Type="PTimeStamp" Name="ptsTimeStamp" />
             <Return Type="SECURITY_STATUS" />
             <Success Return="Equal" Value="0" />
@@ -429,14 +465,14 @@
             <Param Type="PCredHandle" Name="phCredential" />
             <Param Type="PCtxtHandle" Name="phContext" />
             <Param Type="SEC_CHAR*" Name="pszTargetName" />
-            <Param Type="[InitializeSecurityContextRequestFlags(ULONG)]" Name="fContextReq" />
+            <Param Type="[InitializeSecurityContextRequestFlags]" Display="ULONG" Name="fContextReq" />
             <Param Type="ULONG" Name="Reserved1" />
             <Param Type="ULONG" Name="TargetDataRep" />
             <Param Type="PSecBufferDesc" Name="pInput" />
             <Param Type="ULONG" Name="Reserved2" />
             <Param Type="PCtxtHandle" Name="phNewContext" />
             <Param Type="PSecBufferDesc" Name="pOutput" />
-            <Param Type="[InitializeSecurityContextRetFlags*/PULONG]" Name="pfContextAttr" />
+            <Param Type="[InitializeSecurityContextRetFlags*]" Name="pfContextAttr" />
             <Param Type="PTimeStamp" Name="ptsExpiry" />
             <Return Type="SECURITY_STATUS" />
             <Success Return="Equal" Value="0" />
@@ -576,11 +612,11 @@
             <Param Type="PCredHandle" Name="phCredential" />
             <Param Type="PCtxtHandle" Name="phContext" />
             <Param Type="PSecBufferDesc" Name="pInput" />
-            <Param Type="[AcceptSecurityContextRequestFlags(unsigned long)]" Name="fContextReq" />
+            <Param Type="[AcceptSecurityContextRequestFlags]" Name="fContextReq" />
             <Param Type="unsigned long" Name="TargetDataRep" />
             <Param Type="PCtxtHandle" Name="phNewContext" />
             <Param Type="PSecBufferDesc" Name="pOutput" />
-            <Param Type="[AcceptSecurityContextRetFlags*/unsigned long SEC_FAR*]" Name="pfContextAttr" />
+            <Param Type="[AcceptSecurityContextRetFlags*]" Name="pfContextAttr" />
             <Param Type="PTimeStamp" Name="ptsExpiry" />
             <Return Type="SECURITY_STATUS" />
             <Success Return="Equal" Value="0" />
@@ -616,14 +652,14 @@
             <Param Type="PCredHandle" Name="phCredential" />
             <Param Type="PCtxtHandle" Name="phContext" />
             <Param Type="LPTSTR" Name="pszTargetName" />
-            <Param Type="[InitializeSecurityContextRequestFlags(unsigned long)]" Name="fContextReq" />
+            <Param Type="[InitializeSecurityContextRequestFlags]" Name="fContextReq" />
             <Param Type="unsigned long" Name="Reserved1" />
             <Param Type="unsigned long" Name="TargetDataRep" />
             <Param Type="PSecBufferDesc" Name="pInput" />
             <Param Type="unsigned long" Name="Reserved2" />
             <Param Type="PCtxtHandle" Name="phNewContext" />
             <Param Type="PSecBufferDesc" Name="pOutput" />
-            <Param Type="[InitializeSecurityContextRetFlags*/unsigned long SEC_FAR*]" Name="pfContextAttr" />
+            <Param Type="[InitializeSecurityContextRetFlags-unsigned-long*]" Name="pfContextAttr" />
             <Param Type="PTimeStamp" Name="ptsExpiry" />
             <Return Type="SECURITY_STATUS" />
             <Success Return="Equal" Value="0" />

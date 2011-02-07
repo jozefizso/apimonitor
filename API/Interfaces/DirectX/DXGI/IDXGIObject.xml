@@ -6,30 +6,57 @@
 <ApiMonitor>
     <Include Filename="Interfaces\IUnknown.xml" />
     <Interface Name="IDXGIObject" Id="{aec22fb8-76f3-4639-9be0-28eb43a67a2e}" BaseInterface="IUnknown" OnlineHelp="MSDN" ErrorFunc="HRESULT" Category="Graphics and Multimedia/DirectX/DirectX Graphics Infrastructure (DXGI)">
+        
         <!-- Forward Interface Declarations -->
         <Variable Name="IDXGIOutput"                        Type="Interface" />
         <Variable Name="IDXGISwapChain"                     Type="Interface" />
         <Variable Name="IDXGISurface"                       Type="Interface" />
 
-        <Variable Name="DXGI_MODE_DESC*"                    Type="Alias"    Base="LPVOID" />
-        <Variable Name="const DXGI_MODE_DESC*"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="DXGI_MAPPED_RECT*"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="DXGI_SURFACE_DESC*"                 Type="Alias"    Base="LPVOID" />
-        <Variable Name="const DXGI_SURFACE_DESC*"           Type="Alias"    Base="LPVOID" />
-        <Variable Name="DXGI_SWAP_CHAIN_DESC*"              Type="Alias"    Base="LPVOID" />
+        <!-- TODO: Structures  -->
+        <Variable Name="DXGI_ADAPTER_DESC*"                 Type="Alias"    Base="LPVOID" />
+        <Variable Name="DXGI_ADAPTER_DESC1*"                Type="Alias"    Base="LPVOID" />
         <Variable Name="DXGI_OUTPUT_DESC*"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="const DXGI_SHARED_RESOURCE*"        Type="Alias"    Base="LPVOID" />
         <Variable Name="DXGI_GAMMA_CONTROL_CAPABILITIES*"   Type="Alias"    Base="LPVOID" />
-        <Variable Name="DXGI_FRAME_STATISTICS*"             Type="Alias"    Base="LPVOID" />
         <Variable Name="DXGI_GAMMA_CONTROL*"                Type="Alias"    Base="LPVOID" />
         <Variable Name="const DXGI_GAMMA_CONTROL*"          Type="Alias"    Base="LPVOID" />
 
-
-        <Variable Name="DXGI_USAGE" Type="Alias" Base="UINT">
-            <!-- TODO: Decode Flags? -->
+        <!-- DXGI_RATIONAL -->
+        <Variable Name="DXGI_RATIONAL" Type="Struct">
+            <Field Type="UINT"     Name="Numerator" />
+            <Field Type="UINT"     Name="Denominator" />
         </Variable>
-        <Variable Name="DXGI_USAGE*" Type="Pointer" Base="DXGI_USAGE" />
 
+        <!-- DXGI_MODE_SCANLINE_ORDER -->
+        <Variable Name="DXGI_MODE_SCANLINE_ORDER" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED"        Value="0" />
+                <Set Name="DXGI_MODE_SCANLINE_ORDER_PROGRESSIVE"        Value="1" />
+                <Set Name="DXGI_MODE_SCANLINE_ORDER_UPPER_FIELD_FIRST"  Value="2" />
+                <Set Name="DXGI_MODE_SCANLINE_ORDER_LOWER_FIELD_FIRST"  Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- DXGI_MODE_SCALING -->
+        <Variable Name="DXGI_MODE_SCALING" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DXGI_MODE_SCALING_UNSPECIFIED"               Value="0" />
+                <Set Name="DXGI_MODE_SCALING_CENTERED"                  Value="1" />
+                <Set Name="DXGI_MODE_SCALING_STRETCHED"                 Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- DXGI_MODE_ROTATION -->
+        <Variable Name="DXGI_MODE_ROTATION" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DXGI_MODE_ROTATION_UNSPECIFIED"              Value="0" />
+                <Set Name="DXGI_MODE_ROTATION_IDENTITY"                 Value="1" />
+                <Set Name="DXGI_MODE_ROTATION_ROTATE90"                 Value="2" />
+                <Set Name="DXGI_MODE_ROTATION_ROTATE180"                Value="3" />
+                <Set Name="DXGI_MODE_ROTATION_ROTATE270"                Value="4" />
+            </Enum>
+        </Variable>
+
+        <!-- DXGI_FORMAT -->
         <Variable Name="DXGI_FORMAT" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="DXGI_FORMAT_UNKNOWN"                         Value="0" />
@@ -136,7 +163,88 @@
         </Variable>
         <Variable Name="DXGI_FORMAT*" Type="Pointer" Base="DXGI_FORMAT" />
 
+        <!-- DXGI_MODE_DESC -->
+        <Variable Name="DXGI_MODE_DESC" Type="Struct">
+            <Field Type="UINT"                      Name="Width" />
+            <Field Type="UINT"                      Name="Height" />
+            <Field Type="DXGI_RATIONAL"             Name="RefreshRate" />
+            <Field Type="DXGI_FORMAT"               Name="Format" />
+            <Field Type="DXGI_MODE_SCANLINE_ORDER"  Name="ScanlineOrdering" />
+            <Field Type="DXGI_MODE_SCALING"         Name="Scaling" />
+        </Variable>
+        <Variable Name="DXGI_MODE_DESC*"        Type="Pointer" Base="DXGI_MODE_DESC" />
+        <Variable Name="const DXGI_MODE_DESC*"  Type="Pointer" Base="DXGI_MODE_DESC" />
 
+        <!-- DXGI_MAPPED_RECT -->
+        <Variable Name="DXGI_MAPPED_RECT" Type="Struct">
+            <Field Type="INT" 	    Name="Pitch" />
+            <Field Type="BYTE*" 	Name="pBits" />
+        </Variable>
+        <Variable Name="DXGI_MAPPED_RECT*" Type="Pointer" Base="DXGI_MAPPED_RECT" />
+
+        <!-- DXGI_SAMPLE_DESC -->
+        <Variable Name="DXGI_SAMPLE_DESC" Type="Struct">
+            <Field Type="UINT" 	    Name="Count" />
+            <Field Type="UINT"      Name="Quality" />
+        </Variable>
+
+        <!-- DXGI_SURFACE_DESC -->
+        <Variable Name="DXGI_SURFACE_DESC" Type="Struct">
+            <Field Type="UINT" 	            Name="Width" />
+            <Field Type="UINT" 	            Name="Height" />
+            <Field Type="DXGI_FORMAT" 	    Name="Format" />
+            <Field Type="DXGI_SAMPLE_DESC" 	Name="SampleDesc" />
+        </Variable>
+        <Variable Name="DXGI_SURFACE_DESC*"         Type="Pointer" Base="DXGI_SURFACE_DESC" />
+        <Variable Name="const DXGI_SURFACE_DESC*"   Type="Pointer" Base="DXGI_SURFACE_DESC" />
+
+        <!-- DXGI_USAGE -->
+        <Variable Name="DXGI_USAGE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DXGI_USAGE_SHADER_INPUT"             Value="0x10" />
+                <Set Name="DXGI_USAGE_RENDER_TARGET_OUTPUT"     Value="0x20" />
+                <Set Name="DXGI_USAGE_BACK_BUFFER"              Value="0x40" />
+                <Set Name="DXGI_USAGE_SHARED"                   Value="0x80" />
+                <Set Name="DXGI_USAGE_READ_ONLY"                Value="0x100" />
+                <Set Name="DXGI_USAGE_DISCARD_ON_PRESENT"       Value="0x200" />
+                <Set Name="DXGI_USAGE_UNORDERED_ACCESS"         Value="0x400" />
+            </Enum>
+        </Variable>
+        <Variable Name="DXGI_USAGE*" Type="Pointer" Base="DXGI_USAGE" />
+
+        <!-- DXGI_SWAP_EFFECT -->
+        <Variable Name="DXGI_SWAP_EFFECT" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DXGI_SWAP_EFFECT_DISCARD"    Value="0" />
+                <Set Name="DXGI_SWAP_EFFECT_SEQUENTIAL" Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- DXGI_SWAP_CHAIN_FLAG -->
+        <Variable Name="DXGI_SWAP_CHAIN_FLAG" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Flag>
+                <Set Name="DXGI_SWAP_CHAIN_FLAG_NONPREROTATED"      Value="1" />
+                <Set Name="DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH"  Value="2" />
+                <Set Name="DXGI_SWAP_CHAIN_FLAG_GDI_COMPATIBLE"     Value="4" />
+            </Flag>
+        </Variable>
+
+        <!-- DXGI_SWAP_CHAIN_DESC -->
+        <Variable Name="DXGI_SWAP_CHAIN_DESC" Type="Struct">
+            <Field Type="DXGI_MODE_DESC" 	    Name="BufferDesc" />
+            <Field Type="DXGI_SAMPLE_DESC" 	    Name="SampleDesc" />
+            <Field Type="DXGI_USAGE" 	        Name="BufferUsage" />
+            <Field Type="UINT" 	                Name="BufferCount" />
+            <Field Type="HWND" 	                Name="OutputWindow" />
+            <Field Type="BOOL" 	                Name="Windowed" />
+            <Field Type="DXGI_SWAP_EFFECT" 	    Name="SwapEffect" />
+            <Field Type="DXGI_SWAP_CHAIN_FLAG" 	Name="Flags" />
+        </Variable>
+        <Variable Name="DXGI_SWAP_CHAIN_DESC*"          Type="Pointer" Base="DXGI_SWAP_CHAIN_DESC" />
+        <Variable Name="const DXGI_SWAP_CHAIN_DESC*"    Type="Pointer" Base="DXGI_SWAP_CHAIN_DESC" />
+
+        <!-- DXGI_RESIDENCY -->
         <Variable Name="DXGI_RESIDENCY" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="DXGI_RESIDENCY_FULLY_RESIDENT"               Value="1" />
@@ -146,6 +254,23 @@
         </Variable>
         <Variable Name="DXGI_RESIDENCY*" Type="Pointer" Base="DXGI_RESIDENCY" />
 
+        <!-- DXGI_SHARED_RESOURCE -->
+        <Variable Name="DXGI_SHARED_RESOURCE" Type="Struct">
+            <Field Type="HANDLE" Name="Handle" />
+        </Variable>
+        <Variable Name="const DXGI_SHARED_RESOURCE*" Type="Pointer" Base="DXGI_SHARED_RESOURCE" />
+
+        <!-- DXGI_FRAME_STATISTICS -->
+        <Variable Name="DXGI_FRAME_STATISTICS" Type="Struct">
+            <Field Type="UINT" 	            Name="PresentCount" />
+            <Field Type="UINT" 	            Name="PresentRefreshCount" />
+            <Field Type="UINT" 	            Name="SyncRefreshCount" />
+            <Field Type="LARGE_INTEGER" 	Name="SyncQPCTime" />
+            <Field Type="LARGE_INTEGER" 	Name="SyncGPUTime" />
+        </Variable>
+        <Variable Name="DXGI_FRAME_STATISTICS*" Type="Pointer" Base="DXGI_FRAME_STATISTICS" />
+
+        <!-- API -->
         <Api Name="SetPrivateData">
             <Param Type="REFGUID" Name="Name" />
             <Param Type="UINT" Name="DataSize" />

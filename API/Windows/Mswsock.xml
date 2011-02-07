@@ -8,10 +8,43 @@
     <Include Filename="Headers\sockets.h.xml" />
     
     <Module Name="Mswsock.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        <!-- Parameters -->
-        <Variable Name="LPSERVICE_ASYNC_INFO"        Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPSERVICE_INFO"              Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPTRANSMIT_FILE_BUFFERS"     Type="Alias"        Base="LPVOID" />
+        <!-- Variables -->
+        <Variable Name="LPSERVICE_CALLBACK_PROC" Type="Alias" Base="LPVOID" />
+        
+        <!-- TODO: Structures -->
+        <Variable Name="LPSERVICE_ADDRESSES" Type="Alias" Base="LPVOID" />
+
+        <!-- SERVICE_ASYNC_INFO -->
+        <Variable Name="SERVICE_ASYNC_INFO" Type="Struct">
+            <Field Type="LPSERVICE_CALLBACK_PROC" 	Name="lpServiceCallbackProc" />
+            <Field Type="LPARAM" 	                Name="lParam" />
+            <Field Type="HANDLE" 	                Name="hAsyncTaskHandle" />
+        </Variable>
+        <Variable Name="LPSERVICE_ASYNC_INFO" Type="Pointer" Base="SERVICE_ASYNC_INFO" />
+
+        <!-- SERVICE_INFO -->
+        <Variable Name="SERVICE_INFO" Type="Struct">
+            <Field Type="LPGUID" 	            Name="lpServiceType"  />
+            <Field Type="LPTSTR"   	            Name="lpServiceName"  />
+            <Field Type="LPTSTR"   	            Name="lpComment"  />
+            <Field Type="LPTSTR"   	            Name="lpLocale"  />
+            <Field Type="DWORD" 	            Name="dwDisplayHint"  />
+            <Field Type="DWORD" 	            Name="dwVersion"  />
+            <Field Type="DWORD" 	            Name="dwTime"  />
+            <Field Type="LPTSTR"   	            Name="lpMachineName"  />
+            <Field Type="LPSERVICE_ADDRESSES" 	Name="lpServiceAddress"  />
+            <Field Type="BLOB" 	                Name="ServiceSpecificInfo"  />
+        </Variable>
+        <Variable Name="LPSERVICE_INFO" Type="Pointer" Base="SERVICE_INFO" />
+
+        <!-- TRANSMIT_FILE_BUFFERS -->
+        <Variable Name="TRANSMIT_FILE_BUFFERS" Type="Struct">
+            <Field Type="LPVOID" 	Name="Head" />
+            <Field Type="DWORD" 	Name="HeadLength" />
+            <Field Type="LPVOID" 	Name="Tail" />
+            <Field Type="DWORD" 	Name="TailLength" />
+        </Variable>
+        <Variable Name="LPTRANSMIT_FILE_BUFFERS" Type="Pointer" Base="TRANSMIT_FILE_BUFFERS" />
 
         <!-- Windows Sockets 2 -->
         <Category Name="Networking/Network Protocols/Windows Sockets 2" />
@@ -19,8 +52,8 @@
             <Param Type="LPINT" Name="lpiProtocols" />
             <Param Type="LPVOID" Name="lpProtocolBuffer" />
             <Param Type="LPDWORD" Name="lpdwBufferLength" />
-            <Return Type="INT" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SocketCode-INT]" />
+            <Success Return="NotEqual" Value="-1" />
         </Api>
         <Api Name="GetAcceptExSockaddrs">
             <Param Type="PVOID" Name="lpOutputBuffer" />
@@ -46,52 +79,52 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetAddressByName" BothCharset="True">
-            <Param Type="DWORD" Name="dwNameSpace" />
+            <Param Type="[NameSpaceFlags]" Name="dwNameSpace" />
             <Param Type="LPGUID" Name="lpServiceType" />
             <Param Type="LPTSTR" Name="lpServiceName" />
             <Param Type="LPINT" Name="lpiProtocols" />
-            <Param Type="DWORD" Name="dwResolution" />
+            <Param Type="[ResolutionFlags]" Name="dwResolution" />
             <Param Type="LPSERVICE_ASYNC_INFO" Name="lpServiceAsyncInfo" />
             <Param Type="LPVOID" Name="lpCsaddrBuffer" />
             <Param Type="LPDWORD" Name="lpdwBufferLength" />
             <Param Type="LPTSTR" Name="lpAliasBuffer" />
             <Param Type="LPDWORD" Name="lpdwAliasBufferLength" />
             <Return Type="INT" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="NotEqual" Value="-1" />
         </Api>
         <Api Name="GetNameByType" BothCharset="True">
             <Param Type="LPGUID" Name="lpServiceType" />
             <Param Type="LPTSTR" Name="lpServiceName" />
             <Param Type="DWORD" Name="dwNameLength" />
-            <Return Type="INT" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SocketCode-INT]" />
+            <Success Return="NotEqual" Value="-1" />
         </Api>
         <Api Name="GetService" BothCharset="True">
-            <Param Type="DWORD" Name="dwNameSpace" />
+            <Param Type="[NameSpaceFlags]" Name="dwNameSpace" />
             <Param Type="PGUID" Name="lpGuid" />
             <Param Type="LPTSTR" Name="lpServiceName" />
-            <Param Type="DWORD" Name="dwProperties" />
+            <Param Type="[GetService_Props]" Name="dwProperties" />
             <Param Type="LPVOID" Name="lpBuffer" />
             <Param Type="LPDWORD" Name="lpdwBufferSize" />
             <Param Type="LPSERVICE_ASYNC_INFO" Name="lpServiceAsyncInfo" />
-            <Return Type="INT" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SocketCode-INT]" />
+            <Success Return="NotEqual" Value="-1" />
         </Api>
         <Api Name="GetTypeByName" BothCharset="True">
             <Param Type="LPTSTR" Name="lpServiceName" />
             <Param Type="PGUID" Name="lpServiceType" />
-            <Return Type="INT" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SocketCode-INT]" />
+            <Success Return="NotEqual" Value="-1" />
         </Api>
         <Api Name="SetService" BothCharset="True">
-            <Param Type="DWORD" Name="dwNameSpace" />
-            <Param Type="DWORD" Name="dwOperation" />
-            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="[NameSpaceFlags]" Name="dwNameSpace" />
+            <Param Type="[SetService_Operation]" Name="dwOperation" />
+            <Param Type="[SetService_Flags]" Name="dwFlags" />
             <Param Type="LPSERVICE_INFO" Name="lpServiceInfo" />
             <Param Type="LPSERVICE_ASYNC_INFO" Name="lpServiceAsyncInfo" />
-            <Param Type="LPDWORD" Name="lpdwStatusFlags" />
-            <Return Type="INT" />
-            <Success Return="NotEqual" Value="0" />
+            <Param Type="[SetService_FlagsOut*]" Name="lpdwStatusFlags" />
+            <Return Type="[SocketCode-INT]" />
+            <Success Return="NotEqual" Value="-1" />
         </Api>
         <Api Name="TransmitFile">
             <Param Type="SOCKET" Name="hSocket" />
@@ -100,7 +133,7 @@
             <Param Type="DWORD" Name="nNumberOfBytesPerSend" />
             <Param Type="LPOVERLAPPED" Name="lpOverlapped" />
             <Param Type="LPTRANSMIT_FILE_BUFFERS" Name="lpTransmitBuffers" />
-            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="[TransmitFile_Flags]" Name="dwFlags" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -109,8 +142,8 @@
             <Param Type="char*" Name="buf" />
             <Param Type="int" Name="len" />
             <Param Type="int*" Name="flags" />
-            <Return Type="int" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SocketCode-int]" />
+            <Success Return="NotEqual" Value="-1" />
         </Api>
     </Module>
 </ApiMonitor>

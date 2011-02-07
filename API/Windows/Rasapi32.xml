@@ -6,28 +6,101 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Rasapi32.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
-        <!-- Parameters -->
-        <Variable Name="HRASCONN"                        Type="Alias"        Base="HANDLE" />
-        <Variable Name="LPHRASCONN"                      Type="Pointer"        Base="HRASCONN" />
-        <Variable Name="LPRASDIALEXTENSIONS"             Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPRASDIALPARAMS"                 Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPRASCONN"                       Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPRASDEVINFO"                    Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPRASENTRYNAME"                  Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPRASEAPUSERIDENTITY"            Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPRASAUTODIALENTRY"              Type="Alias"        Base="LPVOID" />
-        <Variable Name="RAS_STATS*"                      Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPRASCONNSTATUS"                 Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPRASCTRYINFO"                   Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPRASCREDENTIALS"                Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPRASEAPUSERIDENTITY*"           Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPRASENTRY"                      Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPRASNAPSTATE"                   Type="Alias"        Base="LPVOID" />
-        <Variable Name="PRAS_PROJECTION_INFO"            Type="Alias"        Base="LPVOID" />
-        <Variable Name="ConnectionId*"                   Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPRASSUBENTRY"                   Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPRASUPDATECONN"                 Type="Alias"        Base="LPVOID" />
+        <!-- Variables -->
+        <Variable Name="HRASCONN"           Type="Alias"    Base="HANDLE" />
+        <Variable Name="LPHRASCONN"         Type="Pointer"  Base="HRASCONN" />
+        <Variable Name="ProbationTime"      Type="Pointer"  Base="FILETIME" />
+        <Variable Name="ConnectionId"       Type="Alias"    Base="GUID" />
+        <Variable Name="ConnectionId*"      Type="Pointer"  Base="ConnectionId" />
 
+        <!-- TODO: Strutures -->
+        <Variable Name="LPRASDIALPARAMS"            Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPRASCONN"                  Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPRASDEVINFO"               Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPRASENTRYNAME"             Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPRASEAPUSERIDENTITY"       Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPRASAUTODIALENTRY"         Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPRASCONNSTATUS"            Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPRASCREDENTIALS"           Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPRASEAPUSERIDENTITY*"      Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPRASENTRY"                 Type="Alias"    Base="LPVOID" />
+        <Variable Name="PRAS_PROJECTION_INFO"       Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPRASSUBENTRY"              Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPRASUPDATECONN"            Type="Alias"    Base="LPVOID" />
+
+        <!-- RASEAPINFO -->
+        <Variable Name="RASEAPINFO" Type="Struct" Pack="4">
+            <Field Type="DWORD" 	Name="dwSizeofEapInfo" />
+            <Field Type="BYTE*"  	Name="pbEapInfo" />
+        </Variable>
+
+        <!-- RASDEVSPECIFICINFO -->
+        <Variable Name="RASDEVSPECIFICINFO" Type="Struct" Pack="4">
+            <Field Type="DWORD"   	Name="dwSize" />
+            <Field Type="BYTE*"   	Name="pbDevSpecificInfo" />
+        </Variable>
+
+        <!-- RASDIALEXTENSIONS -->
+        <Variable Name="RASDIALEXTENSIONS" Type="Struct" Pack="4">
+            <Field Type="DWORD"      	        Name="dwSize" />
+            <Field Type="DWORD"      	        Name="dwfOptions" />
+            <Field Type="HWND"       	        Name="hwndParent" />
+            <Field Type="ULONG_PTR"  	        Name="reserved" />
+            <Field Type="ULONG_PTR"  	        Name="reserved1" />
+            <Field Type="RASEAPINFO" 	        Name="RasEapInfo" />
+            <Field Type="BOOL"                	Name="fSkipPppAuth" />
+            <Field Type="RASDEVSPECIFICINFO"    Name="RasDevSpecificInfo" />
+        </Variable>
+        <Variable Name="LPRASDIALEXTENSIONS" Type="Pointer" Base="RASDIALEXTENSIONS" />
+
+        <!-- RAS_STATS -->
+        <Variable Name="RAS_STATS" Type="Struct" Pack="4">
+            <Field Type="DWORD"   	Name="dwSize" />
+            <Field Type="DWORD"   	Name="dwBytesXmited" />
+            <Field Type="DWORD"   	Name="dwBytesRcved" />
+            <Field Type="DWORD"   	Name="dwFramesXmited" />
+            <Field Type="DWORD"   	Name="dwFramesRcved" />
+            <Field Type="DWORD"   	Name="dwCrcErr" />
+            <Field Type="DWORD"   	Name="dwTimeoutErr" />
+            <Field Type="DWORD"   	Name="dwAlignmentErr" />
+            <Field Type="DWORD"   	Name="dwHardwareOverrunErr" />
+            <Field Type="DWORD"   	Name="dwFramingErr" />
+            <Field Type="DWORD"   	Name="dwBufferOverrunErr" />
+            <Field Type="DWORD"   	Name="dwCompressionRatioIn" />
+            <Field Type="DWORD"   	Name="dwCompressionRatioOut" />
+            <Field Type="DWORD"   	Name="dwBps" />
+            <Field Type="DWORD"   	Name="dwConnectDuration" />
+        </Variable>
+        <Variable Name="RAS_STATS*" Type="Pointer" Base="RAS_STATS" />
+
+        <!-- RASCTRYINFO -->
+        <Variable Name="RASCTRYINFO" Type="Struct" Pack="4">
+            <Field Type="DWORD"   	Name="dwSize" />
+            <Field Type="DWORD"   	Name="dwCountryID" />
+            <Field Type="DWORD"   	Name="dwNextCountryID" />
+            <Field Type="DWORD"   	Name="dwCountryCode" />
+            <Field Type="DWORD"   	Name="dwCountryNameOffset" />
+        </Variable>
+        <Variable Name="LPRASCTRYINFO" Type="Pointer" Base="RASCTRYINFO" />
+
+        <!-- IsolationState -->
+        <Variable Name="IsolationState" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="isolationStateNotRestricted"     Value="1" />
+                <Set Name="isolationStateInProbation"       Value="2" />
+                <Set Name="isolationStateRestrictedAccess"  Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- RASNAPSTATE -->
+        <Variable Name="RASNAPSTATE" Type="Struct">
+            <Field Type="DWORD"          	Name="dwSize" />
+            <Field Type="DWORD"          	Name="dwFlags" />
+            <Field Type="IsolationState" 	Name="isolationState" />
+            <Field Type="ProbationTime"  	Name="probationTime" />
+        </Variable>
+        <Variable Name="LPRASNAPSTATE" Type="Pointer" Base="RASNAPSTATE" />
+        
         <Variable Name="[RasConnNotifyFlags]" Type="Alias" Base="DWORD">
                 <Display Name="DWORD" />
             <Flag>
@@ -37,6 +110,7 @@
                 <Set Name="RASCN_BandwidthRemoved"  Value="0x00000008" />
             </Flag>
         </Variable>
+        
         <Variable Name="RASPROJECTION" Type="Alias" Base="DWORD">
             <Flag>
                 <Set Name="RASP_Amb"        Value="0x10000" />
@@ -49,6 +123,7 @@
                 <Set Name="RASP_Slip"       Value="0x20000"  />
             </Flag>
         </Variable>
+        
         <!-- Remote Access Service -->
         <Category Name="Networking/Network Firewall and Routing/Routing and Remote Access Service/Remote Access/Remote Access Service" />
         <Api Name="RasClearConnectionStatistics">

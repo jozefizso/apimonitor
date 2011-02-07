@@ -7,32 +7,106 @@
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\cryptography.h.xml" />
     <Module Name="Wintrust.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        <!-- Parameters -->
-        <Variable Name="CRYPTCATCDF*"                    Type="Alias"        Base="LPVOID" />
+        <!-- Variables -->
+        <Variable Name="HCATADMIN"                      Type="Alias"    Base="HANDLE" />
+        <Variable Name="HCATADMIN*"                     Type="Pointer"  Base="HCATADMIN" />
+        <Variable Name="HCATINFO"                       Type="Alias"    Base="HANDLE" />
+        <Variable Name="HCATINFO*"                      Type="Pointer"  Base="HCATINFO" />
+        <Variable Name="PFN_CDF_PARSE_ERROR_CALLBACK"   Type="Alias"    Base="LPVOID" />
+        <Variable Name="CRYPT_PROVIDER_DATA*"            Type="Alias"        Base="LPVOID" />
 
-        <Variable Name="CRYPTCATATTRIBUTE*"              Type="Alias"        Base="LPVOID" />
-        <Variable Name="PFN_CDF_PARSE_ERROR_CALLBACK"    Type="Alias"        Base="LPVOID" />
-
-        <Variable Name="CRYPTCATMEMBER*"                 Type="Alias"        Base="LPVOID" />
-        <Variable Name="CRYPTCATMEMBER**"                Type="Pointer"      Base="CRYPTCATMEMBER*" />
-
-        <Variable Name="HCATADMIN"                       Type="Alias"        Base="HANDLE" />
-        <Variable Name="HCATADMIN*"                      Type="Pointer"        Base="HCATADMIN" />
-
-        <Variable Name="HCATINFO"                        Type="Alias"        Base="HANDLE" />
-        <Variable Name="HCATINFO*"                       Type="Pointer"        Base="HCATINFO" />
+        <!-- TODO: Structures -->
         <Variable Name="CATALOG_INFO*"                   Type="Alias"        Base="LPVOID" />
-
-        <Variable Name="CRYPT_REGISTER_ACTIONID*"        Type="Alias"        Base="LPVOID" />
         <Variable Name="CRYPT_PROVIDER_FUNCTIONS*"       Type="Alias"        Base="LPVOID" />
         <Variable Name="WINTRUST_DATA*"                  Type="Alias"        Base="LPVOID" />
-        <Variable Name="CRYPT_PROVIDER_DATA*"            Type="Alias"        Base="LPVOID" />
-        <Variable Name="CERT_INFO*"                      Type="Alias"        Base="LPVOID" />
         <Variable Name="CRYPT_PROVIDER_SGNR*"            Type="Alias"        Base="LPVOID" />
         <Variable Name="CRYPT_PROVIDER_CERT*"            Type="Alias"        Base="LPVOID" />
-        <Variable Name="CRYPT_PROVIDER_PRIVDATA*"        Type="Alias"        Base="LPVOID" />
 
-        <!-- Flags -->
+        <!-- CRYPTCATCDF -->
+        <Variable Name="CRYPTCATCDF" Type="Struct">
+            <Field Type="DWORD"      Name="cbStruct" />
+            <Field Type="HANDLE"     Name="hFile" />
+            <Field Type="DWORD"      Name="dwCurFilePos" />
+            <Field Type="DWORD"      Name="dwLastMemberOffset" />
+            <Field Type="BOOL"       Name="fEOF" />
+            <Field Type="LPWSTR"     Name="pwszResultDir" />
+            <Field Type="HANDLE"     Name="hCATStore" />
+        </Variable>
+        <Variable Name="CRYPTCATCDF*" Type="Pointer" Base="CRYPTCATCDF" />
+
+        <!-- [CryptCatTypeAndAction] -->
+        <Variable Name="[CryptCatTypeAndAction]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="CRYPTCAT_ATTR_AUTHENTICATED"       Value="0x10000000" />
+                <Set Name="CRYPTCAT_ATTR_UNAUTHENTICATED"     Value="0x20000000" />
+                <Set Name="CRYPTCAT_ATTR_NAMEASCII"           Value="0x00000001" />
+                <Set Name="CRYPTCAT_ATTR_NAMEOBJID"           Value="0x00000002" />
+                <Set Name="CRYPTCAT_ATTR_DATAASCII"           Value="0x00010000" />
+                <Set Name="CRYPTCAT_ATTR_DATABASE64"          Value="0x00020000" />
+                <Set Name="CRYPTCAT_ATTR_DATAREPLACE"         Value="0x00040000" />
+            </Flag>
+        </Variable>
+
+        <!-- CRYPTCATATTRIBUTE -->
+        <Variable Name="CRYPTCATATTRIBUTE" Type="Struct">
+            <Field Type="DWORD"                     Name="cbStruct" />
+            <Field Type="LPWSTR"                    Name="pwszReferenceTag" />
+            <Field Type="[CryptCatTypeAndAction]"   Name="dwAttrTypeAndAction" />
+            <Field Type="DWORD"                     Name="cbValue" />
+            <Field Type="BYTE*"                     Name="pbValue" Length="cbValue" />
+            <Field Type="DWORD"                     Name="dwReserved" />
+        </Variable>
+        <Variable Name="CRYPTCATATTRIBUTE*" Type="Pointer" Base="CRYPTCATATTRIBUTE" />
+
+        <!-- CRYPTCATMEMBER -->
+        <Variable Name="CRYPTCATMEMBER" Type="Struct">
+            <Field Type="DWORD"                 Name="cbStruct" />
+            <Field Type="LPWSTR"                Name="pwszReferenceTag" />
+            <Field Type="LPWSTR"                Name="pwszFileName" />
+            <Field Type="GUID"                  Name="gSubjectType" />
+            <Field Type="DWORD"                 Name="fdwMemberFlags" />
+            <Field Type="SIP_INDIRECT_DATA*"    Name="pIndirectData" />
+            <Field Type="DWORD"                 Name="dwCertVersion" />
+            <Field Type="DWORD"                 Name="dwReserved" />
+            <Field Type="HANDLE"                Name="hReserved" />
+            <Field Type="CRYPT_ATTR_BLOB"       Name="sEncodedIndirectData" />
+            <Field Type="CRYPT_ATTR_BLOB"       Name="sEncodedMemberInfo" />
+        </Variable>
+        <Variable Name="CRYPTCATMEMBER*"    Type="Pointer" Base="CRYPTCATMEMBER" />
+        <Variable Name="CRYPTCATMEMBER**"   Type="Pointer" Base="CRYPTCATMEMBER*" />
+
+
+        <!-- CRYPT_TRUST_REG_ENTRY -->
+        <Variable Name="CRYPT_TRUST_REG_ENTRY" Type="Struct">
+            <Field Type="DWORD"         Name="cbStruct" />
+            <Field Type="WCHAR*"        Name="pwszDLLName" />
+            <Field Type="WCHAR*"        Name="pwszFunctionName" />
+        </Variable>
+
+        <!-- CRYPT_REGISTER_ACTIONID -->
+        <Variable Name="CRYPT_REGISTER_ACTIONID" Type="Struct">
+            <Field Type="DWORD"                     Name="cbStruct" />
+            <Field Type="CRYPT_TRUST_REG_ENTRY"     Name="sInitProvider" />
+            <Field Type="CRYPT_TRUST_REG_ENTRY"     Name="sObjectProvider" />
+            <Field Type="CRYPT_TRUST_REG_ENTRY"     Name="sSignatureProvider" />
+            <Field Type="CRYPT_TRUST_REG_ENTRY"     Name="sCertificateProvider" />
+            <Field Type="CRYPT_TRUST_REG_ENTRY"     Name="sCertificatePolicyProvider" />
+            <Field Type="CRYPT_TRUST_REG_ENTRY"     Name="sFinalPolicyProvider" />
+            <Field Type="CRYPT_TRUST_REG_ENTRY"     Name="sTestPolicyProvider" />
+            <Field Type="CRYPT_TRUST_REG_ENTRY"     Name="sCleanupProvider" />
+        </Variable>
+        <Variable Name="CRYPT_REGISTER_ACTIONID*" Type="Pointer" Base="CRYPT_REGISTER_ACTIONID" />
+
+        <!-- CRYPT_PROVIDER_PRIVDATA -->
+        <Variable Name="CRYPT_PROVIDER_PRIVDATA" Type="Struct">
+            <Field Type="DWORD"    Name="cbStruct" />
+            <Field Type="GUID"     Name="gProviderID" />
+            <Field Type="DWORD"    Name="cbProvData" />
+            <Field Type="void*"    Name="pvProvData" Length="cbProvData" />
+        </Variable>
+        <Variable Name="CRYPT_PROVIDER_PRIVDATA*" Type="Pointer" Base="CRYPT_PROVIDER_PRIVDATA" />
+
         <Variable Name="[WintrustPolicyFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -49,6 +123,7 @@
                 <Set Name="WTPF_ALLOWONLYPERTRUST"      Value="0x00040000" />
             </Flag>
         </Variable>
+        
         <Variable Name="[WintrustPolicyFlags*]" Type="Pointer" Base="[WintrustPolicyFlags]">
             <Display Name="DWORD*" />
         </Variable>

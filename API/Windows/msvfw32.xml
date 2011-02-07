@@ -6,18 +6,51 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\gdi.h.xml" />
-    
+
     <Module Name="msvfw32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        <!-- Parameters -->
-        <Variable Name="HDRAWDIB"                Type="Alias"        Base="HANDLE" />
-        <Variable Name="LPDRAWDIBTIME"           Type="Alias"        Base="LPVOID" />
-        <Variable Name="HIC"                     Type="Alias"        Base="HANDLE" />
-        <Variable Name="PCOMPVARS"               Type="Alias"        Base="LPVOID" />
-        <Variable Name="ICINFO*"                 Type="Alias"        Base="LPVOID" />
+        <!-- Variables -->
+        <Variable Name="HIC"                    Type="Alias"    Base="HANDLE" />
+        <Variable Name="HDRAWDIB"               Type="Alias"    Base="HANDLE" />
+
+        <!-- DRAWDIBTIME -->
+        <Variable Name="DRAWDIBTIME" Type="Struct">
+            <Field Type="LONG"    	Name="timeCount" />
+            <Field Type="LONG"    	Name="timeDraw" />
+            <Field Type="LONG"    	Name="timeDecompress" />
+            <Field Type="LONG"    	Name="timeDither" />
+            <Field Type="LONG"    	Name="timeStretch" />
+            <Field Type="LONG"    	Name="timeBlt" />
+            <Field Type="LONG"    	Name="timeSetDIBits" />
+        </Variable>
+        <Variable Name="LPDRAWDIBTIME" Type="Pointer" Base="DRAWDIBTIME" />
+
+        <!-- COMPVARS -->
+        <Variable Name="COMPVARS" Type="Struct">
+            <Field Type="LONG"          Name="cbSize" />
+            <Field Type="DWORD"         Name="dwFlags" />
+            <Field Type="HIC"           Name="hic" />
+            <Field Type="DWORD"         Name="fccType" />
+            <Field Type="DWORD"         Name="fccHandler" />
+            <Field Type="LPBITMAPINFO"  Name="lpbiIn" />
+            <Field Type="LPBITMAPINFO"  Name="lpbiOut" />
+            <Field Type="LPVOID"        Name="lpBitsOut" />
+            <Field Type="LPVOID"        Name="lpBitsPrev" />
+            <Field Type="LONG"          Name="lFrame" />
+            <Field Type="LONG"          Name="lKey" />
+            <Field Type="LONG"          Name="lDataRate" />
+            <Field Type="LONG"          Name="lQ" />
+            <Field Type="LONG"          Name="lKeyCount" />
+            <Field Type="LPVOID"        Name="lpState" />
+            <Field Type="LONG"          Name="cbState" />
+        </Variable>
+        <Variable Name="PCOMPVARS" Type="Pointer" Base="COMPVARS" />
+        
+        <!-- TODO: Structures -->
+        <Variable Name="ICINFO*"                Type="Alias"    Base="LPVOID" />
 
         <!-- Flags -->
         <!-- TODO: ICOpenFlags is defined as WORD in one param and UINT in another - make sure it will not cause issues -->
-        <Variable Name="[ICOpenFlags(UINT)]" Type="Alias" Base="UINT">
+        <Variable Name="[ICOpenFlags]" Type="Alias" Base="UINT">
             <Display Name="UINT" />
             <Flag>
                 <Set Name="ICMODE_COMPRESS"         Value="1" />
@@ -28,10 +61,7 @@
                 <Set Name="ICMODE_DRAW"             Value="8" />
             </Flag>
         </Variable>
-        <Variable Name="[ICOpenFlags(WORD)]" Type="Alias" Base="[ICOpenFlags(UINT)]">
-            <Display Name="WORD" />
-        </Variable>
-            
+
         <Variable Name="[ICMessage]" Type="Alias" Base="UINT">
             <Display Name="UINT" />
             <Enum>
@@ -79,6 +109,7 @@
                 <Set Name="ICM_SET_STATUS_PROC"             Value="0x00004048" />
             </Enum>
         </Variable>
+
         <!-- Multimedia -->
         <Category Name="Graphics and Multimedia/Audio and Video/Windows Multimedia" />
         <Api Name="DrawDibBegin">
@@ -324,21 +355,21 @@
             <Param Type="DWORD" Name="fccHandler" />
             <Param Type="LPBITMAPINFOHEADER" Name="lpbiIn" />
             <Param Type="LPBITMAPINFOHEADER" Name="lpbiOut" />
-            <Param Type="[ICOpenFlags(WORD)]" Name="wFlags" />
+            <Param Type="[ICOpenFlags]" Display="WORD" Name="wFlags" />
             <Return Type="HIC" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="ICOpen">
             <Param Type="DWORD" Name="fccType" />
             <Param Type="DWORD" Name="fccHandler" />
-            <Param Type="[ICOpenFlags(UINT)]" Name="wMode" />
+            <Param Type="[ICOpenFlags]" Name="wMode" />
             <Return Type="HIC" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="ICOpenFunction">
             <Param Type="DWORD" Name="fccType" />
             <Param Type="DWORD" Name="fccHandler" />
-            <Param Type="[ICOpenFlags(UINT)]" Name="wMode" />
+            <Param Type="[ICOpenFlags]" Name="wMode" />
             <Param Type="FARPROC" Name="lpfnHandler" />
             <Return Type="HIC" />
             <Success Return="NotEqual" Value="0" />

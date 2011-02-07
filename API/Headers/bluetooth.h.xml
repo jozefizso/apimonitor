@@ -6,26 +6,85 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Headers>
-        <Variable Name="BLUETOOTH_FIND_RADIO_PARAMS*"               Type="Alias"       Base="LPVOID" />
-        <Variable Name="HBLUETOOTH_RADIO_FIND"                      Type="Alias"       Base="HANDLE" />
-        <Variable Name="PBLUETOOTH_RADIO_INFO"                      Type="Alias"       Base="LPVOID" />
-        <Variable Name="BLUETOOTH_DEVICE_INFO*"                     Type="Alias"       Base="LPVOID" />
-        <Variable Name="const BLUETOOTH_DEVICE_INFO*"               Type="Alias"       Base="BLUETOOTH_DEVICE_INFO*" />
-        <Variable Name="HBLUETOOTH_DEVICE_FIND"                     Type="Alias"       Base="HANDLE" />
-        <Variable Name="BLUETOOTH_DEVICE_SEARCH_PARAMS*"            Type="Alias"       Base="LPVOID" />
-        <Variable Name="HBLUETOOTH_AUTHENTICATION_REGISTRATION"     Type="Alias"       Base="HANDLE" />
-        <Variable Name="HBLUETOOTH_AUTHENTICATION_REGISTRATION*"    Type="Pointer"     Base="HBLUETOOTH_AUTHENTICATION_REGISTRATION" />
-        <Variable Name="PFN_AUTHENTICATION_CALLBACK"                Type="Alias"       Base="LPVOID" />
-        <Variable Name="BLUETOOTH_ADDRESS*"                         Type="Alias"       Base="LPVOID" />
-        <Variable Name="PFN_BLUETOOTH_ENUM_ATTRIBUTES_CALLBACK"     Type="Alias"       Base="LPVOID" />
-        <Variable Name="PSDP_ELEMENT_DATA"                          Type="Alias"       Base="LPVOID" />
-        <Variable Name="HBLUETOOTH_CONTAINER_ELEMENT"               Type="Alias"       Base="HANDLE" />
-        <Variable Name="HBLUETOOTH_CONTAINER_ELEMENT*"              Type="Pointer"     Base="HBLUETOOTH_CONTAINER_ELEMENT" />
-        <Variable Name="PSDP_STRING_TYPE_DATA"                      Type="Alias"       Base="LPVOID" />
-        <Variable Name="BLUETOOTH_SELECT_DEVICE_PARAMS*"            Type="Alias"       Base="LPVOID" />
-        <Variable Name="const BLUETOOTH_LOCAL_SERVICE_INFO*"        Type="Alias"       Base="LPVOID" />
-        <Variable Name="PBTH_OOB_DATA"                              Type="Alias"       Base="LPVOID" />
-        <Variable Name="BLUETOOTH_AUTHENTICATION_REQUIREMENTS"      Type="Alias"       Base="UINT">
+        <!-- Variables -->
+        <Variable Name="HBLUETOOTH_RADIO_FIND"                      Type="Alias"    Base="HANDLE" />
+        <Variable Name="HBLUETOOTH_DEVICE_FIND"                     Type="Alias"    Base="HANDLE" />
+        <Variable Name="HBLUETOOTH_AUTHENTICATION_REGISTRATION"     Type="Alias"    Base="HANDLE" />
+        <Variable Name="HBLUETOOTH_AUTHENTICATION_REGISTRATION*"    Type="Pointer"  Base="HBLUETOOTH_AUTHENTICATION_REGISTRATION" />
+        <Variable Name="HBLUETOOTH_CONTAINER_ELEMENT"               Type="Alias"    Base="HANDLE" />
+        <Variable Name="HBLUETOOTH_CONTAINER_ELEMENT*"              Type="Pointer"  Base="HBLUETOOTH_CONTAINER_ELEMENT" />
+        <Variable Name="PFN_AUTHENTICATION_CALLBACK"                Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFN_BLUETOOTH_ENUM_ATTRIBUTES_CALLBACK"     Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFN_DEVICE_CALLBACK"                        Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFN_AUTHENTICATION_CALLBACK_EX"             Type="Alias"    Base="LPVOID" />
+
+        <!-- TODO: Structures -->
+        <Variable Name="PBLUETOOTH_RADIO_INFO"                      Type="Alias"    Base="LPVOID" />
+        <Variable Name="BLUETOOTH_DEVICE_INFO*"                     Type="Alias"    Base="LPVOID" />
+        <Variable Name="PBLUETOOTH_DEVICE_INFO"                     Type="Alias"    Base="BLUETOOTH_DEVICE_INFO*" />
+        <Variable Name="const BLUETOOTH_DEVICE_INFO*"               Type="Alias"    Base="BLUETOOTH_DEVICE_INFO*" />
+        <Variable Name="BLUETOOTH_ADDRESS*"                         Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSDP_ELEMENT_DATA"                          Type="Alias"    Base="LPVOID" />
+        <Variable Name="const BLUETOOTH_LOCAL_SERVICE_INFO*"        Type="Alias"    Base="LPVOID" />
+        <Variable Name="PBLUETOOTH_OOB_DATA_INFO"                   Type="Alias"    Base="LPVOID" />
+        <Variable Name="PBLUETOOTH_AUTHENTICATE_RESPONSE"           Type="Alias"    Base="LPVOID" />
+
+        <!-- SDP_STRING_TYPE_DATA -->
+        <Variable Name="SDP_STRING_TYPE_DATA" Type="Struct">
+            <Field Type="USHORT" 	Name="encoding" />
+            <Field Type="USHORT" 	Name="mibeNum" />
+            <Field Type="USHORT" 	Name="attributeId" />
+        </Variable>
+        <Variable Name="PSDP_STRING_TYPE_DATA" Type="Pointer" Base="SDP_STRING_TYPE_DATA" />
+
+        <!-- BLUETOOTH_FIND_RADIO_PARAMS -->
+        <Variable Name="BLUETOOTH_FIND_RADIO_PARAMS" Type="Struct">
+            <Field Type="DWORD" Name="dwSize" />
+        </Variable>
+        <Variable Name="BLUETOOTH_FIND_RADIO_PARAMS*" Type="Pointer" Base="BLUETOOTH_FIND_RADIO_PARAMS" />
+
+        <!-- BLUETOOTH_DEVICE_SEARCH_PARAMS -->
+        <Variable Name="BLUETOOTH_DEVICE_SEARCH_PARAMS" Type="Struct">
+            <Field Type="DWORD"   	Name="dwSize" />
+            <Field Type="BOOL"    	Name="fReturnAuthenticated" />
+            <Field Type="BOOL"    	Name="fReturnRemembered" />
+            <Field Type="BOOL"    	Name="fReturnUnknown" />
+            <Field Type="BOOL"    	Name="fReturnConnected" />
+            <Field Type="BOOL"    	Name="fIssueInquiry" />
+            <Field Type="UCHAR"   	Name="cTimeoutMultiplier" />
+            <Field Type="HANDLE"  	Name="hRadio" />
+        </Variable>
+        <Variable Name="BLUETOOTH_DEVICE_SEARCH_PARAMS*" Type="Pointer" Base="BLUETOOTH_DEVICE_SEARCH_PARAMS" />
+
+        <!-- BLUETOOTH_COD_PAIRS -->
+        <Variable Name="BLUETOOTH_COD_PAIRS" Type="Struct">
+            <Field Type="ULONG"   	Name="ulCODMask" />
+            <Field Type="LPCWSTR" 	Name="pcszDescription" />
+        </Variable>
+        <Variable Name="BLUETOOTH_COD_PAIRS*" Type="Pointer" Base="BLUETOOTH_COD_PAIRS" />
+
+        <!-- BLUETOOTH_SELECT_DEVICE_PARAMS -->
+        <Variable Name="BLUETOOTH_SELECT_DEVICE_PARAMS" Type="Struct">
+            <Field Type="DWORD"   	                Name="dwSize" />
+            <Field Type="ULONG"   	                Name="cNumOfClasses" />
+            <Field Type="BLUETOOTH_COD_PAIRS*"  	Name="prgClassOfDevices" />
+            <Field Type="LPWSTR"  	                Name="pszInfo" />
+            <Field Type="HWND"    	                Name="hwndParent" />
+            <Field Type="BOOL"    	                Name="fForceAuthentication" />
+            <Field Type="BOOL"    	                Name="fShowAuthenticated" />
+            <Field Type="BOOL"    	                Name="fShowRemembered" />
+            <Field Type="BOOL"    	                Name="fShowUnknown" />
+            <Field Type="BOOL"    	                Name="fAddNewDeviceWizard" />
+            <Field Type="BOOL"    	                Name="fSkipServicesPage" />
+            <Field Type="PFN_DEVICE_CALLBACK" 	    Name="pfnDeviceCallback" />
+            <Field Type="LPVOID"  	                Name="pvParam" />
+            <Field Type="DWORD"   	                Name="cNumDevices" />
+            <Field Type="PBLUETOOTH_DEVICE_INFO"  	Name="pDevices" />
+        </Variable>
+        <Variable Name="BLUETOOTH_SELECT_DEVICE_PARAMS*" Type="Pointer" Base="BLUETOOTH_SELECT_DEVICE_PARAMS" />
+
+        <!-- BLUETOOTH_AUTHENTICATION_REQUIREMENTS -->
+        <Variable Name="BLUETOOTH_AUTHENTICATION_REQUIREMENTS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="MITMProtectionNotRequired"               Value="0x00" />
                 <Set Name="MITMProtectionRequired"                  Value="0x01" />
@@ -36,8 +95,5 @@
                 <Set Name="MITMProtectionNotDefined"                Value="0xff" />
             </Enum>
         </Variable>
-        <Variable Name="PFN_AUTHENTICATION_CALLBACK_EX"             Type="Alias"       Base="LPVOID" />
-        <Variable Name="PBLUETOOTH_AUTHENTICATE_RESPONSE"           Type="Alias"       Base="LPVOID" />
-        <Variable Name="PSDP_STRING_DATA_TYPE"                      Type="Alias"       Base="LPVOID" />
     </Headers>
 </ApiMonitor>

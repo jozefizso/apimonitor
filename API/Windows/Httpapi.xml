@@ -7,23 +7,60 @@
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Httpapi.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
         <!-- Variables -->
-        <Variable Name="HTTPAPI_VERSION"                 Type="Alias" Base="UINT" />
+        <Variable Name="HTTPAPI_VERSION"                 Type="Alias"   Base="UINT" />
+        <Variable Name="HTTP_OPAQUE_ID"                  Type="Alias"   Base="ULONGLONG" />
+        <Variable Name="HTTP_REQUEST_ID"                 Type="Alias"   Base="HTTP_OPAQUE_ID" />
+        <Variable Name="HTTP_CONNECTION_ID"              Type="Alias"   Base="HTTP_OPAQUE_ID" />
+        <Variable Name="HTTP_SERVER_SESSION_ID"          Type="Alias"   Base="HTTP_OPAQUE_ID" />
+        <Variable Name="PHTTP_SERVER_SESSION_ID"         Type="Pointer" Base="HTTP_SERVER_SESSION_ID" />
+        <Variable Name="HTTP_URL_GROUP_ID"               Type="Alias"   Base="HTTP_OPAQUE_ID" />
+        <Variable Name="PHTTP_URL_GROUP_ID"              Type="Pointer" Base="HTTP_URL_GROUP_ID" />
+        <Variable Name="HTTP_URL_CONTEXT"                Type="Alias"   Base="ULONGLONG" />
+
+        <!-- TODO: Structures -->
         <Variable Name="PHTTP_DATA_CHUNK"                Type="Alias" Base="LPVOID" />
-        <Variable Name="PHTTP_CACHE_POLICY"              Type="Alias" Base="LPVOID" />
-        <Variable Name="PHTTP_BYTE_RANGE"                Type="Alias" Base="LPVOID" />
         <Variable Name="PHTTP_REQUEST"                   Type="Alias" Base="LPVOID" />
         <Variable Name="PHTTP_RESPONSE"                  Type="Alias" Base="LPVOID" />
-        <Variable Name="PHTTP_LOG_DATA"                  Type="Alias" Base="LPVOID" />
+
+        <!-- HTTP_CACHE_POLICY_TYPE -->
+        <Variable Name="HTTP_CACHE_POLICY_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="HttpCachePolicyNocache"          Value="0" />
+                <Set Name="HttpCachePolicyUserInvalidates"  Value="1" />
+                <Set Name="HttpCachePolicyTimeToLive"       Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- HTTP_CACHE_POLICY -->
+        <Variable Name="HTTP_CACHE_POLICY" Type="Struct">
+            <Field Type="HTTP_CACHE_POLICY_TYPE"  	Name="Policy" />
+            <Field Type="ULONG"                   	Name="SecondsToLive" />
+        </Variable>
+        <Variable Name="PHTTP_CACHE_POLICY" Type="Pointer" Base="HTTP_CACHE_POLICY" />
+
+        <!-- HTTP_BYTE_RANGE -->
+        <Variable Name="HTTP_BYTE_RANGE" Type="Struct">
+            <Field Type="ULARGE_INTEGER" 	Name="StartingOffset" />
+            <Field Type="ULARGE_INTEGER" 	Name="Length" />
+        </Variable>
+        <Variable Name="PHTTP_BYTE_RANGE" Type="Pointer" Base="HTTP_BYTE_RANGE" />
+
+        <!-- HTTP_LOG_DATA_TYPE -->
+        <Variable Name="HTTP_LOG_DATA_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="HttpLogDataTypeFields" Value="0" />
+            </Enum>
+        </Variable>
+
+        <!-- HTTP_LOG_DATA -->
+        <Variable Name="HTTP_LOG_DATA" Type="Struct">
+            <Field Type="HTTP_LOG_DATA_TYPE" Name="Type" />
+        </Variable>
+        <Variable Name="PHTTP_LOG_DATA" Type="Pointer" Base="HTTP_LOG_DATA" />
+        
         <Variable Name="PHTTP_SSL_CLIENT_CERT_INFO"      Type="Alias" Base="LPVOID" />
-        <Variable Name="HTTP_URL_CONTEXT"                Type="Alias" Base="ULONGLONG" />
-        <Variable Name="PSECURITY_ATTRIBUTES"            Type="Alias" Base="LPVOID" />
-        <Variable Name="HTTP_OPAQUE_ID"                  Type="Alias" Base="ULONGLONG" />
-        <Variable Name="HTTP_REQUEST_ID"                 Type="Alias" Base="HTTP_OPAQUE_ID" />
-        <Variable Name="HTTP_CONNECTION_ID"              Type="Alias" Base="HTTP_OPAQUE_ID" />
-        <Variable Name="HTTP_SERVER_SESSION_ID"          Type="Alias" Base="HTTP_OPAQUE_ID" />
-        <Variable Name="PHTTP_SERVER_SESSION_ID"         Type="Pointer" Base="HTTP_SERVER_SESSION_ID" />
-        <Variable Name="HTTP_URL_GROUP_ID"               Type="Alias" Base="HTTP_OPAQUE_ID" />
-        <Variable Name="PHTTP_URL_GROUP_ID"              Type="Pointer" Base="HTTP_URL_GROUP_ID" />
+       
+        <!-- HTTP_SERVICE_CONFIG_ID -->
         <Variable Name="HTTP_SERVICE_CONFIG_ID" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="HttpServiceConfigIPListenList"   Value="0" />
@@ -33,6 +70,8 @@
                 <Set Name="HttpServiceConfigMax"            Value="4" />
             </Enum>
         </Variable>
+        
+        <!-- HTTP_SERVER_PROPERTY -->
         <Variable Name="HTTP_SERVER_PROPERTY" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="HttpServerAuthenticationProperty"            Value="0" />
@@ -47,6 +86,8 @@
                 <Set Name="HttpServerListenEndpointProperty"            Value="9" />
             </Enum>
         </Variable>
+        
+        <!-- [HttpInitializeFlags] -->
         <Variable Name="[HttpInitializeFlags]" Type="Alias" Base="ULONG">
             <Display Name="ULONG" />
             <Flag>
@@ -54,6 +95,7 @@
                 <Set Name="HTTP_INITIALIZE_CONFIG"  Value="0x00000002" />
             </Flag>
         </Variable>
+        
         <!-- HTTP Server API -->
         <Category Name="Networking/Network Protocols/HTTP Server API/Version 1.0/General" />
         <Api Name="HttpCreateHttpHandle">

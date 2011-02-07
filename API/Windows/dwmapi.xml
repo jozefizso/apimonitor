@@ -7,20 +7,139 @@
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\gdi.h.xml" />
     <Module Name="dwmapi.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
-        <!-- Parameters -->
-        <Variable Name="const DWM_BLURBEHIND*"               Type="Alias" Base="LPVOID" />
-        <Variable Name="const MARGINS*"                      Type="Alias" Base="LPVOID" />
-        <Variable Name="DWM_TIMING_INFO*"                    Type="Alias" Base="LPVOID" />
-        <Variable Name="MilMatrix3x2D*"                      Type="Alias" Base="LPVOID" />
-        <Variable Name="HTHUMBNAIL"                          Type="Alias" Base="HANDLE" />
-        <Variable Name="PHTHUMBNAIL"                         Type="Pointer" Base="HTHUMBNAIL" />
+        <!-- Variables -->
+        <Variable Name="DWM_FRAME_COUNT"    Type="Alias"    Base="ULONGLONG" />
+        <Variable Name="QPC_TIME"           Type="Alias"    Base="ULONGLONG" />
+        <Variable Name="HTHUMBNAIL"         Type="Alias"    Base="HANDLE" />
+        <Variable Name="PHTHUMBNAIL"        Type="Pointer"  Base="HTHUMBNAIL" />
 
-        <Variable Name="DWM_PRESENT_PARAMETERS*"             Type="Alias" Base="LPVOID" />
-        <Variable Name="const DWM_THUMBNAIL_PROPERTIES*"     Type="Alias" Base="LPVOID" />
+        <!-- [DWM_BLURBEHIND_Flags] -->
+        <Variable Name="[DWM_BLURBEHIND_Flags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="DWM_BB_ENABLE"                   Value="0x00000001" />
+                <Set Name="DWM_BB_BLURREGION"               Value="0x00000002" />
+                <Set Name="DWM_BB_TRANSITIONONMAXIMIZED"    Value="0x00000004" />
+            </Flag>
+        </Variable>
 
-        <!-- Flags -->
+        <!-- DWM_BLURBEHIND -->
+        <Variable Name="DWM_BLURBEHIND" Type="Struct" Pack="1">
+            <Field Type="[DWM_BLURBEHIND_Flags]"    Name="dwFlags" />
+            <Field Type="BOOL" 	                    Name="fEnable" />
+            <Field Type="HRGN" 	                    Name="hRgnBlur" />
+            <Field Type="BOOL" 	                    Name="fTransitionOnMaximized" />
+        </Variable>
+        <Variable Name="const DWM_BLURBEHIND*" Type="Pointer" Base="DWM_BLURBEHIND" />
+
+        <!-- UNSIGNED_RATIO -->
+        <Variable Name="UNSIGNED_RATIO" Type="Struct" Pack="1">
+            <Field Type="UINT32" 	Name="uiNumerator" />
+            <Field Type="UINT32" 	Name="uiDenominator" />
+        </Variable>
+
+        <!-- DWM_TIMING_INFO -->
+        <Variable Name="DWM_TIMING_INFO" Type="Struct" Pack="1">
+            <Field Type="UINT32"                    Name="cbSize" />
+            <Field Type="UNSIGNED_RATIO"            Name="rateRefresh" />
+            <Field Type="QPC_TIME"                  Name="qpcRefreshPeriod" />
+            <Field Type="UNSIGNED_RATIO"            Name="rateCompose" />
+            <Field Type="QPC_TIME"                  Name="qpcVBlank" />
+            <Field Type="DWM_FRAME_COUNT"           Name="cRefresh" />
+            <Field Type="UINT"                      Name="cDXRefresh" />
+            <Field Type="QPC_TIME"                  Name="qpcCompose" />
+            <Field Type="DWM_FRAME_COUNT"           Name="cFrame" />
+            <Field Type="UINT"                      Name="cDXPresent" />
+            <Field Type="DWM_FRAME_COUNT"           Name="cRefreshFrame" />
+            <Field Type="DWM_FRAME_COUNT"           Name="cFrameSubmitted" />
+            <Field Type="UINT"                      Name="cDXPresentSubmitted" />
+            <Field Type="DWM_FRAME_COUNT"           Name="cFrameConfirmed" />
+            <Field Type="UINT"                      Name="cDXPresentConfirmed" />
+            <Field Type="DWM_FRAME_COUNT"           Name="cRefreshConfirmed" />
+            <Field Type="UINT"                      Name="cDXRefreshConfirmed" />
+            <Field Type="DWM_FRAME_COUNT"           Name="cFramesLate" />
+            <Field Type="UINT"                      Name="cFramesOutstanding" />
+            <Field Type="DWM_FRAME_COUNT"           Name="cFrameDisplayed" />
+            <Field Type="QPC_TIME"                  Name="qpcFrameDisplayed" />
+            <Field Type="DWM_FRAME_COUNT"           Name="cRefreshFrameDisplayed" />
+            <Field Type="DWM_FRAME_COUNT"           Name="cFrameComplete" />
+            <Field Type="QPC_TIME"                  Name="qpcFrameComplete" />
+            <Field Type="DWM_FRAME_COUNT"           Name="cFramePending" />
+            <Field Type="QPC_TIME"                  Name="qpcFramePending" />
+            <Field Type="DWM_FRAME_COUNT"           Name="cFramesDisplayed" />
+            <Field Type="DWM_FRAME_COUNT"           Name="cFramesComplete" />
+            <Field Type="DWM_FRAME_COUNT"           Name="cFramesPending" />
+            <Field Type="DWM_FRAME_COUNT"           Name="cFramesAvailable" />
+            <Field Type="DWM_FRAME_COUNT"           Name="cFramesDropped" />
+            <Field Type="DWM_FRAME_COUNT"           Name="cFramesMissed" />
+            <Field Type="DWM_FRAME_COUNT"           Name="cRefreshNextDisplayed" />
+            <Field Type="DWM_FRAME_COUNT"           Name="cRefreshNextPresented" />
+            <Field Type="DWM_FRAME_COUNT"           Name="cRefreshesDisplayed" />
+            <Field Type="DWM_FRAME_COUNT"           Name="cRefreshesPresented" />
+            <Field Type="DWM_FRAME_COUNT"           Name="cRefreshStarted" />
+            <Field Type="ULONGLONG"                 Name="cPixelsReceived" />
+            <Field Type="ULONGLONG"                 Name="cPixelsDrawn" />
+            <Field Type="DWM_FRAME_COUNT"           Name="cBuffersEmpty" />
+        </Variable>
+        <Variable Name="DWM_TIMING_INFO*" Type="Pointer" Base="DWM_TIMING_INFO" />
+
+        <!-- MilMatrix3x2D -->
+        <Variable Name="MilMatrix3x2D" Type="Struct" Pack="1">
+            <Field Type="DOUBLE" 	Name="S_11" />
+            <Field Type="DOUBLE" 	Name="S_12" />
+            <Field Type="DOUBLE" 	Name="S_21" />
+            <Field Type="DOUBLE" 	Name="S_22" />
+            <Field Type="DOUBLE" 	Name="DX" />
+            <Field Type="DOUBLE" 	Name="DY" />
+        </Variable>
+        <Variable Name="MilMatrix3x2D*" Type="Pointer" Base="MilMatrix3x2D" />
+
+        <!-- DWM_SOURCE_FRAME_SAMPLING -->
+        <Variable Name="DWM_SOURCE_FRAME_SAMPLING" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DWM_SOURCE_FRAME_SAMPLING_POINT"     Value="0" />
+                <Set Name="DWM_SOURCE_FRAME_SAMPLING_COVERAGE"  Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- DWM_PRESENT_PARAMETERS -->
+        <Variable Name="DWM_PRESENT_PARAMETERS" Type="Struct" Pack="1">
+            <Field Type="UINT32"          	            Name="cbSize" />
+            <Field Type="BOOL"            	            Name="fQueue" />
+            <Field Type="DWM_FRAME_COUNT" 	            Name="cRefreshStart" />
+            <Field Type="UINT"            	            Name="cBuffer" />
+            <Field Type="BOOL"            	            Name="fUseSourceRate" />
+            <Field Type="UNSIGNED_RATIO"  	            Name="rateSource" />
+            <Field Type="UINT"            	            Name="cRefreshesPerFrame" />
+            <Field Type="DWM_SOURCE_FRAME_SAMPLING"  	Name="eSampling" />
+        </Variable>
+        <Variable Name="DWM_PRESENT_PARAMETERS*" Type="Pointer" Base="DWM_PRESENT_PARAMETERS" />
+
+        <!-- [DWM_TNP] -->
+        <Variable Name="[DWM_TNP]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="DWM_TNP_RECTDESTINATION"         Value="0x00000001" />
+                <Set Name="DWM_TNP_RECTSOURCE"              Value="0x00000002" />
+                <Set Name="DWM_TNP_OPACITY"                 Value="0x00000004" />
+                <Set Name="DWM_TNP_VISIBLE"                 Value="0x00000008" />
+                <Set Name="DWM_TNP_SOURCECLIENTAREAONLY"    Value="0x00000010" />
+            </Flag>
+        </Variable>
+
+        <!-- DWM_THUMBNAIL_PROPERTIES -->
+        <Variable Name="DWM_THUMBNAIL_PROPERTIES" Type="Struct" Pack="1">
+            <Field Type="[DWM_TNP]"     Name="dwFlags" />
+            <Field Type="RECT"          Name="rcDestination" />
+            <Field Type="RECT"          Name="rcSource" />
+            <Field Type="BYTE"          Name="opacity" />
+            <Field Type="BOOL"          Name="fVisible" />
+            <Field Type="BOOL"          Name="fSourceClientAreaOnly" />
+        </Variable>
+        <Variable Name="const DWM_THUMBNAIL_PROPERTIES*" Type="Pointer" Base="DWM_THUMBNAIL_PROPERTIES" />
+
         <Variable Name="[DwmWindowAttr]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Enum>
                 <Set Name="DWMWA_NCRENDERING_ENABLED"           Value="1" />
                 <Set Name="DWMWA_NCRENDERING_POLICY"            Value="2" />

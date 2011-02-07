@@ -6,16 +6,46 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Mpr.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        <!-- Parameters -->
-        <Variable Name="LPNETRESOURCE"               Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPNETCONNECTINFOSTRUCT"      Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPCONNECTDLGSTRUCT"          Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPDISCDLGSTRUCT"             Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPNETINFOSTRUCT"             Type="Alias"        Base="LPVOID" />
+        
+        <!-- TODO: Structures -->
+        <Variable Name="LPNETRESOURCE"          Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPCONNECTDLGSTRUCT"     Type="Alias"    Base="LPVOID" />
 
-        <!-- Flags -->
+        <!-- NETCONNECTINFOSTRUCT -->
+        <Variable Name="NETCONNECTINFOSTRUCT" Type="Struct">
+            <Field Type="DWORD" 	Name="cbStructure" />
+            <Field Type="DWORD" 	Name="dwFlags" />
+            <Field Type="DWORD" 	Name="dwSpeed" />
+            <Field Type="DWORD" 	Name="dwDelay" />
+            <Field Type="DWORD" 	Name="dwOptDataSize" />
+        </Variable>
+        <Variable Name="LPNETCONNECTINFOSTRUCT" Type="Pointer" Base="NETCONNECTINFOSTRUCT" />
+
+        <!-- DISCDLGSTRUCT -->
+        <Variable Name="DISCDLGSTRUCT" Type="Struct">
+            <Field Type="DWORD"     Name="cbStructure" />
+            <Field Type="HWND"      Name="hwndOwner" />
+            <Field Type="LPTSTR"    Name="lpLocalName" />
+            <Field Type="LPTSTR"    Name="lpRemoteName" />
+            <Field Type="DWORD"     Name="dwFlags" />
+        </Variable>
+        <Variable Name="LPDISCDLGSTRUCT" Type="Pointer" Base="DISCDLGSTRUCT" />
+
+        <!-- NETINFOSTRUCT -->
+        <Variable Name="NETINFOSTRUCT" Type="Struct">
+            <Field Type="DWORD" 	Name="cbStructure" />
+            <Field Type="DWORD" 	Name="dwProviderVersion" />
+            <Field Type="DWORD" 	Name="dwStatus" />
+            <Field Type="DWORD" 	Name="dwCharacteristics" />
+            <Field Type="ULONG_PTR" Name="dwHandle" />
+            <Field Type="WORD"  	Name="wNetType" />
+            <Field Type="DWORD" 	Name="dwPrinters" />
+            <Field Type="DWORD"     Name="dwDrives" />
+        </Variable>
+        <Variable Name="LPNETINFOSTRUCT" Type="Pointer" Base="NETINFOSTRUCT" />
+
         <Variable Name="[ResourceScope]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Enum>
                 <Set Name="RESOURCE_CONNECTED"      Value="0x00000001" />
                 <Set Name="RESOURCE_GLOBALNET"      Value="0x00000002" />
@@ -24,8 +54,9 @@
                 <Set Name="RESOURCE_CONTEXT"        Value="0x00000005" />
             </Enum>
         </Variable>
+        
         <Variable Name="[ResourceType]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="RESOURCETYPE_ANY"        Value="0x00000000" />
                 <Set Name="RESOURCETYPE_DISK"       Value="0x00000001" />
@@ -34,8 +65,9 @@
                 <Set Name="RESOURCETYPE_UNKNOWN"    Value="0xFFFFFFFF" />
             </Flag>
         </Variable>
+        
         <Variable Name="[ResourceUsage]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="RESOURCEUSAGE_CONNECTABLE"           Value="0x00000001" />
                 <Set Name="RESOURCEUSAGE_CONTAINER"             Value="0x00000002" />
@@ -46,15 +78,17 @@
                 <Set Name="RESOURCEUSAGE_RESERVED"              Value="0x80000000" />
             </Flag>
         </Variable>
+        
         <Variable Name="[UniversalInfoLevel]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Enum>
                 <Set Name="UNIVERSAL_NAME_INFO_LEVEL"   Value="0x00000001" />
                 <Set Name="REMOTE_NAME_INFO_LEVEL"      Value="0x00000002" />
             </Enum>
         </Variable>
+        
         <Variable Name="[ConnectFlags]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="CONNECT_UPDATE_PROFILE"      Value="0x00000001" />
                 <Set Name="CONNECT_UPDATE_RECENT"       Value="0x00000002" />
@@ -73,6 +107,7 @@
                 <Set Name="CONNECT_CRED_RESET"          Value="0x00002000" />
             </Flag>
         </Variable>
+        
         <!-- Windows Networking (WNet) -->
         <Category Name="Networking/Network Management/Windows Networking (WNet)" />
         <Api Name="WNetSetLastError" BothCharset="True">

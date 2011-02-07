@@ -7,18 +7,40 @@
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\cryptography.h.xml" />
     <Include Filename="Headers\registry.h.xml" />
-    
+
     <!-- TODO: Return type is [SystemErrorCode] instead of UINT -->
     <Module Name="Msi.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         <ErrorDecode ErrorFunc="GetLastError" ErrorIsReturnValue="True" />
-        
-        <!-- Parameters -->
-        <Variable Name="INSTALLUI_HANDLER"           Type="Alias" Base="LPVOID" />
-        <Variable Name="PINSTALLUI_HANDLER_RECORD"   Type="Alias" Base="LPVOID" />
-        <Variable Name="MSIHANDLE"                   Type="Alias" Base="unsigned long" />
-        <Variable Name="MSIHANDLE*"                  Type="Pointer" Base="MSIHANDLE" />
-        <Variable Name="MSIHANDLE**"                 Type="Pointer" Base="MSIHANDLE*" />
 
+        <!-- Variables -->
+        <Variable Name="MSIHANDLE"                      Type="Alias"    Base="unsigned long" />
+        <Variable Name="MSIHANDLE*"                     Type="Pointer"  Base="MSIHANDLE" />
+        <Variable Name="MSIHANDLE**"                    Type="Pointer"  Base="MSIHANDLE*" />
+        <Variable Name="INSTALLUI_HANDLER"              Type="Alias"    Base="LPVOID" />
+        <Variable Name="PINSTALLUI_HANDLER_RECORD"      Type="Alias"    Base="LPVOID" />
+
+        <!-- MSIPATCHDATATYPE -->
+        <Variable Name="MSIPATCHDATATYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="MSIPATCH_DATATYPE_PATCHFILE"     Value="0" />
+                <Set Name="MSIPATCH_DATATYPE_XMLPATH"       Value="1" />
+                <Set Name="MSIPATCH_DATATYPE_XMLBLOB"       Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- MSIPATCHSEQUENCEINFO -->
+        <Variable Name="MSIPATCHSEQUENCEINFO" Type="Struct">
+            <Field Type="LPCTSTR"  	        Name="szPatchData" />
+            <Field Type="MSIPATCHDATATYPE" 	Name="ePatchDataType" />
+            <Field Type="DWORD"   	        Name="dwOrder" />
+            <Field Type="UINT"    	        Name="uStatus" />
+        </Variable>
+        <Variable Name="PMSIPATCHSEQUENCEINFO" Type="Pointer" Base="MSIPATCHSEQUENCEINFO" />
+        
+        <!-- TODO: Structures -->
+        <Variable Name="PMSIFILEHASHINFO"            Type="Alias" Base="LPVOID" />
+
+        <!-- USERINFOSTATE -->
         <Variable Name="USERINFOSTATE" Type="Alias" Base="int">
             <Enum>
                 <Set Name="USERINFOSTATE_MOREDATA"      Value="-3" />
@@ -28,10 +50,7 @@
                 <Set Name="USERINFOSTATE_PRESENT"       Value="1" />
             </Enum>
         </Variable>
-        <Variable Name="PMSIPATCHSEQUENCEINFO"       Type="Alias" Base="LPVOID" />
-        <Variable Name="PMSIFILEHASHINFO"            Type="Alias" Base="LPVOID" />
 
-        <!-- Flags -->
         <Variable Name="INSTALLUILEVEL" Type="Alias" Base="UINT">
             <Flag>
                 <Set Name="INSTALLUILEVEL_NOCHANGE"         Value="0" />
@@ -46,6 +65,7 @@
                 <Set Name="INSTALLUILEVEL_SOURCERESONLY"    Value="0x100" />
             </Flag>
         </Variable>
+
         <Variable Name="MSIINSTALLCONTEXT" Type="Alias" Base="DWORD">
             <Flag>
                 <Set Name="MSIINSTALLCONTEXT_NONE"              Value="0" />
@@ -57,10 +77,7 @@
             </Flag>
         </Variable>
         <Variable Name="MSIINSTALLCONTEXT*" Type="Pointer" Base="MSIINSTALLCONTEXT" />
-        <Variable Name="MSIINSTALLCONTEXT(DWORD)" Type="Alias" Base="MSIINSTALLCONTEXT">
-            <Display Name="DWORD" />
-        </Variable>
-        
+
         <Variable Name="INSTALLSTATE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="INSTALLSTATE_NOTUSED"        Value="-7" />
@@ -80,6 +97,7 @@
             </Enum>
         </Variable>
         <Variable Name="INSTALLSTATE*" Type="Pointer" Base="INSTALLSTATE" />
+
         <Variable Name="[MsiInstallLevel]" Type="Alias" Base="int">
             <Display Name="int" />
             <Enum>
@@ -88,8 +106,9 @@
                 <Set Name="INSTALLLEVEL_MAXIMUM"    Value="0xFFFF" />
             </Enum>
         </Variable>
+
         <Variable Name="[MsiReinstallMode]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="REINSTALLMODE_REPAIR"            Value="0x00000001" />
                 <Set Name="REINSTALLMODE_FILEMISSING"       Value="0x00000002" />
@@ -104,8 +123,9 @@
                 <Set Name="REINSTALLMODE_PACKAGE"           Value="0x00000400" />
             </Flag>
         </Variable>
+
         <Variable Name="[MsiInstallMode]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Enum>
                 <Set Name="INSTALLMODE_NODETECTION_ANY"     Value="-4" />
                 <Set Name="INSTALLMODE_NOSOURCERESOLUTION"  Value="-3" />
@@ -114,6 +134,7 @@
                 <Set Name="INSTALLMODE_DEFAULT"             Value="0" />
             </Enum>
         </Variable>
+
         <Variable Name="INSTALLTYPE" Type="Alias" Base="UINT">
             <Flag>
                 <Set Name="INSTALLTYPE_DEFAULT"         Value="0" />
@@ -121,8 +142,9 @@
                 <Set Name="INSTALLTYPE_SINGLE_INSTANCE" Value="2" />
             </Flag>
         </Variable>
+
         <Variable Name="[MsiInstallLogMode]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="INSTALLLOGMODE_FATALEXIT"        Value="0x00000001" />
                 <Set Name="INSTALLLOGMODE_ERROR"            Value="0x00000002" />
@@ -146,8 +168,9 @@
                 <Set Name="INSTALLLOGMODE_RMFILESINUSE"     Value="0x02000000" />
             </Flag>
         </Variable>
+
         <Variable Name="[MsiInstallLogAttributes]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="INSTALLLOGATTRIBUTES_APPEND"         Value="0x00000001" />
                 <Set Name="INSTALLLOGATTRIBUTES_FLUSHEACHLINE"  Value="0x00000002" />
@@ -160,21 +183,23 @@
     </Enum>
     -->
         <Variable Name="[MsiArchFlags]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="MSIARCHITECTUREFLAGS_X86"    Value="0x00000001" />
                 <Set Name="MSIARCHITECTUREFLAGS_IA64"   Value="0x00000002" />
                 <Set Name="MSIARCHITECTUREFLAGS_AMD64"  Value="0x00000004" />
             </Flag>
         </Variable>
+        
         <Variable Name="[MsiAdOptions]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="MSIADVERTISEOPTIONS_INSTANCE"    Value="1" />
             </Flag>
         </Variable>
+        
         <Variable Name="[MsiSourceType]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="MSISOURCETYPE_UNKNOWN"   Value="0x00000000" />
                 <Set Name="MSISOURCETYPE_NETWORK"   Value="0x00000001" />
@@ -183,25 +208,29 @@
                 <Set Name="MSICODE_PATCH"           Value="0x40000000" />
             </Flag>
         </Variable>
+        
         <Variable Name="[MsiCode]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="MSICODE_PRODUCT"         Value="0x00000000" />
                 <Set Name="MSICODE_PATCH"           Value="0x40000000" />
             </Flag>
         </Variable>
+        
         <Variable Name="[MsiAssemblyInfo]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="MSIASSEMBLYINFO_NETASSEMBLY"     Value="0" />
                 <Set Name="MSIASSEMBLYINFO_WIN32ASSEMBLY"   Value="1" />
             </Flag>
         </Variable>
+        
         <Variable Name="[MsiOpenPackageFlags]" Type="Alias" Base="DWORD">
             <Flag>
                 <Set Name="MSIOPENPACKAGEFLAGS_IGNOREMACHINESTATE" Value="0x00000001" />
             </Flag>
         </Variable>
+        
         <Variable Name="[MsiPatchState]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -213,12 +242,14 @@
                 <Set Name="MSIPATCHSTATE_ALL"           Value="0xF" />
             </Flag>
         </Variable>
+        
         <Variable Name="[MsiHashFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
                 <Set Name="MSI_INVALID_HASH_IS_FATAL" Value="0x1" />
             </Flag>
         </Variable>
+        
         <Variable Name="[MsiTransactionAttributes]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -226,8 +257,9 @@
                 <Set Name="MSITRANSACTION_JOIN_EXISTING_EMBEDDEDUI" Value="0x00000002" />
             </Flag>
         </Variable>
+        
         <Variable Name="[MsiScriptFlags]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="SCRIPTFLAGS_CACHEINFO"                   Value="0x00000001" />
                 <Set Name="SCRIPTFLAGS_SHORTCUTS"                   Value="0x00000004" />
@@ -241,6 +273,7 @@
                 <Set Name="SCRIPTFLAGS_REGDATA"                     Value="0x000001A0" />
             </Flag>
         </Variable>
+        
         <Variable Name="[MsiInstallFeatureAttr]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -252,9 +285,11 @@
                 <Set Name="INSTALLFEATUREATTRIBUTE_NOUNSUPPORTEDADVERTISE"  Value="0x00000020" />
             </Flag>
         </Variable>
+        
         <Variable Name="[MsiInstallFeatureAttr*]" Type="Pointer" Base="[MsiInstallFeatureAttr]">
             <Display Name="LPDWORD" />
         </Variable>
+        
         <Variable Name="[MsiTransactionState]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>
@@ -262,6 +297,7 @@
                 <Set Name="MSITRANSACTIONSTATE_COMMIT"      Value="1" />
             </Enum>
         </Variable>
+        
         <!-- Windows Installer -->
         <Category Name="Administration and Management/Application Installation and Servicing/Windows Installer" />
         <Api Name="MsiSetInternalUI">
@@ -628,7 +664,7 @@
         <Api Name="MsiEnumProductsEx" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProductCode" />
             <Param Type="LPCTSTR" Name="szUserSid" />
-            <Param Type="MSIINSTALLCONTEXT(DWORD)" Name="dwContext" />
+            <Param Type="MSIINSTALLCONTEXT" Display="DWORD" Name="dwContext" />
             <Param Type="DWORD" Name="dwIndex" />
             <Param Type="MSIINSTALLCONTEXT*" Name="pdwInstalledContext" />
             <Param Type="LPTSTR" Name="szSid" />
@@ -660,7 +696,7 @@
         </Api>
         <Api Name="MsiEnumComponentsEx" BothCharset="True">
             <Param Type="LPCTSTR" Name="szUserSid" />
-            <Param Type="MSIINSTALLCONTEXT(DWORD)" Name="dwContext" />
+            <Param Type="MSIINSTALLCONTEXT" Display="DWORD" Name="dwContext" />
             <Param Type="DWORD" Name="dwIndex" />
             <Param Type="MSIINSTALLCONTEXT*" Name="pdwInstalledContext" />
             <Param Type="LPTSTR" Name="szSid" />
@@ -678,7 +714,7 @@
         <Api Name="MsiEnumClientsEx" BothCharset="True">
             <Param Type="LPCTSTR" Name="szComponent" />
             <Param Type="LPCTSTR" Name="szUserSid" />
-            <Param Type="MSIINSTALLCONTEXT(DWORD)" Name="dwContext" />
+            <Param Type="MSIINSTALLCONTEXT" Display="DWORD" Name="dwContext" />
             <Param Type="DWORD" Name="dwProductIndex" />
             <Param Type="LPTSTR" Name="szProductBuf" />
             <Param Type="MSIINSTALLCONTEXT*" Name="pdwInstalledContext" />
@@ -875,7 +911,7 @@
         <Api Name="MsiEnumPatchesEx" BothCharset="True">
             <Param Type="LPCTSTR" Name="szProductCode" />
             <Param Type="LPCTSTR" Name="szUserSid" />
-            <Param Type="MSIINSTALLCONTEXT(DWORD)" Name="dwContext" />
+            <Param Type="MSIINSTALLCONTEXT" Display="DWORD" Name="dwContext" />
             <Param Type="[MsiPatchState]" Name="dwFilter" />
             <Param Type="DWORD" Name="dwIndex" />
             <Param Type="MSIINSTALLCONTEXT*" Name="pdwTargetProductContext" />

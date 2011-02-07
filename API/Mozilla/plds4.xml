@@ -6,18 +6,33 @@
 <ApiMonitor>
     <Include Filename="Mozilla\nspr.h.xml" />
     <Module Name="plds4.dll" CallingConvention="CDECL" OnlineHelp="Mozilla">
-        <!-- Parameters -->
+        <!-- Variables -->
         <Variable Name="PLHashFunction"             Type="Alias"        Base="LPVOID" />
         <Variable Name="PLHashComparator"           Type="Alias"        Base="LPVOID" />
-        <Variable Name="const PLHashAllocOps*"      Type="Alias"        Base="LPVOID" />
-        <Variable Name="PLHashTable*"               Type="Alias"        Base="LPVOID" />
-        <Variable Name="PLHashEntry*"               Type="Alias"        Base="LPVOID" />
         <Variable Name="PLHashEnumerator"           Type="Alias"        Base="LPVOID" />
-        <Variable Name="PLHashNumber"               Type="Alias"        Base="LPVOID" />
+        <Variable Name="PLHashNumber"               Type="Alias"        Base="PRUint32" />
+        <Variable Name="const PLHashAllocOps*"      Type="Alias"        Base="LPVOID" />
 
-        <Variable Name="const char*/const void*"    Type="Alias"        Base="const char*">
-            <Display Name="const void*" />
+        <!-- TODO: Structures -->
+        <Variable Name="PLHashEntry*"               Type="Alias"        Base="LPVOID" />
+        <Variable Name="PLHashEntry**"              Type="Pointer"      Base="PLHashEntry*" />
+
+        <!-- PLHashTable -->
+        <Variable Name="PLHashTable" Type="Struct">
+            <Field Type="PLHashEntry**"         	Name="buckets" />
+            <Field Type="PRUint32"              	Name="nentries" />
+            <Field Type="PRUint32"              	Name="shift" />
+            <Field Type="PLHashFunction"      	    Name="keyHash" />
+            <Field Type="PLHashComparator"    	    Name="keyCompare" />
+            <Field Type="PLHashComparator"    	    Name="valueCompare" />
+            <Field Type="const PLHashAllocOps*"	    Name="allocOps" />
+            <Field Type="void*"                	    Name="allocPriv" />
+            <Field Type="PRUint32"              	Name="nlookups" />
+            <Field Type="PRUint32"              	Name="nsteps" />
+            <Field Type="PRUint32"              	Name="ngrows" />
+            <Field Type="PRUint32"              	Name="nshrinks" />
         </Variable>
+        <Variable Name="PLHashTable*" Type="Pointer" Base="PLHashTable" />
 
         <!-- Hash Tables -->
         <Category Name="Netscape Portable Runtime/Hash Tables" />
@@ -67,8 +82,8 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="PL_CompareStrings">
-            <Param Type="const char*/const void*" Name="v1" />
-            <Param Type="const char*/const void*" Name="v2" />
+            <Param Type="const char*" Display="const void*" Name="v1" />
+            <Param Type="const char*" Display="const void*" Name="v2" />
             <Return Type="PRIntn" />
             <Success Return="NotEqual" Value="0" />
         </Api>

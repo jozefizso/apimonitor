@@ -7,8 +7,53 @@
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\shell.h.xml" />
     <Include Filename="Headers\gdi.h.xml" />
+    <Include Filename="Headers\security.h.xml" />
+
     <Module Name="User32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         <!-- Variables -->
+        <Variable Name="DLGPROC"                    Type="Alias"    Base="LPVOID" />
+        <Variable Name="WNDPROC"                    Type="Alias"    Base="LPVOID" />
+        <Variable Name="MSGBOXCALLBACK"             Type="Alias"    Base="LPVOID" />
+        <Variable Name="HDESK"                      Type="Alias"    Base="HANDLE" />
+        <Variable Name="SENDASYNCPROC"              Type="Alias"    Base="LPVOID" />
+        <Variable Name="WNDENUMPROC"                Type="Alias"    Base="LPVOID" />
+        <Variable Name="HDEVNOTIFY"                 Type="Alias"    Base="PVOID" />
+        <Variable Name="HCONV"                      Type="Alias"    Base="HANDLE" />
+        <Variable Name="HDDEDATA"                   Type="Alias"    Base="HANDLE" />
+        <Variable Name="HSZ"                        Type="Alias"    Base="HANDLE" />
+        <Variable Name="HCONVLIST"                  Type="Alias"    Base="HANDLE" />
+        <Variable Name="PFNCALLBACK"                Type="Alias"    Base="LPVOID" />
+        <Variable Name="HHOOK"                      Type="Alias"    Base="HANDLE" />
+        <Variable Name="HOOKPROC"                   Type="Alias"    Base="LPVOID" />
+        <Variable Name="CONST MENUTEMPLATE*"        Type="Alias"    Base="LPVOID" />
+        <Variable Name="MONITORENUMPROC"            Type="Alias"    Base="LPVOID" />
+        <Variable Name="DRAWSTATEPROC"              Type="Alias"    Base="LPVOID" />
+        <Variable Name="GRAYSTRINGPROC"             Type="Alias"    Base="LPVOID" />
+        <Variable Name="HPOWERNOTIFY"               Type="Alias"    Base="PVOID" />
+        <Variable Name="HRAWINPUT"                  Type="Alias"    Base="HANDLE" />
+        <Variable Name="TIMERPROC"                  Type="Alias"    Base="LPVOID" />
+        <Variable Name="PROPENUMPROC"               Type="Alias"    Base="LPVOID" />
+        <Variable Name="PROPENUMPROCEX"             Type="Alias"    Base="LPVOID" />
+        <Variable Name="WINSTAENUMPROC"             Type="Alias"    Base="LPVOID" />
+        <Variable Name="DESKTOPENUMPROC"            Type="Alias"    Base="LPVOID" />
+        <Variable Name="WINEVENTPROC"               Type="Alias"    Base="LPVOID" />
+        <Variable Name="HWINSTA"                    Type="Alias"    Base="HANDLE" />
+        <Variable Name="HWINEVENTHOOK"              Type="Alias"    Base="HANDLE" />
+        <Variable Name="HTOUCHINPUT"                Type="Alias"    Base="HANDLE" />
+        <Variable Name="HGESTUREINFO"               Type="Alias"    Base="HANDLE" />
+
+        <!-- TODO: Structures -->
+        <Variable Name="PTITLEBARINFO"              Type="Alias"    Base="LPVOID" />
+        <Variable Name="PDISPLAY_DEVICE"            Type="Alias"    Base="LPVOID" />
+        <Variable Name="PICONINFOEX"                Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPINPUT"                    Type="Alias"    Base="LPVOID" />
+        <Variable Name="PMENUBARINFO"               Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPPAINTSTRUCT"              Type="Alias"    Base="LPVOID" />
+        <Variable Name="const PAINTSTRUCT*"         Type="Alias"    Base="LPVOID" />
+        <Variable Name="PRAWINPUT"                  Type="Alias"    Base="LPVOID" />
+        <Variable Name="PRAWINPUT*"                 Type="Pointer"  Base="PRAWINPUT" />
+        <Variable Name="PSCROLLBARINFO"             Type="Alias"    Base="LPVOID" />
+
         <Variable Name="[WindowStyle]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -66,6 +111,675 @@
             </Flag>
         </Variable>
 
+        <Variable Name="[DialogStyle]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <!-- Dialog Styles -->
+                <Set Name="DS_ABSALIGN"         Value="0x01" />
+                <Set Name="DS_SYSMODAL"         Value="0x02" />
+                <Set Name="DS_LOCALEDIT"        Value="0x20" />
+                <Set Name="DS_SETFONT"          Value="0x40" />
+                <Set Name="DS_MODALFRAME"       Value="0x80" />
+                <Set Name="DS_NOIDLEMSG"        Value="0x100" />
+                <Set Name="DS_SETFOREGROUND"    Value="0x200" />
+                <Set Name="DS_3DLOOK"           Value="0x0004" />
+                <Set Name="DS_FIXEDSYS"         Value="0x0008" />
+                <Set Name="DS_NOFAILCREATE"     Value="0x0010" />
+                <Set Name="DS_CONTROL"          Value="0x0400" />
+                <Set Name="DS_CENTER"           Value="0x0800" />
+                <Set Name="DS_CENTERMOUSE"      Value="0x1000" />
+                <Set Name="DS_CONTEXTHELP"      Value="0x2000" />
+                <Set Name="DS_SHELLFONT"        Value="0x48" />
+                <Set Name="DS_USEPIXELS"        Value="0x8000" />
+
+                <!-- Window Styles from [WindowStyle] -->
+                <Set Name="WS_BORDER"           Value="0x00800000" />
+                <Set Name="WS_CAPTION"          Value="0x00C00000" />
+                <Set Name="WS_CHILD"            Value="0x40000000" />
+                <Set Name="WS_CLIPCHILDREN"     Value="0x02000000" />
+                <Set Name="WS_CLIPSIBLINGS"     Value="0x04000000" />
+                <Set Name="WS_DISABLED"         Value="0x08000000" />
+                <Set Name="WS_DLGFRAME"         Value="0x00400000" />
+                <Set Name="WS_GROUP"            Value="0x00020000" />
+                <Set Name="WS_HSCROLL"          Value="0x00100000" />
+                <Set Name="WS_MAXIMIZE"         Value="0x01000000" />
+                <Set Name="WS_MAXIMIZEBOX"      Value="0x00010000" />
+                <Set Name="WS_MINIMIZE"         Value="0x20000000" />
+                <Set Name="WS_MINIMIZEBOX"      Value="0x00020000" />
+                <Set Name="WS_OVERLAPPED"       Value="0x00000000" />
+                <Set Name="WS_OVERLAPPEDWINDOW" Value="0x00cf0000" />
+                <Set Name="WS_POPUP"            Value="0x80000000" />
+                <Set Name="WS_POPUPWINDOW"      Value="0x80880000" />
+                <Set Name="WS_SYSMENU"          Value="0x00080000" />
+                <Set Name="WS_TABSTOP"          Value="0x00010000" />
+                <Set Name="WS_THICKFRAME"       Value="0x00040000" />
+                <Set Name="WS_VISIBLE"          Value="0x10000000" />
+                <Set Name="WS_VSCROLL"          Value="0x00200000" />
+            </Flag>
+        </Variable>
+
+        <!-- DLGTEMPLATE -->
+        <Variable Name="DLGTEMPLATE" Type="Struct" Pack="2">
+            <Field Type="[DialogStyle]" 	Name="style" />
+            <Field Type="[WindowExStyle]"   Name="dwExtendedStyle" />
+            <Field Type="WORD"              Name="cdit" />
+            <Field Type="short" 	        Name="x" />
+            <Field Type="short" 	        Name="y" />
+            <Field Type="short" 	        Name="cx" />
+            <Field Type="short" 	        Name="cy" />
+        </Variable>
+        <Variable Name="LPCDLGTEMPLATE" Type="Pointer" Base="DLGTEMPLATE" />
+
+        <!-- MSGBOXPARAMS -->
+        <Variable Name="MSGBOXPARAMS" Type="Struct">
+            <Field Type="UINT"        	    Name="cbSize" />
+            <Field Type="HWND"        	    Name="hwndOwner" />
+            <Field Type="HINSTANCE"   	    Name="hInstance" />
+            <Field Type="LPCTSTR"     	    Name="lpszText" />
+            <Field Type="LPCTSTR"     	    Name="lpszCaption" />
+            <Field Type="DWORD"       	    Name="dwStyle" />
+            <Field Type="LPCTSTR"     	    Name="lpszIcon" />
+            <Field Type="DWORD_PTR"   	    Name="dwContextHelpId" />
+            <Field Type="MSGBOXCALLBACK"    Name="lpfnMsgBoxCallback" />
+            <Field Type="DWORD"       	    Name="dwLanguageId" />
+        </Variable>
+        <Variable Name="const LPMSGBOXPARAMS" Type="Pointer" Base="MSGBOXPARAMS" />
+
+        <!-- BSMINFO -->
+        <Variable Name="BSMINFO" Type="Struct">
+            <Field Type="UINT"  	Name="cbSize" />
+            <Field Type="HDESK" 	Name="hdesk" />
+            <Field Type="HWND"  	Name="hwnd" />
+            <Field Type="LUID"  	Name="luid" />
+        </Variable>
+        <Variable Name="PBSMINFO" Type="Pointer" Base="BSMINFO" />
+
+        <!-- CHANGEFILTERSTRUCT -->
+        <Variable Name="CHANGEFILTERSTRUCT" Type="Struct">
+            <Field Type="DWORD" 	Name="cbSize" />
+            <Field Type="DWORD" 	Name="ExtStatus" />
+        </Variable>
+        <Variable Name="PCHANGEFILTERSTRUCT" Type="Pointer" Base="CHANGEFILTERSTRUCT" />
+
+        <!-- ALTTABINFO -->
+        <Variable Name="ALTTABINFO" Type="Struct">
+            <Field Type="DWORD" Name="cbSize" />
+            <Field Type="int" 	Name="cItems" />
+            <Field Type="int" 	Name="cColumns" />
+            <Field Type="int" 	Name="cRows" />
+            <Field Type="int" 	Name="iColFocus" />
+            <Field Type="int" 	Name="iRowFocus" />
+            <Field Type="int" 	Name="cxItem" />
+            <Field Type="int" 	Name="cyItem" />
+            <Field Type="POINT" Name="ptStart" />
+        </Variable>
+        <Variable Name="PALTTABINFO" Type="Pointer" Base="ALTTABINFO" />
+
+        <!-- [GUITHREADINFO_Flags] -->
+        <Variable Name="[GUITHREADINFO_Flags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="GUI_CARETBLINKING"   Value="0x00000001" />
+                <Set Name="GUI_INMOVESIZE"      Value="0x00000002" />
+                <Set Name="GUI_INMENUMODE"      Value="0x00000004" />
+                <Set Name="GUI_SYSTEMMENUMODE"  Value="0x00000008" />
+                <Set Name="GUI_POPUPMENUMODE"   Value="0x00000010" />
+            </Flag>
+        </Variable>
+
+        <!-- GUITHREADINFO -->
+        <Variable Name="GUITHREADINFO" Type="Struct">
+            <Field Type="DWORD"   	                Name="cbSize" />
+            <Field Type="[GUITHREADINFO_Flags]"   	Name="flags" />
+            <Field Type="HWND"    	                Name="hwndActive" />
+            <Field Type="HWND"    	                Name="hwndFocus" />
+            <Field Type="HWND"    	                Name="hwndCapture" />
+            <Field Type="HWND"    	                Name="hwndMenuOwner" />
+            <Field Type="HWND"    	                Name="hwndMoveSize" />
+            <Field Type="HWND"    	                Name="hwndCaret" />
+            <Field Type="RECT"    	                Name="rcCaret" />
+        </Variable>
+        <Variable Name="LPGUITHREADINFO" Type="Pointer" Base="GUITHREADINFO" />
+
+        <!-- WINDOWINFO -->
+        <Variable Name="WINDOWINFO" Type="Struct">
+            <Field Type="DWORD" 	        Name="cbSize" />
+            <Field Type="RECT" 	            Name="rcWindow" />
+            <Field Type="RECT" 	            Name="rcClient" />
+            <Field Type="[WindowStyle]" 	Name="dwStyle" />
+            <Field Type="[WindowExStyle]" 	Name="dwExStyle" />
+            <Field Type="DWORD"             Name="dwWindowStatus" />
+            <Field Type="UINT" 	            Name="cxWindowBorders" />
+            <Field Type="UINT" 	            Name="cyWindowBorders" />
+            <Field Type="ATOM" 	            Name="atomWindowType" />
+            <Field Type="WORD" 	            Name="wCreatorVersion" />
+        </Variable>
+        <Variable Name="PWINDOWINFO" Type="Pointer" Base="WINDOWINFO" />
+
+        <!-- [WPF_Flags] -->
+        <Variable Name="[WPF_Flags]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Flag>
+                <Set Name="WPF_SETMINPOSITION"          Value="0x0001" />
+                <Set Name="WPF_RESTORETOMAXIMIZED"      Value="0x0002" />
+                <Set Name="WPF_ASYNCWINDOWPLACEMENT"    Value="0x0004" />
+            </Flag>
+        </Variable>
+
+        <!-- WINDOWPLACEMENT -->
+        <Variable Name="WINDOWPLACEMENT" Type="Struct">
+            <Field Type="UINT"  	    Name="length" />
+            <Field Type="[WPF_Flags]"  	Name="flags" />
+            <Field Type="UINT"  	    Name="showCmd" />
+            <Field Type="POINT" 	    Name="ptMinPosition" />
+            <Field Type="POINT" 	    Name="ptMaxPosition" />
+            <Field Type="RECT"  	    Name="rcNormalPosition" />
+        </Variable>
+        <Variable Name="WINDOWPLACEMENT*" Type="Pointer" Base="WINDOWPLACEMENT" />
+
+        <!-- UPDATELAYEREDWINDOWINFO -->
+        <Variable Name="UPDATELAYEREDWINDOWINFO" Type="Struct">
+            <Field Type="DWORD"                 Name="cbSize" />
+            <Field Type="HDC"                   Name="hdcDst" />
+            <Field Type="const POINT*"          Name="pptDst" />
+            <Field Type="const SIZE*"           Name="psize" />
+            <Field Type="HDC"                   Name="hdcSrc" />
+            <Field Type="const POINT*"          Name="pptSrc" />
+            <Field Type="COLORREF"              Name="crKey" />
+            <Field Type="const BLENDFUNCTION*"  Name="pblend" />
+            <Field Type="DWORD"                 Name="dwFlags" />
+            <Field Type="const RECT*"           Name="prcDirty" />
+        </Variable>
+        <Variable Name="const UPDATELAYEREDWINDOWINFO*" Type="Pointer" Base="UPDATELAYEREDWINDOWINFO" />
+
+        <!-- COMBOBOXINFO -->
+        <Variable Name="COMBOBOXINFO" Type="Struct">
+            <Field Type="DWORD" 	Name="cbSize" />
+            <Field Type="RECT" 	    Name="rcItem" />
+            <Field Type="RECT" 	    Name="rcButton" />
+            <Field Type="DWORD" 	Name="stateButton" />
+            <Field Type="HWND" 	    Name="hwndCombo" />
+            <Field Type="HWND" 	    Name="hwndItem" />
+            <Field Type="HWND" 	    Name="hwndList" />
+        </Variable>
+        <Variable Name="PCOMBOBOXINFO" Type="Pointer" Base="COMBOBOXINFO" />
+
+        <!-- [CursorFlags] -->
+        <Variable Name="[CursorFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="CURSOR_SHOWING" Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- CURSORINFO -->
+        <Variable Name="CURSORINFO" Type="Struct">
+            <Field Type="DWORD"   	    Name="cbSize" />
+            <Field Type="[CursorFlags]" Name="flags" />
+            <Field Type="HCURSOR" 	    Name="hCursor" />
+            <Field Type="POINT"   	    Name="ptScreenPos" />
+        </Variable>
+        <Variable Name="PCURSORINFO" Type="Pointer" Base="CURSORINFO" />
+
+        <!-- CONVCONTEXT -->
+        <Variable Name="CONVCONTEXT" Type="Struct">
+            <Field Type="UINT"        	                Name="cb" />
+            <Field Type="UINT"        	                Name="wFlags" />
+            <Field Type="UINT"        	                Name="wCountryID" />
+            <Field Type="int"         	                Name="iCodePage" />
+            <Field Type="DWORD"       	                Name="dwLangID" />
+            <Field Type="DWORD"       	                Name="dwSecurity" />
+            <Field Type="SECURITY_QUALITY_OF_SERVICE" 	Name="qos" />
+        </Variable>
+        <Variable Name="PCONVCONTEXT" Type="Pointer" Base="CONVCONTEXT" />
+
+        <!-- CONVINFO -->
+        <!-- TODO: Flags for wType, wStatus and wConvst -->
+        <Variable Name="CONVINFO" Type="Struct">
+            <Field Type="DWORD"   	    Name="cb" />
+            <Field Type="DWORD_PTR"     Name="hUser" />
+            <Field Type="HCONV"   	    Name="hConvPartner" />
+            <Field Type="HSZ"     	    Name="hszSvcPartner" />
+            <Field Type="HSZ"     	    Name="hszServiceReq" />
+            <Field Type="HSZ"     	    Name="hszTopic" />
+            <Field Type="HSZ"     	    Name="hszItem" />
+            <Field Type="UINT"    	    Name="wFmt" />
+            <Field Type="UINT"    	    Name="wType" />
+            <Field Type="UINT"    	    Name="wStatus" />
+            <Field Type="UINT"    	    Name="wConvst" />
+            <Field Type="UINT"    	    Name="wLastError" />
+            <Field Type="HCONVLIST" 	Name="hConvList" />
+            <Field Type="CONVCONTEXT" 	Name="ConvCtxt" />
+            <Field Type="HWND"    	    Name="hwnd" />
+            <Field Type="HWND"    	    Name="hwndPartner" />
+        </Variable>
+        <Variable Name="PCONVINFO" Type="Pointer" Base="CONVINFO" />
+
+        <!-- [FLASHWINFO_Flags] -->
+        <Variable Name="[FLASHWINFO_Flags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="FLASHW_STOP"         Value="0" />
+                <Set Name="FLASHW_CAPTION"      Value="0x00000001" />
+                <Set Name="FLASHW_TRAY"         Value="0x00000002" />
+                <Set Name="FLASHW_ALL"          Value="0x00000003" />
+                <Set Name="FLASHW_TIMER"        Value="0x00000004" />
+                <Set Name="FLASHW_TIMERNOFG"    Value="0x0000000C" />
+            </Flag>
+        </Variable>
+
+        <!-- FLASHWINFO -->
+        <Variable Name="FLASHWINFO" Type="Struct">
+            <Field Type="UINT"  	            Name="cbSize" />
+            <Field Type="HWND"  	            Name="hwnd" />
+            <Field Type="[FLASHWINFO_Flags]" 	Name="dwFlags" />
+            <Field Type="UINT"  	            Name="uCount" />
+            <Field Type="DWORD" 	            Name="dwTimeout" />
+        </Variable>
+        <Variable Name="PFLASHWINFO" Type="Pointer" Base="FLASHWINFO" />
+
+        <!-- ICONINFO -->
+        <Variable Name="ICONINFO" Type="Struct">
+            <Field Type="BOOL"    	Name="fIcon" />
+            <Field Type="DWORD"   	Name="xHotspot" />
+            <Field Type="DWORD"   	Name="yHotspot" />
+            <Field Type="HBITMAP" 	Name="hbmMask" />
+            <Field Type="HBITMAP" 	Name="hbmColor" />
+        </Variable>
+        <Variable Name="PICONINFO" Type="Pointer" Base="ICONINFO" />
+
+        <!-- [ACCEL_Flags] -->
+        <Variable Name="[ACCEL_Flags]" Type="Alias" Base="BYTE">
+            <Display Name="BYTE" />
+            <Flag>
+                <Set Name="FVIRTKEY"  	Value="0x01" />
+                <Set Name="FNOINVERT" 	Value="0x02" />
+                <Set Name="FSHIFT"    	Value="0x04" />
+                <Set Name="FCONTROL"  	Value="0x08" />
+                <Set Name="FALT"        Value="0x10" />
+            </Flag>
+        </Variable>
+
+        <!-- [VirtKeyCode] -->
+        <!-- Base needs to remain WORD since it is used in ACCEL structure -->
+        <Variable Name="[VirtKeyCode]" Type="Alias" Base="WORD">
+            <Display Name="WORD" />
+            <Enum>
+                <Set Name="VK_LBUTTON"        			Value="0x01" />
+                <Set Name="VK_RBUTTON"        			Value="0x02" />
+                <Set Name="VK_CANCEL"         			Value="0x03" />
+                <Set Name="VK_MBUTTON"        			Value="0x04" />
+                <Set Name="VK_XBUTTON1"       			Value="0x05" />
+                <Set Name="VK_XBUTTON2"       			Value="0x06" />
+                <Set Name="VK_BACK"           			Value="0x08" />
+                <Set Name="VK_TAB"            			Value="0x09" />
+                <Set Name="VK_CLEAR"          			Value="0x0C" />
+                <Set Name="VK_RETURN"         			Value="0x0D" />
+                <Set Name="VK_SHIFT"          			Value="0x10" />
+                <Set Name="VK_CONTROL"        			Value="0x11" />
+                <Set Name="VK_MENU"           			Value="0x12" />
+                <Set Name="VK_PAUSE"          			Value="0x13" />
+                <Set Name="VK_CAPITAL"        			Value="0x14" />
+                <Set Name="VK_KANA"           			Value="0x15" />
+                <Set Name="VK_JUNJA"          			Value="0x17" />
+                <Set Name="VK_FINAL"          			Value="0x18" />
+                <Set Name="VK_KANJI"          			Value="0x19" />
+                <Set Name="VK_ESCAPE"         			Value="0x1B" />
+                <Set Name="VK_CONVERT"        			Value="0x1C" />
+                <Set Name="VK_NONCONVERT"     			Value="0x1D" />
+                <Set Name="VK_ACCEPT"         			Value="0x1E" />
+                <Set Name="VK_MODECHANGE"     			Value="0x1F" />
+                <Set Name="VK_SPACE"          			Value="0x20" />
+                <Set Name="VK_PRIOR"          			Value="0x21" />
+                <Set Name="VK_NEXT"           			Value="0x22" />
+                <Set Name="VK_END"            			Value="0x23" />
+                <Set Name="VK_HOME"           			Value="0x24" />
+                <Set Name="VK_LEFT"           			Value="0x25" />
+                <Set Name="VK_UP"             			Value="0x26" />
+                <Set Name="VK_RIGHT"          			Value="0x27" />
+                <Set Name="VK_DOWN"           			Value="0x28" />
+                <Set Name="VK_SELECT"         			Value="0x29" />
+                <Set Name="VK_PRINT"          			Value="0x2A" />
+                <Set Name="VK_EXECUTE"        			Value="0x2B" />
+                <Set Name="VK_SNAPSHOT"       			Value="0x2C" />
+                <Set Name="VK_INSERT"         			Value="0x2D" />
+                <Set Name="VK_DELETE"         			Value="0x2E" />
+                <Set Name="VK_HELP"           			Value="0x2F" />
+                <Set Name="VK_LWIN"           			Value="0x5B" />
+                <Set Name="VK_RWIN"           			Value="0x5C" />
+                <Set Name="VK_APPS"           			Value="0x5D" />
+                <Set Name="VK_SLEEP"          			Value="0x5F" />
+                <Set Name="VK_NUMPAD0"        			Value="0x60" />
+                <Set Name="VK_NUMPAD1"        			Value="0x61" />
+                <Set Name="VK_NUMPAD2"        			Value="0x62" />
+                <Set Name="VK_NUMPAD3"        			Value="0x63" />
+                <Set Name="VK_NUMPAD4"        			Value="0x64" />
+                <Set Name="VK_NUMPAD5"        			Value="0x65" />
+                <Set Name="VK_NUMPAD6"        			Value="0x66" />
+                <Set Name="VK_NUMPAD7"        			Value="0x67" />
+                <Set Name="VK_NUMPAD8"        			Value="0x68" />
+                <Set Name="VK_NUMPAD9"        			Value="0x69" />
+                <Set Name="VK_MULTIPLY"       			Value="0x6A" />
+                <Set Name="VK_ADD"            			Value="0x6B" />
+                <Set Name="VK_SEPARATOR"      			Value="0x6C" />
+                <Set Name="VK_SUBTRACT"       			Value="0x6D" />
+                <Set Name="VK_DECIMAL"        			Value="0x6E" />
+                <Set Name="VK_DIVIDE"         			Value="0x6F" />
+                <Set Name="VK_F1"             			Value="0x70" />
+                <Set Name="VK_F2"             			Value="0x71" />
+                <Set Name="VK_F3"             			Value="0x72" />
+                <Set Name="VK_F4"             			Value="0x73" />
+                <Set Name="VK_F5"             			Value="0x74" />
+                <Set Name="VK_F6"             			Value="0x75" />
+                <Set Name="VK_F7"             			Value="0x76" />
+                <Set Name="VK_F8"             			Value="0x77" />
+                <Set Name="VK_F9"             			Value="0x78" />
+                <Set Name="VK_F10"            			Value="0x79" />
+                <Set Name="VK_F11"            			Value="0x7A" />
+                <Set Name="VK_F12"            			Value="0x7B" />
+                <Set Name="VK_F13"            			Value="0x7C" />
+                <Set Name="VK_F14"            			Value="0x7D" />
+                <Set Name="VK_F15"            			Value="0x7E" />
+                <Set Name="VK_F16"            			Value="0x7F" />
+                <Set Name="VK_F17"            			Value="0x80" />
+                <Set Name="VK_F18"            			Value="0x81" />
+                <Set Name="VK_F19"            			Value="0x82" />
+                <Set Name="VK_F20"            			Value="0x83" />
+                <Set Name="VK_F21"            			Value="0x84" />
+                <Set Name="VK_F22"            			Value="0x85" />
+                <Set Name="VK_F23"            			Value="0x86" />
+                <Set Name="VK_F24"            			Value="0x87" />
+                <Set Name="VK_NUMLOCK"        			Value="0x90" />
+                <Set Name="VK_SCROLL"         			Value="0x91" />
+                <Set Name="VK_OEM_NEC_EQUAL"  			Value="0x92" />
+                <Set Name="VK_LSHIFT"         			Value="0xA0" />
+                <Set Name="VK_RSHIFT"         			Value="0xA1" />
+                <Set Name="VK_LCONTROL"       			Value="0xA2" />
+                <Set Name="VK_RCONTROL"       			Value="0xA3" />
+                <Set Name="VK_LMENU"          			Value="0xA4" />
+                <Set Name="VK_RMENU"          			Value="0xA5" />
+                <Set Name="VK_BROWSER_BACK"        		Value="0xA6" />
+                <Set Name="VK_BROWSER_FORWARD"     		Value="0xA7" />
+                <Set Name="VK_BROWSER_REFRESH"     		Value="0xA8" />
+                <Set Name="VK_BROWSER_STOP"        		Value="0xA9" />
+                <Set Name="VK_BROWSER_SEARCH"      		Value="0xAA" />
+                <Set Name="VK_BROWSER_FAVORITES"   		Value="0xAB" />
+                <Set Name="VK_BROWSER_HOME"        		Value="0xAC" />
+                <Set Name="VK_VOLUME_MUTE"         		Value="0xAD" />
+                <Set Name="VK_VOLUME_DOWN"         		Value="0xAE" />
+                <Set Name="VK_VOLUME_UP"           		Value="0xAF" />
+                <Set Name="VK_MEDIA_NEXT_TRACK"    		Value="0xB0" />
+                <Set Name="VK_MEDIA_PREV_TRACK"         Value="0xB1" />
+                <Set Name="VK_MEDIA_STOP"          		Value="0xB2" />
+                <Set Name="VK_MEDIA_PLAY_PAUSE"    		Value="0xB3" />
+                <Set Name="VK_LAUNCH_MAIL"         		Value="0xB4" />
+                <Set Name="VK_LAUNCH_MEDIA_SELECT" 		Value="0xB5" />
+                <Set Name="VK_LAUNCH_APP1"         		Value="0xB6" />
+                <Set Name="VK_LAUNCH_APP2"         		Value="0xB7" />
+                <Set Name="VK_OEM_1"          			Value="0xBA" />
+                <Set Name="VK_OEM_PLUS"       			Value="0xBB" />
+                <Set Name="VK_OEM_COMMA"      			Value="0xBC" />
+                <Set Name="VK_OEM_MINUS"      			Value="0xBD" />
+                <Set Name="VK_OEM_PERIOD"     			Value="0xBE" />
+                <Set Name="VK_OEM_2"          			Value="0xBF" />
+                <Set Name="VK_OEM_3"          			Value="0xC0" />
+                <Set Name="VK_OEM_4"          			Value="0xDB" />
+                <Set Name="VK_OEM_5"          			Value="0xDC" />
+                <Set Name="VK_OEM_6"          			Value="0xDD" />
+                <Set Name="VK_OEM_7"          			Value="0xDE" />
+                <Set Name="VK_OEM_8"          			Value="0xDF" />
+                <Set Name="VK_OEM_AX"         			Value="0xE1" />
+                <Set Name="VK_OEM_102"        			Value="0xE2" />
+                <Set Name="VK_ICO_HELP"       			Value="0xE3" />
+                <Set Name="VK_ICO_00"         			Value="0xE4" />
+                <Set Name="VK_PROCESSKEY"     			Value="0xE5" />
+                <Set Name="VK_ICO_CLEAR"      			Value="0xE6" />
+                <Set Name="VK_PACKET"         			Value="0xE7" />
+                <Set Name="VK_OEM_RESET"      			Value="0xE9" />
+                <Set Name="VK_OEM_JUMP"       			Value="0xEA" />
+                <Set Name="VK_OEM_PA1"        			Value="0xEB" />
+                <Set Name="VK_OEM_PA2"        			Value="0xEC" />
+                <Set Name="VK_OEM_PA3"        			Value="0xED" />
+                <Set Name="VK_OEM_WSCTRL"     			Value="0xEE" />
+                <Set Name="VK_OEM_CUSEL"      			Value="0xEF" />
+                <Set Name="VK_OEM_ATTN"       			Value="0xF0" />
+                <Set Name="VK_OEM_FINISH"     			Value="0xF1" />
+                <Set Name="VK_OEM_COPY"       			Value="0xF2" />
+                <Set Name="VK_OEM_AUTO"       			Value="0xF3" />
+                <Set Name="VK_OEM_ENLW"       			Value="0xF4" />
+                <Set Name="VK_OEM_BACKTAB"    			Value="0xF5" />
+                <Set Name="VK_ATTN"           			Value="0xF6" />
+                <Set Name="VK_CRSEL"          			Value="0xF7" />
+                <Set Name="VK_EXSEL"          			Value="0xF8" />
+                <Set Name="VK_EREOF"          			Value="0xF9" />
+                <Set Name="VK_PLAY"           			Value="0xFA" />
+                <Set Name="VK_ZOOM"           			Value="0xFB" />
+                <Set Name="VK_NONAME"         			Value="0xFC" />
+                <Set Name="VK_PA1"            			Value="0xFD" />
+                <Set Name="VK_OEM_CLEAR"      			Value="0xFE" />
+            </Enum>
+        </Variable>
+
+        <!-- ACCEL -->
+        <Variable Name="ACCEL" Type="Struct">
+            <Field Type="[ACCEL_Flags]"   	Name="fVirt" />
+            <Field Type="[VirtKeyCode]"     Name="key" />
+            <Field Type="WORD"   	        Name="cmd" />
+        </Variable>
+        <Variable Name="LPACCEL" Type="Pointer" Base="ACCEL" />
+
+        <!-- LASTINPUTINFO -->
+        <Variable Name="LASTINPUTINFO" Type="Struct">
+            <Field Type="UINT"      Name="cbSize" />
+            <Field Type="DWORD" 	Name="dwTime" />
+        </Variable>
+        <Variable Name="PLASTINPUTINFO" Type="Pointer" Base="LASTINPUTINFO" />
+
+        <!-- [MENUINFO_Mask] -->
+        <Variable Name="[MENUINFO_Mask]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="MIM_MAXHEIGHT"         Value="0x00000001" />
+                <Set Name="MIM_BACKGROUND"        Value="0x00000002" />
+                <Set Name="MIM_HELPID"            Value="0x00000004" />
+                <Set Name="MIM_MENUDATA"          Value="0x00000008" />
+                <Set Name="MIM_STYLE"             Value="0x00000010" />
+                <Set Name="MIM_APPLYTOSUBMENUS"   Value="0x80000000" />
+            </Flag>
+        </Variable>
+
+        <!-- [MENUINFO_Style] -->
+        <Variable Name="[MENUINFO_Style]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="MNS_NOCHECK"         Value="0x80000000" />
+                <Set Name="MNS_MODELESS"        Value="0x40000000" />
+                <Set Name="MNS_DRAGDROP"        Value="0x20000000" />
+                <Set Name="MNS_AUTODISMISS"     Value="0x10000000" />
+                <Set Name="MNS_NOTIFYBYPOS"     Value="0x08000000" />
+                <Set Name="MNS_CHECKORBMP"      Value="0x04000000" />
+            </Flag>
+        </Variable>
+
+        <!-- MENUINFO -->
+        <Variable Name="MENUINFO" Type="Struct">
+            <Field Type="DWORD"   	Name="cbSize" />
+            <Field Type="[MENUINFO_Mask]"   	Name="fMask" />
+            <Field Type="[MENUINFO_Style]"   	Name="dwStyle" />
+            <Field Type="UINT"    	Name="cyMax" />
+            <Field Type="HBRUSH"  	Name="hbrBack" />
+            <Field Type="DWORD"   	Name="dwContextHelpID" />
+            <Field Type="ULONG_PTR" 	Name="dwMenuData" />
+        </Variable>
+        <Variable Name="LPCMENUINFO" Type="Pointer" Base="MENUINFO" />
+
+        <!-- [MENUITEMINFO_Mask] -->
+        <Variable Name="[MENUITEMINFO_Mask]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Flag>
+                <Set Name="MIIM_STATE"       Value="0x00000001" />
+                <Set Name="MIIM_ID"          Value="0x00000002" />
+                <Set Name="MIIM_SUBMENU"     Value="0x00000004" />
+                <Set Name="MIIM_CHECKMARKS"  Value="0x00000008" />
+                <Set Name="MIIM_TYPE"        Value="0x00000010" />
+                <Set Name="MIIM_DATA"        Value="0x00000020" />
+                <Set Name="MIIM_STRING"      Value="0x00000040" />
+                <Set Name="MIIM_BITMAP"      Value="0x00000080" />
+                <Set Name="MIIM_FTYPE"       Value="0x00000100" />
+            </Flag>
+        </Variable>
+
+        <!-- MENUITEMINFO -->
+        <!-- TODO: Flags for fType and fState -->
+        <Variable Name="MENUITEMINFO" Type="Struct">
+            <Field Type="UINT"     	            Name="cbSize" />
+            <Field Type="[MENUITEMINFO_Mask]"   Name="fMask" />
+            <Field Type="UINT"     	            Name="fType" />
+            <Field Type="UINT"     	            Name="fState" />
+            <Field Type="UINT"     	            Name="wID" />
+            <Field Type="HMENU"    	            Name="hSubMenu" />
+            <Field Type="HBITMAP"  	            Name="hbmpChecked" />
+            <Field Type="HBITMAP"  	            Name="hbmpUnchecked" />
+            <Field Type="ULONG_PTR"             Name="dwItemData" />
+            <Field Type="LPTSTR"   	            Name="dwTypeData" />
+            <Field Type="UINT"     	            Name="cch" />
+            <Field Type="HBITMAP"  	            Name="hbmpItem" />
+        </Variable>
+        <Variable Name="LPMENUITEMINFO"  Type="Pointer" Base="MENUITEMINFO" />
+        <Variable Name="LPCMENUITEMINFO"  Type="Pointer" Base="MENUITEMINFO" />
+
+        <!-- TPMPARAMS -->
+        <Variable Name="TPMPARAMS" Type="Struct">
+            <Field Type="UINT"  Name="cbSize" />
+            <Field Type="RECT"  Name="rcExclude" />
+        </Variable>
+        <Variable Name="LPTPMPARAMS" Type="Pointer" Base="TPMPARAMS" />
+
+        <!-- MOUSEMOVEPOINT -->
+        <Variable Name="MOUSEMOVEPOINT" Type="Struct">
+            <Field Type="int"   	Name="x" />
+            <Field Type="int"   	Name="y" />
+            <Field Type="DWORD" 	Name="time" />
+            <Field Type="ULONG_PTR" Name="dwExtraInfo" />
+        </Variable>
+        <Variable Name="LPMOUSEMOVEPOINT" Type="Pointer" Base="MOUSEMOVEPOINT" />
+
+        <!-- [MONITORINFO_Flags] -->
+        <Variable Name="[MONITORINFO_Flags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="MONITORINFOF_PRIMARY" Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- MONITORINFO -->
+        <Variable Name="MONITORINFO" Type="Struct">
+            <Field Type="DWORD"   	            Name="cbSize" />
+            <Field Type="RECT"    	            Name="rcMonitor" />
+            <Field Type="RECT"    	            Name="rcWork" />
+            <Field Type="[MONITORINFO_Flags]"   Name="dwFlags" />
+        </Variable>
+        <Variable Name="LPMONITORINFO" Type="Pointer" Base="MONITORINFO" />
+
+        <!-- [RAWINPUTDEVICE_Flags] -->
+        <Variable Name="[RAWINPUTDEVICE_Flags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="RIDEV_REMOVE"           Value="0x00000001" />
+                <Set Name="RIDEV_EXCLUDE"          Value="0x00000010" />
+                <Set Name="RIDEV_PAGEONLY"         Value="0x00000020" />
+                <Set Name="RIDEV_NOLEGACY"         Value="0x00000030" />
+                <Set Name="RIDEV_INPUTSINK"        Value="0x00000100" />
+                <Set Name="RIDEV_CAPTUREMOUSE"     Value="0x00000200" />
+                <Set Name="RIDEV_NOHOTKEYS"        Value="0x00000200" />
+                <Set Name="RIDEV_APPKEYS"          Value="0x00000400" />
+                <Set Name="RIDEV_EXINPUTSINK"      Value="0x00001000" />
+                <Set Name="RIDEV_DEVNOTIFY"        Value="0x00002000" />
+                <Set Name="RIDEV_EXMODEMASK"       Value="0x000000F0" />
+            </Flag>
+        </Variable>
+
+        <!-- RAWINPUTDEVICE -->
+        <Variable Name="RAWINPUTDEVICE" Type="Struct">
+            <Field Type="USHORT" 	                Name="usUsagePage" />
+            <Field Type="USHORT" 	                Name="usUsage" />
+            <Field Type="[RAWINPUTDEVICE_Flags]"    Name="dwFlags" />
+            <Field Type="HWND" 	                    Name="hwndTarget" />
+        </Variable>
+        <Variable Name="PRAWINPUTDEVICE"  Type="Pointer" Base="RAWINPUTDEVICE" />
+        <Variable Name="PCRAWINPUTDEVICE" Type="Pointer" Base="RAWINPUTDEVICE" />
+
+        <!-- [RawInputDeviceType] -->
+        <Variable Name="[RawInputDeviceType]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="RIM_TYPEMOUSE"       Value="0" />
+                <Set Name="RIM_TYPEKEYBOARD"    Value="1" />
+                <Set Name="RIM_TYPEHID"         Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- RAWINPUTDEVICELIST -->
+        <Variable Name="RAWINPUTDEVICELIST" Type="Struct">
+            <Field Type="HANDLE" 	            Name="hDevice" />
+            <Field Type="[RawInputDeviceType]"	Name="dwType" />
+        </Variable>
+        <Variable Name="PRAWINPUTDEVICELIST" Type="Pointer" Base="RAWINPUTDEVICELIST" />
+
+        <!-- [ClassStyle] -->
+        <Variable Name="[ClassStyle]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Flag>
+                <Set Name="CS_VREDRAW"          Value="0x0001" />
+                <Set Name="CS_HREDRAW"          Value="0x0002" />
+                <Set Name="CS_DBLCLKS"          Value="0x0008" />
+                <Set Name="CS_OWNDC"            Value="0x0020" />
+                <Set Name="CS_CLASSDC"          Value="0x0040" />
+                <Set Name="CS_PARENTDC"         Value="0x0080" />
+                <Set Name="CS_NOCLOSE"          Value="0x0200" />
+                <Set Name="CS_SAVEBITS"         Value="0x0800" />
+                <Set Name="CS_BYTEALIGNCLIENT"  Value="0x1000" />
+                <Set Name="CS_BYTEALIGNWINDOW"  Value="0x2000" />
+                <Set Name="CS_GLOBALCLASS"      Value="0x4000" />
+                <Set Name="CS_IME"              Value="0x00010000" />
+                <Set Name="CS_DROPSHADOW"       Value="0x00020000" />
+            </Flag>
+        </Variable>
+
+        <!-- WNDCLASS -->
+        <Variable Name="WNDCLASS" Type="Struct">
+            <Field Type="[ClassStyle]"  Name="style" />
+            <Field Type="WNDPROC"     	Name="lpfnWndProc" />
+            <Field Type="int"         	Name="cbClsExtra" />
+            <Field Type="int"         	Name="cbWndExtra" />
+            <Field Type="HINSTANCE"   	Name="hInstance" />
+            <Field Type="HICON"       	Name="hIcon" />
+            <Field Type="HCURSOR"     	Name="hCursor" />
+            <Field Type="HBRUSH"      	Name="hbrBackground" />
+            <Field Type="LPCTSTR"     	Name="lpszMenuName" />
+            <Field Type="LPCTSTR"     	Name="lpszClassName" />
+        </Variable>
+        <Variable Name="LPWNDCLASS"         Type="Pointer" Base="WNDCLASS" />
+        <Variable Name="CONST WNDCLASS*"    Type="Pointer" Base="WNDCLASS" />
+
+        <!-- WNDCLASSEX -->
+        <Variable Name="WNDCLASSEX" Type="Struct">
+            <Field Type="UINT"        	Name="cbSize" />
+            <Field Type="[ClassStyle]"  Name="style" />
+            <Field Type="WNDPROC"     	Name="lpfnWndProc" />
+            <Field Type="int"         	Name="cbClsExtra" />
+            <Field Type="int"         	Name="cbWndExtra" />
+            <Field Type="HINSTANCE"   	Name="hInstance" />
+            <Field Type="HICON"       	Name="hIcon" />
+            <Field Type="HCURSOR"     	Name="hCursor" />
+            <Field Type="HBRUSH"      	Name="hbrBackground" />
+            <Field Type="LPCTSTR"     	Name="lpszMenuName" />
+            <Field Type="LPCTSTR"     	Name="lpszClassName" />
+            <Field Type="HICON"       	Name="hIconSm" />
+        </Variable>
+        <Variable Name="LPWNDCLASSEX"       Type="Pointer" Base="WNDCLASSEX" />
+        <Variable Name="CONST WNDCLASSEX*"  Type="Pointer" Base="WNDCLASSEX" />
+        
         <Variable Name="[ExitWindowsExFlags]" Type="Alias" Base="UINT">
             <Display Name="UINT" />
             <Enum>
@@ -225,7 +939,7 @@
             </Flag>
         </Variable>
 
-        <Variable Name="[QueueStatusFlag/DWORD]" Type="Alias" Base="DWORD">
+        <Variable Name="[QueueStatusFlag]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
                 <Set Name="QS_KEY"                  Value="0x0001" />
@@ -244,12 +958,9 @@
                 <Set Name="QS_ALLINPUT"             Value="0x04ff" />
             </Flag>
         </Variable>
-        <Variable Name="[QueueStatusFlag/UINT]" Type="Alias" Base="[QueueStatusFlag/DWORD]">
-            <Display Name="UINT" />
-        </Variable>
 
         <Variable Name="[WindowMessageFilterEnum]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Enum>
                 <Set Name="MSGFLT_ADD"              Value="1" />
                 <Set Name="MSGFLT_REMOVE"           Value="2" />
@@ -309,7 +1020,7 @@
         </Variable>
 
         <Variable Name="[EnumDisplayDevicesFlags]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="EDD_GET_DEVICE_INTERFACE_NAME"   Value="0x00000001" />
             </Flag>
@@ -344,7 +1055,7 @@
         </Variable>
 
         <Variable Name="[AnimateWindowFlags]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="AW_HOR_POSITIVE"         Value="0x00000001" />
                 <Set Name="AW_HOR_NEGATIVE"         Value="0x00000002" />
@@ -648,25 +1359,6 @@
             </Flag>
         </Variable>
 
-        <Variable Name="[ShowWindowEnum]" Type="Alias" Base="int">
-            <Display Name="int" />
-            <Enum>
-                <Set Name="SW_HIDE"             Value="0" />
-                <Set Name="SW_SHOWNORMAL"       Value="1" />
-                <Set Name="SW_NORMAL"           Value="1" />
-                <Set Name="SW_SHOWMINIMIZED"    Value="2" />
-                <Set Name="SW_SHOWMAXIMIZED"    Value="3" />
-                <Set Name="SW_MAXIMIZE"         Value="3" />
-                <Set Name="SW_SHOWNOACTIVATE"   Value="4" />
-                <Set Name="SW_SHOW"             Value="5" />
-                <Set Name="SW_MINIMIZE"         Value="6" />
-                <Set Name="SW_SHOWMINNOACTIVE"  Value="7" />
-                <Set Name="SW_SHOWNA"           Value="8" />
-                <Set Name="SW_RESTORE"          Value="9" />
-                <Set Name="SW_SHOWDEFAULT"      Value="10" />
-                <Set Name="SW_FORCEMINIMIZE"    Value="11" />
-            </Enum>
-        </Variable>
 
         <Variable Name="[MenuCommandPosFlag]" Type="Alias" Base="UINT">
             <Display Name="UINT" />
@@ -810,7 +1502,7 @@
     </Enum>
     -->
         <Variable Name="[MsgWaitForMultipleObjectsFlags]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="MWMO_WAITALL"        Value="0x0001" />
                 <Set Name="MWMO_ALERTABLE"      Value="0x0002" />
@@ -841,7 +1533,7 @@
         </Variable>
 
         <Variable Name="[MonitorFlags]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="MONITOR_DEFAULTTONULL"       Value="0x00000000" />
                 <Set Name="MONITOR_DEFAULTTOPRIMARY"    Value="0x00000001" />
@@ -888,9 +1580,9 @@
         <Variable Name="[LayeredWindowAttribute*]" Type="Pointer" Base="[LayeredWindowAttribute]">
             <Display Name="DWORD*" />
         </Variable>
-        
+
         <Variable Name="[UpdateLayeredWindowFlags]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="ULW_COLORKEY"    Value="0x00000001" />
                 <Set Name="ULW_ALPHA"       Value="0x00000002" />
@@ -910,7 +1602,7 @@
         </Variable>
 
         <Variable Name="[DesktopFlags]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Enum>
                 <Set Name="DF_ALLOWOTHERACCOUNTHOOK"    Value="0x0001" />
             </Enum>
@@ -979,7 +1671,7 @@
         </Variable>
 
         <Variable Name="[DeviceNotificationFlags]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="DEVICE_NOTIFY_WINDOW_HANDLE"         Value="0x00000000" />
                 <Set Name="DEVICE_NOTIFY_SERVICE_HANDLE"        Value="0x00000001" />
@@ -1103,7 +1795,7 @@
                 <Set Name="OBM_OLD_REDUCE"      	Value="32757" />
                 <Set Name="OBM_OLD_ZOOM"        	Value="32756" />
                 <Set Name="OBM_OLD_RESTORE"         Value="32755" />
-                
+
                 <!-- OEM Cursors -->
                 <Set Name="OCR_NORMAL"          	Value="32512" />
                 <Set Name="OCR_IBEAM"           	Value="32513" />
@@ -1231,163 +1923,6 @@
             </Enum>
         </Variable>
 
-        <Variable Name="[VirtKeyCode]" Type="Alias" Base="int">
-            <Display Name="int" />
-            <Enum>
-                <Set Name="VK_LBUTTON"        			Value="0x01" />
-                <Set Name="VK_RBUTTON"        			Value="0x02" />
-                <Set Name="VK_CANCEL"         			Value="0x03" />
-                <Set Name="VK_MBUTTON"        			Value="0x04" />
-                <Set Name="VK_XBUTTON1"       			Value="0x05" />
-                <Set Name="VK_XBUTTON2"       			Value="0x06" />
-                <Set Name="VK_BACK"           			Value="0x08" />
-                <Set Name="VK_TAB"            			Value="0x09" />
-                <Set Name="VK_CLEAR"          			Value="0x0C" />
-                <Set Name="VK_RETURN"         			Value="0x0D" />
-                <Set Name="VK_SHIFT"          			Value="0x10" />
-                <Set Name="VK_CONTROL"        			Value="0x11" />
-                <Set Name="VK_MENU"           			Value="0x12" />
-                <Set Name="VK_PAUSE"          			Value="0x13" />
-                <Set Name="VK_CAPITAL"        			Value="0x14" />
-                <Set Name="VK_KANA"           			Value="0x15" />
-                <Set Name="VK_JUNJA"          			Value="0x17" />
-                <Set Name="VK_FINAL"          			Value="0x18" />
-                <Set Name="VK_KANJI"          			Value="0x19" />
-                <Set Name="VK_ESCAPE"         			Value="0x1B" />
-                <Set Name="VK_CONVERT"        			Value="0x1C" />
-                <Set Name="VK_NONCONVERT"     			Value="0x1D" />
-                <Set Name="VK_ACCEPT"         			Value="0x1E" />
-                <Set Name="VK_MODECHANGE"     			Value="0x1F" />
-                <Set Name="VK_SPACE"          			Value="0x20" />
-                <Set Name="VK_PRIOR"          			Value="0x21" />
-                <Set Name="VK_NEXT"           			Value="0x22" />
-                <Set Name="VK_END"            			Value="0x23" />
-                <Set Name="VK_HOME"           			Value="0x24" />
-                <Set Name="VK_LEFT"           			Value="0x25" />
-                <Set Name="VK_UP"             			Value="0x26" />
-                <Set Name="VK_RIGHT"          			Value="0x27" />
-                <Set Name="VK_DOWN"           			Value="0x28" />
-                <Set Name="VK_SELECT"         			Value="0x29" />
-                <Set Name="VK_PRINT"          			Value="0x2A" />
-                <Set Name="VK_EXECUTE"        			Value="0x2B" />
-                <Set Name="VK_SNAPSHOT"       			Value="0x2C" />
-                <Set Name="VK_INSERT"         			Value="0x2D" />
-                <Set Name="VK_DELETE"         			Value="0x2E" />
-                <Set Name="VK_HELP"           			Value="0x2F" />
-                <Set Name="VK_LWIN"           			Value="0x5B" />
-                <Set Name="VK_RWIN"           			Value="0x5C" />
-                <Set Name="VK_APPS"           			Value="0x5D" />
-                <Set Name="VK_SLEEP"          			Value="0x5F" />
-                <Set Name="VK_NUMPAD0"        			Value="0x60" />
-                <Set Name="VK_NUMPAD1"        			Value="0x61" />
-                <Set Name="VK_NUMPAD2"        			Value="0x62" />
-                <Set Name="VK_NUMPAD3"        			Value="0x63" />
-                <Set Name="VK_NUMPAD4"        			Value="0x64" />
-                <Set Name="VK_NUMPAD5"        			Value="0x65" />
-                <Set Name="VK_NUMPAD6"        			Value="0x66" />
-                <Set Name="VK_NUMPAD7"        			Value="0x67" />
-                <Set Name="VK_NUMPAD8"        			Value="0x68" />
-                <Set Name="VK_NUMPAD9"        			Value="0x69" />
-                <Set Name="VK_MULTIPLY"       			Value="0x6A" />
-                <Set Name="VK_ADD"            			Value="0x6B" />
-                <Set Name="VK_SEPARATOR"      			Value="0x6C" />
-                <Set Name="VK_SUBTRACT"       			Value="0x6D" />
-                <Set Name="VK_DECIMAL"        			Value="0x6E" />
-                <Set Name="VK_DIVIDE"         			Value="0x6F" />
-                <Set Name="VK_F1"             			Value="0x70" />
-                <Set Name="VK_F2"             			Value="0x71" />
-                <Set Name="VK_F3"             			Value="0x72" />
-                <Set Name="VK_F4"             			Value="0x73" />
-                <Set Name="VK_F5"             			Value="0x74" />
-                <Set Name="VK_F6"             			Value="0x75" />
-                <Set Name="VK_F7"             			Value="0x76" />
-                <Set Name="VK_F8"             			Value="0x77" />
-                <Set Name="VK_F9"             			Value="0x78" />
-                <Set Name="VK_F10"            			Value="0x79" />
-                <Set Name="VK_F11"            			Value="0x7A" />
-                <Set Name="VK_F12"            			Value="0x7B" />
-                <Set Name="VK_F13"            			Value="0x7C" />
-                <Set Name="VK_F14"            			Value="0x7D" />
-                <Set Name="VK_F15"            			Value="0x7E" />
-                <Set Name="VK_F16"            			Value="0x7F" />
-                <Set Name="VK_F17"            			Value="0x80" />
-                <Set Name="VK_F18"            			Value="0x81" />
-                <Set Name="VK_F19"            			Value="0x82" />
-                <Set Name="VK_F20"            			Value="0x83" />
-                <Set Name="VK_F21"            			Value="0x84" />
-                <Set Name="VK_F22"            			Value="0x85" />
-                <Set Name="VK_F23"            			Value="0x86" />
-                <Set Name="VK_F24"            			Value="0x87" />
-                <Set Name="VK_NUMLOCK"        			Value="0x90" />
-                <Set Name="VK_SCROLL"         			Value="0x91" />
-                <Set Name="VK_OEM_NEC_EQUAL"  			Value="0x92" />
-                <Set Name="VK_LSHIFT"         			Value="0xA0" />
-                <Set Name="VK_RSHIFT"         			Value="0xA1" />
-                <Set Name="VK_LCONTROL"       			Value="0xA2" />
-                <Set Name="VK_RCONTROL"       			Value="0xA3" />
-                <Set Name="VK_LMENU"          			Value="0xA4" />
-                <Set Name="VK_RMENU"          			Value="0xA5" />
-                <Set Name="VK_BROWSER_BACK"        		Value="0xA6" />
-                <Set Name="VK_BROWSER_FORWARD"     		Value="0xA7" />
-                <Set Name="VK_BROWSER_REFRESH"     		Value="0xA8" />
-                <Set Name="VK_BROWSER_STOP"        		Value="0xA9" />
-                <Set Name="VK_BROWSER_SEARCH"      		Value="0xAA" />
-                <Set Name="VK_BROWSER_FAVORITES"   		Value="0xAB" />
-                <Set Name="VK_BROWSER_HOME"        		Value="0xAC" />
-                <Set Name="VK_VOLUME_MUTE"         		Value="0xAD" />
-                <Set Name="VK_VOLUME_DOWN"         		Value="0xAE" />
-                <Set Name="VK_VOLUME_UP"           		Value="0xAF" />
-                <Set Name="VK_MEDIA_NEXT_TRACK"    		Value="0xB0" />
-                <Set Name="VK_MEDIA_PREV_TRACK"         Value="0xB1" />
-                <Set Name="VK_MEDIA_STOP"          		Value="0xB2" />
-                <Set Name="VK_MEDIA_PLAY_PAUSE"    		Value="0xB3" />
-                <Set Name="VK_LAUNCH_MAIL"         		Value="0xB4" />
-                <Set Name="VK_LAUNCH_MEDIA_SELECT" 		Value="0xB5" />
-                <Set Name="VK_LAUNCH_APP1"         		Value="0xB6" />
-                <Set Name="VK_LAUNCH_APP2"         		Value="0xB7" />
-                <Set Name="VK_OEM_1"          			Value="0xBA" />
-                <Set Name="VK_OEM_PLUS"       			Value="0xBB" />
-                <Set Name="VK_OEM_COMMA"      			Value="0xBC" />
-                <Set Name="VK_OEM_MINUS"      			Value="0xBD" />
-                <Set Name="VK_OEM_PERIOD"     			Value="0xBE" />
-                <Set Name="VK_OEM_2"          			Value="0xBF" />
-                <Set Name="VK_OEM_3"          			Value="0xC0" />
-                <Set Name="VK_OEM_4"          			Value="0xDB" />
-                <Set Name="VK_OEM_5"          			Value="0xDC" />
-                <Set Name="VK_OEM_6"          			Value="0xDD" />
-                <Set Name="VK_OEM_7"          			Value="0xDE" />
-                <Set Name="VK_OEM_8"          			Value="0xDF" />
-                <Set Name="VK_OEM_AX"         			Value="0xE1" />
-                <Set Name="VK_OEM_102"        			Value="0xE2" />
-                <Set Name="VK_ICO_HELP"       			Value="0xE3" />
-                <Set Name="VK_ICO_00"         			Value="0xE4" />
-                <Set Name="VK_PROCESSKEY"     			Value="0xE5" />
-                <Set Name="VK_ICO_CLEAR"      			Value="0xE6" />
-                <Set Name="VK_PACKET"         			Value="0xE7" />
-                <Set Name="VK_OEM_RESET"      			Value="0xE9" />
-                <Set Name="VK_OEM_JUMP"       			Value="0xEA" />
-                <Set Name="VK_OEM_PA1"        			Value="0xEB" />
-                <Set Name="VK_OEM_PA2"        			Value="0xEC" />
-                <Set Name="VK_OEM_PA3"        			Value="0xED" />
-                <Set Name="VK_OEM_WSCTRL"     			Value="0xEE" />
-                <Set Name="VK_OEM_CUSEL"      			Value="0xEF" />
-                <Set Name="VK_OEM_ATTN"       			Value="0xF0" />
-                <Set Name="VK_OEM_FINISH"     			Value="0xF1" />
-                <Set Name="VK_OEM_COPY"       			Value="0xF2" />
-                <Set Name="VK_OEM_AUTO"       			Value="0xF3" />
-                <Set Name="VK_OEM_ENLW"       			Value="0xF4" />
-                <Set Name="VK_OEM_BACKTAB"    			Value="0xF5" />
-                <Set Name="VK_ATTN"           			Value="0xF6" />
-                <Set Name="VK_CRSEL"          			Value="0xF7" />
-                <Set Name="VK_EXSEL"          			Value="0xF8" />
-                <Set Name="VK_EREOF"          			Value="0xF9" />
-                <Set Name="VK_PLAY"           			Value="0xFA" />
-                <Set Name="VK_ZOOM"           			Value="0xFB" />
-                <Set Name="VK_NONAME"         			Value="0xFC" />
-                <Set Name="VK_PA1"            			Value="0xFD" />
-                <Set Name="VK_OEM_CLEAR"      			Value="0xFE" />
-            </Enum>
-        </Variable>
 
         <Variable Name="[WindowRegion]" Type="Alias" Base="int">
             <Display Name="int" />
@@ -1399,76 +1934,96 @@
             </Enum>
         </Variable>
 
-        <Variable Name="LPCDLGTEMPLATE"                  Type="Alias"        Base="LPVOID" />
-        <Variable Name="DLGPROC"                         Type="Alias"        Base="LPVOID" />
-        <Variable Name="const LPMSGBOXPARAMS"            Type="Alias"        Base="LPVOID" />
-        <Variable Name="PBSMINFO"                        Type="Alias"        Base="LPVOID" />
-        <Variable Name="SENDASYNCPROC"                   Type="Alias"        Base="LPVOID" />
-        <Variable Name="PCHANGEFILTERSTRUCT"             Type="Alias"        Base="LPVOID" />
-        <Variable Name="WNDENUMPROC"                     Type="Alias"        Base="LPVOID" />
-        <Variable Name="PALTTABINFO"                     Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPGUITHREADINFO"                 Type="Alias"        Base="LPVOID" />
-        <Variable Name="PTITLEBARINFO"                   Type="Alias"        Base="LPVOID" />
-        <Variable Name="PWINDOWINFO"                     Type="Alias"        Base="LPVOID" />
-        <Variable Name="WINDOWPLACEMENT*"                Type="Alias"        Base="LPVOID" />
-        <Variable Name="BLENDFUNCTION*"                  Type="Alias"        Base="LPVOID" />
-        <Variable Name="const UPDATELAYEREDWINDOWINFO*"  Type="Alias"        Base="LPVOID" />
-        <Variable Name="PCOMBOBOXINFO"                   Type="Alias"        Base="LPVOID" />
-        <Variable Name="PCURSORINFO"                     Type="Alias"        Base="LPVOID" />
-        <Variable Name="PDISPLAY_DEVICE"                 Type="Alias"        Base="LPVOID" />
-        <Variable Name="HDEVNOTIFY"                      Type="Alias"        Base="LPVOID" />
-        <Variable Name="HCONV"                           Type="Alias"        Base="HANDLE" />
-        <Variable Name="HDDEDATA"                        Type="Alias"        Base="HANDLE" />
-        <Variable Name="HSZ"                             Type="Alias"        Base="HANDLE" />
-        <Variable Name="PCONVCONTEXT"                    Type="Alias"        Base="LPVOID" />
-        <Variable Name="HCONVLIST"                       Type="Alias"        Base="HANDLE" />
-        <Variable Name="PFNCALLBACK"                     Type="Alias"        Base="LPVOID" />
-        <Variable Name="PCONVINFO"                       Type="Alias"        Base="LPVOID" />
-        <Variable Name="PFLASHWINFO"                     Type="Alias"        Base="LPVOID" />
-        <Variable Name="HHOOK"                           Type="Alias"        Base="HANDLE" />
-        <Variable Name="HOOKPROC"                        Type="Alias"        Base="LPVOID" />
-        <Variable Name="PICONINFO"                       Type="Alias"        Base="LPVOID" />
-        <Variable Name="PICONINFOEX"                     Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPACCEL"                         Type="Alias"        Base="LPVOID" />
-        <Variable Name="PLASTINPUTINFO"                  Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPINPUT"                         Type="Alias"        Base="LPVOID" />
-        <Variable Name="PMENUBARINFO"                    Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPCMENUINFO"                     Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPMENUITEMINFO"                  Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPCMENUITEMINFO"                 Type="Alias"        Base="LPVOID" />
-        <Variable Name="CONST MENUTEMPLATE*"             Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPTPMPARAMS"                     Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPMOUSEMOVEPOINT"                Type="Alias"        Base="LPVOID" />
-        <Variable Name="MONITORENUMPROC"                 Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPMONITORINFO"                   Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPPAINTSTRUCT"                   Type="Alias"        Base="LPVOID" />
-        <Variable Name="DRAWSTATEPROC"                   Type="Alias"        Base="LPVOID" />
-        <Variable Name="const PAINTSTRUCT*"              Type="Alias"        Base="LPVOID" />
-        <Variable Name="GRAYSTRINGPROC"                  Type="Alias"        Base="LPVOID" />
-        <Variable Name="HPOWERNOTIFY"                    Type="Alias"        Base="LPVOID" />
-        <Variable Name="PRAWINPUT"                       Type="Alias"        Base="LPVOID" />
-        <Variable Name="PRAWINPUT*"                      Type="Pointer"      Base="PRAWINPUT" />
-        <Variable Name="HRAWINPUT"                       Type="Alias"        Base="HANDLE" />
-        <Variable Name="PRAWINPUTDEVICELIST"             Type="Alias"        Base="LPVOID" />
-        <Variable Name="PRAWINPUTDEVICE"                 Type="Alias"        Base="LPVOID" />
-        <Variable Name="PCRAWINPUTDEVICE"                Type="Alias"        Base="LPVOID" />
-        <Variable Name="PSCROLLBARINFO"                  Type="Alias"        Base="LPVOID" />
-        <Variable Name="TIMERPROC"                       Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPWNDCLASS"                      Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPWNDCLASSEX"                    Type="Alias"        Base="LPVOID" />
-        <Variable Name="CONST WNDCLASS*"                 Type="Alias"        Base="LPVOID" />
-        <Variable Name="CONST WNDCLASSEX*"               Type="Alias"        Base="LPVOID" />
-        <Variable Name="WNDPROC"                         Type="Alias"        Base="LPVOID" />
-        <Variable Name="PROPENUMPROC"                    Type="Alias"        Base="LPVOID" />
-        <Variable Name="PROPENUMPROCEX"                  Type="Alias"        Base="LPVOID" />
-        <Variable Name="HWINSTA"                         Type="Alias"        Base="LPVOID" />
-        <Variable Name="WINSTAENUMPROC"                  Type="Alias"        Base="LPVOID" />
-        <Variable Name="HDESK"                           Type="Alias"        Base="LPVOID" />
-        <Variable Name="DESKTOPENUMPROC"                 Type="Alias"        Base="LPVOID" />
-        <Variable Name="WINEVENTPROC"                    Type="Alias"        Base="LPVOID" />
-        <Variable Name="HWINEVENTHOOK"                   Type="Alias"        Base="HANDLE" />
+        <!-- [TOUCHINPUT_Flags] -->
+        <Variable Name="[TOUCHINPUT_Flags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="TOUCHEVENTF_MOVE"           Value="0x0001" />
+                <Set Name="TOUCHEVENTF_DOWN"           Value="0x0002" />
+                <Set Name="TOUCHEVENTF_UP"             Value="0x0004" />
+                <Set Name="TOUCHEVENTF_INRANGE"        Value="0x0008" />
+                <Set Name="TOUCHEVENTF_PRIMARY"        Value="0x0010" />
+                <Set Name="TOUCHEVENTF_NOCOALESCE"     Value="0x0020" />
+                <Set Name="TOUCHEVENTF_PEN"            Value="0x0040" />
+                <Set Name="TOUCHEVENTF_PALM"           Value="0x0080" />
+            </Flag>
+        </Variable>
 
-        <!-- Flags -->
+        <!-- [TOUCHINPUT_Mask] -->
+        <Variable Name="[TOUCHINPUT_Mask]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="TOUCHINPUTMASKF_TIMEFROMSYSTEM"  Value="0x0001" />
+                <Set Name="TOUCHINPUTMASKF_EXTRAINFO"       Value="0x0002" />
+                <Set Name="TOUCHINPUTMASKF_CONTACTAREA"     Value="0x0004" />
+            </Flag>
+        </Variable>
+
+        <!-- TOUCHINPUT -->
+        <Variable Name="TOUCHINPUT" Type="Struct">
+            <Field Type="LONG" 	                Name="x" />
+            <Field Type="LONG" 	                Name="y" />
+            <Field Type="HANDLE" 	            Name="hSource" />
+            <Field Type="DWORD" 	            Name="dwID" />
+            <Field Type="[TOUCHINPUT_Flags]" 	Name="dwFlags" />
+            <Field Type="[TOUCHINPUT_Mask]" 	Name="dwMask" />
+            <Field Type="DWORD" 	            Name="dwTime" />
+            <Field Type="ULONG_PTR"             Name="dwExtraInfo" />
+            <Field Type="DWORD" 	            Name="cxContact" />
+            <Field Type="DWORD" 	            Name="cyContact" />
+        </Variable>
+        <Variable Name="PTOUCHINPUT" Type="Pointer" Base="TOUCHINPUT" />
+
+        <!-- [GestureId] -->
+        <Variable Name="[GestureId]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="GID_ZOOM"           Value="3" />
+                <Set Name="GID_PAN"            Value="4" />
+                <Set Name="GID_ROTATE"         Value="5" />
+                <Set Name="GID_TWOFINGERTAP"   Value="6" />
+                <Set Name="GID_PRESSANDTAP"    Value="7" />
+            </Flag>
+        </Variable>
+
+        <!-- GESTURECONFIG -->
+        <Variable Name="GESTURECONFIG" Type="Struct">
+            <Field Type="[GestureId]"   Name="dwID" />
+            <Field Type="DWORD" 	    Name="dwWant" />
+            <Field Type="DWORD" 	    Name="dwBlock" />
+        </Variable>
+        <Variable Name="PGESTURECONFIG" Type="Pointer" Base="GESTURECONFIG" />
+
+        <!-- POINTS -->
+        <Variable Name="POINTS" Type="Struct">
+            <Field Type="SHORT"   	Name="x" />
+            <Field Type="SHORT"     Name="y" />
+        </Variable>
+
+        <!-- [GESTUREINFO_Flags] -->
+        <Variable Name="[GESTUREINFO_Flags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="GF_BEGIN"    Value="0x00000001" />
+                <Set Name="GF_INERTIA"  Value="0x00000002" />
+                <Set Name="GF_END"      Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <!-- GESTUREINFO -->
+        <Variable Name="GESTUREINFO" Type="Struct">
+            <Field Type="UINT" 	                Name="cbSize" />
+            <Field Type="[GESTUREINFO_Flags]" 	Name="dwFlags" />
+            <Field Type="DWORD" 	            Name="dwID" />
+            <Field Type="HWND" 	                Name="hwndTarget" />
+            <Field Type="POINTS" 	            Name="ptsLocation" />
+            <Field Type="DWORD" 	            Name="dwInstanceID" />
+            <Field Type="DWORD" 	            Name="dwSequenceID" />
+            <Field Type="ULONGLONG" 	        Name="ullArguments" />
+            <Field Type="UINT" 	                Name="cbExtraArgs" />
+        </Variable>
+        <Variable Name="PGESTUREINFO" Type="Pointer" Base="GESTUREINFO" />
+
         <!-- Dialog Boxes -->
         <!-- CreateDialog is a macro -->
         <!-- CreateDialogIndirect is a macro -->
@@ -1607,7 +2162,7 @@
             <Param Type="LPCTSTR" Name="lpCaption" />
             <Param Type="[MessageBoxType]" Name="uType" />
             <Param Type="WORD" Name="wLanguageId" />
-            <Param Type="[WaitTimeout(DWORD)]" Name="dwMilliseconds" />
+            <Param Type="[WaitTimeout]" Name="dwMilliseconds" />
             <Return Type="[MessageBoxResult]" />
             <Success Return="NotEqual" Value="0"/>
         </Api>
@@ -1681,7 +2236,7 @@
             <Return Type="LONG" />
         </Api>
         <Api Name="GetQueueStatus">
-            <Param Type="[QueueStatusFlag/UINT]" Name="flags" />
+            <Param Type="[QueueStatusFlag]" Display="UINT" Name="flags" />
             <Return Type="DWORD" />
         </Api>
         <Api Name="InSendMessage">
@@ -1794,7 +2349,7 @@
         </Api>
         <Api Name="WaitForInputIdle">
             <Param Type="[ProcessHandle]" Name="hProcess" />
-            <Param Type="[WaitTimeout(DWORD)]" Name="dwMilliseconds" />
+            <Param Type="[WaitTimeout]" Name="dwMilliseconds" />
             <Return Type="DWORD" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -2289,7 +2844,7 @@
         </Api>
         <Api Name="ShowWindow">
             <Param Type="HWND" Name="hWnd" />
-            <Param Type="[ShowWindowEnum]" Name="nCmdShow" />
+            <Param Type="[ShowWindowCmd]" Name="nCmdShow" />
             <Return Type="BOOL" />
         </Api>
         <Api Name="ShowWindowAsync">
@@ -3060,7 +3615,7 @@
             <Param Type="LPCTSTR" Name="lpchText" />
             <Param Type="int" Name="nCount" />
             <Param Type="LPRECT" Name="lpRect" />
-            <Param Type="[DrawTextFlags(UINT)]" Name="uFormat" />
+            <Param Type="[DrawTextFlags]" Display="UINT" Name="uFormat" />
             <Return Type="int" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -3069,7 +3624,7 @@
             <Param Type="LPTSTR" Name="lpchText" />
             <Param Type="int" Name="cchText" />
             <Param Type="LPRECT" Name="lprc" />
-            <Param Type="[DrawTextFlags(UINT)]" Name="dwDTFormat" />
+            <Param Type="[DrawTextFlags]" Display="UINT" Name="dwDTFormat" />
             <Param Type="LPDRAWTEXTPARAMS" Name="lpDTParams" />
             <Return Type="int" />
             <Success Return="NotEqual" Value="0" />
@@ -3292,7 +3847,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetAsyncKeyState">
-            <Param Type="[VirtKeyCode]" Name="vKey" />
+            <Param Type="[VirtKeyCode]" Display="int" Name="vKey" />
             <Return Type="SHORT" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -3332,7 +3887,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetKeyState">
-            <Param Type="[VirtKeyCode]" Name="nVirtKey" />
+            <Param Type="[VirtKeyCode]" Display="int" Name="nVirtKey" />
             <Return Type="SHORT" />
         </Api>
         <Api Name="GetLastInputInfo">
@@ -4345,7 +4900,7 @@
             <Return Type="LPTSTR" />
         </Api>
         <Api Name="CharNextExA">
-            <Param Type="[CodePageEnum(WORD)]" Name="CodePage" />
+            <Param Type="[CodePageEnum]" Display="WORD" Name="CodePage" />
             <Param Type="LPCSTR" Name="lpCurrentChar" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="LPSTR" />
@@ -4356,7 +4911,7 @@
             <Return Type="LPTSTR" />
         </Api>
         <Api Name="CharPrevExA">
-            <Param Type="[CodePageEnum(WORD)]" Name="CodePage" />
+            <Param Type="[CodePageEnum]" Display="WORD" Name="CodePage" />
             <Param Type="LPCSTR" Name="lpStart" />
             <Param Type="LPCSTR" Name="lpCurrentChar" />
             <Param Type="DWORD" Name="dwFlags" />
@@ -4443,16 +4998,16 @@
             <Param Type="DWORD" Name="nCount" />
             <Param Type="const HANDLE*" Name="pHandles" />
             <Param Type="BOOL" Name="bWaitAll" />
-            <Param Type="[WaitTimeout(DWORD)]" Name="dwMilliseconds" />
-            <Param Type="[QueueStatusFlag/DWORD]" Name="dwWakeMask" />
+            <Param Type="[WaitTimeout]" Name="dwMilliseconds" />
+            <Param Type="[QueueStatusFlag]" Name="dwWakeMask" />
             <Return Type="DWORD" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="MsgWaitForMultipleObjectsEx">
             <Param Type="DWORD" Name="nCount" />
             <Param Type="const HANDLE*" Name="pHandles" />
-            <Param Type="[WaitTimeout(DWORD)]" Name="dwMilliseconds" />
-            <Param Type="[QueueStatusFlag/DWORD]" Name="dwWakeMask" />
+            <Param Type="[WaitTimeout]" Name="dwMilliseconds" />
+            <Param Type="[QueueStatusFlag]" Name="dwWakeMask" />
             <Param Type="[MsgWaitForMultipleObjectsFlags]" Name="dwFlags" />
             <Return Type="DWORD" />
             <Success Return="NotEqual" Value="0" />
@@ -4657,7 +5212,8 @@
         <Api Name="GetUserObjectInformation" BothCharset="True">
             <Param Type="HANDLE" Name="hObj" />
             <Param Type="[UserObjectInformationEnum]" Name="nIndex" />
-            <Param Type="PVOID" Name="pvInfo" PostLength="lpnLengthNeeded" />    <!-- TODO: PostLength="nLength" -->
+            <Param Type="PVOID" Name="pvInfo" PostLength="lpnLengthNeeded" />
+            <!-- TODO: PostLength="nLength" -->
             <Param Type="DWORD" Name="nLength" />
             <Param Type="LPDWORD" Name="lpnLengthNeeded" />
             <Return Type="BOOL" />

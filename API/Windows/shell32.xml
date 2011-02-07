@@ -8,9 +8,198 @@
     <Include Filename="Headers\shell.h.xml" />
     <Include Filename="Headers\gdi.h.xml" />
     <Include Filename="Headers\registry.h.xml" />
-    
+
     <Module Name="Shell32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         <!-- Variables -->
+        <Variable Name="IShellFolder"                       Type="Interface" />
+        <Variable Name="IContextMenu"                       Type="Interface" />
+        <Variable Name="IDataObject"                        Type="Interface" />
+        <Variable Name="IEnumAssocHandlers"                 Type="Interface" />
+        <Variable Name="IShellItem"                         Type="Interface" />
+        <Variable Name="IFileOperation"                     Type="Interface" />
+        <Variable Name="IShellView"                         Type="Interface" />
+        <Variable Name="IShellItemArray"                    Type="Interface" />
+        <Variable Name="IShellBrowser"                      Type="Interface" />
+        <Variable Name="IFileOperationProgressSink"         Type="Interface" />
+        <Variable Name="IShellTaskScheduler"                Type="Interface" />
+        <Variable Name="IDropSource"                        Type="Interface" />
+        <Variable Name="IContextMenuCB"                     Type="Interface" />
+        <Variable Name="IShellFolderViewCB"                 Type="Interface" />
+
+        <!-- TODO: We can decode RESTRICTIONS, however, it is only used a single API and might not be useful. Decide later -->
+        <Variable Name="RESTRICTIONS" Type="Alias" Base="UINT" />
+
+        <Variable Name="FARPROC16"                          Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPFNDFMCALLBACK"                    Type="Alias"    Base="LPVOID" />
+        <Variable Name="HDROP"                              Type="Alias"    Base="HANDLE" />
+        <Variable Name="HPSXA"                              Type="Alias"    Base="HANDLE" />
+        <Variable Name="LPFNADDPROPSHEETPAGE"               Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPFNVIEWCALLBACK"                   Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFNASYNCICONTASKBALLBACK"           Type="Alias"    Base="LPVOID" />
+
+        <!-- TODO: Structures -->
+        <Variable Name="PCIDLIST_ABSOLUTE_ARRAY"            Type="Alias"    Base="LPVOID" />
+        <Variable Name="PCUIDLIST_RELATIVE_ARRAY"           Type="Alias"    Base="LPVOID" />
+        <Variable Name="AUTO_SCROLL_DATA*"                  Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPSHITEMID"                         Type="Alias"    Base="LPVOID" />
+        <Variable Name="PUIDLIST_RELATIVE"                  Type="Alias"    Base="LPVOID" />
+        <Variable Name="CABINETSTATE*"                      Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPBROWSEINFO"                       Type="Alias"    Base="LPVOID" />
+        <Variable Name="PNOTIFYICONDATA"                    Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPSHELLEXECUTEINFO"                 Type="Alias"    Base="LPVOID" />
+        <Variable Name="SHFILEINFO*"                        Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPSHFOLDERCUSTOMSETTINGS"           Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPSHELLSTATE"                       Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPSHELLFLAGSTATE"                   Type="Alias"    Base="LPVOID" />
+        <Variable Name="SHSTOCKICONINFO*"                   Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPCITEMIDLIST"                      Type="Alias"    Base="LPVOID" />
+        <Variable Name="const OPENASINFO*"                  Type="Alias"    Base="LPVOID" />
+
+        <!-- ASSOCCLASS -->
+        <Variable Name="ASSOCCLASS" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="ASSOCCLASS_SHELL_KEY"		Value="0" />
+                <Set Name="ASSOCCLASS_PROGID_KEY"		Value="1" />
+                <Set Name="ASSOCCLASS_PROGID_STR"		Value="2" />
+                <Set Name="ASSOCCLASS_CLSID_KEY"		Value="3" />
+                <Set Name="ASSOCCLASS_CLSID_STR"		Value="4" />
+                <Set Name="ASSOCCLASS_APP_KEY"			Value="5" />
+                <Set Name="ASSOCCLASS_APP_STR"			Value="6" />
+                <Set Name="ASSOCCLASS_SYSTEM_STR"		Value="7" />
+                <Set Name="ASSOCCLASS_FOLDER"			Value="8" />
+                <Set Name="ASSOCCLASS_STAR"             Value="9" />
+            </Enum>
+        </Variable>
+
+        <!-- ASSOCIATIONELEMENT -->
+        <Variable Name="ASSOCIATIONELEMENT" Type="Struct" Pack32="1">
+            <Field Type="ASSOCCLASS" 	Name="ac" />
+            <Field Type="HKEY" 	        Name="hkClass" />
+            <Field Type="PCWSTR" 	    Name="pszClass" />
+        </Variable>
+        <Variable Name="const ASSOCIATIONELEMENT*" Type="Pointer" Base="ASSOCIATIONELEMENT" />
+
+        <!-- [DLLVER_PLATFORM] -->
+        <Variable Name="[DLLVER_PLATFORM]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="DLLVER_PLATFORM_WINDOWS"     Value="0x00000001" />
+                <Set Name="DLLVER_PLATFORM_NT"          Value="0x00000002" />
+            </Enum>        
+    </Variable>
+
+        <!-- DLLVERSIONINFO -->
+        <Variable Name="DLLVERSIONINFO" Type="Struct">
+            <Field Type="DWORD" 	        Name="cbSize" />
+            <Field Type="DWORD" 	        Name="dwMajorVersion" />
+            <Field Type="DWORD" 	        Name="dwMinorVersion" />
+            <Field Type="DWORD" 	        Name="dwBuildNumber" />
+            <Field Type="[DLLVER_PLATFORM]" Name="dwPlatformID" />
+        </Variable>
+        <Variable Name="DLLVERSIONINFO*" Type="Pointer" Base="DLLVERSIONINFO" />
+
+        <!-- SHChangeNotifyEntry -->
+        <Variable Name="SHChangeNotifyEntry" Type="Struct" Pack="1">
+            <Field Type="PCIDLIST_ABSOLUTE"     Name="pidl" />
+            <Field Type="BOOL"                  Name="fRecursive" />
+        </Variable>
+        <Variable Name="SHChangeNotifyEntry*"       Type="Pointer" Base="SHChangeNotifyEntry" />
+        <Variable Name="const SHChangeNotifyEntry*" Type="Alias"    Base="SHChangeNotifyEntry*" />
+
+        <!-- APPBARDATA -->
+        <Variable Name="APPBARDATA" Type="Struct" Pack32="1">
+            <Field Type="DWORD" 	Name="cbSize" />
+            <Field Type="HWND" 	    Name="hWnd" />
+            <Field Type="UINT" 	    Name="uCallbackMessage" />
+            <Field Type="UINT" 	    Name="uEdge" />
+            <Field Type="RECT" 	    Name="rc" />
+            <Field Type="LPARAM" 	Name="lParam" />
+        </Variable>
+        <Variable Name="PAPPBARDATA" Type="Pointer" Base="APPBARDATA" />
+
+        <!-- DEFCONTEXTMENU -->
+        <Variable Name="DEFCONTEXTMENU" Type="Struct">
+            <Field Type="HWND" 	                Name="hwnd" />
+            <Field Type="IContextMenuCB*" 	    Name="pcmcb" />
+            <Field Type="PCIDLIST_ABSOLUTE" 	Name="pidlFolder" />
+            <Field Type="IShellFolder*" 	    Name="psf" />
+            <Field Type="UINT" 	                Name="cidl" />
+            <Field Type="PCUITEMID_CHILD_ARRAY" Name="apidl" />
+            <Field Type="IUnknown*" 	        Name="punkAssociationInfo" />
+            <Field Type="UINT" 	                Name="cKeys" />
+            <Field Type="const HKEY*"	        Name="aKeys" />
+        </Variable>
+        <Variable Name="const DEFCONTEXTMENU*" Type="Pointer" Base="DEFCONTEXTMENU" />
+
+        <!-- SHCREATEPROCESSINFOW -->
+        <Variable Name="SHCREATEPROCESSINFOW" Type="Struct">
+            <Field Type="DWORD" 	                Name="cbSize" />
+            <Field Type="ULONG" 	                Name="fMask" />
+            <Field Type="HWND" 	                    Name="hwnd" />
+            <Field Type="LPCWSTR"  	                Name="pszFile" />
+            <Field Type="LPCWSTR"  	                Name="pszParameters" />
+            <Field Type="LPCWSTR"  	                Name="pszCurrentDirectory" />
+            <Field Type="HANDLE" 	                Name="hUserToken" />
+            <Field Type="LPSECURITY_ATTRIBUTES" 	Name="lpProcessAttributes" />
+            <Field Type="LPSECURITY_ATTRIBUTES" 	Name="lpThreadAttributes" />
+            <Field Type="BOOL" 	                    Name="bInheritHandles" />
+            <Field Type="DWORD"                     Name="dwCreationFlags" />
+            <Field Type="LPSTARTUPINFOW"            Name="lpStartupInfo" />
+            <Field Type="LPPROCESS_INFORMATION" 	Name="lpProcessInformation" />
+        </Variable>
+        <Variable Name="PSHCREATEPROCESSINFOW" Type="Pointer" Base="SHCREATEPROCESSINFOW" />
+
+        <!-- CSFV -->
+        <Variable Name="CSFV" Type="Struct">
+            <Field Type="UINT"              	Name="cbSize" />
+            <Field Type="IShellFolder*"    	    Name="pshf" />
+            <Field Type="IShellView*"       	Name="psvOuter" />
+            <Field Type="PCIDLIST_ABSOLUTE" 	Name="pidl" />
+            <Field Type="LONG"              	Name="lEvents" />
+            <Field Type="LPFNVIEWCALLBACK"  	Name="pfnCallback" />
+            <Field Type="FOLDERVIEWMODE"    	Name="fvm" />
+        </Variable>
+        <Variable Name="LPCSFV" Type="Pointer" Base="CSFV" />
+
+        <!-- SFV_CREATE -->
+        <Variable Name="SFV_CREATE" Type="Struct">
+            <Field Type="UINT"            	    Name="cbSize" />
+            <Field Type="IShellFolder*"   	    Name="pshf" />
+            <Field Type="IShellView*"     	    Name="psvOuter" />
+            <Field Type="IShellFolderViewCB*" 	Name="psfvcb" />
+        </Variable>
+        <Variable Name="const SFV_CREATE*" Type="Pointer" Base="SFV_CREATE" />
+
+        <!-- NOTIFYICONIDENTIFIER -->
+        <Variable Name="NOTIFYICONIDENTIFIER" Type="Struct">
+            <Field Type="DWORD" 	Name="cbSize" />
+            <Field Type="HWND" 	    Name="hWnd" />
+            <Field Type="UINT" 	    Name="uID" />
+            <Field Type="GUID" 	    Name="guidItem" />
+        </Variable>
+        <Variable Name="const NOTIFYICONIDENTIFIER*" Type="Pointer" Base="NOTIFYICONIDENTIFIER" />
+
+        <!-- SHFILEOPSTRUCT -->
+        <Variable Name="SHFILEOPSTRUCT" Type="Struct" Pack32="1">
+            <Field Type="HWND"            	Name="hwnd" />
+            <Field Type="UINT"            	Name="wFunc" />
+            <Field Type="LPCTSTR"         	Name="pFrom" />
+            <Field Type="LPCTSTR"         	Name="pTo" />
+            <Field Type="FILEOP_FLAGS"    	Name="fFlags" />
+            <Field Type="BOOL"            	Name="fAnyOperationsAborted" />
+            <Field Type="LPVOID"          	Name="hNameMappings" />
+            <Field Type="LPCTSTR"         	Name="lpszProgressTitle" />
+        </Variable>
+        <Variable Name="LPSHFILEOPSTRUCT" Type="Pointer" Base="SHFILEOPSTRUCT" />
+
+        <!-- SHQUERYRBINFO -->
+        <Variable Name="SHQUERYRBINFO" Type="Struct" Pack32="1">
+            <Field Type="DWORD"   	    Name="cbSize" />
+            <Field Type="DWORDLONG" 	Name="i64Size" />
+            <Field Type="DWORDLONG" 	Name="i64NumItems" />
+        </Variable>
+        <Variable Name="LPSHQUERYRBINFO" Type="Pointer" Base="SHQUERYRBINFO" />
+
         <Variable Name="[CSIDL]" Type="Alias" Base="UINT">
             <Display Name="int" />
             <Flag>
@@ -98,10 +287,6 @@
                 <Set Name="KF_FLAG_NOT_PARENT_RELATIVE" Value="0x00000200" />
                 <Set Name="KF_FLAG_SIMPLE_IDLIST"       Value="0x00000100" />
             </Flag>
-        </Variable>
-
-        <Variable Name="KNOWN_FOLDER_FLAG/DWORD" Type="Alias" Base="KNOWN_FOLDER_FLAG">
-            <Display Name="DWORD" />
         </Variable>
 
         <Variable Name="[SHGetFolderPathFlags]" Type="Alias" Base="DWORD">
@@ -292,9 +477,6 @@
         </Variable>
         <Variable Name="QUERY_USER_NOTIFICATION_STATE*" Type="Pointer" Base="QUERY_USER_NOTIFICATION_STATE" />
 
-        <!-- TODO: We can decode RESTRICTIONS, however, it is only used a single API and might not be useful. Decide later -->
-        <Variable Name="RESTRICTIONS" Type="Alias" Base="UINT" />
-
         <Variable Name="LIBRARYMANAGEDIALOGOPTIONS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="LMD_DEFAULT"                             Value="0x00000000"/>
@@ -312,55 +494,6 @@
                 <Set Name="RFF_NOSEPARATEMEM"   Value="0x00000010"/>
             </Flag>
         </Variable>
-
-        <Variable Name="IShellFolder"                       Type="Interface" />
-        <Variable Name="IContextMenu"                       Type="Interface" />
-        <Variable Name="IDataObject"                        Type="Interface" />
-        <Variable Name="IEnumAssocHandlers"                 Type="Interface" />
-        <Variable Name="IShellItem"                         Type="Interface" />
-        <Variable Name="IFileOperation"                     Type="Interface" />
-        <Variable Name="IShellView"                         Type="Interface" />
-        <Variable Name="IShellItemArray"                    Type="Interface" />
-        <Variable Name="IShellBrowser"                      Type="Interface" />
-        <Variable Name="IFileOperationProgressSink"         Type="Interface" />
-        <Variable Name="IShellTaskScheduler"                Type="Interface" />
-        <Variable Name="IDropSource"                        Type="Interface" />
-
-        <Variable Name="const ASSOCIATIONELEMENT*"          Type="Alias"    Base="LPVOID" />
-        <Variable Name="FARPROC16"                          Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPFNDFMCALLBACK"                    Type="Alias"    Base="LPVOID" />
-        <Variable Name="PCUIDLIST_RELATIVE_ARRAY"           Type="Alias"    Base="LPVOID" />
-        <Variable Name="AUTO_SCROLL_DATA*"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="DLLVERSIONINFO*"                    Type="Alias"    Base="LPVOID" />
-        <Variable Name="HDROP"                              Type="Alias"    Base="HANDLE" />
-        <Variable Name="LPSHITEMID"                         Type="Alias"    Base="LPVOID" />
-        <Variable Name="PUIDLIST_RELATIVE"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="PUITEMID_CHILD"                     Type="Alias"    Base="LPVOID" />
-        <Variable Name="SHChangeNotifyEntry*"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="const SHChangeNotifyEntry*"         Type="Alias"    Base="SHChangeNotifyEntry*" />
-        <Variable Name="CABINETSTATE*"                      Type="Alias"    Base="LPVOID" />
-        <Variable Name="HPSXA"                              Type="Alias"    Base="HANDLE" />
-        <Variable Name="LPFNADDPROPSHEETPAGE"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="PAPPBARDATA"                        Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPBROWSEINFO"                       Type="Alias"    Base="LPVOID" />
-        <Variable Name="const DEFCONTEXTMENU*"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSHCREATEPROCESSINFOW"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPCSFV"                             Type="Alias"    Base="LPVOID" />
-        <Variable Name="const SFV_CREATE*"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="PCIDLIST_ABSOLUTE_ARRAY"            Type="Alias"    Base="LPVOID" />
-        <Variable Name="PNOTIFYICONDATA"                    Type="Alias"    Base="LPVOID" />
-        <Variable Name="const NOTIFYICONIDENTIFIER*"        Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPSHELLEXECUTEINFO"                 Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPSHFILEOPSTRUCT"                   Type="Alias"    Base="LPVOID" />
-        <Variable Name="SHFILEINFO*"                        Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPSHFOLDERCUSTOMSETTINGS"           Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPSHELLSTATE"                       Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPSHELLFLAGSTATE"                   Type="Alias"    Base="LPVOID" />
-        <Variable Name="SHSTOCKICONINFO*"                   Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPCITEMIDLIST"                      Type="Alias"    Base="LPVOID" />
-        <Variable Name="PFNASYNCICONTASKBALLBACK"           Type="Alias"    Base="LPVOID" />
-        <Variable Name="const OPENASINFO*"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPSHQUERYRBINFO"                    Type="Alias"    Base="LPVOID" />
 
         <!-- Icons -->
         <Category Name="Windows Application UI Development/Menus and Other Resources/Icons" />
@@ -1031,7 +1164,7 @@
         </Api>
         <Api Name="SHCreateItemInKnownFolder">
             <Param Type="REFKNOWNFOLDERID" Name="kfid" />
-            <Param Type="KNOWN_FOLDER_FLAG/DWORD" Name="dwKFFlags" />
+            <Param Type="KNOWN_FOLDER_FLAG" Display="DWORD" Name="dwKFFlags" />
             <Param Type="PCWSTR" Name="pszItem" />
             <Param Type="REFIID" Name="riid" />
             <Param Type="void**" Name="ppv" InterfaceId="riid" />
@@ -1407,7 +1540,7 @@
         </Api>
         <Api Name="SHGetKnownFolderIDList">
             <Param Type="REFKNOWNFOLDERID" Name="rfid" />
-            <Param Type="KNOWN_FOLDER_FLAG/DWORD" Name="dwFlags" />
+            <Param Type="KNOWN_FOLDER_FLAG" Display="DWORD" Name="dwFlags" />
             <Param Type="HANDLE" Name="hToken" />
             <Param Type="PIDLIST_ABSOLUTE*" Name="ppidl" />
             <Return Type="HRESULT" />

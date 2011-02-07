@@ -7,7 +7,68 @@
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\rpc.h.xml" />
     <Module Name="Ntdsapi.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        
         <!-- Variables -->
+        <Variable Name="LPCWCH*" Type="Alias" Base="WCHAR**" />
+        
+        <!-- TODO: Structures -->
+        <Variable Name="const PSCHEDULE" Type="Alias" Base="LPVOID" />
+
+        <!-- DS_NAME_RESULT_ITEM -->
+        <Variable Name="DS_NAME_RESULT_ITEM" Type="Struct">
+            <Field Type="DWORD"     Name="status" />
+            <Field Type="LPTSTR"    Name="pDomain" />
+            <Field Type="LPTSTR"    Name="pName" />
+        </Variable>
+        <Variable Name="PDS_NAME_RESULT_ITEM" Type="Pointer" Base="DS_NAME_RESULT_ITEM" />
+
+        <!-- DS_NAME_RESULT -->
+        <Variable Name="DS_NAME_RESULT" Type="Struct">
+            <Field Type="DWORD"                 Name="cItems" />
+            <Field Type="PDS_NAME_RESULT_ITEM"  Name="rItems" />
+        </Variable>
+        <Variable Name="DS_NAME_RESULT*"  Type="Pointer" Base="DS_NAME_RESULT" />
+        <Variable Name="PDS_NAME_RESULT"  Type="Pointer" Base="DS_NAME_RESULT" />
+        <Variable Name="PDS_NAME_RESULT*" Type="Alias"   Base="PDS_NAME_RESULT" />
+
+        <!-- DS_SCHEMA_GUID_MAP -->
+        <Variable Name="DS_SCHEMA_GUID_MAP" Type="Struct">
+            <Field Type="GUID"      Name="guid" />
+            <Field Type="DWORD"     Name="guidType" />
+            <Field Type="LPTSTR"    Name="pName" />
+        </Variable>
+        <Variable Name="DS_SCHEMA_GUID_MAP*"  Type="Pointer" Base="DS_SCHEMA_GUID_MAP" />
+        <Variable Name="PDS_SCHEMA_GUID_MAP"  Type="Pointer" Base="DS_SCHEMA_GUID_MAP" />
+        <Variable Name="DS_SCHEMA_GUID_MAP**" Type="Pointer" Base="DS_SCHEMA_GUID_MAP*" />
+
+        <!-- DS_SITE_COST_INFO -->
+        <Variable Name="DS_SITE_COST_INFO" Type="Struct">
+            <Field Type="DWORD"     Name="errorCode" />
+            <Field Type="DWORD"     Name="cost" />
+        </Variable>
+        <Variable Name="PDS_SITE_COST_INFO"  Type="Pointer" Base="DS_SITE_COST_INFO" />
+        <Variable Name="PDS_SITE_COST_INFO*" Type="Pointer" Base="PDS_SITE_COST_INFO" />
+
+        <!-- DS_REPSYNCALL_ERROR -->
+        <Variable Name="DS_REPSYNCALL_ERROR" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DS_REPSYNCALL_WIN32_ERROR_CONTACTING_SERVER" Value="0" />
+                <Set Name="DS_REPSYNCALL_WIN32_ERROR_REPLICATING"       Value="1" />
+                <Set Name="DS_REPSYNCALL_SERVER_UNREACHABLE"            Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- DS_REPSYNCALL_ERRINFO -->
+        <Variable Name="DS_REPSYNCALL_ERRINFO" Type="Struct">
+            <Field Type="LPTSTR"                Name="pszSvrId" />
+            <Field Type="DS_REPSYNCALL_ERROR"   Name="error" />
+            <Field Type="DWORD"                 Name="dwWin32Err" />
+            <Field Type="LPTSTR"                Name="pszSrcId" />
+        </Variable>
+        <Variable Name="PDS_REPSYNCALL_ERRINFO"   Type="Pointer" Base="DS_REPSYNCALL_ERRINFO" />
+        <Variable Name="PDS_REPSYNCALL_ERRINFO*"  Type="Pointer" Base="PDS_REPSYNCALL_ERRINFO" />
+        <Variable Name="PDS_REPSYNCALL_ERRINFO**" Type="Pointer" Base="PDS_REPSYNCALL_ERRINFO*" />
+        
         <Variable Name="DS_NAME_FLAGS" Type="Alias" Base="DWORD">
             <Flag>
                 <Set Name="DS_NAME_NO_FLAGS"                Value="0" />
@@ -17,6 +78,7 @@
                 <Set Name="DS_NAME_FLAG_TRUST_REFERRAL"     Value="0x8" />
             </Flag>
         </Variable>
+        
         <Variable Name="DS_NAME_FORMAT" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="DS_UNKNOWN_NAME"             Value="0" />
@@ -34,6 +96,7 @@
                 <Set Name="DS_DNS_DOMAIN_NAME"          Value="12" />
             </Enum>
         </Variable>
+        
         <Variable Name="DS_MANGLE_FOR" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="DS_MANGLE_UNKNOWN"                       Value="0" />
@@ -42,6 +105,7 @@
             </Enum>
         </Variable>
         <Variable Name="DS_MANGLE_FOR*" Type="Pointer" Base="DS_MANGLE_FOR" />
+        
         <Variable Name="DS_SPN_NAME_TYPE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="DS_SPN_DNS_HOST"     Value="0" />
@@ -58,6 +122,7 @@
                 <Set Name="DS_KCC_TASKID_UPDATE_TOPOLOGY" Value="0" />
             </Enum>
         </Variable>
+        
         <Variable Name="DS_REPL_INFO_TYPE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="DS_REPL_INFO_NEIGHBORS"                  Value="0" />
@@ -73,6 +138,7 @@
                 <Set Name="DS_REPL_INFO_METADATA_2_FOR_ATTR_VALUE"  Value="10" />
             </Enum>
         </Variable>
+        
         <Variable Name="DS_SPN_WRITE_OP" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="DS_SPN_ADD_SPN_OP"           Value="0" />
@@ -80,19 +146,6 @@
                 <Set Name="DS_SPN_DELETE_SPN_OP"        Value="2" />
             </Enum>
         </Variable>
-
-        <Variable Name="PDS_NAME_RESULTW*"          Type="Alias"    Base="LPVOID" />
-        <Variable Name="DS_SCHEMA_GUID_MAP*"        Type="Alias"    Base="LPVOID" />
-        <Variable Name="DS_SCHEMA_GUID_MAP**"       Type="Pointer"  Base="DS_SCHEMA_GUID_MAP*" />
-        <Variable Name="PDS_SITE_COST_INFO"         Type="Alias"    Base="LPVOID" />
-        <Variable Name="PDS_SITE_COST_INFO*"        Type="Pointer"  Base="PDS_SITE_COST_INFO" />
-        <Variable Name="const PSCHEDULE"            Type="Alias"    Base="LPVOID" />
-        <Variable Name="PDS_REPSYNCALL_ERRINFO*"    Type="Alias"    Base="LPVOID" />
-        <Variable Name="PDS_REPSYNCALL_ERRINFO**"   Type="Pointer"  Base="PDS_REPSYNCALL_ERRINFO*" />
-        <Variable Name="PDS_NAME_RESULT*"           Type="Alias"    Base="LPVOID" />
-        <Variable Name="DS_NAME_RESULTW*"           Type="Alias"    Base="LPVOID" />
-        <Variable Name="PDS_SCHEMA_GUID_MAP"        Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPCWCH*"                    Type="Alias"    Base="WCHAR**" />
 
         <!-- Active Directory Domain Services -->
         <Category Name="Administration and Management/Directory, Identity, and Access Services/Directory Services/Directories/Active Directory Domain Services/Domain Controller and Replication Management" />
@@ -200,7 +253,7 @@
             <Return Type="void" />
         </Api>
         <Api Name="DsFreeNameResult" BothCharset="True">
-            <Param Type="DS_NAME_RESULTW*" Name="pResult" />
+            <Param Type="DS_NAME_RESULT*" Name="pResult" />
             <Return Type="void" />
         </Api>
         <Api Name="DsFreePasswordCredentials">
@@ -285,7 +338,7 @@
         </Api>
         <Api Name="DsListRoles" BothCharset="True">
             <Param Type="HANDLE" Name="hDs" />
-            <Param Type="PDS_NAME_RESULTW*" Name="ppRoles" />
+            <Param Type="PDS_NAME_RESULT*" Name="ppRoles" />
             <Return Type="DWORD" />
             <Success Return="NotEqual" Value="0" />
         </Api>

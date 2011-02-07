@@ -5,20 +5,47 @@
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\security.h.xml" />
     <Module Name="Authz.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        <!-- Parameters -->
+
+        <!-- TODO: Structures -->
+        <Variable Name="PAUTHZ_SOURCE_SCHEMA_REGISTRATION"      Type="Alias"    Base="LPVOID" />
+        <Variable Name="PAUTHZ_SECURITY_ATTRIBUTES_INFORMATION" Type="Alias"    Base="LPVOID" />
+        <Variable Name="PAUDIT_PARAMS"                          Type="Alias"    Base="LPVOID" />
+
+        <!-- Variables -->
         <Variable Name="AUTHZ_CLIENT_CONTEXT_HANDLE"            Type="Alias"    Base="HANDLE" />
         <Variable Name="PAUTHZ_CLIENT_CONTEXT_HANDLE"           Type="Pointer"  Base="AUTHZ_CLIENT_CONTEXT_HANDLE" />
-        <Variable Name="PAUTHZ_ACCESS_REQUEST"                  Type="Alias"    Base="LPVOID" />
         <Variable Name="AUTHZ_AUDIT_EVENT_HANDLE"               Type="Alias"    Base="HANDLE" />
-        <Variable Name="PAUTHZ_ACCESS_REPLY"                    Type="Alias"    Base="LPVOID" />
-        <Variable Name="AUTHZ_ACCESS_CHECK_RESULTS_HANDLE"      Type="Alias"    Base="LPVOID" />
+        <Variable Name="AUTHZ_ACCESS_CHECK_RESULTS_HANDLE"      Type="Alias"    Base="HANDLE" />
         <Variable Name="PAUTHZ_ACCESS_CHECK_RESULTS_HANDLE"     Type="Pointer"  Base="AUTHZ_ACCESS_CHECK_RESULTS_HANDLE" />
-        <Variable Name="PAUTHZ_SOURCE_SCHEMA_REGISTRATION"      Type="Alias"    Base="LPVOID" />
         <Variable Name="AUTHZ_RESOURCE_MANAGER_HANDLE"          Type="Alias"    Base="HANDLE" />
         <Variable Name="PAUTHZ_RESOURCE_MANAGER_HANDLE"         Type="Pointer"  Base="AUTHZ_RESOURCE_MANAGER_HANDLE" />
-        <Variable Name="PAUTHZ_SECURITY_ATTRUBUTES_INFORMATION" Type="Alias"    Base="LPVOID" />
-        
+        <Variable Name="PFN_AUTHZ_DYNAMIC_ACCESS_CHECK"         Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFN_AUTHZ_COMPUTE_DYNAMIC_GROUPS"       Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFN_AUTHZ_FREE_DYNAMIC_GROUPS"          Type="Alias"    Base="LPVOID" />
+        <Variable Name="AUTHZ_SECURITY_EVENT_PROVIDER_HANDLE"   Type="Alias"    Base="HANDLE" />
+        <Variable Name="PAUTHZ_SECURITY_EVENT_PROVIDER_HANDLE"  Type="Pointer"  Base="AUTHZ_SECURITY_EVENT_PROVIDER_HANDLE" />
+
+        <!-- AUTHZ_ACCESS_REQUEST -->
+        <Variable Name="AUTHZ_ACCESS_REQUEST" Type="Struct">
+            <Field Type="ACCESS_MASK" 	    Name="DesiredAccess" />
+            <Field Type="PSID" 	            Name="PrincipalSelfSid" />
+            <Field Type="POBJECT_TYPE_LIST" Name="ObjectTypeList" />
+            <Field Type="DWORD" 	        Name="ObjectTypeListLength" />
+            <Field Type="PVOID" 	        Name="OptionalArguments" />
+        </Variable>
+        <Variable Name="PAUTHZ_ACCESS_REQUEST" Type="Pointer" Base="AUTHZ_ACCESS_REQUEST" />
+
+        <!-- AUTHZ_ACCESS_REPLY -->
+        <Variable Name="AUTHZ_ACCESS_REPLY" Type="Struct">
+            <Field Type="DWORD" 	        Name="ResultListLength" />
+            <Field Type="PACCESS_MASK" 	    Name="GrantedAccessMask" />
+            <Field Type="PDWORD" 	        Name="SaclEvaluationResults" />
+            <Field Type="PDWORD" 	        Name="Error" />
+        </Variable>
+        <Variable Name="PAUTHZ_ACCESS_REPLY" Type="Pointer" Base="AUTHZ_ACCESS_REPLY" />
+       
         <Variable Name="AUTHZ_CONTEXT_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="AuthzContextInfoUserSid"             Value="1" />
@@ -33,13 +60,6 @@
                 <Set Name="AuthzContextInfoAuthenticationId"    Value="0" />
             </Enum>
         </Variable>
-        <Variable Name="PFN_AUTHZ_DYNAMIC_ACCESS_CHECK"     Type="Alias"    Base="LPVOID" />
-        <Variable Name="PFN_AUTHZ_COMPUTE_DYNAMIC_GROUPS"   Type="Alias"    Base="LPVOID" />
-        <Variable Name="PFN_AUTHZ_FREE_DYNAMIC_GROUPS"      Type="Alias"    Base="LPVOID" />
-
-        <Variable Name="AUTHZ_SECURITY_EVENT_PROVIDER_HANDLE"   Type="Alias"    Base="HANDLE" />
-        <Variable Name="PAUTHZ_SECURITY_EVENT_PROVIDER_HANDLE"  Type="Pointer"  Base="AUTHZ_SECURITY_EVENT_PROVIDER_HANDLE" />
-        <Variable Name="PAUDIT_PARAMS"                          Type="Alias"    Base="LPVOID" />
 
         <!-- Flags -->
         <Variable Name="[AuthzInitRMFlags]" Type="Alias" Base="DWORD">
@@ -275,7 +295,7 @@
         <Api Name="AuthzModifySecurityAttributes">
             <Param Type="AUTHZ_CLIENT_CONTEXT_HANDLE" Name="AuthzClientContext" />
             <Param Type="PAUTHZ_SECURITY_ATTRIBUTE_OPERATION" Name="pOperations" />
-            <Param Type="PAUTHZ_SECURITY_ATTRUBUTES_INFORMATION" Name="pAttributes" />
+            <Param Type="PAUTHZ_SECURITY_ATTRIBUTES_INFORMATION" Name="pAttributes" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>

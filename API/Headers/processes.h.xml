@@ -6,11 +6,94 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Headers>
-        <Variable Name="PENUM_PAGE_CALLBACK"                 Type="Alias" Base="LPVOID" />
-        <Variable Name="LPMODULEINFO"                        Type="Alias" Base="LPVOID" />
-        <Variable Name="PPERFORMANCE_INFORMATION"            Type="Alias" Base="LPVOID" />
-        <Variable Name="PPROCESS_MEMORY_COUNTERS"            Type="Alias" Base="LPVOID" />
-        <Variable Name="PPSAPI_WS_WATCH_INFORMATION"         Type="Alias" Base="LPVOID" />
-        <Variable Name="PPSAPI_WS_WATCH_INFORMATION_EX"      Type="Alias" Base="LPVOID" />
+        <!-- Variables -->
+        <Variable Name="PENUM_PAGE_CALLBACK" Type="Alias" Base="LPVOID" />
+
+        <!-- MODULEINFO -->
+        <Variable Name="MODULEINFO" Type="Struct">
+            <Field Type="LPVOID" 	Name="lpBaseOfDll" />
+            <Field Type="DWORD" 	Name="SizeOfImage" />
+            <Field Type="LPVOID" 	Name="EntryPoint" />
+        </Variable>
+        <Variable Name="LPMODULEINFO" Type="Pointer" Base="MODULEINFO" />
+
+        <!-- PERFORMANCE_INFORMATION -->
+        <Variable Name="PERFORMANCE_INFORMATION" Type="Struct">
+            <Field Type="DWORD" 	Name="cb" />
+            <Field Type="SIZE_T" 	Name="CommitTotal" />
+            <Field Type="SIZE_T" 	Name="CommitLimit" />
+            <Field Type="SIZE_T" 	Name="CommitPeak" />
+            <Field Type="SIZE_T" 	Name="PhysicalTotal" />
+            <Field Type="SIZE_T" 	Name="PhysicalAvailable" />
+            <Field Type="SIZE_T" 	Name="SystemCache" />
+            <Field Type="SIZE_T" 	Name="KernelTotal" />
+            <Field Type="SIZE_T" 	Name="KernelPaged" />
+            <Field Type="SIZE_T" 	Name="KernelNonpaged" />
+            <Field Type="SIZE_T" 	Name="PageSize" />
+            <Field Type="DWORD" 	Name="HandleCount" />
+            <Field Type="DWORD" 	Name="ProcessCount" />
+            <Field Type="DWORD" 	Name="ThreadCount" />
+        </Variable>
+        <Variable Name="PPERFORMANCE_INFORMATION" Type="Pointer" Base="PERFORMANCE_INFORMATION" />
+
+        <!-- PROCESS_MEMORY_COUNTERS -->
+        <Variable Name="PROCESS_MEMORY_COUNTERS" Type="Struct">
+            <Field Type="DWORD" 	Name="cb" />
+            <Field Type="DWORD" 	Name="PageFaultCount" />
+            <Field Type="SIZE_T" 	Name="PeakWorkingSetSize" />
+            <Field Type="SIZE_T" 	Name="WorkingSetSize" />
+            <Field Type="SIZE_T" 	Name="QuotaPeakPagedPoolUsage" />
+            <Field Type="SIZE_T" 	Name="QuotaPagedPoolUsage" />
+            <Field Type="SIZE_T" 	Name="QuotaPeakNonPagedPoolUsage" />
+            <Field Type="SIZE_T" 	Name="QuotaNonPagedPoolUsage" />
+            <Field Type="SIZE_T" 	Name="PagefileUsage" />
+            <Field Type="SIZE_T" 	Name="PeakPagefileUsage" />
+        </Variable>
+        <Variable Name="PPROCESS_MEMORY_COUNTERS" Type="Pointer" Base="PROCESS_MEMORY_COUNTERS" />
+
+        <!-- PSAPI_WS_WATCH_INFORMATION -->
+        <Variable Name="PSAPI_WS_WATCH_INFORMATION" Type="Struct">
+            <Field Type="LPVOID"    Name="FaultingPc" />
+            <Field Type="LPVOID" 	Name="FaultingVa" />
+        </Variable>
+        <Variable Name="PPSAPI_WS_WATCH_INFORMATION" Type="Pointer" Base="PSAPI_WS_WATCH_INFORMATION" />
+
+        <!-- PSAPI_WS_WATCH_INFORMATION_EX -->
+        <Variable Name="PSAPI_WS_WATCH_INFORMATION_EX" Type="Struct">
+            <Field Type="PSAPI_WS_WATCH_INFORMATION" 	Name="BasicInfo" />
+            <Field Type="ULONG_PTR" 	                Name="FaultingThreadId" />
+            <Field Type="ULONG_PTR" 	                Name="Flags" />
+        </Variable>
+        <Variable Name="PPSAPI_WS_WATCH_INFORMATION_EX" Type="Pointer" Base="PSAPI_WS_WATCH_INFORMATION_EX" />
+
+        <!-- [CreateProcessFlags] -->
+        <Variable Name="[CreateProcessFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="CREATE_BREAKAWAY_FROM_JOB"           Value="0x01000000" />
+                <Set Name="CREATE_DEFAULT_ERROR_MODE"           Value="0x04000000" />
+                <Set Name="CREATE_NEW_CONSOLE"                  Value="0x00000010" />
+                <Set Name="CREATE_NEW_PROCESS_GROUP"            Value="0x00000200" />
+                <Set Name="CREATE_NO_WINDOW"                    Value="0x08000000" />
+                <Set Name="CREATE_PROTECTED_PROCESS"            Value="0x00040000" />
+                <Set Name="CREATE_PRESERVE_CODE_AUTHZ_LEVEL"    Value="0x02000000" />
+                <Set Name="CREATE_SEPARATE_WOW_VDM"             Value="0x00000800" />
+                <Set Name="CREATE_SHARED_WOW_VDM"               Value="0x00001000" />
+                <Set Name="CREATE_SUSPENDED"                    Value="0x00000004" />
+                <Set Name="CREATE_UNICODE_ENVIRONMENT"          Value="0x00000400" />
+                <Set Name="DEBUG_ONLY_THIS_PROCESS"             Value="0x00000002" />
+                <Set Name="DEBUG_PROCESS"                       Value="0x00000001" />
+                <Set Name="DETACHED_PROCESS"                    Value="0x00000008" />
+                <Set Name="EXTENDED_STARTUPINFO_PRESENT"        Value="0x00080000" />
+                <Set Name="INHERIT_PARENT_AFFINITY"             Value="0x00010000" />
+                <Set Name="ABOVE_NORMAL_PRIORITY_CLASS"         Value="0x00008000" />
+                <Set Name="BELOW_NORMAL_PRIORITY_CLASS"         Value="0x00004000" />
+                <Set Name="HIGH_PRIORITY_CLASS"                 Value="0x00000080" />
+                <Set Name="IDLE_PRIORITY_CLASS"                 Value="0x00000040" />
+                <Set Name="NORMAL_PRIORITY_CLASS"               Value="0x00000020" />
+                <Set Name="REALTIME_PRIORITY_CLASS"             Value="0x00000100" />
+            </Flag>
+        </Variable>
+
     </Headers>
 </ApiMonitor>

@@ -6,19 +6,22 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Headers>
+
+        <!-- TODO: Structures -->
         <Variable Name="PIMAGE_SECTION_HEADER"      Type="Alias"    Base="LPVOID" />
         <Variable Name="PIMAGE_SECTION_HEADER*"     Type="Pointer"  Base="PIMAGE_SECTION_HEADER" />
         <Variable Name="PIMAGE_NT_HEADERS"          Type="Alias"    Base="LPVOID" />
         <Variable Name="PIMAGE_NT_HEADERS*"         Type="Pointer"  Base="PIMAGE_NT_HEADERS" />
 
+        <!-- EVENT_TYPE -->
         <Variable Name="EVENT_TYPE" Type="Alias" Base="UINT">
             <Enum>
-                <Set Name="NotificationEvent"           Value="0" />
-                <Set Name="SynchronizationEvent"        Value="1" />
+                <Set Name="NotificationEvent"       Value="0" />
+                <Set Name="SynchronizationEvent"    Value="1" />
             </Enum>
         </Variable>
 
-        <Variable Name="[FileShareMode(DWORD)]" Type="Alias" Base="DWORD">
+        <Variable Name="[FileShareMode]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
                 <Set Name="FILE_SHARE_READ"     Value="0x00000001" />
@@ -26,12 +29,9 @@
                 <Set Name="FILE_SHARE_DELETE"   Value="0x00000004" />
             </Flag>
         </Variable>
-        <Variable Name="[FileShareMode(ULONG)]" Type="Alias" Base="[FileShareMode(DWORD)]">
-            <Display Name="ULONG" />
-        </Variable>
 
-        <Variable Name="[MemoryFlags(ULONG)]" Type="Alias" Base="ULONG">
-            <Display Name="ULONG" />
+        <Variable Name="[MemoryFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="MEM_COMMIT"          Value="0x1000" />
                 <Set Name="MEM_RESERVE"         Value="0x2000" />
@@ -49,22 +49,16 @@
                 <Set Name="MEM_4MB_PAGES"       Value="0x80000000" />
             </Flag>
         </Variable>
-        <Variable Name="[MemoryFlags(DWORD)]" Type="Alias" Base="[MemoryFlags(ULONG)]">
-            <Display Name="DWORD" />
-        </Variable>
-
-        <Variable Name="[AclRevision(DWORD)]" Type="Alias" Base="DWORD">
+        
+        <Variable Name="[AclRevision]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>
                 <Set Name="ACL_REVISION"        Value="2" />
                 <Set Name="ACL_REVISION_DS"     Value="4" />
             </Enum>
         </Variable>
-        <Variable Name="[AclRevision(ULONG)]" Type="Alias" Base="[AclRevision(DWORD)]">
-            <Display Name="ULONG" />
-        </Variable>
 
-        <Variable Name="[NtVerType/DWORD]" Type="Alias" Base="DWORD">
+        <Variable Name="[NtVerType]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
                 <Set Name="VER_MINORVERSION"        Value="0x0000001" />
@@ -77,10 +71,8 @@
                 <Set Name="VER_PRODUCT_TYPE"        Value="0x0000080" />
             </Flag>
         </Variable>
-        <Variable Name="[NtVerType/ULONG]" Type="Alias" Base="[NtVerType/DWORD]">
-            <Display Name="ULONG" />
-        </Variable>
 
+        <!-- [TokenAccess] -->
         <Variable Name="[TokenAccess]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -107,9 +99,32 @@
             </Flag>
         </Variable>
 
-        <Variable Name="[TokenAccess/ACCESS_MASK]" Type="Alias" Base="[TokenAccess]">
-            <Display Name="ACCESS_MASK" />
+        <!-- [ObjectAttributes] -->
+        <Variable Name="[ObjectAttributes]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="OBJ_INHERIT"             	Value="0x00000002" />
+                <Set Name="OBJ_PERMANENT"           	Value="0x00000010" />
+                <Set Name="OBJ_EXCLUSIVE"           	Value="0x00000020" />
+                <Set Name="OBJ_CASE_INSENSITIVE"    	Value="0x00000040" />
+                <Set Name="OBJ_OPENIF"              	Value="0x00000080" />
+                <Set Name="OBJ_OPENLINK"            	Value="0x00000100" />
+                <Set Name="OBJ_KERNEL_HANDLE"       	Value="0x00000200" />
+                <Set Name="OBJ_FORCE_ACCESS_CHECK"  	Value="0x00000400" />
+                <Set Name="OBJ_VALID_ATTRIBUTES"        Value="0x000007F2" />
+            </Flag>
         </Variable>
+
+        <!-- OBJECT_ATTRIBUTES -->
+        <Variable Name="OBJECT_ATTRIBUTES" Type="Struct">
+            <Field Type="ULONG" 	                    Name="Length" />
+            <Field Type="HANDLE" 	                    Name="RootDirectory" />
+            <Field Type="PUNICODE_STRING" 	            Name="ObjectName" />
+            <Field Type="[ObjectAttributes]"            Name="Attributes" />
+            <Field Type="PSECURITY_DESCRIPTOR"          Name="SecurityDescriptor" />
+            <Field Type="PSECURITY_QUALITY_OF_SERVICE" 	Name="SecurityQualityOfService" />
+        </Variable>
+        <Variable Name="POBJECT_ATTRIBUTES" Type="Pointer" Base="OBJECT_ATTRIBUTES" />
 
     </Headers>
 </ApiMonitor>

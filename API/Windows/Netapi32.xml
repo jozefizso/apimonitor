@@ -7,14 +7,54 @@
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\network.h.xml" />
     <Module Name="Netapi32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        
         <!-- Variables -->
-        <Variable Name="PSOCKET_ADDRESS"                     Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPSOCKET_ADDRESS*"                   Type="Pointer"        Base="PSOCKET_ADDRESS" />
-        <Variable Name="PDS_DOMAIN_TRUSTS"                  Type="Alias"        Base="LPVOID" />
-        <Variable Name="PDS_DOMAIN_TRUSTS*"                  Type="Pointer"        Base="PDS_DOMAIN_TRUSTS" />
-        <Variable Name="PDOMAIN_CONTROLLER_INFO"            Type="Alias"        Base="LPVOID" />
-        <Variable Name="PDOMAIN_CONTROLLER_INFO*"            Type="Pointer"        Base="PDOMAIN_CONTROLLER_INFO" />
+        <Variable Name="PZPWSTR*"   Type="Pointer"  Base="PWSTR" />
+        <Variable Name="LMSTR"      Type="Alias"    Base="LPWSTR" />
 
+        <!-- [DsDomainFlags] -->
+        <Variable Name="[DsDomainFlags]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DS_DOMAIN_IN_FOREST"           	Value="0x0001" />
+                <Set Name="DS_DOMAIN_DIRECT_OUTBOUND"     	Value="0x0002" />
+                <Set Name="DS_DOMAIN_TREE_ROOT"           	Value="0x0004" />
+                <Set Name="DS_DOMAIN_PRIMARY"             	Value="0x0008" />
+                <Set Name="DS_DOMAIN_NATIVE_MODE"         	Value="0x0010" />
+                <Set Name="DS_DOMAIN_DIRECT_INBOUND"        Value="0x0020" />
+            </Flag>
+        </Variable>
+
+        <!-- DS_DOMAIN_TRUSTS -->
+        <Variable Name="DS_DOMAIN_TRUSTS" Type="Struct">
+            <Field Type="LPTSTR" 	        Name="NetbiosDomainName" />
+            <Field Type="LPTSTR" 	        Name="DnsDomainName" />
+            <Field Type="[DsDomainFlags]" 	Name="Flags" />
+            <Field Type="ULONG" 	        Name="ParentIndex" />
+            <Field Type="ULONG" 	        Name="TrustType" />
+            <Field Type="ULONG" 	        Name="TrustAttributes" />
+            <Field Type="PSID" 	            Name="DomainSid" />
+            <Field Type="GUID" 	            Name="DomainGuid" />
+        </Variable>
+        <Variable Name="PDS_DOMAIN_TRUSTS"  Type="Pointer"  Base="DS_DOMAIN_TRUSTS" />
+        <Variable Name="PDS_DOMAIN_TRUSTS*" Type="Pointer"  Base="PDS_DOMAIN_TRUSTS" />
+
+        <!-- DOMAIN_CONTROLLER_INFO -->
+        <Variable Name="DOMAIN_CONTROLLER_INFO" Type="Struct">
+            <Field Type="LPTSTR" 	Name="DomainControllerName" />
+            <Field Type="LPTSTR" 	Name="DomainControllerAddress" />
+            <Field Type="ULONG" 	Name="DomainControllerAddressType" />
+            <Field Type="GUID" 	Name="DomainGuid" />
+            <Field Type="LPTSTR" 	Name="DomainName" />
+            <Field Type="LPTSTR" 	Name="DnsForestName" />
+            <Field Type="ULONG" 	Name="Flags" />
+            <Field Type="LPTSTR" 	Name="DcSiteName" />
+            <Field Type="LPTSTR" 	Name="ClientSiteName" />
+        </Variable>
+        <Variable Name="PDOMAIN_CONTROLLER_INFO"  Type="Pointer" Base="DOMAIN_CONTROLLER_INFO" />
+        <Variable Name="PDOMAIN_CONTROLLER_INFO*" Type="Pointer" Base="PDOMAIN_CONTROLLER_INFO" />
+
+        <!-- NET_API_STATUS -->
         <Variable Name="NET_API_STATUS" Type="Alias" Base="DWORD">
             <Enum>
                 <Set Name="NERR_Success"                             Value="0" />
@@ -331,6 +371,7 @@
                 <Set Name="NERR_PasswordFilterError"                 Value="2705" />
             </Enum>
         </Variable>
+        
         <Variable Name="NET_COMPUTER_NAME_TYPE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="NetPrimaryComputerName"      Value="0" />
@@ -339,6 +380,7 @@
                 <Set Name="NetComputerNameTypeMax"      Value="3" />
             </Enum>
         </Variable>
+        
         <Variable Name="NETSETUP_NAME_TYPE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="NetSetupUnknown"             Value="0" />
@@ -349,6 +391,7 @@
                 <Set Name="NetSetupDnsMachine"          Value="5" />
             </Enum>
         </Variable>
+        
         <Variable Name="NET_VALIDATE_PASSWORD_TYPE" Type="Alias" Base="LPVOID">
             <Enum>
                 <Set Name="NetValidateAuthentication"   Value="1" />
@@ -356,8 +399,6 @@
                 <Set Name="NetValidatePasswordReset"    Value="3" />
             </Enum>
         </Variable>
-        <Variable Name="PZPWSTR*"                            Type="Pointer"        Base="PWSTR" />
-        <Variable Name="LMSTR"                               Type="Alias" Base="LPWSTR" />
 
         <Variable Name="DSROLE_PRIMARY_DOMAIN_INFO_LEVEL" Type="Alias" Base="UINT">
             <Enum>
@@ -366,6 +407,7 @@
                 <Set Name="DsRoleOperationState"            Value="3" />
             </Enum>
         </Variable>
+        
         <Variable Name="[ServerType]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -403,6 +445,7 @@
                 <Set Name="SV_TYPE_ALL"                         Value="0xFFFFFFFF" />
             </Flag>
         </Variable>
+        
         <Variable Name="NETSETUP_JOIN_STATUS" Type="Alias" Base="UINT">
             <Flag>
                 <Set Name="NetSetupUnknownStatus"   Value="0" />
@@ -412,12 +455,14 @@
             </Flag>
         </Variable>
         <Variable Name="PNETSETUP_JOIN_STATUS" Type="Pointer" Base="NETSETUP_JOIN_STATUS" />
+        
         <Variable Name="[NetUserGetLocalGroupsFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
                 <Set Name="LG_INCLUDE_INDIRECT"   Value="0x0001" />
             </Flag>
         </Variable>
+        
         <Variable Name="[DsGetDcNameFlags]" Type="Alias" Base="ULONG">
             <Display Name="ULONG" />
             <Flag>
@@ -442,6 +487,7 @@
                 <Set Name="DS_RETURN_FLAT_NAME"                 Value="0x80000000" />
             </Flag>
         </Variable>
+        
         <!-- Active Directory Domain Services -->
         <Category Name="Administration and Management/Directory, Identity, and Access Services/Directory Services/Directories/Active Directory Domain Services/Directory Service" />
         <Api Name="DsAddressToSiteNames" BothCharset="True">

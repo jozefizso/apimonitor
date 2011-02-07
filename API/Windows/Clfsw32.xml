@@ -6,7 +6,20 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Clfsw32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        
+        <!-- TODO: Structures -->
+        <Variable Name="PCLFS_SCAN_CONTEXT"              Type="Alias"       Base="LPVOID" />
+        <Variable Name="CLFS_ARCHIVE_DESCRIPTOR"         Type="Alias"       Base="LPVOID" />
+
         <!-- Variables -->
+        <Variable Name="PFILE"                           Type="Alias"       Base="LPVOID" />
+        <Variable Name="CLFS_PRINT_RECORD_ROUTINE"       Type="Alias"       Base="LPVOID" />
+        <Variable Name="CLFS_BLOCK_ALLOCATION"           Type="Alias"       Base="LPVOID" />
+        <Variable Name="CLFS_BLOCK_DEALLOCATION"         Type="Alias"       Base="LPVOID" />
+        <Variable Name="CLFS_CONTAINER_ID"               Type="Alias"       Base="ULONG" />
+        <Variable Name="CLFS_LOG_ARCHIVE_CONTEXT"        Type="Alias"       Base="LPVOID" />
+        <Variable Name="PCLFS_LOG_ARCHIVE_CONTEXT"       Type="Pointer"     Base="CLFS_LOG_ARCHIVE_CONTEXT" />
+
         <Variable Name="CLFS_RECORD_TYPE" Type="Alias" Base="UINT8">
             <Enum>
                 <Set Name="ClfsNullRecord"      Value="0x00" />
@@ -15,11 +28,13 @@
             </Enum>
         </Variable>
         <Variable Name="PCLFS_RECORD_TYPE" Type="Pointer" Base="CLFS_RECORD_TYPE" />
+        
         <Variable Name="CLFS_IOSTATS_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="ClfsIoStatsDefault"  Value="0x0000" />
             </Enum>
         </Variable>
+
         <Variable Name="CLFS_CONTEXT_MODE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="ClfsContextNone"         Value="0x00" />
@@ -28,6 +43,7 @@
                 <Set Name="ClfsContextForward"      Value="0x03" />
             </Enum>
         </Variable>
+
         <Variable Name="CLFS_SCAN_MODE" Type="Alias" Base="UINT8">
             <Flag>
                 <Set Name="CLFS_SCAN_INIT"          Value="0x01" />
@@ -38,27 +54,53 @@
                 <Set Name="CLFS_SCAN_BUFFERED"      Value="0x20" />
             </Flag>
         </Variable>
+
         <Variable Name="CLFS_LOG_ARCHIVE_MODE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="ClfsLogArchiveEnabled"   Value="0x01" />
                 <Set Name="ClfsLogArchiveDisabled"  Value="0x02" />
             </Enum>
         </Variable>
-        <Variable Name="CLFS_LSN"                        Type="Struct"      Size="8" />
-        <Variable Name="PCLFS_LSN"                       Type="Pointer"     Base="CLFS_LSN" />
-        <Variable Name="const PCLFS_LSN"                 Type="Alias"       Base="PCLFS_LSN" />
-        <Variable Name="const CLFS_LSN*"                 Type="Alias"       Base="PCLFS_LSN" />
-        <Variable Name="PFILE"                           Type="Alias"       Base="LPVOID" />
-        <Variable Name="CLFS_PRINT_RECORD_ROUTINE"       Type="Alias"       Base="LPVOID" />
-        <Variable Name="CLFS_BLOCK_ALLOCATION"           Type="Alias"       Base="LPVOID" />
-        <Variable Name="CLFS_BLOCK_DEALLOCATION"         Type="Alias"       Base="LPVOID" />
-        <Variable Name="PCLFS_WRITE_ENTRY"               Type="Alias"       Base="LPVOID" />
-        <Variable Name="PCLFS_INFORMATION"               Type="Alias"       Base="LPVOID" />
-        <Variable Name="PCLFS_SCAN_CONTEXT"              Type="Alias"       Base="LPVOID" />
-        <Variable Name="CLFS_CONTAINER_ID"               Type="Alias"       Base="ULONG" />
-        <Variable Name="CLFS_LOG_ARCHIVE_CONTEXT"        Type="Alias"       Base="LPVOID" />
-        <Variable Name="PCLFS_LOG_ARCHIVE_CONTEXT"       Type="Pointer"     Base="CLFS_LOG_ARCHIVE_CONTEXT" />
-        <Variable Name="CLFS_ARCHIVE_DESCRIPTOR"         Type="Alias"       Base="LPVOID" />
+
+        <!-- CLS_LSN -->
+        <Variable Name="CLS_LSN" Type="Struct">
+            <Field Type="ULONGLONG" Name="Internal" />
+        </Variable>
+        <Variable Name="CLFS_LSN"           Type="Alias"    Base="CLS_LSN" />
+        <Variable Name="PCLFS_LSN"          Type="Pointer"  Base="CLFS_LSN" />
+        <Variable Name="const PCLFS_LSN"    Type="Alias"    Base="PCLFS_LSN" />
+        <Variable Name="const CLFS_LSN*"    Type="Alias"    Base="PCLFS_LSN" />
+
+        <!-- CLS_WRITE_ENTRY -->
+        <Variable Name="CLS_WRITE_ENTRY" Type="Struct">
+            <Field Type="PVOID"     Name="Buffer" />
+            <Field Type="ULONG"     Name="ByteLength" />
+        </Variable>
+        <Variable Name="CLFS_WRITE_ENTRY"   Type="Alias"     Base="CLS_WRITE_ENTRY" />
+        <Variable Name="PCLFS_WRITE_ENTRY"  Type="Pointer"   Base="CLFS_WRITE_ENTRY" />
+
+        <!-- CLS_INFORMATION -->
+        <Variable Name="CLS_INFORMATION" Type="Struct">
+            <Field Type="LONGLONG" 	Name="TotalAvailable" />
+            <Field Type="LONGLONG" 	Name="CurrentAvailable" />
+            <Field Type="LONGLONG" 	Name="TotalReservation" />
+            <Field Type="ULONGLONG" Name="BaseFileSize" />
+            <Field Type="ULONGLONG" Name="ContainerSize" />
+            <Field Type="ULONG" 	Name="TotalContainers" />
+            <Field Type="ULONG" 	Name="FreeContainers" />
+            <Field Type="ULONG" 	Name="TotalClients" />
+            <Field Type="ULONG" 	Name="Attributes" />
+            <Field Type="ULONG" 	Name="FlushThreshold" />
+            <Field Type="ULONG" 	Name="SectorSize" />
+            <Field Type="CLS_LSN" 	Name="MinArchiveTailLsn" />
+            <Field Type="CLS_LSN" 	Name="BaseLsn" />
+            <Field Type="CLS_LSN" 	Name="LastFlushedLsn" />
+            <Field Type="CLS_LSN" 	Name="LastLsn" />
+            <Field Type="CLS_LSN" 	Name="RestartLsn" />
+            <Field Type="GUID"      Name="Identity" />
+        </Variable>
+        <Variable Name="CLFS_INFORMATION"   Type="Alias"    Base="CLS_INFORMATION" />
+        <Variable Name="PCLFS_INFORMATION"  Type="Pointer"  Base="CLFS_INFORMATION" />
 
         <!-- Common Log File System -->
         <Category Name="System Services/File Services/Storage Management/Common Log File System (CLFS)" />

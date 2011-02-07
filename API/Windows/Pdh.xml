@@ -7,6 +7,53 @@
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Pdh.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
         <!-- Variables -->
+        <Variable Name="PDH_HQUERY"                     Type="Alias"    Base="HANDLE" />
+        <Variable Name="PDH_HQUERY*"                    Type="Pointer"  Base="PDH_HQUERY" />
+        <Variable Name="PDH_HCOUNTER"                   Type="Alias"    Base="HANDLE" />
+        <Variable Name="PDH_HCOUNTER*"                  Type="Pointer"  Base="PDH_HCOUNTER" />
+        <Variable Name="PDH_HLOG"                       Type="Alias"    Base="HANDLE" />
+        <Variable Name="PDH_HLOG*"                      Type="Pointer"  Base="PDH_HLOG" />
+        <Variable Name="volatile DWORD"                 Type="Alias"    Base="DWORD" />
+        
+        <!-- TODO: Structures -->
+        <Variable Name="PPDH_BROWSE_DLG_CONFIG"          Type="Alias"       Base="LPVOID" />
+        <Variable Name="PPDH_FMT_COUNTERVALUE"           Type="Alias"       Base="LPVOID" />
+        <Variable Name="PPDH_STATISTICS"                 Type="Alias"       Base="LPVOID" />
+        <Variable Name="PPDH_COUNTER_INFO"               Type="Alias"       Base="LPVOID" />
+        <Variable Name="PPDH_FMT_COUNTERVALUE_ITEM"      Type="Alias"       Base="LPVOID" />
+        <Variable Name="PPDH_RAW_COUNTER_ITEM"           Type="Alias"       Base="LPVOID" />
+        <Variable Name="PPDH_RAW_LOG_RECORD"             Type="Alias"        Base="LPVOID" />
+
+        <!-- PDH_RAW_COUNTER -->
+        <Variable Name="PDH_RAW_COUNTER" Type="Struct">
+            <Field Type="volatile DWORD" 	Name="CStatus" />
+            <Field Type="FILETIME"    	    Name="TimeStamp" />
+            <Field Type="LONGLONG"    	    Name="FirstValue" />
+            <Field Type="LONGLONG"    	    Name="SecondValue" />
+            <Field Type="DWORD"       	    Name="MultiCount" />
+        </Variable>
+        <Variable Name="PPDH_RAW_COUNTER" Type="Pointer" Base="PDH_RAW_COUNTER" />
+
+        <!-- PDH_TIME_INFO -->
+        <Variable Name="PDH_TIME_INFO" Type="Struct">
+            <Field Type="LONGLONG"    	Name="StartTime" />
+            <Field Type="LONGLONG"    	Name="EndTime" />
+            <Field Type="DWORD"       	Name="SampleCount" />
+        </Variable>
+        <Variable Name="PPDH_TIME_INFO" Type="Pointer" Base="PDH_TIME_INFO" />
+
+        <!-- PDH_COUNTER_PATH_ELEMENTS -->
+        <Variable Name="PDH_COUNTER_PATH_ELEMENTS" Type="Struct">
+            <Field Type="LPTSTR"   	Name="szMachineName" />
+            <Field Type="LPTSTR"   	Name="szObjectName" />
+            <Field Type="LPTSTR"   	Name="szInstanceName" />
+            <Field Type="LPTSTR"   	Name="szParentInstance" />
+            <Field Type="DWORD"   	Name="dwInstanceIndex" />
+            <Field Type="LPTSTR"   	Name="szCounterName" />
+        </Variable>
+        <Variable Name="PDH_COUNTER_PATH_ELEMENTS*" Type="Pointer" Base="PDH_COUNTER_PATH_ELEMENTS" />
+        
+        <!-- PDH_STATUS -->
         <Variable Name="PDH_STATUS" Type="Alias" Base="LONG">
             <Enum>
                 <Set Name="PDH_CSTATUS_VALID_DATA"                          Value="0x00000000" />
@@ -97,6 +144,7 @@
                 <Set Name="PDH_QUERY_PERF_DATA_TIMEOUT"                     Value="0xC0000BFE" />
             </Enum>
         </Variable>
+        
         <Variable Name="[PdhFormatFlags]" Type="Alias" Base="DWORD">
                 <Display Name="DWORD" />
             <Flag>
@@ -112,6 +160,7 @@
                 <Set Name="PDH_FMT_NOCAP100"    Value="0x00008000" />
             </Flag>
         </Variable>
+        
         <Variable Name="[PerfDetailLevel]" Type="Alias" Base="DWORD">
                 <Display Name="DWORD" />
             <Enum>
@@ -121,6 +170,7 @@
                 <Set Name="PERF_DETAIL_WIZARD"      Value="400" />
             </Enum>
         </Variable>
+        
         <Variable Name="[PdhExpandFlags]" Type="Alias" Base="DWORD">
                 <Display Name="DWORD" />
             <Flag>
@@ -128,6 +178,7 @@
                 <Set Name="PDH_NOEXPANDINSTANCES"   Value="2" />
             </Flag>
         </Variable>
+        
         <Variable Name="[PdhPathFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -135,6 +186,7 @@
                 <Set Name="PDH_PATH_WBEM_INPUT"     Value="0x00000002" />
             </Flag>
         </Variable>
+        
         <Variable Name="[PdhOpenLogFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -148,6 +200,7 @@
                 <Set Name="PDH_LOG_CREATE_MASK"         Value="0x0000000F" />
             </Flag>
         </Variable>
+        
         <Variable Name="[PdhLogType]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>
@@ -161,26 +214,11 @@
                 <Set Name="PDH_LOG_TYPE_BINARY"             Value="8" />
             </Enum>
         </Variable>
+        
         <Variable Name="[PdhLogType*]" Type="Pointer" Base="[PdhLogType]">
             <Display Name="LPDWORD" />
         </Variable>
             
-        <Variable Name="PDH_HQUERY"                      Type="Alias"       Base="HANDLE" />
-        <Variable Name="PDH_HQUERY*"                     Type="Pointer"     Base="PDH_HQUERY" />
-        <Variable Name="PDH_HCOUNTER"                    Type="Alias"       Base="HANDLE" />
-        <Variable Name="PDH_HCOUNTER*"                   Type="Pointer"     Base="PDH_HCOUNTER" />
-        <Variable Name="PDH_HLOG"                        Type="Alias"       Base="HANDLE" />
-        <Variable Name="PDH_HLOG*"                       Type="Pointer"     Base="PDH_HLOG" />
-        <Variable Name="PPDH_BROWSE_DLG_CONFIG"          Type="Alias"       Base="LPVOID" />
-        <Variable Name="PPDH_RAW_COUNTER"                Type="Alias"       Base="LPVOID" />
-        <Variable Name="PPDH_FMT_COUNTERVALUE"           Type="Alias"       Base="LPVOID" />
-        <Variable Name="PPDH_STATISTICS"                 Type="Alias"       Base="LPVOID" />
-        <Variable Name="PPDH_COUNTER_INFO"               Type="Alias"       Base="LPVOID" />
-        <Variable Name="PPDH_TIME_INFO"                  Type="Alias"       Base="LPVOID" />
-        <Variable Name="PPDH_FMT_COUNTERVALUE_ITEM"      Type="Alias"       Base="LPVOID" />
-        <Variable Name="PPDH_RAW_COUNTER_ITEM"           Type="Alias"       Base="LPVOID" />
-        <Variable Name="PDH_COUNTER_PATH_ELEMENTS*"      Type="Alias"       Base="LPVOID" />
-        <Variable Name="PPDH_RAW_LOG_RECORD"             Type="Alias"        Base="LPVOID" />
         <!-- Performance Counters -->
         <Category Name="Diagnostics/Performance Monitoring/Performance Counters" />
         <Api Name="PdhAddCounter" BothCharset="True">
@@ -395,7 +433,7 @@
         <Api Name="PdhGetDataSourceTimeRangeH">
             <Param Type="PDH_HLOG" Name="hDataSource" />
             <Param Type="LPDWORD" Name="pdwNumEntries" />
-            <Param Type="PPDH_TIME_INFO" Name="pInfo" PostLength="pdwBufferSize" />
+            <Param Type="PPDH_TIME_INFO" Name="pInfo" Disabled_PostLength="pdwBufferSize" />
             <Param Type="LPDWORD" Name="pdwBufferSize" />
             <Return Type="PDH_STATUS" />
             <Success Return="Equal" Value="0" />
@@ -532,7 +570,7 @@
         </Api>
         <Api Name="PdhParseCounterPath" BothCharset="True">
             <Param Type="LPCTSTR" Name="szFullPathBuffer" />
-            <Param Type="PDH_COUNTER_PATH_ELEMENTS*" Name="pCounterPathElements" PostLength="pdwBufferSize" />
+            <Param Type="PDH_COUNTER_PATH_ELEMENTS*" Name="pCounterPathElements" Disabled_PostLength="pdwBufferSize" />
             <Param Type="LPDWORD" Name="pdwBufferSize" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="PDH_STATUS" />

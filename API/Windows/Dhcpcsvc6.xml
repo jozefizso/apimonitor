@@ -6,11 +6,60 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Dhcpcsvc6.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        <!-- Parameters -->
-        <Variable Name="LPDHCPV6CAPI_CLASSID"                Type="Alias" Base="LPVOID" />
-        <Variable Name="DHCPV6CAPI_PARAMS_ARRAY"             Type="Alias" Base="LPVOID" />
-        <Variable Name="LPDHCPV6CAPIPrefixLeaseInformation"  Type="Alias" Base="LPVOID" />
-        <Variable Name="LPDHCPV6PrefixLeaseInformation"      Type="Alias" Base="LPVOID" />
+        <!-- Variables -->
+        <Variable Name="time_t" Type="Alias" Base="INT64" />
+
+        <!-- TODO: Structures -->
+        <Variable Name="LPDHCPV6Prefix" Type="Alias" Base="LPVOID" />
+
+        <!-- DHCPV6CAPI_CLASSID -->
+        <Variable Name="DHCPV6CAPI_CLASSID" Type="Struct">
+            <Field Type="ULONG"     Name="Flags" />
+            <Field Type="LPBYTE"    Name="Data" />
+            <Field Type="ULONG"     Name="nBytesData" />
+        </Variable>
+        <Variable Name="LPDHCPV6CAPI_CLASSID" Type="Pointer" Base="DHCPV6CAPI_CLASSID" />
+
+        <!-- DHCPV6CAPI_PARAMS -->
+        <Variable Name="DHCPV6CAPI_PARAMS" Type="Struct">
+            <Field Type="ULONG"     Name="Flags" />
+            <Field Type="ULONG"     Name="OptionId" />
+            <Field Type="BOOL"      Name="IsVendor" />
+            <Field Type="LPBYTE"    Name="Data" />
+            <Field Type="DWORD"     Name="nBytesData" />
+        </Variable>
+        <Variable Name="LPDHCPV6CAPI_PARAMS" Type="Pointer" Base="DHCPV6CAPI_PARAMS" />
+
+        <!-- DHCPV6CAPI_PARAMS_ARRAY -->
+        <Variable Name="DHCPV6CAPI_PARAMS_ARRAY" Type="Struct">
+            <Field Type="ULONG"                 Name="nParams" />
+            <Field Type="LPDHCPV6CAPI_PARAMS"   Name="Params" />
+        </Variable>
+
+        <!-- StatusCode -->
+        <Variable Name="StatusCode" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="STATUS_NO_ERROR"                 Value="0" />
+                <Set Name="STATUS_UNSPECIFIED_FAILURE"      Value="1" />
+                <Set Name="STATUS_NO_BINDING"               Value="3" />
+                <Set Name="STATUS_NOPREFIX_AVAIL"           Value="6" />
+            </Enum>
+        </Variable>
+
+        <!-- DHCPV6PrefixLeaseInformation -->
+        <Variable Name="DHCPV6PrefixLeaseInformation" Type="Struct">
+            <Field Type="DWORD" 	        Name="nPrefixes" />
+            <Field Type="LPDHCPV6Prefix"    Name="prefixArray" />
+            <Field Type="DWORD" 	        Name="iaid" />
+            <Field Type="time_t" 	        Name="T1" />
+            <Field Type="time_t" 	        Name="T2" />
+            <Field Type="time_t" 	        Name="MaxLeaseExpirationTime" />
+            <Field Type="time_t" 	        Name="LastRenewalTime" />
+            <Field Type="StatusCode" 	    Name="status" />
+            <Field Type="LPBYTE" 	        Name="ServerId" />
+            <Field Type="DWORD"  	        Name="ServerIdLen" />
+        </Variable>
+        <Variable Name="LPDHCPV6PrefixLeaseInformation" Type="Pointer" Base="DHCPV6PrefixLeaseInformation" />
 
         <!-- Dynamic Host Configuration Protocol (DHCP) -->
         <Category Name="Networking/Network Protocols/Dynamic Host Configuration Protocol (DHCP)/DHCP Client API" />
@@ -36,7 +85,7 @@
         <Api Name="Dhcpv6ReleasePrefix">
             <Param Type="LPWSTR" Name="adapterName" />
             <Param Type="LPDHCPV6CAPI_CLASSID" Name="classId" />
-            <Param Type="LPDHCPV6CAPIPrefixLeaseInformation" Name="prefixleaseInfo" />
+            <Param Type="LPDHCPV6PrefixLeaseInformation" Name="prefixleaseInfo" />
             <Return Type="DWORD" />
             <Success Return="NotEqual" Value="0" />
         </Api>

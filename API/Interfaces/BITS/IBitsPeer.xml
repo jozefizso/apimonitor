@@ -6,6 +6,7 @@
 <ApiMonitor>
     <Include Filename="Interfaces\IUnknown.xml" />
     <Interface Name="IBitsPeer" Id="{659cdea2-489e-11d9-a9cd-000d56965251}" BaseInterface="IUnknown" OnlineHelp="MSDN" ErrorFunc="HRESULT" Category="Networking/Network Communication/Background Intelligent Transfer Service (BITS)">
+
         <!-- Interfaces -->
         <Variable Name="AsyncIBackgroundCopyCallback"	Type="Interface" />
         <Variable Name="IBackgroundCopyCallback"		Type="Interface" />
@@ -30,6 +31,96 @@
         <Variable Name="IEnumBitsPeers"					Type="Interface" />
 
         <!-- Variables -->
+
+        <!-- BG_FILE_PROGRESS -->
+        <Variable Name="BG_FILE_PROGRESS" Type="Struct">
+            <Field Type="UINT64" 	Name="BytesTotal" />
+            <Field Type="UINT64" 	Name="BytesTransferred" />
+            <Field Type="BOOL" 	    Name="Completed" />
+        </Variable>
+        <Variable Name="BG_FILE_PROGRESS*" Type="Pointer" Base="BG_FILE_PROGRESS" />
+
+        <!-- BG_FILE_INFO -->
+        <Variable Name="BG_FILE_INFO" Type="Struct">
+            <Field Type="LPWSTR" 	Name="RemoteName" />
+            <Field Type="LPWSTR" 	Name="LocalName" />
+        </Variable>
+        <Variable Name="BG_FILE_INFO*" Type="Pointer" Base="BG_FILE_INFO" />
+
+        <!-- BG_FILE_RANGE -->
+        <Variable Name="BG_FILE_RANGE" Type="Struct">
+            <Field Type="UINT64" 	Name="InitialOffset" />
+            <Field Type="UINT64" 	Name="Length" />
+        </Variable>
+        <Variable Name="BG_FILE_RANGE*"     Type="Pointer" Base="BG_FILE_RANGE" />
+        <Variable Name="BG_FILE_RANGE**"    Type="Pointer"  Base="BG_FILE_RANGE*" />
+        <Variable Name="BG_FILE_RANGE[]"    Type="Pointer" Base="BG_FILE_RANGE" />
+
+        <!-- BG_JOB_PROGRESS -->
+        <Variable Name="BG_JOB_PROGRESS" Type="Struct">
+            <Field Type="UINT64" 	Name="BytesTotal" />
+            <Field Type="UINT64" 	Name="BytesTransferred" />
+            <Field Type="ULONG" 	Name="FilesTotal" />
+            <Field Type="ULONG" 	Name="FilesTransferred" />
+        </Variable>
+        <Variable Name="BG_JOB_PROGRESS*" Type="Pointer" Base="BG_JOB_PROGRESS" />
+
+        <!-- BG_JOB_TIMES -->
+        <Variable Name="BG_JOB_TIMES" Type="Struct">
+            <Field Type="FILETIME" 	Name="CreationTime" />
+            <Field Type="FILETIME" 	Name="ModificationTime" />
+            <Field Type="FILETIME" 	Name="TransferCompletionTime" />
+        </Variable>
+        <Variable Name="BG_JOB_TIMES*" Type="Pointer" Base="BG_JOB_TIMES" />
+
+        <!-- BG_JOB_REPLY_PROGRESS -->
+        <Variable Name="BG_JOB_REPLY_PROGRESS" Type="Struct">
+            <Field Type="UINT64" 	Name="BytesTotal" />
+            <Field Type="UINT64" 	Name="BytesTransferred" />
+        </Variable>
+        <Variable Name="BG_JOB_REPLY_PROGRESS*" Type="Pointer" Base="BG_JOB_REPLY_PROGRESS" />
+
+        <!-- BG_AUTH_TARGET -->
+        <Variable Name="BG_AUTH_TARGET" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="BG_AUTH_TARGET_SERVER"   Value="1" />
+                <Set Name="BG_AUTH_TARGET_PROXY"    Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- BG_AUTH_SCHEME -->
+        <Variable Name="BG_AUTH_SCHEME" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="BG_AUTH_SCHEME_BASIC"        Value="1" />
+                <Set Name="BG_AUTH_SCHEME_DIGEST"       Value="2" />
+                <Set Name="BG_AUTH_SCHEME_NTLM"         Value="3" />
+                <Set Name="BG_AUTH_SCHEME_NEGOTIATE"    Value="4" />
+                <Set Name="BG_AUTH_SCHEME_PASSPORT"     Value="5" />
+            </Enum>
+        </Variable>
+
+        <!-- BG_BASIC_CREDENTIALS -->
+        <Variable Name="BG_BASIC_CREDENTIALS" Type="Struct">
+            <Field Type="LPWSTR" 	Name="UserName" />
+            <Field Type="LPWSTR" 	Name="Password" />
+        </Variable>
+
+        <!-- BG_AUTH_CREDENTIALS_UNION -->
+        <!-- TODO: This is really a union, but since we have only one element we are defining it as
+        a structure -->
+        <Variable Name="BG_AUTH_CREDENTIALS_UNION" Type="Struct">
+            <Field Type="BG_BASIC_CREDENTIALS" 	Name="Basic" />
+        </Variable>
+
+        <!-- BG_AUTH_CREDENTIALS -->
+        <Variable Name="BG_AUTH_CREDENTIALS" Type="Struct">
+            <Field Type="BG_AUTH_TARGET" 	            Name="Target" />
+            <Field Type="BG_AUTH_SCHEME" 	            Name="Scheme" />
+            <Field Type="BG_AUTH_CREDENTIALS_UNION" 	Name="Credentials" />
+        </Variable>
+        <Variable Name="BG_AUTH_CREDENTIALS*" Type="Pointer" Base="BG_AUTH_CREDENTIALS" />
+
+        <!-- BG_ERROR_CONTEXT -->
         <Variable Name="BG_ERROR_CONTEXT" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="BG_ERROR_CONTEXT_NONE"                           Value="0" />
@@ -43,7 +134,8 @@
             </Enum>
         </Variable>
         <Variable Name="BG_ERROR_CONTEXT*" Type="Pointer" Base="BG_ERROR_CONTEXT" />
-        
+
+        <!-- BG_CERT_STORE_LOCATION -->
         <Variable Name="BG_CERT_STORE_LOCATION" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="BG_CERT_STORE_LOCATION_CURRENT_USER"                 Value="0" />
@@ -58,6 +150,7 @@
         </Variable>
         <Variable Name="BG_CERT_STORE_LOCATION*" Type="Pointer" Base="BG_CERT_STORE_LOCATION" />
 
+        <!-- BG_JOB_TYPE -->
         <Variable Name="BG_JOB_TYPE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="BG_JOB_TYPE_DOWNLOAD"            Value="0" />
@@ -67,6 +160,7 @@
         </Variable>
         <Variable Name="BG_JOB_TYPE*" Type="Pointer" Base="BG_JOB_TYPE" />
 
+        <!-- BG_JOB_STATE -->
         <Variable Name="BG_JOB_STATE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="BG_JOB_STATE_QUEUED"             Value="0" />
@@ -82,6 +176,7 @@
         </Variable>
         <Variable Name="BG_JOB_STATE*" Type="Pointer" Base="BG_JOB_STATE" />
 
+        <!-- BG_JOB_PRIORITY -->
         <Variable Name="BG_JOB_PRIORITY" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="BG_JOB_PRIORITY_FOREGROUND"      Value="0" />
@@ -92,6 +187,7 @@
         </Variable>
         <Variable Name="BG_JOB_PRIORITY*" Type="Pointer" Base="BG_JOB_PRIORITY" />
 
+        <!-- BG_JOB_PROXY_USAGE -->
         <Variable Name="BG_JOB_PROXY_USAGE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="BG_JOB_PROXY_USAGE_PRECONFIG"    Value="0" />
@@ -101,40 +197,6 @@
             </Enum>
         </Variable>
         <Variable Name="BG_JOB_PROXY_USAGE*" Type="Pointer" Base="BG_JOB_PROXY_USAGE" />
-
-        <Variable Name="BG_AUTH_TARGET" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="BG_AUTH_TARGET_SERVER"           Value="1" />
-                <Set Name="BG_AUTH_TARGET_PROXY"            Value="2" />
-            </Enum>
-        </Variable>
-
-        <Variable Name="BG_AUTH_SCHEME" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="BG_AUTH_SCHEME_BASIC"            Value="1" />
-                <Set Name="BG_AUTH_SCHEME_DIGEST"           Value="2" />
-                <Set Name="BG_AUTH_SCHEME_NTLM"             Value="3" />
-                <Set Name="BG_AUTH_SCHEME_NEGOTIATE"        Value="4" />
-                <Set Name="BG_AUTH_SCHEME_PASSPORT"         Value="5" />
-            </Enum>
-        </Variable>
-
-        <Variable Name="BG_FILE_PROGRESS*"      Type="Alias"    Base="LPVOID" />
-        <Variable Name="BG_FILE_INFO*"          Type="Alias"    Base="LPVOID" />
-        <Variable Name="BG_FILE_RANGE[]"        Type="Alias"    Base="LPVOID" />
-        <Variable Name="BG_FILE_RANGE*"         Type="Alias"    Base="LPVOID" />
-        <Variable Name="BG_FILE_RANGE**"        Type="Pointer"  Base="BG_FILE_RANGE*" />
-        <Variable Name="BG_JOB_PROGRESS*"       Type="Alias"    Base="LPVOID" />
-        <Variable Name="BG_JOB_TIMES*"          Type="Alias"    Base="LPVOID" />
-        <Variable Name="BG_JOB_REPLY_PROGRESS*" Type="Alias"    Base="LPVOID" />
-        <Variable Name="BG_AUTH_CREDENTIALS*"   Type="Alias"    Base="LPVOID" />
-        
-
-
-
-
-
-
 
         <!-- Methods -->
         <Api Name="GetPeerName">
