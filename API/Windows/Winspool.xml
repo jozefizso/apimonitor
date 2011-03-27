@@ -14,11 +14,76 @@
         <Variable Name="PCORE_PRINTER_DRIVER"               Type="Alias"    Base="LPVOID" />
         <Variable Name="PrintAsyncNotificationType*"        Type="Alias"    Base="GUID*" />
 
-        <!-- TODO: Structures -->
-       
-        <Variable Name="PPRINTER_NOTIFY_INFO"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="PPRINTER_OPTIONS"                   Type="Alias"    Base="LPVOID" />
+        <!-- [PrinterNotifyType] -->
+        <Variable Name="[PrinterNotifyType]" Type="Alias" Base="WORD">
+            <Display Name="WORD" />
+            <Flag>
+                <Set Name="PRINTER_NOTIFY_TYPE"     Value="0x00" />
+                <Set Name="JOB_NOTIFY_TYPE"         Value="0x01" />
+                <Set Name="SERVER_NOTIFY_TYPE"      Value="0x02" />
+            </Flag>
+        </Variable>
 
+        <!-- [PRINTER_NOTIFY_INFO_DATA_u_s] -->
+        <Variable Name="[PRINTER_NOTIFY_INFO_DATA_u_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="DWORD"     Name="cbBuf" />
+            <Field Type="LPVOID"    Name="pBuf" Count="cbBuf" />
+        </Variable>
+
+        <!-- [PRINTER_NOTIFY_INFO_DATA_u] -->
+        <Variable Name="[PRINTER_NOTIFY_INFO_DATA_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="DWORD [2]"                         Name="adwData" />
+            <Field Type="[PRINTER_NOTIFY_INFO_DATA_u_s]"    Name="Data" />
+        </Variable>
+
+        <!-- PRINTER_NOTIFY_INFO_DATA -->
+        <Variable Name="PRINTER_NOTIFY_INFO_DATA" Type="Struct">
+            <Field Type="[PrinterNotifyType]"           Name="Type" />
+            <Field Type="WORD"                          Name="Field" />
+            <Field Type="DWORD"                         Name="Reserved" />
+            <Field Type="DWORD"                         Name="Id" />
+            <Field Type="[PRINTER_NOTIFY_INFO_DATA_u]"  Name="NotifyData" />
+        </Variable>
+        <Variable Name="PRINTER_NOTIFY_INFO_DATA [1]" Type="Array" Base="PRINTER_NOTIFY_INFO_DATA" Count="1" />
+
+        <!-- [PRINTER_NOTIFY_INFO_FLAGS] -->
+        <Variable Name="[PRINTER_NOTIFY_INFO_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="PRINTER_NOTIFY_INFO_DISCARDED" Value="0x01" />
+            </Flag>
+        </Variable>
+
+        <!-- PRINTER_NOTIFY_INFO -->
+        <Variable Name="PRINTER_NOTIFY_INFO" Type="Struct">
+            <Field Type="DWORD"                         Name="Version" />
+            <Field Type="[PRINTER_NOTIFY_INFO_FLAGS]"   Name="Flags" />
+            <Field Type="DWORD"                         Name="Count" />
+            <Field Type="PRINTER_NOTIFY_INFO_DATA [1]"  Name="aData" Count="Count" />
+        </Variable>
+        <Variable Name="PPRINTER_NOTIFY_INFO" Type="Pointer" Base="PRINTER_NOTIFY_INFO" />
+
+        <!-- PRINTER_OPTION_FLAGS -->
+        <Variable Name="PRINTER_OPTION_FLAGS" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="PRINTER_OPTION_NO_CACHE"         Value="1" />
+                <Set Name="PRINTER_OPTION_CACHE"            Value="2" />
+                <Set Name="PRINTER_OPTION_CLIENT_CHANGE"    Value="4" />
+                <Set Name="PRINTER_OPTION_NO_CLIENT_DATA"   Value="8" />
+            </Flag>
+        </Variable>
+
+        <!-- PRINTER_OPTIONS -->
+        <Variable Name="PRINTER_OPTIONS" Type="Struct">
+            <Field Type="UINT"                  Name="cbSize" />
+            <Field Type="PRINTER_OPTION_FLAGS"  Name="dwFlags" />
+        </Variable>
+        <Variable Name="PPRINTER_OPTIONS" Type="Pointer" Base="PRINTER_OPTIONS" />
+
+        <!-- [PrinterAccessRights] -->
         <Variable Name="[PrinterAccessRights]" Type="Alias" Base="ACCESS_MASK">
             <Display Name="ACCESS_MASK" />
             <Flag>
@@ -225,16 +290,6 @@
                 <Set Name="kBiDirectional"  Value="0" />
                 <Set Name="kUniDirectional" Value="1" />
             </Enum>
-        </Variable>
-
-        <!-- [PrinterNotifyType] -->
-        <Variable Name="[PrinterNotifyType]" Type="Alias" Base="WORD">
-            <Display Name="WORD" />
-            <Flag>
-                <Set Name="PRINTER_NOTIFY_TYPE"     Value="0x00" />
-                <Set Name="JOB_NOTIFY_TYPE"         Value="0x01" />
-                <Set Name="SERVER_NOTIFY_TYPE"      Value="0x02" />
-            </Flag>
         </Variable>
 
         <!-- PRINTER_NOTIFY_OPTIONS_TYPE -->

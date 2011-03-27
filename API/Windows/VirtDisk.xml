@@ -8,16 +8,207 @@
     <Module Name="VirtDisk.dll" CallingConvention="STDCALL" OnlineHelp="MSDN">
         <!-- Variables -->
         
-        <!-- TODO: Structures -->
-        <Variable Name="PATTACH_VIRTUAL_DISK_PARAMETERS"        Type="Alias"    Base="LPVOID" />
-        <Variable Name="PCOMPACT_VIRTUAL_DISK_PARAMETERS"       Type="Alias"    Base="LPVOID" />
-        <Variable Name="PEXPAND_VIRTUAL_DISK_PARAMETERS"        Type="Alias"    Base="LPVOID" />
+        <!-- TODO: Arrays (Complex)-->
         <Variable Name="PSTORAGE_DEPENDENCY_INFO"               Type="Alias"    Base="LPVOID" />
         <Variable Name="PGET_VIRTUAL_DISK_INFO"                 Type="Alias"    Base="LPVOID" />
-        <Variable Name="PMERGE_VIRTUAL_DISK_PARAMETERS"         Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSET_VIRTUAL_DISK_INFO"                 Type="Alias"    Base="LPVOID" />
-        <Variable Name="PCREATE_VIRTUAL_DISK_PARAMETERS"        Type="Alias"    Base="LPVOID" />
-        <Variable Name="POPEN_VIRTUAL_DISK_PARAMETERS"          Type="Alias"    Base="LPVOID" />
+
+        <!-- MERGE_VIRTUAL_DISK_VERSION -->
+        <Variable Name="MERGE_VIRTUAL_DISK_VERSION" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="MERGE_VIRTUAL_DISK_VERSION_UNSPECIFIED"      Value="0" />
+                <Set Name="MERGE_VIRTUAL_DISK_VERSION_1"                Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- [VirtMergeDepth] -->
+        <Variable Name="[VirtMergeDepth]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="MERGE_VIRTUAL_DISK_DEFAULT_MERGE_DEPTH" Value="1" />
+            </Flag>
+        </Variable>
+
+        <!-- [MERGE_VIRTUAL_DISK_PARAMETERS_u_s] -->
+        <Variable Name="[MERGE_VIRTUAL_DISK_PARAMETERS_u_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="[VirtMergeDepth]" Name="MergeDepth" />
+        </Variable>
+
+        <!-- [MERGE_VIRTUAL_DISK_PARAMETERS_u] -->
+        <Variable Name="[MERGE_VIRTUAL_DISK_PARAMETERS_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="[MERGE_VIRTUAL_DISK_PARAMETERS_u_s]" Name="Version1" />
+        </Variable>
+
+        <!-- MERGE_VIRTUAL_DISK_PARAMETERS -->
+        <Variable Name="MERGE_VIRTUAL_DISK_PARAMETERS" Type="Struct">
+            <Field Type="MERGE_VIRTUAL_DISK_VERSION"            Name="Version" />
+            <Field Type="[MERGE_VIRTUAL_DISK_PARAMETERS_u]"     Name="" />
+        </Variable>
+        <Variable Name="PMERGE_VIRTUAL_DISK_PARAMETERS" Type="Pointer" Base="MERGE_VIRTUAL_DISK_PARAMETERS" />
+
+        <!-- SET_VIRTUAL_DISK_INFO_VERSION -->
+        <Variable Name="SET_VIRTUAL_DISK_INFO_VERSION" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="SET_VIRTUAL_DISK_INFO_UNSPECIFIED"   Value="0" />
+                <Set Name="SET_VIRTUAL_DISK_INFO_PARENT_PATH"   Value="1" />
+                <Set Name="SET_VIRTUAL_DISK_INFO_IDENTIFIER"    Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- [SET_VIRTUAL_DISK_INFO_u] -->
+        <Variable Name="[SET_VIRTUAL_DISK_INFO_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="PCWSTR"    Name="ParentFilePath" />
+            <Field Type="GUID"      Name="UniqueIdentifier" />
+        </Variable>
+
+        <!-- SET_VIRTUAL_DISK_INFO -->
+        <Variable Name="SET_VIRTUAL_DISK_INFO" Type="Struct">
+            <Field Type="SET_VIRTUAL_DISK_INFO_VERSION"     Name="Version" />
+            <Field Type="[SET_VIRTUAL_DISK_INFO_u]"         Name="" />
+        </Variable>
+        <Variable Name="PSET_VIRTUAL_DISK_INFO" Type="Pointer" Base="SET_VIRTUAL_DISK_INFO" />
+
+        <!-- CREATE_VIRTUAL_DISK_VERSION -->
+        <Variable Name="CREATE_VIRTUAL_DISK_VERSION" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="CREATE_VIRTUAL_DISK_VERSION_UNSPECIFIED"     Value="0" />
+                <Set Name="CREATE_VIRTUAL_DISK_VERSION_1"               Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- [CREATE_VIRTUAL_DISK_PARAMETERS_u_s] -->
+        <Variable Name="[CREATE_VIRTUAL_DISK_PARAMETERS_u_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="GUID"              Name="UniqueId" />
+            <Field Type="ULONGLONG"         Name="MaximumSize" />
+            <Field Type="ULONG"             Name="BlockSizeInBytes" />
+            <Field Type="ULONG"             Name="SectorSizeInBytes" />
+            <Field Type="PCWSTR"            Name="ParentPath" />
+            <Field Type="PCWSTR"            Name="SourcePath" />
+        </Variable>
+
+        <!-- [CREATE_VIRTUAL_DISK_PARAMETERS_u] -->
+        <Variable Name="[CREATE_VIRTUAL_DISK_PARAMETERS_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="[CREATE_VIRTUAL_DISK_PARAMETERS_u_s]"   Name="Version1" />
+        </Variable>
+
+        <!-- CREATE_VIRTUAL_DISK_PARAMETERS -->
+        <Variable Name="CREATE_VIRTUAL_DISK_PARAMETERS" Type="Struct">
+            <Field Type="CREATE_VIRTUAL_DISK_VERSION"       Name="Version" />
+            <Field Type="[CREATE_VIRTUAL_DISK_PARAMETERS_u]"   Name="" />
+        </Variable>
+        <Variable Name="PCREATE_VIRTUAL_DISK_PARAMETERS" Type="Pointer" Base="CREATE_VIRTUAL_DISK_PARAMETERS" />
+
+        <!-- OPEN_VIRTUAL_DISK_VERSION -->
+        <Variable Name="OPEN_VIRTUAL_DISK_VERSION" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="OPEN_VIRTUAL_DISK_VERSION_UNSPECIFIED"   Value="0" />
+                <Set Name="OPEN_VIRTUAL_DISK_VERSION_1"             Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- [OPEN_VIRTUAL_DISK_PARAMETERS_u_s] -->
+        <Variable Name="[OPEN_VIRTUAL_DISK_PARAMETERS_u_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="ULONG" Name="RWDepth" />
+        </Variable>
+
+        <!-- [OPEN_VIRTUAL_DISK_PARAMETERS_u] -->
+        <Variable Name="[OPEN_VIRTUAL_DISK_PARAMETERS_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="[OPEN_VIRTUAL_DISK_PARAMETERS_u_s]"  Name="Version1" />
+        </Variable>
+
+        <!-- OPEN_VIRTUAL_DISK_PARAMETERS -->
+        <Variable Name="OPEN_VIRTUAL_DISK_PARAMETERS" Type="Struct">
+            <Field Type="OPEN_VIRTUAL_DISK_VERSION"         Name="Version" />
+            <Field Type="[OPEN_VIRTUAL_DISK_PARAMETERS_u]"  Name="" />
+        </Variable>
+        <Variable Name="POPEN_VIRTUAL_DISK_PARAMETERS" Type="Pointer" Base="OPEN_VIRTUAL_DISK_PARAMETERS" />
+
+        <!-- EXPAND_VIRTUAL_DISK_VERSION -->
+        <Variable Name="EXPAND_VIRTUAL_DISK_VERSION" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="EXPAND_VIRTUAL_DISK_VERSION_UNSPECIFIED"     Value="0" />
+                <Set Name="EXPAND_VIRTUAL_DISK_VERSION_1"               Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- [EXPAND_VIRTUAL_DISK_PARAMETERS_u_s] -->
+        <Variable Name="[EXPAND_VIRTUAL_DISK_PARAMETERS_u_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="ULONGLONG" Name="NewSize" />
+        </Variable>
+
+        <!-- [EXPAND_VIRTUAL_DISK_PARAMETERS_u] -->
+        <Variable Name="[EXPAND_VIRTUAL_DISK_PARAMETERS_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="[EXPAND_VIRTUAL_DISK_PARAMETERS_u_s]" Name="Version1" />
+        </Variable>
+
+        <!-- EXPAND_VIRTUAL_DISK_PARAMETERS -->
+        <Variable Name="EXPAND_VIRTUAL_DISK_PARAMETERS" Type="Struct">
+            <Field Type="EXPAND_VIRTUAL_DISK_VERSION"           Name="Version" />
+            <Field Type="[EXPAND_VIRTUAL_DISK_PARAMETERS_u]"    Name="" />
+        </Variable>
+        <Variable Name="PEXPAND_VIRTUAL_DISK_PARAMETERS" Type="Pointer" Base="EXPAND_VIRTUAL_DISK_PARAMETERS" />
+
+        <!-- COMPACT_VIRTUAL_DISK_VERSION -->
+        <Variable Name="COMPACT_VIRTUAL_DISK_VERSION" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="COMPACT_VIRTUAL_DISK_VERSION_UNSPECIFIED"    Value="0" />
+                <Set Name="COMPACT_VIRTUAL_DISK_VERSION_1"              Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- [COMPACT_VIRTUAL_DISK_PARAMETERS_u_s] -->
+        <Variable Name="[COMPACT_VIRTUAL_DISK_PARAMETERS_u_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="ULONG" Name="Reserved" />
+        </Variable>
+
+        <!-- [COMPACT_VIRTUAL_DISK_PARAMETERS_u] -->
+        <Variable Name="[COMPACT_VIRTUAL_DISK_PARAMETERS_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="[COMPACT_VIRTUAL_DISK_PARAMETERS_u_s]"   Name="Version1" />
+        </Variable>
+
+        <!-- COMPACT_VIRTUAL_DISK_PARAMETERS -->
+        <Variable Name="COMPACT_VIRTUAL_DISK_PARAMETERS" Type="Struct">
+            <Field Type="COMPACT_VIRTUAL_DISK_VERSION"          Name="Version" />
+            <Field Type="[COMPACT_VIRTUAL_DISK_PARAMETERS_u]"   Name="" />
+        </Variable>
+        <Variable Name="PCOMPACT_VIRTUAL_DISK_PARAMETERS" Type="Pointer" Base="COMPACT_VIRTUAL_DISK_PARAMETERS" />
+
+        <!-- ATTACH_VIRTUAL_DISK_VERSION -->
+        <Variable Name="ATTACH_VIRTUAL_DISK_VERSION" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="ATTACH_VIRTUAL_DISK_VERSION_UNSPECIFIED"     Value="0" />
+                <Set Name="ATTACH_VIRTUAL_DISK_VERSION_1"               Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- [ATTACH_VIRTUAL_DISK_PARAMETERS_u_s] -->
+        <Variable Name="[ATTACH_VIRTUAL_DISK_PARAMETERS_u_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="ULONG" Name="Reserved" />
+        </Variable>
+
+        <!-- [ATTACH_VIRTUAL_DISK_PARAMETERS_u] -->
+        <Variable Name="[ATTACH_VIRTUAL_DISK_PARAMETERS_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="[ATTACH_VIRTUAL_DISK_PARAMETERS_u_s]" Name="Version1" />
+        </Variable>
+
+        <!-- ATTACH_VIRTUAL_DISK_PARAMETERS -->
+        <Variable Name="ATTACH_VIRTUAL_DISK_PARAMETERS" Type="Struct">
+            <Field Type="ATTACH_VIRTUAL_DISK_VERSION"           Name="Version" />
+            <Field Type="[ATTACH_VIRTUAL_DISK_PARAMETERS_u]"    Name="" />
+        </Variable>
+        <Variable Name="PATTACH_VIRTUAL_DISK_PARAMETERS" Type="Pointer" Base="ATTACH_VIRTUAL_DISK_PARAMETERS" />
 
         <!-- VIRTUAL_STORAGE_TYPE -->
         <Variable Name="VIRTUAL_STORAGE_TYPE" Type="Struct">
@@ -34,6 +225,7 @@
         </Variable>
         <Variable Name="PVIRTUAL_DISK_PROGRESS" Type="Pointer" Base="VIRTUAL_DISK_PROGRESS" />
 
+        <!-- ATTACH_VIRTUAL_DISK_FLAG -->
         <Variable Name="ATTACH_VIRTUAL_DISK_FLAG" Type="Alias" Base="UINT">
             <Flag>
                 <Set Name="ATTACH_VIRTUAL_DISK_FLAG_NONE"               Value="0x00000000" />
@@ -44,24 +236,28 @@
             </Flag>
         </Variable>
 
+        <!-- COMPACT_VIRTUAL_DISK_FLAG -->
         <Variable Name="COMPACT_VIRTUAL_DISK_FLAG" Type="Alias" Base="UINT">
             <Flag>
                 <Set Name="COMPACT_VIRTUAL_DISK_FLAG_NONE"  Value="0x00000000" />
             </Flag>
         </Variable>
-        
+
+        <!-- DETACH_VIRTUAL_DISK_FLAG -->
         <Variable Name="DETACH_VIRTUAL_DISK_FLAG" Type="Alias" Base="UINT">
             <Flag>
                 <Set Name="DETACH_VIRTUAL_DISK_FLAG_NONE"   Value="0x00000000" />
             </Flag>
         </Variable>
 
+        <!-- EXPAND_VIRTUAL_DISK_FLAG -->
         <Variable Name="EXPAND_VIRTUAL_DISK_FLAG" Type="Alias" Base="UINT">
             <Flag>
                 <Set Name="EXPAND_VIRTUAL_DISK_FLAG_NONE"   Value="0x00000000" />
             </Flag>
         </Variable>
 
+        <!-- GET_STORAGE_DEPENDENCY_FLAG -->
         <Variable Name="GET_STORAGE_DEPENDENCY_FLAG" Type="Alias" Base="UINT">
             <Flag>
                 <Set Name="GET_STORAGE_DEPENDENCY_FLAG_NONE"         	Value="0x00000000" />
@@ -70,12 +266,14 @@
             </Flag>
         </Variable>
 
+        <!-- MERGE_VIRTUAL_DISK_FLAG -->
         <Variable Name="MERGE_VIRTUAL_DISK_FLAG" Type="Alias" Base="UINT">
             <Flag>
                 <Set Name="MERGE_VIRTUAL_DISK_FLAG_NONE"    Value="0x00000000" />
             </Flag>
         </Variable>
 
+        <!-- CREATE_VIRTUAL_DISK_FLAG -->
         <Variable Name="CREATE_VIRTUAL_DISK_FLAG" Type="Alias" Base="UINT">
             <Flag>
                 <Set Name="CREATE_VIRTUAL_DISK_FLAG_NONE"                       Value="0x00000000" />
@@ -83,6 +281,7 @@
             </Flag>
         </Variable>
 
+        <!-- OPEN_VIRTUAL_DISK_FLAG -->
         <Variable Name="OPEN_VIRTUAL_DISK_FLAG" Type="Alias" Base="UINT">
             <Flag>
                 <Set Name="OPEN_VIRTUAL_DISK_FLAG_NONE"             Value="0x00000000" />
@@ -92,6 +291,7 @@
             </Flag>
         </Variable>
 
+        <!-- VIRTUAL_DISK_ACCESS_MASK -->
         <Variable Name="VIRTUAL_DISK_ACCESS_MASK" Type="Alias" Base="UINT">
             <Flag>
                 <Set Name="VIRTUAL_DISK_ACCESS_ATTACH_RO"       Value="0x00010000" />

@@ -6,7 +6,7 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Wsdapi.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
-        
+
         <!-- Variables -->
         <Variable Name="IWSDAddress"                    Type="Interface" />
         <Variable Name="IWSDUdpAddress"                 Type="Interface" />
@@ -19,14 +19,99 @@
         <Variable Name="IWSDOutboundAttachment"         Type="Interface" />
         <Variable Name="IWSDHttpMessageParameters"      Type="Interface" />
         <Variable Name="IWSDUdpMessageParameters"       Type="Interface" />
-        
-        <!-- TODO: Structures -->
-        <Variable Name="WSD_SOAP_FAULT_SUBCODE*"        Type="Alias"    Base="LPVOID" />
-        <Variable Name="WSD_LOCALIZED_STRING_LIST*"     Type="Alias"    Base="LPVOID" />
-        <Variable Name="WSDXML_NAMESPACE*"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="WSDXML_ELEMENT*"                Type="Alias"    Base="LPVOID" />
-        <Variable Name="WSDXML_ELEMENT**"               Type="Pointer"  Base="WSDXML_ELEMENT*" />
 
+        <!-- WSD_LOCALIZED_STRING -->
+        <Variable Name="WSD_LOCALIZED_STRING" Type="Struct">
+            <Field Type="const WCHAR*"  Name="lang" />
+            <Field Type="const WCHAR*"  Name="String" />
+        </Variable>
+        <Variable Name="WSD_LOCALIZED_STRING*" Type="Pointer" Base="WSD_LOCALIZED_STRING" />
+
+        <!-- WSD_LOCALIZED_STRING_LIST -->
+        <Variable Name="WSD_LOCALIZED_STRING_LIST" Type="Struct">
+            <!-- TODO: Self-Referencing - Next is WSD_LOCALIZED_STRING_LIST* -->
+            <Field Type="LPVOID"                    Name="Next" Display="WSD_LOCALIZED_STRING_LIST*" />
+            <Field Type="WSD_LOCALIZED_STRING*"     Name="Element" />
+        </Variable>
+        <Variable Name="WSD_LOCALIZED_STRING_LIST*" Type="Pointer" Base="WSD_LOCALIZED_STRING_LIST" />
+        
+        <!-- WSDXML_NAMESPACE -->
+        <Variable Name="WSDXML_NAMESPACE" Type="Struct">
+            <Field Type="const WCHAR*"      Name="Uri" />
+            <Field Type="const WCHAR*"      Name="PreferredPrefix" />
+            <!-- TODO: Parent-Reference - Names is WSDXML_NAME* -->
+            <Field Type="LPVOID"            Name="Names" Display="WSDXML_NAME*" />
+            <Field Type="WORD"              Name="NamesCount" />
+            <Field Type="WORD"              Name="Encoding" />
+        </Variable>
+        <Variable Name="WSDXML_NAMESPACE*" Type="Pointer" Base="WSDXML_NAMESPACE" />
+
+        <!-- WSDXML_NAME -->
+        <Variable Name="WSDXML_NAME" Type="Struct">
+            <Field Type="WSDXML_NAMESPACE*" 	Name="Space" />
+            <Field Type="WCHAR*" 	            Name="LocalName" />
+        </Variable>
+        <Variable Name="WSDXML_NAME*"  Type="Pointer" Base="WSDXML_NAME" />
+        <Variable Name="WSDXML_NAME**" Type="Pointer" Base="WSDXML_NAME*" />
+
+        <!-- WSD_SOAP_FAULT_SUBCODE -->
+        <Variable Name="WSD_SOAP_FAULT_SUBCODE" Type="Struct">
+            <Field Type="WSDXML_NAME*"      Name="Value" />
+            <!-- TODO: Self-Referencing - Subcode is WSD_SOAP_FAULT_SUBCODE* -->
+            <Field Type="LPVOID"            Name="Subcode" Display="WSD_SOAP_FAULT_SUBCODE*" />
+        </Variable>
+        <Variable Name="WSD_SOAP_FAULT_SUBCODE*" Type="Pointer" Base="WSD_SOAP_FAULT_SUBCODE" />
+
+        <!-- [WSDXML_NODE_TYPE] -->
+        <Variable Name="[WSDXML_NODE_TYPE]" Type="Alias" Base="UINT">
+            <Display Name="enum" />
+            <Enum>
+                <Set Name="ElementType"     Value="0" />
+                <Set Name="TextType"        Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- WSDXML_NODE -->
+        <Variable Name="WSDXML_NODE" Type="Struct">
+            <Field Type="[WSDXML_NODE_TYPE]"    Name="Type" />
+            <!-- TODO: Parent-Reference - Parent is WSDXML_ELEMENT* -->
+            <Field Type="LPVOID"    Name="Parent"   Display="WSDXML_ELEMENT*" />
+            <!-- TODO: Self-Reference - Next is WSDXML_NODE* -->
+            <Field Type="LPVOID"    Name="Next"     Display="WSDXML_NODE*"/>
+        </Variable>
+        <Variable Name="WSDXML_NODE*" Type="Pointer" Base="WSDXML_NODE" />
+
+        <!-- WSDXML_ATTRIBUTE -->
+        <Variable Name="WSDXML_ATTRIBUTE" Type="Struct">
+            <!-- TODO: Parent Reference - Element is WSDXML_ELEMENT* -->
+            <Field Type="LPVOID"                Name="Element" Display="WSDXML_ELEMENT*" />
+            <!-- TODO: Self-Referencing - Next is WSDXML_ATTRIBUTE* -->
+            <Field Type="LPVOID"                Name="Next" Display="WSDXML_ATTRIBUTE*" />
+            <Field Type="WSDXML_NAME*"          Name="Name" />
+            <Field Type="WCHAR*"                Name="Value" />
+        </Variable>
+        <Variable Name="WSDXML_ATTRIBUTE*" Type="Pointer" Base="WSDXML_ATTRIBUTE" />
+
+        <!-- WSDXML_PREFIX_MAPPING -->
+        <Variable Name="WSDXML_PREFIX_MAPPING" Type="Struct">
+            <Field Type="DWORD"                     Name="Refs" />
+            <!-- TODO: Self-Referencing - Next is WSDXML_PREFIX_MAPPING* -->
+            <Field Type="LPVOID"                    Name="Next" Display="WSDXML_PREFIX_MAPPING*" />
+            <Field Type="WSDXML_NAMESPACE*"         Name="Space" />
+            <Field Type="WCHAR*"                    Name="Prefix" />
+        </Variable>
+        <Variable Name="WSDXML_PREFIX_MAPPING*" Type="Pointer" Base="WSDXML_PREFIX_MAPPING" />
+
+        <!-- WSDXML_ELEMENT -->
+        <Variable Name="WSDXML_ELEMENT" Type="Struct">
+            <Field Type="WSDXML_NODE"               Name="Node" />
+            <Field Type="WSDXML_NAME*"              Name="Name" />
+            <Field Type="WSDXML_ATTRIBUTE*"         Name="FirstAttribute" />
+            <Field Type="WSDXML_NODE*"              Name="FirstChild" />
+            <Field Type="WSDXML_PREFIX_MAPPING*"    Name="PrefixMappings" />
+        </Variable>
+        <Variable Name="WSDXML_ELEMENT*"    Type="Pointer" Base="WSDXML_ELEMENT" />
+        <Variable Name="WSDXML_ELEMENT**"   Type="Pointer" Base="WSDXML_ELEMENT*" />
 
         <!-- WSD_CONFIG_PARAM_TYPE -->
         <Variable Name="WSD_CONFIG_PARAM_TYPE" Type="Alias" Base="UINT">
@@ -51,14 +136,6 @@
             <Field Type="DWORD" 	                Name="dwConfigDataSize" />
         </Variable>
         <Variable Name="WSD_CONFIG_PARAM*" Type="Pointer" Base="WSD_CONFIG_PARAM" />
-
-        <!-- WSDXML_NAME -->
-        <Variable Name="WSDXML_NAME" Type="Struct">
-            <Field Type="WSDXML_NAMESPACE*" 	Name="Space" />
-            <Field Type="WCHAR*" 	            Name="LocalName" />
-        </Variable>
-        <Variable Name="WSDXML_NAME*"  Type="Pointer" Base="WSDXML_NAME" />
-        <Variable Name="WSDXML_NAME**" Type="Pointer" Base="WSDXML_NAME*" />
 
         <!-- WSD_SOAP_FAULT_CODE -->
         <Variable Name="WSD_SOAP_FAULT_CODE" Type="Struct">

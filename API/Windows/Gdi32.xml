@@ -9,26 +9,470 @@
     <Module Name="Gdi32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         
         <!-- Variables -->
-        <Variable Name="HGDIOBJ"                            Type="Alias"        Base="HANDLE" />
-        <Variable Name="GOBJENUMPROC"                       Type="Alias"        Base="LPVOID" />
-        <Variable Name="FONTENUMPROC"                       Type="Alias"        Base="LPVOID" />
-        <Variable Name="LINEDDAPROC"                        Type="Alias"        Base="LPVOID" />
-        <Variable Name="ENHMFENUMPROC"                      Type="Alias"        Base="LPVOID" />
-        <Variable Name="MFENUMPROC"                         Type="Alias"        Base="LPVOID" />
-        <Variable Name="ABORTPROC"                          Type="Alias"        Base="LPVOID" />
-        
-        <!-- TODO: Structures-->
-        <Variable Name="const BITMAPINFO*"                  Type="Alias"        Base="LPVOID" />
-        <Variable Name="const LOGPALETTE*"                  Type="Alias"        Base="LPVOID" />
-        <Variable Name="const LOGFONT*"                     Type="Alias"        Base="LPVOID" />
-        <Variable Name="const ENUMLOGFONTEXDV*"             Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPGLYPHSET"                         Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPOUTLINETEXTMETRIC"                Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPHANDLETABLE"                      Type="Alias"        Base="LPVOID" />
-        <Variable Name="const ENHMETARECORD*"               Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPMETARECORD"                       Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPFONTSIGNATURE"                    Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPCHARSETINFO"                      Type="Alias"        Base="LPVOID" />
+        <Variable Name="HGDIOBJ"                    Type="Alias"    Base="HANDLE" />
+        <Variable Name="GOBJENUMPROC"               Type="Alias"    Base="LPVOID" />
+        <Variable Name="FONTENUMPROC"               Type="Alias"    Base="LPVOID" />
+        <Variable Name="LINEDDAPROC"                Type="Alias"    Base="LPVOID" />
+        <Variable Name="ENHMFENUMPROC"              Type="Alias"    Base="LPVOID" />
+        <Variable Name="MFENUMPROC"                 Type="Alias"    Base="LPVOID" />
+        <Variable Name="ABORTPROC"                  Type="Alias"    Base="LPVOID" />
+        <Variable Name="WORD [1]"                   Type="Array"    Base="WORD"         Count="1" />
+        <Variable Name="HGDIOBJ [1]"                Type="Array"    Base="HGDIOBJ"      Count="1" />
+        <Variable Name="LONG [MM_MAX_NUMAXES]"      Type="Array"    Base="LONG"         Count="16" />
+        <Variable Name="TCHAR [LF_FULLFACESIZE]"    Type="Array"    Base="TCHAR"        Count="64" />
+
+        <!-- ENUMLOGFONTEX -->
+        <Variable Name="ENUMLOGFONTEX" Type="Struct">
+            <Field Type="LOGFONT"                   Name="elfLogFont" />
+            <Field Type="TCHAR [LF_FULLFACESIZE]"   Name="elfFullName" />
+            <Field Type="TCHAR [LF_FACESIZE]"       Name="elfStyle" />
+            <Field Type="TCHAR [LF_FACESIZE]"       Name="elfScript" />
+        </Variable>
+
+        <!-- DESIGNVECTOR -->
+        <Variable Name="DESIGNVECTOR" Type="Struct">
+            <Field Type="DWORD"                     Name="dvReserved" />
+            <Field Type="DWORD"                     Name="dvNumAxes" />
+            <Field Type="LONG [MM_MAX_NUMAXES]"     Name="dvValues" />
+        </Variable>
+
+        <!-- ENUMLOGFONTEXDV -->
+        <Variable Name="ENUMLOGFONTEXDV" Type="Struct">
+            <Field Type="ENUMLOGFONTEX"     Name="elfEnumLogfontEx" />
+            <Field Type="DESIGNVECTOR"      Name="elfDesignVector" />
+        </Variable>
+        <Variable Name="const ENUMLOGFONTEXDV*" Type="Pointer" Base="ENUMLOGFONTEXDV" />
+
+        <!-- WCRANGE -->
+        <Variable Name="WCRANGE" Type="Struct">
+            <Field Type="WCHAR"     Name="wcLow" />
+            <Field Type="USHORT"    Name="cGlyphs" />
+        </Variable>
+        <Variable Name="WCRANGE [1]" Type="Array" Base="WCRANGE"  Count="1" />
+
+        <!-- GLYPHSET -->
+        <Variable Name="GLYPHSET" Type="Struct">
+            <Field Type="DWORD"         Name="cbThis" />
+            <Field Type="DWORD"         Name="flAccel" />
+            <Field Type="DWORD"         Name="cGlyphsSupported" />
+            <Field Type="DWORD"         Name="cRanges" />
+            <Field Type="WCRANGE [1]"   Name="ranges" Count="cRanges" />
+        </Variable>
+        <Variable Name="LPGLYPHSET" Type="Pointer" Base="GLYPHSET" />
+
+        <!-- [OTM_SELECTION] -->
+        <Variable Name="[OTM_SELECTION]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Flag>
+                <Set Name="Italic"          Value="0x1" />
+                <Set Name="Underscore"      Value="0x2" />
+                <Set Name="Negative"        Value="0x4" />
+                <Set Name="Outline"         Value="0x8" />
+                <Set Name="Strikeout"       Value="0x10" />
+                <Set Name="Bold"            Value="0x20" />
+            </Flag>
+        </Variable>
+
+        <!-- [PANOSE_FAMILY] -->
+        <Variable Name="[PANOSE_FAMILY]" Type="Alias" Base="BYTE">
+            <Display Name="BYTE" />
+            <Enum>
+                <Set Name="PAN_ANY"                         Value="0" />
+                <Set Name="PAN_NO_FIT"                      Value="1" />
+                <Set Name="PAN_FAMILY_TEXT_DISPLAY"         Value="2" />
+                <Set Name="PAN_FAMILY_SCRIPT"               Value="3" />
+                <Set Name="PAN_FAMILY_DECORATIVE"           Value="4" />
+                <Set Name="PAN_FAMILY_PICTORIAL"            Value="5" />
+            </Enum>
+        </Variable>
+
+        <!-- [PANOSE_SERIF] -->
+        <Variable Name="[PANOSE_SERIF]" Type="Alias" Base="BYTE">
+            <Display Name="BYTE" />
+            <Enum>
+                <Set Name="PAN_ANY"                         Value="0" />
+                <Set Name="PAN_NO_FIT"                      Value="1" />
+                <Set Name="PAN_SERIF_COVE"                  Value="2" />
+                <Set Name="PAN_SERIF_OBTUSE_COVE"           Value="3" />
+                <Set Name="PAN_SERIF_SQUARE_COVE"           Value="4" />
+                <Set Name="PAN_SERIF_OBTUSE_SQUARE_COVE"    Value="5" />
+                <Set Name="PAN_SERIF_SQUARE"                Value="6" />
+                <Set Name="PAN_SERIF_THIN"                  Value="7" />
+                <Set Name="PAN_SERIF_BONE"                  Value="8" />
+                <Set Name="PAN_SERIF_EXAGGERATED"           Value="9" />
+                <Set Name="PAN_SERIF_TRIANGLE"              Value="10" />
+                <Set Name="PAN_SERIF_NORMAL_SANS"           Value="11" />
+                <Set Name="PAN_SERIF_OBTUSE_SANS"           Value="12" />
+                <Set Name="PAN_SERIF_PERP_SANS"             Value="13" />
+                <Set Name="PAN_SERIF_FLARED"                Value="14" />
+                <Set Name="PAN_SERIF_ROUNDED"               Value="15" />
+            </Enum>
+        </Variable>
+
+        <!-- [PANOSE_WEIGHT] -->
+        <Variable Name="[PANOSE_WEIGHT]" Type="Alias" Base="BYTE">
+            <Display Name="BYTE" />
+            <Enum>
+                <Set Name="PAN_ANY"                         Value="0" />
+                <Set Name="PAN_NO_FIT"                      Value="1" />
+                <Set Name="PAN_WEIGHT_VERY_LIGHT"           Value="2" />
+                <Set Name="PAN_WEIGHT_LIGHT"                Value="3" />
+                <Set Name="PAN_WEIGHT_THIN"                 Value="4" />
+                <Set Name="PAN_WEIGHT_BOOK"                 Value="5" />
+                <Set Name="PAN_WEIGHT_MEDIUM"               Value="6" />
+                <Set Name="PAN_WEIGHT_DEMI"                 Value="7" />
+                <Set Name="PAN_WEIGHT_BOLD"                 Value="8" />
+                <Set Name="PAN_WEIGHT_HEAVY"                Value="9" />
+                <Set Name="PAN_WEIGHT_BLACK"                Value="10" />
+                <Set Name="PAN_WEIGHT_NORD"                 Value="11" />
+            </Enum>
+        </Variable>
+
+        <!-- [PANOSE_PROPORTION] -->
+        <Variable Name="[PANOSE_PROPORTION]" Type="Alias" Base="BYTE">
+            <Display Name="BYTE" />
+            <Enum>
+                <Set Name="PAN_ANY"                         Value="0" />
+                <Set Name="PAN_NO_FIT"                      Value="1" />
+                <Set Name="PAN_PROP_OLD_STYLE"              Value="2" />
+                <Set Name="PAN_PROP_MODERN"                 Value="3" />
+                <Set Name="PAN_PROP_EVEN_WIDTH"             Value="4" />
+                <Set Name="PAN_PROP_EXPANDED"               Value="5" />
+                <Set Name="PAN_PROP_CONDENSED"              Value="6" />
+                <Set Name="PAN_PROP_VERY_EXPANDED"          Value="7" />
+                <Set Name="PAN_PROP_VERY_CONDENSED"         Value="8" />
+                <Set Name="PAN_PROP_MONOSPACED"             Value="9" />
+            </Enum>
+        </Variable>
+
+        <!-- [PANOSE_CONTRAST] -->
+        <Variable Name="[PANOSE_CONTRAST]" Type="Alias" Base="BYTE">
+            <Display Name="BYTE" />
+            <Enum>
+                <Set Name="PAN_ANY"                         Value="0" />
+                <Set Name="PAN_NO_FIT"                      Value="1" />
+                <Set Name="PAN_CONTRAST_NONE"               Value="2" />
+                <Set Name="PAN_CONTRAST_VERY_LOW"           Value="3" />
+                <Set Name="PAN_CONTRAST_LOW"                Value="4" />
+                <Set Name="PAN_CONTRAST_MEDIUM_LOW"         Value="5" />
+                <Set Name="PAN_CONTRAST_MEDIUM"             Value="6" />
+                <Set Name="PAN_CONTRAST_MEDIUM_HIGH"        Value="7" />
+                <Set Name="PAN_CONTRAST_HIGH"               Value="8" />
+                <Set Name="PAN_CONTRAST_VERY_HIGH"          Value="9" />
+            </Enum>
+        </Variable>
+
+        <!-- [PANOSE_STROKE] -->
+        <Variable Name="[PANOSE_STROKE]" Type="Alias" Base="BYTE">
+            <Display Name="BYTE" />
+            <Enum>
+                <Set Name="PAN_ANY"                         Value="0" />
+                <Set Name="PAN_NO_FIT"                      Value="1" />
+                <Set Name="PAN_STROKE_GRADUAL_DIAG"         Value="2" />
+                <Set Name="PAN_STROKE_GRADUAL_TRAN"         Value="3" />
+                <Set Name="PAN_STROKE_GRADUAL_VERT"         Value="4" />
+                <Set Name="PAN_STROKE_GRADUAL_HORZ"         Value="5" />
+                <Set Name="PAN_STROKE_RAPID_VERT"           Value="6" />
+                <Set Name="PAN_STROKE_RAPID_HORZ"           Value="7" />
+                <Set Name="PAN_STROKE_INSTANT_VERT"         Value="8" />
+            </Enum>
+        </Variable>
+
+        <!-- [PANOSE_ARM] -->
+        <Variable Name="[PANOSE_ARM]" Type="Alias" Base="BYTE">
+            <Display Name="BYTE" />
+            <Enum>
+                <Set Name="PAN_ANY"                         Value="0" />
+                <Set Name="PAN_NO_FIT"                      Value="1" />
+                <Set Name="PAN_STRAIGHT_ARMS_HORZ"          Value="2" />
+                <Set Name="PAN_STRAIGHT_ARMS_WEDGE"         Value="3" />
+                <Set Name="PAN_STRAIGHT_ARMS_VERT"          Value="4" />
+                <Set Name="PAN_STRAIGHT_ARMS_SINGLE_SERIF"  Value="5" />
+                <Set Name="PAN_STRAIGHT_ARMS_DOUBLE_SERIF"  Value="6" />
+                <Set Name="PAN_BENT_ARMS_HORZ"              Value="7" />
+                <Set Name="PAN_BENT_ARMS_WEDGE"             Value="8" />
+                <Set Name="PAN_BENT_ARMS_VERT"              Value="9" />
+                <Set Name="PAN_BENT_ARMS_SINGLE_SERIF"      Value="10" />
+                <Set Name="PAN_BENT_ARMS_DOUBLE_SERIF"      Value="11" />
+            </Enum>
+        </Variable>
+
+        <!-- [PANOSE_LETTER] -->
+        <Variable Name="[PANOSE_LETTER]" Type="Alias" Base="BYTE">
+            <Display Name="BYTE" />
+            <Enum>
+                <Set Name="PAN_ANY"                         Value="0" />
+                <Set Name="PAN_NO_FIT"                      Value="1" />
+                <Set Name="PAN_LETT_NORMAL_CONTACT"         Value="2" />
+                <Set Name="PAN_LETT_NORMAL_WEIGHTED"        Value="3" />
+                <Set Name="PAN_LETT_NORMAL_BOXED"           Value="4" />
+                <Set Name="PAN_LETT_NORMAL_FLATTENED"       Value="5" />
+                <Set Name="PAN_LETT_NORMAL_ROUNDED"         Value="6" />
+                <Set Name="PAN_LETT_NORMAL_OFF_CENTER"      Value="7" />
+                <Set Name="PAN_LETT_NORMAL_SQUARE"          Value="8" />
+                <Set Name="PAN_LETT_OBLIQUE_CONTACT"        Value="9" />
+                <Set Name="PAN_LETT_OBLIQUE_WEIGHTED"       Value="10" />
+                <Set Name="PAN_LETT_OBLIQUE_BOXED"          Value="11" />
+                <Set Name="PAN_LETT_OBLIQUE_FLATTENED"      Value="12" />
+                <Set Name="PAN_LETT_OBLIQUE_ROUNDED"        Value="13" />
+                <Set Name="PAN_LETT_OBLIQUE_OFF_CENTER"     Value="14" />
+                <Set Name="PAN_LETT_OBLIQUE_SQUARE"         Value="15" />
+            </Enum>
+        </Variable>
+
+        <!-- [PANOSE_MIDLINE] -->
+        <Variable Name="[PANOSE_MIDLINE]" Type="Alias" Base="BYTE">
+            <Display Name="BYTE" />
+            <Enum>
+                <Set Name="PAN_ANY"                         Value="0" />
+                <Set Name="PAN_NO_FIT"                      Value="1" />
+                <Set Name="PAN_MIDLINE_STANDARD_TRIMMED"    Value="2" />
+                <Set Name="PAN_MIDLINE_STANDARD_POINTED"    Value="3" />
+                <Set Name="PAN_MIDLINE_STANDARD_SERIFED"    Value="4" />
+                <Set Name="PAN_MIDLINE_HIGH_TRIMMED"        Value="5" />
+                <Set Name="PAN_MIDLINE_HIGH_POINTED"        Value="6" />
+                <Set Name="PAN_MIDLINE_HIGH_SERIFED"        Value="7" />
+                <Set Name="PAN_MIDLINE_CONSTANT_TRIMMED"    Value="8" />
+                <Set Name="PAN_MIDLINE_CONSTANT_POINTED"    Value="9" />
+                <Set Name="PAN_MIDLINE_CONSTANT_SERIFED"    Value="10" />
+                <Set Name="PAN_MIDLINE_LOW_TRIMMED"         Value="11" />
+                <Set Name="PAN_MIDLINE_LOW_POINTED"         Value="12" />
+                <Set Name="PAN_MIDLINE_LOW_SERIFED"         Value="13" />
+            </Enum>
+        </Variable>
+
+        <!-- [PANOSE_XHEIGHT] -->
+        <Variable Name="[PANOSE_XHEIGHT]" Type="Alias" Base="BYTE">
+            <Display Name="BYTE" />
+            <Enum>
+                <Set Name="PAN_ANY"                         Value="0" />
+                <Set Name="PAN_NO_FIT"                      Value="1" />
+                <Set Name="PAN_XHEIGHT_CONSTANT_SMALL"      Value="2" />
+                <Set Name="PAN_XHEIGHT_CONSTANT_STD"        Value="3" />
+                <Set Name="PAN_XHEIGHT_CONSTANT_LARGE"      Value="4" />
+                <Set Name="PAN_XHEIGHT_DUCKING_SMALL"       Value="5" />
+                <Set Name="PAN_XHEIGHT_DUCKING_STD"         Value="6" />
+                <Set Name="PAN_XHEIGHT_DUCKING_LARGE"       Value="7" />
+            </Enum>
+        </Variable>
+
+
+        <!-- PANOSE -->
+        <Variable Name="PANOSE" Type="Struct">
+            <Field Type="[PANOSE_FAMILY]"       Name="bFamilyType" />
+            <Field Type="[PANOSE_SERIF]"        Name="bSerifStyle" />
+            <Field Type="[PANOSE_WEIGHT]"       Name="bWeight" />
+            <Field Type="[PANOSE_PROPORTION]"   Name="bProportion" />
+            <Field Type="[PANOSE_CONTRAST]"     Name="bContrast" />
+            <Field Type="[PANOSE_STROKE]"       Name="bStrokeVariation" />
+            <Field Type="[PANOSE_ARM]"          Name="bArmStyle" />
+            <Field Type="[PANOSE_LETTER]"       Name="bLetterform" />
+            <Field Type="[PANOSE_MIDLINE]"      Name="bMidline" />
+            <Field Type="[PANOSE_XHEIGHT]"      Name="bXHeight" />
+        </Variable>
+
+        <!-- OUTLINETEXTMETRIC -->
+        <Variable Name="OUTLINETEXTMETRIC" Type="Struct">
+            <Field Type="UINT"              Name="otmSize" />
+            <Field Type="TEXTMETRIC"        Name="otmTextMetrics" />
+            <Field Type="BYTE"              Name="otmFiller" />
+            <Field Type="PANOSE"            Name="otmPanoseNumber" />
+            <Field Type="[OTM_SELECTION]"   Name="otmfsSelection" />
+            <Field Type="UINT"              Name="otmfsType" />
+            <Field Type="int"               Name="otmsCharSlopeRise" />
+            <Field Type="int"               Name="otmsCharSlopeRun" />
+            <Field Type="int"               Name="otmItalicAngle" />
+            <Field Type="UINT"              Name="otmEMSquare" />
+            <Field Type="int"               Name="otmAscent" />
+            <Field Type="int"               Name="otmDescent" />
+            <Field Type="UINT"              Name="otmLineGap" />
+            <Field Type="UINT"              Name="otmsCapEmHeight" />
+            <Field Type="UINT"              Name="otmsXHeight" />
+            <Field Type="RECT"              Name="otmrcFontBox" />
+            <Field Type="int"               Name="otmMacAscent" />
+            <Field Type="int"               Name="otmMacDescent" />
+            <Field Type="UINT"              Name="otmMacLineGap" />
+            <Field Type="UINT"              Name="otmusMinimumPPEM" />
+            <Field Type="POINT"             Name="otmptSubscriptSize" />
+            <Field Type="POINT"             Name="otmptSubscriptOffset" />
+            <Field Type="POINT"             Name="otmptSuperscriptSize" />
+            <Field Type="POINT"             Name="otmptSuperscriptOffset" />
+            <Field Type="UINT"              Name="otmsStrikeoutSize" />
+            <Field Type="int"               Name="otmsStrikeoutPosition" />
+            <Field Type="int"               Name="otmsUnderscoreSize" />
+            <Field Type="int"               Name="otmsUnderscorePosition" />
+            <Field Type="PSTR"              Name="otmpFamilyName" />
+            <Field Type="PSTR"              Name="otmpFaceName" />
+            <Field Type="PSTR"              Name="otmpStyleName" />
+            <Field Type="PSTR"              Name="otmpFullName" />
+        </Variable>
+        <Variable Name="LPOUTLINETEXTMETRIC" Type="Pointer" Base="OUTLINETEXTMETRIC" />
+
+        <!-- HANDLETABLE -->
+        <Variable Name="HANDLETABLE" Type="Struct">
+            <Field Type="HGDIOBJ [1]" Name="objectHandle" />
+        </Variable>
+        <Variable Name="LPHANDLETABLE" Type="Pointer" Base="HANDLETABLE" />
+
+        <!-- [EMR_TYPE] -->
+        <Variable Name="[EMR_TYPE]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="EMR_HEADER"                          Value="1" />
+                <Set Name="EMR_POLYBEZIER"                      Value="2" />
+                <Set Name="EMR_POLYGON"                         Value="3" />
+                <Set Name="EMR_POLYLINE"                        Value="4" />
+                <Set Name="EMR_POLYBEZIERTO"                    Value="5" />
+                <Set Name="EMR_POLYLINETO"                      Value="6" />
+                <Set Name="EMR_POLYPOLYLINE"                    Value="7" />
+                <Set Name="EMR_POLYPOLYGON"                     Value="8" />
+                <Set Name="EMR_SETWINDOWEXTEX"                  Value="9" />
+                <Set Name="EMR_SETWINDOWORGEX"                  Value="10" />
+                <Set Name="EMR_SETVIEWPORTEXTEX"                Value="11" />
+                <Set Name="EMR_SETVIEWPORTORGEX"                Value="12" />
+                <Set Name="EMR_SETBRUSHORGEX"                   Value="13" />
+                <Set Name="EMR_EOF"                             Value="14" />
+                <Set Name="EMR_SETPIXELV"                       Value="15" />
+                <Set Name="EMR_SETMAPPERFLAGS"                  Value="16" />
+                <Set Name="EMR_SETMAPMODE"                      Value="17" />
+                <Set Name="EMR_SETBKMODE"                       Value="18" />
+                <Set Name="EMR_SETPOLYFILLMODE"                 Value="19" />
+                <Set Name="EMR_SETROP2"                         Value="20" />
+                <Set Name="EMR_SETSTRETCHBLTMODE"               Value="21" />
+                <Set Name="EMR_SETTEXTALIGN"                    Value="22" />
+                <Set Name="EMR_SETCOLORADJUSTMENT"              Value="23" />
+                <Set Name="EMR_SETTEXTCOLOR"                    Value="24" />
+                <Set Name="EMR_SETBKCOLOR"                      Value="25" />
+                <Set Name="EMR_OFFSETCLIPRGN"                   Value="26" />
+                <Set Name="EMR_MOVETOEX"                        Value="27" />
+                <Set Name="EMR_SETMETARGN"                      Value="28" />
+                <Set Name="EMR_EXCLUDECLIPRECT"                 Value="29" />
+                <Set Name="EMR_INTERSECTCLIPRECT"               Value="30" />
+                <Set Name="EMR_SCALEVIEWPORTEXTEX"              Value="31" />
+                <Set Name="EMR_SCALEWINDOWEXTEX"                Value="32" />
+                <Set Name="EMR_SAVEDC"                          Value="33" />
+                <Set Name="EMR_RESTOREDC"                       Value="34" />
+                <Set Name="EMR_SETWORLDTRANSFORM"               Value="35" />
+                <Set Name="EMR_MODIFYWORLDTRANSFORM"            Value="36" />
+                <Set Name="EMR_SELECTOBJECT"                    Value="37" />
+                <Set Name="EMR_CREATEPEN"                       Value="38" />
+                <Set Name="EMR_CREATEBRUSHINDIRECT"             Value="39" />
+                <Set Name="EMR_DELETEOBJECT"                    Value="40" />
+                <Set Name="EMR_ANGLEARC"                        Value="41" />
+                <Set Name="EMR_ELLIPSE"                         Value="42" />
+                <Set Name="EMR_RECTANGLE"                       Value="43" />
+                <Set Name="EMR_ROUNDRECT"                       Value="44" />
+                <Set Name="EMR_ARC"                             Value="45" />
+                <Set Name="EMR_CHORD"                           Value="46" />
+                <Set Name="EMR_PIE"                             Value="47" />
+                <Set Name="EMR_SELECTPALETTE"                   Value="48" />
+                <Set Name="EMR_CREATEPALETTE"                   Value="49" />
+                <Set Name="EMR_SETPALETTEENTRIES"               Value="50" />
+                <Set Name="EMR_RESIZEPALETTE"                   Value="51" />
+                <Set Name="EMR_REALIZEPALETTE"                  Value="52" />
+                <Set Name="EMR_EXTFLOODFILL"                    Value="53" />
+                <Set Name="EMR_LINETO"                          Value="54" />
+                <Set Name="EMR_ARCTO"                           Value="55" />
+                <Set Name="EMR_POLYDRAW"                        Value="56" />
+                <Set Name="EMR_SETARCDIRECTION"                 Value="57" />
+                <Set Name="EMR_SETMITERLIMIT"                   Value="58" />
+                <Set Name="EMR_BEGINPATH"                       Value="59" />
+                <Set Name="EMR_ENDPATH"                         Value="60" />
+                <Set Name="EMR_CLOSEFIGURE"                     Value="61" />
+                <Set Name="EMR_FILLPATH"                        Value="62" />
+                <Set Name="EMR_STROKEANDFILLPATH"               Value="63" />
+                <Set Name="EMR_STROKEPATH"                      Value="64" />
+                <Set Name="EMR_FLATTENPATH"                     Value="65" />
+                <Set Name="EMR_WIDENPATH"                       Value="66" />
+                <Set Name="EMR_SELECTCLIPPATH"                  Value="67" />
+                <Set Name="EMR_ABORTPATH"                       Value="68" />
+                <Set Name="EMR_GDICOMMENT"                      Value="70" />
+                <Set Name="EMR_FILLRGN"                         Value="71" />
+                <Set Name="EMR_FRAMERGN"                        Value="72" />
+                <Set Name="EMR_INVERTRGN"                       Value="73" />
+                <Set Name="EMR_PAINTRGN"                        Value="74" />
+                <Set Name="EMR_EXTSELECTCLIPRGN"                Value="75" />
+                <Set Name="EMR_BITBLT"                          Value="76" />
+                <Set Name="EMR_STRETCHBLT"                      Value="77" />
+                <Set Name="EMR_MASKBLT"                         Value="78" />
+                <Set Name="EMR_PLGBLT"                          Value="79" />
+                <Set Name="EMR_SETDIBITSTODEVICE"               Value="80" />
+                <Set Name="EMR_STRETCHDIBITS"                   Value="81" />
+                <Set Name="EMR_EXTCREATEFONTINDIRECTW"          Value="82" />
+                <Set Name="EMR_EXTTEXTOUTA"                     Value="83" />
+                <Set Name="EMR_EXTTEXTOUTW"                     Value="84" />
+                <Set Name="EMR_POLYBEZIER16"                    Value="85" />
+                <Set Name="EMR_POLYGON16"                       Value="86" />
+                <Set Name="EMR_POLYLINE16"                      Value="87" />
+                <Set Name="EMR_POLYBEZIERTO16"                  Value="88" />
+                <Set Name="EMR_POLYLINETO16"                    Value="89" />
+                <Set Name="EMR_POLYPOLYLINE16"                  Value="90" />
+                <Set Name="EMR_POLYPOLYGON16"                   Value="91" />
+                <Set Name="EMR_POLYDRAW16"                      Value="92" />
+                <Set Name="EMR_CREATEMONOBRUSH"                 Value="93" />
+                <Set Name="EMR_CREATEDIBPATTERNBRUSHPT"         Value="94" />
+                <Set Name="EMR_EXTCREATEPEN"                    Value="95" />
+                <Set Name="EMR_POLYTEXTOUTA"                    Value="96" />
+                <Set Name="EMR_POLYTEXTOUTW"                    Value="97" />
+                <Set Name="EMR_SETICMMODE"                      Value="98" />
+                <Set Name="EMR_CREATECOLORSPACE"                Value="99" />
+                <Set Name="EMR_SETCOLORSPACE"                   Value="100" />
+                <Set Name="EMR_DELETECOLORSPACE"                Value="101" />
+                <Set Name="EMR_GLSRECORD"                       Value="102" />
+                <Set Name="EMR_GLSBOUNDEDRECORD"                Value="103" />
+                <Set Name="EMR_PIXELFORMAT"                     Value="104" />
+                <Set Name="EMR_RESERVED_105"                    Value="105" />
+                <Set Name="EMR_RESERVED_106"                    Value="106" />
+                <Set Name="EMR_RESERVED_107"                    Value="107" />
+                <Set Name="EMR_RESERVED_108"                    Value="108" />
+                <Set Name="EMR_RESERVED_109"                    Value="109" />
+                <Set Name="EMR_RESERVED_110"                    Value="110" />
+                <Set Name="EMR_COLORCORRECTPALETTE"             Value="111" />
+                <Set Name="EMR_SETICMPROFILEA"                  Value="112" />
+                <Set Name="EMR_SETICMPROFILEW"                  Value="113" />
+                <Set Name="EMR_ALPHABLEND"                      Value="114" />
+                <Set Name="EMR_SETLAYOUT"                       Value="115" />
+                <Set Name="EMR_TRANSPARENTBLT"                  Value="116" />
+                <Set Name="EMR_RESERVED_117"                    Value="117" />
+                <Set Name="EMR_GRADIENTFILL"                    Value="118" />
+                <Set Name="EMR_RESERVED_119"                    Value="119" />
+                <Set Name="EMR_RESERVED_120"                    Value="120" />
+                <Set Name="EMR_COLORMATCHTOTARGETW"             Value="121" />
+                <Set Name="EMR_CREATECOLORSPACEW"               Value="122" />
+            </Enum>
+        </Variable>
+
+        <!-- ENHMETARECORD -->
+        <Variable Name="ENHMETARECORD" Type="Struct">
+            <Field Type="[EMR_TYPE]"    Name="iType" />
+            <Field Type="DWORD"         Name="nSize" />
+            <Field Type="DWORD [1]"     Name="dParm" />
+        </Variable>
+        <Variable Name="const ENHMETARECORD*" Type="Pointer" Base="ENHMETARECORD" />
+
+        <!-- METARECORD -->
+        <Variable Name="METARECORD" Type="Struct">
+            <Field Type="DWORD"         Name="rdSize" />
+            <Field Type="WORD"          Name="rdFunction" />
+            <Field Type="WORD [1]"      Name="rdParm" />
+        </Variable>
+        <Variable Name="LPMETARECORD" Type="Pointer" Base="METARECORD" />
+
+        <!-- FONTSIGNATURE -->
+        <Variable Name="FONTSIGNATURE" Type="Struct">
+            <Field Type="DWORD [4]"     Name="fsUsb" />
+            <Field Type="DWORD [2]"     Name="fsCsb" />
+        </Variable>
+        <Variable Name="LPFONTSIGNATURE" Type="Pointer" Base="FONTSIGNATURE" />
+
+        <!-- CHARSETINFO -->
+        <Variable Name="CHARSETINFO" Type="Struct">
+            <!-- TODO: ciCharset is FontCharset but not UINT instead of BYTE -->
+            <Field Type="UINT"              Name="ciCharset" />
+            <Field Type="[CodePageEnum]"    Name="ciACP" />
+            <Field Type="FONTSIGNATURE"     Name="fs" />
+        </Variable>
+        <Variable Name="LPCHARSETINFO" Type="Pointer" Base="CHARSETINFO" />
         
         <!-- BITMAP -->
         <Variable Name="BITMAP" Type="Struct">
@@ -622,116 +1066,6 @@
                 <Set Name="GGO_GRAY8_BITMAP"    Value="6" />
                 <Set Name="GGO_GLYPH_INDEX"     Value="0x0080" />
                 <Set Name="GGO_UNHINTED"        Value="0x0100" />
-            </Enum>
-        </Variable>
-        
-        <Variable Name="[FontWeight]" Type="Alias" Base="int">
-            <Display Name="int" />
-            <Enum>
-                <Set Name="FW_DONTCARE"     Value="0" />
-                <Set Name="FW_THIN"         Value="100" />
-                <Set Name="FW_EXTRALIGHT"   Value="200" />
-                <Set Name="FW_LIGHT"        Value="300" />
-                <Set Name="FW_NORMAL"       Value="400" />
-                <Set Name="FW_MEDIUM"       Value="500" />
-                <Set Name="FW_SEMIBOLD"     Value="600" />
-                <Set Name="FW_BOLD"         Value="700" />
-                <Set Name="FW_EXTRABOLD"    Value="800" />
-                <Set Name="FW_HEAVY"        Value="900" />
-            </Enum>
-        </Variable>
-        
-        <Variable Name="[FontCharset]" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
-            <Enum>
-                <Set Name="ANSI_CHARSET"          Value="0" />
-                <Set Name="DEFAULT_CHARSET"       Value="1" />
-                <Set Name="SYMBOL_CHARSET"        Value="2" />
-                <Set Name="SHIFTJIS_CHARSET"      Value="128" />
-                <Set Name="HANGEUL_CHARSET"       Value="129" />
-                <Set Name="HANGUL_CHARSET"        Value="129" />
-                <Set Name="GB2312_CHARSET"        Value="134" />
-                <Set Name="CHINESEBIG5_CHARSET"   Value="136" />
-                <Set Name="OEM_CHARSET"           Value="255" />
-                <Set Name="JOHAB_CHARSET"         Value="130" />
-                <Set Name="HEBREW_CHARSET"        Value="177" />
-                <Set Name="ARABIC_CHARSET"        Value="178" />
-                <Set Name="GREEK_CHARSET"         Value="161" />
-                <Set Name="TURKISH_CHARSET"       Value="162" />
-                <Set Name="VIETNAMESE_CHARSET"    Value="163" />
-                <Set Name="THAI_CHARSET"          Value="222" />
-                <Set Name="EASTEUROPE_CHARSET"    Value="238" />
-                <Set Name="RUSSIAN_CHARSET"       Value="204" />
-                <Set Name="MAC_CHARSET"           Value="77" />
-                <Set Name="BALTIC_CHARSET"        Value="186" />
-            </Enum>
-        </Variable>
-        
-        <Variable Name="[FontOutputPrecision]" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
-            <Enum>
-                <Set Name="OUT_DEFAULT_PRECIS"          Value="0" />
-                <Set Name="OUT_STRING_PRECIS"           Value="1" />
-                <Set Name="OUT_CHARACTER_PRECIS"        Value="2" />
-                <Set Name="OUT_STROKE_PRECIS"           Value="3" />
-                <Set Name="OUT_TT_PRECIS"               Value="4" />
-                <Set Name="OUT_DEVICE_PRECIS"           Value="5" />
-                <Set Name="OUT_RASTER_PRECIS"           Value="6" />
-                <Set Name="OUT_TT_ONLY_PRECIS"          Value="7" />
-                <Set Name="OUT_OUTLINE_PRECIS"          Value="8" />
-                <Set Name="OUT_SCREEN_OUTLINE_PRECIS"   Value="9" />
-                <Set Name="OUT_PS_ONLY_PRECIS"          Value="10" />
-            </Enum>
-        </Variable>
-        
-        <Variable Name="[FontClipPrecision]" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
-            <Enum>
-                <Set Name="CLIP_DEFAULT_PRECIS"     	Value="0" />
-                <Set Name="CLIP_CHARACTER_PRECIS"   	Value="1" />
-                <Set Name="CLIP_STROKE_PRECIS"      	Value="2" />
-                <Set Name="CLIP_MASK"               	Value="0xf" />
-                <Set Name="CLIP_LH_ANGLES"          	Value="0x10" />
-                <Set Name="CLIP_TT_ALWAYS"          	Value="0x20" />
-                <Set Name="CLIP_DFA_DISABLE"            Value="0x40" />
-                <Set Name="CLIP_EMBEDDED"           	Value="0x80" />
-            </Enum>
-        </Variable>
-        
-        <Variable Name="[FontQuality]" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
-            <Enum>
-                <Set Name="DEFAULT_QUALITY"         	Value="0" />
-                <Set Name="DRAFT_QUALITY"           	Value="1" />
-                <Set Name="PROOF_QUALITY"           	Value="2" />
-                <Set Name="NONANTIALIASED_QUALITY"  	Value="3" />
-                <Set Name="ANTIALIASED_QUALITY"     	Value="4" />
-                <Set Name="CLEARTYPE_QUALITY"       	Value="5" />
-                <Set Name="CLEARTYPE_NATURAL_QUALITY"   Value="6" />
-            </Enum>
-        </Variable>
-        
-        <Variable Name="[FontPitchAndFamily]" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
-            <Enum>
-                <Set Name="DEFAULT_PITCH | FF_DONTCARE"			Value="0" />
-                <Set Name="FIXED_PITCH | FF_DONTCARE"         	Value="1" />
-                <Set Name="VARIABLE_PITCH | FF_DONTCARE"        Value="2" />
-                <Set Name="DEFAULT_PITCH | FF_ROMAN"            Value="0x10" />
-                <Set Name="FIXED_PITCH | FF_ROMAN"            	Value="0x11" />
-                <Set Name="VARIABLE_PITCH | FF_ROMAN"           Value="0x12" />
-                <Set Name="DEFAULT_PITCH | FF_SWISS"            Value="0x20" />
-                <Set Name="FIXED_PITCH | FF_SWISS"            	Value="0x21" />
-                <Set Name="VARIABLE_PITCH | FF_SWISS"           Value="0x22" />
-                <Set Name="DEFAULT_PITCH | FF_MODERN"           Value="0x30" />
-                <Set Name="FIXED_PITCH | FF_MODERN"           	Value="0x31" />
-                <Set Name="VARIABLE_PITCH | FF_MODERN"          Value="0x32" />
-                <Set Name="DEFAULT_PITCH | FF_SCRIPT"           Value="0x40" />
-                <Set Name="FIXED_PITCH | FF_SCRIPT"           	Value="0x41" />
-                <Set Name="VARIABLE_PITCH | FF_SCRIPT"          Value="0x42" />
-                <Set Name="DEFAULT_PITCH | FF_DECORATIVE"       Value="0x50" />
-                <Set Name="FIXED_PITCH | FF_DECORATIVE"       	Value="0x51" />
-                <Set Name="VARIABLE_PITCH | FF_DECORATIVE"      Value="0x52" />
             </Enum>
         </Variable>
         
@@ -1656,15 +1990,15 @@
             <Param Type="int" Name="nWidth" />
             <Param Type="int" Name="nEscapement" />
             <Param Type="int" Name="nOrientation" />
-            <Param Type="[FontWeight]" Name="fnWeight" />
+            <Param Type="[FontWeight]" Name="fnWeight" Display="int" />
             <Param Type="DWORD" Name="fdwItalic" />
             <Param Type="DWORD" Name="fdwUnderline" />
             <Param Type="DWORD" Name="fdwStrikeOut" />
-            <Param Type="[FontCharset]" Name="fdwCharSet" />
-            <Param Type="[FontOutputPrecision]" Name="fdwOutputPrecision" />
-            <Param Type="[FontClipPrecision]" Name="fdwClipPrecision" />
-            <Param Type="[FontQuality]" Name="fdwQuality" />
-            <Param Type="[FontPitchAndFamily]" Name="fdwPitchAndFamily" />
+            <Param Type="[FontCharset]" Name="fdwCharSet" Display="DWORD" />
+            <Param Type="[FontOutputPrecision]" Name="fdwOutputPrecision" Display="DWORD" />
+            <Param Type="[FontClipPrecision]" Name="fdwClipPrecision" Display="DWORD" />
+            <Param Type="[FontQuality]" Name="fdwQuality" Display="DWORD" />
+            <Param Type="[FontPitchAndFamily]" Name="fdwPitchAndFamily" Display="DWORD" />
             <Param Type="LPCTSTR" Name="lpszFace" />
             <Return Type="HFONT" />
             <Success Return="NotEqual" Value="0" />
@@ -2633,8 +2967,8 @@
             <Param Type="HDC" Name="hdc" />
             <Param Type="LPFONTSIGNATURE" Name="lpSig" />
             <Param Type="DWORD" Name="dwFlags" />
-            <Return Type="int" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[FontCharset]" Display="int" />
+            <Success Return="NotEqual" Value="1" />
         </Api>
         <Api Name="TranslateCharsetInfo">
             <Param Type="DWORD*" Name="lpSrc" />

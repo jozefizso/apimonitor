@@ -7,19 +7,109 @@
     <Include Filename="Headers\windows.h.xml" />
     <Headers>
         <!-- Variables -->
-        <Variable Name="HINTERNET"                                  Type="Alias"        Base="LPVOID" />
-        <Variable Name="HINTERNET*"                                 Type="Pointer"      Base="HINTERNET" />
-        <Variable Name="GROUPID"                                    Type="Alias"        Base="LONGLONG" />
-        <Variable Name="GROUPID*"                                   Type="Pointer"      Base="GROUPID" />
-        <Variable Name="WINHTTP_STATUS_CALLBACK"                    Type="Alias"        Base="LPVOID" />
-        <Variable Name="GOPHER_ATTRIBUTE_ENUMERATOR"                Type="Alias"        Base="LPVOID" />
-        <Variable Name="INTERNET_STATUS_CALLBACK"                   Type="Alias"        Base="LPVOID" />
+        <Variable Name="HINTERNET"                              Type="Alias"    Base="LPVOID" />
+        <Variable Name="HINTERNET*"                             Type="Pointer"  Base="HINTERNET" />
+        <Variable Name="GROUPID"                                Type="Alias"    Base="LONGLONG" />
+        <Variable Name="GROUPID*"                               Type="Pointer"  Base="GROUPID" />
+        <Variable Name="WINHTTP_STATUS_CALLBACK"                Type="Alias"    Base="LPVOID" />
+        <Variable Name="GOPHER_ATTRIBUTE_ENUMERATOR"            Type="Alias"    Base="LPVOID" />
+        <Variable Name="INTERNET_STATUS_CALLBACK"               Type="Alias"    Base="LPVOID" />
+        <Variable Name="DWORD [GROUP_OWNER_STORAGE_SIZE]"       Type="Array"    Base="DWORD"    Count="4" />
+        <Variable Name="TCHAR [GROUPNAME_MAX_LENGTH]"           Type="Array"    Base="TCHAR"    Count="120" />
+        <Variable Name="TCHAR [MAX_GOPHER_DISPLAY_TEXT + 1]"    Type="Array"    Base="TCHAR"    Count="129" />
+        <Variable Name="TCHAR [MAX_GOPHER_LOCATOR_LENGTH + 1]"  Type="Array"    Base="TCHAR"    Count="653" />
 
-        <!-- TODO: Structures -->
-        <Variable Name="LPINTERNET_CACHE_ENTRY_INFO"                Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPINTERNET_CACHE_GROUP_INFO"                Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPGOPHER_FIND_DATA"                         Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPINTERNET_BUFFERS"                         Type="Alias"        Base="LPVOID" />
+        <!-- INTERNET_CACHE_ENTRY_INFO -->
+        <Variable Name="INTERNET_CACHE_ENTRY_INFO" Type="Struct">
+            <Field Type="DWORD"         Name="dwStructSize" />
+            <Field Type="LPTSTR"        Name="lpszSourceUrlName" />
+            <Field Type="LPTSTR"        Name="lpszLocalFileName" />
+            <Field Type="DWORD"         Name="CacheEntryType" />
+            <Field Type="DWORD"         Name="dwUseCount" />
+            <Field Type="DWORD"         Name="dwHitRate" />
+            <Field Type="DWORD"         Name="dwSizeLow" />
+            <Field Type="DWORD"         Name="dwSizeHigh" />
+            <Field Type="FILETIME"      Name="LastModifiedTime" />
+            <Field Type="FILETIME"      Name="ExpireTime" />
+            <Field Type="FILETIME"      Name="LastAccessTime" />
+            <Field Type="FILETIME"      Name="LastSyncTime" />
+            <Field Type="LPTSTR"        Name="lpHeaderInfo" />
+            <Field Type="DWORD"         Name="dwHeaderInfoSize" />
+            <Field Type="LPTSTR"        Name="lpszFileExtension" />
+            <Field Type="DWORD"         Name="dwExemptDelta" />
+        </Variable>
+        <Variable Name="LPINTERNET_CACHE_ENTRY_INFO" Type="Pointer" Base="INTERNET_CACHE_ENTRY_INFO" />
+
+        <!-- [CACHEGROUP_FLAG] -->
+        <Variable Name="[CACHEGROUP_FLAG]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="CACHEGROUP_FLAG_NONPURGEABLE"    Value="0x00000001" />
+                <Set Name="CACHEGROUP_FLAG_GIDONLY"         Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <!-- [CACHEGROUP_TYPE] -->
+        <Variable Name="[CACHEGROUP_TYPE]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="CACHEGROUP_TYPE_INVALID"         Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- INTERNET_CACHE_GROUP_INFO -->
+        <Variable Name="INTERNET_CACHE_GROUP_INFO" Type="Struct">
+            <Field Type="DWORD"                             Name="dwGroupSize" />
+            <Field Type="[CACHEGROUP_FLAG]"                 Name="dwGroupFlags" />
+            <Field Type="[CACHEGROUP_TYPE]"                 Name="dwGroupType" />
+            <Field Type="DWORD"                             Name="dwDiskUsage" />
+            <Field Type="DWORD"                             Name="dwDiskQuota" />
+            <Field Type="DWORD [GROUP_OWNER_STORAGE_SIZE]"  Name="dwOwnerStorage" />
+            <Field Type="TCHAR [GROUPNAME_MAX_LENGTH]"      Name="szGroupName" />
+        </Variable>
+        <Variable Name="LPINTERNET_CACHE_GROUP_INFO" Type="Pointer" Base="INTERNET_CACHE_GROUP_INFO" />
+
+        <!-- [GopherType] -->
+        <Variable Name="[GopherType]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="GOPHER_TYPE_TEXT_FILE"           Value="0x00000001" />
+                <Set Name="GOPHER_TYPE_DIRECTORY"           Value="0x00000002" />
+                <Set Name="GOPHER_TYPE_CSO"                 Value="0x00000004" />
+                <Set Name="GOPHER_TYPE_ERROR"               Value="0x00000008" />
+                <Set Name="GOPHER_TYPE_MAC_BINHEX"          Value="0x00000010" />
+                <Set Name="GOPHER_TYPE_DOS_ARCHIVE"         Value="0x00000020" />
+                <Set Name="GOPHER_TYPE_UNIX_UUENCODED"      Value="0x00000040" />
+                <Set Name="GOPHER_TYPE_INDEX_SERVER"        Value="0x00000080" />
+                <Set Name="GOPHER_TYPE_TELNET"              Value="0x00000100" />
+                <Set Name="GOPHER_TYPE_BINARY"              Value="0x00000200" />
+                <Set Name="GOPHER_TYPE_REDUNDANT"           Value="0x00000400" />
+                <Set Name="GOPHER_TYPE_TN3270"              Value="0x00000800" />
+                <Set Name="GOPHER_TYPE_GIF"                 Value="0x00001000" />
+                <Set Name="GOPHER_TYPE_IMAGE"               Value="0x00002000" />
+                <Set Name="GOPHER_TYPE_BITMAP"              Value="0x00004000" />
+                <Set Name="GOPHER_TYPE_MOVIE"               Value="0x00008000" />
+                <Set Name="GOPHER_TYPE_SOUND"               Value="0x00010000" />
+                <Set Name="GOPHER_TYPE_HTML"                Value="0x00020000" />
+                <Set Name="GOPHER_TYPE_PDF"                 Value="0x00040000" />
+                <Set Name="GOPHER_TYPE_CALENDAR"            Value="0x00080000" />
+                <Set Name="GOPHER_TYPE_INLINE"              Value="0x00100000" />
+                <Set Name="GOPHER_TYPE_UNKNOWN"             Value="0x20000000" />
+                <Set Name="GOPHER_TYPE_ASK"                 Value="0x40000000" />
+                <Set Name="GOPHER_TYPE_GOPHER_PLUS"         Value="0x80000000" />
+            </Flag>
+        </Variable>
+
+        <!-- GOPHER_FIND_DATA -->
+        <Variable Name="GOPHER_FIND_DATA" Type="Struct">
+            <Field Type="TCHAR [MAX_GOPHER_DISPLAY_TEXT + 1]"       Name="DisplayString" />
+            <Field Type="[GopherType]"                              Name="GopherType" />
+            <Field Type="DWORD"                                     Name="SizeLow" />
+            <Field Type="DWORD"                                     Name="SizeHigh" />
+            <Field Type="FILETIME"                                  Name="LastModificationTime" />
+            <Field Type="TCHAR [MAX_GOPHER_LOCATOR_LENGTH + 1]"     Name="Locator" />
+        </Variable>
+        <Variable Name="LPGOPHER_FIND_DATA" Type="Pointer" Base="GOPHER_FIND_DATA" />
 
         <!-- [ProxyAccessType] -->
         <Variable Name="[ProxyAccessType]" Type="Alias" Base="DWORD">
@@ -145,6 +235,22 @@
                 <Set Name="ICU_ENCODE_PERCENT"      Value="0x00001000" />
             </Flag>
         </Variable>
+
+        <!-- INTERNET_BUFFERS -->
+        <Variable Name="INTERNET_BUFFERS" Type="Struct">
+            <Field Type="DWORD"                 Name="dwStructSize" />
+            <!-- TODO: Self-Referencing - Next is INTERNET_BUFFERS* -->
+            <Field Type="LPVOID"                Name="Next" Display="INTERNET_BUFFERS*" />
+            <Field Type="LPCTSTR"               Name="lpcszHeader" />
+            <Field Type="DWORD"                 Name="dwHeadersLength" />
+            <Field Type="DWORD"                 Name="dwHeadersTotal" />
+            <Field Type="LPVOID"                Name="lpvBuffer" />
+            <Field Type="DWORD"                 Name="dwBufferLength" />
+            <Field Type="DWORD"                 Name="dwBufferTotal" />
+            <Field Type="DWORD"                 Name="dwOffsetLow" />
+            <Field Type="DWORD"                 Name="dwOffsetHigh" />
+        </Variable>
+        <Variable Name="LPINTERNET_BUFFERS" Type="Pointer" Base="INTERNET_BUFFERS" />
 
     </Headers>
 </ApiMonitor>

@@ -5,23 +5,205 @@
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\cryptography.h.xml" />
     <Headers>
-        <!-- Variables -->
-        <Variable Name="SAFER_LEVEL_HANDLE"     Type="Alias"    Base="HANDLE" />
-        <Variable Name="SAFER_LEVEL_HANDLE*"    Type="Pointer"  Base="SAFER_LEVEL_HANDLE" />
 
-        <!-- TODO: Structures -->
-        <Variable Name="PTOKEN_GROUPS"                      Type="Alias"    Base="LPVOID" />
-        <Variable Name="PTOKEN_PRIVILEGES"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSID_IDENTIFIER_AUTHORITY"          Type="Alias"    Base="LPVOID" />
-        <Variable Name="PPRIVILEGE_SET"                     Type="Alias"    Base="LPVOID" />
-        <Variable Name="PEXPLICIT_ACCESS"                   Type="Alias"    Base="LPVOID" />
-        <Variable Name="PEXPLICIT_ACCESS*"                  Type="Pointer"  Base="PEXPLICIT_ACCESS" />
-        <Variable Name="PTRUSTEE"                           Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSAFER_CODE_PROPERTIES"             Type="Alias"    Base="LPVOID" />
-        <Variable Name="PTOKEN_SOURCE"                      Type="Alias"    Base="LPVOID" />
+        <!-- TODO: Unions (Complex) -->
         <Variable Name="PSEC_WINNT_AUTH_IDENTITY_OPAQUE"    Type="Alias"    Base="LPVOID" />
         <Variable Name="PSEC_WINNT_AUTH_IDENTITY_OPAQUE*"   Type="Pointer"  Base="PSEC_WINNT_AUTH_IDENTITY_OPAQUE" />
+
+        <!-- Variables -->
+        <Variable Name="SAFER_LEVEL_HANDLE"             Type="Alias"    Base="HANDLE" />
+        <Variable Name="SAFER_LEVEL_HANDLE*"            Type="Pointer"  Base="SAFER_LEVEL_HANDLE" />
+        <Variable Name="BYTE [SAFER_MAX_HASH_SIZE]"     Type="Array"    Base="BYTE" Count="64" />
+        <Variable Name="CHAR [TOKEN_SOURCE_LENGTH]"     Type="Array"    Base="CHAR" Count="8" />
+
+        <!-- [AceFlags] -->
+        <Variable Name="[AceFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="OBJECT_INHERIT_ACE"                  Value="0x1" />
+                <Set Name="CONTAINER_INHERIT_ACE"               Value="0x2" />
+                <Set Name="SUB_CONTAINERS_AND_OBJECTS_INHERIT"  Value="0x3" />
+                <Set Name="NO_PROPAGATE_INHERIT_ACE"            Value="0x4" />
+                <Set Name="INHERIT_ONLY_ACE"                    Value="0x8" />
+                <Set Name="INHERITED_ACE"                       Value="0x10" />
+            </Flag>
+        </Variable>
+
+        <!-- ACCESS_MODE -->
+        <Variable Name="ACCESS_MODE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="NOT_USED_ACCESS"     Value="0" />
+                <Set Name="GRANT_ACCESS"        Value="1" />
+                <Set Name="SET_ACCESS"          Value="2" />
+                <Set Name="DENY_ACCESS"         Value="3" />
+                <Set Name="REVOKE_ACCESS"       Value="4" />
+                <Set Name="SET_AUDIT_SUCCESS"   Value="5" />
+                <Set Name="SET_AUDIT_FAILURE"   Value="6" />
+            </Enum>
+        </Variable>
+
+        <!-- MULTIPLE_TRUSTEE_OPERATION -->
+        <Variable Name="MULTIPLE_TRUSTEE_OPERATION" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="NO_MULTIPLE_TRUSTEE"     Value="0" />
+                <Set Name="TRUSTEE_IS_IMPERSONATE"  Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- TRUSTEE_FORM -->
+        <Variable Name="TRUSTEE_FORM" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="TRUSTEE_IS_SID"              Value="0" />
+                <Set Name="TRUSTEE_IS_NAME"             Value="1" />
+                <Set Name="TRUSTEE_BAD_FORM"            Value="2" />
+                <Set Name="TRUSTEE_IS_OBJECTS_AND_SID"  Value="3" />
+                <Set Name="TRUSTEE_IS_OBJECTS_AND_NAME" Value="4" />
+            </Enum>
+        </Variable>
+
+        <!-- TRUSTEE_TYPE  -->
+        <Variable Name="TRUSTEE_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="TRUSTEE_IS_UNKNOWN"          Value="0" />
+                <Set Name="TRUSTEE_IS_USER"             Value="1" />
+                <Set Name="TRUSTEE_IS_GROUP"            Value="2" />
+                <Set Name="TRUSTEE_IS_DOMAIN"           Value="3" />
+                <Set Name="TRUSTEE_IS_ALIAS"            Value="4" />
+                <Set Name="TRUSTEE_IS_WELL_KNOWN_GROUP" Value="5" />
+                <Set Name="TRUSTEE_IS_DELETED"          Value="6" />
+                <Set Name="TRUSTEE_IS_INVALID"          Value="7" />
+                <Set Name="TRUSTEE_IS_COMPUTER"         Value="8" />
+            </Enum>
+        </Variable>
+
+        <!-- OBJECTS_AND_SID -->
+        <Variable Name="OBJECTS_AND_SID" Type="Struct">
+            <Field Type="DWORD"   	Name="ObjectsPresent" />
+            <Field Type="GUID"    	Name="ObjectTypeGuid" />
+            <Field Type="GUID"    	Name="InheritedObjectTypeGuid" />
+            <Field Type="SID*"      Name="pSid" />
+        </Variable>
+        <Variable Name="POBJECTS_AND_SID" Type="Pointer" Base="OBJECTS_AND_SID" />
+        <Variable Name="OBJECTS_AND_SID*" Type="Pointer" Base="OBJECTS_AND_SID" />
+
+        <!-- SE_OBJECT_TYPE -->
+        <Variable Name="SE_OBJECT_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="SE_UNKNOWN_OBJECT_TYPE"      Value="0" />
+                <Set Name="SE_FILE_OBJECT"              Value="1" />
+                <Set Name="SE_SERVICE"                  Value="2" />
+                <Set Name="SE_PRINTER"                  Value="3" />
+                <Set Name="SE_REGISTRY_KEY"             Value="4" />
+                <Set Name="SE_LMSHARE"                  Value="5" />
+                <Set Name="SE_KERNEL_OBJECT"            Value="6" />
+                <Set Name="SE_WINDOW_OBJECT"            Value="7" />
+                <Set Name="SE_DS_OBJECT"                Value="8" />
+                <Set Name="SE_DS_OBJECT_ALL"            Value="9" />
+                <Set Name="SE_PROVIDER_DEFINED_OBJECT"  Value="10" />
+                <Set Name="SE_WMIGUID_OBJECT"           Value="11" />
+                <Set Name="SE_REGISTRY_WOW64_32KEY"     Value="12" />
+            </Enum>
+        </Variable>
+
+        <!-- OBJECTS_AND_NAME -->
+        <Variable Name="OBJECTS_AND_NAME" Type="Struct">
+            <Field Type="DWORD"          	Name="ObjectsPresent" />
+            <Field Type="SE_OBJECT_TYPE" 	Name="ObjectType" />
+            <Field Type="LPTSTR"   	        Name="ObjectTypeName" />
+            <Field Type="LPTSTR"   	        Name="InheritedObjectTypeName" />
+            <Field Type="LPTSTR"   	        Name="ptstrName" />
+        </Variable>
+        <Variable Name="POBJECTS_AND_NAME" Type="Pointer" Base="OBJECTS_AND_NAME" />
+        <Variable Name="OBJECTS_AND_NAME*" Type="Pointer" Base="OBJECTS_AND_NAME" />
+
+        <!-- [TRUSTEE_u] -->
+        <Variable Name="[TRUSTEE_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="LPTSTR"                Name="ptstrName" />
+            <Field Type="SID*"                  Name="pSid" />
+            <Field Type="OBJECTS_AND_SID*"      Name="pObjectsAndSid" />
+            <Field Type="OBJECTS_AND_NAME*"     Name="pObjectsAndName" />
+        </Variable>
+
+        <!-- TRUSTEE -->
+        <Variable Name="TRUSTEE" Type="Struct">
+            <!-- TODO: Self-Referencing - pMultipleTrustee is TRUSTEE* -->
+            <Field Type="LPVOID"                        Name="pMultipleTrustee" Display="TRUSTEE*" />
+            <Field Type="MULTIPLE_TRUSTEE_OPERATION"    Name="MultipleTrusteeOperation" />
+            <Field Type="TRUSTEE_FORM"                  Name="TrusteeForm" />
+            <Field Type="TRUSTEE_TYPE"                  Name="TrusteeType" />
+            <Field Type="[TRUSTEE_u]"                   Name="" />
+        </Variable>
+        <Variable Name="PTRUSTEE"   Type="Pointer" Base="TRUSTEE" />
+        <Variable Name="PTRUSTEE*"  Type="Pointer" Base="PTRUSTEE" />
+
+        <!-- EXPLICIT_ACCESS -->
+        <Variable Name="EXPLICIT_ACCESS" Type="Struct">
+            <Field Type="DWORD"         Name="grfAccessPermissions" />
+            <Field Type="ACCESS_MODE"   Name="grfAccessMode" />
+            <Field Type="[AceFlags]"    Name="grfInheritance" />
+            <Field Type="TRUSTEE"       Name="Trustee" />
+        </Variable>
+        <Variable Name="PEXPLICIT_ACCESS"   Type="Pointer" Base="EXPLICIT_ACCESS" />
+        <Variable Name="PEXPLICIT_ACCESS*"  Type="Pointer" Base="PEXPLICIT_ACCESS" />
+
+        <!-- TOKEN_SOURCE -->
+        <Variable Name="TOKEN_SOURCE" Type="Struct">
+            <Field Type="CHAR [TOKEN_SOURCE_LENGTH]"    Name="SourceName" />
+            <Field Type="LUID"                          Name="SourceIdentifier" />
+        </Variable>
+        <Variable Name="PTOKEN_SOURCE" Type="Pointer" Base="TOKEN_SOURCE" />
+
+        <!-- [SAFER_CRITERIA] -->
+        <Variable Name="[SAFER_CRITERIA]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="SAFER_CRITERIA_IMAGEPATH"        Value="0x00001" />
+                <Set Name="SAFER_CRITERIA_NOSIGNEDHASH"     Value="0x00002" />
+                <Set Name="SAFER_CRITERIA_IMAGEHASH"        Value="0x00004" />
+                <Set Name="SAFER_CRITERIA_AUTHENTICODE"     Value="0x00008" />
+                <Set Name="SAFER_CRITERIA_URLZONE"          Value="0x00010" />
+                <Set Name="SAFER_CRITERIA_IMAGEPATH_NT"     Value="0x01000" />
+            </Flag>
+        </Variable>
+
+        <!-- URLZONE -->
+        <Variable Name="URLZONE" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="URLZONE_LOCAL_MACHINE"   Value="0" />
+                <Set Name="URLZONE_INTRANET"        Value="1" />
+                <Set Name="URLZONE_TRUSTED"         Value="2" />
+                <Set Name="URLZONE_INTERNET"        Value="3" />
+                <Set Name="URLZONE_UNTRUSTED"       Value="4" />
+            </Enum>
+        </Variable>
+
+        <!-- SAFER_CODE_PROPERTIES -->
+        <Variable Name="SAFER_CODE_PROPERTIES" Type="Struct" Pack="8">
+            <Field Type="DWORD"                         Name="cbSize" />
+            <Field Type="[SAFER_CRITERIA]"              Name="dwCheckFlags" />
+            <Field Type="LPCWSTR"                       Name="ImagePath" />
+            <Field Type="HANDLE"                        Name="hImageFileHandle" />
+            <Field Type="URLZONE"                       Name="UrlZoneId" />
+            <Field Type="BYTE [SAFER_MAX_HASH_SIZE]"    Name="ImageHash" />
+            <Field Type="DWORD"                         Name="dwImageHashSize" />
+            <Field Type="LARGE_INTEGER"                 Name="ImageSize" />
+            <Field Type="ALG_ID"                        Name="HashAlgorithm" />
+            <Field Type="LPBYTE"                        Name="pByteBlock" />
+            <Field Type="HWND"                          Name="hWndParent" />
+            <Field Type="[WTD_UI]"                      Name="dwWVTUIChoice" />
+
+        </Variable>
+        <Variable Name="PSAFER_CODE_PROPERTIES" Type="Pointer" Base="SAFER_CODE_PROPERTIES" />
+
+        <!-- SID_IDENTIFIER_AUTHORITY -->
+        <Variable Name="SID_IDENTIFIER_AUTHORITY" Type="Struct">
+            <Field Type="BYTE [6]" Name="Value" />
+        </Variable>
+        <Variable Name="PSID_IDENTIFIER_AUTHORITY" Type="Pointer" Base="SID_IDENTIFIER_AUTHORITY" />
 
         <!-- AUDIT_POLICY_INFORMATION -->
         <Variable Name="AUDIT_POLICY_INFORMATION" Type="Struct">
@@ -61,11 +243,12 @@
         <Variable Name="[AceFlags-BYTE]" Type="Alias" Base="BYTE">
             <Display Name="BYTE" />
             <Flag>
-                <Set Name="OBJECT_INHERIT_ACE"          Value="0x1" />
-                <Set Name="CONTAINER_INHERIT_ACE"       Value="0x2" />
-                <Set Name="NO_PROPAGATE_INHERIT_ACE"    Value="0x4" />
-                <Set Name="INHERIT_ONLY_ACE"            Value="0x8" />
-                <Set Name="INHERITED_ACE"               Value="0x10" />
+                <Set Name="OBJECT_INHERIT_ACE"                  Value="0x1" />
+                <Set Name="CONTAINER_INHERIT_ACE"               Value="0x2" />
+                <Set Name="SUB_CONTAINERS_AND_OBJECTS_INHERIT"  Value="0x3" />
+                <Set Name="NO_PROPAGATE_INHERIT_ACE"            Value="0x4" />
+                <Set Name="INHERIT_ONLY_ACE"                    Value="0x8" />
+                <Set Name="INHERITED_ACE"                       Value="0x10" />
             </Flag>
         </Variable>
 
@@ -93,50 +276,36 @@
         </Variable>
         <Variable Name="PGENERIC_MAPPING" Type="Pointer" Base="GENERIC_MAPPING" />
 
-        <!-- SE_OBJECT_TYPE -->
-        <Variable Name="SE_OBJECT_TYPE" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="SE_UNKNOWN_OBJECT_TYPE"      Value="0" />
-                <Set Name="SE_FILE_OBJECT"              Value="1" />
-                <Set Name="SE_SERVICE"                  Value="2" />
-                <Set Name="SE_PRINTER"                  Value="3" />
-                <Set Name="SE_REGISTRY_KEY"             Value="4" />
-                <Set Name="SE_LMSHARE"                  Value="5" />
-                <Set Name="SE_KERNEL_OBJECT"            Value="6" />
-                <Set Name="SE_WINDOW_OBJECT"            Value="7" />
-                <Set Name="SE_DS_OBJECT"                Value="8" />
-                <Set Name="SE_DS_OBJECT_ALL"            Value="9" />
-                <Set Name="SE_PROVIDER_DEFINED_OBJECT"  Value="10" />
-                <Set Name="SE_WMIGUID_OBJECT"           Value="11" />
-                <Set Name="SE_REGISTRY_WOW64_32KEY"     Value="12" />
-            </Enum>
-        </Variable>
-        
-        <!-- OBJECTS_AND_NAME -->
-        <Variable Name="OBJECTS_AND_NAME" Type="Struct">
-            <Field Type="DWORD"          	Name="ObjectsPresent" />
-            <Field Type="SE_OBJECT_TYPE" 	Name="ObjectType" />
-            <Field Type="LPTSTR"   	        Name="ObjectTypeName" />
-            <Field Type="LPTSTR"   	        Name="InheritedObjectTypeName" />
-            <Field Type="LPTSTR"   	        Name="ptstrName" />
-        </Variable>
-        <Variable Name="POBJECTS_AND_NAME" Type="Pointer" Base="OBJECTS_AND_NAME" />
-
-        <!-- OBJECTS_AND_SID -->
-        <Variable Name="OBJECTS_AND_SID" Type="Struct">
-            <Field Type="DWORD"   	Name="ObjectsPresent" />
-            <Field Type="GUID"    	Name="ObjectTypeGuid" />
-            <Field Type="GUID"    	Name="InheritedObjectTypeGuid" />
-            <Field Type="SID*"      Name="pSid" />
-        </Variable>
-        <Variable Name="POBJECTS_AND_SID" Type="Pointer" Base="OBJECTS_AND_SID" />
-
         <!-- LUID_AND_ATTRIBUTES -->
         <Variable Name="LUID_AND_ATTRIBUTES" Type="Struct" Pack="4">
             <Field Type="LUID"      Name="Luid" />
             <Field Type="DWORD" 	Name="Attributes" />
         </Variable>
-        <Variable Name="PLUID_AND_ATTRIBUTES" Type="Pointer" Base="LUID_AND_ATTRIBUTES" />
+        <Variable Name="PLUID_AND_ATTRIBUTES"                   Type="Pointer"  Base="LUID_AND_ATTRIBUTES" />
+        <Variable Name="LUID_AND_ATTRIBUTES [ANYSIZE_ARRAY]"    Type="Array"    Base="LUID_AND_ATTRIBUTES" Count="1" />
+
+        <!-- [PRIVILEGE_SET] -->
+        <Variable Name="[PRIVILEGE_SET]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="PRIVILEGE_SET_ALL_NECESSARY" Value="1" />
+            </Flag>
+        </Variable>
+
+        <!-- PRIVILEGE_SET -->
+        <Variable Name="PRIVILEGE_SET" Type="Struct">
+            <Field Type="DWORD"                                 Name="PrivilegeCount" />
+            <Field Type="[PRIVILEGE_SET]"                       Name="Control" />
+            <Field Type="LUID_AND_ATTRIBUTES [ANYSIZE_ARRAY]"   Name="Privilege" Count="PrivilegeCount" />
+        </Variable>
+        <Variable Name="PPRIVILEGE_SET" Type="Pointer" Base="PRIVILEGE_SET" />
+
+        <!-- TOKEN_PRIVILEGES -->
+        <Variable Name="TOKEN_PRIVILEGES" Type="Struct">
+            <Field Type="DWORD"                                 Name="PrivilegeCount" />
+            <Field Type="LUID_AND_ATTRIBUTES [ANYSIZE_ARRAY]"   Name="Privileges" />
+        </Variable>
+        <Variable Name="PTOKEN_PRIVILEGES" Type="Pointer" Base="TOKEN_PRIVILEGES" />
 
         <!-- ACL -->
         <Variable Name="ACL" Type="Struct">
@@ -284,32 +453,6 @@
             </Enum>
         </Variable>
 
-        <!-- TRUSTEE_FORM -->
-        <Variable Name="TRUSTEE_FORM" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="TRUSTEE_IS_SID"              Value="0" />
-                <Set Name="TRUSTEE_IS_NAME"             Value="1" />
-                <Set Name="TRUSTEE_BAD_FORM"            Value="2" />
-                <Set Name="TRUSTEE_IS_OBJECTS_AND_SID"  Value="3" />
-                <Set Name="TRUSTEE_IS_OBJECTS_AND_NAME" Value="4" />
-            </Enum>
-        </Variable>
-
-        <!-- TRUSTEE_TYPE  -->
-        <Variable Name="TRUSTEE_TYPE" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="TRUSTEE_IS_UNKNOWN"          Value="0" />
-                <Set Name="TRUSTEE_IS_USER"             Value="1" />
-                <Set Name="TRUSTEE_IS_GROUP"            Value="2" />
-                <Set Name="TRUSTEE_IS_DOMAIN"           Value="3" />
-                <Set Name="TRUSTEE_IS_ALIAS"            Value="4" />
-                <Set Name="TRUSTEE_IS_WELL_KNOWN_GROUP" Value="5" />
-                <Set Name="TRUSTEE_IS_DELETED"          Value="6" />
-                <Set Name="TRUSTEE_IS_INVALID"          Value="7" />
-                <Set Name="TRUSTEE_IS_COMPUTER"         Value="8" />
-            </Enum>
-        </Variable>
-
         <!-- SECURITY_IMPERSONATION_LEVEL -->
         <Variable Name="SECURITY_IMPERSONATION_LEVEL" Type="Alias" Base="UINT">
             <Enum>
@@ -357,19 +500,6 @@
                 <Set Name="SaferPolicyScopeFlags"                   Value="5" />
                 <Set Name="SaferPolicyDefaultLevelFlags"            Value="6" />
                 <Set Name="SaferPolicyAuthenticodeEnabled"          Value="7" />
-            </Enum>
-        </Variable>
-
-        <!-- ACCESS_MODE -->
-        <Variable Name="ACCESS_MODE" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="NOT_USED_ACCESS"     Value="0" />
-                <Set Name="GRANT_ACCESS"        Value="1" />
-                <Set Name="SET_ACCESS"          Value="2" />
-                <Set Name="DENY_ACCESS"         Value="3" />
-                <Set Name="REVOKE_ACCESS"       Value="4" />
-                <Set Name="SET_AUDIT_SUCCESS"   Value="5" />
-                <Set Name="SET_AUDIT_FAILURE"   Value="6" />
             </Enum>
         </Variable>
 
@@ -584,24 +714,20 @@
         </Variable>
         <Variable Name="POBJECT_TYPE_LIST" Type="Pointer" Base="OBJECT_TYPE_LIST" />
 
-        <!-- SECURITY_ATTRIBUTES -->
-        <!-- TODO: lpSecurityDescriptor = PSECURITY_DESCRIPTOR -->
-        <Variable Name="SECURITY_ATTRIBUTES" Type="Struct">
-            <Field Type="DWORD" 	Name="nLength" />
-            <Field Type="LPVOID" 	Name="lpSecurityDescriptor" />
-            <Field Type="BOOL" 	    Name="bInheritHandle" />
-        </Variable>
-        <Variable Name="LPSECURITY_ATTRIBUTES"          Type="Pointer" Base="SECURITY_ATTRIBUTES" />
-        <Variable Name="PSECURITY_ATTRIBUTES"           Type="Pointer" Base="SECURITY_ATTRIBUTES" />
-        <Variable Name="const LPSECURITY_ATTRIBUTES"    Type="Pointer" Base="SECURITY_ATTRIBUTES" />
-        <Variable Name="const SECURITY_ATTRIBUTES*"     Type="Pointer" Base="SECURITY_ATTRIBUTES" />
-
         <!-- SID_AND_ATTRIBUTES -->
         <Variable Name="SID_AND_ATTRIBUTES" Type="Struct">
             <Field Type="PSID" 	Name="Sid" />
             <Field Type="DWORD" Name="Attributes" />
         </Variable>
-        <Variable Name="PSID_AND_ATTRIBUTES" Type="Pointer" Base="SID_AND_ATTRIBUTES" />
+        <Variable Name="PSID_AND_ATTRIBUTES"                Type="Pointer"  Base="SID_AND_ATTRIBUTES" />
+        <Variable Name="SID_AND_ATTRIBUTES [ANYSIZE_ARRAY]" Type="Array"    Base="SID_AND_ATTRIBUTES" Count="1" />
+
+        <!-- TOKEN_GROUPS -->
+        <Variable Name="TOKEN_GROUPS" Type="Struct">
+            <Field Type="DWORD"                                 Name="GroupCount" />
+            <Field Type="SID_AND_ATTRIBUTES [ANYSIZE_ARRAY]"    Name="Groups" Count="GroupCount" />
+        </Variable>
+        <Variable Name="PTOKEN_GROUPS" Type="Pointer" Base="TOKEN_GROUPS" />
 
         <!-- SECURITY_DESCRIPTOR -->
         <Variable Name="SECURITY_DESCRIPTOR" Type="Struct">
@@ -615,6 +741,17 @@
         </Variable>
         <Variable Name="PSECURITY_DESCRIPTOR"   Type="Pointer" Base="SECURITY_DESCRIPTOR" />
         <Variable Name="PSECURITY_DESCRIPTOR*"  Type="Pointer"  Base="PSECURITY_DESCRIPTOR" />
+
+        <!-- SECURITY_ATTRIBUTES -->
+        <Variable Name="SECURITY_ATTRIBUTES" Type="Struct">
+            <Field Type="DWORD" 	            Name="nLength" />
+            <Field Type="PSECURITY_DESCRIPTOR" 	Name="lpSecurityDescriptor" />
+            <Field Type="BOOL" 	                Name="bInheritHandle" />
+        </Variable>
+        <Variable Name="LPSECURITY_ATTRIBUTES"          Type="Pointer" Base="SECURITY_ATTRIBUTES" />
+        <Variable Name="PSECURITY_ATTRIBUTES"           Type="Pointer" Base="SECURITY_ATTRIBUTES" />
+        <Variable Name="const LPSECURITY_ATTRIBUTES"    Type="Pointer" Base="SECURITY_ATTRIBUTES" />
+        <Variable Name="const SECURITY_ATTRIBUTES*"     Type="Pointer" Base="SECURITY_ATTRIBUTES" />
 
         <!-- SECURITY_DESCRIPTOR_RELATIVE -->
         <Variable Name="SECURITY_DESCRIPTOR_RELATIVE" Type="Struct">

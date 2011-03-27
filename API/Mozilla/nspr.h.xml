@@ -8,6 +8,21 @@
     <HelpUrl Name="Mozilla"         Url="https://developer.mozilla.org/en/{$QUERY}" />
     <HelpUrl Name="Mozilla SSL"     Url="http://www.mozilla.org/projects/security/pki/nss/ref/ssl/sslfnc.html" />
     <Headers>
+        
+        <!-- TODO : Structures/Unions (Complex) -->
+        <Variable Name="const PRIOMethods*"             Type="Alias"    Base="LPVOID" />
+        <Variable Name="PRSocketOptionData*"            Type="Alias"    Base="LPVOID" />
+        <Variable Name="PRNetAddr*"                     Type="Alias"    Base="LPVOID" />
+        <Variable Name="PRNetAddr**"                    Type="Pointer"  Base="PRNetAddr*" />
+        <Variable Name="const PRNetAddr*"               Type="Alias"    Base="LPVOID" />
+        <Variable Name="PRFileDesc*"                    Type="Alias"    Base="LPVOID" />
+        <Variable Name="PRFileDesc**"                   Type="Pointer"  Base="PRFileDesc*" />
+        <Variable Name="PRUword"                        Type="Alias"    Base="UINT_PTR" />
+        <Variable Name="PK11SlotInfo*"                  Type="Alias"    Base="LPVOID" />
+        <Variable Name="CERTCertificateStr*"            Type="Alias"    Base="LPVOID" />
+        <Variable Name="CERTCertificateStr**"           Type="Pointer"  Base="CERTCertificateStr*" />
+        <Variable Name="CERTCertificate*"               Type="Alias"    Base="LPVOID" />
+
         <!-- Variables -->
         <Variable Name="PRUintn"                        Type="Alias"    Base="UINT" />
         <Variable Name="PRUintn*"                       Type="Pointer"  Base="PRUintn" />
@@ -45,36 +60,126 @@
         <Variable Name="PRStack*"                       Type="Alias"    Base="LPVOID" />
         <Variable Name="PRStackElem*"                   Type="Alias"    Base="LPVOID" />
         <Variable Name="PRProcess*"                     Type="Alias"    Base="LPVOID" />
-        <Variable Name="char *const*"                   Type="Alias"    Base="char**" />
+        <Variable Name="char* const*"                   Type="Alias"    Base="char**" />
+        <Variable Name="SSLHandshakeCallback"           Type="Alias"    Base="LPVOID" />
+        <Variable Name="CK_OBJECT_HANDLE"               Type="Alias"    Base="ULONG" />
+        <Variable Name="SSLGetClientAuthData"           Type="Alias"    Base="LPVOID" />
+        <Variable Name="SSLBadCertHandler"              Type="Alias"    Base="LPVOID" />
+        <Variable Name="SSLAuthCertificate"             Type="Alias"    Base="LPVOID" />
 
         <!-- TODO: PRErrorCodes are defined in prerr.h. Decode?
         http://www.opensource.apple.com/source/libsecurity_asn1/libsecurity_asn1-36064/lib/prerr.h
         -->
         <Variable Name="PRErrorCode"                    Type="Alias"    Base="PRInt32" />
 
-        <!-- TODO: Structures -->
-        <Variable Name="PRFileDesc*"                    Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRFileDesc**"                   Type="Pointer"  Base="PRFileDesc*" />
-        <Variable Name="PRNetAddr*"                     Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRNetAddr**"                    Type="Pointer"  Base="PRNetAddr*" />
-        <Variable Name="const PRNetAddr*"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRSocketOptionData*"            Type="Alias"    Base="LPVOID" />
-        <Variable Name="const PRIOMethods*"             Type="Alias"    Base="LPVOID" />
+        <!-- PLArena -->
+        <Variable Name="PLArena" Type="Struct">
+            <!-- TODO: Self-Referencing - next is PLArena* -->
+            <Field Type="LPVOID"        Name="next" Display="PLArena*" />
+            <Field Type="PRUword"       Name="base" />
+            <Field Type="PRUword"       Name="limit" />
+            <Field Type="PRUword"       Name="avail" />
+        </Variable>
+        <Variable Name="PLArena*" Type="Pointer" Base="PLArena" />
 
-        <!-- TODO: Structures/Variables -->
-        <Variable Name="CERTCertificate*"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="SECKEYPrivateKey*"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="SSLAuthCertificate"             Type="Alias"    Base="LPVOID" />
-        <Variable Name="SSLBadCertHandler"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="SSLGetClientAuthData"           Type="Alias"    Base="LPVOID" />
-        <Variable Name="struct CERTDistNamesStr*"       Type="Alias"    Base="LPVOID" />
-        <Variable Name="CERTCertificateStr*"            Type="Alias"    Base="LPVOID" />
-        <Variable Name="struct CERTCertificateStr**"    Type="Pointer"  Base="CERTCertificateStr*" />
-        <Variable Name="SECKEYPrivateKeyStr*"           Type="Alias"    Base="LPVOID" />
-        <Variable Name="struct SECKEYPrivateKeyStr**"   Type="Pointer"  Base="SECKEYPrivateKeyStr*" />
-        <Variable Name="SSLHandshakeCallback"           Type="Alias"    Base="LPVOID" />
-        <Variable Name="SECItem*"                       Type="Alias"    Base="LPVOID" />
-        
+        <!-- PLArenaStats -->
+        <Variable Name="PLArenaStats" Type="Struct">
+            <!-- TODO: Self-Referencing - next is PLArenaStats* -->
+            <Field Type="LPVOID"            Name="next" Display="PLArenaStats*" />
+            <Field Type="char*"             Name="name" />
+            <Field Type="PRUint32"          Name="narenas" />
+            <Field Type="PRUint32"          Name="nallocs" />
+            <Field Type="PRUint32"          Name="nreclaims" />
+            <Field Type="PRUint32"          Name="nmallocs" />
+            <Field Type="PRUint32"          Name="ndeallocs" />
+            <Field Type="PRUint32"          Name="ngrows" />
+            <Field Type="PRUint32"          Name="ninplace" />
+            <Field Type="PRUint32"          Name="nreleases" />
+            <Field Type="PRUint32"          Name="nfastrels" />
+            <Field Type="PRUint32"          Name="nbytes" />
+            <Field Type="PRUint32"          Name="maxalloc" />
+            <Field Type="PRFloat64"         Name="variance" />
+        </Variable>
+
+        <!-- PLArenaPool -->
+        <Variable Name="PLArenaPool" Type="Struct">
+            <Field Type="PLArena"       Name="first" />
+            <Field Type="PLArena*"      Name="current" />
+            <Field Type="PRUint32"      Name="arenasize" />
+            <Field Type="PRUword"       Name="mask" />
+            <Field Type="PLArenaStats"  Name="stats" />
+        </Variable>
+        <Variable Name="PLArenaPool*" Type="Pointer" Base="PLArenaPool" />
+
+        <!-- KeyType -->
+        <Variable Name="KeyType" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="nullKey"         Value="0" />
+                <Set Name="rsaKey"          Value="1" />
+                <Set Name="dsaKey"          Value="2" />
+                <Set Name="fortezzaKey"     Value="3" />
+                <Set Name="dhKey"           Value="4" />
+                <Set Name="keaKey"          Value="5" />
+                <Set Name="ecKey"           Value="6" />
+                <Set Name="rsaPssKey"       Value="7" />
+                <Set Name="rsaOaepKey"      Value="8" />
+            </Enum>
+        </Variable>
+
+        <!-- SECKEYPrivateKeyStr -->
+        <Variable Name="SECKEYPrivateKeyStr" Type="Struct">
+            <Field Type="PLArenaPool*"      Name="arena" />
+            <Field Type="KeyType"           Name="keyType" />
+            <Field Type="PK11SlotInfo*"     Name="pkcs11Slot" />
+            <Field Type="CK_OBJECT_HANDLE"  Name="pkcs11ID" />
+            <Field Type="PRBool"            Name="pkcs11IsTemp" />
+            <Field Type="void*"             Name="wincx" />
+            <Field Type="PRUint32"          Name="staticflags" />
+        </Variable>
+        <Variable Name="SECKEYPrivateKeyStr*"   Type="Pointer"  Base="SECKEYPrivateKeyStr" />
+        <Variable Name="SECKEYPrivateKeyStr**"  Type="Pointer"  Base="SECKEYPrivateKeyStr*" />
+        <Variable Name="SECKEYPrivateKey"       Type="Alias"    Base="SECKEYPrivateKeyStr" />
+        <Variable Name="SECKEYPrivateKey*"      Type="Pointer"  Base="SECKEYPrivateKey" />
+
+        <!-- SECItemType -->
+        <Variable Name="SECItemType" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="siBuffer"                Value="0" />
+                <Set Name="siClearDataBuffer"       Value="1" />
+                <Set Name="siCipherDataBuffer"      Value="2" />
+                <Set Name="siDERCertBuffer"         Value="3" />
+                <Set Name="siEncodedCertBuffer"     Value="4" />
+                <Set Name="siDERNameBuffer"         Value="5" />
+                <Set Name="siEncodedNameBuffer"     Value="6" />
+                <Set Name="siAsciiNameString"       Value="7" />
+                <Set Name="siAsciiString"           Value="8" />
+                <Set Name="siDEROID"                Value="9" />
+                <Set Name="siUnsignedInteger"       Value="10" />
+                <Set Name="siUTCTime"               Value="11" />
+                <Set Name="siGeneralizedTime"       Value="12" />
+                <Set Name="siVisibleString"         Value="13" />
+                <Set Name="siUTF8String"            Value="14" />
+                <Set Name="siBMPString"             Value="15" />
+            </Enum>
+        </Variable>
+
+        <!-- SECItem -->
+        <Variable Name="SECItem" Type="Struct">
+            <Field Type="SECItemType"       Name="type" />
+            <Field Type="unsigned char*"    Name="data" />
+            <Field Type="unsigned int"      Name="len" />
+        </Variable>
+        <Variable Name="SECItem*" Type="Pointer" Base="SECItem" />
+
+        <!-- CERTDistNamesStr -->
+        <Variable Name="CERTDistNamesStr" Type="Struct">
+            <Field Type="PLArenaPool*"  Name="arena" />
+            <Field Type="int"           Name="nnames" />
+            <Field Type="SECItem*"      Name="names" Count="nnames" />
+            <Field Type="void*"         Name="head" />
+        </Variable>
+        <Variable Name="CERTDistNamesStr*" Type="Pointer" Base="CERTDistNamesStr" />
+
         <!-- PRFileType -->
         <Variable Name="PRFileType" Type="Alias" Base="UINT">
             <Enum>

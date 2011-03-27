@@ -8,16 +8,76 @@
     <Include Filename="Headers\native.h.xml" />
     <Module Name="ImageHlp.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
 
+        <!-- TODO: Structures (32/64 Differences) -->
+        <Variable Name="PIMAGE_LOAD_CONFIG_DIRECTORY"    Type="Alias"        Base="LPVOID" />
+
         <!-- Variables -->
         <Variable Name="DIGEST_FUNCTION"                 Type="Alias"        Base="LPVOID" />
         <Variable Name="DIGEST_HANDLE"                   Type="Alias"        Base="PVOID" />
         <Variable Name="PIMAGEHLP_STATUS_ROUTINE"        Type="Alias"        Base="LPVOID" />
-        
-        <!-- TODO: Structures -->
-        <Variable Name="PLOADED_IMAGE"                   Type="Alias"        Base="LPVOID" />
-        <Variable Name="PIMAGE_LOAD_CONFIG_DIRECTORY"    Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPWIN_CERTIFICATE"               Type="Alias"        Base="LPVOID" />
 
+        <!-- [WIN_CERT_TYPE] -->
+        <Variable Name="[WIN_CERT_TYPE]" Type="Alias" Base="WORD">
+            <Display Name="WORD" />
+            <Flag>
+                <Set Name="WIN_CERT_TYPE_X509"                  Value="0x0001" />
+                <Set Name="WIN_CERT_TYPE_PKCS_SIGNED_DATA"      Value="0x0002" />
+                <Set Name="WIN_CERT_TYPE_RESERVED_1"            Value="0x0003" />
+                <Set Name="WIN_CERT_TYPE_TS_STACK_SIGNED"       Value="0x0004" />
+            </Flag>
+        </Variable>
+
+        <!-- WIN_CERTIFICATE -->
+        <Variable Name="WIN_CERTIFICATE" Type="Struct">
+            <Field Type="DWORD"                 Name="dwLength" />
+            <Field Type="WORD"                  Name="wRevision" />
+            <Field Type="[WIN_CERT_TYPE]"       Name="wCertificateType" />
+            <Field Type="BYTE [ANYSIZE_ARRAY]"  Name="bCertificate" />
+        </Variable>
+        <Variable Name="LPWIN_CERTIFICATE" Type="Pointer" Base="WIN_CERTIFICATE" />
+
+        <!-- [ImageCharacteristics] -->
+        <Variable Name="[ImageCharacteristics]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="IMAGE_FILE_RELOCS_STRIPPED"          Value="0x0001" />
+                <Set Name="IMAGE_FILE_EXECUTABLE_IMAGE"         Value="0x0002" />
+                <Set Name="IMAGE_FILE_LINE_NUMS_STRIPPED"       Value="0x0004" />
+                <Set Name="IMAGE_FILE_LOCAL_SYMS_STRIPPED"      Value="0x0008" />
+                <Set Name="IMAGE_FILE_AGGRESIVE_WS_TRIM"        Value="0x0010" />
+                <Set Name="IMAGE_FILE_LARGE_ADDRESS_AWARE"      Value="0x0020" />
+                <Set Name="IMAGE_FILE_BYTES_REVERSED_LO"        Value="0x0080" />
+                <Set Name="IMAGE_FILE_32BIT_MACHINE"            Value="0x0100" />
+                <Set Name="IMAGE_FILE_DEBUG_STRIPPED"           Value="0x0200" />
+                <Set Name="IMAGE_FILE_REMOVABLE_RUN_FROM_SWAP"  Value="0x0400" />
+                <Set Name="IMAGE_FILE_NET_RUN_FROM_SWAP"        Value="0x0800" />
+                <Set Name="IMAGE_FILE_SYSTEM"                   Value="0x1000" />
+                <Set Name="IMAGE_FILE_DLL"                      Value="0x2000" />
+                <Set Name="IMAGE_FILE_UP_SYSTEM_ONLY"           Value="0x4000" />
+                <Set Name="IMAGE_FILE_BYTES_REVERSED_HI"        Value="0x8000" />
+            </Flag>
+        </Variable>
+
+        <!-- LOADED_IMAGE -->
+        <Variable Name="LOADED_IMAGE" Type="Struct">
+            <Field Type="PSTR"                      Name="ModuleName" />
+            <Field Type="HANDLE"                    Name="hFile" />
+            <Field Type="PUCHAR"                    Name="MappedAddress" />
+            <Field Type="PIMAGE_NT_HEADERS"         Name="FileHeader" />
+            <Field Type="PIMAGE_SECTION_HEADER"     Name="LastRvaSection" />
+            <Field Type="ULONG"                     Name="NumberOfSections" />
+            <Field Type="PIMAGE_SECTION_HEADER"     Name="Sections" />
+            <Field Type="[ImageCharacteristics]"    Name="Characteristics" />
+            <Field Type="BOOLEAN"                   Name="fSystemImage" />
+            <Field Type="BOOLEAN"                   Name="fDOSImage" />
+            <Field Type="BOOLEAN"                   Name="fReadOnly" />
+            <Field Type="UCHAR"                     Name="Version" />
+            <Field Type="LIST_ENTRY"                Name="Links" />
+            <Field Type="ULONG"                     Name="SizeOfImage" />
+        </Variable>
+        <Variable Name="PLOADED_IMAGE" Type="Pointer" Base="LOADED_IMAGE" />
+
+        <!-- API's -->
         <Category Name="Diagnostics/Debugging and Error Handling/Debug Help Library/Image Help Library" />
         <Api Name="GetImageConfigInformation">
             <Param Type="PLOADED_IMAGE" Name="LoadedImage" />

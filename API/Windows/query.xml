@@ -16,14 +16,55 @@
         <Variable Name="DWORD const*"                   Type="Alias"    Base="DWORD*" />
         <Variable Name="WCHAR const* const*"            Type="Alias"    Base="WCHAR**" />
         <Variable Name="PROPVARIANT const*"             Type="Alias"    Base="PROPVARIANT*" />
-        
-        <!-- TODO: Structures -->
+
+        <!-- TODO: Unions (Very Complex) -->
         <Variable Name="DBCOMMANDTREE*"                 Type="Alias"    Base="LPVOID" />
         <Variable Name="DBCOMMANDTREE**"                Type="Pointer"  Base="DBCOMMANDTREE*" />
         <Variable Name="DBCOMMANDTREE const*"           Type="Alias"    Base="DBCOMMANDTREE*" />
         <Variable Name="DBCOMMANDTREE const* const*"    Type="Alias"    Base="DBCOMMANDTREE**" />
-        <Variable Name="CIPROPERTYDEF*"                 Type="Alias"    Base="LPVOID" />
-        <Variable Name="CIPROPERTYDEF const*"           Type="Alias"    Base="CIPROPERTYDEF*" />
+
+        <!-- DBKIND -->
+        <Variable Name="DBKIND" Type="Alias" Base="DWORD">
+            <Enum>
+                <Set Name="DBKIND_GUID_NAME"        Value="0" />
+                <Set Name="DBKIND_GUID_PROPID"      Value="1" />
+                <Set Name="DBKIND_NAME"             Value="2" />
+                <Set Name="DBKIND_PGUID_NAME"       Value="3" />
+                <Set Name="DBKIND_PGUID_PROPID"     Value="4" />
+                <Set Name="DBKIND_PROPID"           Value="5" />
+                <Set Name="DBKIND_GUID"             Value="6" />
+            </Enum>
+        </Variable>
+
+        <!-- [DBID_u1] -->
+        <Variable Name="[DBID_u1]" Type="Union">
+            <Display Name="union" />
+            <Field Type="GUID"  Name="guid" />
+            <Field Type="GUID*" Name="pguid" />
+        </Variable>
+
+        <!-- [DBID_u2] -->
+        <Variable Name="[DBID_u2]" Type="Union">
+            <Display Name="union" />
+            <Field Type="LPOLESTR"  Name="pwszName" />
+            <Field Type="ULONG"     Name="ulPropid" />
+        </Variable>
+
+        <!-- DBID -->
+        <Variable Name="DBID" Type="Struct">
+            <Field Type="[DBID_u1]"     Name="uGuid" />
+            <Field Type="DBKIND"        Name="eKind" />
+            <Field Type="[DBID_u2]"     Name="uName" />
+        </Variable>
+
+        <!-- CIPROPERTYDEF -->
+        <Variable Name="CIPROPERTYDEF" Type="Struct">
+            <Field Type="LPWSTR"    Name="wcsFriendlyName" />
+            <Field Type="DWORD"     Name="dbType" />
+            <Field Type="DBID"      Name="dbCol" />
+        </Variable>
+        <Variable Name="CIPROPERTYDEF*"         Type="Pointer" Base="CIPROPERTYDEF" />
+        <Variable Name="CIPROPERTYDEF const*"   Type="Pointer" Base="CIPROPERTYDEF" />
 
         <!-- CI_STATE -->
         <Variable Name="CI_STATE" Type="Struct" Pack="4">

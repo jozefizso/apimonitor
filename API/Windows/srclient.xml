@@ -7,9 +7,80 @@
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="SrClient.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         
-        <!-- TODO: Structures -->
-        <Variable Name="PRESTOREPOINTINFO"   Type="Alias"        Base="LPVOID" />
-        <Variable Name="PSTATEMGRSTATUS"     Type="Alias"        Base="LPVOID" />
+        <!-- Variables -->
+        <Variable Name="CHAR [MAX_DESC]"    Type="Array" Base="CHAR"  Count="64" />
+        <Variable Name="WCHAR [MAX_DESC_W]" Type="Array" Base="WCHAR" Count="256" />
+
+        <!-- [RESTOREPOINT_EVENT] -->
+        <Variable Name="[RESTOREPOINT_EVENT]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="BEGIN_SYSTEM_CHANGE"                 Value="100" />
+                <Set Name="END_SYSTEM_CHANGE"                   Value="101" />
+                <Set Name="BEGIN_NESTED_SYSTEM_CHANGE"          Value="102" />
+                <Set Name="END_NESTED_SYSTEM_CHANGE"            Value="103" />
+                <Set Name="BEGIN_NESTED_SYSTEM_CHANGE_NORP"     Value="104" />
+            </Enum>
+        </Variable>
+
+        <!-- [RESTOREPOINT_TYPE] -->
+        <Variable Name="[RESTOREPOINT_TYPE]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="APPLICATION_INSTALL"         Value="0" />
+                <Set Name="APPLICATION_UNINSTALL"       Value="1" />
+                <Set Name="RESTORE"                     Value="6" />
+                <Set Name="CHECKPOINT"                  Value="7" />
+                <Set Name="DEVICE_DRIVER_INSTALL"       Value="10" />
+                <Set Name="FIRSTRUN"                    Value="11" />
+                <Set Name="MODIFY_SETTINGS"             Value="12" />
+                <Set Name="CANCELLED_OPERATION"         Value="13" />
+                <Set Name="BACKUP_RECOVERY"             Value="14" />
+                <Set Name="BACKUP"                      Value="15" />
+                <Set Name="MANUAL_CHECKPOINT"           Value="16" />
+                <Set Name="WINDOWS_UPDATE"              Value="17" />
+                <Set Name="CRITICAL_UPDATE"             Value="18" />
+            </Enum>
+        </Variable>
+
+        <!-- RESTOREPOINTINFOA -->
+        <Variable Name="RESTOREPOINTINFOA" Type="Struct">
+            <Field Type="[RESTOREPOINT_EVENT]"  Name="dwEventType" />
+            <Field Type="[RESTOREPOINT_TYPE]"   Name="dwRestorePtType" />
+            <Field Type="INT64"                 Name="llSequenceNumber" />
+            <Field Type="CHAR [MAX_DESC]"       Name="szDescription" />
+        </Variable>
+        <Variable Name="PRESTOREPOINTINFOA" Type="Pointer" Base="RESTOREPOINTINFOA" />
+
+        <!-- RESTOREPOINTINFOW -->
+        <Variable Name="RESTOREPOINTINFOW" Type="Struct">
+            <Field Type="[RESTOREPOINT_EVENT]"  Name="dwEventType" />
+            <Field Type="[RESTOREPOINT_TYPE]"   Name="dwRestorePtType" />
+            <Field Type="INT64"                 Name="llSequenceNumber" />
+            <Field Type="WCHAR [MAX_DESC_W]"    Name="szDescription" />
+        </Variable>
+        <Variable Name="PRESTOREPOINTINFOW" Type="Pointer" Base="RESTOREPOINTINFOW" />
+
+        <!-- [StateMgrStatus] -->
+        <Variable Name="[StateMgrStatus]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="ERROR_SUCCESS"           Value="0" />
+                <Set Name="ERROR_BAD_ENVIRONMENT"   Value="10" />
+                <Set Name="ERROR_DISK_FULL"         Value="112" />
+                <Set Name="ERROR_INTERNAL_ERROR"    Value="1359" />
+                <Set Name="ERROR_INVALID_DATA"      Value="13" />
+                <Set Name="ERROR_SERVICE_DISABLED"  Value="1058" />
+                <Set Name="ERROR_TIMEOUT"           Value="1460" />
+            </Enum>
+        </Variable>
+
+        <!-- STATEMGRSTATUS -->
+        <Variable Name="STATEMGRSTATUS" Type="Struct" Pack="1">
+            <Field Type="[StateMgrStatus]"  Name="nStatus" />
+            <Field Type="INT64"             Name="llSequenceNumber" />
+        </Variable>
+        <Variable Name="PSTATEMGRSTATUS" Type="Pointer" Base="LPVOID" />
 
         <!-- System Restore -->
         <Category Name="Administration and Management/System Configuration and Servicing/System Restore" />
@@ -18,8 +89,14 @@
             <Return Type="DWORD" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="SRSetRestorePoint" BothCharset="True">
-            <Param Type="PRESTOREPOINTINFO" Name="pRestorePtSpec" />
+        <Api Name="SRSetRestorePointA">
+            <Param Type="PRESTOREPOINTINFOA" Name="pRestorePtSpec" />
+            <Param Type="PSTATEMGRSTATUS" Name="pSMgrStatus" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SRSetRestorePointW">
+            <Param Type="PRESTOREPOINTINFOW" Name="pRestorePtSpec" />
             <Param Type="PSTATEMGRSTATUS" Name="pSMgrStatus" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />

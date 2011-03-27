@@ -6,7 +6,32 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Headers>
-        <!-- TODO: Structures -->
-        <Variable Name="PSP_DRVINFO_DATA" Type="Alias" Base="LPVOID" />
+
+        <!-- Variables -->
+        <Variable Name="TCHAR [LINE_LEN]" Type="Array" Base="TCHAR" Count="256" />
+
+        <!-- [DiDriverType] -->
+        <Variable Name="[DiDriverType]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="SPDIT_NODRIVER"      Value="0x00000000" />
+                <Set Name="SPDIT_CLASSDRIVER"   Value="0x00000001" />
+                <Set Name="SPDIT_COMPATDRIVER"  Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <!-- SP_DRVINFO_DATA -->
+        <Variable Name="SP_DRVINFO_DATA" Type="Struct" Pack32="1" Pack64="8">
+            <Field Type="DWORD"             Name="cbSize" />
+            <Field Type="[DiDriverType]"    Name="DriverType" />
+            <Field Type="ULONG_PTR"         Name="Reserved" />
+            <Field Type="TCHAR [LINE_LEN]"  Name="Description" />
+            <Field Type="TCHAR [LINE_LEN]"  Name="MfgName" />
+            <Field Type="TCHAR [LINE_LEN]"  Name="ProviderName" />
+            <Field Type="FILETIME"          Name="DriverDate" />
+            <Field Type="DWORDLONG"         Name="DriverVersion" />
+        </Variable>
+        <Variable Name="PSP_DRVINFO_DATA" Type="Pointer" Base="SP_DRVINFO_DATA" />
+
     </Headers>
 </ApiMonitor>

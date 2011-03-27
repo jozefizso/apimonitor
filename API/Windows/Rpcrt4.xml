@@ -8,15 +8,37 @@
     <Include Filename="Headers\cryptography.h.xml" />
     <Include Filename="Headers\rpc.h.xml" />
     <Module Name="Rpcrt4.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
+        
         <!-- Variables -->
         <Variable Name="handle_t"                   Type="Alias"    Base="LPVOID" />
         <Variable Name="handle_t*"                  Type="Pointer"  Base="handle_t" />
         <Variable Name="MIDL_ES_READ"               Type="Alias"    Base="LPVOID" />
         <Variable Name="MIDL_ES_ALLOC"              Type="Alias"    Base="LPVOID" />
         <Variable Name="MIDL_ES_WRITE"              Type="Alias"    Base="LPVOID" />
-        
-        <!-- TODO: Structures -->
-        <Variable Name="NDR_USER_MARSHAL_INFO*"     Type="Alias"    Base="LPVOID" />
+        <Variable Name="ULONG_PTR [5]"              Type="Array"    Base="ULONG_PTR" Count="5" />
+
+        <!-- NDR_USER_MARSHAL_INFO_LEVEL1 -->
+        <Variable Name="NDR_USER_MARSHAL_INFO_LEVEL1" Type="Struct">
+            <Field Type="void*"                 Name="Buffer" />
+            <Field Type="unsigned long"         Name="BufferSize" />
+            <Field Type="void*"                 Name="pfnAllocate" />
+            <Field Type="void*"                 Name="pfnFree" />
+            <Field Type="IRpcChannelBuffer*"    Name="pRpcChannelBuffer" />
+            <Field Type="ULONG_PTR [5]"         Name="Reserved" />
+        </Variable>
+
+        <!-- [NDR_USER_MARSHAL_INFO_u] -->
+        <Variable Name="[NDR_USER_MARSHAL_INFO_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="NDR_USER_MARSHAL_INFO_LEVEL1" Name="Level1" />
+        </Variable>
+
+        <!-- NDR_USER_MARSHAL_INFO -->
+        <Variable Name="NDR_USER_MARSHAL_INFO" Type="Struct">
+            <Field Type="unsigned long"                 Name="InformationLevel" />
+            <Field Type="[NDR_USER_MARSHAL_INFO_u]"     Name="" />
+        </Variable>
+        <Variable Name="NDR_USER_MARSHAL_INFO*" Type="Pointer" Base="NDR_USER_MARSHAL_INFO" />
 
         <Variable Name="[BindingOptions]" Type="Alias" Base="unsigned long">
             <Display Name="unsigned long" />
@@ -216,9 +238,9 @@
             <Param Type="RPC_BINDING_HANDLE" Name="ClientBinding" />
             <Param Type="RPC_AUTHZ_HANDLE*" Name="Privs" />
             <Param Type="RPC_TSTR*" Name="ServerPrincName" OutputOnly="True" />
-            <Param Type="[AuthenticationLevel*]" Name="AuthnLevel" />
-            <Param Type="[AuthenticationService*]" Name="AuthnSvc" />
-            <Param Type="[AuthorizationService*]" Name="AuthzSvc" />
+            <Param Type="[RPC_C_AUTHN_LEVEL*]" Name="AuthnLevel" />
+            <Param Type="[RPC_C_AUTHN_SVC*]" Name="AuthnSvc" />
+            <Param Type="[RPC_C_AUTHZ*]" Name="AuthzSvc" />
             <Return Type="RPC_STATUS" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -226,9 +248,9 @@
             <Param Type="RPC_BINDING_HANDLE" Name="ClientBinding" />
             <Param Type="RPC_AUTHZ_HANDLE*" Name="Privs" />
             <Param Type="RPC_TSTR*" Name="ServerPrincName" OutputOnly="True" />
-            <Param Type="[AuthenticationLevel*]" Name="AuthnLevel" />
-            <Param Type="[AuthenticationService*]" Name="AuthnSvc" />
-            <Param Type="[AuthorizationService*]" Name="AuthzSvc" />
+            <Param Type="[RPC_C_AUTHN_LEVEL*]" Name="AuthnLevel" />
+            <Param Type="[RPC_C_AUTHN_SVC*]" Name="AuthnSvc" />
+            <Param Type="[RPC_C_AUTHZ*]" Name="AuthzSvc" />
             <Param Type="unsigned long" Name="flags" />
             <Return Type="RPC_STATUS" />
             <Success Return="Equal" Value="0" />
@@ -236,20 +258,20 @@
         <Api Name="RpcBindingInqAuthInfo" BothCharset="True">
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
             <Param Type="RPC_TSTR*" Name="ServerPrincName" />
-            <Param Type="[AuthenticationLevel*]" Name="AuthnLevel" />
-            <Param Type="[AuthenticationService*]" Name="AuthnSvc" />
+            <Param Type="[RPC_C_AUTHN_LEVEL*]" Name="AuthnLevel" />
+            <Param Type="[RPC_C_AUTHN_SVC*]" Name="AuthnSvc" />
             <Param Type="RPC_AUTH_IDENTITY_HANDLE*" Name="AuthIdentity" />
-            <Param Type="[AuthorizationService*]" Name="AuthzSvc" />
+            <Param Type="[RPC_C_AUTHZ*]" Name="AuthzSvc" />
             <Return Type="RPC_STATUS" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcBindingInqAuthInfoEx" BothCharset="True">
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
             <Param Type="RPC_TSTR" Name="ServerPrincName" />
-            <Param Type="[AuthenticationLevel*]" Name="AuthnLevel" />
-            <Param Type="[AuthenticationService*]" Name="AuthnSvc" />
+            <Param Type="[RPC_C_AUTHN_LEVEL*]" Name="AuthnLevel" />
+            <Param Type="[RPC_C_AUTHN_SVC*]" Name="AuthnSvc" />
             <Param Type="RPC_AUTH_IDENTITY_HANDLE*" Name="AuthIdentity" />
-            <Param Type="[AuthorizationService*]" Name="AuthzSvc" />
+            <Param Type="[RPC_C_AUTHZ*]" Name="AuthzSvc" />
             <Param Type="unsigned long" Name="RpcQosVersion" />
             <Param Type="RPC_SECURITY_QOS*" Name="SecurityQos" />
             <Return Type="RPC_STATUS" />
@@ -282,8 +304,8 @@
         <Api Name="RpcBindingSetAuthInfo" BothCharset="True">
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
             <Param Type="RPC_TSTR" Name="ServerPrincName" />
-            <Param Type="[AuthenticationLevel]" Name="AuthnLevel" />
-            <Param Type="[AuthenticationService]" Name="AuthnSvc" />
+            <Param Type="[RPC_C_AUTHN_LEVEL]" Name="AuthnLevel" />
+            <Param Type="[RPC_C_AUTHN_SVC]" Name="AuthnSvc" />
             <Param Type="RPC_AUTH_IDENTITY_HANDLE" Name="AuthIdentity" />
             <Param Type="unsigned long" Name="AuthzService" />
             <Return Type="RPC_STATUS" />
@@ -292,10 +314,10 @@
         <Api Name="RpcBindingSetAuthInfoEx" BothCharset="True">
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
             <Param Type="RPC_TSTR" Name="ServerPrincName" />
-            <Param Type="[AuthenticationLevel]" Name="AuthnLevel" />
-            <Param Type="[AuthenticationService]" Name="AuthnSvc" />
+            <Param Type="[RPC_C_AUTHN_LEVEL]" Name="AuthnLevel" />
+            <Param Type="[RPC_C_AUTHN_SVC]" Name="AuthnSvc" />
             <Param Type="RPC_AUTH_IDENTITY_HANDLE" Name="AuthIdentity" />
-            <Param Type="[AuthorizationService]" Name="AuthzSvc" />
+            <Param Type="[RPC_C_AUTHZ]" Name="AuthzSvc" />
             <Param Type="RPC_SECURITY_QOS*" Name="SecurityQOS" />
             <Return Type="RPC_STATUS" />
             <Success Return="Equal" Value="0" />
@@ -484,8 +506,8 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcMgmtInqDefaultProtectLevel">
-            <Param Type="[AuthenticationService]" Display="unsigned int" Name="AuthnSvc" />
-            <Param Type="[AuthenticationLevel-unsigned-int*]" Name="AuthnLevel" />
+            <Param Type="[RPC_C_AUTHN_SVC]" Display="unsigned int" Name="AuthnSvc" />
+            <Param Type="[RPC_C_AUTHN_LEVEL-unsigned-int*]" Name="AuthnLevel" />
             <Return Type="RPC_STATUS" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -497,7 +519,7 @@
         </Api>
         <Api Name="RpcMgmtInqServerPrincName" BothCharset="True">
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
-            <Param Type="[AuthenticationService]" Display="unsigned int" Name="AuthnSvc" />
+            <Param Type="[RPC_C_AUTHN_SVC]" Display="unsigned int" Name="AuthnSvc" />
             <Param Type="RPC_TSTR*" Name="ServerPrincName" OutputOnly="True" />
             <Return Type="RPC_STATUS" />
             <Success Return="Equal" Value="0" />
@@ -614,7 +636,7 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerInqDefaultPrincName" BothCharset="True">
-            <Param Type="[AuthenticationService]" Name="AuthnSvc" />
+            <Param Type="[RPC_C_AUTHN_SVC]" Name="AuthnSvc" />
             <Param Type="RPC_TSTR*" Name="PrincName" />
             <Return Type="RPC_STATUS" />
             <Success Return="Equal" Value="0" />
@@ -640,7 +662,7 @@
         </Api>
         <Api Name="RpcServerRegisterAuthInfo" BothCharset="True">
             <Param Type="RPC_TSTR" Name="ServerPrincName" />
-            <Param Type="[AuthenticationService]" Name="AuthnSvc" />
+            <Param Type="[RPC_C_AUTHN_SVC]" Name="AuthnSvc" />
             <Param Type="RPC_AUTH_KEY_RETRIEVAL_FN" Name="GetKeyFn" />
             <Param Type="void*" Name="Arg" />
             <Return Type="RPC_STATUS" />

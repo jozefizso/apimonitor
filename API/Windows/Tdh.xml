@@ -7,16 +7,273 @@
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Tdh.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         
-        <!-- Variables -->
-        
-        <!-- TODO: Structures -->
-        <Variable Name="PPROVIDER_FIELD_INFOARRAY"       Type="Alias"        Base="LPVOID" />
-        <Variable Name="PPROVIDER_FILTER_INFO*"          Type="Alias"        Base="LPVOID" />
-        <Variable Name="PPROVIDER_ENUMERATION_INFO"      Type="Alias"        Base="LPVOID" />
-        <Variable Name="PTRACE_EVENT_INFO"               Type="Alias"        Base="LPVOID" />
-        <Variable Name="PEVENT_MAP_INFO"                 Type="Alias"        Base="LPVOID" />
-        <Variable Name="PEVENT_RECORD"                   Type="Alias"        Base="LPVOID" />
+        <!-- TODO: Structures (Bitflags) -->
+        <Variable Name="PEVENT_HEADER_EXTENDED_DATA_ITEM" Type="Alias" Base="LPVOID" />
 
+        <!-- TRACE_PROVIDER_INFO -->
+        <Variable Name="TRACE_PROVIDER_INFO" Type="Struct">
+            <Field Type="GUID"      Name="ProviderGuid" />
+            <Field Type="ULONG"     Name="SchemaSource" />
+            <Field Type="ULONG"     Name="ProviderNameOffset" />
+        </Variable>
+        <Variable Name="TRACE_PROVIDER_INFO [ANYSIZE_ARRAY]" Type="Array" Base="TRACE_PROVIDER_INFO" Count="1" />
+
+        <!-- PROVIDER_ENUMERATION_INFO -->
+        <Variable Name="PROVIDER_ENUMERATION_INFO" Type="Struct">
+            <Field Type="ULONG"                                 Name="NumberOfProviders" />
+            <Field Type="ULONG"                                 Name="Reserved" />
+            <Field Type="TRACE_PROVIDER_INFO [ANYSIZE_ARRAY]"   Name="TraceProviderInfoArray" Count="NumberOfProviders" />
+        </Variable>
+        <Variable Name="PPROVIDER_ENUMERATION_INFO" Type="Pointer" Base="PROVIDER_ENUMERATION_INFO" />
+
+        <!-- DECODING_SOURCE -->
+        <Variable Name="DECODING_SOURCE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DecodingSourceXMLFile"   Value="0" />
+                <Set Name="DecodingSourceWbem"      Value="1" />
+                <Set Name="DecodingSourceWPP"       Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- TEMPLATE_FLAGS -->
+        <Variable Name="TEMPLATE_FLAGS" Type="Alias" Base="UINT">
+            <Flag>
+                <Set Name="TEMPLATE_EVENT_DATA"     Value="1" />
+                <Set Name="TEMPLATE_USER_DATA"      Value="2" />
+            </Flag>
+        </Variable>
+
+        <!-- TDH_IN_TYPE -->
+        <Variable Name="TDH_IN_TYPE" Type="Alias" Base="USHORT">
+            <Display Name="USHORT" />
+            <Enum>
+                <Set Name="TDH_INTYPE_NULL"                             Value="0" />
+                <Set Name="TDH_INTYPE_UNICODESTRING"                    Value="1" />
+                <Set Name="TDH_INTYPE_ANSISTRING"                       Value="2" />
+                <Set Name="TDH_INTYPE_INT8"                             Value="3" />
+                <Set Name="TDH_INTYPE_UINT8"                            Value="4" />
+                <Set Name="TDH_INTYPE_INT16"                            Value="5" />
+                <Set Name="TDH_INTYPE_UINT16"                           Value="6" />
+                <Set Name="TDH_INTYPE_INT32"                            Value="7" />
+                <Set Name="TDH_INTYPE_UINT32"                           Value="8" />
+                <Set Name="TDH_INTYPE_INT64"                            Value="9" />
+                <Set Name="TDH_INTYPE_UINT64"                           Value="10" />
+                <Set Name="TDH_INTYPE_FLOAT"                            Value="11" />
+                <Set Name="TDH_INTYPE_DOUBLE"                           Value="12" />
+                <Set Name="TDH_INTYPE_BOOLEAN"                          Value="13" />
+                <Set Name="TDH_INTYPE_BINARY"                           Value="14" />
+                <Set Name="TDH_INTYPE_GUID"                             Value="15" />
+                <Set Name="TDH_INTYPE_POINTER"                          Value="16" />
+                <Set Name="TDH_INTYPE_FILETIME"                         Value="17" />
+                <Set Name="TDH_INTYPE_SYSTEMTIME"                       Value="18" />
+                <Set Name="TDH_INTYPE_SID"                              Value="19" />
+                <Set Name="TDH_INTYPE_HEXINT32"                         Value="20" />
+                <Set Name="TDH_INTYPE_HEXINT64"                         Value="21" />
+                <Set Name="TDH_INTYPE_COUNTEDSTRING"                    Value="300" />
+                <Set Name="TDH_INTYPE_COUNTEDANSISTRING"                Value="301" />
+                <Set Name="TDH_INTYPE_REVERSEDCOUNTEDSTRING"            Value="302" />
+                <Set Name="TDH_INTYPE_REVERSEDCOUNTEDANSISTRING"        Value="303" />
+                <Set Name="TDH_INTYPE_NONNULLTERMINATEDSTRING"          Value="304" />
+                <Set Name="TDH_INTYPE_NONNULLTERMINATEDANSISTRING"      Value="305" />
+                <Set Name="TDH_INTYPE_UNICODECHAR"                      Value="306" />
+                <Set Name="TDH_INTYPE_ANSICHAR"                         Value="307" />
+                <Set Name="TDH_INTYPE_SIZET"                            Value="308" />
+                <Set Name="TDH_INTYPE_HEXDUMP"                          Value="309" />
+                <Set Name="TDH_INTYPE_WBEMSID"                          Value="310" />
+            </Enum>
+        </Variable>
+
+        <!-- TDH_OUT_TYPE -->
+        <Variable Name="TDH_OUT_TYPE" Type="Alias" Base="USHORT">
+            <Display Name="USHORT" />
+            <Enum>
+                <Set Name="TDH_OUTTYPE_NULL"                            Value="0" />
+                <Set Name="TDH_OUTTYPE_STRING"                          Value="1" />
+                <Set Name="TDH_OUTTYPE_DATETIME"                        Value="2" />
+                <Set Name="TDH_OUTTYPE_BYTE"                            Value="3" />
+                <Set Name="TDH_OUTTYPE_UNSIGNEDBYTE"                    Value="4" />
+                <Set Name="TDH_OUTTYPE_SHORT"                           Value="5" />
+                <Set Name="TDH_OUTTYPE_UNSIGNEDSHORT"                   Value="6" />
+                <Set Name="TDH_OUTTYPE_INT"                             Value="7" />
+                <Set Name="TDH_OUTTYPE_UNSIGNEDINT"                     Value="8" />
+                <Set Name="TDH_OUTTYPE_LONG"                            Value="9" />
+                <Set Name="TDH_OUTTYPE_UNSIGNEDLONG"                    Value="10" />
+                <Set Name="TDH_OUTTYPE_FLOAT"                           Value="11" />
+                <Set Name="TDH_OUTTYPE_DOUBLE"                          Value="12" />
+                <Set Name="TDH_OUTTYPE_BOOLEAN"                         Value="13" />
+                <Set Name="TDH_OUTTYPE_GUID"                            Value="14" />
+                <Set Name="TDH_OUTTYPE_HEXBINARY"                       Value="15" />
+                <Set Name="TDH_OUTTYPE_HEXINT8"                         Value="16" />
+                <Set Name="TDH_OUTTYPE_HEXINT16"                        Value="17" />
+                <Set Name="TDH_OUTTYPE_HEXINT32"                        Value="18" />
+                <Set Name="TDH_OUTTYPE_HEXINT64"                        Value="19" />
+                <Set Name="TDH_OUTTYPE_PID"                             Value="20" />
+                <Set Name="TDH_OUTTYPE_TID"                             Value="21" />
+                <Set Name="TDH_OUTTYPE_PORT"                            Value="22" />
+                <Set Name="TDH_OUTTYPE_IPV4"                            Value="23" />
+                <Set Name="TDH_OUTTYPE_IPV6"                            Value="24" />
+                <Set Name="TDH_OUTTYPE_SOCKETADDRESS"                   Value="25" />
+                <Set Name="TDH_OUTTYPE_CIMDATETIME"                     Value="26" />
+                <Set Name="TDH_OUTTYPE_ETWTIME"                         Value="27" />
+                <Set Name="TDH_OUTTYPE_XML"                             Value="28" />
+                <Set Name="TDH_OUTTYPE_ERRORCODE"                       Value="29" />
+                <Set Name="TDH_OUTTYPE_WIN32ERROR"                      Value="30" />
+                <Set Name="TDH_OUTTYPE_NTSTATUS"                        Value="31" />
+                <Set Name="TDH_OUTTYPE_HRESULT"                         Value="32" />
+                <Set Name="TDH_OUTTYPE_CULTURE_INSENSITIVE_DATETIME"    Value="33" />
+                <Set Name="TDH_OUTTYPE_REDUCEDSTRING"                   Value="300"  />
+                <Set Name="TDH_OUTTYPE_NOPRINT"                         Value="301" />
+            </Enum>
+        </Variable>
+
+        <!-- PROPERTY_FLAGS -->
+        <Variable Name="PROPERTY_FLAGS" Type="Alias" Base="UINT">
+            <Flag>
+                <Set Name="PropertyStruct"                  Value="0x1" />
+                <Set Name="PropertyParamLength"             Value="0x2" />
+                <Set Name="PropertyParamCount"              Value="0x4" />
+                <Set Name="PropertyWBEMXmlFragment"         Value="0x8" />
+                <Set Name="PropertyParamFixedLength"        Value="0x10" />
+            </Flag>
+        </Variable>
+
+        <!-- [EVENT_PROPERTY_INFO_u1_s1] -->
+        <Variable Name="[EVENT_PROPERTY_INFO_u1_s1]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="TDH_IN_TYPE"   Name="InType" />
+            <Field Type="TDH_OUT_TYPE"  Name="OutType" />
+            <Field Type="ULONG"         Name="MapNameOffset" />
+        </Variable>
+
+        <!-- [EVENT_PROPERTY_INFO_u1_s2] -->
+        <Variable Name="[EVENT_PROPERTY_INFO_u1_s2]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="USHORT"    Name="StructStartIndex" />
+            <Field Type="USHORT"    Name="NumOfStructMembers" />
+            <Field Type="ULONG"     Name="padding" />
+        </Variable>
+
+        <!-- [EVENT_PROPERTY_INFO_u1] -->
+        <Variable Name="[EVENT_PROPERTY_INFO_u1]" Type="Union">
+            <Display Name="union" />
+            <Field Type="[EVENT_PROPERTY_INFO_u1_s1]"   Name="nonStructType" />
+            <Field Type="[EVENT_PROPERTY_INFO_u1_s2]"   Name="structType" />
+        </Variable>
+
+        <!-- [EVENT_PROPERTY_INFO_u2] -->
+        <Variable Name="[EVENT_PROPERTY_INFO_u2]" Type="Union">
+            <Display Name="union" />
+            <Field Type="USHORT"    Name="count" />
+            <Field Type="USHORT"    Name="countPropertyIndex" />
+        </Variable>
+
+        <!-- [EVENT_PROPERTY_INFO_u3] -->
+        <Variable Name="[EVENT_PROPERTY_INFO_u3]" Type="Union">
+            <Display Name="union" />
+            <Field Type="USHORT"    Name="length" />
+            <Field Type="USHORT"    Name="lengthPropertyIndex" />
+        </Variable>
+
+        <!-- EVENT_PROPERTY_INFO -->
+        <Variable Name="EVENT_PROPERTY_INFO" Type="Struct">
+            <Field Type="PROPERTY_FLAGS"                Name="Flags" />
+            <Field Type="ULONG"                         Name="NameOffset" />
+            <Field Type="[EVENT_PROPERTY_INFO_u1]"      Name="" />
+            <Field Type="[EVENT_PROPERTY_INFO_u2]"      Name="" />
+            <Field Type="[EVENT_PROPERTY_INFO_u3]"      Name="" />
+            <Field Type="ULONG"                         Name="Reserved" />
+        </Variable>
+        <Variable Name="EVENT_PROPERTY_INFO [ANYSIZE_ARRAY]" Type="Array" Base="EVENT_PROPERTY_INFO" Count="1" />
+
+        <!-- PROVIDER_FILTER_INFO -->
+        <Variable Name="PROVIDER_FILTER_INFO" Type="Struct">
+            <Field Type="UCHAR"                                 Name="Id" />
+            <Field Type="UCHAR"                                 Name="Version" />
+            <Field Type="ULONG"                                 Name="MessageOffset" />
+            <Field Type="ULONG"                                 Name="Reserved" />
+            <Field Type="ULONG"                                 Name="PropertyCount" />
+            <Field Type="EVENT_PROPERTY_INFO [ANYSIZE_ARRAY]"   Name="EventPropertyInfoArray" Count="PropertyCount" />
+        </Variable>
+        <Variable Name="PPROVIDER_FILTER_INFO"  Type="Pointer" Base="PROVIDER_FILTER_INFO" />
+        <Variable Name="PPROVIDER_FILTER_INFO*" Type="Pointer" Base="PPROVIDER_FILTER_INFO" />
+
+        <!-- TRACE_EVENT_INFO -->
+        <Variable Name="TRACE_EVENT_INFO" Type="Struct">
+            <Field Type="GUID"                                  Name="ProviderGuid" />
+            <Field Type="GUID"                                  Name="EventGuid" />
+            <Field Type="EVENT_DESCRIPTOR"                      Name="EventDescriptor" />
+            <Field Type="DECODING_SOURCE"                       Name="DecodingSource" />
+            <Field Type="ULONG"                                 Name="ProviderNameOffset" />
+            <Field Type="ULONG"                                 Name="LevelNameOffset" />
+            <Field Type="ULONG"                                 Name="ChannelNameOffset" />
+            <Field Type="ULONG"                                 Name="KeywordsNameOffset" />
+            <Field Type="ULONG"                                 Name="TaskNameOffset" />
+            <Field Type="ULONG"                                 Name="OpcodeNameOffset" />
+            <Field Type="ULONG"                                 Name="EventMessageOffset" />
+            <Field Type="ULONG"                                 Name="ProviderMessageOffset" />
+            <Field Type="ULONG"                                 Name="BinaryXMLOffset" />
+            <Field Type="ULONG"                                 Name="BinaryXMLSize" />
+            <Field Type="ULONG"                                 Name="ActivityIDNameOffset" />
+            <Field Type="ULONG"                                 Name="RelatedActivityIDNameOffset" />
+            <Field Type="ULONG"                                 Name="PropertyCount" />
+            <Field Type="ULONG"                                 Name="TopLevelPropertyCount" />
+            <Field Type="TEMPLATE_FLAGS"                        Name="Flags" />
+            <Field Type="EVENT_PROPERTY_INFO [ANYSIZE_ARRAY]"   Name="EventPropertyInfoArray" Count="PropertyCount" />
+        </Variable>
+        <Variable Name="PTRACE_EVENT_INFO" Type="Pointer" Base="TRACE_EVENT_INFO" />
+
+        <!-- MAP_VALUETYPE -->
+        <Variable Name="MAP_VALUETYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="EVENTMAP_ENTRY_VALUETYPE_ULONG"      Value="0" />
+                <Set Name="EVENTMAP_ENTRY_VALUETYPE_STRING"     Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- MAP_FLAGS -->
+        <Variable Name="MAP_FLAGS" Type="Alias" Base="UINT">
+            <Flag>
+                <Set Name="EVENTMAP_INFO_FLAG_MANIFEST_VALUEMAP"        Value="0x1" />
+                <Set Name="EVENTMAP_INFO_FLAG_MANIFEST_BITMAP"          Value="0x2" />
+                <Set Name="EVENTMAP_INFO_FLAG_MANIFEST_PATTERNMAP"      Value="0x4" />
+                <Set Name="EVENTMAP_INFO_FLAG_WBEM_VALUEMAP"            Value="0x8" />
+                <Set Name="EVENTMAP_INFO_FLAG_WBEM_BITMAP"              Value="0x10" />
+                <Set Name="EVENTMAP_INFO_FLAG_WBEM_FLAG"                Value="0x20" />
+                <Set Name="EVENTMAP_INFO_FLAG_WBEM_NO_MAP"              Value="0x40" />
+            </Flag>
+        </Variable>
+
+        <!-- [EVENT_MAP_ENTRY_u] -->
+        <Variable Name="[EVENT_MAP_ENTRY_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="ULONG"     Name="Value" />
+            <Field Type="ULONG"     Name="InputOffset" />
+        </Variable>
+
+        <!-- EVENT_MAP_ENTRY -->
+        <Variable Name="EVENT_MAP_ENTRY" Type="Struct">
+            <Field Type="ULONG"                 Name="OutputOffset" />
+            <Field Type="[EVENT_MAP_ENTRY_u]"   Name="" />
+        </Variable>
+        <Variable Name="EVENT_MAP_ENTRY [ANYSIZE_ARRAY]" Type="Array" Base="EVENT_MAP_ENTRY" Count="1" />
+
+        <!-- [EVENT_MAP_INFO_u] -->
+        <Variable Name="[EVENT_MAP_INFO_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="MAP_VALUETYPE"     Name="MapEntryValueType" />
+            <Field Type="ULONG"             Name="FormatStringOffset" />
+        </Variable>
+
+        <!-- EVENT_MAP_INFO -->
+        <Variable Name="EVENT_MAP_INFO" Type="Struct">
+            <Field Type="ULONG"                             Name="NameOffset" />
+            <Field Type="MAP_FLAGS"                         Name="Flag" />
+            <Field Type="ULONG"                             Name="EntryCount" />
+            <Field Type="[EVENT_MAP_INFO_u]"                Name="" />
+            <Field Type="EVENT_MAP_ENTRY [ANYSIZE_ARRAY]"   Name="MapEntryArray" Count="EntryCount" />
+        </Variable>
+        <Variable Name="PEVENT_MAP_INFO" Type="Pointer" Base="EVENT_MAP_INFO" />
+        
         <!-- EVENT_FIELD_TYPE -->
         <Variable Name="EVENT_FIELD_TYPE" Type="Alias" Base="UINT">
             <Enum>
@@ -34,6 +291,15 @@
             <Field Type="ULONG" 	    Name="DescriptionOffset" />
             <Field Type="ULONGLONG" 	Name="Value" />
         </Variable>
+        <Variable Name="PROVIDER_FIELD_INFO [ANYSIZE_ARRAY]" Type="Array" Base="PROVIDER_FIELD_INFO" Count="1" />
+
+        <!-- PROVIDER_FIELD_INFOARRAY -->
+        <Variable Name="PROVIDER_FIELD_INFOARRAY" Type="Struct">
+            <Field Type="ULONG"                                 Name="NumberOfElements" />
+            <Field Type="EVENT_FIELD_TYPE"                      Name="FieldType" />
+            <Field Type="PROVIDER_FIELD_INFO [ANYSIZE_ARRAY]"   Name="FieldInfoArray" Count="NumberOfElements" />
+        </Variable>
+        <Variable Name="PPROVIDER_FIELD_INFOARRAY" Type="Pointer" Base="PROVIDER_FIELD_INFOARRAY" />
 
         <!-- TDH_CONTEXT_TYPE -->
         <Variable Name="TDH_CONTEXT_TYPE" Type="Alias" Base="UINT">
@@ -61,6 +327,72 @@
         </Variable>
         <Variable Name="PPROPERTY_DATA_DESCRIPTOR" Type="Pointer" Base="PROPERTY_DATA_DESCRIPTOR" />
 
+        <!-- [EVENT_HEADER_u_s] -->
+        <Variable Name="[EVENT_HEADER_u_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="ULONG"     Name="KernelTime" />
+            <Field Type="ULONG"     Name="UserTime" />
+        </Variable>
+
+        <!-- [EVENT_HEADER_u] -->
+        <Variable Name="[EVENT_HEADER_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="[EVENT_HEADER_u_s]"    Name="" />
+            <Field Type="ULONG64"               Name="ProcessorTime" />
+        </Variable>
+
+        <!-- [EVENT_HEADER_FLAG] -->
+        <Variable Name="[EVENT_HEADER_FLAG]" Type="Alias" Base="USHORT">
+            <Display Name="USHORT" />
+            <Flag>
+                <Set Name="EVENT_HEADER_FLAG_EXTENDED_INFO"         Value="0x0001" />
+                <Set Name="EVENT_HEADER_FLAG_PRIVATE_SESSION"       Value="0x0002" />
+                <Set Name="EVENT_HEADER_FLAG_STRING_ONLY"           Value="0x0004" />
+                <Set Name="EVENT_HEADER_FLAG_TRACE_MESSAGE"         Value="0x0008" />
+                <Set Name="EVENT_HEADER_FLAG_NO_CPUTIME"            Value="0x0010" />
+                <Set Name="EVENT_HEADER_FLAG_32_BIT_HEADER"         Value="0x0020" />
+                <Set Name="EVENT_HEADER_FLAG_64_BIT_HEADER"         Value="0x0040" />
+                <Set Name="EVENT_HEADER_FLAG_CLASSIC_HEADER"        Value="0x0100" />
+            </Flag>
+        </Variable>
+
+        <!-- [EVENT_HEADER_PROPERTY] -->
+        <Variable Name="[EVENT_HEADER_PROPERTY]" Type="Alias" Base="USHORT">
+            <Display Name="USHORT" />
+            <Flag>
+                <Set Name="EVENT_HEADER_PROPERTY_XML"               Value="0x0001" />
+                <Set Name="EVENT_HEADER_PROPERTY_FORWARDED_XML"     Value="0x0002" />
+                <Set Name="EVENT_HEADER_PROPERTY_LEGACY_EVENTLOG"   Value="0x0004" />
+            </Flag>
+        </Variable>
+
+        <!-- EVENT_HEADER -->
+        <Variable Name="EVENT_HEADER" Type="Struct">
+            <Field Type="USHORT"                    Name="Size" />
+            <Field Type="USHORT"                    Name="HeaderType" />
+            <Field Type="[EVENT_HEADER_FLAG]"       Name="Flags" />
+            <Field Type="[EVENT_HEADER_PROPERTY]"   Name="EventProperty" />
+            <Field Type="ULONG"                     Name="ThreadId" />
+            <Field Type="ULONG"                     Name="ProcessId" />
+            <Field Type="LARGE_INTEGER"             Name="TimeStamp" />
+            <Field Type="GUID"                      Name="ProviderId" />
+            <Field Type="EVENT_DESCRIPTOR"          Name="EventDescriptor" />
+            <Field Type="[EVENT_HEADER_u]"          Name="" />
+            <Field Type="GUID"                      Name="ActivityId" />
+        </Variable>
+
+        <!-- EVENT_RECORD -->
+        <Variable Name="EVENT_RECORD" Type="Struct">
+            <Field Type="EVENT_HEADER"                      Name="EventHeader" />
+            <Field Type="ETW_BUFFER_CONTEXT"                Name="BufferContext" />
+            <Field Type="USHORT"                            Name="ExtendedDataCount" />
+            <Field Type="USHORT"                            Name="UserDataLength" />
+            <Field Type="PEVENT_HEADER_EXTENDED_DATA_ITEM"  Name="ExtendedData" />
+            <Field Type="PVOID"                             Name="UserData" />
+            <Field Type="PVOID"                             Name="UserContext" />
+        </Variable>
+        <Variable Name="PEVENT_RECORD" Type="Pointer" Base="EVENT_RECORD" />
+
         <!-- Event Tracing -->
         <Category Name="Diagnostics/Windows Events/Event Tracing" />
         <Api Name="TdhEnumerateProviderFieldInformation">
@@ -76,7 +408,7 @@
             <Param Type="ULONG" Name="TdhContextCount" />
             <Param Type="PTDH_CONTEXT" Name="pTdhContext" />
             <Param Type="ULONG*" Name="FilterCount" />
-            <Param Type="PPROVIDER_FILTER_INFO*" Name="pBuffer" PostLength="pBufferSize" />
+            <Param Type="PPROVIDER_FILTER_INFO*" Name="pBuffer" Count="FilterCount" />
             <Param Type="ULONG*" Name="pBufferSize" />
             <Return Type="ULONG" />
             <Success Return="Equal" Value="0" />

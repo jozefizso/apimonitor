@@ -7,6 +7,12 @@
     <Include Filename="Headers\windows.h.xml" />
     <Headers>
 
+        <!-- Variables -->
+        <Variable Name="PFN_SC_NOTIFY_CALLBACK" Type="Alias" Base="LPVOID" />
+        <Variable Name="SERVICE_STATUS_HANDLE"  Type="Alias" Base="HANDLE" />
+        <Variable Name="SC_HANDLE"              Type="Alias" Base="HANDLE" />
+        <Variable Name="SC_LOCK"                Type="Alias" Base="LPVOID" />
+
         <!-- SC_STATUS_TYPE -->-->
         <Variable Name="SC_STATUS_TYPE" Type="Alias" Base="UINT">
             <Enum>
@@ -194,6 +200,89 @@
                 <Set Name="SERVICE_NOTIFY_DELETE_PENDING"       Value="0x00000200" />
             </Flag>
         </Variable>
+
+        <!-- [ServiceFlags] -->
+        <Variable Name="[ServiceFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="SERVICE_RUNS_IN_SYSTEM_PROCESS" Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- SERVICE_STATUS_PROCESS -->
+        <Variable Name="SERVICE_STATUS_PROCESS" Type="Struct">
+            <Field Type="[ServiceType]"             Name="dwServiceType" />
+            <Field Type="[ServiceCurrentState]"     Name="dwCurrentState" />
+            <Field Type="[ServiceAcceptControls]"   Name="dwControlsAccepted" />
+            <Field Type="DWORD"                     Name="dwWin32ExitCode" />
+            <Field Type="DWORD"                     Name="dwServiceSpecificExitCode" />
+            <Field Type="DWORD"                     Name="dwCheckPoint" />
+            <Field Type="DWORD"                     Name="dwWaitHint" />
+            <Field Type="DWORD"                     Name="dwProcessId" />
+            <Field Type="[ServiceFlags]"            Name="dwServiceFlags" />
+        </Variable>
+
+        <!-- SERVICE_NOTIFY -->
+        <Variable Name="SERVICE_NOTIFY" Type="Struct">
+            <Field Type="DWORD"                     Name="dwVersion" />
+            <Field Type="PFN_SC_NOTIFY_CALLBACK"    Name="pfnNotifyCallback" />
+            <Field Type="PVOID"                     Name="pContext" />
+            <Field Type="DWORD"                     Name="dwNotificationStatus" />
+            <Field Type="SERVICE_STATUS_PROCESS"    Name="ServiceStatus" />
+            <Field Type="DWORD"                     Name="dwNotificationTriggered" />
+            <Field Type="LPTSTR"                    Name="pszServiceNames" />
+        </Variable>
+        <Variable Name="PSERVICE_NOTIFY" Type="Pointer" Base="SERVICE_NOTIFY" />
+
+        <!-- SERVICE_STATUS -->
+        <Variable Name="SERVICE_STATUS" Type="Struct">
+            <Field Type="[ServiceType]"   	        Name="dwServiceType" />
+            <Field Type="[ServiceCurrentState]"     Name="dwCurrentState" />
+            <Field Type="[ServiceAcceptControls]"   Name="dwControlsAccepted" />
+            <Field Type="DWORD"   	                Name="dwWin32ExitCode" />
+            <Field Type="DWORD"   	                Name="dwServiceSpecificExitCode" />
+            <Field Type="DWORD"   	                Name="dwCheckPoint" />
+            <Field Type="DWORD"   	                Name="dwWaitHint" />
+        </Variable>
+        <Variable Name="LPSERVICE_STATUS" Type="Pointer" Base="SERVICE_STATUS" />
+
+        <!-- SERVICE_TABLE_ENTRY -->
+        <Variable Name="LPSERVICE_MAIN_FUNCTION" Type="Alias" Base="LPVOID" />
+        <Variable Name="SERVICE_TABLE_ENTRY" Type="Struct">
+            <Field Type="LPTSTR"                    Name="lpServiceName" />
+            <Field Type="LPSERVICE_MAIN_FUNCTION"   Name="lpServiceProc" />
+        </Variable>
+        <Variable Name="const SERVICE_TABLE_ENTRY*" Type="Pointer" Base="SERVICE_TABLE_ENTRY" />
+
+        <!-- ENUM_SERVICE_STATUS -->
+        <Variable Name="ENUM_SERVICE_STATUS" Type="Struct">
+            <Field Type="LPTSTR"            Name="lpServiceName" />
+            <Field Type="LPTSTR"            Name="lpDisplayName" />
+            <Field Type="SERVICE_STATUS"    Name="ServiceStatus" />
+        </Variable>
+        <Variable Name="LPENUM_SERVICE_STATUS" Type="Pointer" Base="ENUM_SERVICE_STATUS" />
+
+        <!-- QUERY_SERVICE_CONFIG -->
+        <Variable Name="QUERY_SERVICE_CONFIG" Type="Struct">
+            <Field Type="[ServiceType]"   	    Name="dwServiceType" />
+            <Field Type="[ServiceStartType]"   	Name="dwStartType" />
+            <Field Type="[ServiceErrorControl]" Name="dwErrorControl" />
+            <Field Type="LPTSTR"            	Name="lpBinaryPathName" />
+            <Field Type="LPTSTR"            	Name="lpLoadOrderGroup" />
+            <Field Type="DWORD"   	            Name="dwTagId" />
+            <Field Type="LPTSTR"            	Name="lpDependencies" />
+            <Field Type="LPTSTR"            	Name="lpServiceStartName" />
+            <Field Type="LPTSTR"            	Name="lpDisplayName" />
+        </Variable>
+        <Variable Name="LPQUERY_SERVICE_CONFIG" Type="Pointer" Base="QUERY_SERVICE_CONFIG" />
+
+        <!-- QUERY_SERVICE_LOCK_STATUS -->
+        <Variable Name="QUERY_SERVICE_LOCK_STATUS" Type="Struct">
+            <Field Type="DWORD"   	Name="fIsLocked" />
+            <Field Type="LPTSTR"   	Name="lpLockOwner" />
+            <Field Type="DWORD"   	Name="dwLockDuration" />
+        </Variable>
+        <Variable Name="LPQUERY_SERVICE_LOCK_STATUS" Type="Pointer" Base="QUERY_SERVICE_LOCK_STATUS" />
 
     </Headers>
 </ApiMonitor>

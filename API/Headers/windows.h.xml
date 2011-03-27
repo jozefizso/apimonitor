@@ -7,8 +7,11 @@
     <Include Filename="Headers\common.h.xml" />
     <Include Filename="Headers\ntstatus.h.xml" />
     <Include Filename="Internal\internal.h.xml" />
+    
     <Headers>
+        
         <!-- Variables -->
+        <Variable Name="HINSTANCE"                      Type="Alias"    Base="HMODULE" />
         <Variable Name="WPARAM"                         Type="Alias"    Base="UINT_PTR" />
         <Variable Name="LPARAM"                         Type="Alias"    Base="LONG_PTR" />
         <Variable Name="LRESULT"                        Type="Alias"    Base="LONG_PTR" />
@@ -29,37 +32,469 @@
         <Variable Name="PSID*"                          Type="Pointer"  Base="PSID" />
         <Variable Name="PVECTORED_EXCEPTION_HANDLER"    Type="Alias"    Base="LPVOID" />
         <Variable Name="ATOM"                           Type="Alias"    Base="WORD" />
+        <Variable Name="PSLIST_ENTRY"                   Type="Alias"    Base="LPVOID" />
+        <Variable Name="KAFFINITY"                      Type="Alias"    Base="ULONG_PTR" />
+
+        <!-- Arrays -->
+        <Variable Name="WCHAR [32]"                                 Type="Array"    Base="WCHAR"        Count="32" />
+        <Variable Name="CHAR [OFS_MAXPATHNAME]"                     Type="Array"    Base="CHAR"         Count="128" />
+        <Variable Name="TCHAR [CCHDEVICENAME]"                      Type="Array"    Base="TCHAR"        Count="32" />
+        <Variable Name="TCHAR [CCHFORMNAME]"                        Type="Array"    Base="TCHAR"        Count="32" />
+        <Variable Name="TCHAR [RAS_MaxEntryName + 1]"               Type="Array"    Base="TCHAR"        Count="257" />
+        <Variable Name="ULONG_PTR [EXCEPTION_MAXIMUM_PARAMETERS]"   Type="Array"    Base="ULONG_PTR"    Count="15" />
+
+        <!-- Smart Card Variables  -->
+        <Variable Name="SCARDCONTEXT"                   Type="Alias"    Base="ULONG_PTR" />
+        <Variable Name="LPSCARDCONTEXT"                 Type="Pointer"  Base="SCARDCONTEXT" />
+        <Variable Name="SCARDHANDLE"                    Type="Alias"    Base="ULONG_PTR" />
+        <Variable Name="LPSCARDHANDLE"                  Type="Pointer"  Base="SCARDHANDLE" />
+        
+        <!-- MAPI Variables -->
+        <Variable Name="IAddrBook"                      Type="Interface" />
+        <Variable Name="LPADRBOOK"                      Type="Alias"    Base="IAddrBook*" />
+        <Variable Name="LPADRBOOK*"                     Type="Pointer"  Base="LPADRBOOK" />
+        <Variable Name="ALLOCATEBUFFER*"                Type="Alias"    Base="LPVOID" />
+        <Variable Name="FREEBUFFER*"                Type="Alias"    Base="LPVOID" />
+
+        <!-- Wireless LAN Variables -->
+        <!-- TODO: We can decode WLAN_REASON_CODE, howevere there are lots of possible values, so we'll ignore it for now -->
+        <Variable Name="WLAN_REASON_CODE"               Type="Alias"    Base="DWORD" />
+        <Variable Name="PWLAN_REASON_CODE"              Type="Pointer"  Base="WLAN_REASON_CODE" />
 
         <!-- Forward declaration for IUnknown -->
         <Variable Name="IUnknown"                       Type="Interface" />
         <Variable Name="LPUNKNOWN"                      Type="Alias"    Base="IUnknown*" />
         <Variable Name="LPUNKNOWN*"                     Type="Pointer"  Base="LPUNKNOWN" />
-        <Variable Name="LPUNKNOWN FAR*"                 Type="Pointer"  Base="LPUNKNOWN" />
         <Variable Name="const IUnknown*"                Type="Alias"    Base="IUnknown*" />
-        
-        <!-- HINSTANCE -->
-        <Variable Name="HINSTANCE" Type="Alias" Base="HMODULE">
-            <Display Name="HINSTANCE" />
-        </Variable>
 
-        <!-- TODO: Structures -->
-        <Variable Name="DEVMODE*"                       Type="Alias"    Base="LPVOID" />
-        <Variable Name="const DEVMODE*"                 Type="Alias"    Base="DEVMODE*" />
-        <Variable Name="LPDEVMODE"                      Type="Alias"    Base="LPVOID" />
-        <Variable Name="PDEVMODE"                       Type="Alias"    Base="LPVOID" />
-        <Variable Name="PDEVMODE*"                      Type="Pointer"  Base="PDEVMODE" />
-        <Variable Name="LPOVERLAPPED"                   Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPOVERLAPPED*"                  Type="Pointer"  Base="LPOVERLAPPED" />
-        <Variable Name="LPWIN32_FIND_DATA"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="WIN32_FIND_DATAA*"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="WIN32_FIND_DATAW*"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="const WIN32_FIND_DATAW*"        Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPOFSTRUCT"                     Type="Alias"    Base="LPVOID" />
-        <Variable Name="PEXCEPTION_RECORD"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSLIST_ENTRY"                   Type="Alias"    Base="LPVOID" />
+        <!-- LIST_ENTRY -->
+        <Variable Name="LIST_ENTRY" Type="Struct">
+            <!-- TODO: Self-Referecing Flink and Blink are pointers to this structure -->
+            <Field Type="LPVOID"    Name="Flink"    Display="PSLIST_ENTRY" />
+            <Field Type="LPVOID"    Name="Blink"    Display="PSLIST_ENTRY" />
+        </Variable>
+        <Variable Name="PLIST_ENTRY" Type="Pointer" Base="LIST_ENTRY" />
+
+        <!-- TODO: Unions, Bitfields, Structures -->
         <Variable Name="PSLIST_HEADER"                  Type="Alias"    Base="LPVOID" />
+
+        <!-- TODO: Structures - 32/64 Differences -->
         <Variable Name="PCONTEXT"                       Type="Alias"    Base="LPVOID" />
         <Variable Name="const CONTEXT*"                 Type="Alias"    Base="PCONTEXT" />
+
+        <!-- POINT -->
+        <Variable Name="POINT" Type="Struct">
+            <Field Type="LONG" Name="x" />
+            <Field Type="LONG" Name="y" />
+        </Variable>
+        <Variable Name="const POINT"        Type="Alias"    Base="POINT" />
+        <Variable Name="POINT*"             Type="Pointer"  Base="POINT" />
+        <Variable Name="const POINT*"       Type="Alias"    Base="POINT*" />
+        <Variable Name="CONST POINT*"       Type="Alias"    Base="POINT*" />
+        <Variable Name="LPPOINT"            Type="Alias"    Base="POINT*" />
+        <Variable Name="POINTL"             Type="Alias"    Base="POINT" />
+        <Variable Name="POINTL*"            Type="Pointer"  Base="POINTL" />
+
+        <!-- [DMORIENT] -->
+        <Variable Name="[DMORIENT]" Type="Alias" Base="short">
+            <Display Name="short" />
+            <Enum>
+                <Set Name="DMORIENT_PORTRAIT"   Value="1" />
+                <Set Name="DMORIENT_LANDSCAPE"  Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- [DMPAPER] -->
+        <Variable Name="[DMPAPER]" Type="Alias" Base="short">
+            <Display Name="short" />
+            <Enum>
+                <Set Name="DMPAPER_LETTER"                          Value="1" />
+                <Set Name="DMPAPER_LETTERSMALL"                     Value="2" />
+                <Set Name="DMPAPER_TABLOID"                         Value="3" />
+                <Set Name="DMPAPER_LEDGER"                          Value="4" />
+                <Set Name="DMPAPER_LEGAL"                           Value="5" />
+                <Set Name="DMPAPER_STATEMENT"                       Value="6" />
+                <Set Name="DMPAPER_EXECUTIVE"                       Value="7" />
+                <Set Name="DMPAPER_A3"                              Value="8" />
+                <Set Name="DMPAPER_A4"                              Value="9" />
+                <Set Name="DMPAPER_A4SMALL"                         Value="10" />
+                <Set Name="DMPAPER_A5"                              Value="11" />
+                <Set Name="DMPAPER_B4"                              Value="12" />
+                <Set Name="DMPAPER_B5"                              Value="13" />
+                <Set Name="DMPAPER_FOLIO"                           Value="14" />
+                <Set Name="DMPAPER_QUARTO"                          Value="15" />
+                <Set Name="DMPAPER_10X14"                           Value="16" />
+                <Set Name="DMPAPER_11X17"                           Value="17" />
+                <Set Name="DMPAPER_NOTE"                            Value="18" />
+                <Set Name="DMPAPER_ENV_9"                           Value="19" />
+                <Set Name="DMPAPER_ENV_10"                          Value="20" />
+                <Set Name="DMPAPER_ENV_11"                          Value="21" />
+                <Set Name="DMPAPER_ENV_12"                          Value="22" />
+                <Set Name="DMPAPER_ENV_14"                          Value="23" />
+                <Set Name="DMPAPER_CSHEET"                          Value="24" />
+                <Set Name="DMPAPER_DSHEET"                          Value="25" />
+                <Set Name="DMPAPER_ESHEET"                          Value="26" />
+                <Set Name="DMPAPER_ENV_DL"                          Value="27" />
+                <Set Name="DMPAPER_ENV_C5"                          Value="28" />
+                <Set Name="DMPAPER_ENV_C3"                          Value="29" />
+                <Set Name="DMPAPER_ENV_C4"                          Value="30" />
+                <Set Name="DMPAPER_ENV_C6"                          Value="31" />
+                <Set Name="DMPAPER_ENV_C65"                         Value="32" />
+                <Set Name="DMPAPER_ENV_B4"                          Value="33" />
+                <Set Name="DMPAPER_ENV_B5"                          Value="34" />
+                <Set Name="DMPAPER_ENV_B6"                          Value="35" />
+                <Set Name="DMPAPER_ENV_ITALY"                       Value="36" />
+                <Set Name="DMPAPER_ENV_MONARCH"                     Value="37" />
+                <Set Name="DMPAPER_ENV_PERSONAL"                    Value="38" />
+                <Set Name="DMPAPER_FANFOLD_US"                      Value="39" />
+                <Set Name="DMPAPER_FANFOLD_STD_GERMAN"              Value="40" />
+                <Set Name="DMPAPER_FANFOLD_LGL_GERMAN"              Value="41" />
+                <Set Name="DMPAPER_ISO_B4"                          Value="42" />
+                <Set Name="DMPAPER_JAPANESE_POSTCARD"               Value="43" />
+                <Set Name="DMPAPER_9X11"                            Value="44" />
+                <Set Name="DMPAPER_10X11"                           Value="45" />
+                <Set Name="DMPAPER_15X11"                           Value="46" />
+                <Set Name="DMPAPER_ENV_INVITE"                      Value="47" />
+                <Set Name="DMPAPER_RESERVED_48"                     Value="48" />
+                <Set Name="DMPAPER_RESERVED_49"                     Value="49" />
+                <Set Name="DMPAPER_LETTER_EXTRA"                    Value="50" />
+                <Set Name="DMPAPER_LEGAL_EXTRA"                     Value="51" />
+                <Set Name="DMPAPER_TABLOID_EXTRA"                   Value="52" />
+                <Set Name="DMPAPER_A4_EXTRA"                        Value="53" />
+                <Set Name="DMPAPER_LETTER_TRANSVERSE"               Value="54" />
+                <Set Name="DMPAPER_A4_TRANSVERSE"                   Value="55" />
+                <Set Name="DMPAPER_LETTER_EXTRA_TRANSVERSE"         Value="56" />
+                <Set Name="DMPAPER_A_PLUS"                          Value="57" />
+                <Set Name="DMPAPER_B_PLUS"                          Value="58" />
+                <Set Name="DMPAPER_LETTER_PLUS"                     Value="59" />
+                <Set Name="DMPAPER_A4_PLUS"                         Value="60" />
+                <Set Name="DMPAPER_A5_TRANSVERSE"                   Value="61" />
+                <Set Name="DMPAPER_B5_TRANSVERSE"                   Value="62" />
+                <Set Name="DMPAPER_A3_EXTRA"                        Value="63" />
+                <Set Name="DMPAPER_A5_EXTRA"                        Value="64" />
+                <Set Name="DMPAPER_B5_EXTRA"                        Value="65" />
+                <Set Name="DMPAPER_A2"                              Value="66" />
+                <Set Name="DMPAPER_A3_TRANSVERSE"                   Value="67" />
+                <Set Name="DMPAPER_A3_EXTRA_TRANSVERSE"             Value="68" />
+                <Set Name="DMPAPER_DBL_JAPANESE_POSTCARD"           Value="69" />
+                <Set Name="DMPAPER_A6"                              Value="70" />
+                <Set Name="DMPAPER_JENV_KAKU2"                      Value="71" />
+                <Set Name="DMPAPER_JENV_KAKU3"                      Value="72" />
+                <Set Name="DMPAPER_JENV_CHOU3"                      Value="73" />
+                <Set Name="DMPAPER_JENV_CHOU4"                      Value="74" />
+                <Set Name="DMPAPER_LETTER_ROTATED"                  Value="75" />
+                <Set Name="DMPAPER_A3_ROTATED"                      Value="76" />
+                <Set Name="DMPAPER_A4_ROTATED"                      Value="77" />
+                <Set Name="DMPAPER_A5_ROTATED"                      Value="78" />
+                <Set Name="DMPAPER_B4_JIS_ROTATED"                  Value="79" />
+                <Set Name="DMPAPER_B5_JIS_ROTATED"                  Value="80" />
+                <Set Name="DMPAPER_JAPANESE_POSTCARD_ROTATED"       Value="81" />
+                <Set Name="DMPAPER_DBL_JAPANESE_POSTCARD_ROTATED"   Value="82" />
+                <Set Name="DMPAPER_A6_ROTATED"                      Value="83" />
+                <Set Name="DMPAPER_JENV_KAKU2_ROTATED"              Value="84" />
+                <Set Name="DMPAPER_JENV_KAKU3_ROTATED"              Value="85" />
+                <Set Name="DMPAPER_JENV_CHOU3_ROTATED"              Value="86" />
+                <Set Name="DMPAPER_JENV_CHOU4_ROTATED"              Value="87" />
+                <Set Name="DMPAPER_B6_JIS"                          Value="88" />
+                <Set Name="DMPAPER_B6_JIS_ROTATED"                  Value="89" />
+                <Set Name="DMPAPER_12X11"                           Value="90" />
+                <Set Name="DMPAPER_JENV_YOU4"                       Value="91" />
+                <Set Name="DMPAPER_JENV_YOU4_ROTATED"               Value="92" />
+                <Set Name="DMPAPER_P16K"                            Value="93" />
+                <Set Name="DMPAPER_P32K"                            Value="94" />
+                <Set Name="DMPAPER_P32KBIG"                         Value="95" />
+                <Set Name="DMPAPER_PENV_1"                          Value="96" />
+                <Set Name="DMPAPER_PENV_2"                          Value="97" />
+                <Set Name="DMPAPER_PENV_3"                          Value="98" />
+                <Set Name="DMPAPER_PENV_4"                          Value="99" />
+                <Set Name="DMPAPER_PENV_5"                          Value="100" />
+                <Set Name="DMPAPER_PENV_6"                          Value="101" />
+                <Set Name="DMPAPER_PENV_7"                          Value="102" />
+                <Set Name="DMPAPER_PENV_8"                          Value="103" />
+                <Set Name="DMPAPER_PENV_9"                          Value="104" />
+                <Set Name="DMPAPER_PENV_10"                         Value="105" />
+                <Set Name="DMPAPER_P16K_ROTATED"                    Value="106" />
+                <Set Name="DMPAPER_P32K_ROTATED"                    Value="107" />
+                <Set Name="DMPAPER_P32KBIG_ROTATED"                 Value="108" />
+                <Set Name="DMPAPER_PENV_1_ROTATED"                  Value="109" />
+                <Set Name="DMPAPER_PENV_2_ROTATED"                  Value="110" />
+                <Set Name="DMPAPER_PENV_3_ROTATED"                  Value="111" />
+                <Set Name="DMPAPER_PENV_4_ROTATED"                  Value="112" />
+                <Set Name="DMPAPER_PENV_5_ROTATED"                  Value="113" />
+                <Set Name="DMPAPER_PENV_6_ROTATED"                  Value="114" />
+                <Set Name="DMPAPER_PENV_7_ROTATED"                  Value="115" />
+                <Set Name="DMPAPER_PENV_8_ROTATED"                  Value="116" />
+                <Set Name="DMPAPER_PENV_9_ROTATED"                  Value="117" />
+                <Set Name="DMPAPER_PENV_10_ROTATED"                 Value="118" />
+            </Enum>
+        </Variable>
+
+        <!-- [DMBIN] -->
+        <Variable Name="[DMBIN]" Type="Alias" Base="short">
+            <Display Name="short" />
+            <Enum>
+                <Set Name="DMBIN_UPPER"             Value="1" />
+                <Set Name="DMBIN_LOWER"             Value="2" />
+                <Set Name="DMBIN_MIDDLE"            Value="3" />
+                <Set Name="DMBIN_MANUAL"            Value="4" />
+                <Set Name="DMBIN_ENVELOPE"          Value="5" />
+                <Set Name="DMBIN_ENVMANUAL"         Value="6" />
+                <Set Name="DMBIN_AUTO"              Value="7" />
+                <Set Name="DMBIN_TRACTOR"           Value="8" />
+                <Set Name="DMBIN_SMALLFMT"          Value="9" />
+                <Set Name="DMBIN_LARGEFMT"          Value="10" />
+                <Set Name="DMBIN_LARGECAPACITY"     Value="11" />
+                <Set Name="DMBIN_CASSETTE"          Value="14" />
+                <Set Name="DMBIN_FORMSOURCE"        Value="15" />
+            </Enum>
+        </Variable>
+
+        <!-- [DMRES] -->
+        <Variable Name="[DMRES]" Type="Alias" Base="short">
+            <Display Name="short" />
+            <Enum>
+                <Set Name="DMRES_DRAFT"     Value="-1" />
+                <Set Name="DMRES_LOW"       Value="-2" />
+                <Set Name="DMRES_MEDIUM"    Value="-3" />
+                <Set Name="DMRES_HIGH"      Value="-4" />
+            </Enum>
+        </Variable>
+
+        <!-- [DEVMODE_u1_s1] -->
+        <Variable Name="[DEVMODE_u1_s1]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="[DMORIENT]"    Name="dmOrientation" />
+            <Field Type="[DMPAPER]"     Name="dmPaperSize" />
+            <Field Type="short"         Name="dmPaperLength" />
+            <Field Type="short"         Name="dmPaperWidth" />
+            <Field Type="short"         Name="dmScale" />
+            <Field Type="short"         Name="dmCopies" />
+            <Field Type="[DMBIN]"       Name="dmDefaultSource" />
+            <Field Type="[DMRES]"       Name="dmPrintQuality" />
+        </Variable>
+
+        <!-- [DMDO] -->
+        <Variable Name="[DMDO]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="DMDO_DEFAULT"    Value="0" />
+                <Set Name="DMDO_90"         Value="1" />
+                <Set Name="DMDO_180"        Value="2" />
+                <Set Name="DMDO_270"        Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- [DMDFO] -->
+        <Variable Name="[DMDFO]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="DMDFO_DEFAULT"   Value="0" />
+                <Set Name="DMDFO_STRETCH"   Value="1" />
+                <Set Name="DMDFO_CENTER"    Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- [DEVMODE_u1_s2] -->
+        <Variable Name="[DEVMODE_u1_s2]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="POINTL"    Name="dmPosition" />
+            <Field Type="[DMDO]"    Name="dmDisplayOrientation" />
+            <Field Type="[DMDFO]"   Name="dmDisplayFixedOutput" />
+        </Variable>
+
+        <!-- [DEVMODE_u1] -->
+        <Variable Name="[DEVMODE_u1]" Type="Union">
+            <Display Name="union" />
+            <Field Type="[DEVMODE_u1_s1]"   Name="" />
+            <Field Type="[DEVMODE_u1_s2]"   Name="" />
+        </Variable>
+
+        <!-- [DMDISPLAYFLAGS] -->
+        <Variable Name="[DMDISPLAYFLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="DM_GRAYSCALE"                Value="0x00000001" />
+                <Set Name="DM_INTERLACED"               Value="0x00000002" />
+                <Set Name="DMDISPLAYFLAGS_TEXTMODE"     Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <!-- [DMNUP] -->
+        <Variable Name="[DMNUP]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="DMNUP_SYSTEM"    Value="1" />
+                <Set Name="DMNUP_ONEUP"     Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- [DEVMODE_u2] -->
+        <Variable Name="[DEVMODE_u2]" Type="Union">
+            <Display Name="union" />
+            <Field Type="[DMDISPLAYFLAGS]"  Name="dmDisplayFlags" />
+            <Field Type="[DMNUP]"           Name="dmNup" />
+        </Variable>
+
+        <!-- [DM_Fields] -->
+        <Variable Name="[DM_Fields]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="DM_ORIENTATION"              Value="0x00000001" />
+                <Set Name="DM_PAPERSIZE"                Value="0x00000002" />
+                <Set Name="DM_PAPERLENGTH"              Value="0x00000004" />
+                <Set Name="DM_PAPERWIDTH"               Value="0x00000008" />
+                <Set Name="DM_SCALE"                    Value="0x00000010" />
+                <Set Name="DM_POSITION"                 Value="0x00000020" />
+                <Set Name="DM_NUP"                      Value="0x00000040" />
+                <Set Name="DM_DISPLAYORIENTATION"       Value="0x00000080" />
+                <Set Name="DM_COPIES"                   Value="0x00000100" />
+                <Set Name="DM_DEFAULTSOURCE"            Value="0x00000200" />
+                <Set Name="DM_PRINTQUALITY"             Value="0x00000400" />
+                <Set Name="DM_COLOR"                    Value="0x00000800" />
+                <Set Name="DM_DUPLEX"                   Value="0x00001000" />
+                <Set Name="DM_YRESOLUTION"              Value="0x00002000" />
+                <Set Name="DM_TTOPTION"                 Value="0x00004000" />
+                <Set Name="DM_COLLATE"                  Value="0x00008000" />
+                <Set Name="DM_FORMNAME"                 Value="0x00010000" />
+                <Set Name="DM_LOGPIXELS"                Value="0x00020000" />
+                <Set Name="DM_BITSPERPEL"               Value="0x00040000" />
+                <Set Name="DM_PELSWIDTH"                Value="0x00080000" />
+                <Set Name="DM_PELSHEIGHT"               Value="0x00100000" />
+                <Set Name="DM_DISPLAYFLAGS"             Value="0x00200000" />
+                <Set Name="DM_DISPLAYFREQUENCY"         Value="0x00400000" />
+                <Set Name="DM_ICMMETHOD"                Value="0x00800000" />
+                <Set Name="DM_ICMINTENT"                Value="0x01000000" />
+                <Set Name="DM_MEDIATYPE"                Value="0x02000000" />
+                <Set Name="DM_DITHERTYPE"               Value="0x04000000" />
+                <Set Name="DM_PANNINGWIDTH"             Value="0x08000000" />
+                <Set Name="DM_PANNINGHEIGHT"            Value="0x10000000" />
+                <Set Name="DM_DISPLAYFIXEDOUTPUT"       Value="0x20000000" />
+            </Flag>
+        </Variable>
+
+        <!-- [DMCOLOR] -->
+        <Variable Name="[DMCOLOR]" Type="Alias" Base="short">
+            <Display Name="short" />
+            <Enum>
+                <Set Name="DMCOLOR_MONOCHROME"  Value="1" />
+                <Set Name="DMCOLOR_COLOR"       Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- [DMDUP] -->
+        <Variable Name="[DMDUP]" Type="Alias" Base="short">
+            <Display Name="short" />
+            <Enum>
+                <Set Name="DMDUP_SIMPLEX"       Value="1" />
+                <Set Name="DMDUP_VERTICAL"      Value="2" />
+                <Set Name="DMDUP_HORIZONTAL"    Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- [DMTT] -->
+        <Variable Name="[DMTT]" Type="Alias" Base="short">
+            <Display Name="short" />
+            <Enum>
+                <Set Name="DMTT_BITMAP"             Value="1" />
+                <Set Name="DMTT_DOWNLOAD"           Value="2" />
+                <Set Name="DMTT_SUBDEV"             Value="3" />
+                <Set Name="DMTT_DOWNLOAD_OUTLINE"   Value="4" />
+            </Enum>
+        </Variable>
+
+        <!-- [DMCOLLATE] -->
+        <Variable Name="[DMCOLLATE]" Type="Alias" Base="short">
+            <Display Name="short" />
+            <Enum>
+                <Set Name="DMCOLLATE_FALSE"     Value="0" />
+                <Set Name="DMCOLLATE_TRUE"      Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- [DMICMMETHOD] -->
+        <Variable Name="[DMICMMETHOD]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="DMICMMETHOD_NONE"        Value="1" />
+                <Set Name="DMICMMETHOD_SYSTEM"      Value="2" />
+                <Set Name="DMICMMETHOD_DRIVER"      Value="3" />
+                <Set Name="DMICMMETHOD_DEVICE"      Value="4" />
+            </Enum>
+        </Variable>
+
+        <!-- [DMICM] -->
+        <Variable Name="[DMICM]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="DMICM_SATURATE"          Value="1" />
+                <Set Name="DMICM_CONTRAST"          Value="2" />
+                <Set Name="DMICM_COLORIMETRIC"      Value="3" />
+                <Set Name="DMICM_ABS_COLORIMETRIC"  Value="4" />
+            </Enum>
+        </Variable>
+
+        <!-- [DMMEDIA] -->
+        <Variable Name="[DMMEDIA]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="DMMEDIA_STANDARD"        Value="1" />
+                <Set Name="DMMEDIA_TRANSPARENCY"    Value="2" />
+                <Set Name="DMMEDIA_GLOSSY"          Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- [DMDITHER] -->
+        <Variable Name="[DMDITHER]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="DMDITHER_NONE"               Value="1" />
+                <Set Name="DMDITHER_COARSE"             Value="2" />
+                <Set Name="DMDITHER_FINE"               Value="3" />
+                <Set Name="DMDITHER_LINEART"            Value="4" />
+                <Set Name="DMDITHER_ERRORDIFFUSION"     Value="5" />
+                <Set Name="DMDITHER_RESERVED6"          Value="6" />
+                <Set Name="DMDITHER_RESERVED7"          Value="7" />
+                <Set Name="DMDITHER_RESERVED8"          Value="8" />
+                <Set Name="DMDITHER_RESERVED9"          Value="9" />
+                <Set Name="DMDITHER_GRAYSCALE"          Value="10" />
+            </Enum>
+        </Variable>
+
+        <!-- DEVMODE -->
+        <Variable Name="DEVMODE" Type="Struct">
+            <Field Type="TCHAR [CCHDEVICENAME]" Name="dmDeviceName" />
+            <Field Type="WORD"                  Name="dmSpecVersion" />
+            <Field Type="WORD"                  Name="dmDriverVersion" />
+            <Field Type="WORD"                  Name="dmSize" />
+            <Field Type="WORD"                  Name="dmDriverExtra" />
+            <Field Type="[DM_Fields]"           Name="dmFields" />
+            <Field Type="[DEVMODE_u1]"          Name="" />
+            <Field Type="[DMCOLOR]"             Name="dmColor" />
+            <Field Type="[DMDUP]"               Name="dmDuplex" />
+            <Field Type="short"                 Name="dmYResolution" />
+            <Field Type="[DMTT]"                Name="dmTTOption" />
+            <Field Type="[DMCOLLATE]"           Name="dmCollate" />
+            <Field Type="TCHAR [CCHFORMNAME]"   Name="dmFormName" />
+            <Field Type="WORD"                  Name="dmLogPixels" />
+            <Field Type="DWORD"                 Name="dmBitsPerPel" />
+            <Field Type="DWORD"                 Name="dmPelsWidth" />
+            <Field Type="DWORD"                 Name="dmPelsHeight" />
+            <Field Type="[DEVMODE_u2]"          Name="" />
+            <Field Type="DWORD"                 Name="dmDisplayFrequency" />
+            <Field Type="[DMICMMETHOD]"         Name="dmICMMethod" />
+            <Field Type="[DMICM]"               Name="dmICMIntent" />
+            <Field Type="[DMMEDIA]"             Name="dmMediaType" />
+            <Field Type="[DMDITHER]"            Name="dmDitherType" />
+            <Field Type="DWORD"                 Name="dmReserved1" />
+            <Field Type="DWORD"                 Name="dmReserved2" />
+            <Field Type="DWORD"                 Name="dmPanningWidth" />
+            <Field Type="DWORD"                 Name="dmPanningHeight" />
+        </Variable>
+        <Variable Name="DEVMODE*"       Type="Pointer" Base="DEVMODE" />
+        <Variable Name="const DEVMODE*" Type="Pointer" Base="DEVMODE" />
+        <Variable Name="LPDEVMODE"      Type="Pointer" Base="DEVMODE" />
+        <Variable Name="PDEVMODE"       Type="Pointer" Base="DEVMODE" />
+        <Variable Name="PDEVMODE*"      Type="Pointer" Base="PDEVMODE" />
 
         <!-- Handle -->
         <Variable Name="HANDLE" Type="Integer" Size="0" DisplayHex="True" Unsigned="True">
@@ -82,6 +517,10 @@
         <Variable Name="HGLOBAL*"       Type="Pointer"  Base="HGLOBAL" />
         <Variable Name="HKL"            Type="Alias"    Base="HANDLE" />
         <Variable Name="HKL*"           Type="Pointer"  Base="HKL" />
+        <Variable Name="HBITMAP"        Type="Alias"    Base="HANDLE" />
+        <Variable Name="HBITMAP*"       Type="Pointer"  Base="HBITMAP" />
+        <Variable Name="HENHMETAFILE"   Type="Alias"    Base="HANDLE" />
+        <Variable Name="HENHMETAFILE*"  Type="Pointer"  Base="HENHMETAFILE" />
 
         <!-- [ProcessHandle] -->
         <Variable Name="[ProcessHandle]" Type="Alias" Base="HANDLE">
@@ -122,8 +561,9 @@
         <Variable Name="HRESULT*"   Type="Pointer" Base="HRESULT" />
         <Variable Name="PHRESULT"   Type="Pointer" Base="HRESULT" />
 
-        <Variable Name="STDAPI"     Type="Alias" Base="HRESULT" />
-        <Variable Name="SCODE"      Type="Alias" Base="HRESULT" />
+        <Variable Name="STDAPI"     Type="Alias"    Base="HRESULT" />
+        <Variable Name="SCODE"      Type="Alias"    Base="HRESULT" />
+        <Variable Name="SCODE*"     Type="Pointer"  Base="SCODE" />
 
         <!-- LARGE_INTEGER -->
         <Variable Name="LARGE_INTEGER"          Type="Alias"    Base="INT64" />
@@ -357,19 +797,6 @@
                 <Set Name="GetFileExInfoStandard"   Value="0" />
             </Enum>
         </Variable>
-
-        <!-- POINT -->
-        <Variable Name="POINT" Type="Struct">
-            <Field Type="LONG" Name="x" />
-            <Field Type="LONG" Name="y" />
-        </Variable>
-        <Variable Name="const POINT"        Type="Alias"    Base="POINT" />
-        <Variable Name="POINT*"             Type="Pointer"  Base="POINT" />
-        <Variable Name="const POINT*"       Type="Alias"    Base="POINT*" />
-        <Variable Name="CONST POINT*"       Type="Alias"    Base="POINT*" />
-        <Variable Name="LPPOINT"            Type="Alias"    Base="POINT*" />
-        <Variable Name="POINTL"             Type="Alias"    Base="POINT" />
-        <Variable Name="POINTL*"            Type="Pointer"  Base="POINTL" />
 
         <!-- UNICODE_STRING -->
         <Variable Name="UNICODE_STRING" Type="Struct">
@@ -922,14 +1349,34 @@
             </Enum>
         </Variable>
 
+        <!-- [EXCEPTION_FLAGS] -->
+        <Variable Name="[EXCEPTION_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="EXCEPTION_NONCONTINUABLE_EXCEPTION" Value="0x1" />
+            </Enum>
+        </Variable>
+
+        <!-- EXCEPTION_RECORD -->
+        <Variable Name="EXCEPTION_RECORD" Type="Struct">
+            <Field Type="[ExceptionCode]"                           Name="ExceptionCode" />
+            <Field Type="DWORD"                                     Name="ExceptionFlags" />
+            <!-- TODO: Self-Referencing - ExceptionRecord is EXCEPTION_RECORD*-->
+            <Field Type="LPVOID"                                    Name="ExceptionRecord" Display="EXCEPTION_RECORD*" />
+            <Field Type="PVOID"                                     Name="ExceptionAddress" />
+            <Field Type="DWORD"                                     Name="NumberParameters" />
+            <Field Type="ULONG_PTR [EXCEPTION_MAXIMUM_PARAMETERS]"  Name="ExceptionInformation" />
+        </Variable>
+        <Variable Name="PEXCEPTION_RECORD" Type="Pointer" Base="EXCEPTION_RECORD" />
+
         <!-- EXCEPTION_POINTERS -->
         <Variable Name="EXCEPTION_POINTERS" Type="Struct">
             <Field Type="PEXCEPTION_RECORD"     Name="ExceptionRecord" />
             <Field Type="PCONTEXT" 	            Name="ContextRecord" />
         </Variable>
-        <Variable Name="PEXCEPTION_POINTERS"            Type="Pointer" Base="EXCEPTION_POINTERS" />
-        <Variable Name="LPEXCEPTION_POINTERS"           Type="Pointer" Base="EXCEPTION_POINTERS" />
-        <Variable Name="struct _EXCEPTION_POINTERS*"    Type="Pointer" Base="EXCEPTION_POINTERS" />
+        <Variable Name="PEXCEPTION_POINTERS"    Type="Pointer" Base="EXCEPTION_POINTERS" />
+        <Variable Name="LPEXCEPTION_POINTERS"   Type="Pointer" Base="EXCEPTION_POINTERS" />
+        <Variable Name="EXCEPTION_POINTERS*"    Type="Pointer" Base="EXCEPTION_POINTERS" />
 
         <!-- SP_DEVINFO_DATA -->
         <Variable Name="SP_DEVINFO_DATA" Type="Struct">
@@ -1060,14 +1507,506 @@
         <Variable Name="LPSTARTUPINFOW" Type="Pointer" Base="STARTUPINFOW" />
 
         <!-- FILE_SEGMENT_ELEMENT -->
-        <!-- TODO: Structures (This is a union!)
-        <Variable Name="FILE_SEGMENT_ELEMENT" Type="Struct">
+        <Variable Name="FILE_SEGMENT_ELEMENT" Type="Union">
             <Field Type="PVOID64" 	    Name="Buffer" />
             <Field Type="ULONGLONG" 	Name="Alignment" />
         </Variable>
         <Variable Name="FILE_SEGMENT_ELEMENT[]" Type="Pointer" Base="FILE_SEGMENT_ELEMENT" />
-         -->
-        <Variable Name="FILE_SEGMENT_ELEMENT[]" Type="Alias" Base="LPVOID" />
+
+        <!-- [OVERLAPPED_u_s] -->
+        <Variable Name="[OVERLAPPED_u_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="DWORD"     Name="Offset" />
+            <Field Type="DWORD"     Name="OffsetHigh" />
+        </Variable>
+
+        <!-- [OVERLAPPED_u] -->
+        <Variable Name="[OVERLAPPED_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="[OVERLAPPED_u_s]"  Name="" />
+            <Field Type="PVOID"             Name="Pointer" />
+        </Variable>
+
+        <!-- OVERLAPPED -->
+        <Variable Name="OVERLAPPED" Type="Struct">
+            <Field Type="ULONG_PTR"         Name="Internal" />
+            <Field Type="ULONG_PTR"         Name="InternalHigh" />
+            <Field Type="[OVERLAPPED_u]"    Name="" />
+            <Field Type="HANDLE"            Name="hEvent" />
+        </Variable>
+        <Variable Name="OVERLAPPED*"    Type="Pointer" Base="OVERLAPPED" />
+        <Variable Name="LPOVERLAPPED"   Type="Pointer" Base="OVERLAPPED" />
+        <Variable Name="LPOVERLAPPED*"  Type="Pointer" Base="LPOVERLAPPED" />
+
+        <!-- [ReparsePoint] -->
+        <Variable Name="[ReparsePoint]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="IO_REPARSE_TAG_MOUNT_POINT"      Value="0xA0000003" />
+                <Set Name="IO_REPARSE_TAG_HSM"              Value="0xC0000004" />
+                <Set Name="IO_REPARSE_TAG_HSM2"             Value="0x80000006" />
+                <Set Name="IO_REPARSE_TAG_SIS"              Value="0x80000007" />
+                <Set Name="IO_REPARSE_TAG_WIM"              Value="0x80000008" />
+                <Set Name="IO_REPARSE_TAG_CSV"              Value="0x80000009" />
+                <Set Name="IO_REPARSE_TAG_DFS"              Value="0x8000000A" />
+                <Set Name="IO_REPARSE_TAG_SYMLINK"          Value="0xA000000C" />
+                <Set Name="IO_REPARSE_TAG_DFSR"             Value="0x80000012" />
+            </Enum>
+        </Variable>
+
+        <!-- [FileAttributes] -->
+        <Variable Name="[FileAttributes]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="FILE_ATTRIBUTE_READONLY"             Value="0x00000001" />
+                <Set Name="FILE_ATTRIBUTE_HIDDEN"               Value="0x00000002" />
+                <Set Name="FILE_ATTRIBUTE_SYSTEM"               Value="0x00000004" />
+                <Set Name="FILE_ATTRIBUTE_DIRECTORY"            Value="0x00000010" />
+                <Set Name="FILE_ATTRIBUTE_ARCHIVE"              Value="0x00000020" />
+                <Set Name="FILE_ATTRIBUTE_DEVICE"               Value="0x00000040" />
+                <Set Name="FILE_ATTRIBUTE_NORMAL"               Value="0x00000080" />
+                <Set Name="FILE_ATTRIBUTE_TEMPORARY"            Value="0x00000100" />
+                <Set Name="FILE_ATTRIBUTE_SPARSE_FILE"          Value="0x00000200" />
+                <Set Name="FILE_ATTRIBUTE_REPARSE_POINT"        Value="0x00000400" />
+                <Set Name="FILE_ATTRIBUTE_COMPRESSED"           Value="0x00000800" />
+                <Set Name="FILE_ATTRIBUTE_OFFLINE"              Value="0x00001000" />
+                <Set Name="FILE_ATTRIBUTE_NOT_CONTENT_INDEXED"  Value="0x00002000" />
+                <Set Name="FILE_ATTRIBUTE_ENCRYPTED"            Value="0x00004000" />
+                <Set Name="FILE_ATTRIBUTE_VIRTUAL"              Value="0x00010000" />
+            </Flag>
+        </Variable>
+
+        <!-- WIN32_FIND_DATA -->
+        <Variable Name="WIN32_FIND_DATA" Type="Struct">
+            <Field Type="[FileAttributes]"      Name="dwFileAttributes" />
+            <Field Type="FILETIME"              Name="ftCreationTime" />
+            <Field Type="FILETIME"              Name="ftLastAccessTime" />
+            <Field Type="FILETIME"              Name="ftLastWriteTime" />
+            <Field Type="DWORD"                 Name="nFileSizeHigh" />
+            <Field Type="DWORD"                 Name="nFileSizeLow" />
+            <Field Type="[ReparsePoint]"        Name="dwReserved0" />
+            <Field Type="DWORD"                 Name="dwReserved1" />
+            <Field Type="TCHAR [MAX_PATH]"      Name="cFileName" OutputOnly="True" />
+            <Field Type="TCHAR [14]"            Name="cAlternateFileName" OutputOnly="True" />
+        </Variable>
+        <Variable Name="LPWIN32_FIND_DATA" Type="Pointer" Base="WIN32_FIND_DATA" />
+
+        <!-- WIN32_FIND_DATAA -->
+        <Variable Name="WIN32_FIND_DATAA" Type="Struct">
+            <Field Type="[FileAttributes]"      Name="dwFileAttributes" />
+            <Field Type="FILETIME"              Name="ftCreationTime" />
+            <Field Type="FILETIME"              Name="ftLastAccessTime" />
+            <Field Type="FILETIME"              Name="ftLastWriteTime" />
+            <Field Type="DWORD"                 Name="nFileSizeHigh" />
+            <Field Type="DWORD"                 Name="nFileSizeLow" />
+            <Field Type="[ReparsePoint]"        Name="dwReserved0" />
+            <Field Type="DWORD"                 Name="dwReserved1" />
+            <Field Type="CHAR [MAX_PATH]"       Name="cFileName" OutputOnly="True" />
+            <Field Type="CHAR [14]"             Name="cAlternateFileName" OutputOnly="True" />
+        </Variable>
+        <Variable Name="WIN32_FIND_DATAA*" Type="Pointer" Base="WIN32_FIND_DATAA" />
+
+        <!-- WIN32_FIND_DATAW -->
+        <Variable Name="WIN32_FIND_DATAW" Type="Struct">
+            <Field Type="[FileAttributes]"      Name="dwFileAttributes" />
+            <Field Type="FILETIME"              Name="ftCreationTime" />
+            <Field Type="FILETIME"              Name="ftLastAccessTime" />
+            <Field Type="FILETIME"              Name="ftLastWriteTime" />
+            <Field Type="DWORD"                 Name="nFileSizeHigh" />
+            <Field Type="DWORD"                 Name="nFileSizeLow" />
+            <Field Type="[ReparsePoint]"        Name="dwReserved0" />
+            <Field Type="DWORD"                 Name="dwReserved1" />
+            <Field Type="WCHAR [MAX_PATH]"      Name="cFileName" OutputOnly="True" />
+            <Field Type="WCHAR [14]"            Name="cAlternateFileName" OutputOnly="True" />
+        </Variable>
+        <Variable Name="WIN32_FIND_DATAW*"          Type="Pointer" Base="WIN32_FIND_DATAW" />
+        <Variable Name="const WIN32_FIND_DATAW*"    Type="Pointer" Base="WIN32_FIND_DATAW" />
+
+        <!-- TIME_ZONE_INFORMATION -->
+        <Variable Name="TIME_ZONE_INFORMATION" Type="Struct">
+            <Field Type="LONG"          Name="Bias" />
+            <Field Type="WCHAR [32]"    Name="StandardName" />
+            <Field Type="SYSTEMTIME"    Name="StandardDate" />
+            <Field Type="LONG"          Name="StandardBias" />
+            <Field Type="WCHAR [32]"    Name="DaylightName" />
+            <Field Type="SYSTEMTIME"    Name="DaylightDate" />
+            <Field Type="LONG"          Name="DaylightBias" />
+        </Variable>
+        <Variable Name="LPTIME_ZONE_INFORMATION"        Type="Pointer" Base="TIME_ZONE_INFORMATION" />
+        <Variable Name="const TIME_ZONE_INFORMATION*"   Type="Pointer" Base="TIME_ZONE_INFORMATION" />
+
+        <!-- OFSTRUCT -->
+        <Variable Name="OFSTRUCT" Type="Struct">
+            <Field Type="BYTE"                      Name="cBytes" />
+            <Field Type="BYTE"                      Name="fFixedDisk" />
+            <Field Type="WORD"                      Name="nErrCode" />
+            <Field Type="WORD"                      Name="Reserved1" />
+            <Field Type="WORD"                      Name="Reserved2" />
+            <Field Type="CHAR [OFS_MAXPATHNAME]"    Name="szPathName" />
+        </Variable>
+        <Variable Name="LPOFSTRUCT" Type="Pointer" Base="OFSTRUCT" />
+
+        <!-- [PROCESSOR_ARCHITECTURE] -->
+        <Variable Name="[PROCESSOR_ARCHITECTURE]" Type="Alias" Base="WORD">
+            <Display Name="WORD" />
+            <Enum>
+                <Set Name="PROCESSOR_ARCHITECTURE_INTEL"    Value="0" />
+                <Set Name="PROCESSOR_ARCHITECTURE_IA64"     Value="6" />
+                <Set Name="PROCESSOR_ARCHITECTURE_AMD64"    Value="9" />
+                <Set Name="PROCESSOR_ARCHITECTURE_UNKNOWN"  Value="0xFFFF" />
+            </Enum>
+        </Variable>
+
+        <!-- MINIDUMP_TYPE -->
+        <Variable Name="MINIDUMP_TYPE" Type="Alias" Base="DWORD">
+            <Flag>
+                <Set Name="MiniDumpNormal"                          Value="0x00000000"/>
+                <Set Name="MiniDumpWithDataSegs"                    Value="0x00000001"/>
+                <Set Name="MiniDumpWithFullMemory"                  Value="0x00000002"/>
+                <Set Name="MiniDumpWithHandleData"                  Value="0x00000004"/>
+                <Set Name="MiniDumpFilterMemory"                    Value="0x00000008"/>
+                <Set Name="MiniDumpScanMemory"                      Value="0x00000010"/>
+                <Set Name="MiniDumpWithUnloadedModules"             Value="0x00000020"/>
+                <Set Name="MiniDumpWithIndirectlyReferencedMemory"  Value="0x00000040"/>
+                <Set Name="MiniDumpFilterModulePaths"               Value="0x00000080"/>
+                <Set Name="MiniDumpWithProcessThreadData"           Value="0x00000100"/>
+                <Set Name="MiniDumpWithPrivateReadWriteMemory"      Value="0x00000200"/>
+                <Set Name="MiniDumpWithoutOptionalData"             Value="0x00000400"/>
+                <Set Name="MiniDumpWithFullMemoryInfo"              Value="0x00000800"/>
+                <Set Name="MiniDumpWithThreadInfo"                  Value="0x00001000"/>
+                <Set Name="MiniDumpWithCodeSegs"                    Value="0x00002000"/>
+                <Set Name="MiniDumpWithoutAuxiliaryState"           Value="0x00004000"/>
+                <Set Name="MiniDumpWithFullAuxiliaryState"          Value="0x00008000"/>
+                <Set Name="MiniDumpWithPrivateWriteCopyMemory"      Value="0x00010000" />
+                <Set Name="MiniDumpIgnoreInaccessibleMemory"        Value="0x00020000" />
+                <Set Name="MiniDumpWithTokenInformation"            Value="0x00040000" />
+            </Flag>
+        </Variable>
+
+        <!-- THREAD_WRITE_FLAGS -->
+        <Variable Name="THREAD_WRITE_FLAGS" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="ThreadWriteThread"                   Value="0x0001" />
+                <Set Name="ThreadWriteStack"                    Value="0x0002" />
+                <Set Name="ThreadWriteContext"                  Value="0x0004" />
+                <Set Name="ThreadWriteBackingStore"             Value="0x0008" />
+                <Set Name="ThreadWriteInstructionWindow"        Value="0x0010" />
+                <Set Name="ThreadWriteThreadData"               Value="0x0020" />
+                <Set Name="ThreadWriteThreadInfo"               Value="0x0040" />
+            </Flag>
+        </Variable>
+
+        <!-- MODULE_WRITE_FLAGS -->
+        <Variable Name="MODULE_WRITE_FLAGS" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="ModuleWriteModule"               Value="0x0001" />
+                <Set Name="ModuleWriteDataSeg"              Value="0x0002" />
+                <Set Name="ModuleWriteMiscRecord"           Value="0x0004" />
+                <Set Name="ModuleWriteCvRecord"             Value="0x0008" />
+                <Set Name="ModuleReferencedByMemory"        Value="0x0010" />
+                <Set Name="ModuleWriteTlsData"              Value="0x0020" />
+                <Set Name="ModuleWriteCodeSegs"             Value="0x0040" />
+            </Flag>
+        </Variable>
+
+        <!-- [VirtKeyCode] -->
+        <!-- Base needs to remain WORD since it is used in Structures -->
+        <Variable Name="[VirtKeyCode]" Type="Alias" Base="WORD">
+            <Display Name="WORD" />
+            <Enum>
+                <Set Name="VK_LBUTTON"        			Value="0x01" />
+                <Set Name="VK_RBUTTON"        			Value="0x02" />
+                <Set Name="VK_CANCEL"         			Value="0x03" />
+                <Set Name="VK_MBUTTON"        			Value="0x04" />
+                <Set Name="VK_XBUTTON1"       			Value="0x05" />
+                <Set Name="VK_XBUTTON2"       			Value="0x06" />
+                <Set Name="VK_BACK"           			Value="0x08" />
+                <Set Name="VK_TAB"            			Value="0x09" />
+                <Set Name="VK_CLEAR"          			Value="0x0C" />
+                <Set Name="VK_RETURN"         			Value="0x0D" />
+                <Set Name="VK_SHIFT"          			Value="0x10" />
+                <Set Name="VK_CONTROL"        			Value="0x11" />
+                <Set Name="VK_MENU"           			Value="0x12" />
+                <Set Name="VK_PAUSE"          			Value="0x13" />
+                <Set Name="VK_CAPITAL"        			Value="0x14" />
+                <Set Name="VK_KANA"           			Value="0x15" />
+                <Set Name="VK_JUNJA"          			Value="0x17" />
+                <Set Name="VK_FINAL"          			Value="0x18" />
+                <Set Name="VK_KANJI"          			Value="0x19" />
+                <Set Name="VK_ESCAPE"         			Value="0x1B" />
+                <Set Name="VK_CONVERT"        			Value="0x1C" />
+                <Set Name="VK_NONCONVERT"     			Value="0x1D" />
+                <Set Name="VK_ACCEPT"         			Value="0x1E" />
+                <Set Name="VK_MODECHANGE"     			Value="0x1F" />
+                <Set Name="VK_SPACE"          			Value="0x20" />
+                <Set Name="VK_PRIOR"          			Value="0x21" />
+                <Set Name="VK_NEXT"           			Value="0x22" />
+                <Set Name="VK_END"            			Value="0x23" />
+                <Set Name="VK_HOME"           			Value="0x24" />
+                <Set Name="VK_LEFT"           			Value="0x25" />
+                <Set Name="VK_UP"             			Value="0x26" />
+                <Set Name="VK_RIGHT"          			Value="0x27" />
+                <Set Name="VK_DOWN"           			Value="0x28" />
+                <Set Name="VK_SELECT"         			Value="0x29" />
+                <Set Name="VK_PRINT"          			Value="0x2A" />
+                <Set Name="VK_EXECUTE"        			Value="0x2B" />
+                <Set Name="VK_SNAPSHOT"       			Value="0x2C" />
+                <Set Name="VK_INSERT"         			Value="0x2D" />
+                <Set Name="VK_DELETE"         			Value="0x2E" />
+                <Set Name="VK_HELP"           			Value="0x2F" />
+                <Set Name="VK_LWIN"           			Value="0x5B" />
+                <Set Name="VK_RWIN"           			Value="0x5C" />
+                <Set Name="VK_APPS"           			Value="0x5D" />
+                <Set Name="VK_SLEEP"          			Value="0x5F" />
+                <Set Name="VK_NUMPAD0"        			Value="0x60" />
+                <Set Name="VK_NUMPAD1"        			Value="0x61" />
+                <Set Name="VK_NUMPAD2"        			Value="0x62" />
+                <Set Name="VK_NUMPAD3"        			Value="0x63" />
+                <Set Name="VK_NUMPAD4"        			Value="0x64" />
+                <Set Name="VK_NUMPAD5"        			Value="0x65" />
+                <Set Name="VK_NUMPAD6"        			Value="0x66" />
+                <Set Name="VK_NUMPAD7"        			Value="0x67" />
+                <Set Name="VK_NUMPAD8"        			Value="0x68" />
+                <Set Name="VK_NUMPAD9"        			Value="0x69" />
+                <Set Name="VK_MULTIPLY"       			Value="0x6A" />
+                <Set Name="VK_ADD"            			Value="0x6B" />
+                <Set Name="VK_SEPARATOR"      			Value="0x6C" />
+                <Set Name="VK_SUBTRACT"       			Value="0x6D" />
+                <Set Name="VK_DECIMAL"        			Value="0x6E" />
+                <Set Name="VK_DIVIDE"         			Value="0x6F" />
+                <Set Name="VK_F1"             			Value="0x70" />
+                <Set Name="VK_F2"             			Value="0x71" />
+                <Set Name="VK_F3"             			Value="0x72" />
+                <Set Name="VK_F4"             			Value="0x73" />
+                <Set Name="VK_F5"             			Value="0x74" />
+                <Set Name="VK_F6"             			Value="0x75" />
+                <Set Name="VK_F7"             			Value="0x76" />
+                <Set Name="VK_F8"             			Value="0x77" />
+                <Set Name="VK_F9"             			Value="0x78" />
+                <Set Name="VK_F10"            			Value="0x79" />
+                <Set Name="VK_F11"            			Value="0x7A" />
+                <Set Name="VK_F12"            			Value="0x7B" />
+                <Set Name="VK_F13"            			Value="0x7C" />
+                <Set Name="VK_F14"            			Value="0x7D" />
+                <Set Name="VK_F15"            			Value="0x7E" />
+                <Set Name="VK_F16"            			Value="0x7F" />
+                <Set Name="VK_F17"            			Value="0x80" />
+                <Set Name="VK_F18"            			Value="0x81" />
+                <Set Name="VK_F19"            			Value="0x82" />
+                <Set Name="VK_F20"            			Value="0x83" />
+                <Set Name="VK_F21"            			Value="0x84" />
+                <Set Name="VK_F22"            			Value="0x85" />
+                <Set Name="VK_F23"            			Value="0x86" />
+                <Set Name="VK_F24"            			Value="0x87" />
+                <Set Name="VK_NUMLOCK"        			Value="0x90" />
+                <Set Name="VK_SCROLL"         			Value="0x91" />
+                <Set Name="VK_OEM_NEC_EQUAL"  			Value="0x92" />
+                <Set Name="VK_LSHIFT"         			Value="0xA0" />
+                <Set Name="VK_RSHIFT"         			Value="0xA1" />
+                <Set Name="VK_LCONTROL"       			Value="0xA2" />
+                <Set Name="VK_RCONTROL"       			Value="0xA3" />
+                <Set Name="VK_LMENU"          			Value="0xA4" />
+                <Set Name="VK_RMENU"          			Value="0xA5" />
+                <Set Name="VK_BROWSER_BACK"        		Value="0xA6" />
+                <Set Name="VK_BROWSER_FORWARD"     		Value="0xA7" />
+                <Set Name="VK_BROWSER_REFRESH"     		Value="0xA8" />
+                <Set Name="VK_BROWSER_STOP"        		Value="0xA9" />
+                <Set Name="VK_BROWSER_SEARCH"      		Value="0xAA" />
+                <Set Name="VK_BROWSER_FAVORITES"   		Value="0xAB" />
+                <Set Name="VK_BROWSER_HOME"        		Value="0xAC" />
+                <Set Name="VK_VOLUME_MUTE"         		Value="0xAD" />
+                <Set Name="VK_VOLUME_DOWN"         		Value="0xAE" />
+                <Set Name="VK_VOLUME_UP"           		Value="0xAF" />
+                <Set Name="VK_MEDIA_NEXT_TRACK"    		Value="0xB0" />
+                <Set Name="VK_MEDIA_PREV_TRACK"         Value="0xB1" />
+                <Set Name="VK_MEDIA_STOP"          		Value="0xB2" />
+                <Set Name="VK_MEDIA_PLAY_PAUSE"    		Value="0xB3" />
+                <Set Name="VK_LAUNCH_MAIL"         		Value="0xB4" />
+                <Set Name="VK_LAUNCH_MEDIA_SELECT" 		Value="0xB5" />
+                <Set Name="VK_LAUNCH_APP1"         		Value="0xB6" />
+                <Set Name="VK_LAUNCH_APP2"         		Value="0xB7" />
+                <Set Name="VK_OEM_1"          			Value="0xBA" />
+                <Set Name="VK_OEM_PLUS"       			Value="0xBB" />
+                <Set Name="VK_OEM_COMMA"      			Value="0xBC" />
+                <Set Name="VK_OEM_MINUS"      			Value="0xBD" />
+                <Set Name="VK_OEM_PERIOD"     			Value="0xBE" />
+                <Set Name="VK_OEM_2"          			Value="0xBF" />
+                <Set Name="VK_OEM_3"          			Value="0xC0" />
+                <Set Name="VK_OEM_4"          			Value="0xDB" />
+                <Set Name="VK_OEM_5"          			Value="0xDC" />
+                <Set Name="VK_OEM_6"          			Value="0xDD" />
+                <Set Name="VK_OEM_7"          			Value="0xDE" />
+                <Set Name="VK_OEM_8"          			Value="0xDF" />
+                <Set Name="VK_OEM_AX"         			Value="0xE1" />
+                <Set Name="VK_OEM_102"        			Value="0xE2" />
+                <Set Name="VK_ICO_HELP"       			Value="0xE3" />
+                <Set Name="VK_ICO_00"         			Value="0xE4" />
+                <Set Name="VK_PROCESSKEY"     			Value="0xE5" />
+                <Set Name="VK_ICO_CLEAR"      			Value="0xE6" />
+                <Set Name="VK_PACKET"         			Value="0xE7" />
+                <Set Name="VK_OEM_RESET"      			Value="0xE9" />
+                <Set Name="VK_OEM_JUMP"       			Value="0xEA" />
+                <Set Name="VK_OEM_PA1"        			Value="0xEB" />
+                <Set Name="VK_OEM_PA2"        			Value="0xEC" />
+                <Set Name="VK_OEM_PA3"        			Value="0xED" />
+                <Set Name="VK_OEM_WSCTRL"     			Value="0xEE" />
+                <Set Name="VK_OEM_CUSEL"      			Value="0xEF" />
+                <Set Name="VK_OEM_ATTN"       			Value="0xF0" />
+                <Set Name="VK_OEM_FINISH"     			Value="0xF1" />
+                <Set Name="VK_OEM_COPY"       			Value="0xF2" />
+                <Set Name="VK_OEM_AUTO"       			Value="0xF3" />
+                <Set Name="VK_OEM_ENLW"       			Value="0xF4" />
+                <Set Name="VK_OEM_BACKTAB"    			Value="0xF5" />
+                <Set Name="VK_ATTN"           			Value="0xF6" />
+                <Set Name="VK_CRSEL"          			Value="0xF7" />
+                <Set Name="VK_EXSEL"          			Value="0xF8" />
+                <Set Name="VK_EREOF"          			Value="0xF9" />
+                <Set Name="VK_PLAY"           			Value="0xFA" />
+                <Set Name="VK_ZOOM"           			Value="0xFB" />
+                <Set Name="VK_NONAME"         			Value="0xFC" />
+                <Set Name="VK_PA1"            			Value="0xFD" />
+                <Set Name="VK_OEM_CLEAR"      			Value="0xFE" />
+            </Enum>
+        </Variable>
+
+        <!-- [VER_PLATFORM] -->
+        <Variable Name="[VER_PLATFORM]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="VER_PLATFORM_WIN32s"             Value="0" />
+                <Set Name="VER_PLATFORM_WIN32_WINDOWS"      Value="1" />
+                <Set Name="VER_PLATFORM_WIN32_NT"           Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- OSVERSIONINFO -->
+        <Variable Name="OSVERSIONINFO" Type="Struct">
+            <Field Type="DWORD"             Name="dwOSVersionInfoSize" />
+            <Field Type="DWORD"             Name="dwMajorVersion" />
+            <Field Type="DWORD"             Name="dwMinorVersion" />
+            <Field Type="DWORD"             Name="dwBuildNumber" />
+            <Field Type="[VER_PLATFORM]"    Name="dwPlatformId" />
+            <Field Type="TCHAR [128]"       Name="szCSDVersion"  />
+        </Variable>
+        <Variable Name="LPOSVERSIONINFO" Type="Pointer" Base="OSVERSIONINFO" />
+
+        <!-- RTL_OSVERSIONINFOW -->
+        <!-- Identical to UNICODE version of OSVERSIONINFO -->
+        <Variable Name="RTL_OSVERSIONINFOW" Type="Struct">
+            <Field Type="DWORD"             Name="dwOSVersionInfoSize" />
+            <Field Type="DWORD"             Name="dwMajorVersion" />
+            <Field Type="DWORD"             Name="dwMinorVersion" />
+            <Field Type="DWORD"             Name="dwBuildNumber" />
+            <Field Type="[VER_PLATFORM]"    Name="dwPlatformId" />
+            <Field Type="WCHAR [128]"       Name="szCSDVersion"  />
+        </Variable>
+        <Variable Name="PRTL_OSVERSIONINFOW" Type="Pointer" Base="RTL_OSVERSIONINFOW" />
+
+        <!-- [VER_SUITE] -->
+        <Variable Name="[VER_SUITE]" Type="Alias" Base="WORD">
+            <Display Name="WORD" />
+            <Flag>
+                <Set Name="VER_SUITE_SMALLBUSINESS"                 Value="0x00000001" />
+                <Set Name="VER_SUITE_ENTERPRISE"                    Value="0x00000002" />
+                <Set Name="VER_SUITE_BACKOFFICE"                    Value="0x00000004" />
+                <Set Name="VER_SUITE_COMMUNICATIONS"                Value="0x00000008" />
+                <Set Name="VER_SUITE_TERMINAL"                      Value="0x00000010" />
+                <Set Name="VER_SUITE_SMALLBUSINESS_RESTRICTED"      Value="0x00000020" />
+                <Set Name="VER_SUITE_EMBEDDEDNT"                    Value="0x00000040" />
+                <Set Name="VER_SUITE_DATACENTER"                    Value="0x00000080" />
+                <Set Name="VER_SUITE_SINGLEUSERTS"                  Value="0x00000100" />
+                <Set Name="VER_SUITE_PERSONAL"                      Value="0x00000200" />
+                <Set Name="VER_SUITE_BLADE"                         Value="0x00000400" />
+                <Set Name="VER_SUITE_EMBEDDED_RESTRICTED"           Value="0x00000800" />
+                <Set Name="VER_SUITE_SECURITY_APPLIANCE"            Value="0x00001000" />
+                <Set Name="VER_SUITE_STORAGE_SERVER"                Value="0x00002000" />
+                <Set Name="VER_SUITE_COMPUTE_SERVER"                Value="0x00004000" />
+                <Set Name="VER_SUITE_WH_SERVER"                     Value="0x00008000" />
+            </Flag>
+        </Variable>
+
+        <!-- [VER_PRODUCT] -->
+        <Variable Name="[VER_PRODUCT]" Type="Alias" Base="BYTE">
+            <Display Name="BYTE" />
+            <Enum>
+                <Set Name="VER_NT_WORKSTATION"          Value="0x0000001" />
+                <Set Name="VER_NT_DOMAIN_CONTROLLER"    Value="0x0000002" />
+                <Set Name="VER_NT_SERVER"               Value="0x0000003" />
+            </Enum>
+        </Variable>
+
+        <!-- OSVERSIONINFOEX -->
+        <Variable Name="OSVERSIONINFOEX" Type="Struct">
+            <Field Type="DWORD"         Name="dwOSVersionInfoSize" />
+            <Field Type="DWORD"         Name="dwMajorVersion" />
+            <Field Type="DWORD"         Name="dwMinorVersion" />
+            <Field Type="DWORD"         Name="dwBuildNumber" />
+            <Field Type="DWORD"         Name="dwPlatformId" />
+            <Field Type="TCHAR [128]"   Name="szCSDVersion"  />
+            <Field Type="WORD"          Name="wServicePackMajor" />
+            <Field Type="WORD"          Name="wServicePackMinor" />
+            <Field Type="[VER_SUITE]"   Name="wSuiteMask" />
+            <Field Type="[VER_PRODUCT]" Name="wProductType" />
+            <Field Type="BYTE"          Name="wReserved" />
+        </Variable>
+        <Variable Name="LPOSVERSIONINFOEX" Type="Pointer" Base="OSVERSIONINFOEX" />
+
+        <!-- RTL_OSVERSIONINFOEXW -->
+        <!-- Identical to UNICODE version of OSVERSIONINFOEX -->
+        <Variable Name="RTL_OSVERSIONINFOEXW" Type="Struct">
+            <Field Type="DWORD"         Name="dwOSVersionInfoSize" />
+            <Field Type="DWORD"         Name="dwMajorVersion" />
+            <Field Type="DWORD"         Name="dwMinorVersion" />
+            <Field Type="DWORD"         Name="dwBuildNumber" />
+            <Field Type="DWORD"         Name="dwPlatformId" />
+            <Field Type="WCHAR [128]"   Name="szCSDVersion"  />
+            <Field Type="WORD"          Name="wServicePackMajor" />
+            <Field Type="WORD"          Name="wServicePackMinor" />
+            <Field Type="[VER_SUITE]"   Name="wSuiteMask" />
+            <Field Type="[VER_PRODUCT]" Name="wProductType" />
+            <Field Type="BYTE"          Name="wReserved" />
+        </Variable>
+        <Variable Name="PRTL_OSVERSIONINFOEXW" Type="Pointer" Base="RTL_OSVERSIONINFOEXW" />
+
+        <!-- SymTagEnum -->
+        <Variable Name="SymTagEnum" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="SymTagNull"                  Value="0" />
+                <Set Name="SymTagExe"                   Value="1" />
+                <Set Name="SymTagCompiland"             Value="2" />
+                <Set Name="SymTagCompilandDetails"      Value="3" />
+                <Set Name="SymTagCompilandEnv"          Value="4" />
+                <Set Name="SymTagFunction"              Value="5" />
+                <Set Name="SymTagBlock"                 Value="6" />
+                <Set Name="SymTagData"                  Value="7" />
+                <Set Name="SymTagAnnotation"            Value="8" />
+                <Set Name="SymTagLabel"                 Value="9" />
+                <Set Name="SymTagPublicSymbol"          Value="10" />
+                <Set Name="SymTagUDT"                   Value="11" />
+                <Set Name="SymTagEnum"                  Value="12" />
+                <Set Name="SymTagFunctionType"          Value="13" />
+                <Set Name="SymTagPointerType"           Value="14" />
+                <Set Name="SymTagArrayType"             Value="15" />
+                <Set Name="SymTagBaseType"              Value="16" />
+                <Set Name="SymTagTypedef"               Value="17" />
+                <Set Name="SymTagBaseClass"             Value="18" />
+                <Set Name="SymTagFriend"                Value="19" />
+                <Set Name="SymTagFunctionArgType"       Value="20" />
+                <Set Name="SymTagFuncDebugStart"        Value="21" />
+                <Set Name="SymTagFuncDebugEnd"          Value="22" />
+                <Set Name="SymTagUsingNamespace"        Value="23" />
+                <Set Name="SymTagVTableShape"           Value="24" />
+                <Set Name="SymTagVTable"                Value="25" />
+                <Set Name="SymTagCustom"                Value="26" />
+                <Set Name="SymTagThunk"                 Value="27" />
+                <Set Name="SymTagCustomType"            Value="28" />
+                <Set Name="SymTagManagedType"           Value="29" />
+                <Set Name="SymTagDimension"             Value="30" />
+            </Enum>
+        </Variable>
 
     </Headers>
 </ApiMonitor>

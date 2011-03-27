@@ -6,27 +6,7 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Dhcpsapi.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        
-        <!-- TODO: Structures -->
-        <Variable Name="DHCP_CONST DHCP_SUBNET_ELEMENT_DATA_V5*"        Type="Alias" Base="LPVOID" />
-        <Variable Name="DHCP_CONST DHCP_SEARCH_INFO*"                   Type="Alias" Base="LPVOID" />
-        <Variable Name="LPDHCP_SEARCH_INFO"                             Type="Alias" Base="LPVOID" />
-        <Variable Name="DHCP_ADDR_PATTERN*"                             Type="Alias" Base="LPVOID" />
-        <Variable Name="LPDHCP_ADDR_PATTERN"                            Type="Alias" Base="DHCP_ADDR_PATTERN*" />
-        <Variable Name="LPDHCP_OPTION_SCOPE_INFO"                       Type="Alias" Base="LPVOID" />
-        <Variable Name="DHCP_CONST DHCP_OPTION_SCOPE_INFO*"             Type="Alias" Base="LPVOID" />
-        <Variable Name="LPDHCP_ALL_OPTION_VALUES*"                      Type="Alias" Base="LPVOID" />
-        <Variable Name="LPDHCP_SUBNET_ELEMENT_DATA"                     Type="Alias" Base="LPVOID" />
-        <Variable Name="LPDHCP_SUBNET_ELEMENT_DATA_V6"                  Type="Alias" Base="LPVOID" />
-        <Variable Name="LPDHCP_SEARCH_INFO_V6"                          Type="Alias" Base="LPVOID" />
-        <Variable Name="DHCP_CONST DHCP_SEARCH_INFO_V6*"                Type="Alias" Base="LPDHCP_SEARCH_INFO_V6" />
-        <Variable Name="LPDHCP_OPTION_SCOPE_INFO6"                      Type="Alias" Base="LPVOID" />
-        <Variable Name="LPDHCP_OPTION_SCOPE_INFO6*"                     Type="Pointer" Base="LPDHCP_OPTION_SCOPE_INFO6" />
-        <Variable Name="LPDHCP_ALL_OPTIONS*"                            Type="Alias" Base="LPVOID" />
-        <Variable Name="DHCP_FILTER_ADD_INFO*"                          Type="Pointer" Base="LPVOID" />
-        <Variable Name="LPDHCP_OPTION_DATA_ELEMENT"                     Type="Pointer" Base="LPVOID" />
-        <Variable Name="LPDHCP_FILTER_RECORD"                           Type="Pointer" Base="LPVOID" />
-        
+
         <!-- Variables -->
         <Variable Name="DHCP_CONST WCHAR*"                      Type="Alias"    Base="WCHAR*" />
         <Variable Name="DHCP_IP_ADDRESS"                        Type="Alias"    Base="DWORD" />
@@ -38,7 +18,431 @@
         <Variable Name="DHCP_RESUME_HANDLE"                     Type="Alias"    Base="DWORD" />
         <Variable Name="DHCP_RESUME_HANDLE*"                    Type="Pointer"  Base="DHCP_RESUME_HANDLE" />
         <Variable Name="DHCP_CONST BOOL"                        Type="Alias"    Base="BOOL" />
+        <Variable Name="BYTE [MAX_PATTERN_LENGTH]"              Type="Array"    Base="BYTE" Count="255" />
 
+        <!-- DHCP_ADDR_PATTERN -->
+        <Variable Name="DHCP_ADDR_PATTERN" Type="Struct">
+            <Field Type="BOOL"                          Name="MatchHWType" />
+            <Field Type="BYTE"                          Name="HWType" />
+            <Field Type="BOOL"                          Name="IsWildcard" />
+            <Field Type="BYTE"                          Name="Length" />
+            <Field Type="BYTE [MAX_PATTERN_LENGTH]"     Name="Pattern" />
+        </Variable>
+        <Variable Name="DHCP_ADDR_PATTERN*"     Type="Pointer" Base="DHCP_ADDR_PATTERN" />
+        <Variable Name="LPDHCP_ADDR_PATTERN"    Type="Pointer" Base="DHCP_ADDR_PATTERN" />
+
+        <!-- DHCP_IPV6_ADDRESS -->
+        <Variable Name="DHCP_IPV6_ADDRESS" Type="Struct">
+            <Field Type="ULONGLONG"     Name="HighOrderBits" />
+            <Field Type="ULONGLONG"     Name="LowOrderBits" />
+        </Variable>
+        <Variable Name="LPDHCP_IPV6_ADDRESS" Type="Pointer" Base="DHCP_IPV6_ADDRESS" />
+
+        <!-- DHCP_IP_RANGE_V6 -->
+        <Variable Name="DHCP_IP_RANGE_V6" Type="Struct">
+            <Field Type="DHCP_IPV6_ADDRESS"     Name="StartAddress" />
+            <Field Type="DHCP_IPV6_ADDRESS"     Name="EndAddress" />
+        </Variable>
+        <Variable Name="DHCP_IP_RANGE_V6*" Type="Pointer" Base="DHCP_IP_RANGE_V6" />
+
+        <!-- DHCP_BINARY_DATA -->
+        <Variable Name="DHCP_BINARY_DATA" Type="Struct">
+            <Field Type="DWORD"  	Name="DataLength" />
+            <Field Type="BYTE*"     Name="Data" Length="DataLength" />
+        </Variable>
+        <Variable Name="DHCP_CLIENT_UID"    Type="Alias"    Base="DHCP_BINARY_DATA" />
+        <Variable Name="DHCP_CLIENT_UID*"   Type="Pointer"  Base="DHCP_CLIENT_UID" />
+
+        <!-- DHCP_IP_RESERVATION_V6 -->
+        <Variable Name="DHCP_IP_RESERVATION_V6" Type="Struct">
+            <Field Type="DHCP_IPV6_ADDRESS"     Name="ReservedIpAddress" />
+            <Field Type="DHCP_CLIENT_UID*"      Name="ReservedForClient" />
+            <Field Type="DWORD"                 Name="InterfaceId" />
+        </Variable>
+        <Variable Name="DHCP_IP_RESERVATION_V6*" Type="Pointer" Base="DHCP_IP_RESERVATION_V6" />
+
+        <!-- DHCP_IP_RANGE -->
+        <Variable Name="DHCP_IP_RANGE" Type="Struct">
+            <Field Type="DHCP_IP_ADDRESS"   Name="StartAddress" />
+            <Field Type="DHCP_IP_ADDRESS"   Name="EndAddress" />
+        </Variable>
+        <Variable Name="DHCP_IP_RANGE*" Type="Pointer" Base="DHCP_IP_RANGE" />
+
+        <!-- DHCP_OPTION_DATA_TYPE -->
+        <Variable Name="DHCP_OPTION_DATA_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DhcpByteOption"              Value="0" />
+                <Set Name="DhcpWordOption"              Value="1" />
+                <Set Name="DhcpDWordOption"             Value="2" />
+                <Set Name="DhcpDWordDWordOption"        Value="3" />
+                <Set Name="DhcpIpAddressOption"         Value="4" />
+                <Set Name="DhcpStringDataOption"        Value="5" />
+                <Set Name="DhcpBinaryDataOption"        Value="6" />
+                <Set Name="DhcpEncapsulatedDataOption"  Value="7" />
+                <Set Name="DhcpIpv6AddressOption"       Value="8" />
+            </Enum>
+        </Variable>
+
+        <!-- DWORD_DWORD -->
+        <Variable Name="DWORD_DWORD" Type="Struct">
+            <Field Type="DWORD"     Name="DWord1" />
+            <Field Type="DWORD"     Name="DWord2" />
+        </Variable>
+
+        <!-- DHCP_OPTION_ELEMENT_UNION -->
+        <Variable Name="DHCP_OPTION_ELEMENT_UNION" Type="Union">
+            <Field Type="BYTE"              Name="ByteOption" />
+            <Field Type="WORD"              Name="WordOption" />
+            <Field Type="DWORD"             Name="DWordOption" />
+            <Field Type="DWORD_DWORD"       Name="DWordDWordOption" />
+            <Field Type="DHCP_IP_ADDRESS"   Name="IpAddressOption" />
+            <Field Type="LPWSTR"            Name="StringDataOption" />
+            <Field Type="DHCP_BINARY_DATA"  Name="BinaryDataOption" />
+            <Field Type="DHCP_BINARY_DATA"  Name="EncapsulatedDataOption" />
+            <Field Type="LPWSTR"            Name="Ipv6AddressDataOption" />
+        </Variable>
+
+        <!-- DHCP_OPTION_DATA_ELEMENT -->
+        <Variable Name="DHCP_OPTION_DATA_ELEMENT" Type="Struct">
+            <Field Type="DHCP_OPTION_DATA_TYPE"         Name="OptionType" />
+            <Field Type="DHCP_OPTION_ELEMENT_UNION"     Name="Element" />
+        </Variable>
+        <Variable Name="LPDHCP_OPTION_DATA_ELEMENT" Type="Pointer" Base="DHCP_OPTION_DATA_ELEMENT" />
+
+        <!-- DHCP_BOOTP_IP_RANGE -->
+        <Variable Name="DHCP_BOOTP_IP_RANGE" Type="Struct">
+            <Field Type="DHCP_IP_ADDRESS"   Name="StartAddress" />
+            <Field Type="DHCP_IP_ADDRESS"   Name="EndAddress" />
+            <Field Type="ULONG"             Name="BootpAllocated" />
+            <Field Type="ULONG"             Name="MaxBootpAllowed" />
+        </Variable>
+        <Variable Name="DHCP_BOOTP_IP_RANGE*" Type="Pointer" Base="DHCP_BOOTP_IP_RANGE" />
+
+        <!-- DHCP_HOST_INFO -->
+        <Variable Name="DHCP_HOST_INFO" Type="Struct">
+            <Field Type="DHCP_IP_ADDRESS" 	Name="IpAddress" />
+            <Field Type="LPWSTR"          	Name="NetBiosName" />
+            <Field Type="LPWSTR"          	Name="HostName" />
+        </Variable>
+        <Variable Name="DHCP_HOST_INFO*" Type="Pointer" Base="DHCP_HOST_INFO" />
+
+        <!-- DHCP_IP_CLUSTER -->
+        <Variable Name="DHCP_IP_CLUSTER" Type="Struct">
+            <Field Type="DHCP_IP_ADDRESS"   Name="ClusterAddress" />
+            <Field Type="DWORD"             Name="ClusterMask" />
+        </Variable>
+        <Variable Name="DHCP_IP_CLUSTER*" Type="Pointer" Base="DHCP_IP_CLUSTER" />
+
+        <!-- DHCP_IP_RESERVATION_V4 -->
+        <Variable Name="DHCP_IP_RESERVATION_V4" Type="Struct">
+            <Field Type="DHCP_IP_ADDRESS"   Name="ReservedIpAddress" />
+            <Field Type="DHCP_CLIENT_UID*"  Name="ReservedForClient" />
+            <Field Type="BYTE"              Name="bAllowedClientTypes" />
+        </Variable>
+        <Variable Name="DHCP_IP_RESERVATION_V4*" Type="Pointer" Base="DHCP_IP_RESERVATION_V4" />
+
+        <!-- DHCP_SUBNET_ELEMENT_UNION_V5 -->
+        <Variable Name="DHCP_SUBNET_ELEMENT_UNION_V5" Type="Union">
+            <Field Type="DHCP_BOOTP_IP_RANGE*"       Name="IpRange" />
+            <Field Type="DHCP_HOST_INFO*"            Name="SecondaryHost" />
+            <Field Type="DHCP_IP_RESERVATION_V4*"    Name="ReservedIp" />
+            <Field Type="DHCP_IP_RANGE*"             Name="ExcludeIpRange" />
+            <Field Type="DHCP_IP_CLUSTER*"           Name="IpUsedCluster" />
+        </Variable>
+
+        <!-- DHCP_SUBNET_ELEMENT_TYPE -->
+        <Variable Name="DHCP_SUBNET_ELEMENT_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DhcpIpRanges"	        Value="0" />
+                <Set Name="DhcpSecondaryHosts"      Value="1" />
+                <Set Name="DhcpReservedIps"         Value="2" />
+                <Set Name="DhcpExcludedIpRanges"    Value="3" />
+                <Set Name="DhcpIpUsedClusters"      Value="4" />
+                <Set Name="DhcpIpRangesDhcpOnly"    Value="5" />
+                <Set Name="DhcpIpRangesDhcpBootp"   Value="6" />
+                <Set Name="DhcpIpRangesBootpOnly"   Value="7" />
+            </Enum>
+        </Variable>
+
+        <!-- DHCP_SUBNET_ELEMENT_DATA_V5 -->
+        <Variable Name="DHCP_SUBNET_ELEMENT_DATA_V5" Type="Struct">
+            <Field Type="DHCP_SUBNET_ELEMENT_TYPE"      Name="ElementType" />
+            <Field Type="DHCP_SUBNET_ELEMENT_UNION_V5"  Name="Element" />
+        </Variable>
+        <Variable Name="DHCP_CONST DHCP_SUBNET_ELEMENT_DATA_V5*" Type="Pointer" Base="DHCP_SUBNET_ELEMENT_DATA_V5" />
+
+        <!-- DHCP_SEARCH_INFO_TYPE -->
+        <Variable Name="DHCP_SEARCH_INFO_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DhcpClientIpAddress"         Value="0" />
+                <Set Name="DhcpClientHardwareAddress"   Value="1" />
+                <Set Name="DhcpClientName"              Value="2" />
+            </Enum>
+        </Variable>
+        
+        <!-- DHCP_CLIENT_SEARCH_UNION -->
+        <Variable Name="DHCP_CLIENT_SEARCH_UNION" Type="Union">
+            <Field Type="DHCP_IP_ADDRESS"   Name="ClientIpAddress" />
+            <Field Type="DHCP_CLIENT_UID"   Name="ClientHardwareAddress" />
+            <Field Type="LPWSTR"            Name="ClientName" />
+        </Variable>
+
+        <!-- DHCP_SEARCH_INFO -->
+        <Variable Name="DHCP_SEARCH_INFO" Type="Struct">
+            <Field Type="DHCP_SEARCH_INFO_TYPE"     Name="SearchType" />
+            <Field Type="DHCP_CLIENT_SEARCH_UNION"  Name="SearchInfo" />
+        </Variable>
+        <Variable Name="LPDHCP_SEARCH_INFO"             Type="Pointer" Base="DHCP_SEARCH_INFO" />
+        <Variable Name="DHCP_CONST DHCP_SEARCH_INFO*"   Type="Pointer" Base="DHCP_SEARCH_INFO" />
+
+        <!-- DHCP_RESERVED_SCOPE -->
+        <Variable Name="DHCP_RESERVED_SCOPE" Type="Struct">
+            <Field Type="DHCP_IP_ADDRESS"   Name="ReservedIpAddress" />
+            <Field Type="DHCP_IP_ADDRESS"   Name="ReservedIpSubnetAddress" />
+        </Variable>
+
+        <!-- DHCP_OPTION_SCOPE_UNION -->
+        <Variable Name="DHCP_OPTION_SCOPE_UNION" Type="Union">
+            <Field Type="PVOID"                 Name="DefaultScopeInfo" />
+            <Field Type="PVOID"                 Name="GlobalScopeInfo" />
+            <Field Type="DHCP_IP_ADDRESS"       Name="SubnetScopeInfo" />
+            <Field Type="DHCP_RESERVED_SCOPE"   Name="ReservedScopeInfo" />
+            <Field Type="LPWSTR"                Name="MScopeInfo" />
+        </Variable>
+
+        <!-- DHCP_OPTION_SCOPE_TYPE -->
+        <Variable Name="DHCP_OPTION_SCOPE_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DhcpDefaultOptions"      Value="0" />
+                <Set Name="DhcpGlobalOptions"       Value="1" />
+                <Set Name="DhcpSubnetOptions"       Value="2" />
+                <Set Name="DhcpReservedOptions"     Value="3" />
+                <Set Name="DhcpMScopeOptions"       Value="4" />
+            </Enum>
+        </Variable>
+
+        <!-- DHCP_OPTION_SCOPE_INFO -->
+        <Variable Name="DHCP_OPTION_SCOPE_INFO" Type="Struct">
+            <Field Type="DHCP_OPTION_SCOPE_TYPE"    Name="ScopeType" />
+            <Field Type="DHCP_OPTION_SCOPE_UNION"   Name="ScopeInfo" />
+        </Variable>
+        <Variable Name="LPDHCP_OPTION_SCOPE_INFO"           Type="Pointer" Base="DHCP_OPTION_SCOPE_INFO" />
+        <Variable Name="DHCP_CONST DHCP_OPTION_SCOPE_INFO*" Type="Pointer" Base="DHCP_OPTION_SCOPE_INFO" />
+
+        <!-- DHCP_OPTION_DATA -->
+        <Variable Name="DHCP_OPTION_DATA" Type="Struct">
+            <Field Type="DWORD" 	                    Name="NumElements" />
+            <Field Type="LPDHCP_OPTION_DATA_ELEMENT" 	Name="Elements" />
+        </Variable>
+        <Variable Name="LPDHCP_OPTION_DATA" Type="Pointer" Base="DHCP_OPTION_DATA" />
+
+        <!-- DHCP_OPTION_VALUE -->
+        <Variable Name="DHCP_OPTION_VALUE" Type="Struct">
+            <Field Type="DHCP_OPTION_ID"   	Name="OptionID" />
+            <Field Type="DHCP_OPTION_DATA" 	Name="Value" />
+        </Variable>
+        <Variable Name="LPDHCP_OPTION_VALUE"    Type="Pointer" Base="DHCP_OPTION_VALUE" />
+        <Variable Name="LPDHCP_OPTION_VALUE*"   Type="Pointer" Base="LPDHCP_OPTION_VALUE" />
+
+        <!-- DHCP_OPTION_VALUE_ARRAY -->
+        <Variable Name="DHCP_OPTION_VALUE_ARRAY" Type="Struct">
+            <Field Type="DWORD" 	            Name="NumElements" />
+            <Field Type="LPDHCP_OPTION_VALUE" 	Name="Values" />
+        </Variable>
+        <Variable Name="LPDHCP_OPTION_VALUE_ARRAY"      Type="Pointer" Base="DHCP_OPTION_VALUE_ARRAY" />
+        <Variable Name="LPDHCP_OPTION_VALUE_ARRAY*"     Type="Pointer" Base="LPDHCP_OPTION_VALUE_ARRAY" />
+
+        <!-- [DHCP_ALL_OPTION_VALUES_s] -->
+        <Variable Name="[DHCP_ALL_OPTION_VALUES_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="LPWSTR"                        Name="ClassName" />
+            <Field Type="LPWSTR"                        Name="VendorName" />
+            <Field Type="BOOL"                          Name="IsVendor" />
+            <Field Type="LPDHCP_OPTION_VALUE_ARRAY"     Name="OptionsArray" />
+        </Variable>
+        <Variable Name="[DHCP_ALL_OPTION_VALUES_s*]" Type="Pointer" Base="[DHCP_ALL_OPTION_VALUES_s]">
+            <Display Name="struct*" />
+        </Variable>
+
+        <!-- DHCP_ALL_OPTION_VALUES -->
+        <Variable Name="DHCP_ALL_OPTION_VALUES" Type="Struct">
+            <Field Type="DWORD"                             Name="Flags" />
+            <Field Type="DWORD"                             Name="NumElements" />
+            <Field Type="[DHCP_ALL_OPTION_VALUES_s*]"       Name="Options" Count="NumElements" />
+        </Variable>
+        <Variable Name="LPDHCP_ALL_OPTION_VALUES*" Type="Pointer" Base="DHCP_ALL_OPTION_VALUES" />
+
+        <!-- DHCP_IP_RESERVATION -->
+        <Variable Name="DHCP_IP_RESERVATION" Type="Struct">
+            <Field Type="DHCP_IP_ADDRESS"   Name="ReservedIpAddress" />
+            <Field Type="DHCP_CLIENT_UID*"  Name="ReservedForClient" />
+        </Variable>
+        <Variable Name="DHCP_IP_RESERVATION*" Type="Pointer" Base="DHCP_IP_RESERVATION" />
+
+        <!-- DHCP_SUBNET_ELEMENT_UNION -->
+        <Variable Name="DHCP_SUBNET_ELEMENT_UNION" Type="Union">
+            <Field Type="DHCP_IP_RANGE*"            Name="IpRange" />
+            <Field Type="DHCP_HOST_INFO*"           Name="SecondaryHost" />
+            <Field Type="DHCP_IP_RESERVATION*"      Name="ReservedIp" />
+            <Field Type="DHCP_IP_RANGE*"            Name="ExcludeIpRange" />
+            <Field Type="DHCP_IP_CLUSTER*"          Name="IpUsedCluster" />
+        </Variable>
+
+        <!-- DHCP_SUBNET_ELEMENT_DATA -->
+        <Variable Name="DHCP_SUBNET_ELEMENT_DATA" Type="Struct">
+            <Field Type="DHCP_SUBNET_ELEMENT_TYPE"      Name="ElementType" />
+            <Field Type="DHCP_SUBNET_ELEMENT_UNION"     Name="Element" />
+        </Variable>
+        <Variable Name="LPDHCP_SUBNET_ELEMENT_DATA" Type="Pointer" Base="DHCP_SUBNET_ELEMENT_DATA" />
+
+        <!-- DHCP_SUBNET_ELEMENT_TYPE_V6 -->
+        <Variable Name="DHCP_SUBNET_ELEMENT_TYPE_V6" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="Dhcpv6IpRanges"          Value="0" />
+                <Set Name="Dhcpv6ReservedIps"       Value="1" />
+                <Set Name="Dhcpv6ExcludedIpRanges"  Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- DHCP_SUBNET_ELEMENT_UNION_V6 -->
+        <Variable Name="DHCP_SUBNET_ELEMENT_UNION_V6" Type="Union">
+            <Field Type="DHCP_IP_RANGE_V6*"         Name="IpRange" />
+            <Field Type="DHCP_IP_RESERVATION_V6*"   Name="ReservedIp" />
+            <Field Type="DHCP_IP_RANGE_V6*"         Name="ExcludeIpRange" />
+        </Variable>
+
+        <!-- DHCP_SUBNET_ELEMENT_DATA_V6 -->
+        <Variable Name="DHCP_SUBNET_ELEMENT_DATA_V6" Type="Struct">
+            <Field Type="DHCP_SUBNET_ELEMENT_TYPE_V6"   Name="ElementType" />
+            <Field Type="DHCP_SUBNET_ELEMENT_UNION_V6"  Name="Element" />
+        </Variable>
+        <Variable Name="LPDHCP_SUBNET_ELEMENT_DATA_V6" Type="Pointer" Base="DHCP_SUBNET_ELEMENT_DATA_V6" />
+
+        <!-- DHCP_SEARCH_INFO_TYPE_V6 -->
+        <Variable Name="DHCP_SEARCH_INFO_TYPE_V6" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="Dhcpv6ClientIpAddress"   Value="0" />
+                <Set Name="Dhcpv6ClientDUID"        Value="1" />
+                <Set Name="Dhcpv6ClientName"        Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- DHCP_CLIENT_SEARCH_UNION_V6 -->
+        <Variable Name="DHCP_CLIENT_SEARCH_UNION_V6" Type="Union">
+            <Field Type="DHCP_IPV6_ADDRESS"     Name="ClientIpAddress" />
+            <Field Type="DHCP_CLIENT_UID"       Name="ClientDUID" />
+            <Field Type="LPWSTR"                Name="ClientName" />
+        </Variable>
+
+        <!-- DHCP_SEARCH_INFO_V6 -->
+        <Variable Name="DHCP_SEARCH_INFO_V6" Type="Struct">
+            <Field Type="DHCP_SEARCH_INFO_TYPE_V6"      Name="SearchType" />
+            <Field Type="DHCP_CLIENT_SEARCH_UNION_V6"   Name="SearchInfo" />
+        </Variable>
+        <Variable Name="LPDHCP_SEARCH_INFO_V6"              Type="Pointer" Base="DHCP_SEARCH_INFO_V6" />
+        <Variable Name="DHCP_CONST DHCP_SEARCH_INFO_V6*"    Type="Pointer" Base="DHCP_SEARCH_INFO_V6" />
+
+        <!-- DHCP_RESERVED_SCOPE6 -->
+        <Variable Name="DHCP_RESERVED_SCOPE6" Type="Struct">
+            <Field Type="DHCP_IPV6_ADDRESS"     Name="ReservedIpAddress" />
+            <Field Type="DHCP_IPV6_ADDRESS"     Name="ReservedIpSubnetAddress" />
+        </Variable>
+
+        <!-- DHCP_OPTION_SCOPE_TYPE6 -->
+        <Variable Name="DHCP_OPTION_SCOPE_TYPE6" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DhcpDefaultOptions6"     Value="0" />
+                <Set Name="DhcpScopeOptions6"       Value="1" />
+                <Set Name="DhcpReservedOptions6"    Value="2" />
+                <Set Name="DhcpGlobalOptions6"      Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- DHCP_OPTION_SCOPE_UNION6 -->
+        <Variable Name="DHCP_OPTION_SCOPE_UNION6" Type="Union">
+            <Field Type="PVOID"                     Name="DefaultScopeInfo" />
+            <Field Type="DHCP_IPV6_ADDRESS"         Name="SubnetScopeInfo" />
+            <Field Type="DHCP_RESERVED_SCOPE6"      Name="ReservedScopeInfo" />
+        </Variable>
+
+        <!-- DHCP_OPTION_SCOPE_INFO6 -->
+        <Variable Name="DHCP_OPTION_SCOPE_INFO6" Type="Struct">
+            <Field Type="DHCP_OPTION_SCOPE_TYPE6"   Name="ScopeType" />
+            <Field Type="DHCP_OPTION_SCOPE_UNION6"  Name="ScopeInfo" />
+        </Variable>
+        <Variable Name="LPDHCP_OPTION_SCOPE_INFO6"  Type="Pointer" Base="DHCP_OPTION_SCOPE_INFO6" />
+        <Variable Name="LPDHCP_OPTION_SCOPE_INFO6*" Type="Pointer" Base="LPDHCP_OPTION_SCOPE_INFO6" />
+
+        <!-- DHCP_OPTION_TYPE -->
+        <Variable Name="DHCP_OPTION_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DhcpUnaryElementTypeOption"  Value="0" />
+                <Set Name="DhcpArrayTypeOption"         Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- DHCP_OPTION -->
+        <Variable Name="DHCP_OPTION" Type="Struct">
+            <Field Type="DHCP_OPTION_ID"   	Name="OptionID" />
+            <Field Type="LPWSTR"           	Name="OptionName" />
+            <Field Type="LPWSTR"           	Name="OptionComment" />
+            <Field Type="DHCP_OPTION_DATA" 	Name="DefaultValue" />
+            <Field Type="DHCP_OPTION_TYPE" 	Name="OptionType" />
+        </Variable>
+        <Variable Name="LPDHCP_OPTION"  Type="Pointer" Base="DHCP_OPTION" />
+        <Variable Name="LPDHCP_OPTION*" Type="Pointer" Base="LPDHCP_OPTION" />
+
+        <!-- DHCP_OPTION_ARRAY -->
+        <Variable Name="DHCP_OPTION_ARRAY" Type="Struct">
+            <Field Type="DWORD" 	        Name="NumElements" />
+            <Field Type="LPDHCP_OPTION" 	Name="Options" />
+        </Variable>
+        <Variable Name="LPDHCP_OPTION_ARRAY"            Type="Pointer" Base="DHCP_OPTION_ARRAY" />
+        <Variable Name="LPDHCP_OPTION_ARRAY*"           Type="Pointer" Base="LPDHCP_OPTION_ARRAY" />
+
+        <!-- [DHCP_ALL_OPTIONS_s] -->
+        <Variable Name="[DHCP_ALL_OPTIONS_s]" Type="Struct">
+            <Field Type="DHCP_OPTION"       Name="Option" />
+            <Field Type="LPWSTR"            Name="VendorName" />
+            <Field Type="LPWSTR"            Name="ClassName" />
+        </Variable>
+        <Variable Name="[DHCP_ALL_OPTIONS_s*]" Type="Pointer" Base="[DHCP_ALL_OPTIONS_s]">
+            <Display Name="struct*" />
+        </Variable>
+
+        <!-- DHCP_ALL_OPTIONS -->
+        <Variable Name="DHCP_ALL_OPTIONS" Type="Struct">
+            <Field Type="DWORD"                         Name="Flags" />
+            <Field Type="LPDHCP_OPTION_ARRAY"           Name="NonVendorOptions" />
+            <Field Type="DWORD"                         Name="NumVendorOptions" />
+            <Field Type="[DHCP_ALL_OPTIONS_s*]"         Name="VendorOptions" Count="NumVendorOptions" />
+        </Variable>
+        <Variable Name="LPDHCP_ALL_OPTIONS"     Type="Pointer" Base="DHCP_ALL_OPTIONS" />
+        <Variable Name="LPDHCP_ALL_OPTIONS*"    Type="Pointer" Base="LPDHCP_ALL_OPTIONS" />
+
+        <!-- DHCP_FILTER_LIST_TYPE -->
+        <Variable Name="DHCP_FILTER_LIST_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="Deny"    Value="0" />
+                <Set Name="Allow"   Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- DHCP_FILTER_ADD_INFO -->
+        <Variable Name="DHCP_FILTER_ADD_INFO" Type="Struct">
+            <Field Type="DHCP_ADDR_PATTERN"         Name="AddrPatt" />
+            <Field Type="LPWSTR"                    Name="Comment" />
+            <Field Type="DHCP_FILTER_LIST_TYPE"     Name="ListType" />
+        </Variable>
+        <Variable Name="DHCP_FILTER_ADD_INFO*" Type="Pointer" Base="DHCP_FILTER_ADD_INFO" />
+
+        <!-- DHCP_FILTER_RECORD -->
+        <Variable Name="DHCP_FILTER_RECORD" Type="Struct">
+            <Field Type="DHCP_ADDR_PATTERN"     Name="AddrPatt" />
+            <Field Type="LPWSTR"                Name="Comment" />
+        </Variable>
+        <Variable Name="LPDHCP_FILTER_RECORD" Type="Pointer" Base="DHCP_FILTER_RECORD" />
+        
         <!-- DATE_TIME -->
         <Variable Name="DATE_TIME" Type="Struct">
             <Field Type="DWORD" 	Name="dwLowDateTime" />
@@ -56,20 +460,6 @@
         </Variable>
         <Variable Name="LPDHCP_CLASS_INFO"  Type="Pointer" Base="DHCP_CLASS_INFO" />
         <Variable Name="LPDHCP_CLASS_INFO*" Type="Pointer" Base="LPDHCP_CLASS_INFO" />
-
-        <!-- DHCP_BINARY_DATA -->
-        <Variable Name="DHCP_BINARY_DATA" Type="Struct">
-            <Field Type="DWORD"  	Name="DataLength" />
-            <Field Type="BYTE*"     Name="Data" />
-        </Variable>
-        <Variable Name="DHCP_CLIENT_UID" Type="Alias" Base="DHCP_BINARY_DATA" />
-
-        <!-- DHCP_HOST_INFO -->
-        <Variable Name="DHCP_HOST_INFO" Type="Struct">
-            <Field Type="DHCP_IP_ADDRESS" 	Name="IpAddress" />
-            <Field Type="LPWSTR"          	Name="NetBiosName" />
-            <Field Type="LPWSTR"          	Name="HostName" />
-        </Variable>
 
         <!-- DHCP_CLIENT_INFO -->
         <Variable Name="DHCP_CLIENT_INFO" Type="Struct">
@@ -130,32 +520,6 @@
         <Variable Name="LPDHCP_CLIENT_INFO_VQ"  Type="Pointer" Base="DHCP_CLIENT_INFO_VQ" />
         <Variable Name="LPDHCP_CLIENT_INFO_VQ*" Type="Pointer" Base="LPDHCP_CLIENT_INFO_VQ" />
 
-        <!-- DHCP_OPTION_DATA -->
-        <Variable Name="DHCP_OPTION_DATA" Type="Struct">
-            <Field Type="DWORD" 	                    Name="NumElements" />
-            <Field Type="LPDHCP_OPTION_DATA_ELEMENT" 	Name="Elements" />
-        </Variable>
-        <Variable Name="LPDHCP_OPTION_DATA" Type="Pointer" Base="DHCP_OPTION_DATA" />
-
-        <!-- DHCP_OPTION_TYPE -->
-        <Variable Name="DHCP_OPTION_TYPE" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="DhcpUnaryElementTypeOption"  Value="0" />
-                <Set Name="DhcpArrayTypeOption"         Value="1" />
-            </Enum>
-        </Variable>
-
-        <!-- DHCP_OPTION -->
-        <Variable Name="DHCP_OPTION" Type="Struct">
-            <Field Type="DHCP_OPTION_ID"   	Name="OptionID" />
-            <Field Type="LPWSTR"           	Name="OptionName" />
-            <Field Type="LPWSTR"           	Name="OptionComment" />
-            <Field Type="DHCP_OPTION_DATA" 	Name="DefaultValue" />
-            <Field Type="DHCP_OPTION_TYPE" 	Name="OptionType" />
-        </Variable>
-        <Variable Name="LPDHCP_OPTION"  Type="Pointer" Base="DHCP_OPTION" />
-        <Variable Name="LPDHCP_OPTION*" Type="Pointer" Base="LPDHCP_OPTION" />
-
         <!-- DHCP_SUBNET_STATE -->
         <Variable Name="DHCP_SUBNET_STATE" Type="Alias" Base="UINT">
             <Enum>
@@ -214,14 +578,6 @@
         <Variable Name="LPDHCP_CLASS_INFO_ARRAY"    Type="Pointer" Base="DHCP_CLASS_INFO_ARRAY" />
         <Variable Name="LPDHCP_CLASS_INFO_ARRAY*"   Type="Pointer" Base="LPDHCP_CLASS_INFO_ARRAY" />
 
-        <!-- DHCP_FILTER_LIST_TYPE -->
-        <Variable Name="DHCP_FILTER_LIST_TYPE" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="Deny"    Value="0" />
-                <Set Name="Allow"   Value="1" />
-            </Enum>
-        </Variable>
-
         <!-- DHCP_FILTER_ENUM_INFO -->
         <Variable Name="DHCP_FILTER_ENUM_INFO" Type="Struct">
             <Field Type="DWORD" 	            Name="NumElements" />
@@ -229,30 +585,6 @@
         </Variable>
         <Variable Name="LPDHCP_FILTER_ENUM_INFO"        Type="Pointer" Base="DHCP_FILTER_ENUM_INFO" />
         <Variable Name="LPDHCP_FILTER_ENUM_INFO*"       Type="Pointer" Base="LPDHCP_FILTER_ENUM_INFO" />
-
-        <!-- DHCP_OPTION_ARRAY -->
-        <Variable Name="DHCP_OPTION_ARRAY" Type="Struct">
-            <Field Type="DWORD" 	        Name="NumElements" />
-            <Field Type="LPDHCP_OPTION" 	Name="Options" />
-        </Variable>
-        <Variable Name="LPDHCP_OPTION_ARRAY"            Type="Pointer" Base="DHCP_OPTION_ARRAY" />
-        <Variable Name="LPDHCP_OPTION_ARRAY*"           Type="Pointer" Base="LPDHCP_OPTION_ARRAY" />
-
-        <!-- DHCP_OPTION_VALUE -->
-        <Variable Name="DHCP_OPTION_VALUE" Type="Struct">
-            <Field Type="DHCP_OPTION_ID"   	Name="OptionID" />
-            <Field Type="DHCP_OPTION_DATA" 	Name="Value" />
-        </Variable>
-        <Variable Name="LPDHCP_OPTION_VALUE"    Type="Pointer" Base="DHCP_OPTION_VALUE" />
-        <Variable Name="LPDHCP_OPTION_VALUE*"   Type="Pointer" Base="LPDHCP_OPTION_VALUE" />
-
-        <!-- DHCP_OPTION_VALUE_ARRAY -->
-        <Variable Name="DHCP_OPTION_VALUE_ARRAY" Type="Struct">
-            <Field Type="DWORD" 	            Name="NumElements" />
-            <Field Type="LPDHCP_OPTION_VALUE" 	Name="Values" />
-        </Variable>
-        <Variable Name="LPDHCP_OPTION_VALUE_ARRAY"      Type="Pointer" Base="DHCP_OPTION_VALUE_ARRAY" />
-        <Variable Name="LPDHCP_OPTION_VALUE_ARRAY*"     Type="Pointer" Base="LPDHCP_OPTION_VALUE_ARRAY" />
 
         <!-- DHCPDS_SERVER -->
         <Variable Name="DHCPDS_SERVER" Type="Struct">
@@ -341,20 +673,6 @@
         </Variable>
         <Variable Name="LPDHCP_CLIENT_FILTER_STATUS_INFO_ARRAY"     Type="Pointer" Base="DHCP_CLIENT_FILTER_STATUS_INFO_ARRAY" />
         <Variable Name="LPDHCP_CLIENT_FILTER_STATUS_INFO_ARRAY*"    Type="Pointer" Base="LPDHCP_CLIENT_FILTER_STATUS_INFO_ARRAY" />
-
-        <!-- DHCP_SUBNET_ELEMENT_TYPE -->
-        <Variable Name="DHCP_SUBNET_ELEMENT_TYPE" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="DhcpIpRanges"	        Value="0" />
-                <Set Name="DhcpSecondaryHosts"      Value="1" />
-                <Set Name="DhcpReservedIps"         Value="2" />
-                <Set Name="DhcpExcludedIpRanges"    Value="3" />
-                <Set Name="DhcpIpUsedClusters"      Value="4" />
-                <Set Name="DhcpIpRangesDhcpOnly"    Value="5" />
-                <Set Name="DhcpIpRangesDhcpBootp"   Value="6" />
-                <Set Name="DhcpIpRangesBootpOnly"   Value="7" />
-            </Enum>
-        </Variable>
 
         <!-- DHCP_SUBNET_ELEMENT_INFO_ARRAY -->
         <Variable Name="DHCP_SUBNET_ELEMENT_INFO_ARRAY" Type="Struct">
@@ -483,13 +801,6 @@
         </Variable>
         <Variable Name="LPDHCP_SERVER_CONFIG_INFO_V4"       Type="Pointer" Base="DHCP_SERVER_CONFIG_INFO_V4" />
 
-        <!-- DHCP_IPV6_ADDRESS -->
-        <Variable Name="DHCP_IPV6_ADDRESS" Type="Struct">
-            <Field Type="ULONGLONG" 	Name="HighOrderBits" />
-            <Field Type="ULONGLONG" 	Name="LowOrderBits" />
-        </Variable>
-        <Variable Name="LPDHCP_IPV6_ADDRESS" Type="Pointer" Base="DHCP_IPV6_ADDRESS" />
-
         <!-- DHCP_RESUME_IPV6_HANDLE -->
         <Variable Name="DHCP_RESUME_IPV6_HANDLE"                Type="Alias"    Base="DHCP_IPV6_ADDRESS" />
         <Variable Name="DHCP_RESUME_IPV6_HANDLE*"               Type="Pointer"  Base="DHCP_RESUME_IPV6_HANDLE" />
@@ -564,15 +875,6 @@
         </Variable>
         <Variable Name="LPDHCP_CLIENT_INFO_ARRAY_V6"    Type="Pointer" Base="DHCP_CLIENT_INFO_ARRAY_V6" />
         <Variable Name="LPDHCP_CLIENT_INFO_ARRAY_V6*"   Type="Pointer" Base="LPDHCP_CLIENT_INFO_ARRAY_V6" />
-
-        <!-- DHCP_SUBNET_ELEMENT_TYPE_V6 -->
-        <Variable Name="DHCP_SUBNET_ELEMENT_TYPE_V6" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="Dhcpv6IpRanges"	        Value="0" />
-                <Set Name="Dhcpv6ReservedIps"       Value="1" />
-                <Set Name="Dhcpv6ExcludedIpRanges"  Value="2" />
-            </Enum>
-        </Variable>
 
         <!-- DHCP_SUBNET_ELEMENT_INFO_ARRAY_V6 -->
         <Variable Name="DHCP_SUBNET_ELEMENT_INFO_ARRAY_V6" Type="Struct">

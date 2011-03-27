@@ -7,7 +7,11 @@
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\multimedia.h.xml" />
     <Module Name="msacm32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        
+
+        <!-- TODO: Size is 15 for 64-bit and 10 for 32-bit
+        <Variable Name="DWORD [_DRVRESERVED]"       Type="DWORD"    Base="DWORD" Count="" />
+        -->
+
         <!-- Variables -->
         <Variable Name="HACMSTREAM"                 Type="Alias"    Base="HANDLE" />
         <Variable Name="LPHACMSTREAM"               Type="Pointer"  Base="HACMSTREAM" />
@@ -21,17 +25,233 @@
         <Variable Name="ACMFILTERTAGENUMCB"         Type="Alias"    Base="LPVOID" />
         <Variable Name="ACMFORMATENUMCB"            Type="Alias"    Base="LPVOID" />
         <Variable Name="ACMFORMATTAGENUMCB"         Type="Alias"    Base="LPVOID" />
+        <Variable Name="ACMFORMATCHOOSEHOOKPROC"    Type="Alias"    Base="LPVOID" />
+        <Variable Name="ACMFILTERCHOOSEHOOKPROC"    Type="Alias"    Base="LPVOID" />
+
+        <Variable Name="DWORD [5]"                                      Type="Array"    Base="DWORD" Count="5" />
+        <Variable Name="TCHAR [ACMFORMATTAGDETAILS_FORMATTAG_CHARS]"    Type="Array"    Base="TCHAR" Count="48" />
+        <Variable Name="TCHAR [ACMFILTERTAGDETAILS_FILTERTAG_CHARS]"    Type="Array"    Base="TCHAR" Count="48" />
+        <Variable Name="TCHAR [ACMFORMATDETAILS_FORMAT_CHARS]"          Type="Array"    Base="TCHAR" Count="128" />
+        <Variable Name="TCHAR [ACMFILTERDETAILS_FILTER_CHARS]"          Type="Array"    Base="TCHAR" Count="128" />
+        <Variable Name="TCHAR [ACMDRIVERDETAILS_SHORTNAME_CHARS]"       Type="Array"    Base="TCHAR" Count="32" />
+        <Variable Name="TCHAR [ACMDRIVERDETAILS_LONGNAME_CHARS]"        Type="Array"    Base="TCHAR" Count="128" />
+        <Variable Name="TCHAR [ACMDRIVERDETAILS_COPYRIGHT_CHARS]"       Type="Array"    Base="TCHAR" Count="80" />
+        <Variable Name="TCHAR [ACMDRIVERDETAILS_LICENSING_CHARS]"       Type="Array"    Base="TCHAR" Count="128" />
+        <Variable Name="TCHAR [ACMDRIVERDETAILS_FEATURES_CHARS]"        Type="Array"    Base="TCHAR" Count="512" />
+
+        <!-- WAVEFILTER -->
+        <Variable Name="WAVEFILTER" Type="Struct" Pack="1">
+            <Field Type="DWORD"         Name="cbStruct" />
+            <Field Type="DWORD"         Name="dwFilterTag" />
+            <Field Type="DWORD"         Name="fdwFilter" />
+            <Field Type="DWORD [5]"     Name="dwReserved" />
+        </Variable>
+        <Variable Name="LPWAVEFILTER" Type="Pointer" Base="WAVEFILTER" />
+
+        <!-- [ACMDRIVERDETAILS_SUPPORTF] -->
+        <Variable Name="[ACMDRIVERDETAILS_SUPPORTF]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="ACMDRIVERDETAILS_SUPPORTF_CODEC"         Value="0x00000001" />
+                <Set Name="ACMDRIVERDETAILS_SUPPORTF_CONVERTER"     Value="0x00000002" />
+                <Set Name="ACMDRIVERDETAILS_SUPPORTF_FILTER"        Value="0x00000004" />
+                <Set Name="ACMDRIVERDETAILS_SUPPORTF_HARDWARE"      Value="0x00000008" />
+                <Set Name="ACMDRIVERDETAILS_SUPPORTF_ASYNC"         Value="0x00000010" />
+                <Set Name="ACMDRIVERDETAILS_SUPPORTF_LOCAL"         Value="0x40000000" />
+                <Set Name="ACMDRIVERDETAILS_SUPPORTF_DISABLED"      Value="0x80000000" />
+            </Flag>
+        </Variable>
+
+        <!-- ACMDRIVERDETAILS -->
+        <Variable Name="ACMDRIVERDETAILS" Type="Struct" Pack="1">
+            <Field Type="DWORD"                                         Name="cbStruct" />
+            <Field Type="FOURCC"                                        Name="fccType" />
+            <Field Type="FOURCC"                                        Name="fccComp" />
+            <Field Type="WORD"                                          Name="wMid" />
+            <Field Type="WORD"                                          Name="wPid" />
+            <Field Type="DWORD"                                         Name="vdwACM" />
+            <Field Type="DWORD"                                         Name="vdwDriver" />
+            <Field Type="[ACMDRIVERDETAILS_SUPPORTF]"                   Name="fdwSupport" />
+            <Field Type="DWORD"                                         Name="cFormatTags" />
+            <Field Type="DWORD"                                         Name="cFilterTags" />
+            <Field Type="HICON"                                         Name="hicon" />
+            <Field Type="TCHAR [ACMDRIVERDETAILS_SHORTNAME_CHARS]"      Name="szShortName" />
+            <Field Type="TCHAR [ACMDRIVERDETAILS_LONGNAME_CHARS]"       Name="szLongName" />
+            <Field Type="TCHAR [ACMDRIVERDETAILS_COPYRIGHT_CHARS]"      Name="szCopyright" />
+            <Field Type="TCHAR [ACMDRIVERDETAILS_LICENSING_CHARS]"      Name="szLicensing" />
+            <Field Type="TCHAR [ACMDRIVERDETAILS_FEATURES_CHARS]"       Name="szFeatures" />
+        </Variable>
+        <Variable Name="LPACMDRIVERDETAILS" Type="Pointer" Base="ACMDRIVERDETAILS" />
+
+        <!-- ACMFILTERDETAILS -->
+        <Variable Name="ACMFILTERDETAILS" Type="Struct" Pack="1">
+            <Field Type="DWORD"                                     Name="cbStruct" />
+            <Field Type="DWORD"                                     Name="dwFilterIndex" />
+            <Field Type="DWORD"                                     Name="dwFilterTag" />
+            <Field Type="[ACMDRIVERDETAILS_SUPPORTF]"               Name="fdwSupport" />
+            <Field Type="LPWAVEFILTER"                              Name="pwfltr" />
+            <Field Type="DWORD"                                     Name="cbwfltr" />
+            <Field Type="TCHAR [ACMFILTERDETAILS_FILTER_CHARS]"     Name="szFilter" />
+        </Variable>
+        <Variable Name="LPACMFILTERDETAILS" Type="Pointer" Base="ACMFILTERDETAILS" />
+
+        <!-- [ACMFILTERCHOOSE_STYLEF] -->
+        <Variable Name="[ACMFILTERCHOOSE_STYLEF]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="ACMFILTERCHOOSE_STYLEF_SHOWHELP"                 Value="0x00000004" />
+                <Set Name="ACMFILTERCHOOSE_STYLEF_ENABLEHOOK"               Value="0x00000008" />
+                <Set Name="ACMFILTERCHOOSE_STYLEF_ENABLETEMPLATE"           Value="0x00000010" />
+                <Set Name="ACMFILTERCHOOSE_STYLEF_ENABLETEMPLATEHANDLE"     Value="0x00000020" />
+                <Set Name="ACMFILTERCHOOSE_STYLEF_INITTOFILTERSTRUCT"       Value="0x00000040" />
+                <Set Name="ACMFILTERCHOOSE_STYLEF_CONTEXTHELP"              Value="0x00000080" />
+            </Flag>
+        </Variable>
+
+        <!-- [ACM_FILTERENUMF] -->
+        <Variable Name="[ACM_FILTERENUMF]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="ACM_FILTERENUMF_DWFILTERTAG" Value="0x00010000" />
+            </Flag>
+        </Variable>
         
-        <!-- TODO: Structures -->
-        <Variable Name="LPACMDRIVERDETAILS"         Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPACMFILTERDETAILS"         Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPACMFILTERCHOOSE"          Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPACMFILTERTAGDETAILS"      Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPACMFORMATCHOOSE"          Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPACMFORMATDETAILS"         Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPACMFORMATTAGDETAILS"      Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPWAVEFILTER"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPACMSTREAMHEADER"          Type="Alias"    Base="LPVOID" />
+        <!-- ACMFILTERCHOOSE -->
+        <Variable Name="ACMFILTERCHOOSE" Type="Struct" Pack="1">
+            <Field Type="DWORD"                                         Name="cbStruct" />
+            <Field Type="[ACMFILTERCHOOSE_STYLEF]"                      Name="fdwStyle" />
+            <Field Type="HWND"                                          Name="hwndOwner" />
+            <Field Type="LPWAVEFILTER"                                  Name="pwfltr" />
+            <Field Type="DWORD"                                         Name="cbwfltr" />
+            <Field Type="LPCTSTR"                                       Name="pszTitle" />
+            <Field Type="TCHAR [ACMFILTERTAGDETAILS_FILTERTAG_CHARS]"   Name="szFilterTag" />
+            <Field Type="TCHAR [ACMFILTERDETAILS_FILTER_CHARS]"         Name="szFilter" />
+            <Field Type="LPTSTR"                                        Name="pszName" />
+            <Field Type="DWORD"                                         Name="cchName" />
+            <Field Type="[ACM_FILTERENUMF]"                             Name="fdwEnum" />
+            <Field Type="LPWAVEFILTER"                                  Name="pwfltrEnum" />
+            <Field Type="HINSTANCE"                                     Name="hInstance" />
+            <Field Type="LPCTSTR"                                       Name="pszTemplateName" />
+            <Field Type="LPARAM"                                        Name="lCustData" />
+            <Field Type="ACMFILTERCHOOSEHOOKPROC"                       Name="pfnHook" />
+        </Variable>
+        <Variable Name="LPACMFILTERCHOOSE" Type="Pointer" Base="ACMFILTERCHOOSE" />
+
+        <!-- ACMFILTERTAGDETAILS -->
+        <Variable Name="ACMFILTERTAGDETAILS" Type="Struct" Pack="1">
+            <Field Type="DWORD"                                         Name="cbStruct" />
+            <Field Type="DWORD"                                         Name="dwFilterTagIndex" />
+            <Field Type="DWORD"                                         Name="dwFilterTag" />
+            <Field Type="DWORD"                                         Name="cbFilterSize" />
+            <Field Type="[ACMDRIVERDETAILS_SUPPORTF]"                   Name="fdwSupport" />
+            <Field Type="DWORD"                                         Name="cStandardFilters" />
+            <Field Type="TCHAR [ACMFILTERTAGDETAILS_FILTERTAG_CHARS]"   Name="szFilterTag" />
+        </Variable>
+        <Variable Name="LPACMFILTERTAGDETAILS" Type="Pointer" Base="ACMFILTERTAGDETAILS" />
+
+        <!-- [ACMFORMATCHOOSE_STYLEF] -->
+        <Variable Name="[ACMFORMATCHOOSE_STYLEF]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="ACMFORMATCHOOSE_STYLEF_SHOWHELP"                 Value="0x00000004" />
+                <Set Name="ACMFORMATCHOOSE_STYLEF_ENABLEHOOK"               Value="0x00000008" />
+                <Set Name="ACMFORMATCHOOSE_STYLEF_ENABLETEMPLATE"           Value="0x00000010" />
+                <Set Name="ACMFORMATCHOOSE_STYLEF_ENABLETEMPLATEHANDLE"     Value="0x00000020" />
+                <Set Name="ACMFORMATCHOOSE_STYLEF_INITTOWFXSTRUCT"          Value="0x00000040" />
+                <Set Name="ACMFORMATCHOOSE_STYLEF_CONTEXTHELP"              Value="0x00000080" />
+            </Flag>
+        </Variable>
+
+        <!-- [ACM_FORMATENUMF] -->
+        <Variable Name="[ACM_FORMATENUMF]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="ACM_FORMATENUMF_WFORMATTAG"          Value="0x00010000" />
+                <Set Name="ACM_FORMATENUMF_NCHANNELS"           Value="0x00020000" />
+                <Set Name="ACM_FORMATENUMF_NSAMPLESPERSEC"      Value="0x00040000" />
+                <Set Name="ACM_FORMATENUMF_WBITSPERSAMPLE"      Value="0x00080000" />
+                <Set Name="ACM_FORMATENUMF_CONVERT"             Value="0x00100000" />
+                <Set Name="ACM_FORMATENUMF_SUGGEST"             Value="0x00200000" />
+                <Set Name="ACM_FORMATENUMF_HARDWARE"            Value="0x00400000" />
+                <Set Name="ACM_FORMATENUMF_INPUT"               Value="0x00800000" />
+                <Set Name="ACM_FORMATENUMF_OUTPUT"              Value="0x01000000" />
+            </Flag>
+        </Variable>
+
+        <!-- ACMFORMATCHOOSE -->
+        <Variable Name="ACMFORMATCHOOSE" Type="Struct" Pack="1">
+            <Field Type="DWORD"                                         Name="cbStruct" />
+            <Field Type="[ACMFORMATCHOOSE_STYLEF]"                      Name="fdwStyle" />
+            <Field Type="HWND"                                          Name="hwndOwner" />
+            <Field Type="LPWAVEFORMATEX"                                Name="pwfx" />
+            <Field Type="DWORD"                                         Name="cbwfx" />
+            <Field Type="LPCWSTR"                                       Name="pszTitle" />
+            <Field Type="TCHAR [ACMFORMATTAGDETAILS_FORMATTAG_CHARS]"   Name="szFormatTag" />
+            <Field Type="TCHAR [ACMFORMATDETAILS_FORMAT_CHARS]"         Name="szFormat" />
+            <Field Type="LPTSTR"                                        Name="pszName" />
+            <Field Type="DWORD"                                         Name="cchName" />
+            <Field Type="[ACM_FORMATENUMF]"                             Name="fdwEnum" />
+            <Field Type="LPWAVEFORMATEX"                                Name="pwfxEnum" />
+            <Field Type="HINSTANCE"                                     Name="hInstance" />
+            <Field Type="LPCTSTR"                                       Name="pszTemplateName" />
+            <Field Type="LPARAM"                                        Name="lCustData" />
+            <Field Type="ACMFORMATCHOOSEHOOKPROC"                       Name="pfnHook" />
+        </Variable>
+        <Variable Name="LPACMFORMATCHOOSE" Type="Pointer" Base="ACMFORMATCHOOSE" />
+
+        <!-- ACMFORMATDETAILS -->
+        <Variable Name="ACMFORMATDETAILS" Type="Struct" Pack="1">
+            <Field Type="DWORD"                                     Name="cbStruct" />
+            <Field Type="DWORD"                                     Name="dwFormatIndex" />
+            <Field Type="DWORD"                                     Name="dwFormatTag" />
+            <Field Type="[ACMDRIVERDETAILS_SUPPORTF]"               Name="fdwSupport" />
+            <Field Type="LPWAVEFORMATEX"                            Name="pwfx" />
+            <Field Type="DWORD"                                     Name="cbwfx" />
+            <Field Type="TCHAR [ACMFORMATDETAILS_FORMAT_CHARS]"     Name="szFormat" />
+        </Variable>
+        <Variable Name="LPACMFORMATDETAILS" Type="Pointer" Base="ACMFORMATDETAILS" />
+
+        <!-- ACMFORMATTAGDETAILS -->
+        <Variable Name="ACMFORMATTAGDETAILS" Type="Struct" Pack="1">
+            <Field Type="DWORD"                                         Name="cbStruct" />
+            <Field Type="DWORD"                                         Name="dwFormatTagIndex" />
+            <Field Type="DWORD"                                         Name="dwFormatTag" />
+            <Field Type="DWORD"                                         Name="cbFormatSize" />
+            <Field Type="[ACMDRIVERDETAILS_SUPPORTF]"                   Name="fdwSupport" />
+            <Field Type="DWORD"                                         Name="cStandardFormats" />
+            <Field Type="TCHAR [ACMFORMATTAGDETAILS_FORMATTAG_CHARS]"   Name="szFormatTag" />
+        </Variable>
+        <Variable Name="LPACMFORMATTAGDETAILS" Type="Pointer" Base="ACMFORMATTAGDETAILS" />
+
+        <!-- [ACMSTREAMHEADER_STATUSF] -->
+        <Variable Name="[ACMSTREAMHEADER_STATUSF]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="ACMSTREAMHEADER_STATUSF_DONE"        Value="0x00010000" />
+                <Set Name="ACMSTREAMHEADER_STATUSF_PREPARED"    Value="0x00020000" />
+                <Set Name="ACMSTREAMHEADER_STATUSF_INQUEUE"     Value="0x00100000" />
+            </Flag>
+        </Variable>
+
+        <!-- ACMSTREAMHEADER -->
+        <!-- TODO: Can't define until we have definition for DWORD [_DRVRESERVED]
+        <Variable Name="ACMSTREAMHEADER" Type="Struct" Pack="1">
+            <Field Type="DWORD"                         Name="cbStruct" />
+            <Field Type="[ACMSTREAMHEADER_STATUSF]"     Name="fdwStatus" />
+            <Field Type="DWORD_PTR"                     Name="dwUser" />
+            <Field Type="LPBYTE"                        Name="pbSrc" />
+            <Field Type="DWORD"                         Name="cbSrcLength" />
+            <Field Type="DWORD"                         Name="cbSrcLengthUsed" />
+            <Field Type="DWORD_PTR"                     Name="dwSrcUser" />
+            <Field Type="LPBYTE"                        Name="pbDst" />
+            <Field Type="DWORD"                         Name="cbDstLength" />
+            <Field Type="DWORD"                         Name="cbDstLengthUsed" />
+            <Field Type="DWORD_PTR"                     Name="dwDstUser" />
+            <Field Type="DWORD [_DRVRESERVED]"          Name="dwReservedDriver" />
+        </Variable>
+        <Variable Name="LPACMSTREAMHEADER" Type="Pointer" Base="ACMSTREAMHEADER" />
+        -->
+        <Variable Name="LPACMSTREAMHEADER" Type="Alias" Base="LPVOID" />
 
         <!-- Multimedia -->
         <Category Name="Graphics and Multimedia/Audio and Video/Windows Multimedia" />
@@ -116,7 +336,7 @@
             <Param Type="LPACMFILTERDETAILS" Name="pafd" />
             <Param Type="ACMFILTERENUMCB" Name="fnCallback" />
             <Param Type="DWORD_PTR" Name="dwInstance" />
-            <Param Type="DWORD" Name="fdwEnum" />
+            <Param Type="[ACM_FILTERENUMF]" Name="fdwEnum" />
             <Return Type="MMRESULT" />
             <Success Return="NotEqual" Value="0" />
         </Api>

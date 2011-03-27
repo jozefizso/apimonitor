@@ -14,9 +14,85 @@
     <Include Filename="Headers\network.h.xml" />
     <Include Filename="Headers\processes.h.xml" />
     <Module Name="Advapi32.dll" CallingConvention="STDCALL" OnlineHelp="MSDN">
+        
         <!-- Variables -->
-        <Variable Name="LSA_UNICODE_STRING"     Type="Alias"    Base="UNICODE_STRING" />
-        <Variable Name="PLSA_UNICODE_STRING"    Type="Pointer"  Base="LSA_UNICODE_STRING" />
+        <Variable Name="TCHAR [HW_PROFILE_GUIDLEN]" Type="Array" Base="TCHAR" Count="39" />
+        <Variable Name="TCHAR [MAX_PROFILE_LEN]"    Type="Array" Base="TCHAR" Count="80" />
+        <Variable Name="WCHAR [WCT_OBJNAME_LENGTH]" Type="Array" Base="WCHAR" Count="128" />
+
+        <!-- HW_PROFILE_INFO -->
+        <Variable Name="HW_PROFILE_INFO" Type="Struct">
+            <Field Type="DWORD"                         Name="dwDockInfo" />
+            <Field Type="TCHAR [HW_PROFILE_GUIDLEN]"    Name="szHwProfileGuid" />
+            <Field Type="TCHAR [MAX_PROFILE_LEN]"       Name="szHwProfileName" />
+        </Variable>
+        <Variable Name="LPHW_PROFILE_INFO" Type="Pointer" Base="HW_PROFILE_INFO" />
+
+        <!-- WCT_OBJECT_TYPE -->
+        <Variable Name="WCT_OBJECT_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="WctCriticalSectionType"      Value="1" />
+                <Set Name="WctSendMessageType"          Value="2" />
+                <Set Name="WctMutexType"                Value="3" />
+                <Set Name="WctAlpcType"                 Value="4" />
+                <Set Name="WctComType"                  Value="5" />
+                <Set Name="WctThreadWaitType"           Value="6" />
+                <Set Name="WctProcessWaitType"          Value="7" />
+                <Set Name="WctThreadType"               Value="8" />
+                <Set Name="WctComActivationType"        Value="9" />
+                <Set Name="WctUnknownType"              Value="10" />
+                <Set Name="WctSocketIoType"             Value="11" />
+                <Set Name="WctSmbIoType"                Value="12" />
+            </Enum>
+        </Variable>
+
+        <!-- WCT_OBJECT_STATUS -->
+        <Variable Name="WCT_OBJECT_STATUS" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="WctStatusNoAccess"           Value="1" />
+                <Set Name="WctStatusRunning"            Value="2" />
+                <Set Name="WctStatusBlocked"            Value="3" />
+                <Set Name="WctStatusPidOnly"            Value="4" />
+                <Set Name="WctStatusPidOnlyRpcss"       Value="5" />
+                <Set Name="WctStatusOwned"              Value="6" />
+                <Set Name="WctStatusNotOwned"           Value="7" />
+                <Set Name="WctStatusAbandoned"          Value="8" />
+                <Set Name="WctStatusUnknown"            Value="9" />
+                <Set Name="WctStatusError"              Value="10" />
+            </Enum>
+        </Variable>
+
+        <!-- [WAITCHAIN_NODE_INFO_u_s1] -->
+        <Variable Name="[WAITCHAIN_NODE_INFO_u_s1]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="WCHAR [WCT_OBJNAME_LENGTH]"    Name="ObjectName" />
+            <Field Type="LARGE_INTEGER"                 Name="Timeout" />
+            <Field Type="BOOL"                          Name="Alertable" />
+        </Variable>
+
+        <!-- [WAITCHAIN_NODE_INFO_u_s2] -->
+        <Variable Name="[WAITCHAIN_NODE_INFO_u_s2]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="DWORD"     Name="ProcessId" />
+            <Field Type="DWORD"     Name="ThreadId" />
+            <Field Type="DWORD"     Name="WaitTime" />
+            <Field Type="DWORD"     Name="ContextSwitches" />
+        </Variable>
+
+        <!-- [WAITCHAIN_NODE_INFO_u] -->
+        <Variable Name="[WAITCHAIN_NODE_INFO_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="[WAITCHAIN_NODE_INFO_u_s1]"    Name="LockObject" />
+            <Field Type="[WAITCHAIN_NODE_INFO_u_s2]"    Name="ThreadObject" />
+        </Variable>
+
+        <!-- WAITCHAIN_NODE_INFO -->
+        <Variable Name="WAITCHAIN_NODE_INFO" Type="Struct">
+            <Field Type="WCT_OBJECT_TYPE"           Name="ObjectType" />
+            <Field Type="WCT_OBJECT_STATUS"         Name="ObjectStatus" />
+            <Field Type="[WAITCHAIN_NODE_INFO_u]"   Name="ObjectStatus" />
+        </Variable>
+        <Variable Name="PWAITCHAIN_NODE_INFO" Type="Pointer" Base="WAITCHAIN_NODE_INFO" />
 
         <!-- SC_ENUM_TYPE -->
         <Variable Name="SC_ENUM_TYPE" Type="Alias" Base="UINT">
@@ -120,18 +196,6 @@
                 <Set Name="SAFER_SCOPEID_MACHINE"   Value="1" />
                 <Set Name="SAFER_SCOPEID_USER"      Value="2" />
             </Enum>
-        </Variable>
-
-        <!-- [AceFlags] -->
-        <Variable Name="[AceFlags]" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
-            <Flag>
-                <Set Name="OBJECT_INHERIT_ACE"          Value="0x1" />
-                <Set Name="CONTAINER_INHERIT_ACE"       Value="0x2" />
-                <Set Name="NO_PROPAGATE_INHERIT_ACE"    Value="0x4" />
-                <Set Name="INHERIT_ONLY_ACE"            Value="0x8" />
-                <Set Name="INHERITED_ACE"               Value="0x10" />
-            </Flag>
         </Variable>
 
         <!-- [MandatoryPolicyFlags] -->
@@ -258,19 +322,70 @@
             </Enum>
         </Variable>
 
-        <!-- TODO: Structures -->
-        <Variable Name="PENCRYPTION_CERTIFICATE_LIST"               Type="Alias"        Base="LPVOID" />
-        <Variable Name="PENCRYPTION_CERTIFICATE_HASH_LIST"          Type="Alias"        Base="LPVOID" />
-        <Variable Name="PENCRYPTION_CERTIFICATE_HASH_LIST*"         Type="Pointer"      Base="PENCRYPTION_CERTIFICATE_HASH_LIST" />
-        <Variable Name="PINSTALLDATA*"                              Type="Alias"        Base="LPVOID" />
-        <Variable Name="PSERVICE_NOTIFY"                            Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPHW_PROFILE_INFO"                          Type="Alias"        Base="LPVOID" />
-        <Variable Name="PTRUSTEE*"                                  Type="Alias"        Base="LPVOID" />
-        <Variable Name="PLSA_FOREST_TRUST_COLLISION_INFORMATION"    Type="Alias"        Base="LPVOID" />
-        <Variable Name="PLSA_FOREST_TRUST_COLLISION_INFORMATION*"   Type="Pointer"      Base="PLSA_FOREST_TRUST_COLLISION_INFORMATION" />
-        <Variable Name="PLSA_REFERENCED_DOMAIN_LIST"                Type="Alias"        Base="LPVOID" />
-        <Variable Name="PLSA_REFERENCED_DOMAIN_LIST*"               Type="Pointer"      Base="PLSA_REFERENCED_DOMAIN_LIST" />
-        <Variable Name="PWAITCHAIN_NODE_INFO"                       Type="Alias"        Base="LPVOID" />
+        <!-- EFS_HASH_BLOB -->
+        <Variable Name="EFS_HASH_BLOB" Type="Struct">
+            <Field Type="DWORD"     Name="cbData" />
+            <Field Type="PBYTE"     Name="pbData" Length="cbData" />
+        </Variable>
+        <Variable Name="PEFS_HASH_BLOB" Type="Pointer" Base="EFS_HASH_BLOB"/>
+
+        <!-- ENCRYPTION_CERTIFICATE_HASH -->
+        <Variable Name="ENCRYPTION_CERTIFICATE_HASH" Type="Struct">
+            <Field Type="DWORD"             Name="cbTotalLength" />
+            <Field Type="SID*"              Name="pUserSid" />
+            <Field Type="PEFS_HASH_BLOB"    Name="pHash" />
+            <Field Type="LPWSTR"            Name="lpDisplayInformation" />
+        </Variable>
+        <Variable Name="PENCRYPTION_CERTIFICATE_HASH"  Type="Pointer" Base="ENCRYPTION_CERTIFICATE_HASH"/>
+        <Variable Name="PENCRYPTION_CERTIFICATE_HASH*" Type="Pointer" Base="PENCRYPTION_CERTIFICATE_HASH"/>
+
+        <!-- ENCRYPTION_CERTIFICATE_HASH_LIST -->
+        <Variable Name="ENCRYPTION_CERTIFICATE_HASH_LIST" Type="Struct">
+            <Field Type="DWORD"                         Name="nCert_Hash" />
+            <Field Type="PENCRYPTION_CERTIFICATE_HASH*" Name="pUsers" />
+        </Variable>
+        <Variable Name="PENCRYPTION_CERTIFICATE_HASH_LIST"  Type="Pointer" Base="ENCRYPTION_CERTIFICATE_HASH_LIST" />
+        <Variable Name="PENCRYPTION_CERTIFICATE_HASH_LIST*" Type="Pointer" Base="PENCRYPTION_CERTIFICATE_HASH_LIST" />
+
+        <!-- INSTALLSPECTYPE -->
+        <Variable Name="INSTALLSPECTYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="APPNAME"     Value="1" />
+                <Set Name="FILEEXT"     Value="2" />
+                <Set Name="PROGID"      Value="3" />
+                <Set Name="COMCLASS"    Value="4" />
+            </Enum>
+        </Variable>
+
+        <!-- [INSTALLSPEC_s1] -->
+        <Variable Name="[INSTALLSPEC_s1]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="WCHAR*"    Name="Name" />
+            <Field Type="GUID"      Name="GPOId" />
+        </Variable>
+
+        <!-- [INSTALLSPEC_s2] -->
+        <Variable Name="[INSTALLSPEC_s2]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="GUID"      Name="Clsid" />
+            <Field Type="[CLSCTX]"  Name="ClsCtx" />
+        </Variable>
+        
+        <!-- INSTALLSPEC -->
+        <Variable Name="INSTALLSPEC" Type="Union">
+            <Field Type="[INSTALLSPEC_s1]"  Name="AppName" />
+            <Field Type="WCHAR*"            Name="FileExt" />
+            <Field Type="WCHAR*"            Name="ProgId" />
+            <Field Type="[INSTALLSPEC_s2]"  Name="COMClass" />
+        </Variable>
+
+        <!-- INSTALLDATA -->
+        <Variable Name="INSTALLDATA" Type="Struct">
+            <Field Type="INSTALLSPECTYPE"   Name="Type" />
+            <Field Type="INSTALLSPEC"       Name="Spec" />
+        </Variable>
+        <Variable Name="PINSTALLDATA"  Type="Pointer" Base="INSTALLDATA" />
+        <Variable Name="PINSTALLDATA*" Type="Pointer" Base="PINSTALLDATA" />
 
         <!-- VALENT -->
         <Variable Name="VALENT" Type="Struct">
@@ -295,7 +410,15 @@
             <Field Type="SID*"	                Name="pUserSid" />
             <Field Type="PEFS_CERTIFICATE_BLOB" Name="pCertBlob" />
         </Variable>
-        <Variable Name="PENCRYPTION_CERTIFICATE" Type="Pointer" Base="ENCRYPTION_CERTIFICATE" />
+        <Variable Name="PENCRYPTION_CERTIFICATE"  Type="Pointer" Base="ENCRYPTION_CERTIFICATE" />
+        <Variable Name="PENCRYPTION_CERTIFICATE*" Type="Pointer" Base="PENCRYPTION_CERTIFICATE" />
+
+        <!-- ENCRYPTION_CERTIFICATE_LIST -->
+        <Variable Name="ENCRYPTION_CERTIFICATE_LIST" Type="Struct">
+            <Field Type="DWORD"                     Name="nUsers" />
+            <Field Type="PENCRYPTION_CERTIFICATE*"  Name="pUsers" Count="nUsers" />
+        </Variable>
+        <Variable Name="PENCRYPTION_CERTIFICATE_LIST" Type="Pointer" Base="ENCRYPTION_CERTIFICATE_LIST" />
 
         <!-- LOCALMANAGEDAPPLICATION -->
         <Variable Name="[LocalState]" Type="Alias" Base="DWORD">
@@ -388,56 +511,6 @@
             <Field Type="LPVOID"         	Name="pMemContext" />
         </Variable>
         <Variable Name="PPERF_PROVIDER_CONTEXT" Type="Pointer" Base="PERF_PROVIDER_CONTEXT" />
-
-        <!-- SERVICE_STATUS -->
-        <Variable Name="SERVICE_STATUS" Type="Struct">
-            <Field Type="[ServiceType]"   	        Name="dwServiceType" />
-            <Field Type="[ServiceCurrentState]"     Name="dwCurrentState" />
-            <Field Type="[ServiceAcceptControls]"   Name="dwControlsAccepted" />
-            <Field Type="DWORD"   	                Name="dwWin32ExitCode" />
-            <Field Type="DWORD"   	                Name="dwServiceSpecificExitCode" />
-            <Field Type="DWORD"   	                Name="dwCheckPoint" />
-            <Field Type="DWORD"   	                Name="dwWaitHint" />
-        </Variable>
-        <Variable Name="LPSERVICE_STATUS" Type="Pointer" Base="SERVICE_STATUS" />
-
-        <!-- SERVICE_TABLE_ENTRY -->
-        <Variable Name="LPSERVICE_MAIN_FUNCTION" Type="Alias" Base="LPVOID" />
-        <Variable Name="SERVICE_TABLE_ENTRY" Type="Struct">
-            <Field Type="LPTSTR"                    Name="lpServiceName" />
-            <Field Type="LPSERVICE_MAIN_FUNCTION"   Name="lpServiceProc" />
-        </Variable>
-        <Variable Name="const SERVICE_TABLE_ENTRY*" Type="Pointer" Base="SERVICE_TABLE_ENTRY" />
-
-        <!-- ENUM_SERVICE_STATUS -->
-        <Variable Name="ENUM_SERVICE_STATUS" Type="Struct">
-            <Field Type="LPTSTR"            Name="lpServiceName" />
-            <Field Type="LPTSTR"            Name="lpDisplayName" />
-            <Field Type="SERVICE_STATUS"    Name="ServiceStatus" />
-        </Variable>
-        <Variable Name="LPENUM_SERVICE_STATUS" Type="Pointer" Base="ENUM_SERVICE_STATUS" />
-
-        <!-- QUERY_SERVICE_CONFIG -->
-        <Variable Name="QUERY_SERVICE_CONFIG" Type="Struct">
-            <Field Type="[ServiceType]"   	    Name="dwServiceType" />
-            <Field Type="[ServiceStartType]"   	Name="dwStartType" />
-            <Field Type="[ServiceErrorControl]" Name="dwErrorControl" />
-            <Field Type="LPTSTR"            	Name="lpBinaryPathName" />
-            <Field Type="LPTSTR"            	Name="lpLoadOrderGroup" />
-            <Field Type="DWORD"   	            Name="dwTagId" />
-            <Field Type="LPTSTR"            	Name="lpDependencies" />
-            <Field Type="LPTSTR"            	Name="lpServiceStartName" />
-            <Field Type="LPTSTR"            	Name="lpDisplayName" />
-        </Variable>
-        <Variable Name="LPQUERY_SERVICE_CONFIG" Type="Pointer" Base="QUERY_SERVICE_CONFIG" />
-
-        <!-- QUERY_SERVICE_LOCK_STATUS -->
-        <Variable Name="QUERY_SERVICE_LOCK_STATUS" Type="Struct">
-            <Field Type="DWORD"   	Name="fIsLocked" />
-            <Field Type="LPTSTR"   	Name="lpLockOwner" />
-            <Field Type="DWORD"   	Name="dwLockDuration" />
-        </Variable>
-        <Variable Name="LPQUERY_SERVICE_LOCK_STATUS" Type="Pointer" Base="QUERY_SERVICE_LOCK_STATUS" />
 
         <!-- ENABLE_TRACE_PARAMETERS -->
         <Variable Name="PEVENT_FILTER_DESCRIPTOR" Type="Alias" Base="LPVOID" />
@@ -552,14 +625,26 @@
         </Variable>
         <Variable Name="PTRUSTED_DOMAIN_AUTH_INFORMATION" Type="Pointer" Base="TRUSTED_DOMAIN_AUTH_INFORMATION" />
 
+        <!-- [TRACE_MESSAGE_FLAGS] -->
+        <Variable Name="[TRACE_MESSAGE_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="TRACE_MESSAGE_SEQUENCE"                  Value="1" />
+                <Set Name="TRACE_MESSAGE_GUID"                      Value="2" />
+                <Set Name="TRACE_MESSAGE_COMPONENTID"               Value="4" />
+                <Set Name="TRACE_MESSAGE_TIMESTAMP"                 Value="8" />
+                <Set Name="TRACE_MESSAGE_PERFORMANCE_TIMESTAMP"     Value="16" />
+                <Set Name="TRACE_MESSAGE_SYSTEMINFO"                Value="32" />
+                <Set Name="TRACE_MESSAGE_POINTER32"                 Value="0x0040" />
+                <Set Name="TRACE_MESSAGE_POINTER64"                 Value="0x0080" />
+            </Flag>
+        </Variable>
+
         <!-- Variables -->
         <Variable Name="PFE_EXPORT_FUNC"                            Type="Alias"        Base="LPVOID" />
         <Variable Name="PFE_IMPORT_FUNC"                            Type="Alias"        Base="LPVOID" />
         <Variable Name="LPHANDLER_FUNCTION"                         Type="Alias"        Base="LPVOID" />
-        <Variable Name="SERVICE_STATUS_HANDLE"                      Type="Alias"        Base="HANDLE" />
         <Variable Name="LPHANDLER_FUNCTION_EX"                      Type="Alias"        Base="LPVOID" />
-        <Variable Name="SC_HANDLE"                                  Type="Alias"        Base="HANDLE" />
-        <Variable Name="SC_LOCK"                                    Type="Alias"        Base="LPVOID" />
         <Variable Name="TRACEHANDLE"                                Type="Alias"        Base="ULONG64" />
         <Variable Name="PTRACEHANDLE"                               Type="Pointer"      Base="TRACEHANDLE"/>
         <Variable Name="WMIDPREQUEST"                               Type="Alias"        Base="LPVOID" />
@@ -2022,17 +2107,14 @@
             <Return Type="ULONG" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <!-- Variable Arguments NOT supported
-    <Api Name="TraceMessage">
-        <Param Type="TRACEHANDLE" Name="SessionHandle" />
-        <Param Type="ULONG" Name="MessageFlags" />
-        <Param Type="LPGUID" Name="MessageGuid" />
-        <Param Type="USHORT" Name="MessageNumber" />
-        <Param Type="..." />
-        <Return Type="ULONG" />
-        <Success Return="NotEqual" Value="0" />
-    </Api>
-    -->
+        <Api Name="TraceMessage" VarArgs="True">
+            <Param Type="TRACEHANDLE" Name="SessionHandle" />
+            <Param Type="[TRACE_MESSAGE_FLAGS]" Name="MessageFlags" />
+            <Param Type="LPGUID" Name="MessageGuid" />
+            <Param Type="USHORT" Name="MessageNumber" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
         <Api Name="TraceMessageVa">
             <Param Type="TRACEHANDLE" Name="SessionHandle" />
             <Param Type="ULONG" Name="MessageFlags" />
@@ -2312,7 +2394,7 @@
         <Api Name="CopySid">
             <Param Type="DWORD" Name="nDestinationSidLength" />
             <Param Type="PSID" Name="pDestinationSid" />
-            <Param Type="PSID" Name="pSourceSid" />
+            <Param Type="PSID" Name="pSourceSid" Length="nDestinationSidLength" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -2509,7 +2591,7 @@
         <Api Name="LookupAccountName" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpSystemName" />
             <Param Type="LPCTSTR" Name="lpAccountName" />
-            <Param Type="PSID" Name="Sid" />
+            <Param Type="PSID" Name="Sid" PostLength="cbSid" />
             <Param Type="LPDWORD" Name="cbSid" />
             <Param Type="LPTSTR" Name="ReferencedDomainName" OutputOnly="True" />
             <Param Type="LPDWORD" Name="cchReferencedDomainName" />

@@ -5,14 +5,15 @@
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
+
     <Module Name="Wecapi.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+
         <!-- Variables -->
         <Variable Name="EC_HANDLE"                          Type="Alias"    Base="HANDLE" />
         <Variable Name="EC_OBJECT_ARRAY_PROPERTY_HANDLE"    Type="Alias"    Base="HANDLE" />
-        
-        <!-- TODO: Structures -->
-        <Variable Name="PEC_VARIANT"                        Type="Alias"    Base="LPVOID" />
+        <Variable Name="INT32*"                             Type="Pointer"  Base="INT32" />
 
+        <!-- EC_SUBSCRIPTION_PROPERTY_ID -->
         <Variable Name="EC_SUBSCRIPTION_PROPERTY_ID" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="EcSubscriptionEnabled"                       Value="0" />
@@ -45,6 +46,7 @@
             </Enum>
         </Variable>
 
+        <!-- EC_SUBSCRIPTION_RUNTIME_STATUS_INFO_ID -->
         <Variable Name="EC_SUBSCRIPTION_RUNTIME_STATUS_INFO_ID" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="EcSubscriptionRunTimeStatusActive"           Value="0" />
@@ -55,6 +57,42 @@
                 <Set Name="EcSubscriptionRunTimeStatusInfoIdEND"        Value="5" />
             </Enum>
         </Variable>
+
+        <!-- [EC_VARIANT_u] -->
+        <Variable Name="[EC_VARIANT_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="BOOL"                              Name="BooleanVal" />
+            <Field Type="UINT32"                            Name="UInt32Val" />
+            <Field Type="ULONGLONG"                         Name="DateTimeVal" />
+            <Field Type="LPCWSTR"                           Name="StringVal" />
+            <Field Type="PBYTE"                             Name="BinaryVal" />
+            <Field Type="BOOL*"                             Name="BooleanArr" />
+            <Field Type="INT32*"                            Name="Int32Arr" />
+            <Field Type="LPWSTR*"                           Name="StringArr" />
+            <Field Type="EC_OBJECT_ARRAY_PROPERTY_HANDLE"   Name="PropertyHandleVal" />
+        </Variable>
+
+        <!-- EC_VARIANT_TYPE -->
+        <Variable Name="EC_VARIANT_TYPE" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="EcVarTypeNull"                       Value="0" />
+                <Set Name="EcVarTypeBoolean"                    Value="1" />
+                <Set Name="EcVarTypeUInt32"                     Value="2" />
+                <Set Name="EcVarTypeDateTime"                   Value="3" />
+                <Set Name="EcVarTypeString"                     Value="4" />
+                <Set Name="EcVarObjectArrayPropertyHandle"      Value="5" />
+                <Set Name="EC_VARIANT_TYPE_ARRAY"               Value="128" />
+            </Flag>
+        </Variable>
+
+        <!-- EC_VARIANT -->
+        <Variable Name="EC_VARIANT" Type="Struct">
+            <Field Type="[EC_VARIANT_u]"    Name="" />
+            <Field Type="DWORD"             Name="Count" />
+            <Field Type="EC_VARIANT_TYPE"   Name="Type" />
+        </Variable>
+        <Variable Name="PEC_VARIANT" Type="Pointer" Base="EC_VARIANT" />
 
         <!-- Windows Event Collector -->
         <Category Name="Diagnostics/Windows Events/Windows Event Collector" />

@@ -7,6 +7,7 @@
     <Include Filename="Interfaces\IUnknown.xml" />
 
     <Interface Name="IDirect3D9" Id="{81BDCBCA-64D4-426d-AE8D-AD0147F4275C}" BaseInterface="IUnknown" OnlineHelp="MSDN" ErrorFunc="HRESULT" Category="Graphics and Multimedia/DirectX/Direct3D 9">
+        
         <!-- Forward Interface Declarations -->
         <Variable Name="IDirect3DDevice9"               Type="Interface" />
         <Variable Name="IDirect3DDevice9Ex"             Type="Interface" />
@@ -21,6 +22,13 @@
         <Variable Name="IDirect3DVertexShader9"         Type="Interface" />
         <Variable Name="IDirect3DPixelShader9"          Type="Interface" />
         <Variable Name="IDirect3DQuery9"                Type="Interface" />
+        
+        <!-- Arrays -->
+        <Variable Name="float [4][4]"                           Type="Array"    Base="float [4]"    Count="4"/>
+        <Variable Name="WORD [256]"                             Type="Array"    Base="WORD"         Count="256"/>
+        <Variable Name="BYTE [D3D_OMAC_SIZE]"                   Type="Array"    Base="BYTE"         Count="16"/>
+        <Variable Name="char [MAX_DEVICE_IDENTIFIER_STRING]"    Type="Array"    Base="char"         Count="512"/>
+        <Variable Name="char [32]"                              Type="Array"    Base="char"         Count="32"/>
 
         <!-- D3DDEVTYPE -->
         <Variable Name="D3DDEVTYPE" Type="Alias" Base="UINT">
@@ -341,17 +349,56 @@
                 <Set Name="D3DPT_TRIANGLEFAN"           		Value="6" />
             </Enum>
         </Variable>
-        
-        <!-- TODO: Structures -->
-        <Variable Name="D3DADAPTER_IDENTIFIER9*"                    Type="Alias"    Base="LPVOID" />
-        <Variable Name="D3DAUTHENTICATEDCHANNEL_CONFIGURE_OUTPUT*"  Type="Alias"    Base="LPVOID" />
-        <Variable Name="D3DGAMMARAMP*"                              Type="Alias"    Base="LPVOID" />
-        <Variable Name="CONST D3DGAMMARAMP*"                        Type="Alias"    Base="D3DGAMMARAMP*" />
-        <Variable Name="D3DMATRIX*"                                 Type="Alias"    Base="LPVOID" />
-        <Variable Name="CONST D3DMATRIX*"                           Type="Alias"    Base="D3DMATRIX*" />
+
+        <!-- D3DADAPTER_IDENTIFIER9 -->
+        <Variable Name="D3DADAPTER_IDENTIFIER9" Type="Struct" Pack32="4">
+            <Field Type="char [MAX_DEVICE_IDENTIFIER_STRING]"   Name="Driver" />
+            <Field Type="char [MAX_DEVICE_IDENTIFIER_STRING]"   Name="Description" />
+            <Field Type="char [32]"                             Name="DeviceName" />
+            <Field Type="LARGE_INTEGER"                         Name="DriverVersion" />
+            <Field Type="DWORD"                                 Name="VendorId" />
+            <Field Type="DWORD"                                 Name="DeviceId" />
+            <Field Type="DWORD"                                 Name="SubSysId" />
+            <Field Type="DWORD"                                 Name="Revision" />
+            <Field Type="GUID"                                  Name="DeviceIdentifier" />
+            <Field Type="DWORD"                                 Name="WHQLLevel" />
+        </Variable>
+        <Variable Name="D3DADAPTER_IDENTIFIER9*" Type="Pointer" Base="D3DADAPTER_IDENTIFIER9" />
+
+        <!-- D3D_OMAC -->
+        <Variable Name="D3D_OMAC" Type="Struct">
+            <Field Type="BYTE [D3D_OMAC_SIZE]" Name="Omac" />
+        </Variable>
+
+        <!-- D3DAUTHENTICATEDCHANNEL_CONFIGURE_OUTPUT -->
+        <Variable Name="D3DAUTHENTICATEDCHANNEL_CONFIGURE_OUTPUT" Type="Struct">
+            <Field Type="D3D_OMAC"      Name="omac" />
+            <Field Type="GUID"          Name="ConfigureType" />
+            <Field Type="HANDLE"        Name="hChannel" />
+            <Field Type="UINT"          Name="SequenceNumber" />
+            <Field Type="HRESULT"       Name="ReturnCode" />
+        </Variable>
+        <Variable Name="D3DAUTHENTICATEDCHANNEL_CONFIGURE_OUTPUT*" Type="Pointer" Base="D3DAUTHENTICATEDCHANNEL_CONFIGURE_OUTPUT" />
+
+        <!-- D3DGAMMARAMP -->
+        <Variable Name="D3DGAMMARAMP" Type="Struct" Pack32="4">
+            <Field Type="WORD [256]"    Name="red"   />
+            <Field Type="WORD [256]"    Name="green" />
+            <Field Type="WORD [256]"    Name="blue"  />
+        </Variable>
+        <Variable Name="D3DGAMMARAMP*"          Type="Pointer" Base="D3DGAMMARAMP" />
+        <Variable Name="CONST D3DGAMMARAMP*"    Type="Pointer" Base="D3DGAMMARAMP" />
+
+        <!-- D3DMATRIX -->
+        <!-- TODO: This structure has union elements that we are not decoding (not really useful) -->
+        <Variable Name="D3DMATRIX" Type="Struct" Pack32="4">
+            <Field Type="float [4][4]" Name="m" />
+        </Variable>
+        <Variable Name="D3DMATRIX*"         Type="Pointer" Base="D3DMATRIX" />
+        <Variable Name="CONST D3DMATRIX*"   Type="Pointer" Base="D3DMATRIX" />
 
         <!-- D3DDISPLAYMODE -->
-        <Variable Name="D3DDISPLAYMODE" Type="Struct">
+        <Variable Name="D3DDISPLAYMODE" Type="Struct" Pack32="4">
             <Field Type="UINT"                Name="Width" />
             <Field Type="UINT"                Name="Height" />
             <Field Type="UINT"                Name="RefreshRate" />
@@ -855,7 +902,7 @@
         </Variable>
 
         <!-- D3DPRESENT_PARAMETERS -->
-        <Variable Name="D3DPRESENT_PARAMETERS" Type="Struct">
+        <Variable Name="D3DPRESENT_PARAMETERS" Type="Struct" Pack32="4">
             <Field Type="UINT"                      Name="BackBufferWidth" />
             <Field Type="UINT"                      Name="BackBufferHeight" />
             <Field Type="D3DFORMAT"                 Name="BackBufferFormat" />
@@ -904,7 +951,7 @@
         </Variable>
 
         <!-- D3DSURFACE_DESC -->
-        <Variable Name="D3DSURFACE_DESC" Type="Struct">
+        <Variable Name="D3DSURFACE_DESC" Type="Struct" Pack32="4">
             <Field Type="D3DFORMAT"                 Name="Format" />
             <Field Type="D3DRESOURCETYPE"           Name="Type" />
             <Field Type="[D3DUSAGE]"                Name="Usage" />
@@ -917,14 +964,14 @@
         <Variable Name="D3DSURFACE_DESC*" Type="Pointer" Base="D3DSURFACE_DESC" />
 
         <!-- D3DLOCKED_RECT -->
-        <Variable Name="D3DLOCKED_RECT" Type="Struct">
+        <Variable Name="D3DLOCKED_RECT" Type="Struct" Pack32="4">
             <Field Type="INT"       Name="Pitch" />
             <Field Type="void*"     Name="pBits" />
         </Variable>
         <Variable Name="D3DLOCKED_RECT*" Type="Pointer" Base="D3DLOCKED_RECT" />
 
         <!-- D3DRASTER_STATUS -->
-        <Variable Name="D3DRASTER_STATUS" Type="Struct">
+        <Variable Name="D3DRASTER_STATUS" Type="Struct" Pack32="4">
             <Field Type="BOOL"      Name="InVBlank" />
             <Field Type="UINT"      Name="ScanLine" />
         </Variable>
@@ -991,7 +1038,7 @@
         </Variable>
 
         <!-- D3DVERTEXELEMENT9 -->
-        <Variable Name="D3DVERTEXELEMENT9" Type="Struct">
+        <Variable Name="D3DVERTEXELEMENT9" Type="Struct" Pack32="4">
             <Field Type="WORD"          Name="Stream" />
             <Field Type="WORD"          Name="Offset" />
             <Field Type="D3DDECLTYPE"   Name="Type" />
@@ -1020,7 +1067,7 @@
         <Variable Name="CONST D3DDISPLAYMODEFILTER*" Type="Pointer" Base="D3DDISPLAYMODEFILTER" />
 
         <!-- D3DDISPLAYMODEEX -->
-        <Variable Name="D3DDISPLAYMODEEX" Type="Struct">
+        <Variable Name="D3DDISPLAYMODEEX" Type="Struct" Pack32="4">
             <Field Type="UINT"                        Name="Size" />
             <Field Type="UINT"                        Name="Width" />
             <Field Type="UINT"                        Name="Height" />
@@ -1054,7 +1101,7 @@
         <Variable Name="D3DOVERLAYCAPS*" Type="Pointer" Base="D3DOVERLAYCAPS" />
 
         <!-- D3DENCRYPTED_BLOCK_INFO -->
-        <Variable Name="D3DENCRYPTED_BLOCK_INFO" Type="Struct">
+        <Variable Name="D3DENCRYPTED_BLOCK_INFO" Type="Struct" Pack32="4">
             <Field Type="UINT"     Name="NumEncryptedBytesAtBeginning" />
             <Field Type="UINT"     Name="NumBytesInSkipPattern" />
             <Field Type="UINT"     Name="NumBytesInEncryptPattern" />
@@ -1062,7 +1109,7 @@
         <Variable Name="D3DENCRYPTED_BLOCK_INFO*" Type="Pointer" Base="D3DENCRYPTED_BLOCK_INFO" />
 
         <!-- D3DINDEXBUFFER_DESC -->
-        <Variable Name="D3DINDEXBUFFER_DESC" Type="Struct">
+        <Variable Name="D3DINDEXBUFFER_DESC" Type="Struct" Pack32="4">
             <Field Type="D3DFORMAT"         Name="Format" />
             <Field Type="D3DRESOURCETYPE"   Name="Type" />
             <Field Type="[D3DUSAGE]"        Name="Usage" />
@@ -1082,7 +1129,7 @@
         <Variable Name="D3DPRESENTSTATS*" Type="Pointer" Base="D3DPRESENTSTATS" />
 
         <!-- D3DVERTEXBUFFER_DESC -->
-        <Variable Name="D3DVERTEXBUFFER_DESC" Type="Struct">
+        <Variable Name="D3DVERTEXBUFFER_DESC" Type="Struct" Pack32="4">
             <Field Type="D3DFORMAT"             Name="Format" />
             <Field Type="D3DRESOURCETYPE"       Name="Type" />
             <Field Type="[D3DUSAGE]"            Name="Usage" />
@@ -1093,7 +1140,7 @@
         <Variable Name="D3DVERTEXBUFFER_DESC*" Type="Pointer" Base="D3DVERTEXBUFFER_DESC" />
 
         <!-- D3DVOLUME_DESC -->
-        <Variable Name="D3DVOLUME_DESC" Type="Struct">
+        <Variable Name="D3DVOLUME_DESC" Type="Struct" Pack32="4">
             <Field Type="D3DFORMAT"           	Name="Format" />
             <Field Type="D3DRESOURCETYPE"     	Name="Type" />
             <Field Type="DWORD"               	Name="Usage" />
@@ -1105,7 +1152,7 @@
         <Variable Name="D3DVOLUME_DESC*" Type="Pointer" Base="D3DVOLUME_DESC" />
 
         <!-- D3DLOCKED_BOX -->
-        <Variable Name="D3DLOCKED_BOX" Type="Struct">
+        <Variable Name="D3DLOCKED_BOX" Type="Struct" Pack32="4">
             <Field Type="INT"       Name="RowPitch" />
             <Field Type="INT"       Name="SlicePitch" />
             <Field Type="void*"     Name="pBits" />
@@ -1113,7 +1160,7 @@
         <Variable Name="D3DLOCKED_BOX*" Type="Pointer" Base="D3DLOCKED_BOX" />
 
         <!-- D3DBOX -->
-        <Variable Name="D3DBOX" Type="Struct">
+        <Variable Name="D3DBOX" Type="Struct" Pack32="4">
             <Field Type="UINT"      Name="Left" />
             <Field Type="UINT"      Name="Top" />
             <Field Type="UINT"      Name="Right" />
@@ -1172,7 +1219,7 @@
         </Variable>
 
         <!-- D3DDEVICE_CREATION_PARAMETERS -->
-        <Variable Name="D3DDEVICE_CREATION_PARAMETERS" Type="Struct">
+        <Variable Name="D3DDEVICE_CREATION_PARAMETERS" Type="Struct" Pack32="4">
             <Field Type="UINT"          Name="AdapterOrdinal" />
             <Field Type="D3DDEVTYPE"    Name="DeviceType" />
             <Field Type="HWND"          Name="hFocusWindow" />
@@ -1181,7 +1228,7 @@
         <Variable Name="D3DDEVICE_CREATION_PARAMETERS*" Type="Pointer" Base="D3DDEVICE_CREATION_PARAMETERS" />
 
         <!-- D3DRECT -->
-        <Variable Name="D3DRECT" Type="Struct">
+        <Variable Name="D3DRECT" Type="Struct" Pack32="4">
             <Field Type="LONG"      Name="x1" />
             <Field Type="LONG"      Name="y1" />
             <Field Type="LONG"      Name="x2" />
@@ -1190,7 +1237,7 @@
         <Variable Name="CONST D3DRECT*" Type="Pointer" Base="D3DRECT" />
 
         <!-- D3DVIEWPORT9 -->
-        <Variable Name="D3DVIEWPORT9" Type="Struct">
+        <Variable Name="D3DVIEWPORT9" Type="Struct" Pack32="4">
             <Field Type="DWORD"         Name="X" />
             <Field Type="DWORD"         Name="Y" />
             <Field Type="DWORD"         Name="Width" />
@@ -1201,16 +1248,8 @@
         <Variable Name="D3DVIEWPORT9*"          Type="Pointer" Base="D3DVIEWPORT9" />
         <Variable Name="CONST D3DVIEWPORT9*"    Type="Pointer" Base="D3DVIEWPORT9" />
 
-        <!-- D3DCOLORVALUE -->
-        <Variable Name="D3DCOLORVALUE" Type="Struct">
-            <Field Type="float"     Name="r" />
-            <Field Type="float"     Name="g" />
-            <Field Type="float"     Name="b" />
-            <Field Type="float"     Name="a" />
-        </Variable>
-
         <!-- D3DMATERIAL9 -->
-        <Variable Name="D3DMATERIAL9" Type="Struct">
+        <Variable Name="D3DMATERIAL9" Type="Struct" Pack32="4">
             <Field Type="D3DCOLORVALUE"     Name="Diffuse" />
             <Field Type="D3DCOLORVALUE"     Name="Ambient" />
             <Field Type="D3DCOLORVALUE"     Name="Specular" />
@@ -1230,7 +1269,7 @@
         </Variable>
 
         <!-- D3DLIGHT9 -->
-        <Variable Name="D3DLIGHT9" Type="Struct">
+        <Variable Name="D3DLIGHT9" Type="Struct" Pack32="4">
             <Field Type="D3DLIGHTTYPE"        Name="Type" />
             <Field Type="D3DCOLORVALUE"       Name="Diffuse" />
             <Field Type="D3DCOLORVALUE"       Name="Specular" />
@@ -1269,7 +1308,7 @@
         </Variable>
 
         <!-- D3DCLIPSTATUS9 -->
-        <Variable Name="D3DCLIPSTATUS9" Type="Struct">
+        <Variable Name="D3DCLIPSTATUS9" Type="Struct" Pack32="4">
             <Field Type="[D3DCS]"   Name="ClipUnion" />
             <Field Type="[D3DCS]"   Name="ClipIntersection" />
         </Variable>
@@ -1296,7 +1335,7 @@
         </Variable>
 
         <!-- D3DRECTPATCH_INFO -->
-        <Variable Name="D3DRECTPATCH_INFO" Type="Struct">
+        <Variable Name="D3DRECTPATCH_INFO" Type="Struct" Pack32="4">
             <Field Type="UINT"              Name="StartVertexOffsetWidth" />
             <Field Type="UINT"              Name="StartVertexOffsetHeight" />
             <Field Type="UINT"              Name="Width" />
@@ -1308,7 +1347,7 @@
         <Variable Name="CONST D3DRECTPATCH_INFO*" Type="Pointer" Base="D3DRECTPATCH_INFO" />
 
         <!-- D3DTRIPATCH_INFO -->
-        <Variable Name="D3DTRIPATCH_INFO" Type="Struct">
+        <Variable Name="D3DTRIPATCH_INFO" Type="Struct" Pack32="4">
             <Field Type="UINT"              Name="StartVertexOffset" />
             <Field Type="UINT"              Name="NumVertices" />
             <Field Type="D3DBASISTYPE"      Name="Basis" />

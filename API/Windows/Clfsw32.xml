@@ -6,20 +6,58 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Clfsw32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+
+        <!-- TODO: Structures (Field Alignment) -->
+        <Variable Name="PCLFS_SCAN_CONTEXT" Type="Alias" Base="LPVOID" />
         
-        <!-- TODO: Structures -->
-        <Variable Name="PCLFS_SCAN_CONTEXT"              Type="Alias"       Base="LPVOID" />
-        <Variable Name="CLFS_ARCHIVE_DESCRIPTOR"         Type="Alias"       Base="LPVOID" />
-
         <!-- Variables -->
-        <Variable Name="PFILE"                           Type="Alias"       Base="LPVOID" />
-        <Variable Name="CLFS_PRINT_RECORD_ROUTINE"       Type="Alias"       Base="LPVOID" />
-        <Variable Name="CLFS_BLOCK_ALLOCATION"           Type="Alias"       Base="LPVOID" />
-        <Variable Name="CLFS_BLOCK_DEALLOCATION"         Type="Alias"       Base="LPVOID" />
-        <Variable Name="CLFS_CONTAINER_ID"               Type="Alias"       Base="ULONG" />
-        <Variable Name="CLFS_LOG_ARCHIVE_CONTEXT"        Type="Alias"       Base="LPVOID" />
-        <Variable Name="PCLFS_LOG_ARCHIVE_CONTEXT"       Type="Pointer"     Base="CLFS_LOG_ARCHIVE_CONTEXT" />
+        <Variable Name="PFILE"                              Type="Alias"    Base="LPVOID" />
+        <Variable Name="CLFS_PRINT_RECORD_ROUTINE"          Type="Alias"    Base="LPVOID" />
+        <Variable Name="CLFS_BLOCK_ALLOCATION"              Type="Alias"    Base="LPVOID" />
+        <Variable Name="CLFS_BLOCK_DEALLOCATION"            Type="Alias"    Base="LPVOID" />
+        <Variable Name="CLFS_CONTAINER_ID"                  Type="Alias"    Base="ULONG" />
+        <Variable Name="CLFS_LOG_ARCHIVE_CONTEXT"           Type="Alias"    Base="LPVOID" />
+        <Variable Name="PCLFS_LOG_ARCHIVE_CONTEXT"          Type="Pointer"  Base="CLFS_LOG_ARCHIVE_CONTEXT" />
+        <Variable Name="WCHAR [CLFS_MAX_CONTAINER_INFO]"    Type="Array"    Base="WCHAR" Count="256" />
+        <Variable Name="LONGLONG []"                        Type="Pointer"  Base="LONGLONG" />
 
+        <!-- CLFS_CONTAINER_STATE -->
+        <Variable Name="CLFS_CONTAINER_STATE" Type="Alias" Base="UINT32">
+            <Flag>
+                <Set Name="ClfsContainerInitializing"               Value="0x01" />
+                <Set Name="ClfsContainerInactive"                   Value="0x02" />
+                <Set Name="ClfsContainerActive"                     Value="0x04" />
+                <Set Name="ClfsContainerActivePendingDelete"        Value="0x08" />
+                <Set Name="ClfsContainerPendingArchive"             Value="0x10" />
+                <Set Name="ClfsContainerPendingArchiveAndDelete"    Value="0x20" />
+            </Flag>
+        </Variable>
+
+        <!-- CLS_CONTAINER_INFORMATION -->
+        <Variable Name="CLS_CONTAINER_INFORMATION" Type="Struct">
+            <Field Type="ULONG"                             Name="FileAttributes" />
+            <Field Type="ULONGLONG"                         Name="CreationTime" />
+            <Field Type="ULONGLONG"                         Name="LastAccessTime" />
+            <Field Type="ULONGLONG"                         Name="LastWriteTime" />
+            <Field Type="LONGLONG"                          Name="ContainerSize" />
+            <Field Type="ULONG"                             Name="FileNameActualLength" />
+            <Field Type="ULONG"                             Name="FileNameLength" />
+            <Field Type="WCHAR [CLFS_MAX_CONTAINER_INFO]"   Name="FileName"  />
+            <Field Type="CLFS_CONTAINER_STATE"              Name="State" />
+            <Field Type="CLFS_CONTAINER_ID"                 Name="PhysicalContainerId" />
+            <Field Type="CLFS_CONTAINER_ID"                 Name="LogicalContainerId" />
+        </Variable>
+
+        <!-- CLS_ARCHIVE_DESCRIPTOR -->
+        <Variable Name="CLS_ARCHIVE_DESCRIPTOR" Type="Struct">
+            <Field Type="ULONGLONG"                     Name="coffLow" />
+            <Field Type="ULONGLONG"                     Name="coffHigh" />
+            <Field Type="CLS_CONTAINER_INFORMATION"     Name="infoContainer" />
+        </Variable>
+        <Variable Name="CLFS_ARCHIVE_DESCRIPTOR"    Type="Alias"    Base="CLS_ARCHIVE_DESCRIPTOR" />
+        <Variable Name="CLFS_ARCHIVE_DESCRIPTOR []" Type="Pointer"  Base="CLFS_ARCHIVE_DESCRIPTOR" />
+
+        <!-- CLFS_RECORD_TYPE -->
         <Variable Name="CLFS_RECORD_TYPE" Type="Alias" Base="UINT8">
             <Enum>
                 <Set Name="ClfsNullRecord"      Value="0x00" />
@@ -28,13 +66,15 @@
             </Enum>
         </Variable>
         <Variable Name="PCLFS_RECORD_TYPE" Type="Pointer" Base="CLFS_RECORD_TYPE" />
-        
+
+        <!-- CLFS_IOSTATS_CLASS -->
         <Variable Name="CLFS_IOSTATS_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="ClfsIoStatsDefault"  Value="0x0000" />
             </Enum>
         </Variable>
 
+        <!-- CLFS_CONTEXT_MODE -->
         <Variable Name="CLFS_CONTEXT_MODE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="ClfsContextNone"         Value="0x00" />
@@ -44,6 +84,7 @@
             </Enum>
         </Variable>
 
+        <!-- CLFS_SCAN_MODE -->
         <Variable Name="CLFS_SCAN_MODE" Type="Alias" Base="UINT8">
             <Flag>
                 <Set Name="CLFS_SCAN_INIT"          Value="0x01" />
@@ -55,6 +96,7 @@
             </Flag>
         </Variable>
 
+        <!-- CLFS_LOG_ARCHIVE_MODE -->
         <Variable Name="CLFS_LOG_ARCHIVE_MODE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="ClfsLogArchiveEnabled"   Value="0x01" />
@@ -107,7 +149,7 @@
         <Api Name="AlignReservedLog">
             <Param Type="PVOID" Name="pvMarshal" />
             <Param Type="ULONG" Name="cReservedRecords" />
-            <Param Type="LONGLONG" Name="rgcbReservation" />
+            <Param Type="LONGLONG []" Name="rgcbReservation" />
             <Param Type="PLONGLONG" Name="pcbAlignReservation" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
@@ -188,7 +230,7 @@
             <Param Type="PCLFS_LSN" Name="plsnUndoNext" />
             <Param Type="PCLFS_LSN" Name="plsnPrevious" />
             <Param Type="ULONG" Name="cReserveRecords" />
-            <Param Type="LONGLONG" Name="rgcbReservation" />
+            <Param Type="LONGLONG []" Name="rgcbReservation" />
             <Param Type="ULONG" Name="fFlags" />
             <Param Type="PCLFS_LSN" Name="plsn" />
             <Param Type="LPOVERLAPPED" Name="pOverlapped" />
@@ -203,7 +245,7 @@
             <Param Type="PCLFS_LSN" Name="plsnUndoNext" />
             <Param Type="PCLFS_LSN" Name="plsnPrevious" />
             <Param Type="ULONG" Name="cReserveRecords" />
-            <Param Type="LONGLONG" Name="rgcbReservation" />
+            <Param Type="LONGLONG []" Name="rgcbReservation" />
             <Param Type="ULONG" Name="fFlags" />
             <Param Type="PCLFS_LSN" Name="plsn" />
             <Param Type="LPOVERLAPPED" Name="overlapped" />
@@ -373,7 +415,7 @@
         </Api>
         <Api Name="GetNextLogArchiveExtent">
             <Param Type="CLFS_LOG_ARCHIVE_CONTEXT" Name="pvArchiveContext" />
-            <Param Type="CLFS_ARCHIVE_DESCRIPTOR" Name="rgadExtent" />
+            <Param Type="CLFS_ARCHIVE_DESCRIPTOR []" Name="rgadExtent" />
             <Param Type="ULONG" Name="cDescriptors" />
             <Param Type="PULONG" Name="pcDescriptorsReturned" />
             <Return Type="BOOL" />

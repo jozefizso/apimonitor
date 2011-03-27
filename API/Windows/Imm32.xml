@@ -8,15 +8,80 @@
     <Include Filename="Headers\gdi.h.xml" />
 
     <Module Name="Imm32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        
         <!-- Variables -->
-        <Variable Name="HIMC"                    Type="Alias"        Base="HANDLE" />
-        <Variable Name="IMCENUMPROC"             Type="Alias"        Base="LPVOID" />
-        <Variable Name="REGISTERWORDENUMPROC"    Type="Alias"        Base="LPVOID" />
+        <Variable Name="HIMC"                               Type="Alias"    Base="HANDLE" />
+        <Variable Name="IMCENUMPROC"                        Type="Alias"    Base="LPVOID" />
+        <Variable Name="REGISTERWORDENUMPROC"               Type="Alias"    Base="LPVOID" />
+        <Variable Name="TCHAR [IMEMENUITEM_STRING_SIZE]"    Type="Array"    Base="TCHAR"    Count="80" />
+        <Variable Name="TCHAR [STYLE_DESCRIPTION_SIZE]"     Type="Array"    Base="TCHAR"    Count="32" />
 
-        <!-- TODO: Structures -->
-        <Variable Name="LPCANDIDATELIST"         Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPIMEMENUITEMINFO"       Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPSTYLEBUF"              Type="Alias"        Base="LPVOID" />
+        <!-- STYLEBUF -->
+        <Variable Name="STYLEBUF" Type="Struct">
+            <Field Type="DWORD"                             Name="dwStyle" />
+            <Field Type="TCHAR [STYLE_DESCRIPTION_SIZE]"    Name="szDescription" />
+        </Variable>
+        <Variable Name="LPSTYLEBUF" Type="Pointer" Base="STYLEBUF" />
+
+        <!-- [IMFT] -->
+        <Variable Name="[IMFT]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Flag>
+                <Set Name="IMFT_RADIOCHECK"     Value="0x00001" />
+                <Set Name="IMFT_SEPARATOR"      Value="0x00002" />
+                <Set Name="IMFT_SUBMENU"        Value="0x00004" />
+            </Flag>
+        </Variable>
+
+        <!-- [IMFS] -->
+        <Variable Name="[IMFS]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Flag>
+                <Set Name="IMFS_DISABLED"   Value="0x00000003" />
+                <Set Name="IMFS_CHECKED"    Value="0x00000008" />
+                <Set Name="IMFS_HILITE"     Value="0x00000080" />
+                <Set Name="IMFS_DEFAULT"    Value="0x00001000" />
+            </Flag>
+        </Variable>
+
+        <!-- IMEMENUITEMINFO -->
+        <Variable Name="IMEMENUITEMINFO" Type="Struct">
+            <Field Type="UINT"                              Name="cbSize" />
+            <Field Type="[IMFT]"                            Name="fType" />
+            <Field Type="[IMFS]"                            Name="fState" />
+            <Field Type="UINT"                              Name="wID" />
+            <Field Type="HBITMAP"                           Name="hbmpChecked" />
+            <Field Type="HBITMAP"                           Name="hbmpUnchecked" />
+            <Field Type="DWORD"                             Name="dwItemData" />
+            <Field Type="TCHAR [IMEMENUITEM_STRING_SIZE]"   Name="szString" />
+            <Field Type="HBITMAP"                           Name="hbmpItem" />
+        </Variable>
+        <Variable Name="LPIMEMENUITEMINFO" Type="Pointer" Base="IMEMENUITEMINFO" />
+
+        <!-- [IME_CAND] -->
+        <Variable Name="[IME_CAND]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="IME_CAND_UNKNOWN"    Value="0x0000" />
+                <Set Name="IME_CAND_READ"       Value="0x0001" />
+                <Set Name="IME_CAND_CODE"       Value="0x0002" />
+                <Set Name="IME_CAND_MEANING"    Value="0x0003" />
+                <Set Name="IME_CAND_RADICAL"    Value="0x0004" />
+                <Set Name="IME_CAND_STROKE"     Value="0x0005" />
+            </Enum>
+        </Variable>
+
+        <!-- CANDIDATELIST -->
+        <Variable Name="CANDIDATELIST" Type="Struct">
+            <Field Type="DWORD"         Name="dwSize" />
+            <Field Type="[IME_CAND]"    Name="dwStyle" />
+            <Field Type="DWORD"         Name="dwCount" />
+            <Field Type="DWORD"         Name="dwSelection" />
+            <Field Type="DWORD"         Name="dwPageStart" />
+            <Field Type="DWORD"         Name="dwPageSize" />
+            <Field Type="DWORD [1]"     Name="dwOffset" Count="dwCount" />
+        </Variable>
+        <Variable Name="LPCANDIDATELIST" Type="Pointer" Base="CANDIDATELIST" />
 
         <!-- CANDIDATEFORM -->
         <Variable Name="CANDIDATEFORM" Type="Struct">

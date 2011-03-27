@@ -9,15 +9,230 @@
     <Include Filename="Headers\gdi.h.xml" />
     
     <Module Name="OleDlg.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
+        
         <!-- Variables -->
         <Variable Name="LPFNOLEUIHOOK"          Type="Alias" Base="LPVOID" />
         <Variable Name="LPOLEUILINKCONTAINER"   Type="Alias" Base="LPVOID" />
+        <Variable Name="LPOLEUIOBJINFO"         Type="Alias" Base="LPVOID" />
+        <Variable Name="LPOLEUILINKINFO"        Type="Alias" Base="LPVOID" />
 
-        <!-- TODO: Structures -->
-        <Variable Name="LPOLEUICHANGEICON"       Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPOLEUICHANGESOURCE"     Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPOLEUIOBJECTPROPS"      Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPOLEUIPASTESPECIAL"     Type="Alias"        Base="LPVOID" />
+        <!-- [ChangeIconFlag] -->
+        <Variable Name="[ChangeIconFlag]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="CIF_SHOWHELP"        Value="0x00000001" />
+                <Set Name="CIF_SELECTCURRENT"   Value="0x00000002" />
+                <Set Name="CIF_SELECTDEFAULT"   Value="0x00000004" />
+                <Set Name="CIF_SELECTFROMFILE"  Value="0x00000008" />
+                <Set Name="CIF_USEICONEXE"      Value="0x00000010" />
+            </Flag>
+        </Variable>
+
+        <!-- OLEUICHANGEICON -->
+        <Variable Name="OLEUICHANGEICON" Type="Struct">
+            <Field Type="DWORD"             Name="cbStruct" />
+            <Field Type="[ChangeIconFlag]"  Name="dwFlags" />
+            <Field Type="HWND"              Name="hWndOwner" />
+            <Field Type="LPCTSTR"           Name="lpszCaption" />
+            <Field Type="LPFNOLEUIHOOK"     Name="lpfnHook" />
+            <Field Type="LPARAM"            Name="lCustData" />
+            <Field Type="HINSTANCE"         Name="hInstance" />
+            <Field Type="LPCTSTR"           Name="lpszTemplate" />
+            <Field Type="HRSRC"             Name="hResource" />
+            <Field Type="HGLOBAL"           Name="hMetaPict" />
+            <Field Type="CLSID"             Name="clsid" />
+            <Field Type="TCHAR [MAX_PATH]"  Name="szIconExe" />
+            <Field Type="int"               Name="cchIconExe" />
+        </Variable>
+        <Variable Name="LPOLEUICHANGEICON" Type="Pointer" Base="OLEUICHANGEICON" />
+
+        <!-- [PasteSpecialFlag] -->
+        <Variable Name="[PasteSpecialFlag]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="PSF_SHOWHELP"                Value="0x00000001" />
+                <Set Name="PSF_SELECTPASTE"             Value="0x00000002" />
+                <Set Name="PSF_SELECTPASTELINK"         Value="0x00000004" />
+                <Set Name="PSF_CHECKDISPLAYASICON"      Value="0x00000008" />
+                <Set Name="PSF_DISABLEDISPLAYASICON"    Value="0x00000010" />
+                <Set Name="PSF_HIDECHANGEICON"          Value="0x00000020" />
+                <Set Name="PSF_STAYONCLIPBOARDCHANGE"   Value="0x00000040" />
+                <Set Name="PSF_NOREFRESHDATAOBJECT"     Value="0x00000080" />
+            </Flag>
+        </Variable>
+
+        <!-- OLEUIPASTEFLAG -->
+        <Variable Name="OLEUIPASTEFLAG" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="OLEUIPASTE_ENABLEICON"       Value="2048" />
+                <Set Name="OLEUIPASTE_PASTEONLY"        Value="0" />
+                <Set Name="OLEUIPASTE_PASTE"            Value="512" />
+                <Set Name="OLEUIPASTE_LINKANYTYPE"      Value="1024" />
+                <Set Name="OLEUIPASTE_LINKTYPE1"        Value="1" />
+                <Set Name="OLEUIPASTE_LINKTYPE2"        Value="2" />
+                <Set Name="OLEUIPASTE_LINKTYPE3"        Value="4" />
+                <Set Name="OLEUIPASTE_LINKTYPE4"        Value="8" />
+                <Set Name="OLEUIPASTE_LINKTYPE5"        Value="16" />
+                <Set Name="OLEUIPASTE_LINKTYPE6"        Value="32" />
+                <Set Name="OLEUIPASTE_LINKTYPE7"        Value="64" />
+                <Set Name="OLEUIPASTE_LINKTYPE8"        Value="128" />
+            </Flag>
+        </Variable>
+
+        <!-- OLEUIPASTEENTRY -->
+        <Variable Name="OLEUIPASTEENTRY" Type="Struct">
+            <Field Type="FORMATETC"         Name="fmtetc" />
+            <Field Type="LPCTSTR"           Name="lpstrFormatName" />
+            <Field Type="LPCTSTR"           Name="lpstrResultText" />
+            <Field Type="OLEUIPASTEFLAG"    Name="dwFlags" />
+            <Field Type="DWORD"             Name="dwScratchSpace" />
+        </Variable>
+        <Variable Name="LPOLEUIPASTEENTRY" Type="Pointer" Base="OLEUIPASTEENTRY" />
+
+        <!-- OLEUIPASTESPECIAL -->
+        <Variable Name="OLEUIPASTESPECIAL" Type="Struct">
+            <Field Type="DWORD"                 Name="cbStruct" />
+            <Field Type="[PasteSpecialFlag]"    Name="dwFlags" />
+            <Field Type="HWND"                  Name="hWndOwner" />
+            <Field Type="LPCTSTR"               Name="lpszCaption" />
+            <Field Type="LPFNOLEUIHOOK"         Name="lpfnHook" />
+            <Field Type="LPARAM"                Name="lCustData" />
+            <Field Type="HINSTANCE"             Name="hInstance" />
+            <Field Type="LPCTSTR"               Name="lpszTemplate" />
+            <Field Type="HRSRC"                 Name="hResource" />
+            <Field Type="LPDATAOBJECT"          Name="lpSrcDataObj" />
+            <Field Type="LPOLEUIPASTEENTRY"     Name="arrPasteEntries" Count="cPasteEntries" />
+            <Field Type="int"                   Name="cPasteEntries" />
+            <Field Type="UINT*"                 Name="arrLinkTypes" Count="cLinkTypes" />
+            <Field Type="int"                   Name="cLinkTypes" />
+            <Field Type="UINT"                  Name="cClsidExclude" />
+            <Field Type="LPCLSID"               Name="lpClsidExclude" />
+            <Field Type="int"                   Name="nSelectedIndex" />
+            <Field Type="BOOL"                  Name="fLink" />
+            <Field Type="HGLOBAL"               Name="hMetaPict" />
+            <Field Type="SIZEL"                 Name="sizel" />
+        </Variable>
+        <Variable Name="LPOLEUIPASTESPECIAL" Type="Pointer" Base="OLEUIPASTESPECIAL" />
+
+        <!-- [ObjectPropFlags] -->
+        <Variable Name="[ObjectPropFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="OPF_OBJECTISLINK"    Value="0x00000001" />
+                <Set Name="OPF_NOFILLDEFAULT"   Value="0x00000002" />
+                <Set Name="OPF_SHOWHELP"        Value="0x00000004" />
+                <Set Name="OPF_DISABLECONVERT"  Value="0x00000008" />
+            </Flag>
+        </Variable>
+
+        <!-- OLEUIGNRLPROPS -->
+        <Variable Name="OLEUIGNRLPROPS" Type="Struct">
+            <Field Type="DWORD"             Name="cbStruct" />
+            <Field Type="DWORD"             Name="dwFlags" />
+            <Field Type="DWORD [2]"         Name="dwReserved1" />
+            <Field Type="LPFNOLEUIHOOK"     Name="lpfnHook" />
+            <Field Type="LPARAM"            Name="lCustData" />
+            <Field Type="DWORD [3]"         Name="dwReserved2" />
+            <Field Type="LPVOID"            Name="lpOP" Display="OLEUIOBJECTPROPS*" />
+            <!--
+            TODO: Need Forward Reference Structure for above field
+            <Field Type="OLEUIOBJECTPROPS*" Name="lpOP" />
+             -->
+        </Variable>
+        <Variable Name="LPOLEUIGNRLPROPS" Type="Pointer" Base="OLEUIGNRLPROPS" />
+
+        <!-- [ViewPropsFlags] -->
+        <Variable Name="[ViewPropsFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="VPF_SELECTRELATIVE"      Value="0x00000001" />
+                <Set Name="VPF_DISABLERELATIVE"     Value="0x00000002" />
+                <Set Name="VPF_DISABLESCALE"        Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <!-- OLEUIVIEWPROPS -->
+        <Variable Name="OLEUIVIEWPROPS" Type="Struct">
+            <Field Type="DWORD"             Name="cbStruct" />
+            <Field Type="[ViewPropsFlags]"  Name="dwFlags" />
+            <Field Type="DWORD [2]"         Name="dwReserved1" />
+            <Field Type="LPFNOLEUIHOOK"     Name="lpfnHook" />
+            <Field Type="LPARAM"            Name="lCustData" />
+            <Field Type="DWORD [3]"         Name="dwReserved2" />
+            <Field Type="LPVOID"            Name="lpOP" Display="OLEUIOBJECTPROPS*" />
+            <!--
+            TODO: Need Forward Reference Structure for above field
+            <Field Type="OLEUIOBJECTPROPS*" Name="lpOP" />
+             -->
+            <Field Type="int"               Name="nScaleMin" />
+            <Field Type="int"               Name="nScaleMax" />
+        </Variable>
+        <Variable Name="LPOLEUIVIEWPROPS" Type="Pointer" Base="OLEUIVIEWPROPS" />
+
+        <!-- OLEUILINKPROPS -->
+        <Variable Name="OLEUILINKPROPS" Type="Struct">
+            <Field Type="DWORD"             Name="cbStruct" />
+            <Field Type="DWORD"             Name="dwFlags" />
+            <Field Type="DWORD [2]"         Name="dwReserved1" />
+            <Field Type="LPFNOLEUIHOOK"     Name="lpfnHook" />
+            <Field Type="LPARAM"            Name="lCustData" />
+            <Field Type="DWORD [3]"         Name="dwReserved2" />
+            <Field Type="LPVOID"            Name="lpOP" Display="OLEUIOBJECTPROPS*" />
+            <!--
+            TODO: Need Forward Reference Structure for above field
+            <Field Type="OLEUIOBJECTPROPS*" Name="lpOP" />
+             -->
+        </Variable>
+        <Variable Name="LPOLEUILINKPROPS" Type="Pointer" Base="OLEUILINKPROPS" />
+
+        <!-- OLEUIOBJECTPROPS -->
+        <Variable Name="OLEUIOBJECTPROPS" Type="Struct">
+            <Field Type="DWORD"                 Name="cbStruct" />
+            <Field Type="[ObjectPropFlags]"     Name="dwFlags" />
+            <Field Type="LPPROPSHEETHEADER"     Name="lpPS" />
+            <Field Type="DWORD"                 Name="dwObject" />
+            <Field Type="LPOLEUIOBJINFO"        Name="lpObjInfo" />
+            <Field Type="DWORD"                 Name="dwLink" />
+            <Field Type="LPOLEUILINKINFO"       Name="lpLinkInfo" />
+            <Field Type="LPOLEUIGNRLPROPS"      Name="lpGP" />
+            <Field Type="LPOLEUIVIEWPROPS"      Name="lpVP" />
+            <Field Type="LPOLEUILINKPROPS"      Name="lpLP" />
+        </Variable>
+        <Variable Name="LPOLEUIOBJECTPROPS" Type="Pointer" Base="OLEUIOBJECTPROPS" />
+
+        <!-- [ChangeSourceFlags] -->
+        <Variable Name="[ChangeSourceFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="CSF_SHOWHELP"        Value="0x00000001" />
+                <Set Name="CSF_VALIDSOURCE"     Value="0x00000002" />
+                <Set Name="CSF_ONLYGETSOURCE"   Value="0x00000004" />
+                <Set Name="CSF_EXPLORER"        Value="0x00000008" />
+            </Flag>
+        </Variable>
+
+        <!-- OLEUICHANGESOURCE -->
+        <Variable Name="OLEUICHANGESOURCE" Type="Struct">
+            <Field Type="DWORD"                 Name="cbStruct" />
+            <Field Type="[ChangeSourceFlags]"   Name="dwFlags" />
+            <Field Type="HWND"                  Name="hWndOwner" />
+            <Field Type="LPCTSTR"               Name="lpszCaption" />
+            <Field Type="LPFNOLEUIHOOK"         Name="lpfnHook" />
+            <Field Type="LPARAM"                Name="lCustData" />
+            <Field Type="HINSTANCE"             Name="hInstance" />
+            <Field Type="LPCTSTR"               Name="lpszTemplate" />
+            <Field Type="HRSRC"                 Name="hResource" />
+            <Field Type="OPENFILENAME*"         Name="lpOFN" />
+            <Field Type="DWORD [4]"             Name="dwReserved1" />
+            <Field Type="LPOLEUILINKCONTAINER"  Name="lpOleUILinkContainer" />
+            <Field Type="DWORD"                 Name="dwLink" />
+            <Field Type="LPTSTR"                Name="lpszDisplayName" />
+            <Field Type="ULONG"                 Name="nFileLength" />
+            <Field Type="LPTSTR"                Name="lpszFrom" />
+            <Field Type="LPSTR"                 Name="lpszTo" />
+        </Variable>
+        <Variable Name="LPOLEUICHANGESOURCE" Type="Pointer" Base="OLEUICHANGESOURCE" />
 
         <!-- OLEUIBUSY -->
         <Variable Name="OLEUIBUSY" Type="Struct">
@@ -170,15 +385,12 @@
             <Return Type="UINT" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <!-- Variable Arguments NOT supported
-    <Api Name="OleUIPromptUser" BothCharset="True">
-        <Param Type="int" Name="nTemplate" />
-        <Param Type="HWND" Name="hwndParent" />
-        <Param Type="..." />
-        <Return Type="int" />
-        <Success Return="NotEqual" Value="0" />
-    </Api>
-    -->
+        <Api Name="OleUIPromptUser" BothCharset="True" VarArgs="True">
+            <Param Type="int" Name="nTemplate" />
+            <Param Type="HWND" Name="hwndParent" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
         <Api Name="OleUIUpdateLinks" BothCharset="True">
             <Param Type="LPOLEUILINKCONTAINER" Name="lpOleUILinkCntr" />
             <Param Type="HWND" Name="hwndParent" />

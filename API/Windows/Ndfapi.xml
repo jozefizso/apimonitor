@@ -11,9 +11,75 @@
         <!-- Variables -->
         <Variable Name="NDFHANDLE"          Type="Alias"    Base="PVOID" />
         <Variable Name="NDFHANDLE*"         Type="Pointer"  Base="NDFHANDLE" />
-        
-        <!-- TODO: Structures -->
-        <Variable Name="HELPER_ATTRIBUTE*"  Type="Alias"    Base="LPVOID" />
+        <Variable Name="byte"               Type="Alias"    Base="BYTE" />
+        <Variable Name="CHAR [126]"         Type="Array"    Base="CHAR" Count="126" />
+
+        <!-- ATTRIBUTE_TYPE -->
+        <Variable Name="ATTRIBUTE_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="AT_INVALID"          Value="0" />
+                <Set Name="AT_BOOLEAN"          Value="1" />
+                <Set Name="AT_INT8"             Value="2" />
+                <Set Name="AT_UINT8"            Value="3" />
+                <Set Name="AT_INT16"            Value="4" />
+                <Set Name="AT_UINT16"           Value="5" />
+                <Set Name="AT_INT32"            Value="6" />
+                <Set Name="AT_UINT32"           Value="7" />
+                <Set Name="AT_INT64"            Value="8" />
+                <Set Name="AT_UINT64"           Value="9" />
+                <Set Name="AT_STRING"           Value="10" />
+                <Set Name="AT_GUID"             Value="11" />
+                <Set Name="AT_LIFE_TIME"        Value="12" />
+                <Set Name="AT_SOCKADDR"         Value="13" />
+                <Set Name="AT_OCTET_STRING"     Value="14" />
+            </Enum>
+        </Variable>
+
+        <!-- OCTET_STRING -->
+        <!-- TODO: Length="dwLength" for lpValue (add after support for selective encoding of unions) -->
+        <Variable Name="OCTET_STRING" Type="Struct">
+            <Field Type="DWORD"     Name="dwLength" />
+            <Field Type="BYTE*"     Name="lpValue" />
+        </Variable>
+
+        <!-- LIFE_TIME -->
+        <Variable Name="LIFE_TIME" Type="Struct">
+            <Field Type="FILETIME"  Name="startTime" />
+            <Field Type="FILETIME"  Name="endTime" />
+        </Variable>
+
+        <!-- DIAG_SOCKADDR -->
+        <Variable Name="DIAG_SOCKADDR" Type="Struct">
+            <Field Type="USHORT"        Name="family" />
+            <Field Type="CHAR [126]"    Name="data"  />
+        </Variable>
+
+        <!-- [HELPER_ATTRIBUTE_u] -->
+        <Variable Name="[HELPER_ATTRIBUTE_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="BOOL"              Name="Boolean" />
+            <Field Type="char"              Name="Char" />
+            <Field Type="byte"              Name="Byte" />
+            <Field Type="short"             Name="Short" />
+            <Field Type="WORD"              Name="Word" />
+            <Field Type="int"               Name="Int" />
+            <Field Type="DWORD"             Name="DWord" />
+            <Field Type="LONGLONG"          Name="Int64" />
+            <Field Type="ULONGLONG"         Name="UInt64" />
+            <Field Type="LPWSTR"            Name="PWStr" />
+            <Field Type="GUID"              Name="Guid" />
+            <Field Type="LIFE_TIME"         Name="LifeTime" />
+            <Field Type="DIAG_SOCKADDR"     Name="Address" />
+            <Field Type="OCTET_STRING"      Name="OctetString" />
+        </Variable>
+
+        <!-- HELPER_ATTRIBUTE -->
+        <Variable Name="HELPER_ATTRIBUTE" Type="Struct">
+            <Field Type="LPWSTR"                Name="pwszName" />
+            <Field Type="ATTRIBUTE_TYPE"        Name="type" />
+            <Field Type="[HELPER_ATTRIBUTE_u]"  Name="" />
+        </Variable>
+        <Variable Name="HELPER_ATTRIBUTE*" Type="Pointer" Base="HELPER_ATTRIBUTE" />
 
         <!-- Network Diagnostic Framework (NDF) -->
         <Category Name="Networking/Network Management/Network Diagnostics Framework (NDF)" />

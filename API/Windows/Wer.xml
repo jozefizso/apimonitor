@@ -6,13 +6,58 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Wer.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        
         <!-- Variables -->
-        <Variable Name="HREPORT"                        Type="Alias"    Base="HANDLE" />
-        <Variable Name="HREPORT*"                       Type="Pointer"  Base="HREPORT" />
+        <Variable Name="HREPORT"                                    Type="Alias"    Base="HANDLE" />
+        <Variable Name="HREPORT*"                                   Type="Pointer"  Base="HREPORT" />
+        <Variable Name="WCHAR [WER_MAX_PREFERRED_MODULES_BUFFER]"   Type="Array"    Base="WCHAR" Count="256" />
+        <Variable Name="WCHAR [64]"                                 Type="Array"    Base="WCHAR" Count="64" />
+        <Variable Name="WCHAR [512]"                                Type="Array"    Base="WCHAR" Count="512" />
 
-        <!-- TODO: Structures -->
-        <Variable Name="PWER_DUMP_CUSTOM_OPTIONS"       Type="Alias"    Base="LPVOID" />
-        <Variable Name="PWER_REPORT_INFORMATION"        Type="Alias"    Base="LPVOID" />
+        <!-- [WER_DUMP_MASK] -->
+        <Variable Name="[WER_DUMP_MASK]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="WER_DUMP_MASK_DUMPTYPE"                  Value="0x1" />
+                <Set Name="WER_DUMP_MASK_ONLY_THISTHREAD"           Value="0x2" />
+                <Set Name="WER_DUMP_MASK_THREADFLAGS"               Value="0x4" />
+                <Set Name="WER_DUMP_MASK_THREADFLAGS_EX"            Value="0x8" />
+                <Set Name="WER_DUMP_MASK_OTHERTHREADFLAGS"          Value="0x10" />
+                <Set Name="WER_DUMP_MASK_OTHERTHREADFLAGS_EX"       Value="0x20" />
+                <Set Name="WER_DUMP_MASK_PREFERRED_MODULESFLAGS"    Value="0x40" />
+                <Set Name="WER_DUMP_MASK_OTHER_MODULESFLAGS"        Value="0x80" />
+                <Set Name="WER_DUMP_MASK_PREFERRED_MODULE_LIST"     Value="0x100" />
+            </Flag>
+        </Variable>
+
+        <!-- WER_DUMP_CUSTOM_OPTIONS -->
+        <Variable Name="WER_DUMP_CUSTOM_OPTIONS" Type="Struct">
+            <Field Type="DWORD"                                     Name="dwSize" />
+            <Field Type="[WER_DUMP_MASK]"                           Name="dwMask" />
+            <Field Type="MINIDUMP_TYPE"                             Name="dwDumpFlags" Display="DWORD" />
+            <Field Type="BOOL"                                      Name="bOnlyThisThread" />
+            <Field Type="THREAD_WRITE_FLAGS"                        Name="dwExceptionThreadFlags" />
+            <Field Type="THREAD_WRITE_FLAGS"                        Name="dwOtherThreadFlags" />
+            <Field Type="THREAD_WRITE_FLAGS"                        Name="dwExceptionThreadExFlags" />
+            <Field Type="THREAD_WRITE_FLAGS"                        Name="dwOtherThreadExFlags" />
+            <Field Type="MODULE_WRITE_FLAGS"                        Name="dwPreferredModuleFlags" />
+            <Field Type="MODULE_WRITE_FLAGS"                        Name="dwOtherModuleFlags" />
+            <Field Type="WCHAR [WER_MAX_PREFERRED_MODULES_BUFFER]"  Name="wzPreferredModuleList" />
+        </Variable>
+        <Variable Name="PWER_DUMP_CUSTOM_OPTIONS" Type="Pointer" Base="WER_DUMP_CUSTOM_OPTIONS" />
+
+        <!-- WER_REPORT_INFORMATION -->
+        <Variable Name="WER_REPORT_INFORMATION" Type="Struct">
+            <Field Type="DWORD"             Name="dwSize" />
+            <Field Type="HANDLE"            Name="hProcess" />
+            <Field Type="WCHAR [64]"        Name="wzConsentKey" />
+            <Field Type="WCHAR [128]"       Name="wzFriendlyEventName" />
+            <Field Type="WCHAR [128]"       Name="wzApplicationName" />
+            <Field Type="WCHAR [MAX_PATH]"  Name="wzApplicationPath" />
+            <Field Type="WCHAR [512]"       Name="wzDescription" />
+            <Field Type="HWND"              Name="hwndParent" />
+        </Variable>
+        <Variable Name="PWER_REPORT_INFORMATION" Type="Pointer" Base="WER_REPORT_INFORMATION" />
 
         <!-- WER_EXCEPTION_INFORMATION -->
         <Variable Name="WER_EXCEPTION_INFORMATION" Type="Struct">

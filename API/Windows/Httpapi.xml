@@ -5,22 +5,82 @@
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\sockets.h.xml" />
+    <Include Filename="Headers\cryptography.h.xml" />
+    
     <Module Name="Httpapi.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
         <!-- Variables -->
         <Variable Name="HTTPAPI_VERSION"                 Type="Alias"   Base="UINT" />
         <Variable Name="HTTP_OPAQUE_ID"                  Type="Alias"   Base="ULONGLONG" />
         <Variable Name="HTTP_REQUEST_ID"                 Type="Alias"   Base="HTTP_OPAQUE_ID" />
         <Variable Name="HTTP_CONNECTION_ID"              Type="Alias"   Base="HTTP_OPAQUE_ID" />
+        <Variable Name="HTTP_RAW_CONNECTION_ID"          Type="Alias"   Base="HTTP_OPAQUE_ID" />
         <Variable Name="HTTP_SERVER_SESSION_ID"          Type="Alias"   Base="HTTP_OPAQUE_ID" />
         <Variable Name="PHTTP_SERVER_SESSION_ID"         Type="Pointer" Base="HTTP_SERVER_SESSION_ID" />
         <Variable Name="HTTP_URL_GROUP_ID"               Type="Alias"   Base="HTTP_OPAQUE_ID" />
         <Variable Name="PHTTP_URL_GROUP_ID"              Type="Pointer" Base="HTTP_URL_GROUP_ID" />
         <Variable Name="HTTP_URL_CONTEXT"                Type="Alias"   Base="ULONGLONG" />
 
-        <!-- TODO: Structures -->
-        <Variable Name="PHTTP_DATA_CHUNK"                Type="Alias" Base="LPVOID" />
-        <Variable Name="PHTTP_REQUEST"                   Type="Alias" Base="LPVOID" />
-        <Variable Name="PHTTP_RESPONSE"                  Type="Alias" Base="LPVOID" />
+        <!-- HTTP_BYTE_RANGE -->
+        <Variable Name="HTTP_BYTE_RANGE" Type="Struct">
+            <Field Type="ULARGE_INTEGER" 	Name="StartingOffset" />
+            <Field Type="ULARGE_INTEGER" 	Name="Length" />
+        </Variable>
+        <Variable Name="PHTTP_BYTE_RANGE" Type="Pointer" Base="HTTP_BYTE_RANGE" />
+
+        <!-- HTTP_DATA_CHUNK_TYPE -->
+        <Variable Name="HTTP_DATA_CHUNK_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="HttpDataChunkFromMemory"             Value="0" />
+                <Set Name="HttpDataChunkFromFileHandle"         Value="1" />
+                <Set Name="HttpDataChunkFromFragmentCache"      Value="2" />
+                <Set Name="HttpDataChunkFromFragmentCacheEx"    Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- [HTTP_DATA_CHUNK_u_s1] -->
+        <Variable Name="[HTTP_DATA_CHUNK_u_s1]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="PVOID"     Name="pBuffer" Length="BufferLength" />
+            <Field Type="ULONG"     Name="BufferLength" />
+        </Variable>
+
+        <!-- [HTTP_DATA_CHUNK_u_s2] -->
+        <Variable Name="[HTTP_DATA_CHUNK_u_s2]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="HTTP_BYTE_RANGE"   Name="ByteRange" />
+            <Field Type="HANDLE"            Name="FileHandle" />
+        </Variable>
+
+        <!-- [HTTP_DATA_CHUNK_u_s3] -->
+        <Variable Name="[HTTP_DATA_CHUNK_u_s3]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="USHORT"    Name="FragmentNameLength" />
+            <Field Type="PCWSTR"    Name="pFragmentName" />
+        </Variable>
+
+        <!-- [HTTP_DATA_CHUNK_u_s4] -->
+        <Variable Name="[HTTP_DATA_CHUNK_u_s4]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="HTTP_BYTE_RANGE"   Name="ByteRange" />
+            <Field Type="PCWSTR"            Name="pFragmentName" />
+        </Variable>
+
+        <!-- [HTTP_DATA_CHUNK_u] -->
+        <Variable Name="[HTTP_DATA_CHUNK_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="[HTTP_DATA_CHUNK_u_s1]"    Name="FromMemory" />
+            <Field Type="[HTTP_DATA_CHUNK_u_s2]"    Name="FromFileHandle" />
+            <Field Type="[HTTP_DATA_CHUNK_u_s3]"    Name="FromFragmentCache" />
+            <Field Type="[HTTP_DATA_CHUNK_u_s4]"    Name="FromFragmentCacheEx" />
+        </Variable>
+
+        <!-- HTTP_DATA_CHUNK -->
+        <Variable Name="HTTP_DATA_CHUNK" Type="Struct">
+            <Field Type="HTTP_DATA_CHUNK_TYPE"  Name="DataChunkType" />
+            <Field Type="[HTTP_DATA_CHUNK_u]"   Name="" />
+        </Variable>
+        <Variable Name="PHTTP_DATA_CHUNK" Type="Pointer" Base="HTTP_DATA_CHUNK" />
 
         <!-- HTTP_CACHE_POLICY_TYPE -->
         <Variable Name="HTTP_CACHE_POLICY_TYPE" Type="Alias" Base="UINT">
@@ -38,13 +98,6 @@
         </Variable>
         <Variable Name="PHTTP_CACHE_POLICY" Type="Pointer" Base="HTTP_CACHE_POLICY" />
 
-        <!-- HTTP_BYTE_RANGE -->
-        <Variable Name="HTTP_BYTE_RANGE" Type="Struct">
-            <Field Type="ULARGE_INTEGER" 	Name="StartingOffset" />
-            <Field Type="ULARGE_INTEGER" 	Name="Length" />
-        </Variable>
-        <Variable Name="PHTTP_BYTE_RANGE" Type="Pointer" Base="HTTP_BYTE_RANGE" />
-
         <!-- HTTP_LOG_DATA_TYPE -->
         <Variable Name="HTTP_LOG_DATA_TYPE" Type="Alias" Base="UINT">
             <Enum>
@@ -58,8 +111,6 @@
         </Variable>
         <Variable Name="PHTTP_LOG_DATA" Type="Pointer" Base="HTTP_LOG_DATA" />
         
-        <Variable Name="PHTTP_SSL_CLIENT_CERT_INFO"      Type="Alias" Base="LPVOID" />
-       
         <!-- HTTP_SERVICE_CONFIG_ID -->
         <Variable Name="HTTP_SERVICE_CONFIG_ID" Type="Alias" Base="UINT">
             <Enum>
@@ -95,7 +146,217 @@
                 <Set Name="HTTP_INITIALIZE_CONFIG"  Value="0x00000002" />
             </Flag>
         </Variable>
-        
+
+        <!-- [HTTP_REQUEST_FLAG] -->
+        <Variable Name="[HTTP_REQUEST_FLAG]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="HTTP_REQUEST_FLAG_MORE_ENTITY_BODY_EXISTS"   Value="0x00000001" />
+                <Set Name="HTTP_REQUEST_FLAG_IP_ROUTED"                 Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <!-- HTTP_VERSION -->
+        <Variable Name="HTTP_VERSION" Type="Struct">
+            <Field Type="USHORT"    Name="MajorVersion" />
+            <Field Type="USHORT"    Name="MinorVersion" />
+        </Variable>
+
+        <!-- HTTP_VERB -->
+        <Variable Name="HTTP_VERB" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="HttpVerbUnparsed"        Value="0" />
+                <Set Name="HttpVerbUnknown"         Value="1" />
+                <Set Name="HttpVerbInvalid"         Value="2" />
+                <Set Name="HttpVerbOPTIONS"         Value="3" />
+                <Set Name="HttpVerbGET"             Value="4" />
+                <Set Name="HttpVerbHEAD"            Value="5" />
+                <Set Name="HttpVerbPOST"            Value="6" />
+                <Set Name="HttpVerbPUT"             Value="7" />
+                <Set Name="HttpVerbDELETE"          Value="8" />
+                <Set Name="HttpVerbTRACE"           Value="9" />
+                <Set Name="HttpVerbCONNECT"         Value="10" />
+                <Set Name="HttpVerbTRACK"           Value="11" />
+                <Set Name="HttpVerbMOVE"            Value="12" />
+                <Set Name="HttpVerbCOPY"            Value="13" />
+                <Set Name="HttpVerbPROPFIND"        Value="14" />
+                <Set Name="HttpVerbPROPPATCH"       Value="15" />
+                <Set Name="HttpVerbMKCOL"           Value="16" />
+                <Set Name="HttpVerbLOCK"            Value="17" />
+                <Set Name="HttpVerbUNLOCK"          Value="18" />
+                <Set Name="HttpVerbSEARCH"          Value="19" />
+            </Enum>
+        </Variable>
+
+        <!-- HTTP_COOKED_URL -->
+        <Variable Name="HTTP_COOKED_URL" Type="Struct">
+            <Field Type="USHORT"    Name="FullUrlLength" />
+            <Field Type="USHORT"    Name="HostLength" />
+            <Field Type="USHORT"    Name="AbsPathLength" />
+            <Field Type="USHORT"    Name="QueryStringLength" />
+            <Field Type="PCWSTR"    Name="pFullUrl" />
+            <Field Type="PCWSTR"    Name="pHost" />
+            <Field Type="PCWSTR"    Name="pAbsPath" />
+            <Field Type="PCWSTR"    Name="pQueryString" />
+        </Variable>
+
+        <!-- HTTP_TRANSPORT_ADDRESS -->
+        <Variable Name="HTTP_TRANSPORT_ADDRESS" Type="Struct">
+            <Field Type="PSOCKADDR"     Name="pRemoteAddress" />
+            <Field Type="PSOCKADDR"     Name="pLocalAddress" />
+        </Variable>
+
+        <!-- HTTP_UNKNOWN_HEADER -->
+        <Variable Name="HTTP_UNKNOWN_HEADER" Type="Struct">
+            <Field Type="USHORT"    Name="NameLength" />
+            <Field Type="USHORT"    Name="RawValueLength" />
+            <Field Type="PCSTR"     Name="pName" />
+            <Field Type="PCSTR"     Name="pRawValue" />
+        </Variable>
+        <Variable Name="PHTTP_UNKNOWN_HEADER" Type="Pointer" Base="HTTP_UNKNOWN_HEADER"/>
+
+        <!-- HTTP_KNOWN_HEADER -->
+        <Variable Name="HTTP_KNOWN_HEADER" Type="Struct">
+            <Field Type="USHORT"    Name="RawValueLength" />
+            <Field Type="PCSTR"     Name="pRawValue" />
+        </Variable>
+        <Variable Name="PHTTP_KNOWN_HEADER" Type="Pointer" Base="HTTP_KNOWN_HEADER"/>
+        <Variable Name="HTTP_KNOWN_HEADER [HttpHeaderRequestMaximum]"   Type="Array" Base="HTTP_KNOWN_HEADER" Count="41" />
+        <Variable Name="HTTP_KNOWN_HEADER [HttpHeaderResponseMaximum]"  Type="Array" Base="HTTP_KNOWN_HEADER" Count="30" />
+
+        <!-- HTTP_REQUEST_HEADERS -->
+        <Variable Name="HTTP_REQUEST_HEADERS" Type="Struct">
+            <Field Type="USHORT"                                        Name="UnknownHeaderCount" />
+            <Field Type="PHTTP_UNKNOWN_HEADER"                          Name="pUnknownHeaders" Count="UnknownHeaderCount" />
+            <Field Type="USHORT"                                        Name="TrailerCount" />
+            <Field Type="PHTTP_UNKNOWN_HEADER"                          Name="pTrailers" Count="TrailerCount" />
+            <Field Type="HTTP_KNOWN_HEADER [HttpHeaderRequestMaximum]"  Name="KnownHeaders" />
+        </Variable>
+
+        <!-- HTTP_SSL_CLIENT_CERT_INFO -->
+        <Variable Name="HTTP_SSL_CLIENT_CERT_INFO" Type="Struct">
+            <Field Type="[CERT_TRUST_Error]"    Name="CertFlags" Display="ULONG" />
+            <Field Type="ULONG"                 Name="CertEncodedSize" />
+            <Field Type="PUCHAR"                Name="pCertEncoded" />
+            <Field Type="HANDLE"                Name="Token" />
+            <Field Type="BOOLEAN"               Name="CertDeniedByMapper" />
+        </Variable>
+        <Variable Name="PHTTP_SSL_CLIENT_CERT_INFO" Type="Pointer" Base="HTTP_SSL_CLIENT_CERT_INFO" />
+
+        <!-- HTTP_SSL_INFO -->
+        <Variable Name="HTTP_SSL_INFO" Type="Struct">
+            <Field Type="USHORT"                        Name="ServerCertKeySize" />
+            <Field Type="USHORT"                        Name="ConnectionKeySize" />
+            <Field Type="ULONG"                         Name="ServerCertIssuerSize" />
+            <Field Type="ULONG"                         Name="ServerCertSubjectSize" />
+            <Field Type="PCSTR"                         Name="pServerCertIssuer" />
+            <Field Type="PCSTR"                         Name="pServerCertSubject" />
+            <Field Type="PHTTP_SSL_CLIENT_CERT_INFO"    Name="pClientCertInfo" />
+            <Field Type="ULONG"                         Name="SslClientCertNegotiated" />
+        </Variable>
+        <Variable Name="PHTTP_SSL_INFO" Type="Pointer" Base="HTTP_SSL_INFO"/>
+
+        <!-- HTTP_REQUEST_V1 -->
+        <Variable Name="HTTP_REQUEST_V1" Type="Struct">
+            <Field Type="[HTTP_REQUEST_FLAG]"       Name="Flags" />
+            <Field Type="HTTP_CONNECTION_ID"        Name="ConnectionId" />
+            <Field Type="HTTP_REQUEST_ID"           Name="RequestId" />
+            <Field Type="HTTP_URL_CONTEXT"          Name="UrlContext" />
+            <Field Type="HTTP_VERSION"              Name="Version" />
+            <Field Type="HTTP_VERB"                 Name="Verb" />
+            <Field Type="USHORT"                    Name="UnknownVerbLength" />
+            <Field Type="USHORT"                    Name="RawUrlLength" />
+            <Field Type="PCSTR"                     Name="pUnknownVerb" />
+            <Field Type="PCSTR"                     Name="pRawUrl" />
+            <Field Type="HTTP_COOKED_URL"           Name="CookedUrl" />
+            <Field Type="HTTP_TRANSPORT_ADDRESS"    Name="Address" />
+            <Field Type="HTTP_REQUEST_HEADERS"      Name="Headers" />
+            <Field Type="ULONGLONG"                 Name="BytesReceived" />
+            <Field Type="USHORT"                    Name="EntityChunkCount" />
+            <Field Type="PHTTP_DATA_CHUNK"          Name="pEntityChunks" Count="EntityChunkCount" />
+            <Field Type="HTTP_RAW_CONNECTION_ID"    Name="RawConnectionId" />
+            <Field Type="PHTTP_SSL_INFO"            Name="pSslInfo" />
+        </Variable>
+
+        <!-- HTTP_REQUEST_INFO_TYPE -->
+        <Variable Name="HTTP_REQUEST_INFO_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="HttpRequestInfoTypeAuth"         Value="0" />
+                <Set Name="HttpRequestInfoTypeChannelBind"  Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- HTTP_REQUEST_INFO -->
+        <Variable Name="HTTP_REQUEST_INFO" Type="Struct">
+            <Field Type="HTTP_REQUEST_INFO_TYPE"    Name="InfoType" />
+            <Field Type="ULONG"                     Name="InfoLength" />
+            <Field Type="PVOID"                     Name="pInfo" Length="InfoLength" />
+        </Variable>
+        <Variable Name="PHTTP_REQUEST_INFO" Type="Pointer" Base="HTTP_REQUEST_INFO"/>
+
+        <!-- HTTP_REQUEST -->
+        <Variable Name="HTTP_REQUEST" Type="Struct">
+            <Field Type="HTTP_REQUEST_V1"       Name="" />
+            <Field Type="USHORT"                Name="RequestInfoCount" />
+            <Field Type="PHTTP_REQUEST_INFO"    Name="pRequestInfo" Count="RequestInfoCount" />
+        </Variable>
+        <Variable Name="PHTTP_REQUEST" Type="Pointer" Base="HTTP_REQUEST" />
+
+        <!-- [HTTP_RESPONSE_FLAG] -->
+        <Variable Name="[HTTP_RESPONSE_FLAG]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="HTTP_RESPONSE_FLAG_MULTIPLE_ENCODINGS_AVAILABLE" Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- HTTP_RESPONSE_HEADERS -->
+        <Variable Name="HTTP_RESPONSE_HEADERS" Type="Struct">
+            <Field Type="USHORT"                                            Name="UnknownHeaderCount" />
+            <Field Type="PHTTP_UNKNOWN_HEADER"                              Name="pUnknownHeaders" Count="UnknownHeaderCount" />
+            <Field Type="USHORT"                                            Name="TrailerCount" />
+            <Field Type="PHTTP_UNKNOWN_HEADER"                              Name="pTrailers" Count="TrailerCount" />
+            <Field Type="HTTP_KNOWN_HEADER [HttpHeaderResponseMaximum]"     Name="KnownHeaders" />
+        </Variable>
+
+        <!-- HTTP_RESPONSE_V1 -->
+        <Variable Name="HTTP_RESPONSE_V1" Type="Struct">
+            <Field Type="[HTTP_RESPONSE_FLAG]"      Name="Flags" />
+            <Field Type="HTTP_VERSION"              Name="Version" />
+            <Field Type="USHORT"                    Name="StatusCode" />
+            <Field Type="USHORT"                    Name="ReasonLength" />
+            <Field Type="PCSTR"                     Name="pReason" />
+            <Field Type="HTTP_RESPONSE_HEADERS"     Name="Headers" />
+            <Field Type="USHORT"                    Name="EntityChunkCount" />
+            <Field Type="PHTTP_DATA_CHUNK"          Name="pEntityChunks" Count="EntityChunkCount" />
+        </Variable>
+
+        <!-- HTTP_RESPONSE_INFO_TYPE -->
+        <Variable Name="HTTP_RESPONSE_INFO_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="HttpResponseInfoTypeMultipleKnownHeaders"    Value="0" />
+                <Set Name="HttpResponseInfoTypeAuthenticationProperty"  Value="1" />
+                <Set Name="HttpResponseInfoTypeQoSProperty"             Value="2" />
+                <Set Name="HttpResponseInfoTypeChannelBind"             Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- HTTP_RESPONSE_INFO -->
+        <Variable Name="HTTP_RESPONSE_INFO" Type="Struct">
+            <Field Type="HTTP_RESPONSE_INFO_TYPE"   Name="Type" />
+            <Field Type="ULONG"                     Name="Length" />
+            <Field Type="PVOID"                     Name="pInfo" Length="Length" />
+        </Variable>
+        <Variable Name="PHTTP_RESPONSE_INFO" Type="Pointer" Base="HTTP_RESPONSE_INFO" />
+
+        <!-- HTTP_RESPONSE -->
+        <Variable Name="HTTP_RESPONSE" Type="Struct">
+            <Field Type="HTTP_RESPONSE_V1"      Name="" />
+            <Field Type="USHORT"                Name="ResponseInfoCount" />
+            <Field Type="PHTTP_RESPONSE_INFO"   Name="pResponseInfo" Count="ResponseInfoCount" />
+        </Variable>
+        <Variable Name="PHTTP_RESPONSE" Type="Pointer" Base="HTTP_RESPONSE" />
+
         <!-- HTTP Server API -->
         <Category Name="Networking/Network Protocols/HTTP Server API/Version 1.0/General" />
         <Api Name="HttpCreateHttpHandle">

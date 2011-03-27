@@ -8,11 +8,37 @@
     <Include Filename="Headers\sockets.h.xml" />
     
     <Module Name="Mswsock.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        
         <!-- Variables -->
         <Variable Name="LPSERVICE_CALLBACK_PROC" Type="Alias" Base="LPVOID" />
-        
-        <!-- TODO: Structures -->
-        <Variable Name="LPSERVICE_ADDRESSES" Type="Alias" Base="LPVOID" />
+
+        <!-- [SERVICE_ADDRESS_FLAG] -->
+        <Variable Name="[SERVICE_ADDRESS_FLAG]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="SERVICE_ADDRESS_FLAG_RPC_CN"     Value="0x00000001" />
+                <Set Name="SERVICE_ADDRESS_FLAG_RPC_DG"     Value="0x00000002" />
+                <Set Name="SERVICE_ADDRESS_FLAG_RPC_NB"     Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <!-- SERVICE_ADDRESS -->
+        <Variable Name="SERVICE_ADDRESS" Type="Struct">
+            <Field Type="[AddressFamily]"           Name="dwAddressType" Display="DWORD"  />
+            <Field Type="[SERVICE_ADDRESS_FLAG]"    Name="dwAddressFlags"  />
+            <Field Type="DWORD"                     Name="dwAddressLength"  />
+            <Field Type="DWORD"                     Name="dwPrincipalLength"  />
+            <Field Type="BYTE*"                     Name="lpAddress" Length="dwAddressLength"  />
+            <Field Type="BYTE*"                     Name="lpPrincipal" Length="dwPrincipalLength"  />
+        </Variable>
+        <Variable Name="SERVICE_ADDRESS [1]" Type="Array" Base="SERVICE_ADDRESS" Count="1" />
+
+        <!-- SERVICE_ADDRESSES -->
+        <Variable Name="SERVICE_ADDRESSES" Type="Struct">
+            <Field Type="DWORD"                 Name="dwAddressCount"  />
+            <Field Type="SERVICE_ADDRESS [1]"   Name="Addresses" Count="dwAddressCount"  />
+        </Variable>
+        <Variable Name="LPSERVICE_ADDRESSES" Type="Pointer" Base="SERVICE_ADDRESSES" />
 
         <!-- SERVICE_ASYNC_INFO -->
         <Variable Name="SERVICE_ASYNC_INFO" Type="Struct">

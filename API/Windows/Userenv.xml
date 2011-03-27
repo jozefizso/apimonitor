@@ -8,16 +8,54 @@
     <Include Filename="Headers\security.h.xml" />
     
     <Module Name="Userenv.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        
         <!-- Variables -->
         <Variable Name="IWbemServices"              Type="Interface" />
         <Variable Name="IWbemClassObject*"          Type="Interface" />
         <Variable Name="REFGPEXTENSIONID"           Type="Alias"    Base="GUID*" />
         <Variable Name="ASYNCCOMPLETIONHANDLE"      Type="Alias"    Base="UINT_PTR" />
         <Variable Name="PRSOPTOKEN"                 Type="Alias"    Base="PVOID" />
+        <Variable Name="TCHAR [50]"                 Type="Array"    Base="TCHAR" Count="50" />
 
-        <!-- TODO: Structures -->
-        <Variable Name="PGROUP_POLICY_OBJECT"       Type="Alias"    Base="LPVOID" />
-        <Variable Name="PGROUP_POLICY_OBJECT*"      Type="Pointer"  Base="PGROUP_POLICY_OBJECT" />
+        <!-- GPO_LINK -->
+        <Variable Name="GPO_LINK" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="GPLinkUnknown"               Value="0" />
+                <Set Name="GPLinkMachine"               Value="1" />
+                <Set Name="GPLinkSite"                  Value="2" />
+                <Set Name="GPLinkDomain"                Value="3" />
+                <Set Name="GPLinkOrganizationalUnit"    Value="4" />
+            </Enum>
+        </Variable>
+
+        <!-- [GPO_FLAG] -->
+        <Variable Name="[GPO_FLAG]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="GPO_FLAG_DISABLE"    Value="0x00000001" />
+                <Set Name="GPO_FLAG_FORCE"      Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <!-- GROUP_POLICY_OBJECT -->
+        <Variable Name="GROUP_POLICY_OBJECT" Type="Struct">
+            <Field Type="[GPO_FLAG]"            Name="dwOptions" />
+            <Field Type="DWORD"                 Name="dwVersion" />
+            <Field Type="LPTSTR"                Name="lpDSPath" />
+            <Field Type="LPTSTR"                Name="lpFileSysPath" />
+            <Field Type="LPTSTR"                Name="lpDisplayName" />
+            <Field Type="TCHAR [50]"            Name="szGPOName" />
+            <Field Type="GPO_LINK"              Name="GPOLink" />
+            <Field Type="LPARAM"                Name="lParam" />
+            <!-- TODO: Self-Referencing - pNext and pPrev are GROUP_POLICY_OBJECT* -->
+            <Field Type="LPVOID"                Name="pNext" Display="GROUP_POLICY_OBJECT*" />
+            <Field Type="LPVOID"                Name="pPrev" Display="GROUP_POLICY_OBJECT*" />
+            <Field Type="LPTSTR"                Name="lpExtensions" />
+            <Field Type="LPARAM"                Name="lParam2" />
+            <Field Type="LPTSTR"                Name="lpLink" />
+        </Variable>
+        <Variable Name="PGROUP_POLICY_OBJECT"   Type="Pointer" Base="GROUP_POLICY_OBJECT" />
+        <Variable Name="PGROUP_POLICY_OBJECT*"  Type="Pointer" Base="PGROUP_POLICY_OBJECT" />
 
         <!-- SETTINGSTATUS -->
         <Variable Name="SETTINGSTATUS" Type="Alias" Base="UINT">

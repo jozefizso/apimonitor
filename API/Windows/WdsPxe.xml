@@ -8,7 +8,9 @@
     <Include Filename="Headers\registry.h.xml" />
 
     <Module Name="WdsPxe.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        
         <!-- Variables -->
+        <Variable Name="BYTE [PXE_MAX_ADDRESS]" Type="Array" Base="BYTE" Count="16" />
 
         <!-- PXE_PROVIDER -->
         <Variable Name="PXE_PROVIDER" Type="Struct">
@@ -21,9 +23,34 @@
         <Variable Name="PPXE_PROVIDER"  Type="Pointer" Base="PXE_PROVIDER" />
         <Variable Name="PPXE_PROVIDER*" Type="Pointer" Base="PPXE_PROVIDER" />
 
-        <!-- TODO: Structures -->
-        <Variable Name="PXE_ADDRESS*"   Type="Alias"    Base="LPVOID" />
+        <!-- [PXE_ADDRESS_u] -->
+        <Variable Name="[PXE_ADDRESS_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="BYTE [PXE_MAX_ADDRESS]"    Name="bAddress" />
+            <Field Type="ULONG"                     Name="uIpAddress" />
+        </Variable>
 
+        <!-- [PXE_ADDR_FLAGS] -->
+        <Variable Name="[PXE_ADDR_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="PXE_ADDR_BROADCAST"          Value="0x0001" />
+                <Set Name="PXE_ADDR_USE_PORT"           Value="0x0002" />
+                <Set Name="PXE_ADDR_USE_ADDR"           Value="0x0004" />
+                <Set Name="PXE_ADDR_USE_DHCP_RULES"     Value="0x0008" />
+            </Flag>
+        </Variable>
+
+        <!-- PXE_ADDRESS -->
+        <Variable Name="PXE_ADDRESS" Type="Struct">
+            <Field Type="[PXE_ADDR_FLAGS]"  Name="uFlags" />
+            <Field Type="[PXE_ADDRESS_u]"   Name="" />
+            <Field Type="ULONG"             Name="uAddrLen" />
+            <Field Type="USHORT"            Name="uPort" />
+        </Variable>
+        <Variable Name="PXE_ADDRESS*" Type="Pointer" Base="PXE_ADDRESS" />
+
+        <!-- PXE_BOOT_ACTION -->
         <Variable Name="PXE_BOOT_ACTION" Type="Alias" Base="ULONG">
             <Enum>
                 <Set Name="PXE_BA_NBP"          Value="1" />
@@ -33,6 +60,7 @@
             </Enum>
         </Variable>
 
+        <!-- PXE_SEVERITY -->
         <Variable Name="PXE_SEVERITY" Type="Alias" Base="ULONG">
             <Enum>
                 <Set Name="PXE_TRACE_VERBOSE"   Value="0x00010000" />
@@ -43,12 +71,14 @@
             </Enum>
         </Variable>
 
+        <!-- PXE_GSI_TYPE -->
         <Variable Name="PXE_GSI_TYPE" Type="Alias" Base="ULONG">
             <Enum>
                 <Set Name="PXE_GSI_TRACE_ENABLED" Value="1" />
             </Enum>
         </Variable>
 
+        <!-- PXE_REG_INDEX -->
         <Variable Name="PXE_REG_INDEX" Type="Alias" Base="ULONG">
             <Enum>
                 <Set Name="PXE_REG_INDEX_TOP"       Value="0" />
@@ -56,12 +86,14 @@
             </Enum>
         </Variable>
 
+        <!-- PXE_PROVIDER_ATTRIBUTE -->
         <Variable Name="PXE_PROVIDER_ATTRIBUTE" Type="Alias" Base="ULONG">
             <Enum>
                 <Set Name="PXE_PROV_ATTR_FILTER" Value="0" />
             </Enum>
         </Variable>
 
+        <!-- PXE_CALLBACK_TYPE -->
         <Variable Name="PXE_CALLBACK_TYPE" Type="Alias" Base="ULONG">
             <Enum>
                 <Set Name="PXE_CALLBACK_RECV_REQUEST"       Value="0" />
@@ -76,7 +108,7 @@
             <Param Type="HANDLE" Name="hClientRequest" />
             <Param Type="PXE_BOOT_ACTION" Name="Action" />
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PxeDhcpAppendOption">
             <Param Type="PVOID" Name="pReplyPacket" />
@@ -86,7 +118,7 @@
             <Param Type="BYTE" Name="bOptionLen" />
             <Param Type="PVOID" Name="pValue" />
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PxeDhcpGetOptionValue">
             <Param Type="PVOID" Name="pPacket" />
@@ -96,7 +128,7 @@
             <Param Type="PBYTE" Name="pbOptionLen" />
             <Param Type="PVOID*" Name="ppOptionValue" />
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PxeDhcpGetVendorOptionValue">
             <Param Type="PVOID" Name="pPacket" />
@@ -106,7 +138,7 @@
             <Param Type="PBYTE" Name="pbOptionLen" />
             <Param Type="PVOID*" Name="ppOptionValue" />
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PxeDhcpInitialize">
             <Param Type="PVOID" Name="pRecvPacket" />
@@ -115,7 +147,7 @@
             <Param Type="ULONG" Name="uMaxReplyPacketLen" />
             <Param Type="PULONG" Name="puReplyPacketLen" />
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PxeDhcpIsValid">
             <Param Type="PVOID" Name="pPacket" />
@@ -123,14 +155,14 @@
             <Param Type="BOOL" Name="bRequestPacket" />
             <Param Type="PBOOL" Name="pbPxeOptionPresent" />
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PxeGetServerInfo">
             <Param Type="PXE_GSI_TYPE" Name="uInfoType" />
             <Param Type="PVOID" Name="pBuffer" />
             <Param Type="ULONG" Name="uBufferLen" />
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PxePacketAllocate">
             <Param Type="HANDLE" Name="hProvider" />
@@ -145,41 +177,41 @@
             <Param Type="ULONG" Name="uPacketLen" />
             <Param Type="PXE_ADDRESS*" Name="pAddress" />
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PxePacketFree">
             <Param Type="HANDLE" Name="hProvider" />
             <Param Type="HANDLE" Name="hClientRequest" />
             <Param Type="PVOID" Name="pPacket" />
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PxeProviderEnumClose">
             <Param Type="HANDLE" Name="hEnum" />
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PxeProviderEnumFirst">
             <Param Type="HANDLE*" Name="phEnum" />
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PxeProviderEnumNext">
             <Param Type="HANDLE" Name="hEnum" />
             <Param Type="PPXE_PROVIDER*" Name="ppProvider" />
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PxeProviderFreeInfo">
             <Param Type="PPXE_PROVIDER" Name="pProvider" />
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PxeProviderQueryIndex">
             <Param Type="LPCWSTR" Name="pszProviderName" />
             <Param Type="PULONG" Name="puIndex" />
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PxeProviderRegister">
             <Param Type="LPCWSTR" Name="pszProviderName" />
@@ -188,7 +220,7 @@
             <Param Type="BOOL" Name="bIsCritical" />
             <Param Type="PHKEY" Name="phProviderKey" />
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PxeProviderSetAttribute">
             <Param Type="HANDLE" Name="hProvider" />
@@ -196,12 +228,12 @@
             <Param Type="PVOID" Name="pParameterBuffer" Length="uParamLen" />
             <Param Type="ULONG" Name="uParamLen" />
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PxeProviderUnRegister">
             <Param Type="LPCWSTR" Name="pszProviderName" />
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PxeRegisterCallback">
             <Param Type="HANDLE" Name="hProvider" />
@@ -209,17 +241,14 @@
             <Param Type="PVOID" Name="pCallbackFunction" />
             <Param Type="PVOID" Name="pContext" />
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
-        <!-- TODO: Variable Arguments are NOT Supported, Yet
-    <Api Name="PxeTrace">
-        <Param Type="HANDLE" Name="hProvider" />
-        <Param Type="PXE_SEVERITY" Name="Severity" />
-        <Param Type="LPCWSTR" Name="pszFormat" />
-        <Param Type="..." />
-        <Return Type="DWORD" />
-        <Success Return="NotEqual" Value="0" />
-    </Api>
-    -->
+        <Api Name="PxeTrace" VarArgs="True">
+            <Param Type="HANDLE" Name="hProvider" />
+            <Param Type="PXE_SEVERITY" Name="Severity" />
+            <Param Type="LPCWSTR" Name="pszFormat" />
+            <Return Type="DWORD" />
+            <Success Return="Equal" Value="0" />
+        </Api>
     </Module>
 </ApiMonitor>

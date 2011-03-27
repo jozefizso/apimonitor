@@ -9,10 +9,33 @@
     <Module Name="Ntdsapi.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         
         <!-- Variables -->
-        <Variable Name="LPCWCH*" Type="Alias" Base="WCHAR**" />
-        
-        <!-- TODO: Structures -->
-        <Variable Name="const PSCHEDULE" Type="Alias" Base="LPVOID" />
+        <Variable Name="LPCWCH*"                Type="Alias"    Base="WCHAR**" />
+
+        <!-- [ScheduleType] -->
+        <Variable Name="[ScheduleType]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="SCHEDULE_INTERVAL"       Value="0" />
+                <Set Name="SCHEDULE_BANDWIDTH"      Value="1" />
+                <Set Name="SCHEDULE_PRIORITY"       Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- SCHEDULE_HEADER -->
+        <Variable Name="SCHEDULE_HEADER" Type="Struct">
+            <Field Type="[ScheduleType]"    Name="Type" />
+            <Field Type="ULONG"             Name="Offset" />
+        </Variable>
+        <Variable Name="SCHEDULE_HEADER [1]" Type="Array" Base="SCHEDULE_HEADER" Count="1" />
+
+        <!-- SCHEDULE -->
+        <Variable Name="SCHEDULE" Type="Struct">
+            <Field Type="ULONG"                 Name="Size" />
+            <Field Type="ULONG"                 Name="Bandwidth" />
+            <Field Type="ULONG"                 Name="NumberOfSchedules" />
+            <Field Type="SCHEDULE_HEADER [1]"   Name="Schedules" Count="NumberOfSchedules" />
+        </Variable>
+        <Variable Name="const PSCHEDULE" Type="Pointer" Base="SCHEDULE" />
 
         <!-- DS_NAME_RESULT_ITEM -->
         <Variable Name="DS_NAME_RESULT_ITEM" Type="Struct">

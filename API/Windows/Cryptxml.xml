@@ -7,10 +7,6 @@
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\cryptography.h.xml" />
     <Module Name="Cryptxml.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        
-        <!-- TODO: Structures -->
-        <Variable Name="CRYPT_XML_KEY_VALUE*"       Type="Alias" Base="LPVOID" />
-        <Variable Name="CRYPT_XML_KEY_INFO_ITEM*"   Type="Alias" Base="LPVOID" />
 
         <!-- Variables -->
         <Variable Name="HCRYPTXML"                              Type="Alias"   Base="LPVOID" />
@@ -20,6 +16,13 @@
         <Variable Name="PFN_CRYPT_XML_WRITE_CALLBACK"           Type="Alias"   Base="LPVOID" />
         <Variable Name="PFN_CRYPT_XML_CREATE_TRANSFORM"         Type="Alias"   Base="LPVOID" />
 
+        <!-- CRYPT_XML_DATA_BLOB -->
+        <Variable Name="CRYPT_XML_DATA_BLOB" Type="Struct">
+            <Field Type="ULONG"     Name="cbData" />
+            <Field Type="BYTE*"     Name="pbData" Length="cbData" />
+        </Variable>
+
+        <!-- CRYPT_XML_CHARSET -->
         <Variable Name="CRYPT_XML_CHARSET" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="CRYPT_XML_CHARSET_AUTO"      Value="0" />
@@ -38,6 +41,130 @@
         <Variable Name="const PCRYPT_XML_BLOB"  Type="Pointer" Base="CRYPT_XML_BLOB" />
         <Variable Name="const CRYPT_XML_BLOB*"  Type="Pointer" Base="CRYPT_XML_BLOB" />
         <Variable Name="CRYPT_XML_BLOB*"        Type="Pointer" Base="CRYPT_XML_BLOB" />
+
+        <!-- [CRYPT_XML_KEY_VALUE_TYPE] -->
+        <Variable Name="[CRYPT_XML_KEY_VALUE_TYPE]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="CRYPT_XML_KEY_VALUE_TYPE_DSA"        Value="0x00000001" />
+                <Set Name="CRYPT_XML_KEY_VALUE_TYPE_RSA"        Value="0x00000002" />
+                <Set Name="CRYPT_XML_KEY_VALUE_TYPE_ECDSA"      Value="0x00000003" />
+                <Set Name="CRYPT_XML_KEY_VALUE_TYPE_CUSTOM"     Value="0x00000004" />
+            </Enum>
+        </Variable>
+        
+        <!-- CRYPT_XML_KEY_DSA_KEY_VALUE -->
+        <Variable Name="CRYPT_XML_KEY_DSA_KEY_VALUE" Type="Struct">
+            <Field Type="CRYPT_XML_DATA_BLOB"       Name="P" />
+            <Field Type="CRYPT_XML_DATA_BLOB"       Name="Q" />
+            <Field Type="CRYPT_XML_DATA_BLOB"       Name="G" />
+            <Field Type="CRYPT_XML_DATA_BLOB"       Name="Y" />
+            <Field Type="CRYPT_XML_DATA_BLOB"       Name="J" />
+            <Field Type="CRYPT_XML_DATA_BLOB"       Name="Seed" />
+            <Field Type="CRYPT_XML_DATA_BLOB"       Name="Counter" />
+        </Variable>
+
+        <!-- CRYPT_XML_KEY_RSA_KEY_VALUE -->
+        <Variable Name="CRYPT_XML_KEY_RSA_KEY_VALUE" Type="Struct">
+            <Field Type="CRYPT_XML_DATA_BLOB"       Name="Modulus" />
+            <Field Type="CRYPT_XML_DATA_BLOB"       Name="Exponent" />
+        </Variable>
+
+        <!-- CRYPT_XML_KEY_ECDSA_KEY_VALUE -->
+        <Variable Name="CRYPT_XML_KEY_ECDSA_KEY_VALUE" Type="Struct">
+            <Field Type="LPCWSTR"                   Name="wszNamedCurve" />
+            <Field Type="CRYPT_XML_DATA_BLOB"       Name="X" />
+            <Field Type="CRYPT_XML_DATA_BLOB"       Name="Y" />
+            <Field Type="CRYPT_XML_BLOB"            Name="ExplicitPara" />
+        </Variable>
+
+        <!-- [CRYPT_XML_KEY_VALUE_u] -->
+        <Variable Name="[CRYPT_XML_KEY_VALUE_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="CRYPT_XML_KEY_DSA_KEY_VALUE"       Name="DSAKeyValue" />
+            <Field Type="CRYPT_XML_KEY_RSA_KEY_VALUE"       Name="RSAKeyValue" />
+            <Field Type="CRYPT_XML_KEY_ECDSA_KEY_VALUE"     Name="ECDSAKeyValue" />
+            <Field Type="CRYPT_XML_BLOB"                    Name="Custom" />
+        </Variable>
+
+        <!-- CRYPT_XML_KEY_VALUE -->
+        <Variable Name="CRYPT_XML_KEY_VALUE" Type="Struct">
+            <Field Type="[CRYPT_XML_KEY_VALUE_TYPE]"    Name="dwType" />
+            <Field Type="[CRYPT_XML_KEY_VALUE_u]"       Name="" />
+        </Variable>
+        <Variable Name="CRYPT_XML_KEY_VALUE*" Type="Pointer" Base="CRYPT_XML_KEY_VALUE" />
+        
+        <!-- [CRYPT_XML_X509DATA_TYPE] -->
+        <Variable Name="[CRYPT_XML_X509DATA_TYPE]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="CRYPT_XML_X509DATA_TYPE_ISSUER_SERIAL"   Value="0x00000001" />
+                <Set Name="CRYPT_XML_X509DATA_TYPE_SKI"             Value="0x00000002" />
+                <Set Name="CRYPT_XML_X509DATA_TYPE_SUBJECT_NAME"    Value="0x00000003" />
+                <Set Name="CRYPT_XML_X509DATA_TYPE_CERTIFICATE"     Value="0x00000004" />
+                <Set Name="CRYPT_XML_X509DATA_TYPE_CRL"             Value="0x00000005" />
+                <Set Name="CRYPT_XML_X509DATA_TYPE_CUSTOM"          Value="0x00000006" />
+            </Enum>
+        </Variable>
+
+        <!-- CRYPT_XML_ISSUER_SERIAL -->
+        <Variable Name="CRYPT_XML_ISSUER_SERIAL" Type="Struct">
+            <Field Type="LPCWSTR"       Name="wszIssuer" />
+            <Field Type="LPCWSTR"       Name="wszSerial" />
+        </Variable>
+
+        <!-- [CRYPT_XML_X509DATA_ITEM_u] -->
+        <Variable Name="[CRYPT_XML_X509DATA_ITEM_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="CRYPT_XML_ISSUER_SERIAL"       Name="IssuerSerial" />
+            <Field Type="CRYPT_XML_DATA_BLOB"           Name="SKI" />
+            <Field Type="LPCWSTR"                       Name="wszSubjectName" />
+            <Field Type="CRYPT_XML_DATA_BLOB"           Name="Certificate" />
+            <Field Type="CRYPT_XML_DATA_BLOB"           Name="CRL" />
+            <Field Type="CRYPT_XML_BLOB"                Name="Custom" />
+        </Variable>
+
+        <!-- CRYPT_XML_X509DATA_ITEM -->
+        <Variable Name="CRYPT_XML_X509DATA_ITEM" Type="Struct">
+            <Field Type="[CRYPT_XML_X509DATA_TYPE]"     Name="dwType" />
+            <Field Type="[CRYPT_XML_X509DATA_ITEM_u]"   Name="" />
+        </Variable>
+        <Variable Name="CRYPT_XML_X509DATA_ITEM*" Type="Pointer" Base="CRYPT_XML_X509DATA_ITEM" />
+
+        <!-- CRYPT_XML_X509DATA -->
+        <Variable Name="CRYPT_XML_X509DATA" Type="Struct">
+            <Field Type="UINT"                          Name="cX509Data" />
+            <Field Type="CRYPT_XML_X509DATA_ITEM*"      Name="rgX509Data" Count="cX509Data" />
+        </Variable>
+
+        <!-- [CRYPT_XML_KEYINFO_TYPE] -->
+        <Variable Name="[CRYPT_XML_KEYINFO_TYPE]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="CRYPT_XML_KEYINFO_TYPE_KEYNAME"      Value="0x00000001" />
+                <Set Name="CRYPT_XML_KEYINFO_TYPE_KEYVALUE"     Value="0x00000002" />
+                <Set Name="CRYPT_XML_KEYINFO_TYPE_RETRIEVAL"    Value="0x00000003" />
+                <Set Name="CRYPT_XML_KEYINFO_TYPE_X509DATA"     Value="0x00000004" />
+                <Set Name="CRYPT_XML_KEYINFO_TYPE_CUSTOM"       Value="0x00000005" />
+            </Enum>
+        </Variable>
+
+        <!-- [CRYPT_XML_KEY_INFO_ITEM_u] -->
+        <Variable Name="[CRYPT_XML_KEY_INFO_ITEM_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="LPCWSTR"               Name="wszKeyName" />
+            <Field Type="CRYPT_XML_KEY_VALUE"   Name="KeyValue" />
+            <Field Type="CRYPT_XML_BLOB"        Name="RetrievalMethod" />
+            <Field Type="CRYPT_XML_X509DATA"    Name="X509Data" />
+            <Field Type="CRYPT_XML_BLOB"        Name="Custom" />
+        </Variable>
+
+        <!-- CRYPT_XML_KEY_INFO_ITEM -->
+        <Variable Name="CRYPT_XML_KEY_INFO_ITEM" Type="Struct">
+            <Field Type="[CRYPT_XML_KEYINFO_TYPE]"      Name="dwType" />
+            <Field Type="[CRYPT_XML_KEY_INFO_ITEM_u]"   Name="" />
+        </Variable>
+        <Variable Name="CRYPT_XML_KEY_INFO_ITEM*" Type="Pointer" Base="CRYPT_XML_KEY_INFO_ITEM" />
 
         <!-- CRYPT_XML_ALGORITHM -->
         <Variable Name="CRYPT_XML_ALGORITHM" Type="Struct">

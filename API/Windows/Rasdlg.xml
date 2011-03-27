@@ -6,12 +6,66 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Rasdlg.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        
         <!-- Variables -->
         <Variable Name="RASPBDLGFUNC" Type="Alias" Base="LPVOID" />
 
-        <!-- TODO: Structures -->
-        <Variable Name="LPRASENTRYDLG"      Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPRASMONITORDLG"    Type="Alias"    Base="LPVOID" />
+        <!-- [RASDDFLAG] -->
+        <Variable Name="[RASDDFLAG]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="RASDDFLAG_PositionDlg"       Value="0x00000001" />
+                <Set Name="RASDDFLAG_NoPrompt"          Value="0x00000002" />
+                <Set Name="RASDDFLAG_LinkFailure"       Value="0x80000000" />
+            </Flag>
+        </Variable>
+
+        <!-- RASENTRYDLG -->
+        <Variable Name="RASENTRYDLG" Type="Struct" Pack="4">
+            <Field Type="DWORD"                         Name="dwSize" />
+            <Field Type="HWND"                          Name="hwndOwner" />
+            <Field Type="[RASDDFLAG]"                   Name="dwFlags" />
+            <Field Type="LONG"                          Name="xDlg" />
+            <Field Type="LONG"                          Name="yDlg" />
+            <Field Type="TCHAR [RAS_MaxEntryName + 1]"  Name="szEntry" />
+            <Field Type="DWORD"                         Name="dwError" />
+            <Field Type="ULONG_PTR"                     Name="reserved" />
+            <Field Type="ULONG_PTR"                     Name="reserved2" />
+        </Variable>
+        <Variable Name="LPRASENTRYDLG" Type="Pointer" Base="RASENTRYDLG" />
+
+        <!-- [RASMDFLAG] -->
+        <Variable Name="[RASMDFLAG]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="RASMDFLAG_PositionDlg"       Value="0x00000001" />
+                <Set Name="RASMDFLAG_UpdateDefaults"    Value="0x80000000" />
+            </Flag>
+        </Variable>
+
+        <!-- [RASMDPAGE] -->
+        <Variable Name="[RASMDPAGE]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="RASMDPAGE_Status"        Value="0" />
+                <Set Name="RASMDPAGE_Summary"       Value="1" />
+                <Set Name="RASMDPAGE_Preferences"   Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- RASMONITORDLG -->
+        <Variable Name="RASMONITORDLG" Type="Struct" Pack="4">
+            <Field Type="DWORD"         Name="dwSize" />
+            <Field Type="HWND"          Name="hwndOwner" />
+            <Field Type="[RASMDFLAG]"   Name="dwFlags" />
+            <Field Type="[RASMDPAGE]"   Name="dwStartPage" />
+            <Field Type="LONG"          Name="xDlg" />
+            <Field Type="LONG"          Name="yDlg" />
+            <Field Type="DWORD"         Name="dwError" />
+            <Field Type="ULONG_PTR"     Name="reserved" />
+            <Field Type="ULONG_PTR"     Name="reserved2" />
+        </Variable>
+        <Variable Name="LPRASMONITORDLG" Type="Pointer" Base="RASMONITORDLG" />
 
         <!-- RASDIALDLG -->
         <Variable Name="RASDIALDLG" Type="Struct" Pack="4">

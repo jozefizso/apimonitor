@@ -210,12 +210,13 @@
         <Variable Name="IWebWizardExtension"		                Type="Interface" />
         <Variable Name="IWizardExtension"			                Type="Interface" />
         <Variable Name="IWizardSite"				                Type="Interface" />
+        <Variable Name="IServiceProvider"                           Type="Interface" />
+
         <!-- TODO: Need to define these -->
         <Variable Name="IObjectArray"                               Type="Interface" />
         <Variable Name="IEnumGUID"                                  Type="Interface" />
         <Variable Name="IPropertyChangeArray"                       Type="Interface" />
         <Variable Name="IXMLDOMDocument"                            Type="Interface" />
-        <Variable Name="IServiceProvider"                           Type="Interface" />
         <Variable Name="ICondition"                                 Type="Interface" />
         <Variable Name="IPropertyDescriptionList"                   Type="Interface" />
         <Variable Name="IPropertyStore"                             Type="Interface" />
@@ -246,38 +247,338 @@
         <Variable Name="SHCOLUMNID"                     Type="Alias"    Base="PROPERTYKEY" />
         <Variable Name="SHCOLUMNID*"                    Type="Pointer"  Base="SHCOLUMNID" />
         <Variable Name="const SHCOLUMNID*"              Type="Pointer"  Base="SHCOLUMNID" />
+        <Variable Name="BFFCALLBACK"                    Type="Alias"    Base="LPVOID" />
 
-        <!-- TODO: Structures -->
-        <Variable Name="PREVIEWHANDLERFRAMEINFO"            Type="Alias"    Base="LPVOID" />
-        <Variable Name="PREVIEWHANDLERFRAMEINFO*"           Type="Pointer"  Base="PREVIEWHANDLERFRAMEINFO" />
-        <Variable Name="PCIDLIST_ABSOLUTE"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="PCUIDLIST_RELATIVE"                 Type="Alias"    Base="LPVOID" />
-        <Variable Name="PCUITEMID_CHILD"                    Type="Alias"    Base="LPVOID" />
-        <Variable Name="PCUITEMID_CHILD*"                   Type="Pointer"  Base="PCUITEMID_CHILD" />
-        <Variable Name="PCUITEMID_CHILD_ARRAY"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="PCUITEMID_CHILD_ARRAY*"             Type="Pointer"  Base="PCUITEMID_CHILD_ARRAY" />
-        <Variable Name="PIDLIST_ABSOLUTE"                   Type="Alias"    Base="LPVOID" />
-        <Variable Name="PIDLIST_ABSOLUTE*"                  Type="Pointer"  Base="PIDLIST_ABSOLUTE" />
-        <Variable Name="PIDLIST_ABSOLUTE**"                 Type="Pointer"  Base="PIDLIST_ABSOLUTE*" />
-        <Variable Name="PIDLIST_RELATIVE"                   Type="Alias"    Base="LPVOID" />
-        <Variable Name="PIDLIST_RELATIVE*"                  Type="Pointer"  Base="PIDLIST_RELATIVE" />
-        <Variable Name="PITEMID_CHILD"                      Type="Alias"    Base="LPVOID" />
-        <Variable Name="PUITEMID_CHILD"                     Type="Alias"    Base="LPVOID" />
-        <Variable Name="PITEMID_CHILD*"                     Type="Pointer"  Base="PITEMID_CHILD" />
-        <Variable Name="SHELLDETAILS*"                      Type="Alias"    Base="LPVOID" />
-        <Variable Name="PERSIST_FOLDER_TARGET_INFO*"        Type="Alias"    Base="LPVOID" />
-        <Variable Name="const PERSIST_FOLDER_TARGET_INFO*"  Type="Alias"    Base="LPVOID" />
-        <Variable Name="const SHELL_ITEM_RESOURCE*"         Type="Alias"    Base="LPVOID" />
-        <Variable Name="CM_COLUMNINFO*"                     Type="Alias"    Base="LPVOID" />
-        <Variable Name="const CM_COLUMNINFO*"               Type="Alias"    Base="CM_COLUMNINFO*" />
-        <Variable Name="CATEGORY_INFO*"                     Type="Alias"    Base="LPVOID" />
-        <Variable Name="STRRET*"                            Type="Alias"    Base="LPVOID" />
-        <Variable Name="DESKBANDINFO*"                      Type="Alias"    Base="LPVOID" />
-        <Variable Name="EXTRASEARCH*"                       Type="Alias"    Base="LPVOID" />
-        <Variable Name="SHELL_ITEM_RESOURCE*"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPTHUMBBUTTON"                      Type="Alias"    Base="LPVOID" />
-        <Variable Name="struct in_addr"                     Type="Alias"    Base="u_long" />
-        <Variable Name="fd_set*"                            Type="Alias"    Base="LPVOID" />
+        <Variable Name="char [260]"                     Type="Array"    Base="char"  Count="260" />
+        <Variable Name="WCHAR [80]"                     Type="Array"    Base="WCHAR" Count="80" />
+        <Variable Name="WCHAR [260]"                    Type="Array"    Base="WCHAR" Count="260" />
+        <Variable Name="WCHAR [2084]"                   Type="Array"    Base="WCHAR" Count="2084" />
+
+        <!-- PREVIEWHANDLERFRAMEINFO -->
+        <Variable Name="PREVIEWHANDLERFRAMEINFO" Type="Struct">
+            <Field Type="HACCEL"    Name="haccel" />
+            <Field Type="UINT"      Name="cAccelEntries" />
+        </Variable>
+        <Variable Name="PREVIEWHANDLERFRAMEINFO*" Type="Pointer" Base="PREVIEWHANDLERFRAMEINFO" />
+
+        <!-- SHITEMID -->
+        <Variable Name="SHITEMID" Type="Struct" Pack="1">
+            <Field Type="USHORT"    Name="cb" />
+            <Field Type="BYTE"      Name="abID" Display="BYTE [1]" />
+        </Variable>
+        <Variable Name="LPSHITEMID" Type="Pointer" Base="SHITEMID" />
+
+        <!-- ITEMIDLIST -->
+        <Variable Name="ITEMIDLIST" Type="Struct" Pack="1">
+            <Field Type="SHITEMID"  Name="mkid" />
+        </Variable>
+        <Variable Name="LPCITEMIDLIST"              Type="Pointer" Base="ITEMIDLIST" />
+        <Variable Name="PIDLIST_ABSOLUTE"           Type="Pointer" Base="ITEMIDLIST" />
+        <Variable Name="PIDLIST_ABSOLUTE*"          Type="Pointer" Base="PIDLIST_ABSOLUTE" />
+        <Variable Name="PIDLIST_ABSOLUTE**"         Type="Pointer" Base="PIDLIST_ABSOLUTE*" />
+        <Variable Name="PCIDLIST_ABSOLUTE"          Type="Pointer" Base="ITEMIDLIST" />
+        <Variable Name="PIDLIST_RELATIVE"           Type="Pointer" Base="ITEMIDLIST" />
+        <Variable Name="PUIDLIST_RELATIVE"          Type="Pointer" Base="ITEMIDLIST" />
+        <Variable Name="PIDLIST_RELATIVE*"          Type="Pointer" Base="PIDLIST_RELATIVE" />
+        <Variable Name="PCUIDLIST_RELATIVE"         Type="Pointer" Base="ITEMIDLIST" />
+        <Variable Name="PUITEMID_CHILD"             Type="Pointer" Base="ITEMIDLIST" />
+        <Variable Name="PITEMID_CHILD"              Type="Pointer" Base="ITEMIDLIST" />
+        <Variable Name="PITEMID_CHILD*"             Type="Pointer" Base="PITEMID_CHILD" />
+        <Variable Name="PCUITEMID_CHILD"            Type="Pointer" Base="ITEMIDLIST" />
+        <Variable Name="PCUITEMID_CHILD*"           Type="Pointer" Base="PCUITEMID_CHILD" />
+        <Variable Name="PCUITEMID_CHILD_ARRAY"      Type="Pointer" Base="PCUITEMID_CHILD" />
+        <Variable Name="PCUITEMID_CHILD_ARRAY*"     Type="Pointer" Base="PCUITEMID_CHILD_ARRAY" />
+        <Variable Name="PCUIDLIST_RELATIVE_ARRAY"   Type="Pointer" Base="PCUIDLIST_RELATIVE" />
+        <Variable Name="PCIDLIST_ABSOLUTE_ARRAY"    Type="Pointer" Base="PCIDLIST_ABSOLUTE" />
+
+        <!-- STRRET_TYPE -->
+        <Variable Name="STRRET_TYPE" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Flag>
+                <Set Name="STRRET_WSTR"     Value="0" />
+                <Set Name="STRRET_OFFSET"   Value="0x1" />
+                <Set Name="STRRET_CSTR"     Value="0x2" />
+            </Flag>
+        </Variable>
+
+        <!-- [STRRET_u] -->
+        <Variable Name="[STRRET_u]" Type="Union" Pack="8">
+            <Display Name="union" />
+            <Field Type="LPWSTR"    Name="pOleStr" />
+            <Field Type="UINT"      Name="uOffset" />
+            <Field Type="char [260]" Name="cStr" />
+        </Variable>
+
+        <!-- STRRET -->
+        <Variable Name="STRRET" Type="Struct" Pack="8">
+            <Field Type="STRRET_TYPE"   Name="uType" />
+            <Field Type="[STRRET_u]"    Name="" />
+        </Variable>
+        <Variable Name="STRRET*" Type="Pointer" Base="STRRET" />
+
+        <!-- [SHELLDETAILS_fmt] -->
+        <Variable Name="[SHELLDETAILS_fmt]" Type="Alias" Base="UINT">
+            <Display Name="int" />
+            <Flag>
+                <Set Name="LVCFMT_LEFT"             Value="0x0000" />
+                <Set Name="LVCFMT_RIGHT"            Value="0x0001" />
+                <Set Name="LVCFMT_CENTER"           Value="0x0002" />
+                <Set Name="LVCFMT_COL_HAS_IMAGES"   Value="0x8000" />
+            </Flag>
+        </Variable>
+
+        <!-- SHELLDETAILS -->
+        <Variable Name="SHELLDETAILS" Type="Struct">
+            <Field Type="[SHELLDETAILS_fmt]"    Name="fmt" />
+            <Field Type="int"                   Name="cxChar" />
+            <Field Type="STRRET"                Name="str" />
+        </Variable>
+        <Variable Name="SHELLDETAILS*" Type="Pointer" Base="SHELLDETAILS" />
+
+        <!-- CSIDL -->
+        <Variable Name="[CSIDL]" Type="Alias" Base="UINT">
+            <Display Name="int" />
+            <Flag>
+                <Set Name="CSIDL_DESKTOP"                   Value="0x0000" />
+                <Set Name="CSIDL_INTERNET"                  Value="0x0001" />
+                <Set Name="CSIDL_PROGRAMS"                  Value="0x0002" />
+                <Set Name="CSIDL_CONTROLS"                  Value="0x0003" />
+                <Set Name="CSIDL_PRINTERS"                  Value="0x0004" />
+                <Set Name="CSIDL_MYDOCUMENTS"               Value="0x0005" />
+                <Set Name="CSIDL_FAVORITES"                 Value="0x0006" />
+                <Set Name="CSIDL_STARTUP"                   Value="0x0007" />
+                <Set Name="CSIDL_RECENT"                    Value="0x0008" />
+                <Set Name="CSIDL_SENDTO"                    Value="0x0009" />
+                <Set Name="CSIDL_BITBUCKET"                 Value="0x000a" />
+                <Set Name="CSIDL_STARTMENU"                 Value="0x000b" />
+                <Set Name="CSIDL_MYMUSIC"                   Value="0x000d" />
+                <Set Name="CSIDL_MYVIDEO"                   Value="0x000e" />
+                <Set Name="CSIDL_DESKTOPDIRECTORY"          Value="0x0010" />
+                <Set Name="CSIDL_DRIVES"                    Value="0x0011" />
+                <Set Name="CSIDL_NETWORK"                   Value="0x0012" />
+                <Set Name="CSIDL_NETHOOD"                   Value="0x0013" />
+                <Set Name="CSIDL_FONTS"                     Value="0x0014" />
+                <Set Name="CSIDL_TEMPLATES"                 Value="0x0015" />
+                <Set Name="CSIDL_COMMON_STARTMENU"          Value="0x0016" />
+                <Set Name="CSIDL_COMMON_PROGRAMS"           Value="0X0017" />
+                <Set Name="CSIDL_COMMON_STARTUP"            Value="0x0018" />
+                <Set Name="CSIDL_COMMON_DESKTOPDIRECTORY"   Value="0x0019" />
+                <Set Name="CSIDL_APPDATA"                   Value="0x001a" />
+                <Set Name="CSIDL_PRINTHOOD"                 Value="0x001b" />
+                <Set Name="CSIDL_LOCAL_APPDATA"             Value="0x001c" />
+                <Set Name="CSIDL_ALTSTARTUP"                Value="0x001d" />
+                <Set Name="CSIDL_COMMON_ALTSTARTUP"         Value="0x001e" />
+                <Set Name="CSIDL_COMMON_FAVORITES"          Value="0x001f" />
+                <Set Name="CSIDL_INTERNET_CACHE"            Value="0x0020" />
+                <Set Name="CSIDL_COOKIES"                   Value="0x0021" />
+                <Set Name="CSIDL_HISTORY"                   Value="0x0022" />
+                <Set Name="CSIDL_COMMON_APPDATA"            Value="0x0023" />
+                <Set Name="CSIDL_WINDOWS"                   Value="0x0024" />
+                <Set Name="CSIDL_SYSTEM"                    Value="0x0025" />
+                <Set Name="CSIDL_PROGRAM_FILES"             Value="0x0026" />
+                <Set Name="CSIDL_MYPICTURES"                Value="0x0027" />
+                <Set Name="CSIDL_PROFILE"                   Value="0x0028" />
+                <Set Name="CSIDL_SYSTEMX86"                 Value="0x0029" />
+                <Set Name="CSIDL_PROGRAM_FILESX86"          Value="0x002a" />
+                <Set Name="CSIDL_PROGRAM_FILES_COMMON"      Value="0x002b" />
+                <Set Name="CSIDL_PROGRAM_FILES_COMMONX86"   Value="0x002c" />
+                <Set Name="CSIDL_COMMON_TEMPLATES"          Value="0x002d" />
+                <Set Name="CSIDL_COMMON_DOCUMENTS"          Value="0x002e" />
+                <Set Name="CSIDL_COMMON_ADMINTOOLS"         Value="0x002f" />
+                <Set Name="CSIDL_ADMINTOOLS"                Value="0x0030" />
+                <Set Name="CSIDL_CONNECTIONS"               Value="0x0031" />
+                <Set Name="CSIDL_COMMON_MUSIC"              Value="0x0035" />
+                <Set Name="CSIDL_COMMON_PICTURES"           Value="0x0036" />
+                <Set Name="CSIDL_COMMON_VIDEO"              Value="0x0037" />
+                <Set Name="CSIDL_RESOURCES"                 Value="0x0038" />
+                <Set Name="CSIDL_RESOURCES_LOCALIZED"       Value="0x0039" />
+                <Set Name="CSIDL_COMMON_OEM_LINKS"          Value="0x003a" />
+                <Set Name="CSIDL_CDBURN_AREA"               Value="0x003b" />
+                <Set Name="CSIDL_COMPUTERSNEARME"           Value="0x003d" />
+                <Set Name="CSIDL_FLAG_CREATE"               Value="0x8000" />
+                <Set Name="CSIDL_FLAG_DONT_VERIFY"          Value="0x4000" />
+                <Set Name="CSIDL_FLAG_DONT_UNEXPAND"        Value="0x2000" />
+                <Set Name="CSIDL_FLAG_NO_ALIAS"             Value="0x1000" />
+                <Set Name="CSIDL_FLAG_PER_USER_INIT"        Value="0x0800" />
+            </Flag>
+        </Variable>
+
+        <!-- PERSIST_FOLDER_TARGET_INFO -->
+        <Variable Name="PERSIST_FOLDER_TARGET_INFO" Type="Struct" Pack="8">
+            <Field Type="PIDLIST_ABSOLUTE"  Name="pidlTargetFolder" />
+            <Field Type="WCHAR [260]"       Name="szTargetParsingName" />
+            <Field Type="WCHAR [260]"       Name="szNetworkProvider" />
+            <Field Type="[FileAttributes]"  Name="dwAttributes" />
+            <Field Type="[CSIDL]"           Name="csidl" />
+        </Variable>
+        <Variable Name="PERSIST_FOLDER_TARGET_INFO*"        Type="Pointer" Base="PERSIST_FOLDER_TARGET_INFO" />
+        <Variable Name="const PERSIST_FOLDER_TARGET_INFO*"  Type="Pointer" Base="PERSIST_FOLDER_TARGET_INFO" />
+
+        <!-- SHELL_ITEM_RESOURCE -->
+        <Variable Name="SHELL_ITEM_RESOURCE" Type="Struct">
+            <Field Type="GUID"          Name="guidType" />
+            <Field Type="WCHAR [260]"   Name="szName" />
+        </Variable>
+        <Variable Name="SHELL_ITEM_RESOURCE*"       Type="Pointer" Base="SHELL_ITEM_RESOURCE" />
+        <Variable Name="const SHELL_ITEM_RESOURCE*" Type="Pointer" Base="SHELL_ITEM_RESOURCE" />
+
+        <!-- CM_MASK -->
+        <Variable Name="CM_MASK" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="CM_MASK_WIDTH"           Value="0x1" />
+                <Set Name="CM_MASK_DEFAULTWIDTH"    Value="0x2" />
+                <Set Name="CM_MASK_IDEALWIDTH"      Value="0x4" />
+                <Set Name="CM_MASK_NAME"            Value="0x8" />
+                <Set Name="CM_MASK_STATE"           Value="0x10" />
+            </Flag>
+        </Variable>
+
+        <!-- CM_STATE -->
+        <Variable Name="CM_STATE" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="CM_STATE_NONE"                   Value="0" />
+                <Set Name="CM_STATE_VISIBLE"                Value="0x1" />
+                <Set Name="CM_STATE_FIXEDWIDTH"             Value="0x2" />
+                <Set Name="CM_STATE_NOSORTBYFOLDERNESS"     Value="0x4" />
+                <Set Name="CM_STATE_ALWAYSVISIBLE"          Value="0x8" />
+            </Flag>
+        </Variable>
+
+        <!-- CM_SET_WIDTH_VALUE -->
+        <Variable Name="CM_SET_WIDTH_VALUE" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Enum>
+                <Set Name="CM_WIDTH_USEDEFAULT"     Value="-1" />
+                <Set Name="CM_WIDTH_AUTOSIZE"       Value="-2" />
+            </Enum>
+        </Variable>
+
+        <!-- CM_COLUMNINFO -->
+        <Variable Name="CM_COLUMNINFO" Type="Struct">
+            <Field Type="DWORD"                 Name="cbSize" />
+            <Field Type="CM_MASK"               Name="dwMask" />
+            <Field Type="CM_STATE"              Name="dwState" />
+            <Field Type="UINT"                  Name="uWidth" />
+            <Field Type="CM_SET_WIDTH_VALUE"    Name="uDefaultWidth" />
+            <Field Type="UINT"                  Name="uIdealWidth" />
+            <Field Type="WCHAR [80]"            Name="wszName" />
+        </Variable>
+        <Variable Name="CM_COLUMNINFO*"         Type="Pointer" Base="CM_COLUMNINFO" />
+        <Variable Name="const CM_COLUMNINFO*"   Type="Pointer" Base="CM_COLUMNINFO" />
+
+        <!-- CATEGORYINFO_FLAGS -->
+        <Variable Name="CATEGORYINFO_FLAGS" Type="Alias" Base="UINT">
+            <Flag>
+                <Set Name="CATINFO_NORMAL"              Value="0" />
+                <Set Name="CATINFO_COLLAPSED"           Value="0x1" />
+                <Set Name="CATINFO_HIDDEN"              Value="0x2" />
+                <Set Name="CATINFO_EXPANDED"            Value="0x4" />
+                <Set Name="CATINFO_NOHEADER"            Value="0x8" />
+                <Set Name="CATINFO_NOTCOLLAPSIBLE"      Value="0x10" />
+                <Set Name="CATINFO_NOHEADERCOUNT"       Value="0x20" />
+                <Set Name="CATINFO_SUBSETTED"           Value="0x40" />
+            </Flag>
+        </Variable>
+
+        <!-- CATEGORY_INFO -->
+        <Variable Name="CATEGORY_INFO" Type="Struct">
+            <Field Type="CATEGORYINFO_FLAGS"    Name="cif" />
+            <Field Type="WCHAR [260]"           Name="wszName" />
+        </Variable>
+        <Variable Name="CATEGORY_INFO*" Type="Pointer" Base="CATEGORY_INFO" />
+
+        <!-- [DBIM] -->
+        <Variable Name="[DBIM]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="DBIM_MINSIZE"        Value="0x0001" />
+                <Set Name="DBIM_MAXSIZE"        Value="0x0002" />
+                <Set Name="DBIM_INTEGRAL"       Value="0x0004" />
+                <Set Name="DBIM_ACTUAL"         Value="0x0008" />
+                <Set Name="DBIM_TITLE"          Value="0x0010" />
+                <Set Name="DBIM_MODEFLAGS"      Value="0x0020" />
+                <Set Name="DBIM_BKCOLOR"        Value="0x0040" />
+            </Flag>
+        </Variable>
+
+        <!-- [DBIMF] -->
+        <Variable Name="[DBIMF]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="DBIMF_NORMAL"            Value="0x0000" />
+                <Set Name="DBIMF_FIXED"             Value="0x0001" />
+                <Set Name="DBIMF_FIXEDBMP"          Value="0x0004" />
+                <Set Name="DBIMF_VARIABLEHEIGHT"    Value="0x0008" />
+                <Set Name="DBIMF_UNDELETEABLE"      Value="0x0010" />
+                <Set Name="DBIMF_DEBOSSED"          Value="0x0020" />
+                <Set Name="DBIMF_BKCOLOR"           Value="0x0040" />
+                <Set Name="DBIMF_USECHEVRON"        Value="0x0080" />
+                <Set Name="DBIMF_BREAK"             Value="0x0100" />
+                <Set Name="DBIMF_ADDTOFRONT"        Value="0x0200" />
+                <Set Name="DBIMF_TOPALIGN"          Value="0x0400" />
+                <Set Name="DBIMF_NOGRIPPER"         Value="0x0800" />
+                <Set Name="DBIMF_ALWAYSGRIPPER"     Value="0x1000" />
+                <Set Name="DBIMF_NOMARGINS"         Value="0x2000" />
+            </Flag>
+        </Variable>
+
+        <!-- DESKBANDINFO -->
+        <Variable Name="DESKBANDINFO" Type="Struct" Pack="8">
+            <Field Type="[DBIM]"        Name="dwMask" />
+            <Field Type="POINTL"        Name="ptMinSize" />
+            <Field Type="POINTL"        Name="ptMaxSize" />
+            <Field Type="POINTL"        Name="ptIntegral" />
+            <Field Type="POINTL"        Name="ptActual" />
+            <Field Type="WCHAR [256]"   Name="wszTitle" />
+            <Field Type="[DBIMF]"       Name="dwModeFlags" />
+            <Field Type="COLORREF"      Name="crBkgnd" />
+        </Variable>
+        <Variable Name="DESKBANDINFO*" Type="Pointer" Base="DESKBANDINFO" />
+
+        <!-- EXTRASEARCH -->
+        <Variable Name="EXTRASEARCH" Type="Struct">
+            <Field Type="GUID"          Name="guidSearch" />
+            <Field Type="WCHAR [80]"    Name="wszFriendlyName" />
+            <Field Type="WCHAR [2084]"  Name="wszUrl" />
+        </Variable>
+        <Variable Name="EXTRASEARCH*" Type="Pointer" Base="EXTRASEARCH" />
+
+        <!-- THUMBBUTTONFLAGS -->
+        <Variable Name="THUMBBUTTONFLAGS" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="THBF_ENABLED"            Value="0" />
+                <Set Name="THBF_DISABLED"           Value="0x1" />
+                <Set Name="THBF_DISMISSONCLICK"     Value="0x2" />
+                <Set Name="THBF_NOBACKGROUND"       Value="0x4" />
+                <Set Name="THBF_HIDDEN"             Value="0x8" />
+                <Set Name="THBF_NONINTERACTIVE"     Value="0x10" />
+            </Flag>
+        </Variable>
+
+        <!-- THUMBBUTTONMASK -->
+        <Variable Name="THUMBBUTTONMASK" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="THB_BITMAP"      Value="0x1" />
+                <Set Name="THB_ICON"        Value="0x2" />
+                <Set Name="THB_TOOLTIP"     Value="0x4" />
+                <Set Name="THB_FLAGS"       Value="0x8" />
+            </Flag>
+        </Variable>
+
+        <!-- THUMBBUTTON -->
+        <Variable Name="THUMBBUTTON" Type="Struct" Pack="8">
+            <Field Type="THUMBBUTTONMASK"   Name="dwMask" />
+            <Field Type="UINT"              Name="iId" />
+            <Field Type="UINT"              Name="iBitmap" />
+            <Field Type="HICON"             Name="hIcon" />
+            <Field Type="WCHAR [260]"       Name="szTip" />
+            <Field Type="THUMBBUTTONFLAGS"  Name="dwFlags" />
+        </Variable>
+        <Variable Name="LPTHUMBBUTTON" Type="Pointer" Base="THUMBBUTTON" />
 
         <!-- NSTCITEMSTATE -->
         <Variable Name="NSTCITEMSTATE" Type="Alias" Base="DWORD">
@@ -305,11 +606,67 @@
         </Variable>
         <Variable Name="NSTCCUSTOMDRAW*" Type="Pointer" Base="NSTCCUSTOMDRAW" />
 
+        <!-- FOLDERVIEWMODE -->
+        <Variable Name="FOLDERVIEWMODE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="FVM_AUTO"					Value="-1" />
+                <Set Name="FVM_FIRST"					Value="1" />
+                <Set Name="FVM_ICON"					Value="1" />
+                <Set Name="FVM_SMALLICON"				Value="2" />
+                <Set Name="FVM_LIST"					Value="3" />
+                <Set Name="FVM_DETAILS"					Value="4" />
+                <Set Name="FVM_THUMBNAIL"				Value="5" />
+                <Set Name="FVM_TILE"					Value="6" />
+                <Set Name="FVM_THUMBSTRIP"				Value="7" />
+                <Set Name="FVM_CONTENT"					Value="8" />
+            </Enum>
+        </Variable>
+        <Variable Name="FOLDERVIEWMODE*" Type="Pointer" Base="FOLDERVIEWMODE" />
+
+        <!-- FOLDERFLAGS -->
+        <Variable Name="FOLDERFLAGS" Type="Alias" Base="UINT">
+            <Flag>
+                <Set Name="FWF_NONE"					Value="0" />
+                <Set Name="FWF_AUTOARRANGE"				Value="0x1" />
+                <Set Name="FWF_ABBREVIATEDNAMES"		Value="0x2" />
+                <Set Name="FWF_SNAPTOGRID"				Value="0x4" />
+                <Set Name="FWF_OWNERDATA"				Value="0x8" />
+                <Set Name="FWF_BESTFITWINDOW"			Value="0x10" />
+                <Set Name="FWF_DESKTOP"					Value="0x20" />
+                <Set Name="FWF_SINGLESEL"				Value="0x40" />
+                <Set Name="FWF_NOSUBFOLDERS"			Value="0x80" />
+                <Set Name="FWF_TRANSPARENT"				Value="0x100" />
+                <Set Name="FWF_NOCLIENTEDGE"			Value="0x200" />
+                <Set Name="FWF_NOSCROLL"				Value="0x400" />
+                <Set Name="FWF_ALIGNLEFT"				Value="0x800" />
+                <Set Name="FWF_NOICONS"					Value="0x1000" />
+                <Set Name="FWF_SHOWSELALWAYS"			Value="0x2000" />
+                <Set Name="FWF_NOVISIBLE"				Value="0x4000" />
+                <Set Name="FWF_SINGLECLICKACTIVATE"     Value="0x8000" />
+                <Set Name="FWF_NOWEBVIEW"				Value="0x10000" />
+                <Set Name="FWF_HIDEFILENAMES"			Value="0x20000" />
+                <Set Name="FWF_CHECKSELECT"				Value="0x40000" />
+                <Set Name="FWF_NOENUMREFRESH"			Value="0x80000" />
+                <Set Name="FWF_NOGROUPING"				Value="0x100000" />
+                <Set Name="FWF_FULLROWSELECT"			Value="0x200000" />
+                <Set Name="FWF_NOFILTERS"				Value="0x400000" />
+                <Set Name="FWF_NOCOLUMNHEADER"			Value="0x800000" />
+                <Set Name="FWF_NOHEADERINALLVIEWS"		Value="0x1000000" />
+                <Set Name="FWF_EXTENDEDTILES"			Value="0x2000000" />
+                <Set Name="FWF_TRICHECKSELECT"			Value="0x4000000" />
+                <Set Name="FWF_AUTOCHECKSELECT"			Value="0x8000000" />
+                <Set Name="FWF_NOBROWSERVIEWSTATE"		Value="0x10000000" />
+                <Set Name="FWF_SUBSETGROUPS"			Value="0x20000000" />
+                <Set Name="FWF_USESEARCHFOLDER"			Value="0x40000000" />
+                <Set Name="FWF_ALLOWRTLREADING"			Value="0x80000000" />
+            </Flag>
+        </Variable>
+        <Variable Name="FOLDERFLAGS*" Type="Pointer" Base="FOLDERFLAGS" />
+
         <!-- FOLDERSETTINGS -->
-        <!-- TODO: Flags - ViewMode -->
         <Variable Name="FOLDERSETTINGS" Type="Struct">
-            <Field Type="UINT" 	Name="ViewMode" />
-            <Field Type="UINT" 	Name="fFlags" />
+            <Field Type="FOLDERVIEWMODE" 	Name="ViewMode" Display="UINT" />
+            <Field Type="FOLDERFLAGS"       Name="fFlags" />
         </Variable>
         <Variable Name="LPFOLDERSETTINGS"       Type="Pointer" Base="FOLDERSETTINGS" />
         <Variable Name="LPCFOLDERSETTINGS"      Type="Pointer" Base="FOLDERSETTINGS" />
@@ -1028,46 +1385,6 @@
             </Enum>
         </Variable>
 
-        <!-- FOLDERFLAGS -->
-        <Variable Name="FOLDERFLAGS" Type="Alias" Base="UINT">
-            <Flag>
-                <Set Name="FWF_NONE"					Value="0" />
-                <Set Name="FWF_AUTOARRANGE"				Value="0x1" />
-                <Set Name="FWF_ABBREVIATEDNAMES"		Value="0x2" />
-                <Set Name="FWF_SNAPTOGRID"				Value="0x4" />
-                <Set Name="FWF_OWNERDATA"				Value="0x8" />
-                <Set Name="FWF_BESTFITWINDOW"			Value="0x10" />
-                <Set Name="FWF_DESKTOP"					Value="0x20" />
-                <Set Name="FWF_SINGLESEL"				Value="0x40" />
-                <Set Name="FWF_NOSUBFOLDERS"			Value="0x80" />
-                <Set Name="FWF_TRANSPARENT"				Value="0x100" />
-                <Set Name="FWF_NOCLIENTEDGE"			Value="0x200" />
-                <Set Name="FWF_NOSCROLL"				Value="0x400" />
-                <Set Name="FWF_ALIGNLEFT"				Value="0x800" />
-                <Set Name="FWF_NOICONS"					Value="0x1000" />
-                <Set Name="FWF_SHOWSELALWAYS"			Value="0x2000" />
-                <Set Name="FWF_NOVISIBLE"				Value="0x4000" />
-                <Set Name="FWF_SINGLECLICKACTIVATE"     Value="0x8000" />
-                <Set Name="FWF_NOWEBVIEW"				Value="0x10000" />
-                <Set Name="FWF_HIDEFILENAMES"			Value="0x20000" />
-                <Set Name="FWF_CHECKSELECT"				Value="0x40000" />
-                <Set Name="FWF_NOENUMREFRESH"			Value="0x80000" />
-                <Set Name="FWF_NOGROUPING"				Value="0x100000" />
-                <Set Name="FWF_FULLROWSELECT"			Value="0x200000" />
-                <Set Name="FWF_NOFILTERS"				Value="0x400000" />
-                <Set Name="FWF_NOCOLUMNHEADER"			Value="0x800000" />
-                <Set Name="FWF_NOHEADERINALLVIEWS"		Value="0x1000000" />
-                <Set Name="FWF_EXTENDEDTILES"			Value="0x2000000" />
-                <Set Name="FWF_TRICHECKSELECT"			Value="0x4000000" />
-                <Set Name="FWF_AUTOCHECKSELECT"			Value="0x8000000" />
-                <Set Name="FWF_NOBROWSERVIEWSTATE"		Value="0x10000000" />
-                <Set Name="FWF_SUBSETGROUPS"			Value="0x20000000" />
-                <Set Name="FWF_USESEARCHFOLDER"			Value="0x40000000" />
-                <Set Name="FWF_ALLOWRTLREADING"			Value="0x80000000" />
-            </Flag>
-        </Variable>
-        <Variable Name="FOLDERFLAGS*" Type="Pointer" Base="FOLDERFLAGS" />
-
         <!-- LIBRARYOPTIONFLAGS -->
         <Variable Name="LIBRARYOPTIONFLAGS" Type="Alias" Base="UINT">
             <Enum>
@@ -1272,23 +1589,6 @@
             </Flag>
         </Variable>
 
-        <!-- FOLDERVIEWMODE -->
-        <Variable Name="FOLDERVIEWMODE" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="FVM_AUTO"					Value="-1" />
-                <Set Name="FVM_FIRST"					Value="1" />
-                <Set Name="FVM_ICON"					Value="1" />
-                <Set Name="FVM_SMALLICON"				Value="2" />
-                <Set Name="FVM_LIST"					Value="3" />
-                <Set Name="FVM_DETAILS"					Value="4" />
-                <Set Name="FVM_THUMBNAIL"				Value="5" />
-                <Set Name="FVM_TILE"					Value="6" />
-                <Set Name="FVM_THUMBSTRIP"				Value="7" />
-                <Set Name="FVM_CONTENT"					Value="8" />
-            </Enum>
-        </Variable>
-        <Variable Name="FOLDERVIEWMODE*" Type="Pointer" Base="FOLDERVIEWMODE" />
-
         <!-- KF_REDIRECTION_CAPABILITIES -->
         <Variable Name="KF_REDIRECTION_CAPABILITIES" Type="Alias" Base="UINT">
             <Flag>
@@ -1437,7 +1737,7 @@
                 <Set Name="SV3CVW3_DEFAULT"			    Value="0" />
                 <Set Name="SV3CVW3_NONINTERACTIVE"	    Value="0x1" />
                 <Set Name="SV3CVW3_FORCEVIEWMODE"	    Value="0x2" />
-                <Set Name="SV3CVW3_FORCEFOLDERFLAGS"    Value="0x4" />
+                <Set Name="SV3CVW3_FORCE`"    Value="0x4" />
             </Flag>
         </Variable>
 
@@ -1455,7 +1755,6 @@
         </Variable>
         <Variable Name="EXPLORER_BROWSER_OPTIONS*" Type="Pointer" Base="EXPLORER_BROWSER_OPTIONS" />
 
-        <!-- TODO: Used in AssocGetPerceivedType but we don't have API definition yet -->
         <!-- PERCEIVED -->
         <Variable Name="PERCEIVED" Type="Alias" Base="UINT">
             <Enum>
@@ -1476,6 +1775,22 @@
                 <Set Name="PERCEIVED_TYPE_CONTACTS"			Value="10" />
             </Enum>
         </Variable>
+        <Variable Name="PERCEIVED*" Type="Pointer" Base="PERCEIVED" />
+
+        <!-- PERCEIVEDFLAG -->
+        <Variable Name="PERCEIVEDFLAG" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="PERCEIVEDFLAG_UNDEFINED"         Value="0x0000" />
+                <Set Name="PERCEIVEDFLAG_SOFTCODED"         Value="0x0001" />
+                <Set Name="PERCEIVEDFLAG_HARDCODED"         Value="0x0002" />
+                <Set Name="PERCEIVEDFLAG_NATIVESUPPORT"     Value="0x0004" />
+                <Set Name="PERCEIVEDFLAG_GDIPLUS"           Value="0x0010" />
+                <Set Name="PERCEIVEDFLAG_WMSDK"             Value="0x0020" />
+                <Set Name="PERCEIVEDFLAG_ZIPFOLDER"         Value="0x0040" />
+            </Flag>
+        </Variable>
+        <Variable Name="PERCEIVEDFLAG*" Type="Pointer" Base="PERCEIVEDFLAG" />
 
         <!-- FILEOP_FLAGS -->
         <Variable Name="FILEOP_FLAGS" Type="Alias" Base="WORD">
@@ -1498,6 +1813,81 @@
                 <Set Name="FOF_NORECURSEREPARSE"       	Value="0x8000" />
                 <Set Name="FOF_NO_UI"                  	Value="0x0614" />
             </Flag>
+        </Variable>
+
+        <!-- [GIL_INPUT_FLAGS] -->
+        <Variable Name="[GIL_INPUT_FLAGS]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Flag>
+                <Set Name="GIL_OPENICON"            Value="0x0001" />
+                <Set Name="GIL_FORSHELL"            Value="0x0002" />
+                <Set Name="GIL_ASYNC"               Value="0x0020" />
+                <Set Name="GIL_DEFAULTICON"         Value="0x0040" />
+                <Set Name="GIL_FORSHORTCUT"         Value="0x0080" />
+                <Set Name="GIL_CHECKSHIELD"         Value="0x0200" />
+            </Flag>
+        </Variable>
+
+        <!-- [GIL_OUTPUT_FLAGS] -->
+        <Variable Name="[GIL_OUTPUT_FLAGS]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Flag>
+                <Set Name="GIL_SIMULATEDOC"         Value="0x0001" />
+                <Set Name="GIL_PERINSTANCE"         Value="0x0002" />
+                <Set Name="GIL_PERCLASS"            Value="0x0004" />
+                <Set Name="GIL_NOTFILENAME"         Value="0x0008" />
+                <Set Name="GIL_DONTCACHE"           Value="0x0010" />
+                <Set Name="GIL_SHIELD"              Value="0x0200" />
+                <Set Name="GIL_FORCENOSHIELD"       Value="0x0400" />
+            </Flag>
+        </Variable>
+        <Variable Name="[GIL_OUTPUT_FLAGS*]" Type="Pointer" Base="[GIL_OUTPUT_FLAGS]">
+            <Display Name="UINT*" />
+        </Variable>
+
+        <Variable Name="[MessageBoxType]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Flag>
+                <Set Name="MB_ABORTRETRYIGNORE" Value="0x00000002" />
+                <Set Name="MB_CANCELTRYCONTINUE" Value="0x00000006" />
+                <Set Name="MB_HELP" Value="0x00004000" />
+                <Set Name="MB_OK" Value="0x00000000" />
+                <Set Name="MB_OKCANCEL" Value="0x00000001" />
+                <Set Name="MB_RETRYCANCEL" Value="0x00000005" />
+                <Set Name="MB_YESNO" Value="0x00000004" />
+                <Set Name="MB_YESNOCANCEL" Value="0x00000003" />
+                <Set Name="MB_ICONEXCLAMATION" Value="0x00000030" />
+                <Set Name="MB_ICONINFORMATION" Value="0x00000040" />
+                <Set Name="MB_ICONQUESTION" Value="0x00000020" />
+                <Set Name="MB_ICONSTOP" Value="0x00000010" />
+                <Set Name="MB_DEFBUTTON2" Value="0x00000100" />
+                <Set Name="MB_DEFBUTTON3" Value="0x00000200" />
+                <Set Name="MB_DEFBUTTON4" Value="0x00000300" />
+                <Set Name="MB_SYSTEMMODAL" Value="0x00001000" />
+                <Set Name="MB_TASKMODAL" Value="0x00002000" />
+                <Set Name="MB_DEFAULT_DESKTOP_ONLY" Value="0x00020000" />
+                <Set Name="MB_RIGHT" Value="0x00080000" />
+                <Set Name="MB_RTLREADING" Value="0x00100000" />
+                <Set Name="MB_SETFOREGROUND" Value="0x00010000" />
+                <Set Name="MB_TOPMOST" Value="0x00040000" />
+                <Set Name="MB_SERVICE_NOTIFICATION" Value="0x00200000" />
+                <Set Name="MB_SERVICE_NOTIFICATION_NT3X" Value="0x00040000" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[MessageBoxResult]" Type="Alias" Base="int">
+            <Display Name="int" />
+            <Enum>
+                <Set Name="IDOK"            Value="1" />
+                <Set Name="IDCANCEL"        Value="2" />
+                <Set Name="IDABORT"         Value="3" />
+                <Set Name="IDRETRY"         Value="4" />
+                <Set Name="IDIGNORE"        Value="5" />
+                <Set Name="IDYES"           Value="6" />
+                <Set Name="IDNO"            Value="7" />
+                <Set Name="IDTRYAGAIN"      Value="10" />
+                <Set Name="IDCONTINUE"      Value="11" />
+            </Enum>
         </Variable>
 
     </Headers>

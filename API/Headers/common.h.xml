@@ -9,23 +9,15 @@
 
     <Headers>
         <!-- HMODULE -->
-        <Variable Name="HMODULE"        Type="ModuleHandle" />
-        <Variable Name="HMODULE*"       Type="Pointer" Base="HMODULE" />
+        <Variable Name="HMODULE"                Type="ModuleHandle" />
+        <Variable Name="HMODULE*"               Type="Pointer"  Base="HMODULE" />
 
         <!-- void -->
-        <Variable Name="void"           Type="Void" />
-        <Variable Name="VOID"           Type="Alias"    Base="void" />
+        <Variable Name="void"                   Type="Void" />
+        <Variable Name="VOID"                   Type="Alias"    Base="void" />
 
         <!-- void* -->
-        <!-- If we define LPVOID to be a Pointer to VOID, buffers do not get encoded. We'll need to fix that -->
-        <Variable Name="LPVOID"         Type="Pointer"  Base="VOID" />
-        <!--
-        <Variable Name="LPVOID" Type="Integer" Size="0" DisplayHex="True" Unsigned="True">
-            <Enum>
-                <Set Name="NULL" Value="0" />
-            </Enum>
-        </Variable>
-        -->
+        <Variable Name="LPVOID"                 Type="Pointer"  Base="VOID" />
         <Variable Name="LPCVOID"                Type="Alias"    Base="LPVOID" />
         <Variable Name="PVOID"                  Type="Alias"    Base="LPVOID" />
         <Variable Name="PVOID*"                 Type="Pointer"  Base="PVOID" />
@@ -145,6 +137,7 @@
 
         <!-- 32-bit unsigned integer -->
         <Variable Name="UINT32"                 Type="Integer"  Size="4" Unsigned="True" />
+        <Variable Name="UINT32*"                Type="Pointer"  Base="UINT32" />
         <Variable Name="PUINT32"                Type="Pointer"  Base="UINT32" />
         <Variable Name="unsigned long"          Type="Alias"    Base="UINT32" />
         <Variable Name="unsigned long*"         Type="Pointer"  Base="unsigned long" />
@@ -193,6 +186,8 @@
         <Variable Name="LONGLONG**"             Type="Pointer"  Base="LONGLONG*" />
         <Variable Name="LONGLONG volatile*"     Type="Alias"    Base="LONGLONG*" />
         <Variable Name="PLONGLONG"              Type="Pointer"  Base="LONGLONG" />
+        <Variable Name="LONG64"                 Type="Alias"    Base="INT64" />
+        <Variable Name="PLONG64"                Type="Pointer"  Base="LONG64" />
 
         <!-- 64-bit unsigned integers -->
         <Variable Name="UINT64"                 Type="Integer"  Size="8" Unsigned="True" />
@@ -244,6 +239,7 @@
         <Variable Name="LPCWSTR"                Type="Alias"    Base="PWSTR" />
         <Variable Name="LPCWSTR*"               Type="Pointer"  Base="LPCWSTR" />
         <Variable Name="const WCHAR*"           Type="Alias"    Base="PWSTR" />
+        <Variable Name="CONST WCHAR*"           Type="Alias"    Base="PWSTR" />
         <Variable Name="WCHAR*"                 Type="Alias"    Base="PWSTR" />
         <Variable Name="const PWSTR"            Type="Alias"    Base="PWSTR" />
         <Variable Name="PWCHAR"                 Type="Alias"    Base="PWSTR" />
@@ -256,7 +252,8 @@
         <Variable Name="PWSTR**"                Type="Pointer"  Base="PWSTR*" />
         <Variable Name="PCWSTR*"                Type="Alias"    Base="PWSTR*" />
         <Variable Name="WCHAR const*"           Type="Alias"    Base="WCHAR*" />
-        <Variable Name="wchar_t*"               Type="Alias"    Base="WCHAR*" />
+        <Variable Name="wchar_t"                Type="Alias"    Base="WCHAR" />
+        <Variable Name="wchar_t*"               Type="Pointer"  Base="wchar_t" />
 
         <!-- LPTSTR -->
         <Variable Name="TCHAR"                  Type="TCharacter" />
@@ -287,6 +284,9 @@
         <Variable Name="SIZE_T*"                Type="Pointer"  Base="SIZE_T" />
         <Variable Name="PSIZE_T"                Type="Alias"    Base="SIZE_T*" />
 
+        <!-- time_t -->
+        <Variable Name="time_t"                 Type="Alias"    Base="INT64" />
+
         <!-- float -->
         <Variable Name="float"                  Type="Floating" Size="4" />
         <Variable Name="float*"                 Type="Pointer"  Base="float" />
@@ -294,6 +294,7 @@
         <Variable Name="FLOAT*"                 Type="Pointer"  Base="FLOAT" />
         <Variable Name="PFLOAT"                 Type="Pointer"  Base="FLOAT" />
         <Variable Name="CONST float*"           Type="Alias"    Base="float*" />
+        <Variable Name="CONST FLOAT*"           Type="Pointer"  Base="FLOAT" />
 
         <!-- double -->
         <Variable Name="double"                 Type="Floating" Size="8" />
@@ -304,6 +305,40 @@
         <!-- va_list -->
         <Variable Name="va_list"                Type="Alias"    Base="LPVOID" />
         <Variable Name="va_list*"               Type="Pointer"  Base="va_list" />
+
+        <!-- Arrays -->
+        <Variable Name="CHAR [14]"              Type="Array"    Base="CHAR"     Count="14" />
+        <Variable Name="CHAR [MAX_PATH]"        Type="Array"    Base="CHAR"     Count="260" />
+        <Variable Name="WCHAR [1]"              Type="Array"    Base="WCHAR"    Count="1" />
+        <Variable Name="WCHAR [14]"             Type="Array"    Base="WCHAR"    Count="14" />
+        <Variable Name="WCHAR [128]"            Type="Array"    Base="WCHAR"    Count="128" />
+        <Variable Name="WCHAR [256]"            Type="Array"    Base="WCHAR"    Count="256" />
+        <Variable Name="WCHAR [MAX_PATH]"       Type="Array"    Base="WCHAR"    Count="260" />
+        <Variable Name="TCHAR [ANYSIZE_ARRAY]"  Type="Array"    Base="TCHAR"    Count="1" />
+        <Variable Name="TCHAR [14]"             Type="Array"    Base="TCHAR"    Count="14" />
+        <Variable Name="TCHAR [32]"             Type="Array"    Base="TCHAR"    Count="32" />
+        <Variable Name="TCHAR [128]"            Type="Array"    Base="TCHAR"    Count="128" />
+        <Variable Name="TCHAR [256]"            Type="Array"    Base="TCHAR"    Count="256" />
+        <Variable Name="TCHAR [MAX_PATH]"       Type="Array"    Base="TCHAR"    Count="260" />
+        <Variable Name="TCHAR [MAX_PATH + 1]"   Type="Array"    Base="TCHAR"    Count="261" />
+        <Variable Name="UCHAR [1]"              Type="Array"    Base="UCHAR"    Count="1" />
+        <Variable Name="UCHAR [2]"              Type="Array"    Base="UCHAR"    Count="2" />
+        <Variable Name="UCHAR [16]"             Type="Array"    Base="UCHAR"    Count="16" />
+        <Variable Name="UCHAR [24]"             Type="Array"    Base="UCHAR"    Count="24" />
+        <Variable Name="DWORD [1]"              Type="Array"    Base="DWORD"    Count="1" />
+        <Variable Name="DWORD [2]"              Type="Array"    Base="DWORD"    Count="2" />
+        <Variable Name="DWORD [3]"              Type="Array"    Base="DWORD"    Count="3" />
+        <Variable Name="DWORD [4]"              Type="Array"    Base="DWORD"    Count="4" />
+        <Variable Name="BYTE [ANYSIZE_ARRAY]"   Type="Array"    Base="BYTE"     Count="1" />
+        <Variable Name="BYTE [2]"               Type="Array"    Base="BYTE"     Count="2" />
+        <Variable Name="BYTE [6]"               Type="Array"    Base="BYTE"     Count="6" />
+        <Variable Name="BYTE [8]"               Type="Array"    Base="BYTE"     Count="8" />
+        <Variable Name="ULONG [2]"              Type="Array"    Base="ULONG"    Count="2" />
+        <Variable Name="ULONG [4]"              Type="Array"    Base="ULONG"    Count="4" />
+        <Variable Name="float [4]"              Type="Array"    Base="float"    Count="4"/>
+        <Variable Name="ULONG64 [2]"            Type="Array"    Base="ULONG64"  Count="2" />
+        <Variable Name="ULONG64 [4]"            Type="Array"    Base="ULONG64"  Count="4" />
+        <Variable Name="USHORT [8]"             Type="Array"    Base="USHORT"   Count="8" />
 
     </Headers>
 </ApiMonitor>

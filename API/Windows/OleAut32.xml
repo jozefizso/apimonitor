@@ -10,10 +10,64 @@
     <Module Name="OleAut32.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
 
         <!-- Variables -->
-        <Variable Name="OLE_COLOR"      Type="Alias" Base="DWORD" />
-        
-        <!-- TODO: Structures -->
-        <Variable Name="LPPICTDESC" Type="Alias" Base="LPVOID" />
+        <Variable Name="OLE_COLOR" Type="Alias" Base="DWORD" />
+
+        <!-- [PICTDESC_u_s1] -->
+        <Variable Name="[PICTDESC_u_s1]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="HBITMAP"       Name="hbitmap" />
+            <Field Type="HPALETTE"      Name="hpal" />
+        </Variable>
+
+        <!-- [PICTDESC_u_s2] -->
+        <Variable Name="[PICTDESC_u_s2]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="HMETAFILE"     Name="hmeta" />
+            <Field Type="int"           Name="xExt" />
+            <Field Type="int"           Name="yExt" />
+        </Variable>
+
+        <!-- [PICTDESC_u_s3] -->
+        <Variable Name="[PICTDESC_u_s3]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="HICON" Name="hicon" />
+        </Variable>
+
+        <!-- [PICTDESC_u_s4] -->
+        <Variable Name="[PICTDESC_u_s4]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="HENHMETAFILE" Name="hemf" />
+        </Variable>
+
+        <!-- [PICTDESC_u] -->
+        <Variable Name="[PICTDESC_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="[PICTDESC_u_s1]"   Name="bmp" />
+            <Field Type="[PICTDESC_u_s2]"   Name="wmf" />
+            <Field Type="[PICTDESC_u_s3]"   Name="icon" />
+            <Field Type="[PICTDESC_u_s4]"   Name="emf" />
+        </Variable>
+
+        <!-- [PICTYPE] -->
+        <Variable Name="[PICTYPE]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Flag>
+                <Set Name="PICTYPE_UNINITIALIZED"   Value="-1" />
+                <Set Name="PICTYPE_NONE"            Value="0" />
+                <Set Name="PICTYPE_BITMAP"          Value="1" />
+                <Set Name="PICTYPE_METAFILE"        Value="2" />
+                <Set Name="PICTYPE_ICON"            Value="3" />
+                <Set Name="PICTYPE_ENHMETAFILE"     Value="4" />
+            </Flag>
+        </Variable>
+
+        <!-- PICTDESC -->
+        <Variable Name="PICTDESC" Type="Struct">
+            <Field Type="UINT"          Name="cbSizeofstruct" />
+            <Field Type="[PICTYPE]"     Name="picType" />
+            <Field Type="[PICTDESC_u]"  Name="" />
+        </Variable>
+        <Variable Name="LPPICTDESC" Type="Pointer" Base="PICTDESC" />
 
         <!-- CY -->
         <Variable Name="CY" Type="Struct">
@@ -42,7 +96,7 @@
             <Field Type="int" 	            Name="y" />
             <Field Type="LPCOLESTR" 	    Name="lpszCaption" />
             <Field Type="ULONG" 	        Name="cObjects" />
-            <Field Type="LPUNKNOWN FAR*" 	Name="lplpUnk" />
+            <Field Type="LPUNKNOWN*" 	    Name="lplpUnk" />
             <Field Type="ULONG" 	        Name="cPages" />
             <Field Type="CLSID*" 	        Name="lpPages" />
             <Field Type="LCID" 	            Name="lcid" />

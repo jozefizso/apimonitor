@@ -11,6 +11,7 @@
         <Variable Name="TCI_ADD_FLOW_COMPLETE_HANDLER"  Type="Alias" Base="LPVOID" />
         <Variable Name="TCI_MOD_FLOW_COMPLETE_HANDLER"  Type="Alias" Base="LPVOID" />
         <Variable Name="TCI_DEL_FLOW_COMPLETE_HANDLER"  Type="Alias" Base="LPVOID" />
+        <Variable Name="WCHAR [MAX_STRING_LENGTH]"      Type="Array" Base="WCHAR" Count="256" />
 
         <!-- TC_GEN_FILTER -->
         <Variable Name="TC_GEN_FILTER" Type="Struct">
@@ -19,12 +20,82 @@
             <Field Type="PVOID"   	Name="Pattern" Length="PatternSize" />
             <Field Type="PVOID"   	Name="Mask" Length="PatternSize" />
         </Variable>
-        <Variable Name="PTC_GEN_FILTER" Type="Pointer" Base="TC_GEN_FILTER" />
-        
-        <!-- TODO: Structures -->
-        <Variable Name="PTC_GEN_FLOW"            Type="Alias"        Base="LPVOID" />
-        <Variable Name="PENUMERATION_BUFFER"     Type="Alias"        Base="LPVOID" />
-        <Variable Name="PTC_IFC_DESCRIPTOR"      Type="Alias"        Base="LPVOID" />
+        <Variable Name="PTC_GEN_FILTER"     Type="Pointer"  Base="TC_GEN_FILTER" />
+        <Variable Name="TC_GEN_FILTER [1]"  Type="Array"    Base="TC_GEN_FILTER" Count="1" />
+
+        <!-- NETWORK_ADDRESS -->
+        <Variable Name="NETWORK_ADDRESS" Type="Struct">
+            <Field Type="USHORT"        Name="AddressLength" />
+            <Field Type="USHORT"        Name="AddressType" />
+            <Field Type="UCHAR [1]"     Name="Address" />
+        </Variable>
+        <Variable Name="NETWORK_ADDRESS [1]" Type="Array" Base="NETWORK_ADDRESS" Count="1" />
+
+        <!-- NETWORK_ADDRESS_LIST -->
+        <Variable Name="NETWORK_ADDRESS_LIST" Type="Struct">
+            <Field Type="LONG"                  Name="AddressCount" />
+            <Field Type="USHORT"                Name="AddressType" />
+            <Field Type="NETWORK_ADDRESS [1]"   Name="Address" />
+        </Variable>
+
+        <!-- ADDRESS_LIST_DESCRIPTOR -->
+        <Variable Name="ADDRESS_LIST_DESCRIPTOR" Type="Struct">
+            <Field Type="ULONG"                     Name="MediaType" />
+            <Field Type="NETWORK_ADDRESS_LIST"      Name="AddressList" />
+        </Variable>
+
+        <!-- TC_IFC_DESCRIPTOR -->
+        <Variable Name="TC_IFC_DESCRIPTOR" Type="Struct">
+            <Field Type="ULONG"                     Name="Length" />
+            <Field Type="LPWSTR"                    Name="pInterfaceName" />
+            <Field Type="LPWSTR"                    Name="pInterfaceID" />
+            <Field Type="ADDRESS_LIST_DESCRIPTOR"   Name="AddressListDesc" />
+        </Variable>
+        <Variable Name="PTC_IFC_DESCRIPTOR" Type="Pointer" Base="TC_IFC_DESCRIPTOR" />
+
+        <!-- [QOS_OBJECT_HDR_TYPE] -->
+        <Variable Name="[QOS_OBJECT_HDR_TYPE]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="QOS_OBJECT_END_OF_LIST"          Value="2001" />
+                <Set Name="QOS_OBJECT_SD_MODE"              Value="2002" />
+                <Set Name="QOS_OBJECT_SHAPING_RATE"         Value="2003" />
+                <Set Name="QOS_OBJECT_DESTADDR"             Value="2004" />
+                <Set Name="RSVP_OBJECT_STATUS_INFO"         Value="1000" />
+                <Set Name="RSVP_OBJECT_RESERVE_INFO"        Value="1001" />
+                <Set Name="RSVP_OBJECT_ADSPEC"              Value="1002" />
+                <Set Name="RSVP_OBJECT_POLICY_INFO"         Value="1003" />
+                <Set Name="RSVP_OBJECT_FILTERSPEC_LIST"     Value="1004" />
+            </Enum>
+        </Variable>
+
+        <!-- QOS_OBJECT_HDR -->
+        <Variable Name="QOS_OBJECT_HDR" Type="Struct">
+            <Field Type="[QOS_OBJECT_HDR_TYPE]"     Name="ObjectType" />
+            <Field Type="ULONG"                     Name="ObjectLength" />
+        </Variable>
+        <Variable Name="QOS_OBJECT_HDR [1]" Type="Array" Base="QOS_OBJECT_HDR" Count="1" />
+
+        <!-- TC_GEN_FLOW -->
+        <Variable Name="TC_GEN_FLOW" Type="Struct">
+            <Field Type="FLOWSPEC"              Name="SendingFlowspec" />
+            <Field Type="FLOWSPEC"              Name="ReceivingFlowspec" />
+            <Field Type="ULONG"                 Name="TcObjectsLength" />
+            <Field Type="QOS_OBJECT_HDR [1]"    Name="TcObjects" />
+        </Variable>
+        <Variable Name="PTC_GEN_FLOW" Type="Pointer" Base="TC_GEN_FLOW" />
+
+        <!-- ENUMERATION_BUFFER -->
+        <Variable Name="ENUMERATION_BUFFER" Type="Struct">
+            <Field Type="ULONG"                         Name="Length" />
+            <Field Type="ULONG"                         Name="OwnerProcessId" />
+            <Field Type="USHORT"                        Name="FlowNameLength" />
+            <Field Type="WCHAR [MAX_STRING_LENGTH]"     Name="FlowName" />
+            <Field Type="PTC_GEN_FLOW"                  Name="pFlow" />
+            <Field Type="ULONG"                         Name="NumberOfFilters" />
+            <Field Type="TC_GEN_FILTER [1]"             Name="GenericFilter" Count="NumberOfFilters" />
+        </Variable>
+        <Variable Name="PENUMERATION_BUFFER" Type="Pointer" Base="ENUMERATION_BUFFER" />
 
         <!-- TCI_CLIENT_FUNC_LIST -->
         <Variable Name="TCI_CLIENT_FUNC_LIST" Type="Struct">

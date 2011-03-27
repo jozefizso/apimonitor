@@ -6,30 +6,388 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Wlanapi.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
-        <!-- Variables -->
-        <Variable Name="WLAN_NOTIFICATION_CALLBACK"         Type="Alias"    Base="LPVOID" />
 
-        <!-- TODO: Structures -->
-        <Variable Name="PDOT11_SSID"                        Type="Alias"    Base="LPVOID" />
-        <Variable Name="const PDOT11_SSID"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="PDOT11_BSSID_LIST"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="PWLAN_INTERFACE_INFO_LIST"          Type="Alias"    Base="LPVOID" />
-        <Variable Name="PWLAN_INTERFACE_INFO_LIST*"         Type="Pointer"  Base="PWLAN_INTERFACE_INFO_LIST" />
-        <Variable Name="const PWLAN_RAW_DATA_LIST"          Type="Alias"    Base="LPVOID" />
-        <Variable Name="PWLAN_RAW_DATA_LIST*"               Type="Pointer"  Base="const PWLAN_RAW_DATA_LIST" />
-        <Variable Name="PWLAN_AVAILABLE_NETWORK_LIST"       Type="Alias"    Base="LPVOID" />
-        <Variable Name="PWLAN_AVAILABLE_NETWORK_LIST*"      Type="Pointer"  Base="PWLAN_AVAILABLE_NETWORK_LIST" />
-        <Variable Name="const PDOT11_NETWORK_LIST"          Type="Alias"    Base="LPVOID" />
-        <Variable Name="PDOT11_NETWORK_LIST*"               Type="Pointer"  Base="const PDOT11_NETWORK_LIST" />
-        <Variable Name="PWLAN_INTERFACE_CAPABILITY"         Type="Alias"    Base="LPVOID" />
-        <Variable Name="PWLAN_INTERFACE_CAPABILITY*"        Type="Pointer"  Base="PWLAN_INTERFACE_CAPABILITY" />
-        <Variable Name="PWLAN_BSS_LIST"                     Type="Alias"    Base="LPVOID" />
-        <Variable Name="PWLAN_BSS_LIST*"                    Type="Pointer"  Base="PWLAN_BSS_LIST" />
-        <Variable Name="PWLAN_PROFILE_INFO_LIST"            Type="Alias"    Base="LPVOID" />
-        <Variable Name="PWLAN_PROFILE_INFO_LIST*"           Type="Pointer"  Base="PWLAN_PROFILE_INFO_LIST" />
-        <Variable Name="PWLAN_HOSTED_NETWORK_STATUS"        Type="Alias"    Base="LPVOID" />
-        <Variable Name="PWLAN_HOSTED_NETWORK_STATUS*"       Type="Pointer"  Base="PWLAN_HOSTED_NETWORK_STATUS" />
-        <Variable Name="const PWLAN_RAW_DATA"               Type="Alias"    Base="LPVOID" />
+        <!-- Variables -->
+        <Variable Name="WLAN_NOTIFICATION_CALLBACK"             Type="Alias"    Base="LPVOID" />
+        <Variable Name="WLAN_SIGNAL_QUALITY"                    Type="Alias"    Base="ULONG" />
+        <Variable Name="WCHAR [WLAN_MAX_NAME_LENGTH]"           Type="Array"    Base="WCHAR"    Count="256" />
+        <Variable Name="UCHAR [DOT11_SSID_MAX_LENGTH]"          Type="Array"    Base="UCHAR"    Count="32" />
+        <Variable Name="USHORT [DOT11_RATE_SET_MAX_LENGTH]"     Type="Array"    Base="USHORT"   Count="126" />
+
+        <!-- DOT11_MAC_ADDRESS -->
+        <Variable Name="DOT11_MAC_ADDRESS"      Type="Array" Base="UCHAR"               Count="6" />
+        <Variable Name="DOT11_MAC_ADDRESS [1]"  Type="Array" Base="DOT11_MAC_ADDRESS"   Count="1" />
+
+        <!-- [WlanProfileFlags] -->
+        <Variable Name="[WlanProfileFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="WLAN_PROFILE_GROUP_POLICY"                   Value="0x00000001" />
+                <Set Name="WLAN_PROFILE_USER"                           Value="0x00000002" />
+                <Set Name="WLAN_PROFILE_GET_PLAINTEXT_KEY"              Value="0x00000004" />
+                <Set Name="WLAN_PROFILE_CONNECTION_MODE_SET_BY_CLIENT"  Value="0x00010000" />
+                <Set Name="WLAN_PROFILE_CONNECTION_MODE_AUTO"           Value="0x00020000" />
+            </Flag>
+        </Variable>
+        <Variable Name="[WlanProfileFlags*]" Type="Pointer" Base="[WlanProfileFlags]">
+            <Display Name="DWORD*" />
+        </Variable>
+
+        <!-- DOT11_BSS_TYPE -->
+        <Variable Name="DOT11_BSS_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="dot11_BSS_type_infrastructure"   Value="1" />
+                <Set Name="dot11_BSS_type_independent"      Value="2" />
+                <Set Name="dot11_BSS_type_any"              Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- DOT11_PHY_TYPE -->
+        <Variable Name="DOT11_PHY_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="dot11_phy_type_unknown"          Value="0" />
+                <Set Name="dot11_phy_type_fhss"             Value="1" />
+                <Set Name="dot11_phy_type_dsss"             Value="2" />
+                <Set Name="dot11_phy_type_irbaseband"       Value="3" />
+                <Set Name="dot11_phy_type_ofdm"             Value="4" />
+                <Set Name="dot11_phy_type_hrdsss"           Value="5" />
+                <Set Name="dot11_phy_type_erp"              Value="6" />
+                <Set Name="dot11_phy_type_ht"               Value="7" />
+            </Enum>
+        </Variable>
+        <Variable Name="DOT11_PHY_TYPE [WLAN_MAX_PHY_INDEX]"        Type="Array" Base="DOT11_PHY_TYPE" Count="64" />
+        <Variable Name="DOT11_PHY_TYPE [WLAN_MAX_PHY_TYPE_NUMBER]"  Type="Array" Base="DOT11_PHY_TYPE" Count="8" />
+
+        <!-- DOT11_SSID -->
+        <Variable Name="DOT11_SSID" Type="Struct">
+            <Field Type="ULONG"                             Name="uSSIDLength" />
+            <Field Type="UCHAR [DOT11_SSID_MAX_LENGTH]"     Name="ucSSID" />
+        </Variable>
+        <Variable Name="PDOT11_SSID"        Type="Pointer" Base="DOT11_SSID" />
+        <Variable Name="const PDOT11_SSID"  Type="Pointer" Base="DOT11_SSID" />
+
+        <!-- DOT11_AUTH_ALGORITHM -->
+        <Variable Name="DOT11_AUTH_ALGORITHM" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DOT11_AUTH_ALGO_80211_OPEN"              Value="1" />
+                <Set Name="DOT11_AUTH_ALGO_80211_SHARED_KEY"        Value="2" />
+                <Set Name="DOT11_AUTH_ALGO_WPA"                     Value="3" />
+                <Set Name="DOT11_AUTH_ALGO_WPA_PSK"                 Value="4" />
+                <Set Name="DOT11_AUTH_ALGO_WPA_NONE"                Value="5" />
+                <Set Name="DOT11_AUTH_ALGO_RSNA"                    Value="6" />
+                <Set Name="DOT11_AUTH_ALGO_RSNA_PSK"                Value="7" />
+            </Enum>
+        </Variable>
+
+        <!-- DOT11_CIPHER_ALGORITHM -->
+        <Variable Name="DOT11_CIPHER_ALGORITHM" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DOT11_CIPHER_ALGO_NONE"                  Value="0x00" />
+                <Set Name="DOT11_CIPHER_ALGO_WEP40"                 Value="0x01" />
+                <Set Name="DOT11_CIPHER_ALGO_TKIP"                  Value="0x02" />
+                <Set Name="DOT11_CIPHER_ALGO_CCMP"                  Value="0x04" />
+                <Set Name="DOT11_CIPHER_ALGO_WEP104"                Value="0x05" />
+                <Set Name="DOT11_CIPHER_ALGO_WPA_USE_GROUP"         Value="0x100" />
+                <Set Name="DOT11_CIPHER_ALGO_WEP"                   Value="0x101" />
+            </Enum>
+        </Variable>
+
+        <!-- [NDIS_OBJECT_TYPE] -->
+        <Variable Name="[NDIS_OBJECT_TYPE]" Type="Alias" Base="UCHAR">
+            <Display Name="UCHAR" />
+            <Enum>
+                <Set Name="NDIS_OBJECT_TYPE_DEFAULT"                                                Value="0x80" />
+                <Set Name="NDIS_OBJECT_TYPE_MINIPORT_INIT_PARAMETERS"                               Value="0x81" />
+                <Set Name="NDIS_OBJECT_TYPE_SG_DMA_DESCRIPTION"                                     Value="0x83" />
+                <Set Name="NDIS_OBJECT_TYPE_MINIPORT_INTERRUPT"                                     Value="0x84" />
+                <Set Name="NDIS_OBJECT_TYPE_DEVICE_OBJECT_ATTRIBUTES"                               Value="0x85" />
+                <Set Name="NDIS_OBJECT_TYPE_BIND_PARAMETERS"                                        Value="0x86" />
+                <Set Name="NDIS_OBJECT_TYPE_OPEN_PARAMETERS"                                        Value="0x87" />
+                <Set Name="NDIS_OBJECT_TYPE_RSS_CAPABILITIES"                                       Value="0x88" />
+                <Set Name="NDIS_OBJECT_TYPE_RSS_PARAMETERS"                                         Value="0x89" />
+                <Set Name="NDIS_OBJECT_TYPE_MINIPORT_DRIVER_CHARACTERISTICS"                        Value="0x8A" />
+                <Set Name="NDIS_OBJECT_TYPE_FILTER_DRIVER_CHARACTERISTICS"                          Value="0x8B" />
+                <Set Name="NDIS_OBJECT_TYPE_FILTER_PARTIAL_CHARACTERISTICS"                         Value="0x8C" />
+                <Set Name="NDIS_OBJECT_TYPE_FILTER_ATTRIBUTES"                                      Value="0x8D" />
+                <Set Name="NDIS_OBJECT_TYPE_CLIENT_CHIMNEY_OFFLOAD_GENERIC_CHARACTERISTICS"         Value="0x8E" />
+                <Set Name="NDIS_OBJECT_TYPE_PROVIDER_CHIMNEY_OFFLOAD_GENERIC_CHARACTERISTICS"       Value="0x8F" />
+                <Set Name="NDIS_OBJECT_TYPE_CO_PROTOCOL_CHARACTERISTICS"                            Value="0x90" />
+                <Set Name="NDIS_OBJECT_TYPE_CO_MINIPORT_CHARACTERISTICS"                            Value="0x91" />
+                <Set Name="NDIS_OBJECT_TYPE_MINIPORT_PNP_CHARACTERISTICS"                           Value="0x92" />
+                <Set Name="NDIS_OBJECT_TYPE_CLIENT_CHIMNEY_OFFLOAD_CHARACTERISTICS"                 Value="0x93" />
+                <Set Name="NDIS_OBJECT_TYPE_PROVIDER_CHIMNEY_OFFLOAD_CHARACTERISTICS"               Value="0x94" />
+                <Set Name="NDIS_OBJECT_TYPE_PROTOCOL_DRIVER_CHARACTERISTICS"                        Value="0x95" />
+                <Set Name="NDIS_OBJECT_TYPE_REQUEST_EX"                                             Value="0x96" />
+                <Set Name="NDIS_OBJECT_TYPE_OID_REQUEST"                                            Value="0x96" />
+                <Set Name="NDIS_OBJECT_TYPE_TIMER_CHARACTERISTICS"                                  Value="0x97" />
+                <Set Name="NDIS_OBJECT_TYPE_STATUS_INDICATION"                                      Value="0x98" />
+                <Set Name="NDIS_OBJECT_TYPE_FILTER_ATTACH_PARAMETERS"                               Value="0x99" />
+                <Set Name="NDIS_OBJECT_TYPE_FILTER_PAUSE_PARAMETERS"                                Value="0x9A" />
+                <Set Name="NDIS_OBJECT_TYPE_FILTER_RESTART_PARAMETERS"                              Value="0x9B" />
+                <Set Name="NDIS_OBJECT_TYPE_PORT_CHARACTERISTICS"                                   Value="0x9C" />
+                <Set Name="NDIS_OBJECT_TYPE_PORT_STATE"                                             Value="0x9D" />
+                <Set Name="NDIS_OBJECT_TYPE_MINIPORT_ADAPTER_REGISTRATION_ATTRIBUTES"               Value="0x9E" />
+                <Set Name="NDIS_OBJECT_TYPE_MINIPORT_ADAPTER_GENERAL_ATTRIBUTES"                    Value="0x9F" />
+                <Set Name="NDIS_OBJECT_TYPE_MINIPORT_ADAPTER_OFFLOAD_ATTRIBUTES"                    Value="0xA0" />
+                <Set Name="NDIS_OBJECT_TYPE_MINIPORT_ADAPTER_NATIVE_802_11_ATTRIBUTES"              Value="0xA1" />
+                <Set Name="NDIS_OBJECT_TYPE_RESTART_GENERAL_ATTRIBUTES"                             Value="0xA2" />
+                <Set Name="NDIS_OBJECT_TYPE_PROTOCOL_RESTART_PARAMETERS"                            Value="0xA3" />
+                <Set Name="NDIS_OBJECT_TYPE_MINIPORT_ADD_DEVICE_REGISTRATION_ATTRIBUTES"            Value="0xA4" />
+                <Set Name="NDIS_OBJECT_TYPE_CO_CALL_MANAGER_OPTIONAL_HANDLERS"                      Value="0xA5" />
+                <Set Name="NDIS_OBJECT_TYPE_CO_CLIENT_OPTIONAL_HANDLERS"                            Value="0xA6" />
+                <Set Name="NDIS_OBJECT_TYPE_OFFLOAD"                                                Value="0xA7" />
+                <Set Name="NDIS_OBJECT_TYPE_OFFLOAD_ENCAPSULATION"                                  Value="0xA8" />
+                <Set Name="NDIS_OBJECT_TYPE_CONFIGURATION_OBJECT"                                   Value="0xA9" />
+                <Set Name="NDIS_OBJECT_TYPE_DRIVER_WRAPPER_OBJECT"                                  Value="0xAA" />
+                <Set Name="NDIS_OBJECT_TYPE_HD_SPLIT_ATTRIBUTES"                                    Value="0xAB" />
+                <Set Name="NDIS_OBJECT_TYPE_NSI_NETWORK_RW_STRUCT"                                  Value="0xAC" />
+                <Set Name="NDIS_OBJECT_TYPE_NSI_COMPARTMENT_RW_STRUCT"                              Value="0xAD" />
+                <Set Name="NDIS_OBJECT_TYPE_NSI_INTERFACE_PERSIST_RW_STRUCT"                        Value="0xAE" />
+                <Set Name="NDIS_OBJECT_TYPE_MINIPORT_ADAPTER_HARDWARE_ASSIST_ATTRIBUTES"            Value="0xAF" />
+                <Set Name="NDIS_OBJECT_TYPE_SHARED_MEMORY_PROVIDER_CHARACTERISTICS"                 Value="0xB0" />
+                <Set Name="NDIS_OBJECT_TYPE_RSS_PROCESSOR_INFO"                                     Value="0xB1" />
+            </Enum>
+        </Variable>
+
+        <!-- NDIS_OBJECT_HEADER -->
+        <Variable Name="NDIS_OBJECT_HEADER" Type="Struct">
+            <Field Type="[NDIS_OBJECT_TYPE]"    Name="Type" />
+            <Field Type="UCHAR"                 Name="Revision" />
+            <Field Type="USHORT"                Name="Size" />
+        </Variable>
+
+        <!-- DOT11_BSSID_LIST -->
+        <Variable Name="DOT11_BSSID_LIST" Type="Struct">
+            <Field Type="NDIS_OBJECT_HEADER"        Name="Header" />
+            <Field Type="ULONG"                     Name="uNumOfEntries" />
+            <Field Type="ULONG"                     Name="uTotalNumOfEntries" />
+            <Field Type="DOT11_MAC_ADDRESS [1]"     Name="BSSIDs" Count="uNumOfEntries" />
+        </Variable>
+        <Variable Name="PDOT11_BSSID_LIST" Type="Pointer" Base="DOT11_BSSID_LIST" />
+
+        <!-- WLAN_INTERFACE_STATE -->
+        <Variable Name="WLAN_INTERFACE_STATE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="wlan_interface_state_not_ready"              Value="0" />
+                <Set Name="wlan_interface_state_connected"              Value="1" />
+                <Set Name="wlan_interface_state_ad_hoc_network_formed"  Value="2" />
+                <Set Name="wlan_interface_state_disconnecting"          Value="3" />
+                <Set Name="wlan_interface_state_disconnected"           Value="4" />
+                <Set Name="wlan_interface_state_associating"            Value="5" />
+                <Set Name="wlan_interface_state_discovering"            Value="6" />
+                <Set Name="wlan_interface_state_authenticating"         Value="7" />
+            </Enum>
+        </Variable>
+
+        <!-- WLAN_INTERFACE_INFO -->
+        <Variable Name="WLAN_INTERFACE_INFO" Type="Struct">
+            <Field Type="GUID"                          Name="InterfaceGuid" />
+            <Field Type="WCHAR [WLAN_MAX_NAME_LENGTH]"  Name="strInterfaceDescription" />
+            <Field Type="WLAN_INTERFACE_STATE"          Name="isState" />
+        </Variable>
+        <Variable Name="WLAN_INTERFACE_INFO [1]" Type="Array" Base="WLAN_INTERFACE_INFO" Count="1" />
+
+        <!-- WLAN_INTERFACE_INFO_LIST -->
+        <Variable Name="WLAN_INTERFACE_INFO_LIST" Type="Struct">
+            <Field Type="DWORD"                     Name="dwNumberOfItems" />
+            <Field Type="DWORD"                     Name="dwIndex" />
+            <Field Type="WLAN_INTERFACE_INFO [1]"   Name="InterfaceInfo" Count="dwNumberOfItems" />
+        </Variable>
+        <Variable Name="PWLAN_INTERFACE_INFO_LIST"  Type="Pointer" Base="WLAN_INTERFACE_INFO_LIST" />
+        <Variable Name="PWLAN_INTERFACE_INFO_LIST*" Type="Pointer" Base="PWLAN_INTERFACE_INFO_LIST" />
+
+        <!-- [WLAN_RAW_DATA_LIST_s] -->
+        <Variable Name="[WLAN_RAW_DATA_LIST_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="DWORD"     Name="dwDataOffset" />
+            <Field Type="DWORD"     Name="dwDataSize" />
+        </Variable>
+        <Variable Name="[WLAN_RAW_DATA_LIST_s [1]]" Type="Array" Base="[WLAN_RAW_DATA_LIST_s]" Count="1">
+            <Display Name="struct [1]" />
+        </Variable>
+
+        <!-- WLAN_RAW_DATA_LIST -->
+        <Variable Name="WLAN_RAW_DATA_LIST" Type="Struct">
+            <Field Type="DWORD"                         Name="dwTotalSize" />
+            <Field Type="DWORD"                         Name="dwNumberOfItems" />
+            <Field Type="[WLAN_RAW_DATA_LIST_s [1]]"    Name="DataList" Count="1" />
+        </Variable>
+        <Variable Name="PWLAN_RAW_DATA_LIST"        Type="Pointer" Base="WLAN_RAW_DATA_LIST" />
+        <Variable Name="const PWLAN_RAW_DATA_LIST"  Type="Pointer" Base="WLAN_RAW_DATA_LIST" />
+        <Variable Name="PWLAN_RAW_DATA_LIST*"       Type="Pointer" Base="PWLAN_RAW_DATA_LIST" />
+
+        <!-- [WLAN_AVAILABLE_NETWORK_FLAGS] -->
+        <Variable Name="[WLAN_AVAILABLE_NETWORK_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="WLAN_AVAILABLE_NETWORK_CONNECTED"                Value="0x00000001" />
+                <Set Name="WLAN_AVAILABLE_NETWORK_HAS_PROFILE"              Value="0x00000002" />
+                <Set Name="WLAN_AVAILABLE_NETWORK_CONSOLE_USER_PROFILE"     Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <!-- WLAN_AVAILABLE_NETWORK -->
+        <Variable Name="WLAN_AVAILABLE_NETWORK" Type="Struct">
+            <Field Type="WCHAR [WLAN_MAX_NAME_LENGTH]"                  Name="strProfileName" />
+            <Field Type="DOT11_SSID"                                    Name="dot11Ssid" />
+            <Field Type="DOT11_BSS_TYPE"                                Name="dot11BssType" />
+            <Field Type="ULONG"                                         Name="uNumberOfBssids" />
+            <Field Type="BOOL"                                          Name="bNetworkConnectable" />
+            <Field Type="WLAN_REASON_CODE"                              Name="wlanNotConnectableReason" />
+            <Field Type="ULONG"                                         Name="uNumberOfPhyTypes" />
+            <Field Type="DOT11_PHY_TYPE [WLAN_MAX_PHY_TYPE_NUMBER]"     Name="dot11PhyTypes" />
+            <Field Type="BOOL"                                          Name="bMorePhyTypes" />
+            <Field Type="WLAN_SIGNAL_QUALITY"                           Name="wlanSignalQuality" />
+            <Field Type="BOOL"                                          Name="bSecurityEnabled" />
+            <Field Type="DOT11_AUTH_ALGORITHM"                          Name="dot11DefaultAuthAlgorithm" />
+            <Field Type="DOT11_CIPHER_ALGORITHM"                        Name="dot11DefaultCipherAlgorithm" />
+            <Field Type="[WLAN_AVAILABLE_NETWORK_FLAGS]"                Name="dwFlags" />
+            <Field Type="DWORD"                                         Name="dwReserved" />
+        </Variable>
+        <Variable Name="WLAN_AVAILABLE_NETWORK [1]" Type="Array" Base="WLAN_AVAILABLE_NETWORK" Count="1" />
+
+        <!-- WLAN_AVAILABLE_NETWORK_LIST -->
+        <Variable Name="WLAN_AVAILABLE_NETWORK_LIST" Type="Struct">
+            <Field Type="DWORD"                         Name="dwNumberOfItems" />
+            <Field Type="DWORD"                         Name="dwIndex" />
+            <Field Type="WLAN_AVAILABLE_NETWORK [1]"    Name="Network" Count="dwNumberOfItems" />
+        </Variable>
+        <Variable Name="PWLAN_AVAILABLE_NETWORK_LIST"   Type="Pointer" Base="WLAN_AVAILABLE_NETWORK_LIST" />
+        <Variable Name="PWLAN_AVAILABLE_NETWORK_LIST*"  Type="Pointer" Base="PWLAN_AVAILABLE_NETWORK_LIST" />
+
+        <!-- DOT11_NETWORK -->
+        <Variable Name="DOT11_NETWORK" Type="Struct">
+            <Field Type="DOT11_SSID"        Name="dot11Ssid" />
+            <Field Type="DOT11_BSS_TYPE"    Name="dot11BssType" />
+        </Variable>
+        <Variable Name="DOT11_NETWORK [1]" Type="Array" Base="DOT11_NETWORK" Count="1" />
+
+        <!-- DOT11_NETWORK_LIST -->
+        <Variable Name="DOT11_NETWORK_LIST" Type="Struct">
+            <Field Type="DWORD"                 Name="dwNumberOfItems" />
+            <Field Type="DWORD"                 Name="dwIndex" />
+            <Field Type="DOT11_NETWORK [1]"     Name="Network" Count="dwNumberOfItems" />
+        </Variable>
+        <Variable Name="const PDOT11_NETWORK_LIST"  Type="Pointer" Base="DOT11_NETWORK_LIST" />
+        <Variable Name="PDOT11_NETWORK_LIST"        Type="Pointer" Base="DOT11_NETWORK_LIST" />
+        <Variable Name="PDOT11_NETWORK_LIST*"       Type="Pointer" Base="PDOT11_NETWORK_LIST" />
+
+        <!-- WLAN_INTERFACE_TYPE -->
+        <Variable Name="WLAN_INTERFACE_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="wlan_interface_type_emulated_802_11"     Value="0" />
+                <Set Name="wlan_interface_type_native_802_11"       Value="1" />
+                <Set Name="wlan_interface_type_invalid"             Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- WLAN_INTERFACE_CAPABILITY -->
+        <Variable Name="WLAN_INTERFACE_CAPABILITY" Type="Struct">
+            <Field Type="WLAN_INTERFACE_TYPE"                   Name="interfaceType" />
+            <Field Type="BOOL"                                  Name="bDot11DSupported" />
+            <Field Type="DWORD"                                 Name="dwMaxDesiredSsidListSize" />
+            <Field Type="DWORD"                                 Name="dwMaxDesiredBssidListSize" />
+            <Field Type="DWORD"                                 Name="dwNumberOfSupportedPhys" />
+            <Field Type="DOT11_PHY_TYPE [WLAN_MAX_PHY_INDEX]"   Name="dot11PhyTypes" />
+        </Variable>
+        <Variable Name="PWLAN_INTERFACE_CAPABILITY"     Type="Pointer" Base="WLAN_INTERFACE_CAPABILITY" />
+        <Variable Name="PWLAN_INTERFACE_CAPABILITY*"    Type="Pointer" Base="PWLAN_INTERFACE_CAPABILITY" />
+
+        <!-- WLAN_RATE_SET -->
+        <Variable Name="WLAN_RATE_SET" Type="Struct">
+            <Field Type="ULONG"                                 Name="uRateSetLength" />
+            <Field Type="USHORT [DOT11_RATE_SET_MAX_LENGTH]"    Name="usRateSet" />
+        </Variable>
+
+        <!-- WLAN_BSS_ENTRY -->
+        <Variable Name="WLAN_BSS_ENTRY" Type="Struct">
+            <Field Type="DOT11_SSID"            Name="dot11Ssid" />
+            <Field Type="ULONG"                 Name="uPhyId" />
+            <Field Type="DOT11_MAC_ADDRESS"     Name="dot11Bssid" />
+            <Field Type="DOT11_BSS_TYPE"        Name="dot11BssType" />
+            <Field Type="DOT11_PHY_TYPE"        Name="dot11BssPhyType" />
+            <Field Type="LONG"                  Name="lRssi" />
+            <Field Type="ULONG"                 Name="uLinkQuality" />
+            <Field Type="BOOLEAN"               Name="bInRegDomain" />
+            <Field Type="USHORT"                Name="usBeaconPeriod" />
+            <Field Type="ULONGLONG"             Name="ullTimestamp" />
+            <Field Type="ULONGLONG"             Name="ullHostTimestamp" />
+            <Field Type="USHORT"                Name="usCapabilityInformation" />
+            <Field Type="ULONG"                 Name="ulChCenterFrequency" />
+            <Field Type="WLAN_RATE_SET"         Name="wlanRateSet" />
+            <Field Type="ULONG"                 Name="ulIeOffset" />
+            <Field Type="ULONG"                 Name="ulIeSize" />
+        </Variable>
+        <Variable Name="WLAN_BSS_ENTRY [1]" Type="Array" Base="WLAN_BSS_ENTRY" Count="1" />
+
+        <!-- WLAN_BSS_LIST -->
+        <Variable Name="WLAN_BSS_LIST" Type="Struct">
+            <Field Type="DWORD"                 Name="dwTotalSize" />
+            <Field Type="DWORD"                 Name="dwNumberOfItems" />
+            <Field Type="WLAN_BSS_ENTRY [1]"    Name="wlanBssEntries" Count="dwNumberOfItems" />
+        </Variable>
+        <Variable Name="PWLAN_BSS_LIST"     Type="Pointer" Base="WLAN_BSS_LIST" />
+        <Variable Name="PWLAN_BSS_LIST*"    Type="Pointer" Base="PWLAN_BSS_LIST" />
+
+        <!-- WLAN_PROFILE_INFO -->
+        <Variable Name="WLAN_PROFILE_INFO" Type="Struct">
+            <Field Type="WCHAR [WLAN_MAX_NAME_LENGTH]"  Name="strProfileName" />
+            <Field Type="[WlanProfileFlags]"            Name="dwFlags" />
+        </Variable>
+        <Variable Name="WLAN_PROFILE_INFO [1]" Type="Array" Base="WLAN_PROFILE_INFO" Count="1" />
+
+        <!-- WLAN_PROFILE_INFO_LIST -->
+        <Variable Name="WLAN_PROFILE_INFO_LIST" Type="Struct">
+            <Field Type="DWORD"                     Name="dwNumberOfItems" />
+            <Field Type="DWORD"                     Name="dwIndex" />
+            <Field Type="WLAN_PROFILE_INFO [1]"     Name="ProfileInfo" Count="dwNumberOfItems" />
+        </Variable>
+        <Variable Name="PWLAN_PROFILE_INFO_LIST"    Type="Pointer" Base="WLAN_PROFILE_INFO_LIST" />
+        <Variable Name="PWLAN_PROFILE_INFO_LIST*"   Type="Pointer" Base="PWLAN_PROFILE_INFO_LIST" />
+
+        <!-- WLAN_HOSTED_NETWORK_STATE -->
+        <Variable Name="WLAN_HOSTED_NETWORK_STATE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="wlan_hosted_network_unavailable"     Value="0" />
+                <Set Name="wlan_hosted_network_idle"            Value="1" />
+                <Set Name="wlan_hosted_network_active"          Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- WLAN_HOSTED_NETWORK_PEER_AUTH_STATE -->
+        <Variable Name="WLAN_HOSTED_NETWORK_PEER_AUTH_STATE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="wlan_hosted_network_peer_state_invalid"          Value="0" />
+                <Set Name="wlan_hosted_network_peer_state_authenticated"    Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- WLAN_HOSTED_NETWORK_PEER_STATE -->
+        <Variable Name="WLAN_HOSTED_NETWORK_PEER_STATE" Type="Struct">
+            <Field Type="DOT11_MAC_ADDRESS"                     Name="PeerMacAddress" />
+            <Field Type="WLAN_HOSTED_NETWORK_PEER_AUTH_STATE"   Name="PeerAuthState" />
+        </Variable>
+        <Variable Name="WLAN_HOSTED_NETWORK_PEER_STATE [1]" Type="Array" Base="WLAN_HOSTED_NETWORK_PEER_STATE" Count="1" />
+
+        <!-- WLAN_HOSTED_NETWORK_STATUS -->
+        <Variable Name="WLAN_HOSTED_NETWORK_STATUS" Type="Struct">
+            <Field Type="WLAN_HOSTED_NETWORK_STATE"             Name="HostedNetworkState" />
+            <Field Type="GUID"                                  Name="IPDeviceID" />
+            <Field Type="DOT11_MAC_ADDRESS"                     Name="wlanHostedNetworkBSSID" />
+            <Field Type="DOT11_PHY_TYPE"                        Name="dot11PhyType" />
+            <Field Type="ULONG"                                 Name="ulChannelFrequency" />
+            <Field Type="DWORD"                                 Name="dwNumberOfPeers" />
+            <Field Type="WLAN_HOSTED_NETWORK_PEER_STATE [1]"    Name="PeerList" Count="dwNumberOfPeers" />
+        </Variable>
+        <Variable Name="PWLAN_HOSTED_NETWORK_STATUS"    Type="Pointer" Base="WLAN_HOSTED_NETWORK_STATUS" />
+        <Variable Name="PWLAN_HOSTED_NETWORK_STATUS*"   Type="Pointer" Base="PWLAN_HOSTED_NETWORK_STATUS" />
+
+        <!-- WLAN_RAW_DATA -->
+        <Variable Name="WLAN_RAW_DATA" Type="Struct">
+            <Field Type="DWORD"     Name="dwDataSize" />
+            <Field Type="BYTE [1]"  Name="DataBlob" Count="dwDataSize" />
+        </Variable>
+        <Variable Name="const PWLAN_RAW_DATA" Type="Pointer" Base="WLAN_RAW_DATA" />
 
         <!-- WLAN_CONNECTION_MODE -->
         <Variable Name="WLAN_CONNECTION_MODE" Type="Alias" Base="UINT">
@@ -40,15 +398,6 @@
                 <Set Name="wlan_connection_mode_discovery_unsecure"     Value="3" />
                 <Set Name="wlan_connection_mode_auto"                   Value="4" />
                 <Set Name="wlan_connection_mode_invalid"                Value="5" />
-            </Enum>
-        </Variable>
-
-        <!-- DOT11_BSS_TYPE -->
-        <Variable Name="DOT11_BSS_TYPE" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="dot11_BSS_type_infrastructure"   Value="1" />
-                <Set Name="dot11_BSS_type_independent"      Value="2" />
-                <Set Name="dot11_BSS_type_any"              Value="3" />
             </Enum>
         </Variable>
 
@@ -183,10 +532,9 @@
             </Enum>
         </Variable>
 
-        <!-- TODO: Below is flag or enum
-<!-- WLAN_INTF_OPCODE --> -->
+        <!-- WLAN_INTF_OPCODE -->
         <Variable Name="WLAN_INTF_OPCODE" Type="Alias" Base="UINT">
-            <Flag>
+            <Enum>
                 <Set Name="wlan_intf_opcode_autoconf_enabled"                           Value="1" />
                 <Set Name="wlan_intf_opcode_background_scan_enabled"                    Value="2" />
                 <Set Name="wlan_intf_opcode_media_streaming_mode"                       Value="3" />
@@ -204,9 +552,10 @@
                 <Set Name="wlan_intf_opcode_hosted_network_capable"                     Value="15" />
                 <Set Name="wlan_intf_opcode_statistics"                                 Value="0x10000101" />
                 <Set Name="wlan_intf_opcode_rssi"                                       Value="0x10000102" />
-            </Flag>
+            </Enum>
         </Variable>
 
+        <!-- [WlanNotificationSource] -->
         <Variable Name="[WlanNotificationSource]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -224,6 +573,7 @@
             <Display Name="PDWORD" />
         </Variable>
 
+        <!-- [WlanAvailableFlags] -->
         <Variable Name="[WlanAvailableFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -232,6 +582,7 @@
             </Flag>
         </Variable>
 
+        <!-- [WlanAccess] -->
         <Variable Name="[WlanAccess]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -244,26 +595,14 @@
             <Display Name="PDWORD" />
         </Variable>
 
-        <Variable Name="[WlanProfileFlags]" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
-            <Flag>
-                <Set Name="WLAN_PROFILE_GROUP_POLICY"                   Value="0x00000001" />
-                <Set Name="WLAN_PROFILE_USER"                           Value="0x00000002" />
-                <Set Name="WLAN_PROFILE_GET_PLAINTEXT_KEY"              Value="0x00000004" />
-                <Set Name="WLAN_PROFILE_CONNECTION_MODE_SET_BY_CLIENT"  Value="0x00010000" />
-                <Set Name="WLAN_PROFILE_CONNECTION_MODE_AUTO"           Value="0x00020000" />
-            </Flag>
-        </Variable>
-        <Variable Name="[WlanProfileFlags*]" Type="Pointer" Base="[WlanProfileFlags]">
-            <Display Name="DWORD*" />
-        </Variable>
-
+        <!-- EAP_TYPE -->
         <Variable Name="EAP_TYPE" Type="Struct">
             <Field Type="BYTE"  Name="type" />
             <Field Type="DWORD" Name="dwVendorId" />
             <Field Type="DWORD" Name="dwVendorType" />
         </Variable>
 
+        <!-- EAP_METHOD_TYPE -->
         <Variable Name="EAP_METHOD_TYPE" Type="Struct">
             <Field Type="EAP_TYPE"  Name="eapType" />
             <Field Type="DWORD"     Name="dwAuthorId" />

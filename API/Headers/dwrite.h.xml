@@ -1,0 +1,578 @@
+<!--
+    API Monitor Definitions
+    (c) 2011, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Headers>
+        <!-- Interfaces -->
+        <Variable Name="IDWriteBitmapRenderTarget"      Type="Interface" />
+        <Variable Name="IDWriteFactory"                 Type="Interface" />
+        <Variable Name="IDWriteFont"                    Type="Interface" />
+        <Variable Name="IDWriteFontCollection"          Type="Interface" />
+        <Variable Name="IDWriteFontCollectionLoader"    Type="Interface" />
+        <Variable Name="IDWriteFontFace"                Type="Interface" />
+        <Variable Name="IDWriteFontFamily"              Type="Interface" />
+        <Variable Name="IDWriteFontFile"                Type="Interface" />
+        <Variable Name="IDWriteFontFileEnumerator"      Type="Interface" />
+        <Variable Name="IDWriteFontFileLoader"          Type="Interface" />
+        <Variable Name="IDWriteFontFileStream"          Type="Interface" />
+        <Variable Name="IDWriteFontList"                Type="Interface" />
+        <Variable Name="IDWriteGdiInterop"              Type="Interface" />
+        <Variable Name="IDWriteGlyphRunAnalysis"        Type="Interface" />
+        <Variable Name="IDWriteInlineObject"            Type="Interface" />
+        <Variable Name="IDWriteLocalFontFileLoader"     Type="Interface" />
+        <Variable Name="IDWriteLocalizedStrings"        Type="Interface" />
+        <Variable Name="IDWritePixelSnapping"           Type="Interface" />
+        <Variable Name="IDWriteRenderingParams"         Type="Interface" />
+        <Variable Name="IDWriteTextAnalyzer"            Type="Interface" />
+        <Variable Name="IDWriteTextFormat"              Type="Interface" />
+        <Variable Name="IDWriteTextLayout"              Type="Interface" />
+        <Variable Name="IDWriteTextRenderer"            Type="Interface" />
+        <Variable Name="IDWriteTypography"              Type="Interface" />
+
+        <!-- Interface Aliases -->
+        <Variable Name="IDWriteFontFile* const*"        Type="Alias"    Base="IDWriteFontFile**"/>
+
+        <!-- Undefined Interfaces -->
+        <Variable Name="IDWriteTextAnalysisSource"      Type="Interface" />
+        <Variable Name="IDWriteNumberSubstitution"      Type="Interface" />
+        <Variable Name="IDWriteGeometrySink"            Type="Interface" />
+        <Variable Name="IDWriteTextAnalysisSink"        Type="Interface" />
+        
+        <!-- TODO: Bitfields -->
+        <Variable Name="DWRITE_CLUSTER_METRICS*"                    Type="Alias"    Base="LPVOID"/>
+        <Variable Name="DWRITE_SHAPING_TEXT_PROPERTIES*"            Type="Alias"    Base="LPVOID" />
+        <Variable Name="DWRITE_SHAPING_GLYPH_PROPERTIES*"           Type="Alias"    Base="LPVOID" />
+        <Variable Name="DWRITE_SHAPING_GLYPH_PROPERTIES const*"     Type="Alias"    Base="LPVOID" />
+
+        <!-- Variables -->
+        <Variable Name="UINT16 const*"                  Type="Pointer"  Base="UINT16"/>
+        <Variable Name="UINT32 const*"                  Type="Pointer"  Base="UINT32"/>
+        <Variable Name="FLOAT const*"                   Type="Pointer"  Base="FLOAT"/>
+        <Variable Name="void const*"                    Type="Pointer"  Base="void"/>
+        <Variable Name="void const**"                   Type="Pointer"  Base="void const*"/>
+        <Variable Name="RECT const*"                    Type="Pointer"  Base="RECT"/>
+        <Variable Name="LOGFONTW const*"                Type="Alias"    Base="LOGFONTW*"/>
+
+        <!-- DWRITE_GLYPH_OFFSET -->
+        <Variable Name="DWRITE_GLYPH_OFFSET" Type="Struct">
+            <Field Type="FLOAT"     Name="advanceOffset" />
+            <Field Type="FLOAT"     Name="ascenderOffset" />
+        </Variable>
+        <Variable Name="DWRITE_GLYPH_OFFSET*"       Type="Pointer" Base="DWRITE_GLYPH_OFFSET"/>
+        <Variable Name="DWRITE_GLYPH_OFFSET const*" Type="Pointer" Base="DWRITE_GLYPH_OFFSET"/>
+
+        <!-- DWRITE_GLYPH_RUN -->
+        <Variable Name="DWRITE_GLYPH_RUN" Type="Struct">
+            <Field Type="IDWriteFontFace*"              Name="fontFace" />
+            <Field Type="FLOAT"                         Name="fontEmSize" />
+            <Field Type="UINT32"                        Name="glyphCount" />
+            <Field Type="UINT16 const*"                 Name="glyphIndices" Count="glyphCount" />
+            <Field Type="FLOAT const*"                  Name="glyphAdvances" Count="glyphCount" />
+            <Field Type="DWRITE_GLYPH_OFFSET const*"    Name="glyphOffsets" Count="glyphCount" />
+            <Field Type="BOOL"                          Name="isSideways" />
+            <Field Type="UINT32"                        Name="bidiLevel" />
+        </Variable>
+        <Variable Name="CONST DWRITE_GLYPH_RUN*" Type="Pointer" Base="DWRITE_GLYPH_RUN" />
+        <Variable Name="DWRITE_GLYPH_RUN const*" Type="Pointer" Base="DWRITE_GLYPH_RUN" />
+
+        <!-- DWRITE_FACTORY_TYPE -->
+        <Variable Name="DWRITE_FACTORY_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DWRITE_FACTORY_TYPE_SHARED"      Value="0" />
+                <Set Name="DWRITE_FACTORY_TYPE_ISOLATED"    Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- DWRITE_MATRIX -->
+        <Variable Name="DWRITE_MATRIX" Type="Struct">
+            <Field Type="FLOAT"     Name="m11" />
+            <Field Type="FLOAT"     Name="m12" />
+            <Field Type="FLOAT"     Name="m21" />
+            <Field Type="FLOAT"     Name="m22" />
+            <Field Type="FLOAT"     Name="dx" />
+            <Field Type="FLOAT"     Name="dy" />
+        </Variable>
+        <Variable Name="DWRITE_MATRIX*"         Type="Pointer" Base="DWRITE_MATRIX"/>
+        <Variable Name="DWRITE_MATRIX const*"   Type="Pointer" Base="DWRITE_MATRIX"/>
+
+        <!-- DWRITE_FONT_FACE_TYPE -->
+        <Variable Name="DWRITE_FONT_FACE_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DWRITE_FONT_FACE_TYPE_CFF"                   Value="0" />
+                <Set Name="DWRITE_FONT_FACE_TYPE_TRUETYPE"              Value="1" />
+                <Set Name="DWRITE_FONT_FACE_TYPE_TRUETYPE_COLLECTION"   Value="2" />
+                <Set Name="DWRITE_FONT_FACE_TYPE_TYPE1"                 Value="3" />
+                <Set Name="DWRITE_FONT_FACE_TYPE_VECTOR"                Value="4" />
+                <Set Name="DWRITE_FONT_FACE_TYPE_BITMAP"                Value="5" />
+                <Set Name="DWRITE_FONT_FACE_TYPE_UNKNOWN"               Value="6" />
+            </Enum>
+        </Variable>
+        <Variable Name="DWRITE_FONT_FACE_TYPE*" Type="Pointer" Base="DWRITE_FONT_FACE_TYPE"/>
+
+        <!-- DWRITE_PIXEL_GEOMETRY -->
+        <Variable Name="DWRITE_PIXEL_GEOMETRY" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DWRITE_PIXEL_GEOMETRY_FLAT"          Value="0" />
+                <Set Name="DWRITE_PIXEL_GEOMETRY_RGB"           Value="1" />
+                <Set Name="DWRITE_PIXEL_GEOMETRY_BGR"           Value="2" />
+            </Enum>
+        </Variable>
+        
+        <!-- DWRITE_FONT_WEIGHT -->
+        <Variable Name="DWRITE_FONT_WEIGHT" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DWRITE_FONT_WEIGHT_THIN"             Value="100" />
+                <Set Name="DWRITE_FONT_WEIGHT_EXTRA_LIGHT"      Value="200" />
+                <Set Name="DWRITE_FONT_WEIGHT_LIGHT"            Value="300" />
+                <Set Name="DWRITE_FONT_WEIGHT_NORMAL"           Value="400" />
+                <Set Name="DWRITE_FONT_WEIGHT_MEDIUM"           Value="500" />
+                <Set Name="DWRITE_FONT_WEIGHT_SEMI_BOLD"        Value="600" />
+                <Set Name="DWRITE_FONT_WEIGHT_BOLD"             Value="700" />
+                <Set Name="DWRITE_FONT_WEIGHT_EXTRA_BOLD"       Value="800" />
+                <Set Name="DWRITE_FONT_WEIGHT_BLACK"            Value="900" />
+                <Set Name="DWRITE_FONT_WEIGHT_EXTRA_BLACK"      Value="950" />
+            </Enum>
+        </Variable>
+        <Variable Name="DWRITE_FONT_WEIGHT*" Type="Pointer" Base="DWRITE_FONT_WEIGHT"/>
+
+        <!-- DWRITE_NUMBER_SUBSTITUTION_METHOD -->
+        <Variable Name="DWRITE_NUMBER_SUBSTITUTION_METHOD" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DWRITE_NUMBER_SUBSTITUTION_METHOD_FROM_CULTURE"      Value="0" />
+                <Set Name="DWRITE_NUMBER_SUBSTITUTION_METHOD_CONTEXTUAL"        Value="1" />
+                <Set Name="DWRITE_NUMBER_SUBSTITUTION_METHOD_NONE"              Value="2" />
+                <Set Name="DWRITE_NUMBER_SUBSTITUTION_METHOD_NATIONAL"          Value="3" />
+                <Set Name="DWRITE_NUMBER_SUBSTITUTION_METHOD_TRADITIONAL"       Value="4" />
+            </Enum>
+        </Variable>
+
+        <!-- DWRITE_FONT_STRETCH -->
+        <Variable Name="DWRITE_FONT_STRETCH" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DWRITE_FONT_STRETCH_UNDEFINED"           Value="0" />
+                <Set Name="DWRITE_FONT_STRETCH_ULTRA_CONDENSED"     Value="1" />
+                <Set Name="DWRITE_FONT_STRETCH_EXTRA_CONDENSED"     Value="2" />
+                <Set Name="DWRITE_FONT_STRETCH_CONDENSED"           Value="3" />
+                <Set Name="DWRITE_FONT_STRETCH_SEMI_CONDENSED"      Value="4" />
+                <Set Name="DWRITE_FONT_STRETCH_NORMAL"              Value="5" />
+                <Set Name="DWRITE_FONT_STRETCH_SEMI_EXPANDED"       Value="6" />
+                <Set Name="DWRITE_FONT_STRETCH_EXPANDED"            Value="7" />
+                <Set Name="DWRITE_FONT_STRETCH_EXTRA_EXPANDED"      Value="8" />
+                <Set Name="DWRITE_FONT_STRETCH_ULTRA_EXPANDED"      Value="9" />
+            </Enum>
+        </Variable>
+        <Variable Name="DWRITE_FONT_STRETCH*" Type="Pointer" Base="DWRITE_FONT_STRETCH"/>
+
+        <!-- DWRITE_FONT_STYLE -->
+        <Variable Name="DWRITE_FONT_STYLE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DWRITE_FONT_STYLE_NORMAL"        Value="0" />
+                <Set Name="DWRITE_FONT_STYLE_OBLIQUE"       Value="1" />
+                <Set Name="DWRITE_FONT_STYLE_ITALIC"        Value="2" />
+            </Enum>
+        </Variable>
+        <Variable Name="DWRITE_FONT_STYLE*" Type="Pointer" Base="DWRITE_FONT_STYLE"/>
+
+        <!-- DWRITE_INFORMATIONAL_STRING_ID -->
+        <Variable Name="DWRITE_INFORMATIONAL_STRING_ID" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DWRITE_INFORMATIONAL_STRING_NONE"                        Value="0" />
+                <Set Name="DWRITE_INFORMATIONAL_STRING_COPYRIGHT_NOTICE"            Value="1" />
+                <Set Name="DWRITE_INFORMATIONAL_STRING_VERSION_STRINGS"             Value="2" />
+                <Set Name="DWRITE_INFORMATIONAL_STRING_TRADEMARK"                   Value="3" />
+                <Set Name="DWRITE_INFORMATIONAL_STRING_MANUFACTURER"                Value="4" />
+                <Set Name="DWRITE_INFORMATIONAL_STRING_DESIGNER"                    Value="5" />
+                <Set Name="DWRITE_INFORMATIONAL_STRING_DESIGNER_URL"                Value="6" />
+                <Set Name="DWRITE_INFORMATIONAL_STRING_DESCRIPTION"                 Value="7" />
+                <Set Name="DWRITE_INFORMATIONAL_STRING_FONT_VENDOR_URL"             Value="8" />
+                <Set Name="DWRITE_INFORMATIONAL_STRING_LICENSE_DESCRIPTION"         Value="9" />
+                <Set Name="DWRITE_INFORMATIONAL_STRING_LICENSE_INFO_URL"            Value="10" />
+                <Set Name="DWRITE_INFORMATIONAL_STRING_WIN32_FAMILY_NAMES"          Value="11" />
+                <Set Name="DWRITE_INFORMATIONAL_STRING_WIN32_SUBFAMILY_NAMES"       Value="12" />
+                <Set Name="DWRITE_INFORMATIONAL_STRING_PREFERRED_FAMILY_NAMES"      Value="13" />
+                <Set Name="DWRITE_INFORMATIONAL_STRING_PREFERRED_SUBFAMILY_NAMES"   Value="14" />
+                <Set Name="DWRITE_INFORMATIONAL_STRING_SAMPLE_TEXT"                 Value="15" />
+            </Enum>
+        </Variable>
+
+        <!-- DWRITE_FONT_SIMULATIONS -->
+        <Variable Name="DWRITE_FONT_SIMULATIONS" Type="Alias" Base="UINT">
+            <Flag>
+                <Set Name="DWRITE_FONT_SIMULATIONS_NONE"        Value="0x0000" />
+                <Set Name="DWRITE_FONT_SIMULATIONS_BOLD"        Value="0x0001" />
+                <Set Name="DWRITE_FONT_SIMULATIONS_OBLIQUE"     Value="0x0002" />
+            </Flag>
+        </Variable>
+
+        <!-- DWRITE_FONT_METRICS -->
+        <Variable Name="DWRITE_FONT_METRICS" Type="Struct">
+            <Field Type="UINT16"    Name="designUnitsPerEm" />
+            <Field Type="UINT16"    Name="ascent" />
+            <Field Type="UINT16"    Name="descent" />
+            <Field Type="INT16"     Name="lineGap" />
+            <Field Type="UINT16"    Name="capHeight" />
+            <Field Type="UINT16"    Name="xHeight" />
+            <Field Type="INT16"     Name="underlinePosition" />
+            <Field Type="UINT16"    Name="underlineThickness" />
+            <Field Type="INT16"     Name="strikethroughPosition" />
+            <Field Type="UINT16"    Name="strikethroughThickness" />
+        </Variable>
+        <Variable Name="DWRITE_FONT_METRICS*" Type="Pointer" Base="DWRITE_FONT_METRICS"/>
+
+        <!-- DWRITE_RENDERING_MODE -->
+        <Variable Name="DWRITE_RENDERING_MODE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DWRITE_RENDERING_MODE_DEFAULT"                       Value="0" />
+                <Set Name="DWRITE_RENDERING_MODE_ALIASED"                       Value="1" />
+                <Set Name="DWRITE_RENDERING_MODE_CLEARTYPE_GDI_CLASSIC"         Value="2" />
+                <Set Name="DWRITE_RENDERING_MODE_CLEARTYPE_GDI_NATURAL"         Value="3" />
+                <Set Name="DWRITE_RENDERING_MODE_CLEARTYPE_NATURAL"             Value="4" />
+                <Set Name="DWRITE_RENDERING_MODE_CLEARTYPE_NATURAL_SYMMETRIC"   Value="5" />
+                <Set Name="DWRITE_RENDERING_MODE_OUTLINE"                       Value="6" />
+            </Enum>
+        </Variable>
+        <Variable Name="DWRITE_RENDERING_MODE*" Type="Pointer" Base="DWRITE_RENDERING_MODE"/>
+
+        <!-- DWRITE_FONT_FILE_TYPE -->
+        <Variable Name="DWRITE_FONT_FILE_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DWRITE_FONT_FILE_TYPE_UNKNOWN"               Value="0" />
+                <Set Name="DWRITE_FONT_FILE_TYPE_CFF"                   Value="1" />
+                <Set Name="DWRITE_FONT_FILE_TYPE_TRUETYPE"              Value="2" />
+                <Set Name="DWRITE_FONT_FILE_TYPE_TRUETYPE_COLLECTION"   Value="3" />
+                <Set Name="DWRITE_FONT_FILE_TYPE_TYPE1_PFM"             Value="4" />
+                <Set Name="DWRITE_FONT_FILE_TYPE_TYPE1_PFB"             Value="5" />
+                <Set Name="DWRITE_FONT_FILE_TYPE_VECTOR"                Value="6" />
+                <Set Name="DWRITE_FONT_FILE_TYPE_BITMAP"                Value="7" />
+            </Enum>
+        </Variable>
+        <Variable Name="DWRITE_FONT_FILE_TYPE*" Type="Pointer" Base="DWRITE_FONT_FILE_TYPE"/>
+
+        <!-- DWRITE_TEXTURE_TYPE -->
+        <Variable Name="DWRITE_TEXTURE_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DWRITE_TEXTURE_ALIASED_1x1"      Value="0" />
+                <Set Name="DWRITE_TEXTURE_CLEARTYPE_3x1"    Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- DWRITE_INLINE_OBJECT_METRICS -->
+        <Variable Name="DWRITE_INLINE_OBJECT_METRICS" Type="Struct">
+            <Field Type="FLOAT"     Name="width" />
+            <Field Type="FLOAT"     Name="height" />
+            <Field Type="FLOAT"     Name="baseline" />
+            <Field Type="BOOL"      Name="supportsSideways" />
+        </Variable>
+        <Variable Name="DWRITE_INLINE_OBJECT_METRICS*" Type="Pointer" Base="DWRITE_INLINE_OBJECT_METRICS"/>
+
+        <!-- DWRITE_OVERHANG_METRICS -->
+        <Variable Name="DWRITE_OVERHANG_METRICS" Type="Struct">
+            <Field Type="FLOAT"     Name="left" />
+            <Field Type="FLOAT"     Name="top" />
+            <Field Type="FLOAT"     Name="right" />
+            <Field Type="FLOAT"     Name="bottom" />
+        </Variable>
+        <Variable Name="DWRITE_OVERHANG_METRICS*" Type="Pointer" Base="DWRITE_OVERHANG_METRICS"/>
+
+        <!-- DWRITE_BREAK_CONDITION -->
+        <Variable Name="DWRITE_BREAK_CONDITION" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DWRITE_BREAK_CONDITION_NEUTRAL"          Value="0" />
+                <Set Name="DWRITE_BREAK_CONDITION_CAN_BREAK"        Value="1" />
+                <Set Name="DWRITE_BREAK_CONDITION_MAY_NOT_BREAK"    Value="2" />
+                <Set Name="DWRITE_BREAK_CONDITION_MUST_BREAK"       Value="3" />
+            </Enum>
+        </Variable>
+        <Variable Name="DWRITE_BREAK_CONDITION*" Type="Pointer" Base="DWRITE_BREAK_CONDITION"/>
+
+        <!-- DWRITE_SCRIPT_SHAPES -->
+        <Variable Name="DWRITE_SCRIPT_SHAPES" Type="Alias" Base="UINT">
+            <Flag>
+                <Set Name="DWRITE_SCRIPT_SHAPES_DEFAULT"        Value="0" />
+                <Set Name="DWRITE_SCRIPT_SHAPES_NO_VISUAL"      Value="1" />
+            </Flag>
+        </Variable>
+
+        <!-- DWRITE_SCRIPT_ANALYSIS -->
+        <Variable Name="DWRITE_SCRIPT_ANALYSIS" Type="Struct">
+            <Field Type="UINT16"                Name="script" />
+            <Field Type="DWRITE_SCRIPT_SHAPES"  Name="shapes" />
+        </Variable>
+        <Variable Name="DWRITE_SCRIPT_ANALYSIS const*" Type="Pointer" Base="DWRITE_SCRIPT_ANALYSIS"/>
+
+        <!-- DWRITE_TEXT_ALIGNMENT -->
+        <Variable Name="DWRITE_TEXT_ALIGNMENT" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DWRITE_TEXT_ALIGNMENT_LEADING"       Value="0" />
+                <Set Name="DWRITE_TEXT_ALIGNMENT_TRAILING"      Value="1" />
+                <Set Name="DWRITE_TEXT_ALIGNMENT_CENTER"        Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- DWRITE_PARAGRAPH_ALIGNMENT -->
+        <Variable Name="DWRITE_PARAGRAPH_ALIGNMENT" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DWRITE_PARAGRAPH_ALIGNMENT_NEAR"         Value="0" />
+                <Set Name="DWRITE_PARAGRAPH_ALIGNMENT_FAR"          Value="1" />
+                <Set Name="DWRITE_PARAGRAPH_ALIGNMENT_CENTER"       Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- DWRITE_WORD_WRAPPING -->
+        <Variable Name="DWRITE_WORD_WRAPPING" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DWRITE_WORD_WRAPPING_WRAP"           Value="0" />
+                <Set Name="DWRITE_WORD_WRAPPING_NO_WRAP"        Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- DWRITE_READING_DIRECTION -->
+        <Variable Name="DWRITE_READING_DIRECTION" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DWRITE_READING_DIRECTION_LEFT_TO_RIGHT"      Value="0" />
+                <Set Name="DWRITE_READING_DIRECTION_RIGHT_TO_LEFT"      Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- DWRITE_FLOW_DIRECTION -->
+        <Variable Name="DWRITE_FLOW_DIRECTION" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DWRITE_FLOW_DIRECTION_TOP_TO_BOTTOM" Value="0" />
+            </Enum>
+        </Variable>
+
+        <!-- DWRITE_TRIMMING_GRANULARITY -->
+        <Variable Name="DWRITE_TRIMMING_GRANULARITY" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DWRITE_TRIMMING_GRANULARITY_NONE"        Value="0" />
+                <Set Name="DWRITE_TRIMMING_GRANULARITY_CHARACTER"   Value="1" />
+                <Set Name="DWRITE_TRIMMING_GRANULARITY_WORD"        Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- DWRITE_TRIMMING -->
+        <Variable Name="DWRITE_TRIMMING" Type="Struct">
+            <Field Type="DWRITE_TRIMMING_GRANULARITY"   Name="granularity" />
+            <Field Type="UINT32"                        Name="delimiter" />
+            <Field Type="UINT32"                        Name="delimiterCount" />
+        </Variable>
+        <Variable Name="DWRITE_TRIMMING*"       Type="Pointer" Base="DWRITE_TRIMMING"/>
+        <Variable Name="DWRITE_TRIMMING const*" Type="Pointer" Base="DWRITE_TRIMMING"/>
+
+        <!-- DWRITE_LINE_SPACING_METHOD -->
+        <Variable Name="DWRITE_LINE_SPACING_METHOD" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DWRITE_LINE_SPACING_METHOD_DEFAULT"      Value="0" />
+                <Set Name="DWRITE_LINE_SPACING_METHOD_UNIFORM"      Value="1" />
+            </Enum>
+        </Variable>
+        <Variable Name="DWRITE_LINE_SPACING_METHOD*" Type="Pointer" Base="DWRITE_LINE_SPACING_METHOD"/>
+
+        <!-- DWRITE_TEXT_RANGE -->
+        <Variable Name="DWRITE_TEXT_RANGE" Type="Struct">
+            <Field Type="UINT32"    Name="startPosition" />
+            <Field Type="UINT32"    Name="length" />
+        </Variable>
+        <Variable Name="DWRITE_TEXT_RANGE*" Type="Pointer" Base="DWRITE_TEXT_RANGE"/>
+
+        <!-- DWRITE_LINE_METRICS -->
+        <Variable Name="DWRITE_LINE_METRICS" Type="Struct">
+            <Field Type="UINT32"    Name="length" />
+            <Field Type="UINT32"    Name="trailingWhitespaceLength" />
+            <Field Type="UINT32"    Name="newlineLength" />
+            <Field Type="FLOAT"     Name="height" />
+            <Field Type="FLOAT"     Name="baseline" />
+            <Field Type="BOOL"      Name="isTrimmed" />
+        </Variable>
+        <Variable Name="DWRITE_LINE_METRICS*" Type="Pointer" Base="DWRITE_LINE_METRICS"/>
+
+        <!-- DWRITE_TEXT_METRICS -->
+        <Variable Name="DWRITE_TEXT_METRICS" Type="Struct">
+            <Field Type="FLOAT"     Name="left" />
+            <Field Type="FLOAT"     Name="top" />
+            <Field Type="FLOAT"     Name="width" />
+            <Field Type="FLOAT"     Name="widthIncludingTrailingWhitespace" />
+            <Field Type="FLOAT"     Name="height" />
+            <Field Type="FLOAT"     Name="layoutWidth" />
+            <Field Type="FLOAT"     Name="layoutHeight" />
+            <Field Type="UINT32"    Name="maxBidiReorderingDepth" />
+            <Field Type="UINT32"    Name="lineCount" />
+        </Variable>
+        <Variable Name="DWRITE_TEXT_METRICS*" Type="Pointer" Base="DWRITE_TEXT_METRICS"/>
+
+        <!-- DWRITE_HIT_TEST_METRICS -->
+        <Variable Name="DWRITE_HIT_TEST_METRICS" Type="Struct">
+            <Field Type="UINT32"    Name="textPosition" />
+            <Field Type="UINT32"    Name="length" />
+            <Field Type="FLOAT"     Name="left" />
+            <Field Type="FLOAT"     Name="top" />
+            <Field Type="FLOAT"     Name="width" />
+            <Field Type="FLOAT"     Name="height" />
+            <Field Type="UINT32"    Name="bidiLevel" />
+            <Field Type="BOOL"      Name="isText" />
+            <Field Type="BOOL"      Name="isTrimmed" />
+        </Variable>
+        <Variable Name="DWRITE_HIT_TEST_METRICS*" Type="Pointer" Base="DWRITE_HIT_TEST_METRICS"/>
+
+        <!-- DWRITE_MEASURING_MODE -->
+        <Variable Name="DWRITE_MEASURING_MODE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DWRITE_MEASURING_MODE_NATURAL"       Value="0" />
+                <Set Name="DWRITE_MEASURING_MODE_GDI_CLASSIC"   Value="1" />
+                <Set Name="DWRITE_MEASURING_MODE_GDI_NATURAL"   Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- DWRITE_UNDERLINE -->
+        <Variable Name="DWRITE_UNDERLINE" Type="Struct">
+            <Field Type="FLOAT"                     Name="width" />
+            <Field Type="FLOAT"                     Name="thickness" />
+            <Field Type="FLOAT"                     Name="offset" />
+            <Field Type="FLOAT"                     Name="runHeight" />
+            <Field Type="DWRITE_READING_DIRECTION"  Name="readingDirection" />
+            <Field Type="DWRITE_FLOW_DIRECTION"     Name="flowDirection" />
+            <Field Type="WCHAR const*"              Name="localeName" />
+            <Field Type="DWRITE_MEASURING_MODE"     Name="measuringMode" />
+        </Variable>
+        <Variable Name="DWRITE_UNDERLINE const*" Type="Pointer" Base="DWRITE_UNDERLINE"/>
+
+        <!-- DWRITE_STRIKETHROUGH -->
+        <Variable Name="DWRITE_STRIKETHROUGH" Type="Struct">
+            <Field Type="FLOAT"                     Name="width" />
+            <Field Type="FLOAT"                     Name="thickness" />
+            <Field Type="FLOAT"                     Name="offset" />
+            <Field Type="DWRITE_READING_DIRECTION"  Name="readingDirection" />
+            <Field Type="DWRITE_FLOW_DIRECTION"     Name="flowDirection" />
+            <Field Type="WCHAR const*"              Name="localeName" />
+            <Field Type="DWRITE_MEASURING_MODE"     Name="measuringMode" />
+        </Variable>
+        <Variable Name="DWRITE_STRIKETHROUGH const*" Type="Pointer" Base="DWRITE_STRIKETHROUGH"/>
+
+        <!-- DWRITE_FONT_FEATURE_TAG -->
+        <Variable Name="DWRITE_FONT_FEATURE_TAG" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DWRITE_FONT_FEATURE_TAG_ALTERNATIVE_FRACTIONS"              Value="0x63726661" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_PETITE_CAPITALS_FROM_CAPITALS"      Value="0x63703263" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_SMALL_CAPITALS_FROM_CAPITALS"       Value="0x63733263" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_CONTEXTUAL_ALTERNATES"              Value="0x746c6163" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_CASE_SENSITIVE_FORMS"               Value="0x65736163" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_GLYPH_COMPOSITION_DECOMPOSITION"    Value="0x706d6363" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_CONTEXTUAL_LIGATURES"               Value="0x67696c63" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_CAPITAL_SPACING"                    Value="0x70737063" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_CONTEXTUAL_SWASH"                   Value="0x68777363" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_CURSIVE_POSITIONING"                Value="0x73727563" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_DEFAULT"                            Value="0x746c6664" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_DISCRETIONARY_LIGATURES"            Value="0x67696c64" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_EXPERT_FORMS"                       Value="0x74707865" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_FRACTIONS"                          Value="0x63617266" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_FULL_WIDTH"                         Value="0x64697766" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_HALF_FORMS"                         Value="0x666c6168" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_HALANT_FORMS"                       Value="0x6e6c6168" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_ALTERNATE_HALF_WIDTH"               Value="0x746c6168" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_HISTORICAL_FORMS"                   Value="0x74736968" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_HORIZONTAL_KANA_ALTERNATES"         Value="0x616e6b68" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_HISTORICAL_LIGATURES"               Value="0x67696c68" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_HALF_WIDTH"                         Value="0x64697768" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_HOJO_KANJI_FORMS"                   Value="0x6f6a6f68" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_JIS04_FORMS"                        Value="0x3430706a" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_JIS78_FORMS"                        Value="0x3837706a" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_JIS83_FORMS"                        Value="0x3338706a" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_JIS90_FORMS"                        Value="0x3039706a" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_KERNING"                            Value="0x6e72656b" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_STANDARD_LIGATURES"                 Value="0x6167696c" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_LINING_FIGURES"                     Value="0x6d756e6c" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_LOCALIZED_FORMS"                    Value="0x6c636f6c" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_MARK_POSITIONING"                   Value="0x6b72616d" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_MATHEMATICAL_GREEK"                 Value="0x6b72676d" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_MARK_TO_MARK_POSITIONING"           Value="0x6b6d6b6d" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_ALTERNATE_ANNOTATION_FORMS"         Value="0x746c616e" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_NLC_KANJI_FORMS"                    Value="0x6b636c6e" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_OLD_STYLE_FIGURES"                  Value="0x6d756e6f" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_ORDINALS"                           Value="0x6e64726f" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_PROPORTIONAL_ALTERNATE_WIDTH"       Value="0x746c6170" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_PETITE_CAPITALS"                    Value="0x70616370" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_PROPORTIONAL_FIGURES"               Value="0x6d756e70" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_PROPORTIONAL_WIDTHS"                Value="0x64697770" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_QUARTER_WIDTHS"                     Value="0x64697771" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_REQUIRED_LIGATURES"                 Value="0x67696c72" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_RUBY_NOTATION_FORMS"                Value="0x79627572" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_STYLISTIC_ALTERNATES"               Value="0x746c6173" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_SCIENTIFIC_INFERIORS"               Value="0x666e6973" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_SMALL_CAPITALS"                     Value="0x70636d73" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_SIMPLIFIED_FORMS"                   Value="0x6c706d73" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_1"                    Value="0x31307373" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_2"                    Value="0x32307373" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_3"                    Value="0x33307373" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_4"                    Value="0x34307373" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_5"                    Value="0x35307373" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_6"                    Value="0x36307373" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_7"                    Value="0x37307373" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_8"                    Value="0x38307373" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_9"                    Value="0x39307373" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_10"                   Value="0x30317373" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_11"                   Value="0x31317373" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_12"                   Value="0x32317373" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_13"                   Value="0x33317373" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_14"                   Value="0x34317373" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_15"                   Value="0x35317373" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_16"                   Value="0x36317373" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_17"                   Value="0x37317373" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_18"                   Value="0x38317373" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_19"                   Value="0x39317373" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_20"                   Value="0x30327373" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_SUBSCRIPT"                          Value="0x73627573" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_SUPERSCRIPT"                        Value="0x73707573" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_SWASH"                              Value="0x68737773" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_TITLING"                            Value="0x6c746974" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_TRADITIONAL_NAME_FORMS"             Value="0x6d616e74" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_TABULAR_FIGURES"                    Value="0x6d756e74" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_TRADITIONAL_FORMS"                  Value="0x64617274" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_THIRD_WIDTHS"                       Value="0x64697774" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_UNICASE"                            Value="0x63696e75" />
+                <Set Name="DWRITE_FONT_FEATURE_TAG_SLASHED_ZERO"                       Value="0x6f72657a" />
+            </Enum>
+        </Variable>
+
+        <!-- DWRITE_FONT_FEATURE -->
+        <Variable Name="DWRITE_FONT_FEATURE" Type="Struct">
+            <Field Type="DWRITE_FONT_FEATURE_TAG"   Name="nameTag" />
+            <Field Type="UINT32"                    Name="parameter" />
+        </Variable>
+        <Variable Name="DWRITE_FONT_FEATURE*" Type="Pointer" Base="DWRITE_FONT_FEATURE"/>
+
+        <!-- DWRITE_GLYPH_METRICS -->
+        <Variable Name="DWRITE_GLYPH_METRICS" Type="Struct">
+            <Field Type="INT32"     Name="leftSideBearing" />
+            <Field Type="UINT32"    Name="advanceWidth" />
+            <Field Type="INT32"     Name="rightSideBearing" />
+            <Field Type="INT32"     Name="topSideBearing" />
+            <Field Type="UINT32"    Name="advanceHeight" />
+            <Field Type="INT32"     Name="bottomSideBearing" />
+            <Field Type="INT32"     Name="verticalOriginY" />
+        </Variable>
+        <Variable Name="DWRITE_GLYPH_METRICS*" Type="Pointer" Base="DWRITE_GLYPH_METRICS"/>
+
+        <!-- DWRITE_TYPOGRAPHIC_FEATURES -->
+        <Variable Name="DWRITE_TYPOGRAPHIC_FEATURES" Type="Struct">
+            <Field Type="DWRITE_FONT_FEATURE*"  Name="features" Count="featureCount" />
+            <Field Type="UINT32"                Name="featureCount" />
+        </Variable>
+        <Variable Name="DWRITE_TYPOGRAPHIC_FEATURES*"           Type="Pointer" Base="DWRITE_TYPOGRAPHIC_FEATURES"/>
+        <Variable Name="DWRITE_TYPOGRAPHIC_FEATURES const**"    Type="Pointer" Base="DWRITE_TYPOGRAPHIC_FEATURES*"/>
+
+        <!-- DWRITE_GLYPH_RUN_DESCRIPTION -->
+        <!-- TODO: localName and string have count = stringLength -->
+        <Variable Name="DWRITE_GLYPH_RUN_DESCRIPTION" Type="Struct">
+            <Field Type="WCHAR const*"      Name="localeName" />
+            <Field Type="WCHAR const*"      Name="string" />
+            <Field Type="UINT32"            Name="stringLength" />
+            <Field Type="UINT16 const*"     Name="clusterMap" Count="stringLength" />
+            <Field Type="UINT32"            Name="textPosition" />
+        </Variable>
+        <Variable Name="DWRITE_GLYPH_RUN_DESCRIPTION const*" Type="Pointer" Base="DWRITE_GLYPH_RUN_DESCRIPTION"/>
+
+    </Headers>
+</ApiMonitor>

@@ -7,10 +7,6 @@
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Mpr.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         
-        <!-- TODO: Structures -->
-        <Variable Name="LPNETRESOURCE"          Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPCONNECTDLGSTRUCT"     Type="Alias"    Base="LPVOID" />
-
         <!-- NETCONNECTINFOSTRUCT -->
         <Variable Name="NETCONNECTINFOSTRUCT" Type="Struct">
             <Field Type="DWORD" 	Name="cbStructure" />
@@ -44,6 +40,7 @@
         </Variable>
         <Variable Name="LPNETINFOSTRUCT" Type="Pointer" Base="NETINFOSTRUCT" />
 
+        <!-- [ResourceScope] -->
         <Variable Name="[ResourceScope]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>
@@ -55,7 +52,8 @@
             </Enum>
         </Variable>
         
-        <Variable Name="[ResourceType]" Type="Alias" Base="DWORD">
+        <!-- [RESOURCETYPE] -->
+        <Variable Name="[RESOURCETYPE]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
                 <Set Name="RESOURCETYPE_ANY"        Value="0x00000000" />
@@ -66,7 +64,8 @@
             </Flag>
         </Variable>
         
-        <Variable Name="[ResourceUsage]" Type="Alias" Base="DWORD">
+        <!-- [RESOURCEUSAGE] -->
+        <Variable Name="[RESOURCEUSAGE]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
                 <Set Name="RESOURCEUSAGE_CONNECTABLE"           Value="0x00000001" />
@@ -78,7 +77,8 @@
                 <Set Name="RESOURCEUSAGE_RESERVED"              Value="0x80000000" />
             </Flag>
         </Variable>
-        
+
+        <!-- [UniversalInfoLevel] -->
         <Variable Name="[UniversalInfoLevel]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>
@@ -86,7 +86,8 @@
                 <Set Name="REMOTE_NAME_INFO_LEVEL"      Value="0x00000002" />
             </Enum>
         </Variable>
-        
+
+        <!-- [ConnectFlags] -->
         <Variable Name="[ConnectFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -107,7 +108,62 @@
                 <Set Name="CONNECT_CRED_RESET"          Value="0x00002000" />
             </Flag>
         </Variable>
-        
+
+        <!-- [RESOURCEDISPLAYTYPE] -->
+        <Variable Name="[RESOURCEDISPLAYTYPE]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="RESOURCEDISPLAYTYPE_GENERIC"             Value="0x00000000" />
+                <Set Name="RESOURCEDISPLAYTYPE_DOMAIN"              Value="0x00000001" />
+                <Set Name="RESOURCEDISPLAYTYPE_SERVER"              Value="0x00000002" />
+                <Set Name="RESOURCEDISPLAYTYPE_SHARE"               Value="0x00000003" />
+                <Set Name="RESOURCEDISPLAYTYPE_FILE"                Value="0x00000004" />
+                <Set Name="RESOURCEDISPLAYTYPE_GROUP"               Value="0x00000005" />
+                <Set Name="RESOURCEDISPLAYTYPE_NETWORK"             Value="0x00000006" />
+                <Set Name="RESOURCEDISPLAYTYPE_ROOT"                Value="0x00000007" />
+                <Set Name="RESOURCEDISPLAYTYPE_SHAREADMIN"          Value="0x00000008" />
+                <Set Name="RESOURCEDISPLAYTYPE_DIRECTORY"           Value="0x00000009" />
+                <Set Name="RESOURCEDISPLAYTYPE_TREE"                Value="0x0000000A" />
+                <Set Name="RESOURCEDISPLAYTYPE_NDSCONTAINER"        Value="0x0000000B" />
+            </Enum>
+        </Variable>
+
+        <!-- NETRESOURCE -->
+        <Variable Name="NETRESOURCE" Type="Struct">
+            <Field Type="[ResourceScope]"           Name="dwScope" />
+            <Field Type="[RESOURCETYPE]"            Name="dwType" />
+            <Field Type="[RESOURCEDISPLAYTYPE]"     Name="dwDisplayType" />
+            <Field Type="[RESOURCEUSAGE]"           Name="dwUsage" />
+            <Field Type="LPTSTR"                    Name="lpLocalName" />
+            <Field Type="LPTSTR"                    Name="lpRemoteName" />
+            <Field Type="LPTSTR"                    Name="lpComment"  />
+            <Field Type="LPTSTR"                    Name="lpProvider" />
+        </Variable>
+        <Variable Name="LPNETRESOURCE" Type="Pointer" Base="NETRESOURCE" />
+
+        <!-- [CONNDLG] -->
+        <Variable Name="[CONNDLG]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="CONNDLG_RO_PATH"         Value="0x00000001" />
+                <Set Name="CONNDLG_CONN_POINT"      Value="0x00000002" />
+                <Set Name="CONNDLG_USE_MRU"         Value="0x00000004" />
+                <Set Name="CONNDLG_HIDE_BOX"        Value="0x00000008" />
+                <Set Name="CONNDLG_PERSIST"         Value="0x00000010" />
+                <Set Name="CONNDLG_NOT_PERSIST"     Value="0x00000020" />
+            </Flag>
+        </Variable>
+
+        <!-- CONNECTDLGSTRUCT -->
+        <Variable Name="CONNECTDLGSTRUCT" Type="Struct">
+            <Field Type="DWORD"             Name="cbStructure" />
+            <Field Type="HWND"              Name="hwndOwner" />
+            <Field Type="LPNETRESOURCE"     Name="lpConnRes" />
+            <Field Type="[CONNDLG]"         Name="dwFlags" />
+            <Field Type="DWORD"             Name="dwDevNum" />
+        </Variable>
+        <Variable Name="LPCONNECTDLGSTRUCT" Type="Pointer" Base="CONNECTDLGSTRUCT" />
+
         <!-- Windows Networking (WNet) -->
         <Category Name="Networking/Network Management/Windows Networking (WNet)" />
         <Api Name="WNetSetLastError" BothCharset="True">
@@ -159,7 +215,7 @@
         </Api>
         <Api Name="WNetConnectionDialog">
             <Param Type="HWND" Name="hwnd" />
-            <Param Type="[ResourceType]" Name="dwType" />
+            <Param Type="[RESOURCETYPE]" Name="dwType" />
             <Return Type="DWORD" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -170,7 +226,7 @@
         </Api>
         <Api Name="WNetDisconnectDialog">
             <Param Type="HWND" Name="hwnd" />
-            <Param Type="[ResourceType]" Name="dwType" />
+            <Param Type="[RESOURCETYPE]" Name="dwType" />
             <Return Type="DWORD" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -248,8 +304,8 @@
         </Api>
         <Api Name="WNetOpenEnum" BothCharset="True">
             <Param Type="[ResourceScope]" Name="dwScope" />
-            <Param Type="[ResourceType]" Name="dwType" />
-            <Param Type="[ResourceUsage]" Name="dwUsage" />
+            <Param Type="[RESOURCETYPE]" Name="dwType" />
+            <Param Type="[RESOURCEUSAGE]" Name="dwUsage" />
             <Param Type="LPNETRESOURCE" Name="lpNetResource" />
             <Param Type="LPHANDLE" Name="lphEnum" />
             <Return Type="DWORD" />

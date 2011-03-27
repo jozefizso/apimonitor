@@ -8,15 +8,11 @@
     <Include Filename="Headers\security.h.xml" />
     <Module Name="Authz.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
 
-        <!-- TODO: Structures -->
-        <Variable Name="PAUTHZ_SOURCE_SCHEMA_REGISTRATION"      Type="Alias"    Base="LPVOID" />
-        <Variable Name="PAUTHZ_SECURITY_ATTRIBUTES_INFORMATION" Type="Alias"    Base="LPVOID" />
-        <Variable Name="PAUDIT_PARAMS"                          Type="Alias"    Base="LPVOID" />
-
         <!-- Variables -->
         <Variable Name="AUTHZ_CLIENT_CONTEXT_HANDLE"            Type="Alias"    Base="HANDLE" />
         <Variable Name="PAUTHZ_CLIENT_CONTEXT_HANDLE"           Type="Pointer"  Base="AUTHZ_CLIENT_CONTEXT_HANDLE" />
         <Variable Name="AUTHZ_AUDIT_EVENT_HANDLE"               Type="Alias"    Base="HANDLE" />
+        <Variable Name="PAUTHZ_AUDIT_EVENT_HANDLE"              Type="Pointer"  Base="AUTHZ_AUDIT_EVENT_HANDLE" />
         <Variable Name="AUTHZ_ACCESS_CHECK_RESULTS_HANDLE"      Type="Alias"    Base="HANDLE" />
         <Variable Name="PAUTHZ_ACCESS_CHECK_RESULTS_HANDLE"     Type="Pointer"  Base="AUTHZ_ACCESS_CHECK_RESULTS_HANDLE" />
         <Variable Name="AUTHZ_RESOURCE_MANAGER_HANDLE"          Type="Alias"    Base="HANDLE" />
@@ -26,6 +22,190 @@
         <Variable Name="PFN_AUTHZ_FREE_DYNAMIC_GROUPS"          Type="Alias"    Base="LPVOID" />
         <Variable Name="AUTHZ_SECURITY_EVENT_PROVIDER_HANDLE"   Type="Alias"    Base="HANDLE" />
         <Variable Name="PAUTHZ_SECURITY_EVENT_PROVIDER_HANDLE"  Type="Pointer"  Base="AUTHZ_SECURITY_EVENT_PROVIDER_HANDLE" />
+        <Variable Name="AUTHZ_AUDIT_EVENT_TYPE_HANDLE"          Type="Alias"    Base="HANDLE" />
+        
+        <!-- Arrays -->
+        <Variable Name="BYTE [_AUTHZ_SS_MAXSIZE]"               Type="Array"    Base="BYTE" Count="128" />
+
+        <!-- AUDIT_PARAM_TYPE -->
+        <Variable Name="AUDIT_PARAM_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="APT_None"                Value="1" />
+                <Set Name="APT_String"              Value="2" />
+                <Set Name="APT_Ulong"               Value="3" />
+                <Set Name="APT_Pointer"             Value="4" />
+                <Set Name="APT_Sid"                 Value="5" />
+                <Set Name="APT_LogonId"             Value="6" />
+                <Set Name="APT_ObjectTypeList"      Value="7" />
+                <Set Name="APT_Luid"                Value="8" />
+                <Set Name="APT_Guid"                Value="9" />
+                <Set Name="APT_Time"                Value="10" />
+                <Set Name="APT_Int64"               Value="11" />
+                <Set Name="APT_IpAddress"           Value="12" />
+                <Set Name="APT_LogonIdWithSid"      Value="13" />
+            </Enum>
+        </Variable>
+
+        <!-- AUDIT_OBJECT_TYPE -->
+        <Variable Name="AUDIT_OBJECT_TYPE" Type="Struct">
+            <Field Type="GUID"          Name="ObjectType" />
+            <Field Type="USHORT"        Name="Flags" />
+            <Field Type="USHORT"        Name="Level" />
+            <Field Type="ACCESS_MASK"   Name="AccessMask" />
+        </Variable>
+        <Variable Name="AUDIT_OBJECT_TYPE*" Type="Pointer" Base="AUDIT_OBJECT_TYPE" />
+
+        <!-- AUDIT_OBJECT_TYPES -->
+        <Variable Name="AUDIT_OBJECT_TYPES" Type="Struct">
+            <Field Type="USHORT"                Name="Count" />
+            <Field Type="USHORT"                Name="Flags" />
+            <Field Type="AUDIT_OBJECT_TYPE*"    Name="pObjectTypes" Count="Count" />
+        </Variable>
+        <Variable Name="AUDIT_OBJECT_TYPES*" Type="Pointer" Base="AUDIT_OBJECT_TYPES" />
+
+        <!-- AUDIT_IP_ADDRESS -->
+        <Variable Name="AUDIT_IP_ADDRESS" Type="Struct">
+            <Field Type="BYTE [_AUTHZ_SS_MAXSIZE]" Name="pIpAddress" />
+        </Variable>
+        <Variable Name="AUDIT_IP_ADDRESS*" Type="Pointer" Base="AUDIT_IP_ADDRESS" />
+
+        <!-- [AUDIT_PARAM_u1] -->
+        <Variable Name="[AUDIT_PARAM_u1]" Type="Union">
+            <Display Name="union" />
+            <Field Type="ULONG_PTR"             Name="Data0" />
+            <Field Type="PWSTR"                 Name="String" />
+            <Field Type="ULONG_PTR"             Name="u" />
+            <Field Type="SID*"                  Name="psid" />
+            <Field Type="GUID*"                 Name="pguid" />
+            <Field Type="ULONG"                 Name="LogonId_LowPart" />
+            <Field Type="AUDIT_OBJECT_TYPES*"   Name="pObjectTypes" />
+            <Field Type="AUDIT_IP_ADDRESS*"     Name="pIpAddress" />
+        </Variable>
+
+        <!-- [AUDIT_PARAM_u2] -->
+        <Variable Name="[AUDIT_PARAM_u2]" Type="Union">
+            <Display Name="union" />
+            <Field Type="ULONG_PTR"     Name="Data1" />
+            <Field Type="LONG"          Name="LogonId_HighPart" />
+        </Variable>
+
+        <!-- AUDIT_PARAM -->
+        <Variable Name="AUDIT_PARAM" Type="Struct">
+            <Field Type="AUDIT_PARAM_TYPE"      Name="Type" />
+            <Field Type="ULONG"                 Name="Length" />
+            <Field Type="DWORD"                 Name="Flags" />
+            <Field Type="[AUDIT_PARAM_u1]"      Name="" />
+            <Field Type="[AUDIT_PARAM_u2]"      Name="" />
+        </Variable>
+        <Variable Name="AUDIT_PARAM*" Type="Pointer" Base="AUDIT_PARAM" />
+
+        <!-- [APF_TYPE] -->
+        <Variable Name="[APF_TYPE]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="APF_AuditFailure"    Value="0x00000000" />
+                <Set Name="APF_AuditSuccess"    Value="0x00000001" />
+            </Enum>
+        </Variable>
+
+        <!-- AUDIT_PARAMS -->
+        <Variable Name="AUDIT_PARAMS" Type="Struct">
+            <Field Type="ULONG"                 Name="Length" />
+            <Field Type="[APF_TYPE]"            Name="Flags" />
+            <Field Type="USHORT"                Name="Count" />
+            <Field Type="AUDIT_PARAM*"          Name="Parameters" Count="Count" />
+        </Variable>
+        <Variable Name="PAUDIT_PARAMS" Type="Pointer" Base="AUDIT_PARAMS" />
+
+        <!-- AUTHZ_SECURITY_ATTRIBUTE_FQBN_VALUE -->
+        <Variable Name="AUTHZ_SECURITY_ATTRIBUTE_FQBN_VALUE" Type="Struct">
+            <Field Type="ULONG64"   Name="Version" />
+            <Field Type="PWSTR"     Name="pName" />
+        </Variable>
+        <Variable Name="PAUTHZ_SECURITY_ATTRIBUTE_FQBN_VALUE" Type="Pointer" Base="AUTHZ_SECURITY_ATTRIBUTE_FQBN_VALUE" />
+
+        <!-- AUTHZ_SECURITY_ATTRIBUTE_OCTET_STRING_VALUE -->
+        <Variable Name="AUTHZ_SECURITY_ATTRIBUTE_OCTET_STRING_VALUE" Type="Struct">
+            <Field Type="PVOID"     Name="pValue" />
+            <Field Type="ULONG"     Name="ValueLength" />
+        </Variable>
+        <Variable Name="PAUTHZ_SECURITY_ATTRIBUTE_OCTET_STRING_VALUE" Type="Pointer" Base="AUTHZ_SECURITY_ATTRIBUTE_OCTET_STRING_VALUE" />
+
+        <!-- [AUTHZ_SECURITY_ATTRIBUTE_V1_u] -->
+        <Variable Name="[AUTHZ_SECURITY_ATTRIBUTE_V1_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="PLONG64"                                       Name="pInt64" />
+            <Field Type="PULONG64"                                      Name="pUint64" />
+            <Field Type="PWSTR*"                                        Name="ppString" />
+            <Field Type="PAUTHZ_SECURITY_ATTRIBUTE_FQBN_VALUE"          Name="pFqbn" />
+            <Field Type="PAUTHZ_SECURITY_ATTRIBUTE_OCTET_STRING_VALUE"  Name="pOctetString" />
+        </Variable>
+
+        <!-- [AUTHZ_SECURITY_ATTRIBUTE] -->
+        <Variable Name="[AUTHZ_SECURITY_ATTRIBUTE]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="AUTHZ_SECURITY_ATTRIBUTE_NON_INHERITABLE"        Value="0x0001" />
+                <Set Name="AUTHZ_SECURITY_ATTRIBUTE_VALUE_CASE_SENSITIVE"   Value="0x0002" />
+            </Flag>
+        </Variable>
+
+        <!-- AUTHZ_SECURITY_ATTRIBUTE_V1 -->
+        <Variable Name="AUTHZ_SECURITY_ATTRIBUTE_V1" Type="Struct">
+            <Field Type="PWSTR"                             Name="pName" />
+            <Field Type="USHORT"                            Name="ValueType" />
+            <Field Type="USHORT"                            Name="Reserved" />
+            <Field Type="[AUTHZ_SECURITY_ATTRIBUTE]"        Name="Flags" />
+            <Field Type="ULONG"                             Name="ValueCount" />
+            <Field Type="[AUTHZ_SECURITY_ATTRIBUTE_V1_u]"   Name="Values" />
+        </Variable>
+        <Variable Name="PAUTHZ_SECURITY_ATTRIBUTE_V1" Type="Pointer" Base="AUTHZ_SECURITY_ATTRIBUTE_V1"/>
+
+        <!-- [AUTHZ_SECURITY_ATTRIBUTES_INFORMATION_u] -->
+        <Variable Name="[AUTHZ_SECURITY_ATTRIBUTES_INFORMATION_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="PAUTHZ_SECURITY_ATTRIBUTE_V1" Name="pAttributeV1" />
+        </Variable>
+
+        <!-- AUTHZ_SECURITY_ATTRIBUTES_INFORMATION -->
+        <Variable Name="AUTHZ_SECURITY_ATTRIBUTES_INFORMATION" Type="Struct">
+            <Field Type="USHORT"                                        Name="Version" />
+            <Field Type="USHORT"                                        Name="Reserved" />
+            <Field Type="ULONG"                                         Name="AttributeCount" />
+            <Field Type="[AUTHZ_SECURITY_ATTRIBUTES_INFORMATION_u]"     Name="Attribute" />
+        </Variable>
+        <Variable Name="PAUTHZ_SECURITY_ATTRIBUTES_INFORMATION" Type="Pointer" Base="AUTHZ_SECURITY_ATTRIBUTES_INFORMATION" />
+
+        <!-- AUTHZ_REGISTRATION_OBJECT_TYPE_NAME_OFFSET -->
+        <Variable Name="AUTHZ_REGISTRATION_OBJECT_TYPE_NAME_OFFSET" Type="Struct">
+            <Field Type="PWSTR"     Name="szObjectTypeName" />
+            <Field Type="DWORD"     Name="dwOffset" />
+        </Variable>
+        <Variable Name="AUTHZ_REGISTRATION_OBJECT_TYPE_NAME_OFFSET [ANYSIZE_ARRAY]" Type="Array" Base="AUTHZ_REGISTRATION_OBJECT_TYPE_NAME_OFFSET" Count="1" />
+
+        <!-- [AuthzRegistrationFlags] -->
+        <Variable Name="[AuthzRegistrationFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="AUTHZ_ALLOW_MULTIPLE_SOURCE_INSTANCES"   Value="0x1" />
+                <Set Name="AUTHZ_MIGRATED_LEGACY_PUBLISHER"         Value="0x2" />
+            </Flag>
+        </Variable>
+
+        <!-- AUTHZ_SOURCE_SCHEMA_REGISTRATION -->
+        <Variable Name="AUTHZ_SOURCE_SCHEMA_REGISTRATION" Type="Struct">
+            <Field Type="[AuthzRegistrationFlags]"          Name="dwFlags" />
+            <Field Type="PWSTR"                             Name="szEventSourceName" />
+            <Field Type="PWSTR"                             Name="szEventMessageFile" />
+            <Field Type="PWSTR"                             Name="szEventSourceXmlSchemaFile" />
+            <Field Type="PWSTR"                             Name="szEventAccessStringsFile" />
+            <Field Type="PWSTR"                             Name="szExecutableImagePath" />
+            <Field Type="GUID*"                             Name="pProviderGuid" />
+            <Field Type="DWORD"                             Name="dwObjectTypeNameCount" />
+            <Field Type="AUTHZ_REGISTRATION_OBJECT_TYPE_NAME_OFFSET [ANYSIZE_ARRAY]" Name="ObjectTypeNames" Count="dwObjectTypeNameCount" />
+        </Variable>
+        <Variable Name="PAUTHZ_SOURCE_SCHEMA_REGISTRATION" Type="Pointer" Base="AUTHZ_SOURCE_SCHEMA_REGISTRATION" />
+
 
         <!-- AUTHZ_ACCESS_REQUEST -->
         <Variable Name="AUTHZ_ACCESS_REQUEST" Type="Struct">
@@ -96,6 +276,16 @@
             </Enum>
         </Variable>
         <Variable Name="PAUTHZ_SECURITY_ATTRIBUTE_OPERATION" Type="Pointer" Base="AUTHZ_SECURITY_ATTRIBUTE_OPERATION" />
+
+        <!-- [AUTHZ_INITOBJAUDITEVENT_FLAGS] -->
+        <Variable Name="[AUTHZ_INITOBJAUDITEVENT_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="AUTHZ_NO_SUCCESS_AUDIT"      Value="0x00000001" />
+                <Set Name="AUTHZ_NO_FAILURE_AUDIT"      Value="0x00000002" />
+                <Set Name="AUTHZ_NO_ALLOC_STRINGS"      Value="0x00000004" />
+            </Flag>
+        </Variable>
 
         <!-- Authorization -->
         <Category Name="Security/Authorization/Basic Access Control" />
@@ -200,35 +390,31 @@
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <!-- Variable Arguments NOT supported
-    <Api Name="AuthzInitializeObjectAccessAuditEvent">
-        <Param Type="DWORD" Name="Flags" />
-        <Param Type="AUTHZ_AUDIT_EVENT_TYPE_HANDLE" Name="hAuditEventType" />
-        <Param Type="PWSTR" Name="szOperationType" />
-        <Param Type="PWSTR" Name="szObjectType" />
-        <Param Type="PWSTR" Name="szObjectName" />
-        <Param Type="PWSTR" Name="szAdditionalInfo" />
-        <Param Type="PAUTHZ_AUDIT_EVENT_HANDLE" Name="phAuditEvent" />
-        <Param Type="DWORD" Name="dwAdditionalParamCount" />
-        <Param Type="..." />
-        <Return Type="BOOL" />
-        <Success Return="NotEqual" Value="0" />
-    </Api>
-    <Api Name="AuthzInitializeObjectAccessAuditEvent2">
-        <Param Type="DWORD" Name="Flags" />
-        <Param Type="AUTHZ_AUDIT_EVENT_TYPE_HANDLE" Name="hAuditEventType" />
-        <Param Type="PWSTR" Name="szOperationType" />
-        <Param Type="PWSTR" Name="szObjectType" />
-        <Param Type="PWSTR" Name="szObjectName" />
-        <Param Type="PWSTR" Name="szAdditionalInfo" />
-        <Param Type="PWSTR" Name="szAdditionalInfo2" />
-        <Param Type="PAUTHZ_AUDIT_EVENT_HANDLE" Name="phAuditEvent" />
-        <Param Type="DWORD" Name="dwAdditionalParameterCount" />
-        <Param Type="..." />
-        <Return Type="BOOL" />
-        <Success Return="NotEqual" Value="0" />
-    </Api>
-    -->
+        <Api Name="AuthzInitializeObjectAccessAuditEvent" VarArgs="True">
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="AUTHZ_AUDIT_EVENT_TYPE_HANDLE" Name="hAuditEventType" />
+            <Param Type="PWSTR" Name="szOperationType" />
+            <Param Type="PWSTR" Name="szObjectType" />
+            <Param Type="PWSTR" Name="szObjectName" />
+            <Param Type="PWSTR" Name="szAdditionalInfo" />
+            <Param Type="PAUTHZ_AUDIT_EVENT_HANDLE" Name="phAuditEvent" />
+            <Param Type="DWORD" Name="dwAdditionalParamCount" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="AuthzInitializeObjectAccessAuditEvent2" VarArgs="True">
+            <Param Type="[AUTHZ_INITOBJAUDITEVENT_FLAGS]" Name="Flags" />
+            <Param Type="AUTHZ_AUDIT_EVENT_TYPE_HANDLE" Name="hAuditEventType" />
+            <Param Type="PWSTR" Name="szOperationType" />
+            <Param Type="PWSTR" Name="szObjectType" />
+            <Param Type="PWSTR" Name="szObjectName" />
+            <Param Type="PWSTR" Name="szAdditionalInfo" />
+            <Param Type="PWSTR" Name="szAdditionalInfo2" />
+            <Param Type="PAUTHZ_AUDIT_EVENT_HANDLE" Name="phAuditEvent" />
+            <Param Type="DWORD" Name="dwAdditionalParameterCount" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
         <Api Name="AuthzInitializeResourceManager">
             <Param Type="[AuthzInitRMFlags]" Name="flags" />
             <Param Type="PFN_AUTHZ_DYNAMIC_ACCESS_CHECK" Name="pfnAccessCheck" />
@@ -258,18 +444,15 @@
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <!-- Variable Arguments NOT supported
-    <Api Name="AuthzReportSecurityEvent">
-        <Param Type="DWORD" Name="dwFlags" />
-        <Param Type="AUTHZ_SECURITY_EVENT_PROVIDER_HANDLE" Name="hEventProvider" />
-        <Param Type="DWORD" Name="dwAuditId" />
-        <Param Type="PSID" Name="pUserSid" />
-        <Param Type="DWORD" Name="dwCount" />
-        <Param Type="..." />
-        <Return Type="BOOL" />
-        <Success Return="NotEqual" Value="0" />
-    </Api>
-    -->
+        <Api Name="AuthzReportSecurityEvent" VarArgs="True">
+            <Param Type="[APF_TYPE]" Name="dwFlags" />
+            <Param Type="AUTHZ_SECURITY_EVENT_PROVIDER_HANDLE" Name="hEventProvider" />
+            <Param Type="DWORD" Name="dwAuditId" />
+            <Param Type="PSID" Name="pUserSid" />
+            <Param Type="DWORD" Name="dwCount" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
         <Api Name="AuthzReportSecurityEventFromParams">
             <Param Type="DWORD" Name="dwFlags" />
             <Param Type="AUTHZ_SECURITY_EVENT_PROVIDER_HANDLE" Name="hEventProvider" />

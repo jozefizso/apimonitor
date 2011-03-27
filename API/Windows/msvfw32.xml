@@ -6,11 +6,13 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\gdi.h.xml" />
+    <Include Filename="Headers\multimedia.h.xml" />
 
     <Module Name="msvfw32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         <!-- Variables -->
         <Variable Name="HIC"                    Type="Alias"    Base="HANDLE" />
         <Variable Name="HDRAWDIB"               Type="Alias"    Base="HANDLE" />
+        <Variable Name="WCHAR [16]"             Type="Array"    Base="WCHAR"    Count="16" />
 
         <!-- DRAWDIBTIME -->
         <Variable Name="DRAWDIBTIME" Type="Struct">
@@ -44,12 +46,37 @@
             <Field Type="LONG"          Name="cbState" />
         </Variable>
         <Variable Name="PCOMPVARS" Type="Pointer" Base="COMPVARS" />
-        
-        <!-- TODO: Structures -->
-        <Variable Name="ICINFO*"                Type="Alias"    Base="LPVOID" />
 
-        <!-- Flags -->
-        <!-- TODO: ICOpenFlags is defined as WORD in one param and UINT in another - make sure it will not cause issues -->
+        <!-- [VIDCF] -->
+        <Variable Name="[VIDCF]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="VIDCF_QUALITY"           Value="0x0001" />
+                <Set Name="VIDCF_CRUNCH"            Value="0x0002" />
+                <Set Name="VIDCF_TEMPORAL"          Value="0x0004" />
+                <Set Name="VIDCF_COMPRESSFRAMES"    Value="0x0008" />
+                <Set Name="VIDCF_DRAW"              Value="0x0010" />
+                <Set Name="VIDCF_FASTTEMPORALC"     Value="0x0020" />
+                <Set Name="VIDCF_QUALITYTIME"       Value="0x0040" />
+                <Set Name="VIDCF_FASTTEMPORALD"     Value="0x0080" />
+            </Flag>
+        </Variable>
+
+        <!-- ICINFO -->
+        <Variable Name="ICINFO" Type="Struct">
+            <Field Type="DWORD"         Name="dwSize" />
+            <Field Type="FOURCC"        Name="fccType" Display="DWORD" />
+            <Field Type="DWORD"         Name="fccHandler" />
+            <Field Type="[VIDCF]"       Name="dwFlags" />
+            <Field Type="DWORD"         Name="dwVersion" />
+            <Field Type="DWORD"         Name="dwVersionICM" />
+            <Field Type="WCHAR [16]"    Name="szName" />
+            <Field Type="WCHAR [128]"   Name="szDescription" />
+            <Field Type="WCHAR [128]"   Name="szDriver" />
+        </Variable>
+        <Variable Name="ICINFO*" Type="Pointer" Base="ICINFO" />
+
+        <!-- [ICOpenFlags] -->
         <Variable Name="[ICOpenFlags]" Type="Alias" Base="UINT">
             <Display Name="UINT" />
             <Flag>
@@ -62,6 +89,7 @@
             </Flag>
         </Variable>
 
+        <!-- [ICMessage] -->
         <Variable Name="[ICMessage]" Type="Alias" Base="UINT">
             <Display Name="UINT" />
             <Enum>

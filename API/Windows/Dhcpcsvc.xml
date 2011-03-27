@@ -6,15 +6,56 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Dhcpcsvc.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        
-        <!-- TODO: Structures -->
-        <Variable Name="PMCAST_SCOPE_ENTRY"          Type="Alias" Base="LPVOID" />
-        <Variable Name="PMCAST_LEASE_REQUEST"        Type="Alias" Base="LPVOID" />
-        <Variable Name="PMCAST_LEASE_RESPONSE"       Type="Alias" Base="LPVOID" />
-        <Variable Name="PMCAST_SCOPE_CTX"            Type="Alias" Base="LPVOID" />
 
         <!-- Variables-->
-        <Variable Name="IP_ADDR_FAMILY"              Type="Alias" Base="unsigned short" />
+        <Variable Name="IP_ADDR_FAMILY"         Type="Alias" Base="unsigned short" />
+        <Variable Name="BYTE [16]"              Type="Array" Base="BYTE" Count="16" />
+
+        <!-- IPNG_ADDRESS -->
+        <Variable Name="IPNG_ADDRESS" Type="Union">
+            <Field Type="DWORD"         Name="IpAddrV4" />
+            <Field Type="BYTE [16]"     Name="IpAddrV6" />
+        </Variable>
+
+        <!-- MCAST_LEASE_REQUEST -->
+        <Variable Name="MCAST_LEASE_REQUEST" Type="Struct">
+            <Field Type="LONG"          Name="LeaseStartTime" />
+            <Field Type="LONG"          Name="MaxLeaseStartTime" />
+            <Field Type="DWORD"         Name="LeaseDuration" />
+            <Field Type="DWORD"         Name="MinLeaseDuration" />
+            <Field Type="IPNG_ADDRESS"  Name="ServerAddress" />
+            <Field Type="WORD"          Name="MinAddrCount" />
+            <Field Type="WORD"          Name="AddrCount" />
+            <Field Type="PBYTE"         Name="pAddrBuf" />
+        </Variable>
+        <Variable Name="PMCAST_LEASE_REQUEST" Type="Pointer" Base="MCAST_LEASE_REQUEST" />
+
+        <!-- MCAST_LEASE_RESPONSE -->
+        <Variable Name="MCAST_LEASE_RESPONSE" Type="Struct">
+            <Field Type="LONG"          Name="LeaseStartTime" />
+            <Field Type="LONG"          Name="LeaseEndTime" />
+            <Field Type="IPNG_ADDRESS"  Name="ServerAddress" />
+            <Field Type="WORD"          Name="AddrCount" />
+            <Field Type="PBYTE"         Name="pAddrBuf" />
+        </Variable>
+        <Variable Name="PMCAST_LEASE_RESPONSE" Type="Pointer" Base="MCAST_LEASE_RESPONSE" />
+
+        <!-- MCAST_SCOPE_CTX -->
+        <Variable Name="MCAST_SCOPE_CTX" Type="Struct">
+            <Field Type="IPNG_ADDRESS"      Name="ScopeID" />
+            <Field Type="IPNG_ADDRESS"      Name="Interface" />
+            <Field Type="IPNG_ADDRESS"      Name="ServerID" />
+        </Variable>
+        <Variable Name="PMCAST_SCOPE_CTX" Type="Pointer" Base="MCAST_SCOPE_CTX" />
+
+        <!-- MCAST_SCOPE_ENTRY -->
+        <Variable Name="MCAST_SCOPE_ENTRY" Type="Struct">
+            <Field Type="MCAST_SCOPE_CTX"   Name="ScopeCtx" />
+            <Field Type="IPNG_ADDRESS"      Name="LastAddr" />
+            <Field Type="DWORD"             Name="TTL" />
+            <Field Type="UNICODE_STRING"    Name="ScopeDesc" />
+        </Variable>
+        <Variable Name="PMCAST_SCOPE_ENTRY"          Type="Alias" Base="LPVOID" />
 
         <!-- DHCPCAPI_CLASSID -->
         <Variable Name="DHCPCAPI_CLASSID" Type="Struct">

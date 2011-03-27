@@ -4,14 +4,39 @@
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
+    <Include Filename="Headers\security.h.xml" />
     <Include Filename="Headers\windows.h.xml" />
     <Headers>
+        
+        <!-- Variables -->
+        <Variable Name="BYTE [IMAGE_SIZEOF_SHORT_NAME]" Type="Array" Base="BYTE" Count="8" />
 
-        <!-- TODO: Structures -->
-        <Variable Name="PIMAGE_SECTION_HEADER"      Type="Alias"    Base="LPVOID" />
-        <Variable Name="PIMAGE_SECTION_HEADER*"     Type="Pointer"  Base="PIMAGE_SECTION_HEADER" />
+        <!-- TODO: Structures (Different for 32/64) -->
         <Variable Name="PIMAGE_NT_HEADERS"          Type="Alias"    Base="LPVOID" />
         <Variable Name="PIMAGE_NT_HEADERS*"         Type="Pointer"  Base="PIMAGE_NT_HEADERS" />
+
+        <!-- [IMAGE_SECTION_HEADER_u] -->
+        <Variable Name="[IMAGE_SECTION_HEADER_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="DWORD"     Name="PhysicalAddress" />
+            <Field Type="DWORD"     Name="VirtualSize" />
+        </Variable>
+
+        <!-- IMAGE_SECTION_HEADER -->
+        <Variable Name="IMAGE_SECTION_HEADER" Type="Struct">
+            <Field Type="BYTE [IMAGE_SIZEOF_SHORT_NAME]"    Name="Name" />
+            <Field Type="[IMAGE_SECTION_HEADER_u]"          Name="Misc" />
+            <Field Type="DWORD"                             Name="VirtualAddress" />
+            <Field Type="DWORD"                             Name="SizeOfRawData" />
+            <Field Type="DWORD"                             Name="PointerToRawData" />
+            <Field Type="DWORD"                             Name="PointerToRelocations" />
+            <Field Type="DWORD"                             Name="PointerToLinenumbers" />
+            <Field Type="WORD"                              Name="NumberOfRelocations" />
+            <Field Type="WORD"                              Name="NumberOfLinenumbers" />
+            <Field Type="DWORD"                             Name="Characteristics" />
+        </Variable>
+        <Variable Name="PIMAGE_SECTION_HEADER"  Type="Pointer" Base="IMAGE_SECTION_HEADER" />
+        <Variable Name="PIMAGE_SECTION_HEADER*" Type="Pointer" Base="PIMAGE_SECTION_HEADER" />
 
         <!-- EVENT_TYPE -->
         <Variable Name="EVENT_TYPE" Type="Alias" Base="UINT">
@@ -30,7 +55,18 @@
             </Flag>
         </Variable>
 
-        <Variable Name="[MemoryFlags]" Type="Alias" Base="DWORD">
+        <!-- [MemoryType] -->
+        <Variable Name="[MemoryType]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="MEM_IMAGE"   Value="0x1000000" />
+                <Set Name="MEM_MAPPED"  Value="0x40000" />
+                <Set Name="MEM_PRIVATE" Value="0x20000" />
+            </Flag>
+        </Variable>
+
+        <!-- [MemoryAllocationFlags] -->
+        <Variable Name="[MemoryAllocationFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
                 <Set Name="MEM_COMMIT"          Value="0x1000" />
@@ -49,7 +85,34 @@
                 <Set Name="MEM_4MB_PAGES"       Value="0x80000000" />
             </Flag>
         </Variable>
-        
+
+        <Variable Name="[MemoryProtection]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="PAGE_EXECUTE"            Value="0x10" />
+                <Set Name="PAGE_EXECUTE_READ"       Value="0x20" />
+                <Set Name="PAGE_EXECUTE_READWRITE"  Value="0x40" />
+                <Set Name="PAGE_EXECUTE_WRITECOPY"  Value="0x80" />
+                <Set Name="PAGE_NOACCESS"           Value="0x01" />
+                <Set Name="PAGE_READONLY"           Value="0x02" />
+                <Set Name="PAGE_READWRITE"          Value="0x04" />
+                <Set Name="PAGE_WRITECOPY"          Value="0x08" />
+                <Set Name="PAGE_GUARD"              Value="0x100" />
+                <Set Name="PAGE_NOCACHE"            Value="0x200" />
+                <Set Name="PAGE_WRITECOMBINE"       Value="0x400" />
+                <Set Name="SEC_COMMIT"              Value="0x8000000" />
+                <Set Name="SEC_IMAGE"               Value="0x1000000" />
+                <Set Name="SEC_LARGE_PAGES"         Value="0x80000000" />
+                <Set Name="SEC_NOCACHE"             Value="0x10000000" />
+                <Set Name="SEC_RESERVE"             Value="0x4000000" />
+                <Set Name="SEC_WRITECOMBINE"        Value="0x40000000" />
+            </Flag>
+        </Variable>
+
+        <Variable Name="[MemoryProtection*]" Type="Pointer" Base="[MemoryProtection]">
+            <Display Name="PDWORD" />
+        </Variable>
+
         <Variable Name="[AclRevision]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>
@@ -125,6 +188,47 @@
             <Field Type="PSECURITY_QUALITY_OF_SERVICE" 	Name="SecurityQualityOfService" />
         </Variable>
         <Variable Name="POBJECT_ATTRIBUTES" Type="Pointer" Base="OBJECT_ATTRIBUTES" />
+
+        <!-- RTL_CRITICAL_SECTION_DEBUG -->
+        <Variable Name="RTL_CRITICAL_SECTION_DEBUG" Type="Struct">
+            <Field Type="USHORT"        Name="Type" />
+            <Field Type="USHORT"        Name="CreatorBackTraceIndex" />
+            <!-- TODO: Parent-Reference - CriticalSection is really RTL_CRITICAL_SECTION*-->
+            <Field Type="LPVOID"        Name="CriticalSection" Display="RTL_CRITICAL_SECTION*" />
+            <Field Type="LIST_ENTRY"    Name="ProcessLocksList" />
+            <Field Type="ULONG"         Name="EntryCount" />
+            <Field Type="ULONG"         Name="ContentionCount" />
+            <Field Type="ULONG [2]"     Name="Spare" />
+        </Variable>
+        <Variable Name="PRTL_CRITICAL_SECTION_DEBUG" Type="Pointer" Base="RTL_CRITICAL_SECTION_DEBUG" />
+
+        <!-- RTL_CRITICAL_SECTION -->
+        <Variable Name="RTL_CRITICAL_SECTION" Type="Struct" Pack="8">
+            <Field Type="PRTL_CRITICAL_SECTION_DEBUG"   Name="DebugInfo" />
+            <Field Type="LONG"                          Name="LockCount" />
+            <Field Type="LONG"                          Name="RecursionCount" />
+            <Field Type="HANDLE"                        Name="OwningThread" />
+            <Field Type="HANDLE"                        Name="LockSemaphore" />
+            <Field Type="ULONG_PTR"                     Name="SpinCount" />
+        </Variable>
+        <Variable Name="PRTL_CRITICAL_SECTION" Type="Pointer" Base="RTL_CRITICAL_SECTION" />
+
+        <Variable Name="[NtProtectionFlags]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="PAGE_NOACCESS"           Value="0x01" />
+                <Set Name="PAGE_READONLY"           Value="0x02" />
+                <Set Name="PAGE_READWRITE"          Value="0x04" />
+                <Set Name="PAGE_WRITECOPY"          Value="0x08" />
+                <Set Name="PAGE_EXECUTE"            Value="0x10" />
+                <Set Name="PAGE_EXECUTE_READ"       Value="0x20" />
+                <Set Name="PAGE_EXECUTE_READWRITE"  Value="0x40" />
+                <Set Name="PAGE_EXECUTE_WRITECOPY"  Value="0x80" />
+                <Set Name="PAGE_GUARD"              Value="0x100" />
+                <Set Name="PAGE_NOCACHE"            Value="0x200" />
+                <Set Name="PAGE_WRITECOMBINE"       Value="0x400" />
+            </Flag>
+        </Variable>
 
     </Headers>
 </ApiMonitor>

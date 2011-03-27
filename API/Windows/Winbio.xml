@@ -13,6 +13,7 @@
     <Include Filename="Headers\native.h.xml" />
     <Include Filename="Headers\network.h.xml" />
     <Module Name="Winbio.dll" CallingConvention="STDCALL" OnlineHelp="MSDN" ErrorFunc="HRESULT">
+        
         <!-- Variables -->
         <Variable Name="WINBIO_SESSION_HANDLE"              Type="Alias"    Base="ULONG" />
         <Variable Name="WINBIO_SESSION_HANDLE*"             Type="Pointer"  Base="WINBIO_SESSION_HANDLE" />
@@ -24,115 +25,12 @@
         <Variable Name="PWINBIO_EVENT_CALLBACK"             Type="Alias"    Base="LPVOID" />
         <Variable Name="PWINBIO_CAPTURE_CALLBACK"           Type="Alias"    Base="LPVOID" />
         <Variable Name="PWINBIO_VERIFY_CALLBACK"            Type="Alias"    Base="LPVOID" />
+        <Variable Name="WINBIO_UUID"                        Type="Alias"    Base="UUID" />
+        <Variable Name="WINBIO_BIOMETRIC_SENSOR_SUBTYPE"    Type="Alias"    Base="ULONG" />
+        <Variable Name="WINBIO_STRING"                      Type="Array"    Base="WCHAR" Count="256" />
+        <Variable Name="UCHAR [SECURITY_MAX_SID_SIZE]"      Type="Array"    Base="UCHAR" Count="68" />
 
-        <!-- TODO: Structures -->
-        <!--
-        <Variable Name="WINBIO_IDENTITY"            Type="Struct"    Size="?" />
-        -->
-        <Variable Name="WINBIO_IDENTITY*"           Type="Alias"    Base="LPVOID" />
-        <Variable Name="WINBIO_UNIT_SCHEMA*"        Type="Pointer"  Base="LPVOID" />
-        <Variable Name="WINBIO_UNIT_SCHEMA**"       Type="Pointer"  Base="WINBIO_UNIT_SCHEMA*" />
-        <Variable Name="WINBIO_STORAGE_SCHEMA*"     Type="Pointer"  Base="LPVOID" />
-        <Variable Name="WINBIO_STORAGE_SCHEMA**"    Type="Pointer"  Base="WINBIO_STORAGE_SCHEMA*" />
-        <Variable Name="WINBIO_BSP_SCHEMA*"         Type="Pointer"  Base="LPVOID" />
-        <Variable Name="WINBIO_BSP_SCHEMA**"        Type="Pointer"  Base="WINBIO_BSP_SCHEMA*" />
-
-        <!-- WINBIO_BIR_DATA -->
-        <Variable Name="WINBIO_BIR_DATA" Type="Struct">
-            <Field Type="ULONG" 	Name="Size" />
-            <Field Type="ULONG"     Name="Offset" />
-        </Variable>
-
-        <!-- WINBIO_BIR -->
-        <Variable Name="WINBIO_BIR" Type="Struct">
-            <Field Type="WINBIO_BIR_DATA" 	Name="HeaderBlock" />
-            <Field Type="WINBIO_BIR_DATA" 	Name="StandardDataBlock" />
-            <Field Type="WINBIO_BIR_DATA" 	Name="VendorDataBlock" />
-            <Field Type="WINBIO_BIR_DATA" 	Name="SignatureBlock" />
-        </Variable>
-        <Variable Name="PWINBIO_BIR"    Type="Pointer"  Base="WINBIO_BIR" />
-        <Variable Name="PWINBIO_BIR*"   Type="Pointer"  Base="PWINBIO_BIR" />
-        
-        <Variable Name="WINBIO_POOL_TYPE" Type="Alias" Base="ULONG">
-            <Enum>
-                <Set Name="WINBIO_POOL_UNKNOWN"     Value="0" />
-                <Set Name="WINBIO_POOL_SYSTEM"      Value="1" />
-                <Set Name="WINBIO_POOL_PRIVATE"     Value="2" />
-                <Set Name="WINBIO_POOL_UNASSIGNED"  Value="3" />
-            </Enum>
-        </Variable>
-
-        <Variable Name="WINBIO_PROPERTY_TYPE" Type="Alias" Base="ULONG">
-            <Enum>
-                <Set Name="WINBIO_PROPERTY_TYPE_SESSION"        Value="1" />
-                <Set Name="WINBIO_PROPERTY_TYPE_UNIT"       	Value="2" />
-                <Set Name="WINBIO_PROPERTY_TYPE_TEMPLATE"   	Value="3" />
-            </Enum>
-        </Variable>
-
-        <Variable Name="WINBIO_CREDENTIAL_FORMAT" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="WINBIO_PASSWORD_GENERIC"		Value="0x00000001" />
-                <Set Name="WINBIO_PASSWORD_PACKED"      Value="0x00000002" />
-            </Enum>
-        </Variable>
-
-        <Variable Name="WINBIO_COMPONENT" Type="Alias" Base="ULONG">
-            <Enum>
-                <Set Name="WINBIO_COMPONENT_SENSOR"     Value="1" />
-                <Set Name="WINBIO_COMPONENT_ENGINE"     Value="2" />
-                <Set Name="WINBIO_COMPONENT_STORAGE"    Value="3" />
-            </Enum>
-        </Variable>
-
-        <Variable Name="WINBIO_BIR_PURPOSE" Type="Alias" Base="UCHAR">
-            <Flag>
-                <Set Name="WINBIO_NO_PURPOSE_AVAILABLE"                     Value="0x00" />
-                <Set Name="WINBIO_PURPOSE_VERIFY"                           Value="0x01" />
-                <Set Name="WINBIO_PURPOSE_IDENTIFY"                         Value="0x02" />
-                <Set Name="WINBIO_PURPOSE_ENROLL"                           Value="0x04" />
-                <Set Name="WINBIO_PURPOSE_ENROLL_FOR_VERIFICATION"          Value="0x08" />
-                <Set Name="WINBIO_PURPOSE_ENROLL_FOR_IDENTIFICATION"        Value="0x10" />
-                <Set Name="WINBIO_PURPOSE_AUDIT"                            Value="0x80" />
-            </Flag>
-        </Variable>
-
-        <Variable Name="WINBIO_BIR_DATA_FLAGS" Type="Alias" Base="UCHAR">
-            <Flag>
-                <Set Name="WINBIO_DATA_FLAG_PRIVACY"            Value="0x02" />
-                <Set Name="WINBIO_DATA_FLAG_INTEGRITY"          Value="0x01" />
-                <Set Name="WINBIO_DATA_FLAG_SIGNED"             Value="0x04" />
-                <Set Name="WINBIO_DATA_FLAG_RAW"                Value="0x20" />
-                <Set Name="WINBIO_DATA_FLAG_INTERMEDIATE"       Value="0x40" />
-                <Set Name="WINBIO_DATA_FLAG_PROCESSED"          Value="0x80" />
-            </Flag>
-        </Variable>
-
-        <Variable Name="WINBIO_BIOMETRIC_SUBTYPE" Type="Alias" Base="UCHAR">
-            <Enum>
-                <Set Name="WINBIO_SUBTYPE_NO_INFORMATION"   Value="0x00" />
-                <Set Name="WINBIO_SUBTYPE_ANY"              Value="0xFF" />
-            </Enum>
-        </Variable>
-        <Variable Name="WINBIO_BIOMETRIC_SUBTYPE*"  Type="Pointer" Base="WINBIO_BIOMETRIC_SUBTYPE" />
-        <Variable Name="WINBIO_BIOMETRIC_SUBTYPE**" Type="Pointer" Base="WINBIO_BIOMETRIC_SUBTYPE*" />
-
-        <Variable Name="WINBIO_REJECT_DETAIL" Type="Alias" Base="ULONG">
-            <Enum>
-                <Set Name="WINBIO_FP_TOO_HIGH"          Value="1" />
-                <Set Name="WINBIO_FP_TOO_LOW"           Value="2" />
-                <Set Name="WINBIO_FP_TOO_LEFT"          Value="3" />
-                <Set Name="WINBIO_FP_TOO_RIGHT"         Value="4" />
-                <Set Name="WINBIO_FP_TOO_FAST"          Value="5" />
-                <Set Name="WINBIO_FP_TOO_SLOW"          Value="6" />
-                <Set Name="WINBIO_FP_POOR_QUALITY"      Value="7" />
-                <Set Name="WINBIO_FP_TOO_SKEWED"        Value="8" />
-                <Set Name="WINBIO_FP_TOO_SHORT"         Value="9" />
-                <Set Name="WINBIO_FP_MERGE_FAILURE"     Value="10" />
-            </Enum>
-        </Variable>
-        <Variable Name="WINBIO_REJECT_DETAIL*" Type="Pointer" Base="WINBIO_REJECT_DETAIL" />
-
+        <!-- WINBIO_BIOMETRIC_TYPE -->
         <Variable Name="WINBIO_BIOMETRIC_TYPE" Type="Alias" Base="ULONG">
             <Flag>
                 <Set Name="WINBIO_NO_TYPE_AVAILABLE"            	Value="0x00000000" />
@@ -162,6 +60,216 @@
             </Flag>
         </Variable>
 
+        <!-- WINBIO_POOL_TYPE -->
+        <Variable Name="WINBIO_POOL_TYPE" Type="Alias" Base="ULONG">
+            <Enum>
+                <Set Name="WINBIO_POOL_UNKNOWN"     Value="0" />
+                <Set Name="WINBIO_POOL_SYSTEM"      Value="1" />
+                <Set Name="WINBIO_POOL_PRIVATE"     Value="2" />
+                <Set Name="WINBIO_POOL_UNASSIGNED"  Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- WINBIO_VERSION -->
+        <Variable Name="WINBIO_VERSION" Type="Struct">
+            <Field Type="DWORD"     Name="MajorVersion" />
+            <Field Type="DWORD"     Name="MinorVersion" />
+        </Variable>
+
+        <!-- WINBIO_IDENTITY_TYPE -->
+        <Variable Name="WINBIO_IDENTITY_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="WINBIO_ID_TYPE_NULL"         Value="0" />
+                <Set Name="WINBIO_ID_TYPE_WILDCARD"     Value="1" />
+                <Set Name="WINBIO_ID_TYPE_GUID"         Value="2" />
+                <Set Name="WINBIO_ID_TYPE_SID"          Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- [WINBIO_IDENTITY_u_s] -->
+        <Variable Name="[WINBIO_IDENTITY_u_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="ULONG"                             Name="Size" />
+            <Field Type="UCHAR [SECURITY_MAX_SID_SIZE]"     Name="Data" />
+        </Variable>
+
+        <!-- [WINBIO_IDENTITY_u] -->
+        <Variable Name="[WINBIO_IDENTITY_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="ULONG"                     Name="Null" />
+            <Field Type="ULONG"                     Name="Wildcard" />
+            <Field Type="GUID"                      Name="TemplateGuid" />
+            <Field Type="[WINBIO_IDENTITY_u_s]"     Name="AccountSid" />
+        </Variable>
+
+        <!-- WINBIO_IDENTITY -->
+        <Variable Name="WINBIO_IDENTITY" Type="Struct">
+            <Field Type="WINBIO_IDENTITY_TYPE"  Name="Type" />
+            <Field Type="[WINBIO_IDENTITY_u]"   Name="Value" />
+        </Variable>
+        <Variable Name="WINBIO_IDENTITY*" Type="Pointer" Base="WINBIO_IDENTITY" />
+
+        <!-- WINBIO_CAPABILITIES -->
+        <Variable Name="WINBIO_CAPABILITIES" Type="Alias" Base="ULONG">
+            <Flag>
+                <Set Name="WINBIO_CAPABILITY_SENSOR"            Value="0x00000001" />
+                <Set Name="WINBIO_CAPABILITY_MATCHING"          Value="0x00000002" />
+                <Set Name="WINBIO_CAPABILITY_DATABASE"          Value="0x00000004" />
+                <Set Name="WINBIO_CAPABILITY_PROCESSING"        Value="0x00000008" />
+                <Set Name="WINBIO_CAPABILITY_ENCRYPTION"        Value="0x00000010" />
+                <Set Name="WINBIO_CAPABILITY_NAVIGATION"        Value="0x00000020" />
+                <Set Name="WINBIO_CAPABILITY_INDICATOR"         Value="0x00000040" />
+            </Flag>
+        </Variable>
+
+        <!-- WINBIO_UNIT_SCHEMA -->
+        <Variable Name="WINBIO_UNIT_SCHEMA" Type="Struct">
+            <Field Type="WINBIO_UNIT_ID"                    Name="UnitId" />
+            <Field Type="WINBIO_POOL_TYPE"                  Name="PoolType" />
+            <Field Type="WINBIO_BIOMETRIC_TYPE"             Name="BiometricFactor" />
+            <Field Type="WINBIO_BIOMETRIC_SENSOR_SUBTYPE"   Name="SensorSubType" />
+            <Field Type="WINBIO_CAPABILITIES"               Name="Capabilities" />
+            <Field Type="WINBIO_STRING"                     Name="DeviceInstanceId" />
+            <Field Type="WINBIO_STRING"                     Name="Description" />
+            <Field Type="WINBIO_STRING"                     Name="Manufacturer" />
+            <Field Type="WINBIO_STRING"                     Name="Model" />
+            <Field Type="WINBIO_STRING"                     Name="SerialNumber" />
+            <Field Type="WINBIO_VERSION"                    Name="FirmwareVersion" />
+        </Variable>
+        <Variable Name="WINBIO_UNIT_SCHEMA*"    Type="Pointer" Base="WINBIO_UNIT_SCHEMA" />
+        <Variable Name="WINBIO_UNIT_SCHEMA**"   Type="Pointer" Base="WINBIO_UNIT_SCHEMA*" />
+
+        <!-- [WINBIO_DATABASE_ATTRIBUTES] -->
+        <Variable Name="[WINBIO_DATABASE_ATTRIBUTES]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="WINBIO_DATABASE_TYPE_FILE"       Value="0x00000001" />
+                <Set Name="WINBIO_DATABASE_TYPE_DBMS"       Value="0x00000002" />
+                <Set Name="WINBIO_DATABASE_TYPE_ONCHIP"     Value="0x00000003" />
+                <Set Name="WINBIO_DATABASE_TYPE_SMARTCARD"  Value="0x00000004" />
+                <Set Name="WINBIO_DATABASE_FLAG_REMOVABLE"  Value="0x00010000" />
+                <Set Name="WINBIO_DATABASE_FLAG_REMOTE"     Value="0x00020000" />
+            </Flag>
+        </Variable>
+
+        <!-- WINBIO_STORAGE_SCHEMA -->
+        <Variable Name="WINBIO_STORAGE_SCHEMA" Type="Struct">
+            <Field Type="WINBIO_BIOMETRIC_TYPE"         Name="BiometricFactor" />
+            <Field Type="WINBIO_UUID"                   Name="DatabaseId" />
+            <Field Type="WINBIO_UUID"                   Name="DataFormat" />
+            <Field Type="[WINBIO_DATABASE_ATTRIBUTES]"  Name="Attributes" />
+            <Field Type="WINBIO_STRING"                 Name="FilePath" />
+            <Field Type="WINBIO_STRING"                 Name="ConnectionString" />
+        </Variable>
+        <Variable Name="WINBIO_STORAGE_SCHEMA*"     Type="Pointer" Base="WINBIO_STORAGE_SCHEMA" />
+        <Variable Name="WINBIO_STORAGE_SCHEMA**"    Type="Pointer" Base="WINBIO_STORAGE_SCHEMA*" />
+
+        <!-- WINBIO_BSP_SCHEMA -->
+        <Variable Name="WINBIO_BSP_SCHEMA" Type="Struct">
+            <Field Type="WINBIO_BIOMETRIC_TYPE"     Name="BiometricFactor" />
+            <Field Type="WINBIO_UUID"               Name="BspId" />
+            <Field Type="WINBIO_STRING"             Name="Description" />
+            <Field Type="WINBIO_STRING"             Name="Vendor" />
+            <Field Type="WINBIO_VERSION"            Name="Version" />
+        </Variable>
+        <Variable Name="WINBIO_BSP_SCHEMA*"     Type="Pointer" Base="WINBIO_BSP_SCHEMA" />
+        <Variable Name="WINBIO_BSP_SCHEMA**"    Type="Pointer" Base="WINBIO_BSP_SCHEMA*" />
+
+        <!-- WINBIO_BIR_DATA -->
+        <Variable Name="WINBIO_BIR_DATA" Type="Struct">
+            <Field Type="ULONG" 	Name="Size" />
+            <Field Type="ULONG"     Name="Offset" />
+        </Variable>
+
+        <!-- WINBIO_BIR -->
+        <Variable Name="WINBIO_BIR" Type="Struct">
+            <Field Type="WINBIO_BIR_DATA" 	Name="HeaderBlock" />
+            <Field Type="WINBIO_BIR_DATA" 	Name="StandardDataBlock" />
+            <Field Type="WINBIO_BIR_DATA" 	Name="VendorDataBlock" />
+            <Field Type="WINBIO_BIR_DATA" 	Name="SignatureBlock" />
+        </Variable>
+        <Variable Name="PWINBIO_BIR"    Type="Pointer"  Base="WINBIO_BIR" />
+        <Variable Name="PWINBIO_BIR*"   Type="Pointer"  Base="PWINBIO_BIR" />
+
+        <!-- WINBIO_PROPERTY_TYPE -->
+        <Variable Name="WINBIO_PROPERTY_TYPE" Type="Alias" Base="ULONG">
+            <Enum>
+                <Set Name="WINBIO_PROPERTY_TYPE_SESSION"        Value="1" />
+                <Set Name="WINBIO_PROPERTY_TYPE_UNIT"       	Value="2" />
+                <Set Name="WINBIO_PROPERTY_TYPE_TEMPLATE"   	Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- WINBIO_CREDENTIAL_FORMAT -->
+        <Variable Name="WINBIO_CREDENTIAL_FORMAT" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="WINBIO_PASSWORD_GENERIC"		Value="0x00000001" />
+                <Set Name="WINBIO_PASSWORD_PACKED"      Value="0x00000002" />
+            </Enum>
+        </Variable>
+
+        <!-- WINBIO_COMPONENT -->
+        <Variable Name="WINBIO_COMPONENT" Type="Alias" Base="ULONG">
+            <Enum>
+                <Set Name="WINBIO_COMPONENT_SENSOR"     Value="1" />
+                <Set Name="WINBIO_COMPONENT_ENGINE"     Value="2" />
+                <Set Name="WINBIO_COMPONENT_STORAGE"    Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- WINBIO_BIR_PURPOSE -->
+        <Variable Name="WINBIO_BIR_PURPOSE" Type="Alias" Base="UCHAR">
+            <Flag>
+                <Set Name="WINBIO_NO_PURPOSE_AVAILABLE"                     Value="0x00" />
+                <Set Name="WINBIO_PURPOSE_VERIFY"                           Value="0x01" />
+                <Set Name="WINBIO_PURPOSE_IDENTIFY"                         Value="0x02" />
+                <Set Name="WINBIO_PURPOSE_ENROLL"                           Value="0x04" />
+                <Set Name="WINBIO_PURPOSE_ENROLL_FOR_VERIFICATION"          Value="0x08" />
+                <Set Name="WINBIO_PURPOSE_ENROLL_FOR_IDENTIFICATION"        Value="0x10" />
+                <Set Name="WINBIO_PURPOSE_AUDIT"                            Value="0x80" />
+            </Flag>
+        </Variable>
+
+        <!-- WINBIO_BIR_DATA_FLAGS -->
+        <Variable Name="WINBIO_BIR_DATA_FLAGS" Type="Alias" Base="UCHAR">
+            <Flag>
+                <Set Name="WINBIO_DATA_FLAG_PRIVACY"            Value="0x02" />
+                <Set Name="WINBIO_DATA_FLAG_INTEGRITY"          Value="0x01" />
+                <Set Name="WINBIO_DATA_FLAG_SIGNED"             Value="0x04" />
+                <Set Name="WINBIO_DATA_FLAG_RAW"                Value="0x20" />
+                <Set Name="WINBIO_DATA_FLAG_INTERMEDIATE"       Value="0x40" />
+                <Set Name="WINBIO_DATA_FLAG_PROCESSED"          Value="0x80" />
+            </Flag>
+        </Variable>
+
+        <!-- WINBIO_BIOMETRIC_SUBTYPE -->
+        <Variable Name="WINBIO_BIOMETRIC_SUBTYPE" Type="Alias" Base="UCHAR">
+            <Enum>
+                <Set Name="WINBIO_SUBTYPE_NO_INFORMATION"   Value="0x00" />
+                <Set Name="WINBIO_SUBTYPE_ANY"              Value="0xFF" />
+            </Enum>
+        </Variable>
+        <Variable Name="WINBIO_BIOMETRIC_SUBTYPE*"  Type="Pointer" Base="WINBIO_BIOMETRIC_SUBTYPE" />
+        <Variable Name="WINBIO_BIOMETRIC_SUBTYPE**" Type="Pointer" Base="WINBIO_BIOMETRIC_SUBTYPE*" />
+
+        <!-- WINBIO_REJECT_DETAIL -->
+        <Variable Name="WINBIO_REJECT_DETAIL" Type="Alias" Base="ULONG">
+            <Enum>
+                <Set Name="WINBIO_FP_TOO_HIGH"          Value="1" />
+                <Set Name="WINBIO_FP_TOO_LOW"           Value="2" />
+                <Set Name="WINBIO_FP_TOO_LEFT"          Value="3" />
+                <Set Name="WINBIO_FP_TOO_RIGHT"         Value="4" />
+                <Set Name="WINBIO_FP_TOO_FAST"          Value="5" />
+                <Set Name="WINBIO_FP_TOO_SLOW"          Value="6" />
+                <Set Name="WINBIO_FP_POOR_QUALITY"      Value="7" />
+                <Set Name="WINBIO_FP_TOO_SKEWED"        Value="8" />
+                <Set Name="WINBIO_FP_TOO_SHORT"         Value="9" />
+                <Set Name="WINBIO_FP_MERGE_FAILURE"     Value="10" />
+            </Enum>
+        </Variable>
+        <Variable Name="WINBIO_REJECT_DETAIL*" Type="Pointer" Base="WINBIO_REJECT_DETAIL" />
+
+        <!-- WINBIO_EVENT_TYPE -->
         <Variable Name="WINBIO_EVENT_TYPE" Type="Alias" Base="ULONG">
             <Enum>
                 <Set Name="WINBIO_EVENT_ERROR"                  Value="0xFFFFFFFF" />
@@ -170,6 +278,7 @@
             </Enum>
         </Variable>
 
+        <!-- WINBIO_SESSION_FLAGS -->
         <Variable Name="WINBIO_SESSION_FLAGS" Type="Alias" Base="ULONG">
             <Flag>
                 <Set Name="WINBIO_FLAG_DEFAULT"         Value="0x00000000" />
@@ -180,6 +289,7 @@
             </Flag>
         </Variable>
 
+        <!-- WINBIO_CREDENTIAL_TYPE -->
         <Variable Name="WINBIO_CREDENTIAL_TYPE" Type="Alias" Base="UINT">
             <Flag>
                 <Set Name="WINBIO_CREDENTIAL_PASSWORD"	    Value="0x00000001" />
@@ -187,6 +297,7 @@
             </Flag>
         </Variable>
 
+        <!-- WINBIO_SETTING_SOURCE_TYPE -->
         <Variable Name="WINBIO_SETTING_SOURCE_TYPE" Type="Alias" Base="ULONG">
             <Enum>
                 <Set Name="WINBIO_SETTING_SOURCE_INVALID"   Value="0" />
@@ -197,11 +308,21 @@
         </Variable>
         <Variable Name="PWINBIO_SETTING_SOURCE_TYPE" Type="Pointer" Base="WINBIO_SETTING_SOURCE_TYPE" />
 
+        <!-- WINBIO_PROPERTY_ID -->
         <Variable Name="WINBIO_PROPERTY_ID" Type="Alias" Base="ULONG">
             <Enum>
                 <Set Name="WINBIO_PROPERTY_SAMPLE_HINT" Value="1" />
             </Enum>
         </Variable>
+
+        <!-- WINBIO_CREDENTIAL_STATE -->
+        <Variable Name="WINBIO_CREDENTIAL_STATE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="WINBIO_CREDENTIAL_NOT_SET"   Value="0x00000001" />
+                <Set Name="WINBIO_CREDENTIAL_SET"       Value="0x00000002" />
+            </Enum>
+        </Variable>
+        <Variable Name="WINBIO_CREDENTIAL_STATE*" Type="Pointer" Base="WINBIO_CREDENTIAL_STATE" />
 
         <!-- APIs -->
         <Category Name="Security/Security Devices/Windows Biometric Framework" />
@@ -342,7 +463,6 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <!-- TODO: Need to define WINBIO_IDENTITY first 
         <Api Name="WinBioGetCredentialState">
             <Param Type="WINBIO_IDENTITY" Name="Identity" />
             <Param Type="WINBIO_CREDENTIAL_TYPE" Name="Type" />
@@ -350,7 +470,6 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        -->
         <Api Name="WinBioGetDomainLogonSetting">
             <Param Type="BOOLEAN*" Name="Value" />
             <Param Type="PWINBIO_SETTING_SOURCE_TYPE" Name="Source" />
@@ -440,14 +559,12 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <!-- TODO: Need to define WINBIO_IDENTITY first 
         <Api Name="WinBioRemoveCredential">
             <Param Type="WINBIO_IDENTITY" Name="Identity" />
             <Param Type="WINBIO_CREDENTIAL_TYPE" Name="Type" />
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        -->
         <Api Name="WinBioSetCredential">
             <Param Type="WINBIO_CREDENTIAL_TYPE" Name="Type" />
             <Param Type="PUCHAR" Name="Credential" />

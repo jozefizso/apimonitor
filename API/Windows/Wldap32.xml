@@ -6,15 +6,63 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Wldap32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        
         <!-- Variables -->
+        <Variable Name="PLDAPSearch"    Type="Alias" Base="LPVOID" />
+        <Variable Name="UCHAR [25]"     Type="Array" Base="UCHAR" Count="25" />
+        <Variable Name="UCHAR [41]"     Type="Array" Base="UCHAR" Count="41" />
 
-        <!-- TODO: Structures -->
-        <Variable Name="LDAP*"                   Type="Alias"       Base="LPVOID" />
-        <Variable Name="PLDAP"                   Type="Alias"       Base="LPVOID" />
-        <Variable Name="LDAPMessage*"            Type="Alias"       Base="LPVOID" />
-        <Variable Name="LDAPMessage**"           Type="Pointer"     Base="LDAPMessage*" />
-        <Variable Name="PLDAPMessage"            Type="Alias"       Base="LDAPMessage*" />
-        <Variable Name="PLDAPSearch"             Type="Alias"       Base="LPVOID" />
+        <!-- [LDAP_s] -->
+        <Variable Name="[LDAP_s]" Type="Struct" Pack32="4">
+            <Display Name="struct" />
+            <Field Type="UINT_PTR"      Name="sb_sd" />
+            <Field Type="UCHAR [41]"    Name="Reserved1" />
+            <Field Type="ULONG_PTR"     Name="sb_naddr" />
+            <Field Type="UCHAR [24]"    Name="Reserved2" />
+        </Variable>
+
+        <!-- LDAP -->
+        <Variable Name="LDAP" Type="Struct" Pack32="4">
+            <Field Type="[LDAP_s]"      Name="ld_sb" />
+            <Field Type="PCHAR"         Name="ld_host" />
+            <Field Type="ULONG"         Name="ld_version" />
+            <Field Type="UCHAR"         Name="ld_lberoptions" />
+            <Field Type="ULONG"         Name="ld_deref" />
+            <Field Type="ULONG"         Name="ld_timelimit" />
+            <Field Type="ULONG"         Name="ld_sizelimit" />
+            <Field Type="ULONG"         Name="ld_errno" />
+            <Field Type="PCHAR"         Name="ld_matched" />
+            <Field Type="PCHAR"         Name="ld_error" />
+            <Field Type="ULONG"         Name="ld_msgid" />
+            <Field Type="UCHAR [25]"    Name="Reserved3" />
+            <Field Type="ULONG"         Name="ld_cldaptries" />
+            <Field Type="ULONG"         Name="ld_cldaptimeout" />
+            <Field Type="ULONG"         Name="ld_refhoplimit" />
+            <Field Type="ULONG"         Name="ld_options" />
+        </Variable>
+        <Variable Name="LDAP*" Type="Pointer" Base="LDAP" />
+        <Variable Name="PLDAP" Type="Pointer" Base="LDAP" />
+
+        <!-- LDAPMessage -->
+        <Variable Name="LDAPMessage" Type="Struct">
+            <Field Type="ULONG"         Name="lm_msgid" />
+            <Field Type="ULONG"         Name="lm_msgtype" />
+            <Field Type="PVOID"         Name="lm_ber" />
+            <!-- TODO: Self-Referencing - lm_chain and lm_next are LDAPMessage* -->
+            <Field Type="LPVOID"        Name="lm_chain" Display="LDAPMessage*" />
+            <Field Type="LPVOID"        Name="lm_next" Display="LDAPMessage*" />
+            <Field Type="ULONG"         Name="lm_time" />
+            <Field Type="PLDAP"         Name="Connection" />
+            <Field Type="PVOID"         Name="Request" />
+            <Field Type="ULONG"         Name="lm_returncode" />
+            <Field Type="USHORT"        Name="lm_referral" />
+            <Field Type="BOOLEAN"       Name="lm_chased" />
+            <Field Type="BOOLEAN"       Name="lm_eom" />
+            <Field Type="BOOLEAN"       Name="ConnectionReferenced" />
+        </Variable>
+        <Variable Name="PLDAPMessage"   Type="Pointer" Base="LDAPMessage" />
+        <Variable Name="LDAPMessage*"   Type="Pointer" Base="LDAPMessage" />
+        <Variable Name="LDAPMessage**"  Type="Pointer" Base="LDAPMessage*" />
 
         <!-- berval -->
         <Variable Name="berval" Type="Struct">
@@ -834,21 +882,17 @@
             <Return Type="INT" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <!-- Variable Arguments NOT Supported
-    <Api Name="ber_printf">
-        <Param Type="BerElement*" Name="pBerElement" />
-        <Param Type="PCHAR" Name="fmt" />
-        <Param Type="..." />
-        <Return Type="INT" />
-        <Success Return="NotEqual" Value="0" />
-    </Api>
-    <Api Name="ber_scanf">
-        <Param Type="BerElement*" Name="pBerElement" />
-        <Param Type="PCHAR" Name="fmt" />
-        <Param Type="..." />
-        <Return Type="INT" />
-        <Success Return="NotEqual" Value="0" />
-    </Api>
-    -->
+        <Api Name="ber_printf" VarArgs="True">
+            <Param Type="BerElement*" Name="pBerElement" />
+            <Param Type="PCHAR" Name="fmt" />
+            <Return Type="INT" />
+            <Success Return="NotEqual" Value="-1" />
+        </Api>
+        <Api Name="ber_scanf" VarArgs="True">
+            <Param Type="BerElement*" Name="pBerElement" />
+            <Param Type="PCHAR" Name="fmt" />
+            <Return Type="INT" />
+            <Success Return="NotEqual" Value="-1" />
+        </Api>
     </Module>
 </ApiMonitor>

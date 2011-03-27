@@ -22,9 +22,64 @@
         <Variable Name="PTimeStamp"                 Type="Pointer"  Base="TimeStamp" />
         <Variable Name="SEC_GET_KEY_FN"             Type="Alias"    Base="LPVOID" />
 
-        <!-- TODO: Structures -->
+        <!-- TODO: Structures (Complex) -->
         <Variable Name="PSecurityFunctionTable"             Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSECURITY_LOGON_SESSION_DATA*"      Type="Alias"    Base="LPVOID" />
+
+        <!-- SECURITY_LOGON_TYPE -->
+        <Variable Name="SECURITY_LOGON_TYPE" Type="Alias" Base="DWORD">
+            <Enum>
+                <Set Name="UndefinedLogonType"          Value="0" />
+                <!-- Interactive Starts at 2 -->
+                <Set Name="Interactive"                 Value="2" />
+                <Set Name="Network"                     Value="3" />
+                <Set Name="Batch"                       Value="4" />
+                <Set Name="Service"                     Value="5" />
+                <Set Name="Proxy"                       Value="6" />
+                <Set Name="Unlock"                      Value="7" />
+                <Set Name="NetworkCleartext"            Value="8" />
+                <Set Name="NewCredentials"              Value="9" />
+                <Set Name="RemoteInteractive"           Value="10" />
+                <Set Name="CachedInteractive"           Value="11" />
+                <Set Name="CachedRemoteInteractive"     Value="12" />
+                <Set Name="CachedUnlock"                Value="13" />
+            </Enum>
+        </Variable>
+
+        <!-- LSA_LAST_INTER_LOGON_INFO -->
+        <Variable Name="LSA_LAST_INTER_LOGON_INFO" Type="Struct">
+            <Field Type="LARGE_INTEGER"     Name="LastSuccessfulLogon" />
+            <Field Type="LARGE_INTEGER"     Name="LastFailedLogon" />
+            <Field Type="ULONG"             Name="FailedAttemptCountSinceLastSuccessfulLogon" />
+        </Variable>
+
+        <!-- SECURITY_LOGON_SESSION_DATA -->
+        <Variable Name="SECURITY_LOGON_SESSION_DATA" Type="Struct">
+            <Field Type="ULONG"                         Name="Size" />
+            <Field Type="LUID"                          Name="LogonId" />
+            <Field Type="LSA_UNICODE_STRING"            Name="UserName" />
+            <Field Type="LSA_UNICODE_STRING"            Name="LogonDomain" />
+            <Field Type="LSA_UNICODE_STRING"            Name="AuthenticationPackage" />
+            <Field Type="SECURITY_LOGON_TYPE"           Name="LogonType" Display="ULONG" />
+            <Field Type="ULONG"                         Name="Session" />
+            <Field Type="PSID"                          Name="Sid" />
+            <Field Type="LARGE_INTEGER"                 Name="LogonTime" />
+            <Field Type="LSA_UNICODE_STRING"            Name="LogonServer" />
+            <Field Type="LSA_UNICODE_STRING"            Name="DnsDomainName" />
+            <Field Type="LSA_UNICODE_STRING"            Name="Upn" />
+            <Field Type="ULONG"                         Name="UserFlags" />
+            <Field Type="LSA_LAST_INTER_LOGON_INFO"     Name="LastLogonInfo" />
+            <Field Type="LSA_UNICODE_STRING"            Name="LogonScript" />
+            <Field Type="LSA_UNICODE_STRING"            Name="ProfilePath" />
+            <Field Type="LSA_UNICODE_STRING"            Name="HomeDirectory" />
+            <Field Type="LSA_UNICODE_STRING"            Name="HomeDirectoryDrive" />
+            <Field Type="LARGE_INTEGER"                 Name="LogoffTime" />
+            <Field Type="LARGE_INTEGER"                 Name="KickOffTime" />
+            <Field Type="LARGE_INTEGER"                 Name="PasswordLastSet" />
+            <Field Type="LARGE_INTEGER"                 Name="PasswordCanChange" />
+            <Field Type="LARGE_INTEGER"                 Name="PasswordMustChange" />
+        </Variable>
+        <Variable Name="PSECURITY_LOGON_SESSION_DATA"  Type="Pointer" Base="SECURITY_LOGON_SESSION_DATA" />
+        <Variable Name="PSECURITY_LOGON_SESSION_DATA*" Type="Pointer" Base="PSECURITY_LOGON_SESSION_DATA" />
 
         <!-- SecPkgInfo -->
         <Variable Name="SecPkgInfo" Type="Struct">
@@ -67,25 +122,6 @@
             <Field Type="void*"             Name="Signature" />
         </Variable>
         <Variable Name="PSECURITY_PACKAGE_OPTIONS" Type="Pointer" Base="SECURITY_PACKAGE_OPTIONS" />
-
-        <Variable Name="SECURITY_LOGON_TYPE" Type="Alias" Base="DWORD">
-            <Enum>
-                <Set Name="UndefinedLogonType"          Value="0" />
-                <!-- Interactive Starts at 2 -->
-                <Set Name="Interactive"                 Value="2" />
-                <Set Name="Network"                     Value="3" />
-                <Set Name="Batch"                       Value="4" />
-                <Set Name="Service"                     Value="5" />
-                <Set Name="Proxy"                       Value="6" />
-                <Set Name="Unlock"                      Value="7" />
-                <Set Name="NetworkCleartext"            Value="8" />
-                <Set Name="NewCredentials"              Value="9" />
-                <Set Name="RemoteInteractive"           Value="10" />
-                <Set Name="CachedInteractive"           Value="11" />
-                <Set Name="CachedRemoteInteractive"     Value="12" />
-                <Set Name="CachedUnlock"                Value="13" />
-            </Enum>
-        </Variable>
 
         <Variable Name="EXTENDED_NAME_FORMAT" Type="Alias" Base="UINT">
             <Enum>

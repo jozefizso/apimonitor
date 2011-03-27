@@ -9,14 +9,208 @@
     <Include Filename="Headers\registry.h.xml" />
     
     <Module Name="PowrProf.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
+        
         <!-- Variables -->
-        <Variable Name="PWRSCHEMESENUMPROC"                  Type="Alias"        Base="LPVOID" />
+        <Variable Name="PWRSCHEMESENUMPROC"         Type="Alias"    Base="LPVOID" />
+        <Variable Name="BYTE [3]"                   Type="Array"    Base="BYTE"     Count="3" />
 
-        <!-- TODO: Structures -->
-        <Variable Name="PGLOBAL_POWER_POLICY"                Type="Alias"        Base="LPVOID" />
-        <Variable Name="PPOWER_POLICY"                       Type="Alias"        Base="LPVOID" />
-        <Variable Name="PSYSTEM_POWER_CAPABILITIES"          Type="Alias"        Base="LPVOID" />
-        <Variable Name="PMACHINE_PROCESSOR_POWER_POLICY"     Type="Alias"        Base="LPVOID" />
+        <!-- [POWER_ACTION] -->
+        <Variable Name="[POWER_ACTION]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="POWER_ACTION_QUERY_ALLOWED"          Value="0x00000001" />
+                <Set Name="POWER_ACTION_UI_ALLOWED"             Value="0x00000002" />
+                <Set Name="POWER_ACTION_OVERRIDE_APPS"          Value="0x00000004" />
+                <Set Name="POWER_ACTION_PSEUDO_TRANSITION"      Value="0x08000000" />
+                <Set Name="POWER_ACTION_LIGHTEST_FIRST"         Value="0x10000000" />
+                <Set Name="POWER_ACTION_LOCK_CONSOLE"           Value="0x20000000" />
+                <Set Name="POWER_ACTION_DISABLE_WAKES"          Value="0x40000000" />
+                <Set Name="POWER_ACTION_CRITICAL"               Value="0x80000000" />
+            </Flag>
+        </Variable>
+
+        <!-- [POWER_LEVEL] -->
+        <Variable Name="[POWER_LEVEL]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="POWER_LEVEL_USER_NOTIFY_TEXT"        Value="0x00000001" />
+                <Set Name="POWER_LEVEL_USER_NOTIFY_SOUND"       Value="0x00000002" />
+                <Set Name="POWER_LEVEL_USER_NOTIFY_EXEC"        Value="0x00000004" />
+                <Set Name="POWER_USER_NOTIFY_BUTTON"            Value="0x00000008" />
+                <Set Name="POWER_USER_NOTIFY_SHUTDOWN"          Value="0x00000010" />
+                <Set Name="POWER_USER_NOTIFY_FORCED_SHUTDOWN"   Value="0x00000020" />
+                <Set Name="POWER_FORCE_TRIGGER_RESET"           Value="0x80000000" />
+            </Flag>
+        </Variable>
+
+        <!-- POWER_ACTION_POLICY -->
+        <Variable Name="POWER_ACTION_POLICY" Type="Struct">
+            <Field Type="POWER_ACTION"      Name="Action" />
+            <Field Type="[POWER_ACTION]"    Name="Flags" />
+            <Field Type="[POWER_LEVEL]"     Name="EventCode" />
+        </Variable>
+
+        <!-- USER_POWER_POLICY -->
+        <Variable Name="USER_POWER_POLICY" Type="Struct">
+            <Field Type="ULONG"                     Name="Revision" />
+            <Field Type="POWER_ACTION_POLICY"       Name="IdleAc" />
+            <Field Type="POWER_ACTION_POLICY"       Name="IdleDc" />
+            <Field Type="ULONG"                     Name="IdleTimeoutAc" />
+            <Field Type="ULONG"                     Name="IdleTimeoutDc" />
+            <Field Type="UCHAR"                     Name="IdleSensitivityAc" />
+            <Field Type="UCHAR"                     Name="IdleSensitivityDc" />
+            <Field Type="UCHAR"                     Name="ThrottlePolicyAc" />
+            <Field Type="UCHAR"                     Name="ThrottlePolicyDc" />
+            <Field Type="SYSTEM_POWER_STATE"        Name="MaxSleepAc" />
+            <Field Type="SYSTEM_POWER_STATE"        Name="MaxSleepDc" />
+            <Field Type="ULONG [2]"                 Name="Reserved" />
+            <Field Type="ULONG"                     Name="VideoTimeoutAc" />
+            <Field Type="ULONG"                     Name="VideoTimeoutDc" />
+            <Field Type="ULONG"                     Name="SpindownTimeoutAc" />
+            <Field Type="ULONG"                     Name="SpindownTimeoutDc" />
+            <Field Type="BOOLEAN"                   Name="OptimizeForPowerAc" />
+            <Field Type="BOOLEAN"                   Name="OptimizeForPowerDc" />
+            <Field Type="UCHAR"                     Name="FanThrottleToleranceAc" />
+            <Field Type="UCHAR"                     Name="FanThrottleToleranceDc" />
+            <Field Type="UCHAR"                     Name="ForcedThrottleAc" />
+            <Field Type="UCHAR"                     Name="ForcedThrottleDc" />
+        </Variable>
+
+        <!-- MACHINE_POWER_POLICY -->
+        <Variable Name="MACHINE_POWER_POLICY" Type="Struct">
+            <Field Type="ULONG"                     Name="Revision" />
+            <Field Type="SYSTEM_POWER_STATE"        Name="MinSleepAc" />
+            <Field Type="SYSTEM_POWER_STATE"        Name="MinSleepDc" />
+            <Field Type="SYSTEM_POWER_STATE"        Name="ReducedLatencySleepAc" />
+            <Field Type="SYSTEM_POWER_STATE"        Name="ReducedLatencySleepDc" />
+            <Field Type="ULONG"                     Name="DozeTimeoutAc" />
+            <Field Type="ULONG"                     Name="DozeTimeoutDc" />
+            <Field Type="ULONG"                     Name="DozeS4TimeoutAc" />
+            <Field Type="ULONG"                     Name="DozeS4TimeoutDc" />
+            <Field Type="UCHAR"                     Name="MinThrottleAc" />
+            <Field Type="UCHAR"                     Name="MinThrottleDc" />
+            <Field Type="UCHAR [2]"                 Name="pad1" />
+            <Field Type="POWER_ACTION_POLICY"       Name="OverThrottledAc" />
+            <Field Type="POWER_ACTION_POLICY"       Name="OverThrottledDc" />
+        </Variable>
+
+        <!-- POWER_POLICY -->
+        <Variable Name="POWER_POLICY" Type="Struct">
+            <Field Type="USER_POWER_POLICY"     Name="user" />
+            <Field Type="MACHINE_POWER_POLICY"  Name="mach" />
+        </Variable>
+        <Variable Name="PPOWER_POLICY" Type="Pointer" Base="POWER_POLICY" />
+
+        <!-- SYSTEM_POWER_LEVEL -->
+        <Variable Name="SYSTEM_POWER_LEVEL" Type="Struct">
+            <Field Type="BOOLEAN"                   Name="Enable" />
+            <Field Type="BYTE [3]"                  Name="Spare" />
+            <Field Type="DWORD"                     Name="BatteryLevel" />
+            <Field Type="POWER_ACTION_POLICY"       Name="PowerPolicy" />
+            <Field Type="SYSTEM_POWER_STATE"        Name="MinSystemState" />
+        </Variable>
+        <Variable Name="SYSTEM_POWER_LEVEL [NUM_DISCHARGE_POLICIES]" Type="Array" Base="SYSTEM_POWER_LEVEL" Count="4" />
+
+        <!-- GLOBAL_USER_POWER_POLICY -->
+        <Variable Name="GLOBAL_USER_POWER_POLICY" Type="Struct">
+            <Field Type="ULONG"                                         Name="Revision" />
+            <Field Type="POWER_ACTION_POLICY"                           Name="PowerButtonAc" />
+            <Field Type="POWER_ACTION_POLICY"                           Name="PowerButtonDc" />
+            <Field Type="POWER_ACTION_POLICY"                           Name="SleepButtonAc" />
+            <Field Type="POWER_ACTION_POLICY"                           Name="SleepButtonDc" />
+            <Field Type="POWER_ACTION_POLICY"                           Name="LidCloseAc" />
+            <Field Type="POWER_ACTION_POLICY"                           Name="LidCloseDc" />
+            <Field Type="SYSTEM_POWER_LEVEL [NUM_DISCHARGE_POLICIES]"   Name="DischargePolicy" />
+            <Field Type="ULONG"                                         Name="GlobalFlags" />
+        </Variable>
+
+        <!-- GLOBAL_MACHINE_POWER_POLICY -->
+        <Variable Name="GLOBAL_MACHINE_POWER_POLICY" Type="Struct">
+            <Field Type="ULONG"                     Name="Revision" />
+            <Field Type="SYSTEM_POWER_STATE"        Name="LidOpenWakeAc" />
+            <Field Type="SYSTEM_POWER_STATE"        Name="LidOpenWakeDc" />
+            <Field Type="ULONG"                     Name="BroadcastCapacityResolution" />
+        </Variable>
+
+        <!-- GLOBAL_POWER_POLICY -->
+        <Variable Name="GLOBAL_POWER_POLICY" Type="Struct">
+            <Field Type="GLOBAL_USER_POWER_POLICY"      Name="user" />
+            <Field Type="GLOBAL_MACHINE_POWER_POLICY"   Name="mach" />
+        </Variable>
+        <Variable Name="PGLOBAL_POWER_POLICY" Type="Pointer" Base="GLOBAL_POWER_POLICY" />
+
+        <!-- PROCESSOR_POWER_POLICY_INFO -->
+        <Variable Name="PROCESSOR_POWER_POLICY_INFO" Type="Struct">
+            <Field Type="DWORD"         Name="TimeCheck" />
+            <Field Type="DWORD"         Name="DemoteLimit" />
+            <Field Type="DWORD"         Name="PromoteLimit" />
+            <Field Type="BYTE"          Name="DemotePercent" />
+            <Field Type="BYTE"          Name="PromotePercent" />
+            <Field Type="BYTE [2]"      Name="Spare" />
+            <!-- TODO: Reserved is a BitField -->
+            <Field Type="DWORD"         Name="Reserved" />
+        </Variable>
+        <Variable Name="PROCESSOR_POWER_POLICY_INFO [3]" Type="Array" Base="PROCESSOR_POWER_POLICY_INFO" Count="3" />
+
+        <!-- PROCESSOR_POWER_POLICY -->
+        <Variable Name="PROCESSOR_POWER_POLICY" Type="Struct">
+            <Field Type="DWORD"                             Name="Revision" />
+            <Field Type="BYTE"                              Name="DynamicThrottle" />
+            <Field Type="BYTE [3]"                          Name="Spare" />
+            <!-- TODO: Reserved is a BitField -->
+            <Field Type="DWORD"                             Name="Reserved" />
+            <Field Type="DWORD"                             Name="PolicyCount" />
+            <Field Type="PROCESSOR_POWER_POLICY_INFO [3]"   Name="Policy" />
+        </Variable>
+
+        <!-- MACHINE_PROCESSOR_POWER_POLICY -->
+        <Variable Name="MACHINE_PROCESSOR_POWER_POLICY" Type="Struct">
+            <Field Type="ULONG"                     Name="Revision" />
+            <Field Type="PROCESSOR_POWER_POLICY"    Name="ProcessorPolicyAc" />
+            <Field Type="PROCESSOR_POWER_POLICY"    Name="ProcessorPolicyDc" />
+        </Variable>
+        <Variable Name="PMACHINE_PROCESSOR_POWER_POLICY" Type="Pointer" Base="MACHINE_PROCESSOR_POWER_POLICY" />
+
+        <!-- BATTERY_REPORTING_SCALE -->
+        <Variable Name="BATTERY_REPORTING_SCALE" Type="Struct">
+            <Field Type="DWORD"     Name="Granularity" />
+            <Field Type="DWORD"     Name="Capacity" />
+        </Variable>
+        <Variable Name="BATTERY_REPORTING_SCALE [3]" Type="Array" Base="BATTERY_REPORTING_SCALE" Count="3" />
+
+        <!-- SYSTEM_POWER_CAPABILITIES -->
+        <Variable Name="SYSTEM_POWER_CAPABILITIES" Type="Struct">
+            <Field Type="BOOLEAN"                       Name="PowerButtonPresent" />
+            <Field Type="BOOLEAN"                       Name="SleepButtonPresent" />
+            <Field Type="BOOLEAN"                       Name="LidPresent" />
+            <Field Type="BOOLEAN"                       Name="SystemS1" />
+            <Field Type="BOOLEAN"                       Name="SystemS2" />
+            <Field Type="BOOLEAN"                       Name="SystemS3" />
+            <Field Type="BOOLEAN"                       Name="SystemS4" />
+            <Field Type="BOOLEAN"                       Name="SystemS5" />
+            <Field Type="BOOLEAN"                       Name="HiberFilePresent" />
+            <Field Type="BOOLEAN"                       Name="FullWake" />
+            <Field Type="BOOLEAN"                       Name="VideoDimPresent" />
+            <Field Type="BOOLEAN"                       Name="ApmPresent" />
+            <Field Type="BOOLEAN"                       Name="UpsPresent" />
+            <Field Type="BOOLEAN"                       Name="ThermalControl" />
+            <Field Type="BOOLEAN"                       Name="ProcessorThrottle" />
+            <Field Type="BYTE"                          Name="ProcessorMinThrottle" />
+            <Field Type="BYTE"                          Name="ProcessorMaxThrottle" />
+            <Field Type="BOOLEAN"                       Name="FastSystemS4" />
+            <Field Type="BYTE [3]"                      Name="spare2" />
+            <Field Type="BOOLEAN"                       Name="DiskSpinDown" />
+            <Field Type="BYTE [8]"                      Name="spare3" />
+            <Field Type="BOOLEAN"                       Name="SystemBatteriesPresent" />
+            <Field Type="BOOLEAN"                       Name="BatteriesAreShortTerm" />
+            <Field Type="BATTERY_REPORTING_SCALE [3]"   Name="BatteryScale" />
+            <Field Type="SYSTEM_POWER_STATE"            Name="AcOnLineWake" />
+            <Field Type="SYSTEM_POWER_STATE"            Name="SoftLidWake" />
+            <Field Type="SYSTEM_POWER_STATE"            Name="RtcWake" />
+            <Field Type="SYSTEM_POWER_STATE"            Name="MinDeviceWakeState" />
+            <Field Type="SYSTEM_POWER_STATE"            Name="DefaultLowLatencyWake" />
+        </Variable>
+        <Variable Name="PSYSTEM_POWER_CAPABILITIES" Type="Pointer" Base="SYSTEM_POWER_CAPABILITIES" />
 
         <Variable Name="POWER_PLATFORM_ROLE" Type="Alias" Base="UINT">
             <Enum>

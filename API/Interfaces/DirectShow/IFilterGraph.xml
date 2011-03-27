@@ -6,10 +6,10 @@
 <ApiMonitor>
     <Include Filename="Interfaces\IUnknown.xml" />
     <Include Filename="Headers\directx.h.xml" />
-    
+
     <ErrorLookupModule Name="Quartz.dll" />
     <Interface Name="IFilterGraph" Id="{56a8689f-0ad4-11ce-b03a-0020af0ba770}" BaseInterface="IUnknown" OnlineHelp="MSDN" ErrorFunc="HRESULT" Category="Graphics and Multimedia/Audio and Video/DirectShow">
-        
+
         <!-- Forward Interface Declarations -->
         <Variable Name="IAMAnalogVideoDecoder"                      Type="Interface" />
         <Variable Name="IAMAnalogVideoEncoder"                      Type="Interface" />
@@ -166,12 +166,14 @@
         <Variable Name="IVMRWindowlessControl"                      Type="Interface" />
         <Variable Name="IVMRWindowlessControl9"                     Type="Interface" />
         <Variable Name="IVPManager"                                 Type="Interface" />
-        
+
+        <!-- External Interfaces -->
+        <Variable Name="IDirect3DSurface9"                          Type="Interface" />
+        <Variable Name="IDirect3DDevice9"                           Type="Interface" />
+
         <!-- DirectDraw Interfaces  - TODO: Add DirectDraw Interfaces -->
         <Variable Name="IDirectDraw"                                Type="Interface" />
-        <Variable Name="IDirect3DSurface9"                          Type="Interface" />
         <Variable Name="IDirectDrawSurface"                         Type="Interface" />
-        <Variable Name="IDirect3DDevice9"                           Type="Interface" />
         <Variable Name="LPDIRECTDRAW7"                              Type="Alias"        Base="LPVOID" />
         <Variable Name="LPDIRECTDRAW7*"                             Type="Pointer"      Base="LPDIRECTDRAW7" />
         <Variable Name="LPDIRECTDRAWSURFACE7"                       Type="Alias"        Base="LPVOID" />
@@ -189,31 +191,592 @@
         <Variable Name="OAHWND"                                     Type="Alias"    Base="LONG_PTR" />
         <Variable Name="OAHWND*"                                    Type="Pointer"  Base="OAHWND" />
         <Variable Name="OAEVENT*"                                   Type="Pointer"  Base="LONG_PTR" />
-        
-        <!-- TODO: Structures -->
-        <Variable Name="AMCOPPSignature*"                           Type="Alias"    Base="LPVOID" />
-        <Variable Name="DVINFO*"                                    Type="Alias"    Base="LPVOID" />
-        <Variable Name="const REGFILTER2*"                          Type="Alias"    Base="LPVOID" />
-        <Variable Name="AMCOPPCommand*"                             Type="Alias"    Base="LPVOID" />
-        <Variable Name="PIN_INFO*"                                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="VMR9MonitorInfo*"                           Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPDDPIXELFORMAT"                            Type="Alias"    Base="LPVOID" />
-        <Variable Name="const AMCOPPCommand*"                       Type="Alias"    Base="LPVOID" />
-        <Variable Name="SPRMARRAY*"                                 Type="Alias"    Base="LPVOID" />
-        <Variable Name="GPRMARRAY*"                                 Type="Alias"    Base="LPVOID" />
-        <Variable Name="const AMCOPPStatusInput*"                   Type="Alias"    Base="LPVOID" />
-        <Variable Name="VMRMONITORINFO*"                            Type="Alias"    Base="LPVOID" />
-        <Variable Name="AMCOPPStatusOutput*"                        Type="Alias"    Base="LPVOID" />
-        <Variable Name="DVD_ATR*"                                   Type="Alias"    Base="LPVOID" />
-        <Variable Name="DVD_MenuAttributes*"                        Type="Alias"    Base="LPVOID" />
-        <Variable Name="DVD_VideoATR*"                              Type="Alias"    Base="LPVOID" />
-        <Variable Name="DVD_TitleAttributes*"                       Type="Alias"    Base="LPVOID" />
-        <Variable Name="DVD_AudioATR*"                              Type="Alias"    Base="LPVOID" />
-        <Variable Name="DVD_SubpictureATR*"                         Type="Alias"    Base="LPVOID" />
-        <Variable Name="DVD_AudioAttributes*"                       Type="Alias"    Base="LPVOID" />
-        <Variable Name="DVD_KaraokeAttributes*"                     Type="Alias"    Base="LPVOID" />
-        <Variable Name="BYTE[2]"                                    Type="Alias"    Base="LPVOID" />
-        <Variable Name="FILTER_INFO*"                               Type="Alias"    Base="LPVOID" />
+        <Variable Name="DVD_SubpictureATR"                          Type="Alias"    Base="BYTE [6]" />
+        <Variable Name="DVD_SubpictureATR*"                         Type="Pointer"  Base="DVD_SubpictureATR" />
+        <Variable Name="DVD_AudioATR"                               Type="Alias"    Base="BYTE [8]" />
+        <Variable Name="DVD_AudioATR*"                              Type="Pointer"  Base="DVD_AudioATR" />
+        <Variable Name="DVD_VideoATR"                               Type="Alias"    Base="BYTE [2]" />
+        <Variable Name="DVD_VideoATR*"                              Type="Pointer"  Base="DVD_VideoATR" />
+        <Variable Name="DVD_REGISTER"                               Type="Alias"    Base="WORD" />
+
+        <!-- Arrays -->
+        <Variable Name="BOOL [8]"                                   Type="Array"    Base="BOOL"         Count="8" />
+        <Variable Name="BYTE [256]"                                 Type="Array"    Base="BYTE"         Count="256" />
+        <Variable Name="BYTE [768]"                                 Type="Array"    Base="BYTE"         Count="768" />
+        <Variable Name="BYTE [4076]"                                Type="Array"    Base="BYTE"         Count="4076" />
+        <Variable Name="BYTE [4056]"                                Type="Array"    Base="BYTE"         Count="4056" />
+        <Variable Name="wchar_t [32]"                               Type="Array"    Base="wchar_t"      Count="32" />
+        <Variable Name="wchar_t [256]"                              Type="Array"    Base="wchar_t"      Count="256" />
+        <Variable Name="wchar_t [512]"                              Type="Array"    Base="wchar_t"      Count="512" />
+        <Variable Name="GPRMARRAY"                                  Type="Array"    Base="DVD_REGISTER" Count="16" />
+        <Variable Name="GPRMARRAY*"                                 Type="Pointer"  Base="GPRMARRAY" />
+        <Variable Name="SPRMARRAY"                                  Type="Array"    Base="DVD_REGISTER" Count="24" />
+        <Variable Name="SPRMARRAY*"                                 Type="Pointer"  Base="SPRMARRAY" />
+
+        <!-- [DDPIXELFORMAT_u1] -->
+        <Variable Name="[DDPIXELFORMAT_u1]" Type="Union">
+            <Display Name="union" />
+            <Field Type="DWORD"     Name="dwRGBBitCount" />
+            <Field Type="DWORD"     Name="dwYUVBitCount" />
+            <Field Type="DWORD"     Name="dwZBufferBitDepth" />
+            <Field Type="DWORD"     Name="dwAlphaBitDepth" />
+            <Field Type="DWORD"     Name="dwLuminanceBitCount" />
+            <Field Type="DWORD"     Name="dwBumpBitCount" />
+            <Field Type="DWORD"     Name="dwPrivateFormatBitCount" />
+        </Variable>
+
+        <!-- [DDPIXELFORMAT_u2] -->
+        <Variable Name="[DDPIXELFORMAT_u2]" Type="Union">
+            <Display Name="union" />
+            <Field Type="DWORD"     Name="dwRBitMask" />
+            <Field Type="DWORD"     Name="dwYBitMask" />
+            <Field Type="DWORD"     Name="dwStencilBitDepth" />
+            <Field Type="DWORD"     Name="dwLuminanceBitMask" />
+            <Field Type="DWORD"     Name="dwBumpDuBitMask" />
+            <Field Type="DWORD"     Name="dwOperations" />
+        </Variable>
+
+        <!-- [DDPIXELFORMAT_u3_s] -->
+        <Variable Name="[DDPIXELFORMAT_u3_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="WORD"      Name="wFlipMSTypes" />
+            <Field Type="WORD"      Name="wBltMSTypes" />
+        </Variable>
+
+        <!-- [DDPIXELFORMAT_u3] -->
+        <Variable Name="[DDPIXELFORMAT_u3]" Type="Union">
+            <Display Name="union" />
+            <Field Type="DWORD"                 Name="dwGBitMask" />
+            <Field Type="DWORD"                 Name="dwUBitMask" />
+            <Field Type="DWORD"                 Name="dwZBitMask" />
+            <Field Type="DWORD"                 Name="dwBumpDvBitMask" />
+            <Field Type="[DDPIXELFORMAT_u3_s]"  Name="MultiSampleCaps" />
+        </Variable>
+
+        <!-- [DDPIXELFORMAT_u4] -->
+        <Variable Name="[DDPIXELFORMAT_u4]" Type="Union">
+            <Display Name="union" />
+            <Field Type="DWORD"     Name="dwBBitMask" />
+            <Field Type="DWORD"     Name="dwVBitMask" />
+            <Field Type="DWORD"     Name="dwStencilBitMask" />
+            <Field Type="DWORD"     Name="dwBumpLuminanceBitMask" />
+        </Variable>
+
+        <!-- [DDPIXELFORMAT_u5] -->
+        <Variable Name="[DDPIXELFORMAT_u5]" Type="Union">
+            <Display Name="union" />
+            <Field Type="DWORD"     Name="dwRGBAlphaBitMask" />
+            <Field Type="DWORD"     Name="dwYUVAlphaBitMask" />
+            <Field Type="DWORD"     Name="dwLuminanceAlphaBitMask" />
+            <Field Type="DWORD"     Name="dwRGBZBitMask" />
+            <Field Type="DWORD"     Name="dwYUVZBitMask" />
+        </Variable>
+
+        <!-- [DDPIXELFORMAT_FLAGS] -->
+        <Variable Name="[DDPIXELFORMAT_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="DDPF_ALPHAPIXELS"            Value="0x00000001" />
+                <Set Name="DDPF_ALPHA"                  Value="0x00000002" />
+                <Set Name="DDPF_FOURCC"                 Value="0x00000004" />
+                <Set Name="DDPF_PALETTEINDEXED4"        Value="0x00000008" />
+                <Set Name="DDPF_PALETTEINDEXEDTO8"      Value="0x00000010" />
+                <Set Name="DDPF_PALETTEINDEXED8"        Value="0x00000020" />
+                <Set Name="DDPF_RGB"                    Value="0x00000040" />
+                <Set Name="DDPF_COMPRESSED"             Value="0x00000080" />
+                <Set Name="DDPF_RGBTOYUV"               Value="0x00000100" />
+                <Set Name="DDPF_YUV"                    Value="0x00000200" />
+                <Set Name="DDPF_ZBUFFER"                Value="0x00000400" />
+                <Set Name="DDPF_PALETTEINDEXED1"        Value="0x00000800" />
+                <Set Name="DDPF_PALETTEINDEXED2"        Value="0x00001000" />
+                <Set Name="DDPF_ZPIXELS"                Value="0x00002000" />
+                <Set Name="DDPF_STENCILBUFFER"          Value="0x00004000" />
+                <Set Name="DDPF_ALPHAPREMULT"           Value="0x00008000" />
+                <Set Name="DDPF_LUMINANCE"              Value="0x00020000" />
+                <Set Name="DDPF_BUMPLUMINANCE"          Value="0x00040000" />
+                <Set Name="DDPF_BUMPDUDV"               Value="0x00080000" />
+            </Flag>
+        </Variable>
+
+        <!-- DDPIXELFORMAT -->
+        <Variable Name="DDPIXELFORMAT" Type="Struct">
+            <Field Type="DWORD"                     Name="dwSize" />
+            <Field Type="[DDPIXELFORMAT_FLAGS]"     Name="dwFlags" />
+            <Field Type="DWORD"                     Name="dwFourCC" />
+            <Field Type="[DDPIXELFORMAT_u1]"        Name="" />
+            <Field Type="[DDPIXELFORMAT_u2]"        Name="" />
+            <Field Type="[DDPIXELFORMAT_u3]"        Name="" />
+            <Field Type="[DDPIXELFORMAT_u4]"        Name="" />
+            <Field Type="[DDPIXELFORMAT_u5]"        Name="" />
+        </Variable>
+        <Variable Name="LPDDPIXELFORMAT" Type="Pointer" Base="DDPIXELFORMAT" />
+
+        <!-- DVD_AUDIO_LANG_EXT -->
+        <Variable Name="DVD_AUDIO_LANG_EXT" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DVD_AUD_EXT_NotSpecified"			Value="0" />
+                <Set Name="DVD_AUD_EXT_Captions"				Value="1" />
+                <Set Name="DVD_AUD_EXT_VisuallyImpaired"		Value="2" />
+                <Set Name="DVD_AUD_EXT_DirectorComments1"		Value="3" />
+                <Set Name="DVD_AUD_EXT_DirectorComments2"		Value="4" />
+            </Enum>
+        </Variable>
+        <Variable Name="DVD_AUDIO_LANG_EXT*" Type="Pointer" Base="DVD_AUDIO_LANG_EXT" />
+
+        <!-- DVD_VIDEO_COMPRESSION -->
+        <Variable Name="DVD_VIDEO_COMPRESSION" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DVD_VideoCompression_Other"      Value="0" />
+                <Set Name="DVD_VideoCompression_MPEG1"      Value="1" />
+                <Set Name="DVD_VideoCompression_MPEG2"      Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- DVD_VideoAttributes -->
+        <Variable Name="DVD_VideoAttributes" Type="Struct">
+            <Field Type="BOOL"                      Name="fPanscanPermitted" />
+            <Field Type="BOOL"                      Name="fLetterboxPermitted" />
+            <Field Type="ULONG"                     Name="ulAspectX" />
+            <Field Type="ULONG"                     Name="ulAspectY" />
+            <Field Type="ULONG"                     Name="ulFrameRate" />
+            <Field Type="ULONG"                     Name="ulFrameHeight" />
+            <Field Type="DVD_VIDEO_COMPRESSION"     Name="Compression" />
+            <Field Type="BOOL"                      Name="fLine21Field1InGOP" />
+            <Field Type="BOOL"                      Name="fLine21Field2InGOP" />
+            <Field Type="ULONG"                     Name="ulSourceResolutionX" />
+            <Field Type="ULONG"                     Name="ulSourceResolutionY" />
+            <Field Type="BOOL"                      Name="fIsSourceLetterboxed" />
+            <Field Type="BOOL"                      Name="fIsFilmMode" />
+        </Variable>
+        <Variable Name="DVD_VideoAttributes*" Type="Pointer" Base="DVD_VideoAttributes" />
+
+        <!-- DVD_AUDIO_APPMODE -->
+        <Variable Name="DVD_AUDIO_APPMODE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DVD_AudioMode_None"          Value="0" />
+                <Set Name="DVD_AudioMode_Karaoke"       Value="1" />
+                <Set Name="DVD_AudioMode_Surround"      Value="2" />
+                <Set Name="DVD_AudioMode_Other"         Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- DVD_AUDIO_FORMAT -->
+        <Variable Name="DVD_AUDIO_FORMAT" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DVD_AudioFormat_AC3"             Value="0" />
+                <Set Name="DVD_AudioFormat_MPEG1"           Value="1" />
+                <Set Name="DVD_AudioFormat_MPEG1_DRC"       Value="2" />
+                <Set Name="DVD_AudioFormat_MPEG2"           Value="3" />
+                <Set Name="DVD_AudioFormat_MPEG2_DRC"       Value="4" />
+                <Set Name="DVD_AudioFormat_LPCM"            Value="5" />
+                <Set Name="DVD_AudioFormat_DTS"             Value="6" />
+                <Set Name="DVD_AudioFormat_SDDS"            Value="7" />
+                <Set Name="DVD_AudioFormat_Other"           Value="8" />
+            </Enum>
+        </Variable>
+
+        <!-- DVD_AudioAttributes -->
+        <Variable Name="DVD_AudioAttributes" Type="Struct">
+            <Field Type="DVD_AUDIO_APPMODE"     Name="AppMode" />
+            <Field Type="BYTE"                  Name="AppModeData" />
+            <Field Type="DVD_AUDIO_FORMAT"      Name="AudioFormat" />
+            <Field Type="LCID"                  Name="Language" />
+            <Field Type="DVD_AUDIO_LANG_EXT"    Name="LanguageExtension" />
+            <Field Type="BOOL"                  Name="fHasMultichannelInfo" />
+            <Field Type="DWORD"                 Name="dwFrequency" />
+            <Field Type="BYTE"                  Name="bQuantization" />
+            <Field Type="BYTE"                  Name="bNumberOfChannels" />
+            <Field Type="DWORD [2]"             Name="dwReserved"  />
+        </Variable>
+        <Variable Name="DVD_AudioAttributes*" Type="Pointer" Base="DVD_AudioAttributes" />
+        <Variable Name="DVD_AudioAttributes [8]" Type="Array" Base="DVD_AudioAttributes" Count="8" />
+
+        <!-- DVD_HMSF_TIMECODE -->
+        <Variable Name="DVD_HMSF_TIMECODE" Type="Struct">
+            <Field Type="BYTE" 	Name="bHours" />
+            <Field Type="BYTE" 	Name="bMinutes" />
+            <Field Type="BYTE" 	Name="bSeconds" />
+            <Field Type="BYTE" 	Name="bFrames" />
+        </Variable>
+        <Variable Name="DVD_HMSF_TIMECODE*" Type="Pointer" Base="DVD_HMSF_TIMECODE" />
+
+        <!-- DVD_SUBPICTURE_TYPE -->
+        <Variable Name="DVD_SUBPICTURE_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DVD_SPType_NotSpecified" Value="0" />
+                <Set Name="DVD_SPType_Language"     Value="1" />
+                <Set Name="DVD_SPType_Other"        Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- DVD_SUBPICTURE_CODING -->
+        <Variable Name="DVD_SUBPICTURE_CODING" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DVD_SPCoding_RunLength"  Value="0" />
+                <Set Name="DVD_SPCoding_Extended"   Value="1" />
+                <Set Name="DVD_SPCoding_Other"      Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- DVD_SUBPICTURE_LANG_EXT -->
+        <Variable Name="DVD_SUBPICTURE_LANG_EXT" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DVD_SP_EXT_NotSpecified"                 Value="0" />
+                <Set Name="DVD_SP_EXT_Caption_Normal"               Value="1" />
+                <Set Name="DVD_SP_EXT_Caption_Big"                  Value="2" />
+                <Set Name="DVD_SP_EXT_Caption_Children"             Value="3" />
+                <Set Name="DVD_SP_EXT_CC_Normal"                    Value="5" />
+                <Set Name="DVD_SP_EXT_CC_Big"                       Value="6" />
+                <Set Name="DVD_SP_EXT_CC_Children"                  Value="7" />
+                <Set Name="DVD_SP_EXT_Forced"                       Value="9" />
+                <Set Name="DVD_SP_EXT_DirectorComments_Normal"      Value="13" />
+                <Set Name="DVD_SP_EXT_DirectorComments_Big"         Value="14" />
+                <Set Name="DVD_SP_EXT_DirectorComments_Children"    Value="15" />
+            </Enum>
+        </Variable>
+        <Variable Name="DVD_SUBPICTURE_LANG_EXT*" Type="Pointer" Base="DVD_SUBPICTURE_LANG_EXT" />
+
+        <!-- DVD_SubpictureAttributes -->
+        <Variable Name="DVD_SubpictureAttributes" Type="Struct">
+            <Field Type="DVD_SUBPICTURE_TYPE"       Name="Type" />
+            <Field Type="DVD_SUBPICTURE_CODING"     Name="CodingMode" />
+            <Field Type="LCID"                      Name="Language" />
+            <Field Type="DVD_SUBPICTURE_LANG_EXT"   Name="LanguageExtension" />
+        </Variable>
+        <Variable Name="DVD_SubpictureAttributes*" Type="Pointer" Base="DVD_SubpictureAttributes" />
+        <Variable Name="DVD_SubpictureAttributes [32]" Type="Array" Base="DVD_SubpictureAttributes" Count="32" />
+
+        <!-- REGPINTYPES -->
+        <Variable Name="REGPINTYPES" Type="Struct">
+            <Field Type="const CLSID*"  Name="clsMajorType" />
+            <Field Type="const CLSID*"  Name="clsMinorType" />
+        </Variable>
+        <Variable Name="const REGPINTYPES*" Type="Pointer" Base="REGPINTYPES" />
+
+        <!-- REGFILTERPINS -->
+        <Variable Name="REGFILTERPINS" Type="Struct">
+            <Field Type="LPWSTR"                Name="strName" />
+            <Field Type="BOOL"                  Name="bRendered" />
+            <Field Type="BOOL"                  Name="bOutput" />
+            <Field Type="BOOL"                  Name="bZero" />
+            <Field Type="BOOL"                  Name="bMany" />
+            <Field Type="const CLSID*"          Name="clsConnectsToFilter" />
+            <Field Type="const WCHAR*"          Name="strConnectsToPin" />
+            <Field Type="UINT"                  Name="nMediaTypes" />
+            <Field Type="const REGPINTYPES*"    Name="lpMediaType" Count="nMediaTypes" />
+        </Variable>
+        <Variable Name="const REGFILTERPINS*" Type="Pointer" Base="REGFILTERPINS" />
+
+        <!-- REGPINMEDIUM -->
+        <Variable Name="REGPINMEDIUM" Type="Struct">
+            <Field Type="CLSID" 	Name="clsMedium" />
+            <Field Type="DWORD" 	Name="dw1" />
+            <Field Type="DWORD" 	Name="dw2" />
+        </Variable>
+        <Variable Name="const REGPINMEDIUM*" Type="Pointer" Base="REGPINMEDIUM" />
+
+        <!-- REGFILTERPINS2 -->
+        <Variable Name="REGFILTERPINS2" Type="Struct">
+            <Field Type="DWORD"                 Name="dwFlags" />
+            <Field Type="UINT"                  Name="cInstances" />
+            <Field Type="UINT"                  Name="nMediaTypes" />
+            <Field Type="const REGPINTYPES*"    Name="lpMediaType" Count="nMediaTypes" />
+            <Field Type="UINT"                  Name="nMediums" />
+            <Field Type="const REGPINMEDIUM*"   Name="lpMedium" Count="nMediums" />
+            <Field Type="const CLSID*"          Name="clsPinCategory" />
+        </Variable>
+        <Variable Name="const REGFILTERPINS2*" Type="Pointer" Base="REGFILTERPINS2" />
+
+        <!-- [REGFILTER2_u_s1] -->
+        <Variable Name="[REGFILTER2_u_s1]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="ULONG"                 Name="cPins" />
+            <Field Type="const REGFILTERPINS*"  Name="rgPins" />
+        </Variable>
+
+        <!-- [REGFILTER2_u_s2] -->
+        <Variable Name="[REGFILTER2_u_s2]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="ULONG"                 Name="cPins2" />
+            <Field Type="const REGFILTERPINS2*" Name="rgPins2" />
+        </Variable>
+
+        <!-- [REGFILTER2_u] -->
+        <Variable Name="[REGFILTER2_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="[REGFILTER2_u_s1]" Name="" />
+            <Field Type="[REGFILTER2_u_s2]" Name="" />
+        </Variable>
+
+        <!-- [FILTER_MERIT] -->
+        <Variable Name="[FILTER_MERIT]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="MERIT_PREFERRED"         Value="0x800000" />
+                <Set Name="MERIT_NORMAL"            Value="0x600000" />
+                <Set Name="MERIT_UNLIKELY"          Value="0x400000" />
+                <Set Name="MERIT_DO_NOT_USE"        Value="0x200000" />
+                <Set Name="MERIT_SW_COMPRESSOR"     Value="0x100000" />
+                <Set Name="MERIT_HW_COMPRESSOR"     Value="0x100050" />
+            </Enum>
+        </Variable>
+
+        <!-- REGFILTER2 -->
+        <Variable Name="REGFILTER2" Type="Struct">
+            <Field Type="DWORD"                 Name="dwVersion" />
+            <Field Type="[FILTER_MERIT]"        Name="dwMerit" />
+            <Field Type="[REGFILTER2_u]"        Name="" />
+        </Variable>
+        <Variable Name="const REGFILTER2*" Type="Pointer" Base="REGFILTER2" />
+
+        <!-- DVINFO -->
+        <Variable Name="DVINFO" Type="Struct">
+            <Field Type="DWORD"         Name="dwDVAAuxSrc" />
+            <Field Type="DWORD"         Name="dwDVAAuxCtl" />
+            <Field Type="DWORD"         Name="dwDVAAuxSrc1" />
+            <Field Type="DWORD"         Name="dwDVAAuxCtl1" />
+            <Field Type="DWORD"         Name="dwDVVAuxSrc" />
+            <Field Type="DWORD"         Name="dwDVVAuxCtl" />
+            <Field Type="DWORD [2]"     Name="dwDVReserved"  />
+        </Variable>
+        <Variable Name="DVINFO*" Type="Pointer" Base="DVINFO" />
+
+        <!-- VMR9MonitorInfo -->
+        <Variable Name="VMR9MonitorInfo" Type="Struct">
+            <Field Type="UINT"                  Name="uDevID" />
+            <Field Type="RECT"                  Name="rcMonitor" />
+            <Field Type="HMONITOR"              Name="hMon" />
+            <Field Type="[MONITORINFO_Flags]"   Name="dwFlags" />
+            <Field Type="wchar_t [32]"          Name="szDevice"  />
+            <Field Type="wchar_t [512]"         Name="szDescription"  />
+            <Field Type="LARGE_INTEGER"         Name="liDriverVersion" />
+            <Field Type="DWORD"                 Name="dwVendorId" />
+            <Field Type="DWORD"                 Name="dwDeviceId" />
+            <Field Type="DWORD"                 Name="dwSubSysId" />
+            <Field Type="DWORD"                 Name="dwRevision" />
+        </Variable>
+        <Variable Name="VMR9MonitorInfo*" Type="Pointer" Base="VMR9MonitorInfo" />
+
+        <!-- PIN_DIRECTION -->
+        <Variable Name="PIN_DIRECTION" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="PINDIR_INPUT"    Value="0" />
+                <Set Name="PINDIR_OUTPUT"   Value="1" />
+            </Enum>
+        </Variable>
+        <Variable Name="PIN_DIRECTION*" Type="Pointer" Base="PIN_DIRECTION" />
+
+        <!-- PIN_INFO -->
+        <Variable Name="PIN_INFO" Type="Struct">
+            <Field Type="IBaseFilter*"      Name="pFilter" />
+            <Field Type="PIN_DIRECTION"     Name="dir" />
+            <Field Type="WCHAR [128]"       Name="achName"  />
+        </Variable>
+        <Variable Name="PIN_INFO*" Type="Pointer" Base="PIN_INFO" />
+
+        <!-- AMCOPPCommand -->
+        <Variable Name="AMCOPPCommand" Type="Struct">
+            <Field Type="GUID"          Name="macKDI" />
+            <Field Type="GUID"          Name="guidCommandID" />
+            <Field Type="DWORD"         Name="dwSequence" />
+            <Field Type="DWORD"         Name="cbSizeData" />
+            <Field Type="BYTE [4056]"   Name="CommandData" Count="cbSizeData"  />
+        </Variable>
+        <Variable Name="AMCOPPCommand*"         Type="Pointer" Base="AMCOPPCommand" />
+        <Variable Name="const AMCOPPCommand*"   Type="Pointer" Base="AMCOPPCommand" />
+
+        <!-- AMCOPPSignature -->
+        <Variable Name="AMCOPPSignature" Type="Struct">
+            <Field Type="BYTE [256]" Name="Signature"  />
+        </Variable>
+        <Variable Name="AMCOPPSignature*" Type="Pointer" Base="AMCOPPSignature" />
+
+        <!-- AMCOPPStatusInput -->
+        <Variable Name="AMCOPPStatusInput" Type="Struct">
+            <Field Type="GUID"          Name="rApp" />
+            <Field Type="GUID"          Name="guidStatusRequestID" />
+            <Field Type="DWORD"         Name="dwSequence" />
+            <Field Type="DWORD"         Name="cbSizeData" />
+            <Field Type="BYTE [4056]"   Name="StatusData" Count="cbSizeData"  />
+        </Variable>
+        <Variable Name="const AMCOPPStatusInput*" Type="Pointer" Base="AMCOPPStatusInput" />
+
+        <!-- VMRGUID -->
+        <Variable Name="VMRGUID" Type="Struct">
+            <Field Type="GUID*"	Name="pGUID" />
+            <Field Type="GUID"	Name="GUID" />
+        </Variable>
+        <Variable Name="VMRGUID*"       Type="Pointer" Base="VMRGUID" />
+        <Variable Name="const VMRGUID*" Type="Pointer" Base="VMRGUID" />
+
+        <!-- VMRMONITORINFO -->
+        <Variable Name="VMRMONITORINFO" Type="Struct">
+            <Field Type="VMRGUID"               Name="guid" />
+            <Field Type="RECT"                  Name="rcMonitor" />
+            <Field Type="HMONITOR"              Name="hMon" />
+            <Field Type="[MONITORINFO_Flags]"   Name="dwFlags" />
+            <Field Type="wchar_t [32]"          Name="szDevice"  />
+            <Field Type="wchar_t [256]"         Name="szDescription"  />
+            <Field Type="LARGE_INTEGER"         Name="liDriverVersion" />
+            <Field Type="DWORD"                 Name="dwVendorId" />
+            <Field Type="DWORD"                 Name="dwDeviceId" />
+            <Field Type="DWORD"                 Name="dwSubSysId" />
+            <Field Type="DWORD"                 Name="dwRevision" />
+        </Variable>
+        <Variable Name="VMRMONITORINFO*" Type="Pointer" Base="VMRMONITORINFO" />
+
+        <!-- AMCOPPStatusOutput -->
+        <Variable Name="AMCOPPStatusOutput" Type="Struct">
+            <Field Type="GUID"          Name="macKDI" />
+            <Field Type="DWORD"         Name="cbSizeData" />
+            <Field Type="BYTE [4076]"   Name="COPPStatus" Count="cbSizeData"  />
+        </Variable>
+        <Variable Name="AMCOPPStatusOutput*" Type="Pointer" Base="AMCOPPStatusOutput" />
+
+        <!-- DVD_ATR -->
+        <Variable Name="DVD_ATR" Type="Struct">
+            <Field Type="ULONG"         Name="ulCAT" />
+            <Field Type="BYTE [768]"    Name="pbATRI"  />
+        </Variable>
+        <Variable Name="DVD_ATR*" Type="Pointer" Base="DVD_ATR" />
+
+        <!-- DVD_MenuAttributes -->
+        <Variable Name="DVD_MenuAttributes" Type="Struct">
+            <Field Type="BOOL [8]"                  Name="fCompatibleRegion"  />
+            <Field Type="DVD_VideoAttributes"       Name="VideoAttributes" />
+            <Field Type="BOOL"                      Name="fAudioPresent" />
+            <Field Type="DVD_AudioAttributes"       Name="AudioAttributes" />
+            <Field Type="BOOL"                      Name="fSubpicturePresent" />
+            <Field Type="DVD_SubpictureAttributes"  Name="SubpictureAttributes" />
+        </Variable>
+        <Variable Name="DVD_MenuAttributes*" Type="Pointer" Base="DVD_MenuAttributes" />
+
+        <!-- [SPEAKER_POSITION] -->
+        <Variable Name="[SPEAKER_POSITION]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="SPEAKER_FRONT_LEFT"              Value="0x1" />
+                <Set Name="SPEAKER_FRONT_RIGHT"             Value="0x2" />
+                <Set Name="SPEAKER_FRONT_CENTER"            Value="0x4" />
+                <Set Name="SPEAKER_LOW_FREQUENCY"           Value="0x8" />
+                <Set Name="SPEAKER_BACK_LEFT"               Value="0x10" />
+                <Set Name="SPEAKER_BACK_RIGHT"              Value="0x20" />
+                <Set Name="SPEAKER_FRONT_LEFT_OF_CENTER"    Value="0x40" />
+                <Set Name="SPEAKER_FRONT_RIGHT_OF_CENTER"   Value="0x80" />
+                <Set Name="SPEAKER_BACK_CENTER"             Value="0x100" />
+                <Set Name="SPEAKER_SIDE_LEFT"               Value="0x200" />
+                <Set Name="SPEAKER_SIDE_RIGHT"              Value="0x400" />
+                <Set Name="SPEAKER_TOP_CENTER"              Value="0x800" />
+                <Set Name="SPEAKER_TOP_FRONT_LEFT"          Value="0x1000" />
+                <Set Name="SPEAKER_TOP_FRONT_CENTER"        Value="0x2000" />
+                <Set Name="SPEAKER_TOP_FRONT_RIGHT"         Value="0x4000" />
+                <Set Name="SPEAKER_TOP_BACK_LEFT"           Value="0x8000" />
+                <Set Name="SPEAKER_TOP_BACK_CENTER"         Value="0x10000" />
+                <Set Name="SPEAKER_TOP_BACK_RIGHT"          Value="0x20000" />
+                <Set Name="SPEAKER_ALL"                     Value="0x80000000" />
+            </Flag>
+        </Variable>
+
+        <!-- DVD_MUA_MixingInfo -->
+        <Variable Name="DVD_MUA_MixingInfo" Type="Struct">
+            <Field Type="BOOL"                  Name="fMixTo0" />
+            <Field Type="BOOL"                  Name="fMixTo1" />
+            <Field Type="BOOL"                  Name="fMix0InPhase" />
+            <Field Type="BOOL"                  Name="fMix1InPhase" />
+            <Field Type="[SPEAKER_POSITION]"    Name="dwSpeakerPosition" />
+        </Variable>
+        <Variable Name="DVD_MUA_MixingInfo [8]" Type="Array" Base="DVD_MUA_MixingInfo" Count="8" />
+
+        <!-- DVD_MUA_Coeff -->
+        <Variable Name="DVD_MUA_Coeff" Type="Struct">
+            <Field Type="double"    Name="log2_alpha" />
+            <Field Type="double"    Name="log2_beta" />
+        </Variable>
+        <Variable Name="DVD_MUA_Coeff [8]" Type="Array" Base="DVD_MUA_Coeff" Count="8" />
+
+        <!-- DVD_MultichannelAudioAttributes -->
+        <Variable Name="DVD_MultichannelAudioAttributes" Type="Struct">
+            <Field Type="DVD_MUA_MixingInfo [8]"    Name="Info"  />
+            <Field Type="DVD_MUA_Coeff [8]"         Name="Coeff"  />
+        </Variable>
+        <Variable Name="DVD_MultichannelAudioAttributes [8]" Type="Array" Base="DVD_MultichannelAudioAttributes" Count="8" />
+
+        <!-- DVD_TITLE_APPMODE -->
+        <Variable Name="DVD_TITLE_APPMODE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DVD_AppMode_Not_Specified"   Value="0" />
+                <Set Name="DVD_AppMode_Karaoke"         Value="1" />
+                <Set Name="DVD_AppMode_Other"           Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- [DVD_TitleAttributes_u] -->
+        <Variable Name="[DVD_TitleAttributes_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="DVD_TITLE_APPMODE"     Name="AppMode" />
+            <Field Type="DVD_HMSF_TIMECODE"     Name="TitleLength" />
+        </Variable>
+
+        <!-- DVD_TitleAttributes -->
+        <Variable Name="DVD_TitleAttributes" Type="Struct">
+            <Field Type="[DVD_TitleAttributes_u]"               Name="" />
+            <Field Type="DVD_VideoAttributes"                   Name="VideoAttributes" />
+            <Field Type="ULONG"                                 Name="ulNumberOfAudioStreams" />
+            <Field Type="DVD_AudioAttributes [8]"               Name="AudioAttributes" />
+            <Field Type="DVD_MultichannelAudioAttributes [8]"   Name="MultichannelAudioAttributes"  />
+            <Field Type="ULONG"                                 Name="ulNumberOfSubpictureStreams" />
+            <Field Type="DVD_SubpictureAttributes [32]"         Name="SubpictureAttributes"  />
+        </Variable>
+        <Variable Name="DVD_TitleAttributes*" Type="Pointer" Base="DVD_TitleAttributes" />
+
+        <!-- DVD_KARAOKE_ASSIGNMENT -->
+        <Variable Name="DVD_KARAOKE_ASSIGNMENT" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DVD_Assignment_reserved0"        Value="0" />
+                <Set Name="DVD_Assignment_reserved1"        Value="1" />
+                <Set Name="DVD_Assignment_LR"               Value="2" />
+                <Set Name="DVD_Assignment_LRM"              Value="3" />
+                <Set Name="DVD_Assignment_LR1"              Value="4" />
+                <Set Name="DVD_Assignment_LRM1"             Value="5" />
+                <Set Name="DVD_Assignment_LR12"             Value="6" />
+                <Set Name="DVD_Assignment_LRM12"            Value="7" />
+            </Enum>
+        </Variable>
+
+        <!-- DVD_KARAOKE_CONTENTS -->
+        <Variable Name="DVD_KARAOKE_CONTENTS" Type="Alias" Base="WORD">
+            <Display Name="WORD" />
+            <Flag>
+                <Set Name="DVD_Karaoke_GuideVocal1"         Value="0x1" />
+                <Set Name="DVD_Karaoke_GuideVocal2"         Value="0x2" />
+                <Set Name="DVD_Karaoke_GuideMelody1"        Value="0x4" />
+                <Set Name="DVD_Karaoke_GuideMelody2"        Value="0x8" />
+                <Set Name="DVD_Karaoke_GuideMelodyA"        Value="0x10" />
+                <Set Name="DVD_Karaoke_GuideMelodyB"        Value="0x20" />
+                <Set Name="DVD_Karaoke_SoundEffectA"        Value="0x40" />
+                <Set Name="DVD_Karaoke_SoundEffectB"        Value="0x80" />
+            </Flag>
+        </Variable>
+        <Variable Name="DVD_KARAOKE_CONTENTS [8]" Type="Array" Base="DVD_KARAOKE_CONTENTS" Count="8">
+            <Display Name="WORD [8]" />
+        </Variable>
+
+        <!-- DVD_KaraokeAttributes -->
+        <Variable Name="DVD_KaraokeAttributes" Type="Struct">
+            <Field Type="BYTE"                      Name="bVersion" />
+            <Field Type="BOOL"                      Name="fMasterOfCeremoniesInGuideVocal1" />
+            <Field Type="BOOL"                      Name="fDuet" />
+            <Field Type="DVD_KARAOKE_ASSIGNMENT"    Name="ChannelAssignment" />
+            <Field Type="DVD_KARAOKE_CONTENTS [8]"  Name="wChannelContents"  />
+        </Variable>
+        <Variable Name="DVD_KaraokeAttributes*" Type="Pointer" Base="DVD_KaraokeAttributes" />
+
+        <!-- FILTER_INFO -->
+        <Variable Name="FILTER_INFO" Type="Struct">
+            <Field Type="WCHAR [128]"       Name="achName"  />
+            <Field Type="IFilterGraph*"     Name="pGraph" />
+        </Variable>
+        <Variable Name="FILTER_INFO*" Type="Pointer" Base="FILTER_INFO" />
 
         <!-- ALLOCATOR_PROPERTIES -->
         <Variable Name="ALLOCATOR_PROPERTIES" Type="Struct">
@@ -246,26 +809,36 @@
             <Field Type="WORD"   	Name="wFrameRate" />
             <Field Type="WORD"   	Name="wFrameFract" />
             <Field Type="DWORD"  	Name="dwFrames" />
-       </Variable>
+        </Variable>
+
+        <!-- [TIMECODE_SAMPLE_FLAGS] -->
+        <Variable Name="[TIMECODE_SAMPLE_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <!-- TODO: Need to find values -->
+                <!--
+                <Set Name="AM_TIMECODE_FLAG_FCM"                Value="" />
+                <Set Name="AM_TIMECODE_FLAG_CF"                 Value="" />
+                <Set Name="AM_TIMECODE_FLAG_FIELD"              Value="" />
+                <Set Name="AM_TIMECODE_FLAG_DF"                 Value="" />
+                <Set Name="AM_TIMECODE_COLORFRAME"              Value="" />
+                <Set Name="AM_TIMECODE_COLORSEQUENCE"           Value="" />
+                <Set Name="AM_TIMECODE_FILMSEQUENCE_TYPE"       Value="" />
+                -->
+                <Set Name="ED_DEVCAP_TIMECODE_READ"             Value="4121" />
+                <Set Name="ED_DEVCAP_ATN_READ"                  Value="5047" />
+                <Set Name="ED_DEVCAP_RTC_READ"                  Value="5050" />
+            </Enum>
+        </Variable>
 
         <!-- TIMECODE_SAMPLE -->
-        <!-- TODO: dwFlags -->
         <Variable Name="TIMECODE_SAMPLE" Type="Struct">
-            <Field Type="LONGLONG" 	Name="qwTick" />
-            <Field Type="TIMECODE" 	Name="timecode" />
-            <Field Type="DWORD" 	Name="dwUser" />
-            <Field Type="DWORD" 	Name="dwFlags" />
+            <Field Type="LONGLONG" 	                Name="qwTick" />
+            <Field Type="TIMECODE" 	                Name="timecode" />
+            <Field Type="DWORD" 	                Name="dwUser" />
+            <Field Type="[TIMECODE_SAMPLE_FLAGS]" 	Name="dwFlags" />
         </Variable>
         <Variable Name="PTIMECODE_SAMPLE"   Type="Pointer" Base="TIMECODE_SAMPLE" />
-
-        <!-- DVD_HMSF_TIMECODE -->
-        <Variable Name="DVD_HMSF_TIMECODE" Type="Struct">
-            <Field Type="BYTE" 	Name="bHours" />
-            <Field Type="BYTE" 	Name="bMinutes" />
-            <Field Type="BYTE" 	Name="bSeconds" />
-            <Field Type="BYTE" 	Name="bFrames" />
-        </Variable>
-        <Variable Name="DVD_HMSF_TIMECODE*" Type="Pointer" Base="DVD_HMSF_TIMECODE" />
 
         <!-- AM_DVD_STREAM_FLAGS -->
         <Variable Name="AM_DVD_STREAM_FLAGS" Type="Alias" Base="DWORD">
@@ -367,14 +940,6 @@
         </Variable>
         <Variable Name="DVD_PLAYBACK_LOCATION2*" Type="Pointer" Base="DVD_PLAYBACK_LOCATION2" />
 
-        <!-- REGPINMEDIUM -->
-        <Variable Name="REGPINMEDIUM" Type="Struct">
-            <Field Type="CLSID" 	Name="clsMedium" />
-            <Field Type="DWORD" 	Name="dw1" />
-            <Field Type="DWORD" 	Name="dw2" />
-        </Variable>
-        <Variable Name="const REGPINMEDIUM*" Type="Pointer" Base="REGPINMEDIUM" />
-
         <!-- VMRPresentationFlags -->
         <Variable Name="VMRPresentationFlags" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
@@ -388,7 +953,6 @@
         </Variable>
 
         <!-- VMRPRESENTATIONINFO -->
-        <!-- TODO: dwTypeSpecificFlags, dwInterlaceFlags -->
         <Variable Name="VMRPRESENTATIONINFO" Type="Struct">
             <Field Type="VMRPresentationFlags"  Name="dwFlags" />
             <Field Type="LPDIRECTDRAWSURFACE7" 	Name="lpSurf" />
@@ -397,7 +961,7 @@
             <Field Type="SIZE" 	                Name="szAspectRatio" />
             <Field Type="RECT" 	                Name="rcSrc" />
             <Field Type="RECT" 	                Name="rcDst" />
-            <Field Type="DWORD" 	            Name="dwTypeSpecificFlags" />
+            <Field Type="DWORD"                 Name="dwTypeSpecificFlags" />
             <Field Type="DWORD" 	            Name="dwInterlaceFlags" />
         </Variable>
         <Variable Name="VMRPRESENTATIONINFO*" Type="Pointer" Base="VMRPRESENTATIONINFO" />
@@ -515,14 +1079,6 @@
         <Variable Name="VMR9AlphaBitmap*"       Type="Pointer" Base="VMR9AlphaBitmap" />
         <Variable Name="const VMR9AlphaBitmap*" Type="Pointer" Base="VMR9AlphaBitmap" />
 
-        <!-- VMRGUID -->
-        <Variable Name="VMRGUID" Type="Struct">
-            <Field Type="GUID*"	Name="pGUID" />
-            <Field Type="GUID"	Name="GUID" />
-        </Variable>
-        <Variable Name="VMRGUID*"       Type="Pointer" Base="VMRGUID" />
-        <Variable Name="const VMRGUID*" Type="Pointer" Base="VMRGUID" />
-
         <!-- VMRSurfaceAllocationFlags -->
         <Variable Name="VMRSurfaceAllocationFlags" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
@@ -536,8 +1092,26 @@
             </Flag>
         </Variable>
 
+        <!-- [AMINTERLACE_FLAG] -->
+        <Variable Name="[AMINTERLACE_FLAG]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="AMINTERLACE_IsInterlaced"                Value="0x00000001" />
+                <Set Name="AMINTERLACE_1FieldPerSample"             Value="0x00000002" />
+                <Set Name="AMINTERLACE_Field1First"                 Value="0x00000004" />
+                <Set Name="AMINTERLACE_FieldPatternMask"            Value="0x00000030" />
+                <Set Name="AMINTERLACE_FieldPatField1Only"          Value="0x00000000" />
+                <Set Name="AMINTERLACE_FieldPatField2Only"          Value="0x00000010" />
+                <Set Name="AMINTERLACE_FieldPatBothRegular"         Value="0x00000020" />
+                <Set Name="AMINTERLACE_FieldPatBothIrregular"       Value="0x00000030" />
+                <Set Name="AMINTERLACE_DisplayModeMask"             Value="0x000000c0" />
+                <Set Name="AMINTERLACE_DisplayModeBobOnly"          Value="0x00000000" />
+                <Set Name="AMINTERLACE_DisplayModeWeaveOnly"        Value="0x00000040" />
+                <Set Name="AMINTERLACE_DisplayModeBobOrWeave"       Value="0x00000080" />
+            </Flag>
+        </Variable>
+
         <!-- VMRALLOCATIONINFO -->
-        <!-- TODO: dwInterlaceFlags -->
         <Variable Name="VMRALLOCATIONINFO" Type="Struct">
             <Field Type="VMRSurfaceAllocationFlags" Name="dwFlags" />
             <Field Type="LPBITMAPINFOHEADER" 	    Name="lpHdr" />
@@ -545,7 +1119,7 @@
             <Field Type="SIZE" 	                    Name="szAspectRatio" />
             <Field Type="DWORD" 	                Name="dwMinBuffers" />
             <Field Type="DWORD" 	                Name="dwMaxBuffers" />
-            <Field Type="DWORD" 	                Name="dwInterlaceFlags" />
+            <Field Type="[AMINTERLACE_FLAG]"        Name="dwInterlaceFlags" />
             <Field Type="SIZE" 	                    Name="szNativeSize" />
         </Variable>
         <Variable Name="VMRALLOCATIONINFO*" Type="Pointer" Base="VMRALLOCATIONINFO" />
@@ -649,7 +1223,7 @@
                 <Set Name="DeinterlaceTech_MotionVectorSteered"     Value="0x80" />
             </Enum>
         </Variable>
-        
+
         <!-- VMRDeinterlaceCaps -->
         <Variable Name="VMRDeinterlaceCaps" Type="Struct">
             <Field Type="DWORD"                 Name="dwSize" />
@@ -703,7 +1277,7 @@
                 <Set Name="DeinterlaceTech9_MotionVectorSteered"        Value="0x80" />
             </Enum>
         </Variable>
-        
+
         <!-- VMR9DeinterlaceCaps -->
         <Variable Name="VMR9DeinterlaceCaps" Type="Struct">
             <Field Type="DWORD"                 Name="dwSize" />
@@ -760,78 +1334,6 @@
             <Field Type="float" 	                Name="StepSize" />
         </Variable>
         <Variable Name="VMR9ProcAmpControlRange*" Type="Pointer" Base="VMR9ProcAmpControlRange" />
-
-        <!-- DVD_VIDEO_COMPRESSION -->
-        <Variable Name="DVD_VIDEO_COMPRESSION" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="DVD_VideoCompression_Other"      Value="0" />
-                <Set Name="DVD_VideoCompression_MPEG1"      Value="1" />
-                <Set Name="DVD_VideoCompression_MPEG2"      Value="2" />
-            </Enum>
-        </Variable>
-
-        <!-- DVD_VideoAttributes -->
-        <Variable Name="DVD_VideoAttributes" Type="Struct">
-            <Field Type="BOOL"                      Name="fPanscanPermitted" />
-            <Field Type="BOOL"                      Name="fLetterboxPermitted" />
-            <Field Type="ULONG"                     Name="ulAspectX" />
-            <Field Type="ULONG"                     Name="ulAspectY" />
-            <Field Type="ULONG"                     Name="ulFrameRate" />
-            <Field Type="ULONG"                     Name="ulFrameHeight" />
-            <Field Type="DVD_VIDEO_COMPRESSION"     Name="Compression" />
-            <Field Type="BOOL"                      Name="fLine21Field1InGOP" />
-            <Field Type="BOOL"                      Name="fLine21Field2InGOP" />
-            <Field Type="ULONG"                     Name="ulSourceResolutionX" />
-            <Field Type="ULONG"                     Name="ulSourceResolutionY" />
-            <Field Type="BOOL"                      Name="fIsSourceLetterboxed" />
-            <Field Type="BOOL"                      Name="fIsFilmMode" />
-        </Variable>
-        <Variable Name="DVD_VideoAttributes*" Type="Pointer" Base="DVD_VideoAttributes" />
-
-        <!-- DVD_SUBPICTURE_TYPE -->
-        <Variable Name="DVD_SUBPICTURE_TYPE" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="DVD_SPType_NotSpecified" Value="0" />
-                <Set Name="DVD_SPType_Language"     Value="1" />
-                <Set Name="DVD_SPType_Other"        Value="2" />
-            </Enum>
-        </Variable>
-
-        <!-- DVD_SUBPICTURE_CODING -->
-        <Variable Name="DVD_SUBPICTURE_CODING" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="DVD_SPCoding_RunLength"  Value="0" />
-                <Set Name="DVD_SPCoding_Extended"   Value="1" />
-                <Set Name="DVD_SPCoding_Other"      Value="2" />
-            </Enum>
-        </Variable>
-
-        <!-- DVD_SUBPICTURE_LANG_EXT -->
-        <Variable Name="DVD_SUBPICTURE_LANG_EXT" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="DVD_SP_EXT_NotSpecified"                 Value="0" />
-                <Set Name="DVD_SP_EXT_Caption_Normal"               Value="1" />
-                <Set Name="DVD_SP_EXT_Caption_Big"                  Value="2" />
-                <Set Name="DVD_SP_EXT_Caption_Children"             Value="3" />
-                <Set Name="DVD_SP_EXT_CC_Normal"                    Value="5" />
-                <Set Name="DVD_SP_EXT_CC_Big"                       Value="6" />
-                <Set Name="DVD_SP_EXT_CC_Children"                  Value="7" />
-                <Set Name="DVD_SP_EXT_Forced"                       Value="9" />
-                <Set Name="DVD_SP_EXT_DirectorComments_Normal"      Value="13" />
-                <Set Name="DVD_SP_EXT_DirectorComments_Big"         Value="14" />
-                <Set Name="DVD_SP_EXT_DirectorComments_Children"    Value="15" />
-            </Enum>
-        </Variable>
-        <Variable Name="DVD_SUBPICTURE_LANG_EXT*" Type="Pointer" Base="DVD_SUBPICTURE_LANG_EXT" />
-
-        <!-- DVD_SubpictureAttributes -->
-        <Variable Name="DVD_SubpictureAttributes" Type="Struct">
-            <Field Type="DVD_SUBPICTURE_TYPE"       Name="Type" />
-            <Field Type="DVD_SUBPICTURE_CODING"     Name="CodingMode" />
-            <Field Type="LCID"                      Name="Language" />
-            <Field Type="DVD_SUBPICTURE_LANG_EXT"   Name="LanguageExtension" />
-        </Variable>
-        <Variable Name="DVD_SubpictureAttributes*" Type="Pointer" Base="DVD_SubpictureAttributes" />
 
         <!-- [DvdAudioCaps] -->
         <Variable Name="[DvdAudioCaps]" Type="Alias" Base="DWORD">
@@ -1055,15 +1557,6 @@
         </Variable>
         <Variable Name="DVD_DOMAIN*" Type="Pointer" Base="DVD_DOMAIN" />
 
-        <!-- PIN_DIRECTION -->
-        <Variable Name="PIN_DIRECTION" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="PINDIR_INPUT"    Value="0" />
-                <Set Name="PINDIR_OUTPUT"   Value="1" />
-            </Enum>
-        </Variable>
-        <Variable Name="PIN_DIRECTION*" Type="Pointer" Base="PIN_DIRECTION" />
-
         <!-- InterleavingMode -->
         <Variable Name="InterleavingMode" Type="Alias" Base="UINT">
             <Enum>
@@ -1176,18 +1669,6 @@
                 <Set Name="DVD_ReadBurstPeriodInMS"				Value="17" />
             </Enum>
         </Variable>
-
-        <!-- DVD_AUDIO_LANG_EXT -->
-        <Variable Name="DVD_AUDIO_LANG_EXT" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="DVD_AUD_EXT_NotSpecified"			Value="0" />
-                <Set Name="DVD_AUD_EXT_Captions"				Value="1" />
-                <Set Name="DVD_AUD_EXT_VisuallyImpaired"		Value="2" />
-                <Set Name="DVD_AUD_EXT_DirectorComments1"		Value="3" />
-                <Set Name="DVD_AUD_EXT_DirectorComments2"		Value="4" />
-            </Enum>
-        </Variable>
-        <Variable Name="DVD_AUDIO_LANG_EXT*" Type="Pointer" Base="DVD_AUDIO_LANG_EXT" />
 
         <!-- FILTER_STATE -->
         <Variable Name="FILTER_STATE" Type="Alias" Base="UINT">

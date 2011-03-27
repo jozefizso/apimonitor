@@ -6,11 +6,32 @@
 <ApiMonitor>
     <Include Filename="Interfaces\IUnknown.xml" />
     <Interface Name="IPrint" Id="{b722bcc9-4e68-101b-a2bc-00aa00404770}" BaseInterface="IUnknown" OnlineHelp="MSDN" ErrorFunc="HRESULT" Category="Component Development/COM/Component Object Model (COM)/OLE and Data Transfer/Interfaces">
-        <!-- Variables -->
-        
-        <!-- TODO: Structures -->
-        <Variable Name="PAGESET*"    Type="Alias"   Base="LPVOID" />
-        <Variable Name="PAGESET**"   Type="Pointer" Base="PAGESET*" />
+
+        <!-- [PAGESET_ENUM] -->
+        <Variable Name="[PAGESET_ENUM]" Type="Alias" Base="LONG">
+            <Display Name="LONG" />
+            <Enum>
+                <Set Name="PAGESET_TOLASTPAGE" Value="-1" />
+            </Enum>
+        </Variable>
+
+        <!-- PAGERANGE -->
+        <Variable Name="PAGERANGE" Type="Struct">
+            <Field Type="LONG"              Name="nFromPage" />
+            <Field Type="[PAGESET_ENUM]"    Name="nToPage" />
+        </Variable>
+        <Variable Name="PAGERANGE [1]" Type="Array" Base="PAGERANGE" Count="1" />
+
+        <!-- PAGESET -->
+        <Variable Name="PAGESET" Type="Struct">
+            <Field Type="ULONG"             Name="cbStruct" />
+            <Field Type="BOOL"              Name="fOddPages" />
+            <Field Type="BOOL"              Name="fEvenPages" />
+            <Field Type="ULONG"             Name="cPageRange" />
+            <Field Type="PAGERANGE [1]"     Name="rgPages" Count="cPageRange" />
+        </Variable>
+        <Variable Name="PAGESET*"   Type="Pointer" Base="PAGESET" />
+        <Variable Name="PAGESET**"  Type="Pointer" Base="PAGESET*" />
         
         <!-- Methods -->
         <Api Name="SetInitialPageNum">

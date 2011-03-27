@@ -8,11 +8,9 @@
     <Include Filename="Headers\gdi.h.xml" />
     <Include Filename="Headers\registry.h.xml" />
     <Module Name="comctl32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        
-        <!-- TODO: Structures -->
+
+        <!-- TODO: Structures (32/64 differences) -->
         <Variable Name="LPCTBBUTTON"                    Type="Alias"    Base="LPVOID" />
-        <Variable Name="PREADERMODEINFO"                Type="Alias"    Base="LPVOID" />
-        <Variable Name="const TASKDIALOGCONFIG*"        Type="Alias"    Base="LPVOID" />
 
         <!-- Variables -->
         <Variable Name="HDPA"                           Type="Alias"    Base="LPVOID" />
@@ -28,7 +26,33 @@
         <Variable Name="PFNDAENUMCALLBACK"              Type="Alias"    Base="LPVOID" />
         <Variable Name="PFNDAENUMCALLBACK*"             Type="Pointer"  Base="PFNDAENUMCALLBACK" />
         <Variable Name="PFNDACOMPARE"                   Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFTASKDIALOGCALLBACK"           Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFNREADERSCROLL"                Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFNREADERTRANSLATEDISPATCH"     Type="Alias"    Base="LPVOID" />
 
+        <!-- [ReaderModeFlag] -->
+        <Variable Name="[ReaderModeFlag]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="RMF_ZEROCURSOR"          Value="0x01" />
+                <Set Name="RMF_VERTICALONLY"        Value="0x02" />
+                <Set Name="RMF_HORIZONTALONLY"      Value="0x04" />
+            </Flag>
+        </Variable>
+
+        <!-- READERMODEINFO -->
+        <Variable Name="READERMODEINFO" Type="Struct">
+            <Field Type="UINT"                          Name="cbSize" />
+            <Field Type="HWND"                          Name="hwnd" />
+            <Field Type="[ReaderModeFlag]"              Name="fFlags" />
+            <Field Type="LPRECT"                        Name="prc" />
+            <Field Type="PFNREADERSCROLL"               Name="pfnScroll" />
+            <Field Type="PFNREADERTRANSLATEDISPATCH"    Name="pfnTranslatedDispatch" />
+            <Field Type="LPARAM"                        Name="lParam" />
+        </Variable>
+        <Variable Name="PREADERMODEINFO" Type="Pointer" Base="READERMODEINFO" />
+
+        <!-- TASKDIALOG_COMMON_BUTTON_FLAGS -->
         <Variable Name="TASKDIALOG_COMMON_BUTTON_FLAGS" Type="Alias" Base="UINT">
             <Flag>
                 <Set Name="TDCBF_OK_BUTTON"         Value="0x0001" />
@@ -40,6 +64,7 @@
             </Flag>
         </Variable>
 
+        <!-- [ILD_Flags] -->
         <Variable Name="[ILD_Flags]" Type="Alias" Base="UINT">
             <Display Name="UINT" />
             <Flag>
@@ -58,6 +83,7 @@
             </Flag>
         </Variable>
 
+        <!-- [ILC_Flags] -->
         <Variable Name="[ILC_Flags]" Type="Alias" Base="UINT">
             <Display Name="UINT" />
             <Flag>
@@ -77,6 +103,7 @@
             </Flag>
         </Variable>
 
+        <!-- [WSB_Prop] -->
         <Variable Name="[WSB_Prop]" Type="Alias" Base="UINT">
             <Display Name="UINT" />
             <Enum>
@@ -96,6 +123,7 @@
             </Enum>
         </Variable>
 
+        <!-- [ILP_Flags] -->
         <Variable Name="[ILP_Flags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>
@@ -104,6 +132,7 @@
             </Enum>
         </Variable>
 
+        <!-- [TBStyle] -->
         <Variable Name="[TBStyle]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -150,6 +179,7 @@
             </Flag>
         </Variable>
 
+        <!-- [UDStyle] -->
         <Variable Name="[UDStyle]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -187,6 +217,7 @@
             </Flag>
         </Variable>
 
+        <!-- [MruFlags] -->
         <Variable Name="[MruFlags]" Type="Alias" Base="UINT">
             <Display Name="UINT" />
             <Flag>
@@ -214,6 +245,7 @@
         </Variable>
         <Variable Name="LPCOLORMAP" Type="Pointer" Base="COLORMAP" />
 
+        <!-- [IccFlags] -->
         <Variable Name="[IccFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -275,7 +307,79 @@
             <Field Type="RECT"    	Name="rcImage" />
         </Variable>
         <Variable Name="IMAGEINFO*" Type="Pointer" Base="IMAGEINFO" />
-        
+
+        <!-- TASKDIALOG_FLAGS -->
+        <Variable Name="TASKDIALOG_FLAGS" Type="Alias" Base="UINT">
+            <Flag>
+                <Set Name="TDF_ENABLE_HYPERLINKS"               Value="0x0001" />
+                <Set Name="TDF_USE_HICON_MAIN"                  Value="0x0002" />
+                <Set Name="TDF_USE_HICON_FOOTER"                Value="0x0004" />
+                <Set Name="TDF_ALLOW_DIALOG_CANCELLATION"       Value="0x0008" />
+                <Set Name="TDF_USE_COMMAND_LINKS"               Value="0x0010" />
+                <Set Name="TDF_USE_COMMAND_LINKS_NO_ICON"       Value="0x0020" />
+                <Set Name="TDF_EXPAND_FOOTER_AREA"              Value="0x0040" />
+                <Set Name="TDF_EXPANDED_BY_DEFAULT"             Value="0x0080" />
+                <Set Name="TDF_VERIFICATION_FLAG_CHECKED"       Value="0x0100" />
+                <Set Name="TDF_SHOW_PROGRESS_BAR"               Value="0x0200" />
+                <Set Name="TDF_SHOW_MARQUEE_PROGRESS_BAR"       Value="0x0400" />
+                <Set Name="TDF_CALLBACK_TIMER"                  Value="0x0800" />
+                <Set Name="TDF_POSITION_RELATIVE_TO_WINDOW"     Value="0x1000" />
+                <Set Name="TDF_RTL_LAYOUT"                      Value="0x2000" />
+                <Set Name="TDF_NO_DEFAULT_RADIO_BUTTON"         Value="0x4000" />
+                <Set Name="TDF_CAN_BE_MINIMIZED"                Value="0x8000" />
+            </Flag>
+        </Variable>
+
+        <!-- TASKDIALOG_BUTTON -->
+        <Variable Name="TASKDIALOG_BUTTON" Type="Struct" Pack="1">
+            <Field Type="int"       Name="nButtonID" />
+            <Field Type="PCWSTR"    Name="pszButtonText" />
+        </Variable>
+        <Variable Name="const TASKDIALOG_BUTTON*" Type="Pointer" Base="TASKDIALOG_BUTTON"/>
+
+        <!-- [TASKDIALOGCONFIG_u1] -->
+        <Variable Name="[TASKDIALOGCONFIG_u1]" Type="Union">
+            <Display Name="union" />
+            <Field Type="HICON"     Name="hMainIcon" />
+            <Field Type="PCWSTR"    Name="pszMainIcon" />
+        </Variable>
+
+        <!-- [TASKDIALOGCONFIG_u2] -->
+        <Variable Name="[TASKDIALOGCONFIG_u2]" Type="Union">
+            <Display Name="union" />
+            <Field Type="HICON"     Name="hFooterIcon" />
+            <Field Type="PCWSTR"    Name="pszFooterIcon" />
+        </Variable>
+
+        <!-- TASKDIALOGCONFIG -->
+        <Variable Name="TASKDIALOGCONFIG" Type="Struct" Pack="1">
+            <Field Type="UINT"                              Name="cbSize" />
+            <Field Type="HWND"                              Name="hwndParent" />
+            <Field Type="HINSTANCE"                         Name="hInstance" />
+            <Field Type="TASKDIALOG_FLAGS"                  Name="dwFlags" />
+            <Field Type="TASKDIALOG_COMMON_BUTTON_FLAGS"    Name="dwCommonButtons" />
+            <Field Type="PCWSTR"                            Name="pszWindowTitle" />
+            <Field Type="[TASKDIALOGCONFIG_u1]"             Name="" />
+            <Field Type="PCWSTR"                            Name="pszMainInstruction" />
+            <Field Type="PCWSTR"                            Name="pszContent" />
+            <Field Type="UINT"                              Name="cButtons" />
+            <Field Type="const TASKDIALOG_BUTTON*"          Name="pButtons" Count="cButtons" />
+            <Field Type="int"                               Name="nDefaultButton" />
+            <Field Type="UINT"                              Name="cRadioButtons" Count="cRadioButtons" />
+            <Field Type="const TASKDIALOG_BUTTON*"          Name="pRadioButtons" />
+            <Field Type="int"                               Name="nDefaultRadioButton" />
+            <Field Type="PCWSTR"                            Name="pszVerificationText" />
+            <Field Type="PCWSTR"                            Name="pszExpandedInformation" />
+            <Field Type="PCWSTR"                            Name="pszExpandedControlText" />
+            <Field Type="PCWSTR"                            Name="pszCollapsedControlText" />
+            <Field Type="[TASKDIALOGCONFIG_u2]"             Name="" />
+            <Field Type="PCWSTR"                            Name="pszFooter" />
+            <Field Type="PFTASKDIALOGCALLBACK"              Name="pfCallback" />
+            <Field Type="LONG_PTR"                          Name="lpCallbackData" />
+            <Field Type="UINT"                              Name="cxWidth" />
+        </Variable>
+        <Variable Name="const TASKDIALOGCONFIG*" Type="Pointer" Base="TASKDIALOGCONFIG" />
+
         <!-- Mouse Input -->
         <Category Name="Windows Application UI Development/User Interaction/Keyboard and Mouse Input/Mouse Input" />
         <Api Name="_TrackMouseEvent">

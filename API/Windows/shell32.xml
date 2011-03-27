@@ -10,7 +10,16 @@
     <Include Filename="Headers\registry.h.xml" />
 
     <Module Name="Shell32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        <!-- Variables -->
+
+        <!-- TODO: We can decode RESTRICTIONS, however, it is only used a single API and might not be useful. Decide later -->
+        <Variable Name="RESTRICTIONS" Type="Alias" Base="UINT" />
+
+        <!-- TODO: Bitfields -->
+        <Variable Name="LPSHELLSTATE"                       Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPSHELLFLAGSTATE"                   Type="Alias"    Base="LPVOID" />
+        <Variable Name="CABINETSTATE*"                      Type="Alias"    Base="LPVOID" />
+
+        <!-- Interfaces -->
         <Variable Name="IShellFolder"                       Type="Interface" />
         <Variable Name="IContextMenu"                       Type="Interface" />
         <Variable Name="IDataObject"                        Type="Interface" />
@@ -26,9 +35,7 @@
         <Variable Name="IContextMenuCB"                     Type="Interface" />
         <Variable Name="IShellFolderViewCB"                 Type="Interface" />
 
-        <!-- TODO: We can decode RESTRICTIONS, however, it is only used a single API and might not be useful. Decide later -->
-        <Variable Name="RESTRICTIONS" Type="Alias" Base="UINT" />
-
+        <!-- Variables -->
         <Variable Name="FARPROC16"                          Type="Alias"    Base="LPVOID" />
         <Variable Name="LPFNDFMCALLBACK"                    Type="Alias"    Base="LPVOID" />
         <Variable Name="HDROP"                              Type="Alias"    Base="HANDLE" />
@@ -36,24 +43,271 @@
         <Variable Name="LPFNADDPROPSHEETPAGE"               Type="Alias"    Base="LPVOID" />
         <Variable Name="LPFNVIEWCALLBACK"                   Type="Alias"    Base="LPVOID" />
         <Variable Name="PFNASYNCICONTASKBALLBACK"           Type="Alias"    Base="LPVOID" />
+        
+        <Variable Name="TCHAR [80]"                         Type="Array"    Base="TCHAR"    Count="80" />
+        <Variable Name="POINT [NUM_POINTS]"                 Type="Array"    Base="POINT"    Count="3" />
+        <Variable Name="DWORD [NUM_POINTS]"                 Type="Array"    Base="DWORD"    Count="3" />
 
-        <!-- TODO: Structures -->
-        <Variable Name="PCIDLIST_ABSOLUTE_ARRAY"            Type="Alias"    Base="LPVOID" />
-        <Variable Name="PCUIDLIST_RELATIVE_ARRAY"           Type="Alias"    Base="LPVOID" />
-        <Variable Name="AUTO_SCROLL_DATA*"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPSHITEMID"                         Type="Alias"    Base="LPVOID" />
-        <Variable Name="PUIDLIST_RELATIVE"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="CABINETSTATE*"                      Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPBROWSEINFO"                       Type="Alias"    Base="LPVOID" />
-        <Variable Name="PNOTIFYICONDATA"                    Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPSHELLEXECUTEINFO"                 Type="Alias"    Base="LPVOID" />
-        <Variable Name="SHFILEINFO*"                        Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPSHFOLDERCUSTOMSETTINGS"           Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPSHELLSTATE"                       Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPSHELLFLAGSTATE"                   Type="Alias"    Base="LPVOID" />
-        <Variable Name="SHSTOCKICONINFO*"                   Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPCITEMIDLIST"                      Type="Alias"    Base="LPVOID" />
-        <Variable Name="const OPENASINFO*"                  Type="Alias"    Base="LPVOID" />
+        <!-- AUTO_SCROLL_DATA -->
+        <Variable Name="AUTO_SCROLL_DATA" Type="Struct">
+            <Field Type="int"                   Name="iNextSample" />
+            <Field Type="DWORD"                 Name="dwLastScroll" />
+            <Field Type="BOOL"                  Name="bFull" />
+            <Field Type="POINT [NUM_POINTS]"    Name="pts" />
+            <Field Type="DWORD [NUM_POINTS]"    Name="dwTimes" />
+        </Variable>
+        <Variable Name="AUTO_SCROLL_DATA*" Type="Pointer" Base="AUTO_SCROLL_DATA" />
+
+        <!-- [BROWSEINFO_FLAG] -->
+        <Variable Name="[BROWSEINFO_FLAG]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Flag>
+                <Set Name="BIF_RETURNONLYFSDIRS"        Value="0x00000001" />
+                <Set Name="BIF_DONTGOBELOWDOMAIN"       Value="0x00000002" />
+                <Set Name="BIF_STATUSTEXT"              Value="0x00000004" />
+                <Set Name="BIF_RETURNFSANCESTORS"       Value="0x00000008" />
+                <Set Name="BIF_EDITBOX"                 Value="0x00000010" />
+                <Set Name="BIF_VALIDATE"                Value="0x00000020" />
+                <Set Name="BIF_NEWDIALOGSTYLE"          Value="0x00000040" />
+                <Set Name="BIF_USENEWUI"                Value="0x00000050" />
+                <Set Name="BIF_BROWSEINCLUDEURLS"       Value="0x00000080" />
+                <Set Name="BIF_UAHINT"                  Value="0x00000100" />
+                <Set Name="BIF_NONEWFOLDERBUTTON"       Value="0x00000200" />
+                <Set Name="BIF_NOTRANSLATETARGETS"      Value="0x00000400" />
+                <Set Name="BIF_BROWSEFORCOMPUTER"       Value="0x00001000" />
+                <Set Name="BIF_BROWSEFORPRINTER"        Value="0x00002000" />
+                <Set Name="BIF_BROWSEINCLUDEFILES"      Value="0x00004000" />
+                <Set Name="BIF_SHAREABLE"               Value="0x00008000" />
+                <Set Name="BIF_BROWSEFILEJUNCTIONS"     Value="0x00010000" />
+            </Flag>
+        </Variable>
+
+        <!-- BROWSEINFO -->
+        <Variable Name="BROWSEINFO" Type="Struct" Pack="8">
+            <Field Type="HWND"                  Name="hwndOwner" />
+            <Field Type="PCIDLIST_ABSOLUTE"     Name="pidlRoot" />
+            <Field Type="LPTSTR"                Name="pszDisplayName" />
+            <Field Type="LPCTSTR"               Name="lpszTitle" />
+            <Field Type="[BROWSEINFO_FLAG]"     Name="ulFlags" />
+            <Field Type="BFFCALLBACK"           Name="lpfn" />
+            <Field Type="LPARAM"                Name="lParam" />
+            <Field Type="int"                   Name="iImage" />
+        </Variable>
+        <Variable Name="LPBROWSEINFO" Type="Pointer" Base="BROWSEINFO" />
+
+        <!-- [NOTIFYICONDATA_u] -->
+        <Variable Name="[NOTIFYICONDATA_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="UINT"  Name="uTimeout" />
+            <Field Type="UINT"  Name="uVersion" />
+        </Variable>
+
+        <!-- [NOTIFYICON_FLAG] -->
+        <Variable Name="[NOTIFYICON_FLAG]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Flag>
+                <Set Name="NIF_MESSAGE"         Value="0x00000001" />
+                <Set Name="NIF_ICON"            Value="0x00000002" />
+                <Set Name="NIF_TIP"             Value="0x00000004" />
+                <Set Name="NIF_STATE"           Value="0x00000008" />
+                <Set Name="NIF_INFO"            Value="0x00000010" />
+                <Set Name="NIF_GUID"            Value="0x00000020" />
+                <Set Name="NIF_REALTIME"        Value="0x00000040" />
+                <Set Name="NIF_SHOWTIP"         Value="0x00000080" />
+            </Flag>
+        </Variable>
+
+        <!-- [NOTIFYICON_STATE] -->
+        <Variable Name="[NOTIFYICON_STATE]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="NIS_HIDDEN"      Value="0x00000001" />
+                <Set Name="NIS_SHAREDICON"  Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <!-- [NOTIFYICON_INFO_FLAG] -->
+        <Variable Name="[NOTIFYICON_INFO_FLAG]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="NIIF_NONE"                   Value="0x00000000" />
+                <Set Name="NIIF_INFO"                   Value="0x00000001" />
+                <Set Name="NIIF_WARNING"                Value="0x00000002" />
+                <Set Name="NIIF_ERROR"                  Value="0x00000003" />
+                <Set Name="NIIF_USER"                   Value="0x00000004" />
+                <Set Name="NIIF_ICON_MASK"              Value="0x0000000F" />
+                <Set Name="NIIF_NOSOUND"                Value="0x00000010" />
+                <Set Name="NIIF_LARGE_ICON"             Value="0x00000020" />
+                <Set Name="NIIF_RESPECT_QUIET_TIME"     Value="0x00000080" />
+            </Flag>
+        </Variable>
+
+        <!-- NOTIFYICONDATA -->
+        <Variable Name="NOTIFYICONDATA" Type="Struct">
+            <Field Type="DWORD"                     Name="cbSize" />
+            <Field Type="HWND"                      Name="hWnd" />
+            <Field Type="UINT"                      Name="uID" />
+            <Field Type="[NOTIFYICON_FLAG]"         Name="uFlags" />
+            <Field Type="UINT"                      Name="uCallbackMessage" />
+            <Field Type="HICON"                     Name="hIcon" />
+            <Field Type="TCHAR [128]"               Name="szTip" />
+            <Field Type="[NOTIFYICON_STATE]"        Name="dwState" />
+            <Field Type="[NOTIFYICON_STATE]"        Name="dwStateMask" />
+            <Field Type="TCHAR [256]"               Name="szInfo" />
+            <Field Type="[NOTIFYICONDATA_u]"        Name="" />
+            <Field Type="TCHAR [64]"                Name="szInfoTitle" />
+            <Field Type="[NOTIFYICON_INFO_FLAG]"    Name="dwInfoFlags" />
+            <Field Type="GUID"                      Name="guidItem" />
+            <Field Type="HICON"                     Name="hBalloonIcon" />
+        </Variable>
+        <Variable Name="PNOTIFYICONDATA" Type="Pointer" Base="NOTIFYICONDATA" />
+
+        <!-- [SHELLEXECUTEINFO_u] -->
+        <Variable Name="[SHELLEXECUTEINFO_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="HANDLE"    Name="hIcon" />
+            <Field Type="HANDLE"    Name="hMonitor" />
+        </Variable>
+
+        <!-- [SEE_MASK] -->
+        <Variable Name="[SEE_MASK]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="SEE_MASK_DEFAULT"                Value="0x00000000" />
+                <Set Name="SEE_MASK_CLASSNAME"              Value="0x00000001" />
+                <Set Name="SEE_MASK_CLASSKEY"               Value="0x00000003" />
+                <Set Name="SEE_MASK_IDLIST"                 Value="0x00000004" />
+                <Set Name="SEE_MASK_INVOKEIDLIST"           Value="0x0000000c" />
+                <Set Name="SEE_MASK_ICON"                   Value="0x00000010" />
+                <Set Name="SEE_MASK_HOTKEY"                 Value="0x00000020" />
+                <Set Name="SEE_MASK_NOCLOSEPROCESS"         Value="0x00000040" />
+                <Set Name="SEE_MASK_CONNECTNETDRV"          Value="0x00000080" />
+                <Set Name="SEE_MASK_NOASYNC"                Value="0x00000100" />
+                <Set Name="SEE_MASK_DOENVSUBST"             Value="0x00000200" />
+                <Set Name="SEE_MASK_FLAG_NO_UI"             Value="0x00000400" />
+                <Set Name="SEE_MASK_UNICODE"                Value="0x00004000" />
+                <Set Name="SEE_MASK_NO_CONSOLE"             Value="0x00008000" />
+                <Set Name="SEE_MASK_ASYNCOK"                Value="0x00100000" />
+                <Set Name="SEE_MASK_HMONITOR"               Value="0x00200000" />
+                <Set Name="SEE_MASK_NOZONECHECKS"           Value="0x00800000" />
+                <Set Name="SEE_MASK_NOQUERYCLASSSTORE"      Value="0x01000000" />
+                <Set Name="SEE_MASK_WAITFORINPUTIDLE"       Value="0x02000000" />
+                <Set Name="SEE_MASK_FLAG_LOG_USAGE"         Value="0x04000000" />
+            </Flag>
+        </Variable>
+
+        <!-- [SEE_HINSTANCE] -->
+        <Variable Name="[SEE_HINSTANCE]" Type="Alias" Base="UINT_PTR">
+            <Display Name="HINSTANCE" />
+            <Enum>
+                <Set Name="SE_ERR_FNF"                  Value="2" />
+                <Set Name="SE_ERR_PNF"                  Value="3" />
+                <Set Name="SE_ERR_ACCESSDENIED"         Value="5" />
+                <Set Name="SE_ERR_OOM"                  Value="8" />
+                <Set Name="SE_ERR_DLLNOTFOUND"          Value="32" />
+                <Set Name="SE_ERR_SHARE"                Value="26" />
+                <Set Name="SE_ERR_ASSOCINCOMPLETE"      Value="27" />
+                <Set Name="SE_ERR_DDETIMEOUT"           Value="28" />
+                <Set Name="SE_ERR_DDEFAIL"              Value="29" />
+                <Set Name="SE_ERR_DDEBUSY"              Value="30" />
+                <Set Name="SE_ERR_NOASSOC"              Value="31" />
+            </Enum>
+        </Variable>
+
+        <!-- SHELLEXECUTEINFO -->
+        <Variable Name="SHELLEXECUTEINFO" Type="Struct">
+            <Field Type="DWORD"                 Name="cbSize" />
+            <Field Type="[SEE_MASK]"            Name="fMask" />
+            <Field Type="HWND"                  Name="hwnd" />
+            <Field Type="LPCTSTR"               Name="lpVerb" />
+            <Field Type="LPCTSTR"               Name="lpFile" />
+            <Field Type="LPCTSTR"               Name="lpParameters" />
+            <Field Type="LPCTSTR"               Name="lpDirectory" />
+            <Field Type="[ShowWindowCmd]"       Name="nShow" />
+            <Field Type="[SEE_HINSTANCE]"       Name="hInstApp" />
+            <!-- TODO: lpIDList is PCIDLIST_ABSOLUTE -->
+            <Field Type="void*"                 Name="lpIDList" />
+            <Field Type="LPCTSTR"               Name="lpClass" />
+            <Field Type="HKEY"                  Name="hkeyClass" />
+            <Field Type="DWORD"                 Name="dwHotKey" />
+            <Field Type="[SHELLEXECUTEINFO_u]"  Name="" />
+            <Field Type="HANDLE"                Name="hProcess" />
+        </Variable>
+        <Variable Name="LPSHELLEXECUTEINFO" Type="Pointer" Base="SHELLEXECUTEINFO" />
+
+        <!-- SHFILEINFO -->
+        <Variable Name="SHFILEINFO" Type="Struct">
+            <Field Type="HICON"                 Name="hIcon" />
+            <Field Type="int"                   Name="iIcon" />
+            <Field Type="SFGAOF"                Name="dwAttributes" Display="DWORD" />
+            <Field Type="TCHAR [MAX_PATH]"      Name="szDisplayName" />
+            <Field Type="TCHAR [80]"            Name="szTypeName" />
+        </Variable>
+        <Variable Name="SHFILEINFO*" Type="Pointer" Base="SHFILEINFO" />
+
+        <!-- [SHFOLDERCUSTOMSETTINGS_MASK] -->
+        <Variable Name="[SHFOLDERCUSTOMSETTINGS_MASK]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="FCSM_VIEWID"             Value="0x00000001" />
+                <Set Name="FCSM_WEBVIEWTEMPLATE"    Value="0x00000002" />
+                <Set Name="FCSM_INFOTIP"            Value="0x00000004" />
+                <Set Name="FCSM_CLSID"              Value="0x00000008" />
+                <Set Name="FCSM_ICONFILE"           Value="0x00000010" />
+                <Set Name="FCSM_LOGO"               Value="0x00000020" />
+                <Set Name="FCSM_FLAGS"              Value="0x00000040" />
+            </Flag>
+        </Variable>
+
+        <!-- SHFOLDERCUSTOMSETTINGS -->
+        <Variable Name="SHFOLDERCUSTOMSETTINGS" Type="Struct" Pack="8">
+            <Field Type="DWORD"                             Name="dwSize" />
+            <Field Type="[SHFOLDERCUSTOMSETTINGS_MASK]"     Name="dwMask" />
+            <Field Type="SHELLVIEWID*"                      Name="pvid" />
+            <Field Type="LPWSTR"                            Name="pszWebViewTemplate" />
+            <Field Type="DWORD"                             Name="cchWebViewTemplate" />
+            <Field Type="LPWSTR"                            Name="pszWebViewTemplateVersion" />
+            <Field Type="LPWSTR"                            Name="pszInfoTip" />
+            <Field Type="DWORD"                             Name="cchInfoTip" />
+            <Field Type="CLSID*"                            Name="pclsid" />
+            <Field Type="DWORD"                             Name="dwFlags" />
+            <Field Type="LPWSTR"                            Name="pszIconFile" />
+            <Field Type="DWORD"                             Name="cchIconFile" />
+            <Field Type="int"                               Name="iIconIndex" />
+            <Field Type="LPWSTR"                            Name="pszLogo" />
+            <Field Type="DWORD"                             Name="cchLogo" />
+        </Variable>
+        <Variable Name="LPSHFOLDERCUSTOMSETTINGS" Type="Pointer" Base="SHFOLDERCUSTOMSETTINGS" />
+
+        <!-- SHSTOCKICONINFO -->
+        <Variable Name="SHSTOCKICONINFO" Type="Struct">
+            <Field Type="DWORD"             Name="cbSize" />
+            <Field Type="HICON"             Name="hIcon" />
+            <Field Type="int"               Name="iSysImageIndex" />
+            <Field Type="int"               Name="iIcon" />
+            <Field Type="WCHAR [MAX_PATH]"  Name="szPath" />
+        </Variable>
+        <Variable Name="SHSTOCKICONINFO*" Type="Pointer" Base="SHSTOCKICONINFO" />
+
+        <!-- OPEN_AS_INFO_FLAGS -->
+        <Variable Name="OPEN_AS_INFO_FLAGS" Type="Alias" Base="UINT">
+            <Flag>
+                <Set Name="OAIF_ALLOW_REGISTRATION"     Value="0x00000001" />
+                <Set Name="OAIF_REGISTER_EXT"           Value="0x00000002" />
+                <Set Name="OAIF_EXEC"                   Value="0x00000004" />
+                <Set Name="OAIF_FORCE_REGISTRATION"     Value="0x00000008" />
+                <Set Name="OAIF_HIDE_REGISTRATION"      Value="0x00000020" />
+                <Set Name="OAIF_URL_PROTOCOL"           Value="0x00000040" />
+            </Flag>
+        </Variable>
+
+        <!-- OPENASINFO -->
+        <Variable Name="OPENASINFO" Type="Struct" Pack="8">
+            <Field Type="LPCWSTR"               Name="pcszFile" />
+            <Field Type="LPCWSTR"               Name="pcszClass" />
+            <Field Type="OPEN_AS_INFO_FLAGS"    Name="oaifInFlags" />
+        </Variable>
+        <Variable Name="const OPENASINFO*" Type="Pointer" Base="OPENASINFO" />
 
         <!-- ASSOCCLASS -->
         <Variable Name="ASSOCCLASS" Type="Alias" Base="UINT">
@@ -199,73 +453,6 @@
             <Field Type="DWORDLONG" 	Name="i64NumItems" />
         </Variable>
         <Variable Name="LPSHQUERYRBINFO" Type="Pointer" Base="SHQUERYRBINFO" />
-
-        <Variable Name="[CSIDL]" Type="Alias" Base="UINT">
-            <Display Name="int" />
-            <Flag>
-                <Set Name="CSIDL_DESKTOP"                   Value="0x0000" />
-                <Set Name="CSIDL_INTERNET"                  Value="0x0001" />
-                <Set Name="CSIDL_PROGRAMS"                  Value="0x0002" />
-                <Set Name="CSIDL_CONTROLS"                  Value="0x0003" />
-                <Set Name="CSIDL_PRINTERS"                  Value="0x0004" />
-                <Set Name="CSIDL_MYDOCUMENTS"               Value="0x0005" />
-                <Set Name="CSIDL_FAVORITES"                 Value="0x0006" />
-                <Set Name="CSIDL_STARTUP"                   Value="0x0007" />
-                <Set Name="CSIDL_RECENT"                    Value="0x0008" />
-                <Set Name="CSIDL_SENDTO"                    Value="0x0009" />
-                <Set Name="CSIDL_BITBUCKET"                 Value="0x000a" />
-                <Set Name="CSIDL_STARTMENU"                 Value="0x000b" />
-                <Set Name="CSIDL_MYMUSIC"                   Value="0x000d" />
-                <Set Name="CSIDL_MYVIDEO"                   Value="0x000e" />
-                <Set Name="CSIDL_DESKTOPDIRECTORY"          Value="0x0010" />
-                <Set Name="CSIDL_DRIVES"                    Value="0x0011" />
-                <Set Name="CSIDL_NETWORK"                   Value="0x0012" />
-                <Set Name="CSIDL_NETHOOD"                   Value="0x0013" />
-                <Set Name="CSIDL_FONTS"                     Value="0x0014" />
-                <Set Name="CSIDL_TEMPLATES"                 Value="0x0015" />
-                <Set Name="CSIDL_COMMON_STARTMENU"          Value="0x0016" />
-                <Set Name="CSIDL_COMMON_PROGRAMS"           Value="0X0017" />
-                <Set Name="CSIDL_COMMON_STARTUP"            Value="0x0018" />
-                <Set Name="CSIDL_COMMON_DESKTOPDIRECTORY"   Value="0x0019" />
-                <Set Name="CSIDL_APPDATA"                   Value="0x001a" />
-                <Set Name="CSIDL_PRINTHOOD"                 Value="0x001b" />
-                <Set Name="CSIDL_LOCAL_APPDATA"             Value="0x001c" />
-                <Set Name="CSIDL_ALTSTARTUP"                Value="0x001d" />
-                <Set Name="CSIDL_COMMON_ALTSTARTUP"         Value="0x001e" />
-                <Set Name="CSIDL_COMMON_FAVORITES"          Value="0x001f" />
-                <Set Name="CSIDL_INTERNET_CACHE"            Value="0x0020" />
-                <Set Name="CSIDL_COOKIES"                   Value="0x0021" />
-                <Set Name="CSIDL_HISTORY"                   Value="0x0022" />
-                <Set Name="CSIDL_COMMON_APPDATA"            Value="0x0023" />
-                <Set Name="CSIDL_WINDOWS"                   Value="0x0024" />
-                <Set Name="CSIDL_SYSTEM"                    Value="0x0025" />
-                <Set Name="CSIDL_PROGRAM_FILES"             Value="0x0026" />
-                <Set Name="CSIDL_MYPICTURES"                Value="0x0027" />
-                <Set Name="CSIDL_PROFILE"                   Value="0x0028" />
-                <Set Name="CSIDL_SYSTEMX86"                 Value="0x0029" />
-                <Set Name="CSIDL_PROGRAM_FILESX86"          Value="0x002a" />
-                <Set Name="CSIDL_PROGRAM_FILES_COMMON"      Value="0x002b" />
-                <Set Name="CSIDL_PROGRAM_FILES_COMMONX86"   Value="0x002c" />
-                <Set Name="CSIDL_COMMON_TEMPLATES"          Value="0x002d" />
-                <Set Name="CSIDL_COMMON_DOCUMENTS"          Value="0x002e" />
-                <Set Name="CSIDL_COMMON_ADMINTOOLS"         Value="0x002f" />
-                <Set Name="CSIDL_ADMINTOOLS"                Value="0x0030" />
-                <Set Name="CSIDL_CONNECTIONS"               Value="0x0031" />
-                <Set Name="CSIDL_COMMON_MUSIC"              Value="0x0035" />
-                <Set Name="CSIDL_COMMON_PICTURES"           Value="0x0036" />
-                <Set Name="CSIDL_COMMON_VIDEO"              Value="0x0037" />
-                <Set Name="CSIDL_RESOURCES"                 Value="0x0038" />
-                <Set Name="CSIDL_RESOURCES_LOCALIZED"       Value="0x0039" />
-                <Set Name="CSIDL_COMMON_OEM_LINKS"          Value="0x003a" />
-                <Set Name="CSIDL_CDBURN_AREA"               Value="0x003b" />
-                <Set Name="CSIDL_COMPUTERSNEARME"           Value="0x003d" />
-                <Set Name="CSIDL_FLAG_CREATE"               Value="0x8000" />
-                <Set Name="CSIDL_FLAG_DONT_VERIFY"          Value="0x4000" />
-                <Set Name="CSIDL_FLAG_DONT_UNEXPAND"        Value="0x2000" />
-                <Set Name="CSIDL_FLAG_NO_ALIAS"             Value="0x1000" />
-                <Set Name="CSIDL_FLAG_PER_USER_INIT"        Value="0x0800" />
-            </Flag>
-        </Variable>
 
         <Variable Name="[SHGetDataFromIDListFormats]" Type="Alias" Base="int">
             <Display Name="int" />
@@ -1360,7 +1547,7 @@
             <Param Type="LPCTSTR" Name="lpFile" />
             <Param Type="LPCTSTR" Name="lpParameters" />
             <Param Type="LPCTSTR" Name="lpDirectory" />
-            <Param Type="INT" Name="nShowCmd" />
+            <Param Type="[ShowWindowCmd]" Name="nShowCmd" Display="INT" />
             <Return Type="HINSTANCE" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -1372,7 +1559,7 @@
             <Param Type="HICON*" Name="phIcon" />
             <Param Type="UINT*" Name="pIconId" />
             <Param Type="UINT" Name="nIcons" />
-            <Param Type="UINT" Name="flags" />
+            <Param Type="[LRFlags]" Name="flags" />
             <Return Type="UINT" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -1761,7 +1948,7 @@
             <Param Type="IShellTaskScheduler*" Name="pts" />
             <Param Type="IShellFolder*" Name="psf" />
             <Param Type="LPCITEMIDLIST" Name="pidl" />
-            <Param Type="UINT" Name="flags" />
+            <Param Type="[GIL_INPUT_FLAGS]" Name="flags" />
             <Param Type="PFNASYNCICONTASKBALLBACK" Name="pfn" />
             <Param Type="void*" Name="pvData" />
             <Param Type="void*" Name="pvHint" />
@@ -1982,7 +2169,7 @@
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="SHUnlockShared">
+        <Api Name="SHUnlockShared" Ordinal="9">
             <Param Type="void*" Name="pvData" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
@@ -2026,7 +2213,7 @@
             <Param Type="LPCTSTR" Name="lpFile" />
             <Param Type="LPCTSTR" Name="lpParameters" />
             <Param Type="LPCTSTR" Name="lpDirectory" />
-            <Param Type="INT" Name="nShowCmd" />
+            <Param Type="[ShowWindowCmd]" Name="nShowCmd" Display="INT" />
             <Param Type="void*" Name="lpfnCBWinExec" />
             <Return Type="HINSTANCE" />
             <Success Return="NotEqual" Value="0" />

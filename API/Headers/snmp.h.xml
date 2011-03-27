@@ -6,6 +6,7 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Headers>
+
         <!-- Variables -->
         <Variable Name="SNMPAPI"                Type="Alias"    Base="INT" />
         <Variable Name="LPSNMP_MGR_SESSION"     Type="Alias"    Base="PVOID" />
@@ -13,17 +14,19 @@
         <Variable Name="AsnInteger*"            Type="Pointer"  Base="AsnInteger" />
         <Variable Name="AsnTimeticks"           Type="Alias"    Base="ULONG" />
         <Variable Name="AsnTimeticks*"          Type="Pointer"  Base="AsnTimeticks" />
-
-        <!-- TODO: Structures -->
-        <Variable Name="AsnAny*"                Type="Alias"    Base="LPVOID" />
-        <Variable Name="SnmpVarBind*"           Type="Alias"    Base="LPVOID" />
-
+        <Variable Name="AsnInteger32"           Type="Alias"    Base="LONG" />
+        <Variable Name="AsnUnsigned32"          Type="Alias"    Base="ULONG" />
+        <Variable Name="AsnCounter64"           Type="Alias"    Base="ULARGE_INTEGER" />
+        <Variable Name="AsnCounter32"           Type="Alias"    Base="AsnUnsigned32" />
+        <Variable Name="AsnGauge32"             Type="Alias"    Base="AsnUnsigned32" />
+        
         <!-- AsnObjectIdentifier -->
         <Variable Name="AsnObjectIdentifier" Type="Struct" Pack="4">
             <Field Type="UINT"      Name="idLength" />
             <Field Type="UINT*"     Name="ids" />
         </Variable>
-        <Variable Name="AsnObjectIdentifier*" Type="Pointer" Base="AsnObjectIdentifier" />
+        <Variable Name="AsnObjectIdentifier*"   Type="Pointer"  Base="AsnObjectIdentifier" />
+        <Variable Name="AsnObjectName"          Type="Alias"    Base="AsnObjectIdentifier" />
 
         <!-- AsnOctetString -->
         <Variable Name="AsnOctetString" Type="Struct" Pack="4">
@@ -34,6 +37,65 @@
         <Variable Name="AsnOctetString*"    Type="Pointer"  Base="AsnOctetString" />
         <Variable Name="AsnNetworkAddress"  Type="Alias"    Base="AsnOctetString" />
         <Variable Name="AsnNetworkAddress*" Type="Pointer"  Base="AsnNetworkAddress" />
+        <Variable Name="AsnBits"            Type="Alias"    Base="AsnOctetString" />
+        <Variable Name="AsnSequence"        Type="Alias"    Base="AsnOctetString" />
+        <Variable Name="AsnIPAddress"       Type="Alias"    Base="AsnOctetString" />
+        <Variable Name="AsnOpaque"          Type="Alias"    Base="AsnOctetString" />
+
+        <!-- [ASN_TYPE] -->
+        <Variable Name="[ASN_TYPE]" Type="Alias" Base="BYTE">
+            <Display Name="BYTE" />
+            <Enum>
+                <Set Name="ASN_INTEGER"                     Value="0x02" />
+                <Set Name="ASN_BITS"                        Value="0x03" />
+                <Set Name="ASN_OCTETSTRING"                 Value="0x04" />
+                <Set Name="ASN_NULL"                        Value="0x05" />
+                <Set Name="ASN_OBJECTIDENTIFIER"            Value="0x06" />
+                <Set Name="ASN_SEQUENCE"                    Value="0x30" />
+                <Set Name="ASN_IPADDRESS"                   Value="0x40" />
+                <Set Name="ASN_COUNTER32"                   Value="0x41" />
+                <Set Name="ASN_GAUGE32"                     Value="0x42" />
+                <Set Name="ASN_TIMETICKS"                   Value="0x43" />
+                <Set Name="ASN_OPAQUE"                      Value="0x44" />
+                <Set Name="ASN_COUNTER64"                   Value="0x46" />
+                <Set Name="ASN_UINTEGER32"                  Value="0x47" />
+                <Set Name="SNMP_EXCEPTION_NOSUCHOBJECT"     Value="0x80" />
+                <Set Name="SNMP_EXCEPTION_NOSUCHINSTANCE"   Value="0x81" />
+                <Set Name="SNMP_EXCEPTION_ENDOFMIBVIEW"     Value="0x82" />
+            </Enum>
+        </Variable>
+
+        <!-- [AsnAny_u] -->
+        <Variable Name="[AsnAny_u]" Type="Union" Pack="4">
+            <Display Name="union" />
+            <Field Type="AsnInteger32"          Name="number" />
+            <Field Type="AsnUnsigned32"         Name="unsigned32" />
+            <Field Type="AsnCounter64"          Name="counter64" />
+            <Field Type="AsnOctetString"        Name="string" />
+            <Field Type="AsnBits"               Name="bits" />
+            <Field Type="AsnObjectIdentifier"   Name="object" />
+            <Field Type="AsnSequence"           Name="sequence" />
+            <Field Type="AsnIPAddress"          Name="address" />
+            <Field Type="AsnCounter32"          Name="counter" />
+            <Field Type="AsnGauge32"            Name="gauge" />
+            <Field Type="AsnTimeticks"          Name="ticks" />
+            <Field Type="AsnOpaque"             Name="arbitrary" />
+        </Variable>
+
+        <!-- AsnAny -->
+        <Variable Name="AsnAny" Type="Struct" Pack="4">
+            <Field Type="[ASN_TYPE]"    Name="asnType" />
+            <Field Type="[AsnAny_u]"    Name="asnValue" />
+        </Variable>
+        <Variable Name="AsnAny*"            Type="Pointer"  Base="AsnAny" />
+        <Variable Name="AsnObjectSyntax"    Type="Alias"    Base="AsnAny" />
+
+        <!-- SnmpVarBind -->
+        <Variable Name="SnmpVarBind" Type="Struct" Pack="4">
+            <Field Type="AsnObjectName"     Name="name" />
+            <Field Type="AsnObjectSyntax"   Name="value" />
+        </Variable>
+        <Variable Name="SnmpVarBind*" Type="Pointer" Base="SnmpVarBind" />
 
         <!-- SnmpVarBindList -->
         <Variable Name="SnmpVarBindList" Type="Struct" Pack="4">
@@ -41,6 +103,6 @@
             <Field Type="UINT"          Name="len" />
         </Variable>
         <Variable Name="SnmpVarBindList*" Type="Pointer" Base="SnmpVarBindList" />
-        
+
     </Headers>
 </ApiMonitor>

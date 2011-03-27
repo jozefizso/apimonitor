@@ -8,14 +8,419 @@
     <Headers>
         
         <!-- Variables -->
-        <Variable Name="PEVENT_CALLBACK"                Type="Alias"    Base="LPVOID" />        
-        
-        <!-- TODO: Structures -->
-        <Variable Name="PEVENT_TRACE_PROPERTIES"        Type="Alias"   Base="LPVOID" />
-        <Variable Name="PEVENT_TRACE_PROPERTIES*"       Type="Pointer"  Base="PEVENT_TRACE_PROPERTIES" />
-        <Variable Name="PEVENT_TRACE_HEADER"            Type="Alias"    Base="LPVOID" />
-        <Variable Name="PEVENT_INSTANCE_HEADER"         Type="Alias"    Base="LPVOID" />
-        <Variable Name="PEVENT_TRACE_LOGFILE"           Type="Alias"    Base="LPVOID" />
+        <Variable Name="PEVENT_CALLBACK"                Type="Alias"    Base="LPVOID" />
+        <Variable Name="PEVENT_TRACE_BUFFER_CALLBACK"   Type="Alias"    Base="LPVOID" />
+        <Variable Name="PEVENT_RECORD_CALLBACK"         Type="Alias"    Base="LPVOID" />
+
+        <!-- [WNODE_HEADER_u1_s] -->
+        <Variable Name="[WNODE_HEADER_u1_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="ULONG"     Name="Version" />
+            <Field Type="ULONG"     Name="Linkage" />
+        </Variable>
+
+        <!-- [WNODE_HEADER_u1] -->
+        <Variable Name="[WNODE_HEADER_u1]" Type="Union">
+            <Display Name="union" />
+            <Field Type="ULONG64"               Name="HistoricalContext" />
+            <Field Type="[WNODE_HEADER_u1_s]"   Name="" />
+        </Variable>
+
+        <!-- [WNODE_HEADER_u2] -->
+        <Variable Name="[WNODE_HEADER_u2]" Type="Union">
+            <Display Name="union" />
+            <Field Type="ULONG"             Name="CountLost" />
+            <Field Type="HANDLE"            Name="KernelHandle" />
+            <Field Type="LARGE_INTEGER"     Name="TimeStamp" />
+        </Variable>
+
+        <!-- [WNODE_HEADER_Flags] -->
+        <Variable Name="[WNODE_HEADER_Flags]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="WNODE_FLAG_ALL_DATA"                     Value="0x00000001" />
+                <Set Name="WNODE_FLAG_SINGLE_INSTANCE"              Value="0x00000002" />
+                <Set Name="WNODE_FLAG_SINGLE_ITEM"                  Value="0x00000004" />
+                <Set Name="WNODE_FLAG_EVENT_ITEM"                   Value="0x00000008" />
+                <Set Name="WNODE_FLAG_FIXED_INSTANCE_SIZE"          Value="0x00000010" />
+                <Set Name="WNODE_FLAG_TOO_SMALL"                    Value="0x00000020" />
+                <Set Name="WNODE_FLAG_INSTANCES_SAME"               Value="0x00000040" />
+                <Set Name="WNODE_FLAG_STATIC_INSTANCE_NAMES"        Value="0x00000080" />
+                <Set Name="WNODE_FLAG_INTERNAL"                     Value="0x00000100" />
+                <Set Name="WNODE_FLAG_USE_TIMESTAMP"                Value="0x00000200" />
+                <Set Name="WNODE_FLAG_PERSIST_EVENT"                Value="0x00000400" />
+                <Set Name="WNODE_FLAG_EVENT_REFERENCE"              Value="0x00002000" />
+                <Set Name="WNODE_FLAG_ANSI_INSTANCENAMES"           Value="0x00004000" />
+                <Set Name="WNODE_FLAG_METHOD_ITEM"                  Value="0x00008000" />
+                <Set Name="WNODE_FLAG_PDO_INSTANCE_NAMES"           Value="0x00010000" />
+                <Set Name="WNODE_FLAG_TRACED_GUID"                  Value="0x00020000" />
+                <Set Name="WNODE_FLAG_LOG_WNODE"                    Value="0x00040000" />
+                <Set Name="WNODE_FLAG_USE_GUID_PTR"                 Value="0x00080000" />
+                <Set Name="WNODE_FLAG_USE_MOF_PTR"                  Value="0x00100000" />
+                <Set Name="WNODE_FLAG_NO_HEADER"                    Value="0x00200000" />
+                <Set Name="WNODE_FLAG_SEND_DATA_BLOCK"              Value="0x00400000" />
+                <Set Name="WNODE_FLAG_SEVERITY_MASK"                Value="0xff000000" />
+            </Flag>
+        </Variable>
+
+        <!-- WNODE_HEADER -->
+        <Variable Name="WNODE_HEADER" Type="Struct">
+            <Field Type="ULONG"                 Name="BufferSize" />
+            <Field Type="ULONG"                 Name="ProviderId" />
+            <Field Type="[WNODE_HEADER_u1]"     Name="" />
+            <Field Type="[WNODE_HEADER_u2]"     Name="" />
+            <Field Type="GUID"                  Name="Guid" />
+            <Field Type="ULONG"                 Name="ClientContext" />
+            <Field Type="[WNODE_HEADER_Flags]"  Name="Flags" />
+        </Variable>
+
+        <!-- [EventLogFileMode] -->
+        <Variable Name="[EventLogFileMode]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="EVENT_TRACE_FILE_MODE_NONE"                  Value="0x00000000" />
+                <Set Name="EVENT_TRACE_FILE_MODE_SEQUENTIAL"            Value="0x00000001" />
+                <Set Name="EVENT_TRACE_FILE_MODE_CIRCULAR"              Value="0x00000002" />
+                <Set Name="EVENT_TRACE_FILE_MODE_APPEND"                Value="0x00000004" />
+                <Set Name="EVENT_TRACE_REAL_TIME_MODE"                  Value="0x00000100" />
+                <Set Name="EVENT_TRACE_DELAY_OPEN_FILE_MODE"            Value="0x00000200" />
+                <Set Name="EVENT_TRACE_BUFFERING_MODE"                  Value="0x00000400" />
+                <Set Name="EVENT_TRACE_PRIVATE_LOGGER_MODE"             Value="0x00000800" />
+                <Set Name="EVENT_TRACE_ADD_HEADER_MODE"                 Value="0x00001000" />
+                <Set Name="EVENT_TRACE_USE_GLOBAL_SEQUENCE"             Value="0x00004000" />
+                <Set Name="EVENT_TRACE_USE_LOCAL_SEQUENCE"              Value="0x00008000" />
+                <Set Name="EVENT_TRACE_RELOG_MODE"                      Value="0x00010000" />
+                <Set Name="EVENT_TRACE_USE_PAGED_MEMORY"                Value="0x01000000" />
+                <Set Name="EVENT_TRACE_FILE_MODE_NEWFILE"               Value="0x00000008" />
+                <Set Name="EVENT_TRACE_FILE_MODE_PREALLOCATE"           Value="0x00000020" />
+                <Set Name="EVENT_TRACE_NONSTOPPABLE_MODE"               Value="0x00000040" />
+                <Set Name="EVENT_TRACE_SECURE_MODE"                     Value="0x00000080" />
+                <Set Name="EVENT_TRACE_USE_KBYTES_FOR_SIZE"             Value="0x00002000" />
+                <Set Name="EVENT_TRACE_PRIVATE_IN_PROC"                 Value="0x00020000" />
+                <Set Name="EVENT_TRACE_MODE_RESERVED"                   Value="0x00100000" />
+                <Set Name="EVENT_TRACE_NO_PER_PROCESSOR_BUFFERING"      Value="0x10000000" />
+            </Flag>
+        </Variable>
+
+        <!-- [EventEnableFlags] -->
+        <Variable Name="[EventEnableFlags]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="EVENT_TRACE_FLAG_PROCESS"                Value="0x00000001" />
+                <Set Name="EVENT_TRACE_FLAG_THREAD"                 Value="0x00000002" />
+                <Set Name="EVENT_TRACE_FLAG_IMAGE_LOAD"             Value="0x00000004" />
+                <Set Name="EVENT_TRACE_FLAG_DISK_IO"                Value="0x00000100" />
+                <Set Name="EVENT_TRACE_FLAG_DISK_FILE_IO"           Value="0x00000200" />
+                <Set Name="EVENT_TRACE_FLAG_MEMORY_PAGE_FAULTS"     Value="0x00001000" />
+                <Set Name="EVENT_TRACE_FLAG_MEMORY_HARD_FAULTS"     Value="0x00002000" />
+                <Set Name="EVENT_TRACE_FLAG_NETWORK_TCPIP"          Value="0x00010000" />
+                <Set Name="EVENT_TRACE_FLAG_REGISTRY"               Value="0x00020000" />
+                <Set Name="EVENT_TRACE_FLAG_DBGPRINT"               Value="0x00040000" />
+                <Set Name="EVENT_TRACE_FLAG_PROCESS_COUNTERS"       Value="0x00000008" />
+                <Set Name="EVENT_TRACE_FLAG_CSWITCH"                Value="0x00000010" />
+                <Set Name="EVENT_TRACE_FLAG_DPC"                    Value="0x00000020" />
+                <Set Name="EVENT_TRACE_FLAG_INTERRUPT"              Value="0x00000040" />
+                <Set Name="EVENT_TRACE_FLAG_SYSTEMCALL"             Value="0x00000080" />
+                <Set Name="EVENT_TRACE_FLAG_DISK_IO_INIT"           Value="0x00000400" />
+                <Set Name="EVENT_TRACE_FLAG_ALPC"                   Value="0x00100000" />
+                <Set Name="EVENT_TRACE_FLAG_SPLIT_IO"               Value="0x00200000" />
+                <Set Name="EVENT_TRACE_FLAG_DRIVER"                 Value="0x00800000" />
+                <Set Name="EVENT_TRACE_FLAG_PROFILE"                Value="0x01000000" />
+                <Set Name="EVENT_TRACE_FLAG_FILE_IO"                Value="0x02000000" />
+                <Set Name="EVENT_TRACE_FLAG_FILE_IO_INIT"           Value="0x04000000" />
+                <Set Name="EVENT_TRACE_FLAG_DISPATCHER"             Value="0x00000800" />
+                <Set Name="EVENT_TRACE_FLAG_VIRTUAL_ALLOC"          Value="0x00004000" />
+                <Set Name="EVENT_TRACE_FLAG_EXTENSION"              Value="0x80000000" />
+                <Set Name="EVENT_TRACE_FLAG_FORWARD_WMI"            Value="0x40000000" />
+                <Set Name="EVENT_TRACE_FLAG_ENABLE_RESERVE"         Value="0x20000000" />
+            </Flag>
+        </Variable>
+
+        <!-- EVENT_TRACE_PROPERTIES -->
+        <Variable Name="EVENT_TRACE_PROPERTIES" Type="Struct">
+            <Field Type="WNODE_HEADER"          Name="Wnode" />
+            <Field Type="ULONG"                 Name="BufferSize" />
+            <Field Type="ULONG"                 Name="MinimumBuffers" />
+            <Field Type="ULONG"                 Name="MaximumBuffers" />
+            <Field Type="ULONG"                 Name="MaximumFileSize" />
+            <Field Type="[EventLogFileMode]"    Name="LogFileMode" />
+            <Field Type="ULONG"                 Name="FlushTimer" />
+            <Field Type="[EventEnableFlags]"    Name="EnableFlags" />
+            <Field Type="LONG"                  Name="AgeLimit" />
+            <Field Type="ULONG"                 Name="NumberOfBuffers" />
+            <Field Type="ULONG"                 Name="FreeBuffers" />
+            <Field Type="ULONG"                 Name="EventsLost" />
+            <Field Type="ULONG"                 Name="BuffersWritten" />
+            <Field Type="ULONG"                 Name="LogBuffersLost" />
+            <Field Type="ULONG"                 Name="RealTimeBuffersLost" />
+            <Field Type="HANDLE"                Name="LoggerThreadId" />
+            <Field Type="ULONG"                 Name="LogFileNameOffset" />
+            <Field Type="ULONG"                 Name="LoggerNameOffset" />
+        </Variable>
+        <Variable Name="PEVENT_TRACE_PROPERTIES"    Type="Pointer" Base="EVENT_TRACE_PROPERTIES" />
+        <Variable Name="PEVENT_TRACE_PROPERTIES*"   Type="Pointer"  Base="PEVENT_TRACE_PROPERTIES" />
+
+        <!-- [EVENT_TRACE_HEADER_u1_s] -->
+        <Variable Name="[EVENT_TRACE_HEADER_u1_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="UCHAR"     Name="HeaderType" />
+            <Field Type="UCHAR"     Name="MarkerFlags" />
+        </Variable>
+
+        <!-- [EVENT_TRACE_HEADER_u1] -->
+        <Variable Name="[EVENT_TRACE_HEADER_u1]" Type="Union">
+            <Display Name="union" />
+            <Field Type="USHORT"                    Name="FieldTypeFlags" />
+            <Field Type="[EVENT_TRACE_HEADER_u1_s]" Name="" />
+        </Variable>
+
+        <!-- [EVENT_TRACE_TYPE] -->
+        <Variable Name="[EVENT_TRACE_TYPE]" Type="Alias" Base="UCHAR">
+            <Display Name="UCHAR" />
+            <Enum>
+                <Set Name="EVENT_TRACE_TYPE_INFO"               Value="0x00" />
+                <Set Name="EVENT_TRACE_TYPE_START"              Value="0x01" />
+                <Set Name="EVENT_TRACE_TYPE_END"                Value="0x02" />
+                <Set Name="EVENT_TRACE_TYPE_STOP"               Value="0x02" />
+                <Set Name="EVENT_TRACE_TYPE_DC_START"           Value="0x03" />
+                <Set Name="EVENT_TRACE_TYPE_DC_END"             Value="0x04" />
+                <Set Name="EVENT_TRACE_TYPE_EXTENSION"          Value="0x05" />
+                <Set Name="EVENT_TRACE_TYPE_REPLY"              Value="0x06" />
+                <Set Name="EVENT_TRACE_TYPE_DEQUEUE"            Value="0x07" />
+                <Set Name="EVENT_TRACE_TYPE_RESUME"             Value="0x07" />
+                <Set Name="EVENT_TRACE_TYPE_CHECKPOINT"         Value="0x08" />
+                <Set Name="EVENT_TRACE_TYPE_SUSPEND"            Value="0x08" />
+                <Set Name="EVENT_TRACE_TYPE_WINEVT_SEND"        Value="0x09" />
+                <Set Name="EVENT_TRACE_TYPE_WINEVT_RECEIVE"     Value="0XF0" />
+            </Enum>
+        </Variable>
+
+        <!-- [TRACE_LEVEL] -->
+        <Variable Name="[TRACE_LEVEL]" Type="Alias" Base="UCHAR">
+            <Display Name="UCHAR" />
+            <Enum>
+                <Set Name="TRACE_LEVEL_NONE"                Value="0" />
+                <Set Name="TRACE_LEVEL_FATAL"               Value="1" />
+                <Set Name="TRACE_LEVEL_ERROR"               Value="2" />
+                <Set Name="TRACE_LEVEL_WARNING"             Value="3" />
+                <Set Name="TRACE_LEVEL_INFORMATION"         Value="4" />
+                <Set Name="TRACE_LEVEL_VERBOSE"             Value="5" />
+                <Set Name="TRACE_LEVEL_RESERVED6"           Value="6" />
+                <Set Name="TRACE_LEVEL_RESERVED7"           Value="7" />
+                <Set Name="TRACE_LEVEL_RESERVED8"           Value="8" />
+                <Set Name="TRACE_LEVEL_RESERVED9"           Value="9" />
+            </Enum>
+        </Variable>
+
+        <!-- [EVENT_TRACE_HEADER_u2_s] -->
+        <Variable Name="[EVENT_TRACE_HEADER_u2_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="[EVENT_TRACE_TYPE]"    Name="Type" />
+            <Field Type="[TRACE_LEVEL]"         Name="Level" />
+            <Field Type="USHORT"                Name="Version" />
+        </Variable>
+
+        <!-- [EVENT_TRACE_HEADER_u2] -->
+        <Variable Name="[EVENT_TRACE_HEADER_u2]" Type="Union">
+            <Display Name="union" />
+            <Field Type="ULONG"                         Name="Version" />
+            <Field Type="[EVENT_TRACE_HEADER_u2_s]"     Name="Class" />
+        </Variable>
+
+        <!-- [EVENT_TRACE_HEADER_u3] -->
+        <Variable Name="[EVENT_TRACE_HEADER_u3]" Type="Union">
+            <Display Name="union" />
+            <Field Type="GUID"          Name="Guid" />
+            <Field Type="ULONGLONG"     Name="GuidPtr" />
+        </Variable>
+
+        <!-- [EVENT_TRACE_HEADER_u4_s1] -->
+        <Variable Name="[EVENT_TRACE_HEADER_u4_s1]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="ULONG"     Name="KernelTime" />
+            <Field Type="ULONG"     Name="UserTime" />
+        </Variable>
+
+        <!-- [EVENT_TRACE_HEADER_u4_s2] -->
+        <Variable Name="[EVENT_TRACE_HEADER_u4_s2]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="ULONG"                     Name="ClientContext" />
+            <Field Type="[WNODE_HEADER_Flags]"      Name="Flags" />
+        </Variable>
+
+        <!-- [EVENT_TRACE_HEADER_u4] -->
+        <Variable Name="[EVENT_TRACE_HEADER_u4]" Type="Union">
+            <Display Name="union" />
+            <Field Type="[EVENT_TRACE_HEADER_u4_s1]"    Name="" />
+            <Field Type="ULONG64"                       Name="ProcessorTime" />
+            <Field Type="[EVENT_TRACE_HEADER_u4_s2]"    Name="" />
+        </Variable>
+
+        <!-- EVENT_TRACE_HEADER -->
+        <Variable Name="EVENT_TRACE_HEADER" Type="Struct">
+            <Field Type="USHORT"                    Name="Size" />
+            <Field Type="[EVENT_TRACE_HEADER_u1]"   Name="" />
+            <Field Type="[EVENT_TRACE_HEADER_u2]"   Name="" />
+            <Field Type="ULONG"                     Name="ThreadId" />
+            <Field Type="ULONG"                     Name="ProcessId" />
+            <Field Type="LARGE_INTEGER"             Name="TimeStamp" />
+            <Field Type="[EVENT_TRACE_HEADER_u3]"   Name="" />
+            <Field Type="[EVENT_TRACE_HEADER_u4]"   Name="" />
+        </Variable>
+        <Variable Name="PEVENT_TRACE_HEADER" Type="Pointer" Base="EVENT_TRACE_HEADER" />
+
+        <!-- [EVENT_INSTANCE_HEADER_u1_s] -->
+        <Variable Name="[EVENT_INSTANCE_HEADER_u1_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="ULONG"                     Name="EventId" />
+            <Field Type="[WNODE_HEADER_Flags]"      Name="Flags" />
+        </Variable>
+
+        <!-- [EVENT_INSTANCE_HEADER_u] -->
+        <Variable Name="[EVENT_INSTANCE_HEADER_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="[EVENT_TRACE_HEADER_u4_s1]"    Name="" />
+            <Field Type="ULONG64"                       Name="ProcessorTime" />
+            <Field Type="[EVENT_INSTANCE_HEADER_u1_s]"  Name="" />
+        </Variable>
+
+        <!-- EVENT_INSTANCE_HEADER -->
+        <Variable Name="EVENT_INSTANCE_HEADER" Type="Struct">
+            <Field Type="USHORT"                    Name="Size" />
+            <Field Type="[EVENT_TRACE_HEADER_u1]"   Name="" />
+            <Field Type="[EVENT_TRACE_HEADER_u2]"   Name="" />
+            <Field Type="ULONG"                     Name="ThreadId" />
+            <Field Type="ULONG"                     Name="ProcessId" />
+            <Field Type="LARGE_INTEGER"             Name="TimeStamp" />
+            <Field Type="ULONGLONG"                 Name="RegHandle" />
+            <Field Type="ULONG"                     Name="InstanceId" />
+            <Field Type="ULONG"                     Name="ParentInstanceId" />
+            <Field Type="[EVENT_INSTANCE_HEADER_u]" Name="" />
+            <Field Type="ULONGLONG"                 Name="ParentRegHandle" />
+        </Variable>
+        <Variable Name="PEVENT_INSTANCE_HEADER" Type="Pointer" Base="EVENT_INSTANCE_HEADER" />
+
+        <!-- [ProcessTraceMode] -->
+        <Variable Name="[ProcessTraceMode]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="PROCESS_TRACE_MODE_REAL_TIME"        Value="0x00000100" />
+                <Set Name="PROCESS_TRACE_MODE_RAW_TIMESTAMP"    Value="0x00001000" />
+                <Set Name="PROCESS_TRACE_MODE_EVENT_RECORD"     Value="0x10000000" />
+            </Flag>
+        </Variable>
+
+        <!-- [EVENT_TRACE_LOGFILE_u1] -->
+        <Variable Name="[EVENT_TRACE_LOGFILE_u1]" Type="Union">
+            <Display Name="union" />
+            <Field Type="ULONG"     Name="LogFileMode" />
+            <Field Type="ULONG"     Name="ProcessTraceMode" />
+        </Variable>
+
+        <!-- [EVENT_TRACE_LOGFILE_u2] -->
+        <Variable Name="[EVENT_TRACE_LOGFILE_u2]" Type="Union">
+            <Display Name="union" />
+            <Field Type="PEVENT_CALLBACK"           Name="EventCallback" />
+            <Field Type="PEVENT_RECORD_CALLBACK"    Name="EventRecordCallback" />
+        </Variable>
+
+        <!-- ETW_BUFFER_CONTEXT -->
+        <Variable Name="ETW_BUFFER_CONTEXT" Type="Struct">
+            <Field Type="UCHAR"     Name="ProcessorNumber" />
+            <Field Type="UCHAR"     Name="Alignment" />
+            <Field Type="USHORT"    Name="LoggerId" />
+        </Variable>
+
+        <!-- [EVENT_TRACE_u] -->
+        <Variable Name="[EVENT_TRACE_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="ULONG"                 Name="ClientContext" />
+            <Field Type="ETW_BUFFER_CONTEXT"    Name="BufferContext" />
+        </Variable>
+
+        <!-- EVENT_TRACE -->
+        <Variable Name="EVENT_TRACE" Type="Struct">
+            <Field Type="EVENT_TRACE_HEADER"    Name="Header" />
+            <Field Type="ULONG"                 Name="InstanceId" />
+            <Field Type="ULONG"                 Name="ParentInstanceId" />
+            <Field Type="GUID"                  Name="ParentGuid" />
+            <Field Type="PVOID"                 Name="MofData" />
+            <Field Type="ULONG"                 Name="MofLength" />
+            <Field Type="[EVENT_TRACE_u]"       Name="" />
+        </Variable>
+
+        <!-- [TRACE_LOGFILE_HEADER_u1_s] -->
+        <Variable Name="[TRACE_LOGFILE_HEADER_u1_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="UCHAR"     Name="MajorVersion" />
+            <Field Type="UCHAR"     Name="MinorVersion" />
+            <Field Type="UCHAR"     Name="SubVersion" />
+            <Field Type="UCHAR"     Name="SubMinorVersion" />
+        </Variable>
+
+        <!-- [TRACE_LOGFILE_HEADER_u1] -->
+        <Variable Name="[TRACE_LOGFILE_HEADER_u1]" Type="Union">
+            <Display Name="union" />
+            <Field Type="ULONG"                         Name="Version" />
+            <Field Type="[TRACE_LOGFILE_HEADER_u1_s]"   Name="VersionDetail" />
+        </Variable>
+
+        <!-- [TRACE_LOGFILE_HEADER_u2_s] -->
+        <Variable Name="[TRACE_LOGFILE_HEADER_u2_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="ULONG"     Name="StartBuffers" />
+            <Field Type="ULONG"     Name="PointerSize" />
+            <Field Type="ULONG"     Name="EventsLost" />
+            <Field Type="ULONG"     Name="CpuSpeedInMHz" />
+        </Variable>
+
+        <!-- [TRACE_LOGFILE_HEADER_u2] -->
+        <Variable Name="[TRACE_LOGFILE_HEADER_u2]" Type="Union">
+            <Display Name="union" />
+            <Field Type="GUID"                          Name="LogInstanceGuid" />
+            <Field Type="[TRACE_LOGFILE_HEADER_u2_s]"   Name="" />
+        </Variable>
+
+        <!-- TRACE_LOGFILE_HEADER -->
+        <Variable Name="TRACE_LOGFILE_HEADER" Type="Struct">
+            <Field Type="ULONG"                         Name="BufferSize" />
+            <Field Type="[TRACE_LOGFILE_HEADER_u1]"     Name="" />
+            <Field Type="ULONG"                         Name="ProviderVersion" />
+            <Field Type="ULONG"                         Name="NumberOfProcessors" />
+            <Field Type="LARGE_INTEGER"                 Name="EndTime" />
+            <Field Type="ULONG"                         Name="TimerResolution" />
+            <Field Type="ULONG"                         Name="MaximumFileSize" />
+            <Field Type="ULONG"                         Name="LogFileMode" />
+            <Field Type="ULONG"                         Name="BuffersWritten" />
+            <Field Type="[TRACE_LOGFILE_HEADER_u2]"     Name="" />
+            <Field Type="LPWSTR"                        Name="LoggerName" />
+            <Field Type="LPWSTR"                        Name="LogFileName" />
+            <Field Type="TIME_ZONE_INFORMATION"         Name="TimeZone" />
+            <Field Type="LARGE_INTEGER"                 Name="BootTime" />
+            <Field Type="LARGE_INTEGER"                 Name="PerfFreq" />
+            <Field Type="LARGE_INTEGER"                 Name="StartTime" />
+            <Field Type="ULONG"                         Name="ReservedFlags" />
+            <Field Type="ULONG"                         Name="BuffersLost" />
+        </Variable>
+
+        <!-- EVENT_TRACE_LOGFILE -->
+        <Variable Name="EVENT_TRACE_LOGFILE" Type="Struct">
+            <Field Type="LPTSTR"                            Name="LogFileName" />
+            <Field Type="LPTSTR"                            Name="LoggerName" />
+            <Field Type="LONGLONG"                          Name="CurrentTime" />
+            <Field Type="ULONG"                             Name="BuffersRead" />
+            <Field Type="[EVENT_TRACE_LOGFILE_u1]"          Name="" />
+            <Field Type="EVENT_TRACE"                       Name="CurrentEvent" />
+            <Field Type="TRACE_LOGFILE_HEADER"              Name="LogfileHeader" />
+            <Field Type="PEVENT_TRACE_BUFFER_CALLBACK"      Name="BufferCallback" />
+            <Field Type="ULONG"                             Name="BufferSize" />
+            <Field Type="ULONG"                             Name="Filled" />
+            <Field Type="ULONG"                             Name="EventsLost" />
+            <Field Type="[EVENT_TRACE_LOGFILE_u2]"          Name="" />
+            <Field Type="ULONG"                             Name="IsKernelTrace" />
+            <Field Type="PVOID"                             Name="Context" />
+        </Variable>
+        <Variable Name="PEVENT_TRACE_LOGFILE" Type="Pointer" Base="EVENT_TRACE_LOGFILE" />
 
         <!-- EVENT_INSTANCE_INFO -->
         <Variable Name="EVENT_INSTANCE_INFO" Type="Struct">

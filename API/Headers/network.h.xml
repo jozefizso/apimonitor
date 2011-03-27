@@ -6,10 +6,100 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Headers>
+        
+        <!-- Variables -->
+        <Variable Name="LSA_UNICODE_STRING"     Type="Alias"    Base="UNICODE_STRING" />
+        <Variable Name="PLSA_UNICODE_STRING"    Type="Pointer"  Base="LSA_UNICODE_STRING" />
 
-        <!-- TODO: Structures -->
-        <Variable Name="PLSA_FOREST_TRUST_INFORMATION"      Type="Alias"    Base="LPVOID" />
-        <Variable Name="PLSA_FOREST_TRUST_INFORMATION*"     Type="Pointer"  Base="PLSA_FOREST_TRUST_INFORMATION" />
+        <!-- LSA_FOREST_TRUST_DOMAIN_INFO -->
+        <Variable Name="LSA_FOREST_TRUST_DOMAIN_INFO" Type="Struct">
+            <Field Type="PSID"                  Name="Sid" />
+            <Field Type="LSA_UNICODE_STRING"    Name="DnsName" />
+            <Field Type="LSA_UNICODE_STRING"    Name="NetbiosName" />
+        </Variable>
+
+        <!-- LSA_FOREST_TRUST_BINARY_DATA -->
+        <Variable Name="LSA_FOREST_TRUST_BINARY_DATA" Type="Struct">
+            <Field Type="ULONG"     Name="Length" />
+            <Field Type="PUCHAR"    Name="Buffer" Length="Length" />
+        </Variable>
+
+        <!-- [LSA_FOREST_TRUST_RECORD_u] -->
+        <Variable Name="[LSA_FOREST_TRUST_RECORD_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="LSA_UNICODE_STRING"            Name="TopLevelName" />
+            <Field Type="LSA_FOREST_TRUST_DOMAIN_INFO"  Name="DomainInfo" />
+            <Field Type="LSA_FOREST_TRUST_BINARY_DATA"  Name="Data" />
+        </Variable>
+
+        <!-- LSA_FOREST_TRUST_RECORD_TYPE -->
+        <Variable Name="LSA_FOREST_TRUST_RECORD_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="ForestTrustTopLevelName"     Value="0" />
+                <Set Name="ForestTrustTopLevelNameEx"   Value="1" />
+                <Set Name="ForestTrustDomainInfo"       Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- LSA_FOREST_TRUST_RECORD -->
+        <Variable Name="LSA_FOREST_TRUST_RECORD" Type="Struct">
+            <Field Type="ULONG"                         Name="Flags" />
+            <Field Type="LSA_FOREST_TRUST_RECORD_TYPE"  Name="ForestTrustType" />
+            <Field Type="LARGE_INTEGER"                 Name="Time" />
+            <Field Type="[LSA_FOREST_TRUST_RECORD_u]"   Name="ForestTrustData" />
+        </Variable>
+        <Variable Name="PLSA_FOREST_TRUST_RECORD"   Type="Pointer" Base="LSA_FOREST_TRUST_RECORD" />
+        <Variable Name="PLSA_FOREST_TRUST_RECORD*"  Type="Pointer" Base="PLSA_FOREST_TRUST_RECORD" />
+
+        <!-- LSA_FOREST_TRUST_INFORMATION -->
+        <Variable Name="LSA_FOREST_TRUST_INFORMATION" Type="Struct">
+            <Field Type="ULONG"                     Name="RecordCount" />
+            <Field Type="PLSA_FOREST_TRUST_RECORD*" Name="Entries" Count="RecordCount" />
+        </Variable>
+        <Variable Name="PLSA_FOREST_TRUST_INFORMATION"  Type="Pointer" Base="LSA_FOREST_TRUST_INFORMATION" />
+        <Variable Name="PLSA_FOREST_TRUST_INFORMATION*" Type="Pointer" Base="PLSA_FOREST_TRUST_INFORMATION" />
+
+        <!-- LSA_FOREST_TRUST_COLLISION_RECORD_TYPE -->
+        <Variable Name="LSA_FOREST_TRUST_COLLISION_RECORD_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="CollisionTdo"    Value="0" />
+                <Set Name="CollisionXref"   Value="1" />
+                <Set Name="CollisionOther"  Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- LSA_FOREST_TRUST_COLLISION_RECORD -->
+        <Variable Name="LSA_FOREST_TRUST_COLLISION_RECORD" Type="Struct">
+            <Field Type="ULONG"                                     Name="Index" />
+            <Field Type="LSA_FOREST_TRUST_COLLISION_RECORD_TYPE"    Name="Type" />
+            <Field Type="ULONG"                                     Name="Flags" />
+            <Field Type="LSA_UNICODE_STRING"                        Name="Name" />
+        </Variable>
+        <Variable Name="PLSA_FOREST_TRUST_COLLISION_RECORD"  Type="Pointer" Base="LSA_FOREST_TRUST_COLLISION_RECORD"/>
+        <Variable Name="PLSA_FOREST_TRUST_COLLISION_RECORD*" Type="Pointer" Base="PLSA_FOREST_TRUST_COLLISION_RECORD"/>
+
+        <!-- LSA_TRUST_INFORMATION -->
+        <Variable Name="LSA_TRUST_INFORMATION" Type="Struct">
+            <Field Type="LSA_UNICODE_STRING"    Name="Name" />
+            <Field Type="PSID"                  Name="Sid" />
+        </Variable>
+        <Variable Name="PLSA_TRUST_INFORMATION" Type="Pointer" Base="LSA_TRUST_INFORMATION" />
+
+        <!-- LSA_REFERENCED_DOMAIN_LIST -->
+        <Variable Name="LSA_REFERENCED_DOMAIN_LIST" Type="Struct">
+            <Field Type="ULONG"                     Name="Entries" />
+            <Field Type="PLSA_TRUST_INFORMATION"    Name="Domains" />
+        </Variable>
+        <Variable Name="PLSA_REFERENCED_DOMAIN_LIST"    Type="Pointer" Base="LSA_REFERENCED_DOMAIN_LIST" />
+        <Variable Name="PLSA_REFERENCED_DOMAIN_LIST*"   Type="Pointer" Base="PLSA_REFERENCED_DOMAIN_LIST" />
+
+        <!-- LSA_FOREST_TRUST_COLLISION_INFORMATION -->
+        <Variable Name="LSA_FOREST_TRUST_COLLISION_INFORMATION" Type="Struct">
+            <Field Type="ULONG"                                 Name="RecordCount" />
+            <Field Type="PLSA_FOREST_TRUST_COLLISION_RECORD*"   Name="Entries" Count="RecordCount" />
+        </Variable>
+        <Variable Name="PLSA_FOREST_TRUST_COLLISION_INFORMATION"    Type="Pointer" Base="LSA_FOREST_TRUST_COLLISION_INFORMATION" />
+        <Variable Name="PLSA_FOREST_TRUST_COLLISION_INFORMATION*"   Type="Pointer" Base="PLSA_FOREST_TRUST_COLLISION_INFORMATION" />
 
     </Headers>
 </ApiMonitor>

@@ -5,28 +5,634 @@
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
-    <Module Name="Rasapi32.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
-        <!-- Variables -->
-        <Variable Name="HRASCONN"           Type="Alias"    Base="HANDLE" />
-        <Variable Name="LPHRASCONN"         Type="Pointer"  Base="HRASCONN" />
-        <Variable Name="ProbationTime"      Type="Pointer"  Base="FILETIME" />
-        <Variable Name="ConnectionId"       Type="Alias"    Base="GUID" />
-        <Variable Name="ConnectionId*"      Type="Pointer"  Base="ConnectionId" />
+    <Include Filename="Headers\sockets.h.xml" />
 
-        <!-- TODO: Strutures -->
-        <Variable Name="LPRASDIALPARAMS"            Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPRASCONN"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPRASDEVINFO"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPRASENTRYNAME"             Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPRASEAPUSERIDENTITY"       Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPRASAUTODIALENTRY"         Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPRASCONNSTATUS"            Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPRASCREDENTIALS"           Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPRASEAPUSERIDENTITY*"      Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPRASENTRY"                 Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRAS_PROJECTION_INFO"       Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPRASSUBENTRY"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPRASUPDATECONN"            Type="Alias"    Base="LPVOID" />
+    <Module Name="Rasapi32.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
+        
+        <!-- Variables -->
+        <Variable Name="HRASCONN"                           Type="Alias"    Base="HANDLE" />
+        <Variable Name="LPHRASCONN"                         Type="Pointer"  Base="HRASCONN" />
+        <Variable Name="ProbationTime"                      Type="Alias"    Base="FILETIME" />
+        <Variable Name="ConnectionId"                       Type="Alias"    Base="GUID" />
+        <Variable Name="ConnectionId*"                      Type="Pointer"  Base="ConnectionId" />
+        <Variable Name="RASIPV4ADDR"                        Type="Alias"    Base="IN_ADDR" />
+        <Variable Name="RASIPV4ADDR*"                       Type="Pointer"  Base="RASIPV4ADDR" />
+        <Variable Name="RASIPV6ADDR"                        Type="Alias"    Base="IN6_ADDR" />
+        <Variable Name="RASIPV6ADDR*"                       Type="Pointer"  Base="RASIPV6ADDR" />
+        
+        <Variable Name="BYTE [1]"                           Type="Array"    Base="BYTE"     Count="1" />
+        <Variable Name="TCHAR [RAS_MaxDeviceType + 1]"      Type="Array"    Base="TCHAR"    Count="17" />
+        <Variable Name="TCHAR [RAS_MaxDeviceName + 1]"      Type="Array"    Base="TCHAR"    Count="129" />
+        <Variable Name="TCHAR [RAS_MaxPhoneNumber + 1]"     Type="Array"    Base="TCHAR"    Count="129" />
+        <Variable Name="TCHAR [RAS_MaxCallbackNumber + 1]"  Type="Array"    Base="TCHAR"    Count="129" />
+        <Variable Name="TCHAR [RAS_MaxAreaCode + 1]"        Type="Array"    Base="TCHAR"    Count="11" />
+        <Variable Name="TCHAR [RAS_MaxPadType + 1]"         Type="Array"    Base="TCHAR"    Count="33" />
+        <Variable Name="TCHAR [RAS_MaxX25Address + 1]"      Type="Array"    Base="TCHAR"    Count="201" />
+        <Variable Name="TCHAR [RAS_MaxFacilities + 1]"      Type="Array"    Base="TCHAR"    Count="201" />
+        <Variable Name="TCHAR [RAS_MaxUserData + 1]"        Type="Array"    Base="TCHAR"    Count="201" />
+        <Variable Name="TCHAR [RAS_MaxDnsSuffix]"           Type="Array"    Base="TCHAR"    Count="256" />
+        <Variable Name="TCHAR [UNLEN + 1]"                  Type="Array"    Base="TCHAR"    Count="257" />
+        <Variable Name="TCHAR [PWLEN + 1]"                  Type="Array"    Base="TCHAR"    Count="257" />
+        <Variable Name="TCHAR [DNLEN + 1]"                  Type="Array"    Base="TCHAR"    Count="16" />
+        
+        <!-- RASAPIVERSION -->
+        <Variable Name="RASAPIVERSION" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="RASAPIVERSION_500"   Value="1" />
+                <Set Name="RASAPIVERSION_501"   Value="2" />
+                <Set Name="RASAPIVERSION_600"   Value="3" />
+                <Set Name="RASAPIVERSION_601"   Value="4" />
+            </Enum>
+        </Variable>
+
+        <!-- [RASTUNNELENDPOINT_u] -->
+        <Variable Name="[RASTUNNELENDPOINT_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="RASIPV4ADDR"   Name="ipv4" />
+            <Field Type="RASIPV6ADDR"   Name="ipv6" />
+        </Variable>
+
+        <!-- [RASTUNNELENDPOINT_TYPE] -->
+        <Variable Name="[RASTUNNELENDPOINT_TYPE]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="RASTUNNELENDPOINT_UNKNOWN"   Value="0" />
+                <Set Name="RASTUNNELENDPOINT_IPv4"      Value="1" />
+                <Set Name="RASTUNNELENDPOINT_IPv6"      Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- RASTUNNELENDPOINT -->
+        <Variable Name="RASTUNNELENDPOINT" Type="Struct" Pack="4">
+            <Field Type="[RASTUNNELENDPOINT_TYPE]"  Name="dwType" />
+            <Field Type="[RASTUNNELENDPOINT_u]"     Name="" />
+        </Variable>
+
+        <!-- RASDIALPARAMS -->
+        <Variable Name="RASDIALPARAMS" Type="Struct" Pack="4">
+            <Field Type="DWORD"                                 Name="dwSize" />
+            <Field Type="TCHAR [RAS_MaxEntryName + 1]"          Name="szEntryName" />
+            <Field Type="TCHAR [RAS_MaxPhoneNumber + 1]"        Name="szPhoneNumber" />
+            <Field Type="TCHAR [RAS_MaxCallbackNumber + 1]"     Name="szCallbackNumber" />
+            <Field Type="TCHAR [UNLEN + 1]"                     Name="szUserName" />
+            <Field Type="TCHAR [PWLEN + 1]"                     Name="szPassword" />
+            <Field Type="TCHAR [DNLEN + 1]"                     Name="szDomain" />
+            <Field Type="DWORD"                                 Name="dwSubEntry" />
+            <Field Type="ULONG_PTR"                             Name="dwCallbackId" />
+            <Field Type="DWORD"                                 Name="dwIfIndex" />
+        </Variable>
+        <Variable Name="LPRASDIALPARAMS" Type="Pointer" Base="RASDIALPARAMS" />
+
+        <!-- [RASCONN_FLAGS] -->
+        <Variable Name="[RASCONN_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="RASCF_AllUsers"          Value="0x00000001" />
+                <Set Name="RASCF_GlobalCreds"       Value="0x00000002" />
+                <Set Name="RASCF_OwnerKnown"        Value="0x00000004" />
+                <Set Name="RASCF_OwnerMatch"        Value="0x00000008" />
+            </Flag>
+        </Variable>
+
+        <!-- RASCONN -->
+        <Variable Name="RASCONN" Type="Struct" Pack="4">
+            <Field Type="DWORD"                             Name="dwSize" />
+            <Field Type="HRASCONN"                          Name="hrasconn" />
+            <Field Type="TCHAR [RAS_MaxEntryName + 1]"      Name="szEntryName" />
+            <Field Type="TCHAR [RAS_MaxDeviceType + 1]"     Name="szDeviceType" />
+            <Field Type="TCHAR [RAS_MaxDeviceName + 1]"     Name="szDeviceName" />
+            <Field Type="TCHAR [MAX_PATH]"                  Name="szPhonebook"  />
+            <Field Type="DWORD"                             Name="dwSubEntry" />
+            <Field Type="GUID"                              Name="guidEntry" />
+            <Field Type="[RASCONN_FLAGS]"                   Name="dwFlags" />
+            <Field Type="LUID"                              Name="luid" />
+            <Field Type="GUID"                              Name="guidCorrelationId" />
+        </Variable>
+        <Variable Name="LPRASCONN" Type="Pointer" Base="RASCONN" />
+
+        <!-- RASDEVINFO -->
+        <Variable Name="RASDEVINFO" Type="Struct" Pack="4">
+            <Field Type="DWORD"                             Name="dwSize" />
+            <Field Type="TCHAR [RAS_MaxDeviceType + 1]"     Name="szDeviceType" />
+            <Field Type="TCHAR [RAS_MaxDeviceName + 1]"     Name="szDeviceName" />
+        </Variable>
+        <Variable Name="LPRASDEVINFO" Type="Pointer" Base="RASDEVINFO" />
+
+        <!-- [RASENTRYNAME_FLAGS] -->
+        <Variable Name="[RASENTRYNAME_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="REN_User"        Value="0x00000000" />
+                <Set Name="REN_AllUsers"    Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- RASENTRYNAME -->
+        <Variable Name="RASENTRYNAME" Type="Struct" Pack="4">
+            <Field Type="DWORD"                         Name="dwSize" />
+            <Field Type="TCHAR [RAS_MaxEntryName + 1]"  Name="szEntryName" />
+            <Field Type="[RASENTRYNAME_FLAGS]"          Name="dwFlags" />
+            <Field Type="TCHAR [MAX_PATH + 1]"          Name="szPhonebookPath" />
+        </Variable>
+        <Variable Name="LPRASENTRYNAME" Type="Pointer" Base="RASENTRYNAME" />
+
+        <!-- RASAUTODIALENTRY -->
+        <Variable Name="RASAUTODIALENTRY" Type="Struct" Pack="4">
+            <Field Type="DWORD"                             Name="dwSize" />
+            <Field Type="DWORD"                             Name="dwFlags" />
+            <Field Type="DWORD"                             Name="dwDialingLocation" />
+            <Field Type="TCHAR [RAS_MaxEntryName + 1]"      Name="szEntry" />
+        </Variable>
+        <Variable Name="LPRASAUTODIALENTRY" Type="Pointer" Base="RASAUTODIALENTRY" />
+
+        <!-- RASCONNSTATE -->
+        <Variable Name="RASCONNSTATE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="RASCS_OpenPort"                  Value="0" />
+                <Set Name="RASCS_PortOpened"                Value="1" />
+                <Set Name="RASCS_ConnectDevice"             Value="2" />
+                <Set Name="RASCS_DeviceConnected"           Value="3" />
+                <Set Name="RASCS_AllDevicesConnected"       Value="4" />
+                <Set Name="RASCS_Authenticate"              Value="5" />
+                <Set Name="RASCS_AuthNotify"                Value="6" />
+                <Set Name="RASCS_AuthRetry"                 Value="7" />
+                <Set Name="RASCS_AuthCallback"              Value="8" />
+                <Set Name="RASCS_AuthChangePassword"        Value="9" />
+                <Set Name="RASCS_AuthProject"               Value="10" />
+                <Set Name="RASCS_AuthLinkSpeed"             Value="11" />
+                <Set Name="RASCS_AuthAck"                   Value="12" />
+                <Set Name="RASCS_ReAuthenticate"            Value="13" />
+                <Set Name="RASCS_Authenticated"             Value="14" />
+                <Set Name="RASCS_PrepareForCallback"        Value="15" />
+                <Set Name="RASCS_WaitForModemReset"         Value="16" />
+                <Set Name="RASCS_WaitForCallback"           Value="17" />
+                <Set Name="RASCS_Projected"                 Value="18" />
+                <Set Name="RASCS_StartAuthentication"       Value="19" />
+                <Set Name="RASCS_CallbackComplete"          Value="20" />
+                <Set Name="RASCS_LogonNetwork"              Value="21" />
+                <Set Name="RASCS_SubEntryConnected"         Value="22" />
+                <Set Name="RASCS_SubEntryDisconnected"      Value="23" />
+                <Set Name="RASCS_ApplySettings"             Value="24" />
+                <Set Name="RASCS_Interactive"               Value="0x1000" />
+                <Set Name="RASCS_RetryAuthentication"       Value="0x1001" />
+                <Set Name="RASCS_CallbackSetByCaller"       Value="0x1002" />
+                <Set Name="RASCS_PasswordExpired"           Value="0x1003" />
+                <Set Name="RASCS_InvokeEapUI"               Value="0x1004" />
+                <Set Name="RASCS_Connected"                 Value="0x2000" />
+                <Set Name="RASCS_Disconnected"              Value="0x2001" />
+            </Enum>
+        </Variable>
+
+        <!-- RASCONNSUBSTATE -->
+        <Variable Name="RASCONNSUBSTATE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="RASCSS_None"             Value="0" />
+                <Set Name="RASCSS_Dormant"          Value="1" />
+                <Set Name="RASCSS_Reconnecting"     Value="2" />
+                <Set Name="RASCSS_Reconnected"      Value="0x2000" />
+            </Enum>
+        </Variable>
+
+        <!-- RASCONNSTATUS -->
+        <Variable Name="RASCONNSTATUS" Type="Struct" Pack="4">
+            <Field Type="DWORD"                             Name="dwSize" />
+            <Field Type="RASCONNSTATE"                      Name="rasconnstate" />
+            <Field Type="DWORD"                             Name="dwError" />
+            <Field Type="TCHAR [RAS_MaxDeviceType + 1]"     Name="szDeviceType" />
+            <Field Type="TCHAR [RAS_MaxDeviceName + 1]"     Name="szDeviceName" />
+            <Field Type="TCHAR [RAS_MaxPhoneNumber + 1]"    Name="szPhoneNumber" />
+            <Field Type="RASTUNNELENDPOINT"                 Name="localEndPoint" />
+            <Field Type="RASTUNNELENDPOINT"                 Name="remoteEndPoint" />
+            <Field Type="RASCONNSUBSTATE"                   Name="rasconnsubstate" />
+        </Variable>
+        <Variable Name="LPRASCONNSTATUS" Type="Pointer" Base="RASCONNSTATUS" />
+
+        <!-- [RASCM_FLAGS] -->
+        <Variable Name="[RASCM_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="RASCM_UserName"              Value="0x00000001" />
+                <Set Name="RASCM_Password"              Value="0x00000002" />
+                <Set Name="RASCM_Domain"                Value="0x00000004" />
+                <Set Name="RASCM_DefaultCreds"          Value="0x00000008" />
+                <Set Name="RASCM_PreSharedKey"          Value="0x00000010" />
+                <Set Name="RASCM_ServerPreSharedKey"    Value="0x00000020" />
+                <Set Name="RASCM_DDMPreSharedKey"       Value="0x00000040" />
+            </Flag>
+        </Variable>
+
+        <!-- RASCREDENTIALS -->
+        <Variable Name="RASCREDENTIALS" Type="Struct" Pack="4">
+            <Field Type="DWORD"                 Name="dwSize" />
+            <Field Type="[RASCM_FLAGS]"         Name="dwMask" />
+            <Field Type="TCHAR [UNLEN + 1]"     Name="szUserName" />
+            <Field Type="TCHAR [PWLEN + 1]"     Name="szPassword" />
+            <Field Type="TCHAR [DNLEN + 1]"     Name="szDomain" />
+        </Variable>
+        <Variable Name="LPRASCREDENTIALS" Type="Pointer" Base="RASCREDENTIALS" />
+
+        <!-- RASEAPUSERIDENTITY -->
+        <Variable Name="RASEAPUSERIDENTITY" Type="Struct" Pack="4">
+            <Field Type="TCHAR [UNLEN + 1]"     Name="szUserName" />
+            <Field Type="DWORD"                 Name="dwSizeofEapInfo" />
+            <Field Type="BYTE [1]"              Name="pbEapInfo" Count="dwSizeofEapInfo" />
+        </Variable>
+        <Variable Name="LPRASEAPUSERIDENTITY"   Type="Pointer" Base="RASEAPUSERIDENTITY" />
+        <Variable Name="LPRASEAPUSERIDENTITY*"  Type="Pointer" Base="LPRASEAPUSERIDENTITY" />
+
+        <!-- RASIPADDR -->
+        <Variable Name="RASIPADDR" Type="Struct" Pack="4">
+            <Field Type="BYTE"      Name="a" />
+            <Field Type="BYTE"      Name="b" />
+            <Field Type="BYTE"      Name="c" />
+            <Field Type="BYTE"      Name="d" />
+        </Variable>
+
+        <!-- [RASEO_FLAGS] -->
+        <Variable Name="[RASEO_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="RASEO_UseCountryAndAreaCodes"        Value="0x00000001" />
+                <Set Name="RASEO_SpecificIpAddr"                Value="0x00000002" />
+                <Set Name="RASEO_SpecificNameServers"           Value="0x00000004" />
+                <Set Name="RASEO_IpHeaderCompression"           Value="0x00000008" />
+                <Set Name="RASEO_RemoteDefaultGateway"          Value="0x00000010" />
+                <Set Name="RASEO_DisableLcpExtensions"          Value="0x00000020" />
+                <Set Name="RASEO_TerminalBeforeDial"            Value="0x00000040" />
+                <Set Name="RASEO_TerminalAfterDial"             Value="0x00000080" />
+                <Set Name="RASEO_ModemLights"                   Value="0x00000100" />
+                <Set Name="RASEO_SwCompression"                 Value="0x00000200" />
+                <Set Name="RASEO_RequireEncryptedPw"            Value="0x00000400" />
+                <Set Name="RASEO_RequireMsEncryptedPw"          Value="0x00000800" />
+                <Set Name="RASEO_RequireDataEncryption"         Value="0x00001000" />
+                <Set Name="RASEO_NetworkLogon"                  Value="0x00002000" />
+                <Set Name="RASEO_UseLogonCredentials"           Value="0x00004000" />
+                <Set Name="RASEO_PromoteAlternates"             Value="0x00008000" />
+                <Set Name="RASEO_SecureLocalFiles"              Value="0x00010000" />
+                <Set Name="RASEO_RequireEAP"                    Value="0x00020000" />
+                <Set Name="RASEO_RequirePAP"                    Value="0x00040000" />
+                <Set Name="RASEO_RequireSPAP"                   Value="0x00080000" />
+                <Set Name="RASEO_Custom"                        Value="0x00100000" />
+                <Set Name="RASEO_PreviewPhoneNumber"            Value="0x00200000" />
+                <Set Name="RASEO_SharedPhoneNumbers"            Value="0x00800000" />
+                <Set Name="RASEO_PreviewUserPw"                 Value="0x01000000" />
+                <Set Name="RASEO_PreviewDomain"                 Value="0x02000000" />
+                <Set Name="RASEO_ShowDialingProgress"           Value="0x04000000" />
+                <Set Name="RASEO_RequireCHAP"                   Value="0x08000000" />
+                <Set Name="RASEO_RequireMsCHAP"                 Value="0x10000000" />
+                <Set Name="RASEO_RequireMsCHAP2"                Value="0x20000000" />
+                <Set Name="RASEO_RequireW95MSCHAP"              Value="0x40000000" />
+                <Set Name="RASEO_CustomScript"                  Value="0x80000000" />
+            </Flag>
+        </Variable>
+
+        <!-- [RASEO2_FLAGS] -->
+        <Variable Name="[RASEO2_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="RASEO2_SecureFileAndPrint"               Value="0x00000001" />
+                <Set Name="RASEO2_SecureClientForMSNet"             Value="0x00000002" />
+                <Set Name="RASEO2_DontNegotiateMultilink"           Value="0x00000004" />
+                <Set Name="RASEO2_DontUseRasCredentials"            Value="0x00000008" />
+                <Set Name="RASEO2_UsePreSharedKey"                  Value="0x00000010" />
+                <Set Name="RASEO2_Internet"                         Value="0x00000020" />
+                <Set Name="RASEO2_DisableNbtOverIP"                 Value="0x00000040" />
+                <Set Name="RASEO2_UseGlobalDeviceSettings"          Value="0x00000080" />
+                <Set Name="RASEO2_ReconnectIfDropped"               Value="0x00000100" />
+                <Set Name="RASEO2_SharePhoneNumbers"                Value="0x00000200" />
+                <Set Name="RASEO2_SecureRoutingCompartment"         Value="0x00000400" />
+                <Set Name="RASEO2_UseTypicalSettings"               Value="0x00000800" />
+                <Set Name="RASEO2_IPv6SpecificNameServers"          Value="0x00001000" />
+                <Set Name="RASEO2_IPv6RemoteDefaultGateway"         Value="0x00002000" />
+                <Set Name="RASEO2_RegisterIpWithDNS"                Value="0x00004000" />
+                <Set Name="RASEO2_UseDNSSuffixForRegistration"      Value="0x00008000" />
+                <Set Name="RASEO2_IPv4ExplicitMetric"               Value="0x00010000" />
+                <Set Name="RASEO2_IPv6ExplicitMetric"               Value="0x00020000" />
+                <Set Name="RASEO2_DisableIKENameEkuCheck"           Value="0x00040000" />
+                <Set Name="RASEO2_DisableClassBasedStaticRoute"     Value="0x00080000" />
+                <Set Name="RASEO2_SpecificIPv6Addr"                 Value="0x00100000" />
+                <Set Name="RASEO2_DisableMobility"                  Value="0x00200000" />
+                <Set Name="RASEO2_RequireMachineCertificates"       Value="0x00400000" />
+            </Flag>
+        </Variable>
+
+        <!-- [RASNP_FLAGS] -->
+        <Variable Name="[RASNP_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="RASNP_NetBEUI"   Value="0x00000001" />
+                <Set Name="RASNP_Ipx"       Value="0x00000002" />
+                <Set Name="RASNP_Ip"        Value="0x00000004" />
+                <Set Name="RASNP_Ipv6"      Value="0x00000008" />
+            </Flag>
+        </Variable>
+
+        <!-- [RASFP_FLAGS] -->
+        <Variable Name="[RASFP_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="RASFP_Ppp"       Value="0x00000001" />
+                <Set Name="RASFP_Slip"      Value="0x00000002" />
+                <Set Name="RASFP_Ras"       Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <!-- [RASEDM_ENUM] -->
+        <Variable Name="[RASEDM_ENUM]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="RASEDM_DialAll"          Value="1" />
+                <Set Name="RASEDM_DialAsNeeded"     Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- [RASET_ENUM] -->
+        <Variable Name="[RASET_ENUM]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="RASET_Phone"         Value="1" />
+                <Set Name="RASET_Vpn"           Value="2" />
+                <Set Name="RASET_Direct"        Value="3" />
+                <Set Name="RASET_Internet"      Value="4" />
+                <Set Name="RASET_Broadband"     Value="5" />
+            </Enum>
+        </Variable>
+
+        <!-- [RAS_ENCRYPTION_TYPE] -->
+        <Variable Name="[RAS_ENCRYPTION_TYPE]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="ET_None"         Value="0" />
+                <Set Name="ET_Require"      Value="1" />
+                <Set Name="ET_RequireMax"   Value="2" />
+                <Set Name="ET_Optional"     Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- [RAS_VPN_STRATEGY] -->
+        <Variable Name="[RAS_VPN_STRATEGY]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="VS_Default"          Value="0" />
+                <Set Name="VS_PptpOnly"         Value="1" />
+                <Set Name="VS_PptpFirst"        Value="2" />
+                <Set Name="VS_L2tpOnly"         Value="3" />
+                <Set Name="VS_L2tpFirst"        Value="4" />
+                <Set Name="VS_SstpOnly"         Value="5" />
+                <Set Name="VS_SstpFirst"        Value="6" />
+                <Set Name="VS_Ikev2Only"        Value="7" />
+                <Set Name="VS_Ikev2First"       Value="8" />
+                <Set Name="VS_PptpSstp"         Value="12" />
+                <Set Name="VS_L2tpSstp"         Value="13" />
+                <Set Name="VS_Ikev2Sstp"        Value="14" />
+            </Enum>
+        </Variable>
+
+        <!-- RASENTRY -->
+        <Variable Name="RASENTRY" Type="Struct" Pack="4">
+            <Field Type="DWORD"                             Name="dwSize" />
+            <Field Type="[RASEO_FLAGS]"                     Name="dwfOptions" />
+            <Field Type="DWORD"                             Name="dwCountryID" />
+            <Field Type="DWORD"                             Name="dwCountryCode" />
+            <Field Type="TCHAR [RAS_MaxAreaCode + 1]"       Name="szAreaCode" />
+            <Field Type="TCHAR [RAS_MaxPhoneNumber + 1]"    Name="szLocalPhoneNumber" />
+            <Field Type="DWORD"                             Name="dwAlternateOffset" />
+            <Field Type="RASIPADDR"                         Name="ipaddr" />
+            <Field Type="RASIPADDR"                         Name="ipaddrDns" />
+            <Field Type="RASIPADDR"                         Name="ipaddrDnsAlt" />
+            <Field Type="RASIPADDR"                         Name="ipaddrWins" />
+            <Field Type="RASIPADDR"                         Name="ipaddrWinsAlt" />
+            <Field Type="DWORD"                             Name="dwFrameSize" />
+            <Field Type="[RASNP_FLAGS]"                     Name="dwfNetProtocols" />
+            <Field Type="[RASFP_FLAGS]"                     Name="dwFramingProtocol" />
+            <Field Type="TCHAR [MAX_PATH]"                  Name="szScript" />
+            <Field Type="TCHAR [MAX_PATH]"                  Name="szAutodialDll" />
+            <Field Type="TCHAR [MAX_PATH]"                  Name="szAutodialFunc" />
+            <Field Type="TCHAR [RAS_MaxDeviceType + 1]"     Name="szDeviceType" />
+            <Field Type="TCHAR [RAS_MaxDeviceName + 1]"     Name="szDeviceName" />
+            <Field Type="TCHAR [RAS_MaxPadType + 1]"        Name="szX25PadType" />
+            <Field Type="TCHAR [RAS_MaxX25Address + 1]"     Name="szX25Address" />
+            <Field Type="TCHAR [RAS_MaxFacilities + 1]"     Name="szX25Facilities" />
+            <Field Type="TCHAR [RAS_MaxUserData + 1]"       Name="szX25UserData" />
+            <Field Type="DWORD"                             Name="dwChannels" />
+            <Field Type="DWORD"                             Name="dwReserved1" />
+            <Field Type="DWORD"                             Name="dwReserved2" />
+            <Field Type="DWORD"                             Name="dwSubEntries" />
+            <Field Type="[RASEDM_ENUM]"                     Name="dwDialMode" />
+            <Field Type="DWORD"                             Name="dwDialExtraPercent" />
+            <Field Type="DWORD"                             Name="dwDialExtraSampleSeconds" />
+            <Field Type="DWORD"                             Name="dwHangUpExtraPercent" />
+            <Field Type="DWORD"                             Name="dwHangUpExtraSampleSeconds" />
+            <Field Type="DWORD"                             Name="dwIdleDisconnectSeconds" />
+            <Field Type="[RASET_ENUM]"                      Name="dwType" />
+            <Field Type="[RAS_ENCRYPTION_TYPE]"             Name="dwEncryptionType" />
+            <Field Type="DWORD"                             Name="dwCustomAuthKey" />
+            <Field Type="GUID"                              Name="guidId" />
+            <Field Type="TCHAR [MAX_PATH]"                  Name="szCustomDialDll" />
+            <Field Type="[RAS_VPN_STRATEGY]"                Name="dwVpnStrategy" />
+            <Field Type="[RASEO2_FLAGS]"                    Name="dwfOptions2" />
+            <Field Type="DWORD"                             Name="dwfOptions3" />
+            <Field Type="TCHAR [RAS_MaxDnsSuffix]"          Name="szDnsSuffix" />
+            <Field Type="DWORD"                             Name="dwTcpWindowSize" />
+            <Field Type="TCHAR [MAX_PATH]"                  Name="szPrerequisitePbk" />
+            <Field Type="TCHAR [RAS_MaxEntryName + 1]"      Name="szPrerequisiteEntry" />
+            <Field Type="DWORD"                             Name="dwRedialCount" />
+            <Field Type="DWORD"                             Name="dwRedialPause" />
+            <Field Type="RASIPV6ADDR"                       Name="ipv6addrDns" />
+            <Field Type="RASIPV6ADDR"                       Name="ipv6addrDnsAlt" />
+            <Field Type="DWORD"                             Name="dwIPv4InterfaceMetric" />
+            <Field Type="DWORD"                             Name="dwIPv6InterfaceMetric" />
+            <Field Type="RASIPV6ADDR"                       Name="ipv6addr" />
+            <Field Type="DWORD"                             Name="dwIPv6PrefixLength" />
+            <Field Type="DWORD"                             Name="dwNetworkOutageTime" />
+        </Variable>
+        <Variable Name="LPRASENTRY" Type="Pointer" Base="RASENTRY" />
+
+        <!-- [RASIPO_OPTIONS] -->
+        <Variable Name="[RASIPO_OPTIONS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="RASIPO_VJ" Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- [RASLCPAP] -->
+        <Variable Name="[RASLCPAP]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="RASLCPAP_PAP"        Value="0xC023" />
+                <Set Name="RASLCPAP_SPAP"       Value="0xC027" />
+                <Set Name="RASLCPAP_CHAP"       Value="0xC223" />
+                <Set Name="RASLCPAP_EAP"        Value="0xC227" />
+            </Enum>
+        </Variable>
+
+        <!-- [RASLCPAD] -->
+        <Variable Name="[RASLCPAD]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="RASLCPAD_CHAP_MD5"   Value="0x05" />
+                <Set Name="RASLCPAD_CHAP_MS"    Value="0x80" />
+                <Set Name="RASLCPAD_CHAP_MSV2"  Value="0x81" />
+            </Enum>
+        </Variable>
+
+        <!-- [RASLCPO] -->
+        <Variable Name="[RASLCPO]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="RASLCPO_PFC"         Value="0x00000001" />
+                <Set Name="RASLCPO_ACFC"        Value="0x00000002" />
+                <Set Name="RASLCPO_SSHF"        Value="0x00000004" />
+                <Set Name="RASLCPO_DES_56"      Value="0x00000008" />
+                <Set Name="RASLCPO_3_DES"       Value="0x00000010" />
+                <Set Name="RASLCPO_AES_128"     Value="0x00000020" />
+                <Set Name="RASLCPO_AES_256"     Value="0x00000040" />
+            </Flag>
+        </Variable>
+
+        <!-- [RASCCPCA] -->
+        <Variable Name="[RASCCPCA]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="RASCCPCA_MPPC"   Value="0x00000006" />
+                <Set Name="RASCCPCA_STAC"   Value="0x00000005" />
+            </Enum>
+        </Variable>
+
+        <!-- [RASCCPO] -->
+        <Variable Name="[RASCCPO]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="RASCCPO_Compression"         Value="0x00000001" />
+                <Set Name="RASCCPO_HistoryLess"         Value="0x00000002" />
+                <Set Name="RASCCPO_Encryption56bit"     Value="0x00000010" />
+                <Set Name="RASCCPO_Encryption40bit"     Value="0x00000020" />
+                <Set Name="RASCCPO_Encryption128bit"    Value="0x00000040" />
+            </Flag>
+        </Variable>
+
+        <!-- RASPPP_PROJECTION_INFO -->
+        <Variable Name="RASPPP_PROJECTION_INFO" Type="Struct" Pack="4">
+            <Field Type="DWORD"                 Name="dwIPv4NegotiationError" />
+            <Field Type="RASIPV4ADDR"           Name="ipv4Address" />
+            <Field Type="RASIPV4ADDR"           Name="ipv4ServerAddress" />
+            <Field Type="[RASIPO_OPTIONS]"      Name="dwIPv4Options" />
+            <Field Type="[RASIPO_OPTIONS]"      Name="dwIPv4ServerOptions" />
+            <Field Type="DWORD"                 Name="dwIPv6NegotiationError" />
+            <Field Type="BYTE [8]"              Name="bInterfaceIdentifier" />
+            <Field Type="BYTE [8]"              Name="bServerInterfaceIdentifier" />
+            <Field Type="BOOL"                  Name="fBundled" />
+            <Field Type="BOOL"                  Name="fMultilink" />
+            <Field Type="[RASLCPAP]"            Name="dwAuthenticationProtocol" />
+            <Field Type="[RASLCPAD]"            Name="dwAuthenticationData" />
+            <Field Type="[RASLCPAP]"            Name="dwServerAuthenticationProtocol" />
+            <Field Type="[RASLCPAD]"            Name="dwServerAuthenticationData" />
+            <Field Type="DWORD"                 Name="dwEapTypeId" />
+            <Field Type="DWORD"                 Name="dwServerEapTypeId" />
+            <Field Type="[RASLCPO]"             Name="dwLcpOptions" />
+            <Field Type="[RASLCPO]"             Name="dwLcpServerOptions" />
+            <Field Type="DWORD"                 Name="dwCcpError" />
+            <Field Type="[RASCCPCA]"            Name="dwCcpCompressionAlgorithm" />
+            <Field Type="[RASCCPCA]"            Name="dwCcpServerCompressionAlgorithm" />
+            <Field Type="[RASCCPO]"             Name="dwCcpOptions" />
+            <Field Type="[RASCCPO]"             Name="dwCcpServerOptions" />
+        </Variable>
+
+        <!-- IPSEC_CIPHER_TYPE -->
+        <Variable Name="IPSEC_CIPHER_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="IPSEC_CIPHER_TYPE_DES"       Value="1" />
+                <Set Name="IPSEC_CIPHER_TYPE_3DES"      Value="2" />
+                <Set Name="IPSEC_CIPHER_TYPE_AES_128"   Value="3" />
+                <Set Name="IPSEC_CIPHER_TYPE_AES_192"   Value="4" />
+                <Set Name="IPSEC_CIPHER_TYPE_AES_256"   Value="5" />
+            </Enum>
+        </Variable>
+
+        <!-- [RASIKEv2_FLAGS] -->
+        <Variable Name="[RASIKEv2_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="RASIKEv2_FLAGS_MOBIKESUPPORTED"      Value="0x00000001" />
+                <Set Name="RASIKEv2_FLAGS_BEHIND_NAT"           Value="0x00000002" />
+                <Set Name="RASIKEv2_FLAGS_SERVERBEHIND_NAT"     Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <!-- [RASIKEv2_AUTH] -->
+        <Variable Name="[RASIKEv2_AUTH]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="RASIKEv2_AUTH_MACHINECERTIFICATES"   Value="1" />
+                <Set Name="RASIKEv2_AUTH_EAP"                   Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- RASIKEV2_PROJECTION_INFO -->
+        <Variable Name="RASIKEV2_PROJECTION_INFO" Type="Struct" Pack="4">
+            <Field Type="DWORD"             Name="dwIPv4NegotiationError" />
+            <Field Type="RASIPV4ADDR"       Name="ipv4Address" />
+            <Field Type="RASIPV4ADDR"       Name="ipv4ServerAddress" />
+            <Field Type="DWORD"             Name="dwIPv6NegotiationError" />
+            <Field Type="RASIPV6ADDR"       Name="ipv6Address" />
+            <Field Type="RASIPV6ADDR"       Name="ipv6ServerAddress" />
+            <Field Type="DWORD"             Name="dwPrefixLength" />
+            <Field Type="[RASIKEv2_AUTH]"   Name="dwAuthenticationProtocol" />
+            <Field Type="DWORD"             Name="dwEapTypeId" />
+            <Field Type="[RASIKEv2_FLAGS]"  Name="dwFlags" />
+            <Field Type="IPSEC_CIPHER_TYPE" Name="dwEncryptionMethod" Display="DWORD" />
+            <Field Type="DWORD"             Name="numIPv4ServerAddresses" />
+            <Field Type="RASIPV4ADDR*"      Name="ipv4ServerAddresses" Count="numIPv4ServerAddresses" />
+            <Field Type="DWORD"             Name="numIPv6ServerAddresses" />
+            <Field Type="RASIPV6ADDR*"      Name="ipv6ServerAddresses" Count="numIPv6ServerAddresses" />
+        </Variable>
+
+        <!-- [RAS_PROJECTION_INFO_u] -->
+        <Variable Name="[RAS_PROJECTION_INFO_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="RASPPP_PROJECTION_INFO"    Name="ppp" />
+            <Field Type="RASIKEV2_PROJECTION_INFO"  Name="ikev2" />
+        </Variable>
+
+        <!-- RASPROJECTION_INFO_TYPE -->
+        <Variable Name="RASPROJECTION_INFO_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="PROJECTION_INFO_TYPE_PPP"    Value="1" />
+                <Set Name="PROJECTION_INFO_TYPE_IKEv2"  Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- RAS_PROJECTION_INFO -->
+        <Variable Name="RAS_PROJECTION_INFO" Type="Struct" Pack="4">
+            <Field Type="RASAPIVERSION"                 Name="version" />
+            <Field Type="RASPROJECTION_INFO_TYPE"       Name="type" />
+            <Field Type="[RAS_PROJECTION_INFO_u]"       Name="" />
+        </Variable>
+        <Variable Name="PRAS_PROJECTION_INFO" Type="Pointer" Base="RAS_PROJECTION_INFO" />
+
+        <!-- RASSUBENTRY -->
+        <Variable Name="RASSUBENTRY" Type="Struct" Pack="4">
+            <Field Type="DWORD"                             Name="dwSize" />
+            <Field Type="DWORD"                             Name="dwfFlags" />
+            <Field Type="TCHAR [RAS_MaxDeviceType + 1]"     Name="szDeviceType" />
+            <Field Type="TCHAR [RAS_MaxDeviceName + 1]"     Name="szDeviceName" />
+            <Field Type="TCHAR [RAS_MaxPhoneNumber + 1]"    Name="szLocalPhoneNumber"  />
+            <Field Type="DWORD"                             Name="dwAlternateOffset" />
+        </Variable>
+        <Variable Name="LPRASSUBENTRY" Type="Pointer" Base="RASSUBENTRY" />
+
+        <!-- RASUPDATECONN -->
+        <Variable Name="RASUPDATECONN" Type="Struct" Pack="4">
+            <Field Type="RASAPIVERSION"         Name="version" />
+            <Field Type="DWORD"                 Name="dwSize" />
+            <Field Type="DWORD"                 Name="dwFlags" />
+            <Field Type="DWORD"                 Name="dwIfIndex" />
+            <Field Type="RASTUNNELENDPOINT"     Name="localEndPoint" />
+            <Field Type="RASTUNNELENDPOINT"     Name="remoteEndPoint" />
+        </Variable>
+        <Variable Name="LPRASUPDATECONN" Type="Pointer" Base="RASUPDATECONN" />
 
         <!-- RASEAPINFO -->
         <Variable Name="RASEAPINFO" Type="Struct" Pack="4">
@@ -93,7 +699,7 @@
         </Variable>
 
         <!-- RASNAPSTATE -->
-        <Variable Name="RASNAPSTATE" Type="Struct">
+        <Variable Name="RASNAPSTATE" Type="Struct" Pack="4">
             <Field Type="DWORD"          	Name="dwSize" />
             <Field Type="DWORD"          	Name="dwFlags" />
             <Field Type="IsolationState" 	Name="isolationState" />

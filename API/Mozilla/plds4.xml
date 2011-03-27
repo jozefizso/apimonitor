@@ -6,6 +6,7 @@
 <ApiMonitor>
     <Include Filename="Mozilla\nspr.h.xml" />
     <Module Name="plds4.dll" CallingConvention="CDECL" OnlineHelp="Mozilla">
+        
         <!-- Variables -->
         <Variable Name="PLHashFunction"             Type="Alias"        Base="LPVOID" />
         <Variable Name="PLHashComparator"           Type="Alias"        Base="LPVOID" />
@@ -13,9 +14,16 @@
         <Variable Name="PLHashNumber"               Type="Alias"        Base="PRUint32" />
         <Variable Name="const PLHashAllocOps*"      Type="Alias"        Base="LPVOID" />
 
-        <!-- TODO: Structures -->
-        <Variable Name="PLHashEntry*"               Type="Alias"        Base="LPVOID" />
-        <Variable Name="PLHashEntry**"              Type="Pointer"      Base="PLHashEntry*" />
+        <!-- PLHashEntry -->
+        <Variable Name="PLHashEntry" Type="Struct">
+            <!-- TODO: Self-Referencing - next is PLHashEntry* -->
+            <Field Type="LPVOID"            Name="next" Display="PLHashEntry*" />
+            <Field Type="PLHashNumber"      Name="keyHash" />
+            <Field Type="const void*"       Name="key" />
+            <Field Type="void*"             Name="value" />
+        </Variable>
+        <Variable Name="PLHashEntry*"   Type="Pointer" Base="PLHashEntry" />
+        <Variable Name="PLHashEntry**"  Type="Pointer" Base="PLHashEntry*" />
 
         <!-- PLHashTable -->
         <Variable Name="PLHashTable" Type="Struct">

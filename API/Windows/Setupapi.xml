@@ -8,7 +8,7 @@
     <Include Filename="Headers\setup.h.xml" />
     <Include Filename="Headers\gdi.h.xml" />
     <Include Filename="Headers\registry.h.xml" />
-    
+
     <Module Name="Setupapi.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         <!-- Variables -->
         <Variable Name="DEVINSTID"                          Type="Alias"    Base="TCHAR*" />
@@ -36,17 +36,211 @@
         <Variable Name="PHMACHINE"                          Type="Pointer"  Base="HMACHINE" />
         <Variable Name="CONFLICT_LIST"                      Type="Alias"    Base="ULONG_PTR" />
         <Variable Name="PCONFLICT_LIST"                     Type="Pointer"  Base="CONFLICT_LIST" />
+        <Variable Name="TCHAR [SP_MAX_MACHINENAME_LENGTH]"  Type="Array"    Base="TCHAR" Count="263" />
+        
+        <!-- [InfStyle] -->
+        <Variable Name="[InfStyle]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="INF_STYLE_NONE"      Value="0x00000000" />
+                <Set Name="INF_STYLE_OLDNT"     Value="0x00000001" />
+                <Set Name="INF_STYLE_WIN4"      Value="0x00000002" />
+            </Flag>
+        </Variable>
 
-        <!-- TODO: Structures -->
-        <Variable Name="PSP_INF_INFORMATION"                Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSP_ALTPLATFORM_INFO"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSP_ORIGINAL_FILE_INFO"             Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSP_INF_SIGNER_INFO_W"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSP_DEVINFO_LIST_DETAIL_DATA"       Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSP_DEVINSTALL_PARAMS"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSP_DEVICE_INTERFACE_DETAIL_DATA"   Type="Alias"    Base="LPVOID" />
-        <Variable Name="PSP_DRVINFO_DETAIL_DATA"            Type="Alias"    Base="LPVOID" />
-        <Variable Name="PCONFLICT_DETAILS"                  Type="Alias"    Base="LPVOID" />
+        <!-- SP_INF_INFORMATION -->
+        <Variable Name="SP_INF_INFORMATION" Type="Struct" Pack32="1" Pack64="8">
+            <Field Type="[InfStyle]"            Name="InfStyle" />
+            <Field Type="DWORD"                 Name="InfCount" />
+            <Field Type="BYTE [ANYSIZE_ARRAY]"  Name="VersionData" Count="InfCount" />
+        </Variable>
+        <Variable Name="PSP_INF_INFORMATION" Type="Pointer" Base="SP_INF_INFORMATION" />
+
+        <!-- SP_ALTPLATFORM_INFO -->
+        <Variable Name="SP_ALTPLATFORM_INFO" Type="Struct" Pack32="1" Pack64="8">
+            <Field Type="DWORD"                         Name="cbSize" />
+            <Field Type="[VER_PLATFORM]"                Name="Platform" />
+            <Field Type="DWORD"                         Name="MajorVersion" />
+            <Field Type="DWORD"                         Name="MinorVersion" />
+            <Field Type="[PROCESSOR_ARCHITECTURE]"      Name="ProcessorArchitecture" />
+            <Field Type="WORD"                          Name="Flags" />
+            <Field Type="DWORD"                         Name="FirstValidatedMajorVersion" />
+            <Field Type="DWORD"                         Name="FirstValidatedMinorVersion" />
+        </Variable>
+        <Variable Name="PSP_ALTPLATFORM_INFO" Type="Pointer" Base="SP_ALTPLATFORM_INFO" />
+
+        <!-- SP_ORIGINAL_FILE_INFO -->
+        <Variable Name="SP_ORIGINAL_FILE_INFO" Type="Struct" Pack32="1" Pack64="8">
+            <Field Type="DWORD"                 Name="cbSize" />
+            <Field Type="TCHAR [MAX_PATH]"      Name="OriginalInfName" />
+            <Field Type="TCHAR [MAX_PATH]"      Name="OriginalCatalogName" />
+        </Variable>
+        <Variable Name="PSP_ORIGINAL_FILE_INFO" Type="Pointer" Base="SP_ORIGINAL_FILE_INFO" />
+
+        <!-- SP_INF_SIGNER_INFO -->
+        <Variable Name="SP_INF_SIGNER_INFO" Type="Struct" Pack32="1" Pack64="8">
+            <Field Type="DWORD"             Name="cbSize" />
+            <Field Type="TCHAR [MAX_PATH]"  Name="CatalogFile" />
+            <Field Type="TCHAR [MAX_PATH]"  Name="DigitalSigner" />
+            <Field Type="TCHAR [MAX_PATH]"  Name="DigitalSignerVersion" />
+            <Field Type="DWORD"             Name="SignerScore" />
+        </Variable>
+        <Variable Name="PSP_INF_SIGNER_INFO" Type="Pointer" Base="SP_INF_SIGNER_INFO" />
+
+        <!-- SP_DEVINFO_LIST_DETAIL_DATA -->
+        <Variable Name="SP_DEVINFO_LIST_DETAIL_DATA" Type="Struct" Pack32="1" Pack64="8">
+            <Field Type="DWORD"                                 Name="cbSize" />
+            <Field Type="GUID"                                  Name="ClassGuid" />
+            <Field Type="HANDLE"                                Name="RemoteMachineHandle" />
+            <Field Type="TCHAR [SP_MAX_MACHINENAME_LENGTH]"     Name="RemoteMachineName" />
+        </Variable>
+        <Variable Name="PSP_DEVINFO_LIST_DETAIL_DATA" Type="Pointer" Base="SP_DEVINFO_LIST_DETAIL_DATA" />
+
+        <!-- [DI_FLAGS] -->
+        <Variable Name="[DI_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="DI_SHOWOEM"                              Value="0x00000001" />
+                <Set Name="DI_SHOWCOMPAT"                           Value="0x00000002" />
+                <Set Name="DI_SHOWCLASS"                            Value="0x00000004" />
+                <Set Name="DI_SHOWALL"                              Value="0x00000007" />
+                <Set Name="DI_NOVCP"                                Value="0x00000008" />
+                <Set Name="DI_DIDCOMPAT"                            Value="0x00000010" />
+                <Set Name="DI_DIDCLASS"                             Value="0x00000020" />
+                <Set Name="DI_AUTOASSIGNRES"                        Value="0x00000040" />
+                <Set Name="DI_NEEDRESTART"                          Value="0x00000080" />
+                <Set Name="DI_NEEDREBOOT"                           Value="0x00000100" />
+                <Set Name="DI_NOBROWSE"                             Value="0x00000200" />
+                <Set Name="DI_MULTMFGS"                             Value="0x00000400" />
+                <Set Name="DI_DISABLED"                             Value="0x00000800" />
+                <Set Name="DI_GENERALPAGE_ADDED"                    Value="0x00001000" />
+                <Set Name="DI_RESOURCEPAGE_ADDED"                   Value="0x00002000" />
+                <Set Name="DI_PROPERTIES_CHANGE"                    Value="0x00004000" />
+                <Set Name="DI_INF_IS_SORTED"                        Value="0x00008000" />
+                <Set Name="DI_ENUMSINGLEINF"                        Value="0x00010000" />
+                <Set Name="DI_DONOTCALLCONFIGMG"                    Value="0x00020000" />
+                <Set Name="DI_INSTALLDISABLED"                      Value="0x00040000" />
+                <Set Name="DI_COMPAT_FROM_CLASS"                    Value="0x00080000" />
+                <Set Name="DI_CLASSINSTALLPARAMS"                   Value="0x00100000" />
+                <Set Name="DI_NODI_DEFAULTACTION"                   Value="0x00200000" />
+                <Set Name="DI_QUIETINSTALL"                         Value="0x00800000" />
+                <Set Name="DI_NOFILECOPY"                           Value="0x01000000" />
+                <Set Name="DI_FORCECOPY"                            Value="0x02000000" />
+                <Set Name="DI_DRIVERPAGE_ADDED"                     Value="0x04000000" />
+                <Set Name="DI_USECI_SELECTSTRINGS"                  Value="0x08000000" />
+                <Set Name="DI_OVERRIDE_INFFLAGS"                    Value="0x10000000" />
+                <Set Name="DI_PROPS_NOCHANGEUSAGE"                  Value="0x20000000" />
+                <Set Name="DI_NOSELECTICONS"                        Value="0x40000000" />
+                <Set Name="DI_NOWRITE_IDS"                          Value="0x80000000" />
+            </Flag>
+        </Variable>
+
+        <!-- [DI_FLAGSEX] -->
+        <Variable Name="[DI_FLAGSEX]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="DI_FLAGSEX_RESERVED2"                    Value="0x00000001" />
+                <Set Name="DI_FLAGSEX_RESERVED3"                    Value="0x00000002" />
+                <Set Name="DI_FLAGSEX_CI_FAILED"                    Value="0x00000004" />
+                <Set Name="DI_FLAGSEX_FINISHINSTALL_ACTION"         Value="0x00000008" />
+                <Set Name="DI_FLAGSEX_DIDINFOLIST"                  Value="0x00000010" />
+                <Set Name="DI_FLAGSEX_DIDCOMPATINFO"                Value="0x00000020" />
+                <Set Name="DI_FLAGSEX_FILTERCLASSES"                Value="0x00000040" />
+                <Set Name="DI_FLAGSEX_SETFAILEDINSTALL"             Value="0x00000080" />
+                <Set Name="DI_FLAGSEX_DEVICECHANGE"                 Value="0x00000100" />
+                <Set Name="DI_FLAGSEX_ALWAYSWRITEIDS"               Value="0x00000200" />
+                <Set Name="DI_FLAGSEX_PROPCHANGE_PENDING"           Value="0x00000400" />
+                <Set Name="DI_FLAGSEX_ALLOWEXCLUDEDDRVS"            Value="0x00000800" />
+                <Set Name="DI_FLAGSEX_NOUIONQUERYREMOVE"            Value="0x00001000" />
+                <Set Name="DI_FLAGSEX_USECLASSFORCOMPAT"            Value="0x00002000" />
+                <Set Name="DI_FLAGSEX_RESERVED4"                    Value="0x00004000" />
+                <Set Name="DI_FLAGSEX_NO_DRVREG_MODIFY"             Value="0x00008000" />
+                <Set Name="DI_FLAGSEX_IN_SYSTEM_SETUP"              Value="0x00010000" />
+                <Set Name="DI_FLAGSEX_INET_DRIVER"                  Value="0x00020000" />
+                <Set Name="DI_FLAGSEX_APPENDDRIVERLIST"             Value="0x00040000" />
+                <Set Name="DI_FLAGSEX_PREINSTALLBACKUP"             Value="0x00080000" />
+                <Set Name="DI_FLAGSEX_BACKUPONREPLACE"              Value="0x00100000" />
+                <Set Name="DI_FLAGSEX_DRIVERLIST_FROM_URL"          Value="0x00200000" />
+                <Set Name="DI_FLAGSEX_RESERVED1"                    Value="0x00400000" />
+                <Set Name="DI_FLAGSEX_EXCLUDE_OLD_INET_DRIVERS"     Value="0x00800000" />
+                <Set Name="DI_FLAGSEX_POWERPAGE_ADDED"              Value="0x01000000" />
+                <Set Name="DI_FLAGSEX_FILTERSIMILARDRIVERS"         Value="0x02000000" />
+                <Set Name="DI_FLAGSEX_INSTALLEDDRIVER"              Value="0x04000000" />
+                <Set Name="DI_FLAGSEX_NO_CLASSLIST_NODE_MERGE"      Value="0x08000000" />
+                <Set Name="DI_FLAGSEX_ALTPLATFORM_DRVSEARCH"        Value="0x10000000" />
+                <Set Name="DI_FLAGSEX_RESTART_DEVICE_ONLY"          Value="0x20000000" />
+                <Set Name="DI_FLAGSEX_RECURSIVESEARCH"              Value="0x40000000" />
+                <Set Name="DI_FLAGSEX_SEARCH_PUBLISHED_INFS"        Value="0x80000000" />
+            </Flag>
+        </Variable>
+
+        <!-- SP_DEVINSTALL_PARAMS -->
+        <Variable Name="SP_DEVINSTALL_PARAMS" Type="Struct" Pack32="1" Pack64="8">
+            <Field Type="DWORD"                 Name="cbSize" />
+            <Field Type="[DI_FLAGS]"            Name="Flags" />
+            <Field Type="[DI_FLAGSEX]"          Name="FlagsEx" />
+            <Field Type="HWND"                  Name="hwndParent" />
+            <Field Type="PSP_FILE_CALLBACK"     Name="InstallMsgHandler" />
+            <Field Type="PVOID"                 Name="InstallMsgHandlerContext" />
+            <Field Type="HSPFILEQ"              Name="FileQueue" />
+            <Field Type="ULONG_PTR"             Name="ClassInstallReserved" />
+            <Field Type="DWORD"                 Name="Reserved" />
+            <Field Type="TCHAR [MAX_PATH]"      Name="DriverPath" />
+        </Variable>
+        <Variable Name="PSP_DEVINSTALL_PARAMS" Type="Pointer" Base="SP_DEVINSTALL_PARAMS" />
+
+        <!-- SP_DEVICE_INTERFACE_DETAIL_DATA -->
+        <Variable Name="SP_DEVICE_INTERFACE_DETAIL_DATA" Type="Struct" Pack32="1" Pack64="8">
+            <Field Type="DWORD"                     Name="cbSize" />
+            <Field Type="TCHAR [ANYSIZE_ARRAY]"     Name="DevicePath" />
+        </Variable>
+        <Variable Name="PSP_DEVICE_INTERFACE_DETAIL_DATA" Type="Pointer" Base="SP_DEVICE_INTERFACE_DETAIL_DATA" />
+
+        <!-- SP_DRVINFO_DETAIL_DATA -->
+        <Variable Name="SP_DRVINFO_DETAIL_DATA" Type="Struct" Pack32="1" Pack64="8">
+            <Field Type="DWORD"                 Name="cbSize" />
+            <Field Type="FILETIME"              Name="InfDate" />
+            <Field Type="DWORD"                 Name="CompatIDsOffset" />
+            <Field Type="DWORD"                 Name="CompatIDsLength" />
+            <Field Type="ULONG_PTR"             Name="Reserved" />
+            <Field Type="TCHAR [LINE_LEN]"      Name="SectionName" />
+            <Field Type="TCHAR [MAX_PATH]"      Name="InfFileName" />
+            <Field Type="TCHAR [LINE_LEN]"      Name="DrvDescription" />
+            <Field Type="TCHAR [ANYSIZE_ARRAY]" Name="HardwareID" />
+        </Variable>
+        <Variable Name="PSP_DRVINFO_DETAIL_DATA" Type="Pointer" Base="SP_DRVINFO_DETAIL_DATA" />
+
+        <!-- [CM_CDMASK] -->
+        <Variable Name="[CM_CDMASK]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CM_CDMASK_DEVINST"       Value="0x00000001" />
+                <Set Name="CM_CDMASK_RESDES"        Value="0x00000002" />
+                <Set Name="CM_CDMASK_FLAGS"         Value="0x00000004" />
+                <Set Name="CM_CDMASK_DESCRIPTION"   Value="0x00000008" />
+            </Flag>
+        </Variable>
+
+        <!-- [CM_CDFLAGS] -->
+        <Variable Name="[CM_CDFLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CM_CDFLAGS_DRIVER"       Value="0x00000001" />
+                <Set Name="CM_CDFLAGS_ROOT_OWNED"   Value="0x00000002" />
+                <Set Name="CM_CDFLAGS_RESERVED"     Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <!-- CONFLICT_DETAILS -->
+        <Variable Name="CONFLICT_DETAILS" Type="Struct">
+            <Field Type="ULONG"             Name="CD_ulSize" />
+            <Field Type="[CM_CDMASK]"       Name="CD_ulMask" />
+            <Field Type="DEVINST"           Name="CD_dnDevInst" />
+            <Field Type="RES_DES"           Name="CD_rdResDes" />
+            <Field Type="[CM_CDFLAGS]"      Name="CD_ulFlags" />
+            <Field Type="TCHAR [MAX_PATH]"  Name="CD_szDescription" />
+        </Variable>
+        <Variable Name="PCONFLICT_DETAILS" Type="Pointer" Base="CONFLICT_DETAILS" />
 
         <!-- INFCONTEXT -->
         <Variable Name="INFCONTEXT" Type="Struct">
@@ -58,7 +252,7 @@
         <Variable Name="PINFCONTEXT" Type="Pointer" Base="INFCONTEXT" />
 
         <!-- SP_FILE_COPY_PARAMS -->
-        <Variable Name="SP_FILE_COPY_PARAMS" Type="Struct">
+        <Variable Name="SP_FILE_COPY_PARAMS" Type="Struct" Pack32="1" Pack64="8">
             <Field Type="DWORD"    	Name="cbSize" />
             <Field Type="HSPFILEQ" 	Name="QueueHandle" />
             <Field Type="PCTSTR"    Name="SourceRootPath" />
@@ -75,7 +269,7 @@
         <Variable Name="PSP_FILE_COPY_PARAMS" Type="Pointer" Base="SP_FILE_COPY_PARAMS" />
 
         <!-- SP_DEVICE_INTERFACE_DATA -->
-        <Variable Name="SP_DEVICE_INTERFACE_DATA" Type="Struct">
+        <Variable Name="SP_DEVICE_INTERFACE_DATA" Type="Struct" Pack32="1" Pack64="8">
             <Field Type="DWORD" 	Name="cbSize" />
             <Field Type="GUID"  	Name="InterfaceClassGuid" />
             <Field Type="DWORD" 	Name="Flags" />
@@ -84,13 +278,14 @@
         <Variable Name="PSP_DEVICE_INTERFACE_DATA" Type="Pointer" Base="SP_DEVICE_INTERFACE_DATA" />
 
         <!-- SP_CLASSIMAGELIST_DATA -->
-        <Variable Name="SP_CLASSIMAGELIST_DATA" Type="Struct">
+        <Variable Name="SP_CLASSIMAGELIST_DATA" Type="Struct" Pack32="1" Pack64="8">
             <Field Type="DWORD"      	Name="cbSize" />
             <Field Type="HIMAGELIST" 	Name="ImageList" />
             <Field Type="ULONG_PTR"  	Name="Reserved" />
         </Variable>
         <Variable Name="PSP_CLASSIMAGELIST_DATA" Type="Pointer" Base="SP_CLASSIMAGELIST_DATA" />
 
+        <!-- DI_FUNCTION -->
         <Variable Name="DI_FUNCTION" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="DIF_SELECTDEVICE"                    Value="0x00000001" />
@@ -140,7 +335,7 @@
         </Variable>
 
         <!-- SP_CLASSINSTALL_HEADER -->
-        <Variable Name="SP_CLASSINSTALL_HEADER" Type="Struct">
+        <Variable Name="SP_CLASSINSTALL_HEADER" Type="Struct" Pack32="1" Pack64="8">
             <Field Type="DWORD"       	Name="cbSize" />
             <Field Type="DI_FUNCTION" 	Name="InstallFunction" />
         </Variable>
@@ -155,7 +350,7 @@
         <Variable Name="CONST DEVPROPKEY*"  Type="Pointer" Base="DEVPROPKEY" />
 
         <!-- SP_DRVINSTALL_PARAMS -->
-        <Variable Name="SP_DRVINSTALL_PARAMS" Type="Struct">
+        <Variable Name="SP_DRVINSTALL_PARAMS" Type="Struct" Pack32="1" Pack64="8">
             <Field Type="DWORD" 	Name="cbSize" />
             <Field Type="DWORD" 	Name="Rank" />
             <Field Type="DWORD" 	Name="Flags" />
@@ -164,8 +359,9 @@
         </Variable>
         <Variable Name="PSP_DRVINSTALL_PARAMS" Type="Pointer" Base="SP_DRVINSTALL_PARAMS" />
 
+        <!-- [DeviceInfoGetFlags] -->
         <Variable Name="[DeviceInfoGetFlags]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="DIGCF_DEFAULT"           Value="0x00000001" />
                 <Set Name="DIGCF_PRESENT"           Value="0x00000002" />
@@ -175,6 +371,7 @@
             </Flag>
         </Variable>
 
+        <!-- [OpenDeviceInterfaceFlags] -->
         <Variable Name="[OpenDeviceInterfaceFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -182,6 +379,7 @@
             </Flag>
         </Variable>
 
+        <!-- [OpenDeviceInfoFlags] -->
         <Variable Name="[OpenDeviceInfoFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -190,6 +388,7 @@
             </Flag>
         </Variable>
 
+        <!-- [GetCustomDevicePropertyFlags] -->
         <Variable Name="[GetCustomDevicePropertyFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -197,8 +396,9 @@
             </Flag>
         </Variable>
 
+        <!-- [DeviceInfoScope] -->
         <Variable Name="[DeviceInfoScope]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="DICS_FLAG_GLOBAL"            Value="0x00000001" />
                 <Set Name="DICS_FLAG_CONFIGSPECIFIC"    Value="0x00000002" />
@@ -206,6 +406,7 @@
             </Flag>
         </Variable>
 
+        <!-- [DeviceInfoKeyType] -->
         <Variable Name="[DeviceInfoKeyType]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -215,22 +416,25 @@
             </Flag>
         </Variable>
 
+        <!-- [SetupDiBuildClassInfoListFlags] -->
         <Variable Name="[SetupDiBuildClassInfoListFlags]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="DIBCI_NOINSTALLCLASS"    Value="0x00000001" />
                 <Set Name="DIBCI_NODISPLAYCLASS"    Value="0x00000002" />
             </Flag>
         </Variable>
 
+        <!-- [DiClassPropertyFlags] -->
         <Variable Name="[DiClassPropertyFlags]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="DICLASSPROP_INSTALLER"   Value="0x00000001" />
                 <Set Name="DICLASSPROP_INTERFACE"   Value="0x00000002" />
             </Flag>
         </Variable>
 
+        <!-- [CM_Locate_DevNode_Flags] -->
         <Variable Name="[CM_Locate_DevNode_Flags]" Type="Alias" Base="ULONG">
             <Display Name="ULONG" />
             <Flag>
@@ -242,6 +446,7 @@
             </Flag>
         </Variable>
 
+        <!-- [CsConfigFlags] -->
         <Variable Name="[CsConfigFlags]" Type="Alias" Base="ULONG">
             <Display Name="ULONG" />
             <Flag>
@@ -251,10 +456,11 @@
                 <Set Name="CSCONFIGFLAG_DO_NOT_START"       Value="0x00000004" />
             </Flag>
         </Variable>
-
         <Variable Name="[CsConfigFlags*]" Type="Pointer" Base="[CsConfigFlags]">
             <Display Name="PULONG" />
         </Variable>
+
+        <!-- [DiGetClassDevPropertySheetsType] -->
         <Variable Name="[DiGetClassDevPropertySheetsType]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>
@@ -265,6 +471,7 @@
             </Enum>
         </Variable>
 
+        <!-- [LogicalConfigFlags] -->
         <Variable Name="[LogicalConfigFlags]" Type="Alias" Base="ULONG">
             <Display Name="ULONG" />
             <Enum>
@@ -277,15 +484,7 @@
             </Enum>
         </Variable>
 
-        <Variable Name="[DiDriverType]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
-            <Flag>
-                <Set Name="SPDIT_NODRIVER"      Value="0x00000000" />
-                <Set Name="SPDIT_CLASSDRIVER"   Value="0x00000001" />
-                <Set Name="SPDIT_COMPATDRIVER"  Value="0x00000002" />
-            </Flag>
-        </Variable>
-
+        <!-- [CmProblemNumber] -->
         <Variable Name="[CmProblemNumber]" Type="Alias" Base="ULONG">
             <Display Name="ULONG" />
             <Enum>
@@ -341,19 +540,11 @@
                 <Set Name="CM_PROB_SETPROPERTIES_FAILED"            Value="0x00000032" />
             </Enum>
         </Variable>
-
         <Variable Name="[CmProblemNumber*]" Type="Pointer" Base="[CmProblemNumber]">
             <Display Name="PULONG" />
         </Variable>
-        <Variable Name="[InfStyle]" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
-            <Flag>
-                <Set Name="INF_STYLE_NONE"      Value="0x00000000" />
-                <Set Name="INF_STYLE_OLDNT"     Value="0x00000001" />
-                <Set Name="INF_STYLE_WIN4"      Value="0x00000002" />
-            </Flag>
-        </Variable>
 
+        <!-- [SetupDiCreateDeviceInfoFlags -->
         <Variable Name="[SetupDiCreateDeviceInfoFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -362,8 +553,9 @@
             </Flag>
         </Variable>
 
+        <!-- [SetupDeviceRegistryProperty] -->
         <Variable Name="[SetupDeviceRegistryProperty]" Type="Alias" Base="DWORD">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Enum>
                 <Set Name="SPDRP_DEVICEDESC"                    Value="0x00000000" />
                 <Set Name="SPDRP_HARDWAREID"                    Value="0x00000001" />
@@ -404,6 +596,7 @@
             </Enum>
         </Variable>
 
+        <!-- LogSeverity -->
         <Variable Name="LogSeverity" Type="Alias" Base="DWORD">
             <Enum>
                 <Set Name="LogSevInformation"   Value="0x00000000" />
@@ -414,6 +607,7 @@
             </Enum>
         </Variable>
 
+        <!-- SetupFileLogInfo -->
         <Variable Name="SetupFileLogInfo" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="SetupFileLogSourceFilename"      Value="0" />
@@ -424,6 +618,7 @@
             </Enum>
         </Variable>
 
+        <!-- DEVPROPTYPE -->
         <Variable Name="DEVPROPTYPE" Type="Alias" Base="ULONG">
             <Enum>
                 <Set Name="DEVPROP_TYPE_EMPTY"                          Value="0x00000000" />
@@ -458,6 +653,7 @@
         </Variable>
         <Variable Name="DEVPROPTYPE*" Type="Pointer" Base="DEVPROPTYPE" />
 
+        <!-- PPNP_VETO_TYPE -->
         <Variable Name="PPNP_VETO_TYPE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="PNP_VetoTypeUnknown"             Value="0" />
@@ -474,6 +670,35 @@
                 <Set Name="PNP_VetoLegacyDriver"            Value="11" />
                 <Set Name="PNP_VetoInsufficientRights"      Value="12" />
             </Enum>
+        </Variable>
+
+        <!-- [SPDSL_FLAGS] -->
+        <Variable Name="[SPDSL_FLAGS]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Flag>
+                <Set Name="SPDSL_IGNORE_DISK"                   Value="0x00000001" />
+                <Set Name="SPDSL_DISALLOW_NEGATIVE_ADJUST"      Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <!-- [SPINST_FLAGS] -->
+        <Variable Name="[SPINST_FLAGS]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Flag>
+                <Set Name="SPINST_LOGCONFIG"        Value="0x00000001" />
+                <Set Name="SPINST_INIFILES"         Value="0x00000002" />
+                <Set Name="SPINST_REGISTRY"         Value="0x00000004" />
+                <Set Name="SPINST_INI2REG"          Value="0x00000008" />
+                <Set Name="SPINST_FILES"            Value="0x00000010" />
+                <Set Name="SPINST_BITREG"           Value="0x00000020" />
+                <Set Name="SPINST_REGSVR"           Value="0x00000040" />
+                <Set Name="SPINST_UNREGSVR"         Value="0x00000080" />
+                <Set Name="SPINST_PROFILEITEMS"     Value="0x00000100" />
+                <Set Name="SPINST_COPYINF"          Value="0x00000200" />
+                <Set Name="SPINST_PROPERTIES"       Value="0x00000400" />
+                <Set Name="SPINST_ALL"              Value="0x000007ff" />
+                <Set Name="SPINST_ALL"              Value="0x000003ff" />
+            </Flag>
         </Variable>
 
         <!-- Setup API -->
@@ -598,7 +823,7 @@
         <Api Name="SetupCreateDiskSpaceList" BothCharset="True">
             <Param Type="PVOID" Name="Reserved1" />
             <Param Type="DWORD" Name="Reserved2" />
-            <Param Type="UINT" Name="Flags" />
+            <Param Type="[SPDSL_FLAGS]" Name="Flags" />
             <Return Type="HDSKSPC" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -890,7 +1115,7 @@
             <Param Type="HWND" Name="Owner" />
             <Param Type="HINF" Name="InfHandle" />
             <Param Type="PCTSTR" Name="SectionName" />
-            <Param Type="UINT" Name="Flags" />
+            <Param Type="[SPINST_FLAGS]" Name="Flags" />
             <Param Type="HKEY" Name="RelativeKeyRoot" />
             <Param Type="PCTSTR" Name="SourceRootPath" />
             <Param Type="UINT" Name="CopyFlags" />
@@ -1254,7 +1479,7 @@
         <Api Name="SetupVerifyInfFile" BothCharset="True">
             <Param Type="PCWSTR" Name="InfName" />
             <Param Type="PSP_ALTPLATFORM_INFO" Name="AltPlatformInfo" />
-            <Param Type="PSP_INF_SIGNER_INFO_W" Name="InfFileName" />
+            <Param Type="PSP_INF_SIGNER_INFO" Name="InfFileName" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -2144,27 +2369,21 @@
             <Param Type="SP_LOG_TOKEN" Name="LogToken" />
             <Return Type="VOID" />
         </Api>
-        <!-- Variable Arguments NOT supported
-    <Api Name="SetupWriteTextLog">
-        <Param Type="SP_LOG_TOKEN" Name="LogToken" />
-        <Param Type="DWORD" Name="Category" />
-        <Param Type="DWORD" Name="Flags" />
-        <Param Type="PCTSTR" Name="MessageStr" />
-        <Param Type="..." />
-        <Return Type="VOID" />
-    </Api>
-    -->
-        <!-- Variable Arguments NOT supported
-    <Api Name="SetupWriteTextLogError">
-        <Param Type="SP_LOG_TOKEN" Name="LogToken" />
-        <Param Type="DWORD" Name="Category" />
-        <Param Type="DWORD" Name="LogFlags" />
-        <Param Type="DWORD" Name="Error" />
-        <Param Type="PCSTR" Name="MessageStr" />
-        <Param Type="..." />
-        <Return Type="VOID" />
-    </Api>
-    -->
+        <Api Name="SetupWriteTextLog" VarArgs="True">
+            <Param Type="SP_LOG_TOKEN" Name="LogToken" />
+            <Param Type="DWORD" Name="Category" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="PCTSTR" Name="MessageStr" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="SetupWriteTextLogError" VarArgs="True">
+            <Param Type="SP_LOG_TOKEN" Name="LogToken" />
+            <Param Type="DWORD" Name="Category" />
+            <Param Type="DWORD" Name="LogFlags" />
+            <Param Type="DWORD" Name="Error" />
+            <Param Type="PCSTR" Name="MessageStr" />
+            <Return Type="VOID" />
+        </Api>
         <Api Name="SetupWriteTextLogInfLine">
             <Param Type="SP_LOG_TOKEN" Name="LogToken" />
             <Param Type="DWORD" Name="Flags" />

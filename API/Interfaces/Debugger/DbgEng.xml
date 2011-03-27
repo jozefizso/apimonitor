@@ -1,0 +1,1394 @@
+<!--
+    API Monitor Definitions
+    (c) 2011, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\native.h.xml" />
+
+    <Module Name="DbgEng.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
+
+        <!-- Interfaces -->
+        <Variable Name="IDebugAdvanced"                     Type="Interface" />
+        <Variable Name="IDebugAdvanced2"                    Type="Interface" />
+        <Variable Name="IDebugAdvanced3"                    Type="Interface" />
+        <Variable Name="IDebugBreakpoint"                   Type="Interface" />
+        <Variable Name="IDebugBreakpoint2"                  Type="Interface" />
+        <Variable Name="IDebugClient"                       Type="Interface" />
+        <Variable Name="IDebugClient2"                      Type="Interface" />
+        <Variable Name="IDebugClient3"                      Type="Interface" />
+        <Variable Name="IDebugClient4"                      Type="Interface" />
+        <Variable Name="IDebugClient5"                      Type="Interface" />
+        <Variable Name="IDebugControl"                      Type="Interface" />
+        <Variable Name="IDebugControl2"                     Type="Interface" />
+        <Variable Name="IDebugControl3"                     Type="Interface" />
+        <Variable Name="IDebugControl4"                     Type="Interface" />
+        <Variable Name="IDebugDataSpaces"                   Type="Interface" />
+        <Variable Name="IDebugDataSpaces2"                  Type="Interface" />
+        <Variable Name="IDebugDataSpaces3"                  Type="Interface" />
+        <Variable Name="IDebugDataSpaces4"                  Type="Interface" />
+        <Variable Name="IDebugEventCallbacks"               Type="Interface" />
+        <Variable Name="IDebugEventCallbacksWide"           Type="Interface" />
+        <Variable Name="IDebugInputCallbacks"               Type="Interface" />
+        <Variable Name="IDebugOutputCallbacks"              Type="Interface" />
+        <Variable Name="IDebugOutputCallbacks2"             Type="Interface" />
+        <Variable Name="IDebugOutputCallbacksWide"          Type="Interface" />
+        <Variable Name="IDebugRegisters"                    Type="Interface" />
+        <Variable Name="IDebugRegisters2"                   Type="Interface" />
+        <Variable Name="IDebugSymbolGroup"                  Type="Interface" />
+        <Variable Name="IDebugSymbolGroup2"                 Type="Interface" />
+        <Variable Name="IDebugSymbols"                      Type="Interface" />
+        <Variable Name="IDebugSymbols2"                     Type="Interface" />
+        <Variable Name="IDebugSymbols3"                     Type="Interface" />
+        <Variable Name="IDebugSystemObjects"                Type="Interface" />
+        <Variable Name="IDebugSystemObjects2"               Type="Interface" />
+        <Variable Name="IDebugSystemObjects3"               Type="Interface" />
+        <Variable Name="IDebugSystemObjects4"               Type="Interface" />
+
+        <!-- Interface Aliases -->
+        <Variable Name="PDEBUG_CLIENT"                      Type="Alias"        Base="IDebugClient*"/>
+        <Variable Name="PDEBUG_CLIENT*"                     Type="Pointer"      Base="PDEBUG_CLIENT"/>
+        <Variable Name="PDEBUG_INPUT_CALLBACKS"             Type="Alias"        Base="IDebugInputCallbacks*"/>
+        <Variable Name="PDEBUG_INPUT_CALLBACKS*"            Type="Pointer"      Base="PDEBUG_INPUT_CALLBACKS"/>
+        <Variable Name="PDEBUG_EVENT_CALLBACKS"             Type="Alias"        Base="IDebugEventCallbacks*"/>
+        <Variable Name="PDEBUG_EVENT_CALLBACKS*"            Type="Pointer"      Base="PDEBUG_EVENT_CALLBACKS"/>
+        <Variable Name="PDEBUG_EVENT_CALLBACKS_WIDE"        Type="Alias"        Base="IDebugEventCallbacksWide*"/>
+        <Variable Name="PDEBUG_EVENT_CALLBACKS_WIDE*"       Type="Pointer"      Base="PDEBUG_EVENT_CALLBACKS_WIDE"/>
+        <Variable Name="PDEBUG_BREAKPOINT"                  Type="Alias"        Base="IDebugBreakpoint*"/>
+        <Variable Name="PDEBUG_BREAKPOINT*"                 Type="Pointer"      Base="PDEBUG_BREAKPOINT"/>
+        <Variable Name="PDEBUG_BREAKPOINT2"                 Type="Alias"        Base="IDebugBreakpoint2*"/>
+        <Variable Name="PDEBUG_BREAKPOINT2*"                Type="Pointer"      Base="PDEBUG_BREAKPOINT2"/>
+        <Variable Name="PDEBUG_OUTPUT_CALLBACKS"            Type="Alias"        Base="IDebugOutputCallbacks*"/>
+        <Variable Name="PDEBUG_OUTPUT_CALLBACKS*"           Type="Pointer"      Base="PDEBUG_OUTPUT_CALLBACKS"/>
+        <Variable Name="PDEBUG_OUTPUT_CALLBACKS_WIDE"       Type="Alias"        Base="IDebugOutputCallbacksWide*"/>
+        <Variable Name="PDEBUG_OUTPUT_CALLBACKS_WIDE*"      Type="Pointer"      Base="PDEBUG_OUTPUT_CALLBACKS_WIDE"/>
+        <Variable Name="PDEBUG_SYMBOL_GROUP"                Type="Alias"        Base="IDebugSymbolGroup*" />
+        <Variable Name="PDEBUG_SYMBOL_GROUP*"               Type="Pointer"      Base="PDEBUG_SYMBOL_GROUP" />
+        <Variable Name="PDEBUG_SYMBOL_GROUP2"               Type="Alias"        Base="IDebugSymbolGroup2*" />
+        <Variable Name="PDEBUG_SYMBOL_GROUP2*"              Type="Pointer"      Base="PDEBUG_SYMBOL_GROUP2" />
+
+        <!-- Variables -->
+        <Variable Name="FARPROC*"                           Type="Pointer"      Base="FARPROC" />
+        <Variable Name="PWINDBG_EXTENSION_APIS32"           Type="Alias"        Base="LPVOID" />
+        <Variable Name="PWINDBG_EXTENSION_APIS64"           Type="Alias"        Base="LPVOID" />
+        
+        <!-- Arrays -->
+        <Variable Name="double [2]"                                 Type="Array"    Base="double"   Count="2" />
+        <Variable Name="UCHAR [10]"                                 Type="Array"    Base="UCHAR"    Count="10" />
+        <Variable Name="UCHAR [11]"                                 Type="Array"    Base="UCHAR"    Count="11" />
+        <Variable Name="ULONG64 [6]"                                Type="Array"    Base="ULONG64"  Count="6" />
+        <Variable Name="DWORD64 [EXCEPTION_MAXIMUM_PARAMETERS]"     Type="Array"    Base="DWORD64"  Count="15" />
+
+        <!-- [DEBUG_VALUE_TYPE] -->
+        <Variable Name="[DEBUG_VALUE_TYPE]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="DEBUG_VALUE_INVALID"         Value="0" />
+                <Set Name="DEBUG_VALUE_INT8"            Value="1" />
+                <Set Name="DEBUG_VALUE_INT16"           Value="2" />
+                <Set Name="DEBUG_VALUE_INT32"           Value="3" />
+                <Set Name="DEBUG_VALUE_INT64"           Value="4" />
+                <Set Name="DEBUG_VALUE_FLOAT32"         Value="5" />
+                <Set Name="DEBUG_VALUE_FLOAT64"         Value="6" />
+                <Set Name="DEBUG_VALUE_FLOAT80"         Value="7" />
+                <Set Name="DEBUG_VALUE_FLOAT82"         Value="8" />
+                <Set Name="DEBUG_VALUE_FLOAT128"        Value="9" />
+                <Set Name="DEBUG_VALUE_VECTOR64"        Value="10" />
+                <Set Name="DEBUG_VALUE_VECTOR128"       Value="11" />
+            </Enum>
+        </Variable>
+
+        <!-- [DEBUG_VALUE_u_s1] -->
+        <Variable Name="[DEBUG_VALUE_u_s1]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="ULONG64"   Name="I64" />
+            <Field Type="BOOL"      Name="Nat" />
+        </Variable>
+
+        <!-- [DEBUG_VALUE_u_s2] -->
+        <Variable Name="[DEBUG_VALUE_u_s2]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="ULONG"     Name="LowPart" />
+            <Field Type="ULONG"     Name="HighPart" />
+        </Variable>
+
+        <!-- [DEBUG_VALUE_u_s3] -->
+        <Variable Name="[DEBUG_VALUE_u_s3]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="ULONG64"   Name="LowPart" />
+            <Field Type="LONG64"    Name="HighPart" />
+        </Variable>
+
+        <!-- [DEBUG_VALUE_u] -->
+        <Variable Name="[DEBUG_VALUE_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="UCHAR"                 Name="I8" />
+            <Field Type="USHORT"                Name="I16" />
+            <Field Type="ULONG"                 Name="I32" />
+            <Field Type="[DEBUG_VALUE_u_s1]"    Name="" />
+            <Field Type="float"                 Name="F32" />
+            <Field Type="double"                Name="F64" />
+            <Field Type="UCHAR [10]"            Name="F80Bytes" />
+            <Field Type="UCHAR [11]"            Name="F82Bytes" />
+            <Field Type="UCHAR [16]"            Name="F128Bytes" />
+            <Field Type="UCHAR [16]"            Name="VI8" />
+            <Field Type="USHORT [8]"            Name="VI16" />
+            <Field Type="ULONG [4]"             Name="VI32" />
+            <Field Type="ULONG64 [2]"           Name="VI64" />
+            <Field Type="float [4]"             Name="VF32" />
+            <Field Type="double [2]"            Name="VF64" />
+            <Field Type="[DEBUG_VALUE_u_s2]"    Name="I64Parts32" />
+            <Field Type="[DEBUG_VALUE_u_s3]"    Name="F128Parts64" />
+            <Field Type="UCHAR [24]"            Name="RawBytes" />
+        </Variable>
+
+        <!-- DEBUG_VALUE -->
+        <Variable Name="DEBUG_VALUE" Type="Struct">
+            <Field Type="[DEBUG_VALUE_u]"       Name="" />
+            <Field Type="ULONG"                 Name="TailOfRawBytes" />
+            <Field Type="[DEBUG_VALUE_TYPE]"    Name="Type" />
+        </Variable>
+        <Variable Name="PDEBUG_VALUE" Type="Pointer" Base="DEBUG_VALUE" />
+
+        <!-- [DEBUG_ANY] -->
+        <Variable Name="[DEBUG_ANY]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="DEBUG_ANY_ID" Value="0xffffffff" />
+            </Enum>
+        </Variable>
+
+        <!-- [DEBUG_OFFSET] -->
+        <Variable Name="[DEBUG_OFFSET]" Type="Alias" Base="ULONG64">
+            <Display Name="ULONG64" />
+            <Enum>
+                <Set Name="DEBUG_INVALID_OFFSET" Value="-1" />
+            </Enum>
+        </Variable>
+
+        <!-- [DEBUG_MODULE_FLAGS] -->
+        <Variable Name="[DEBUG_MODULE_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_MODULE_LOADED"                 Value="0x00000000" />
+                <Set Name="DEBUG_MODULE_UNLOADED"               Value="0x00000001" />
+                <Set Name="DEBUG_MODULE_USER_MODE"              Value="0x00000002" />
+                <Set Name="DEBUG_MODULE_EXE_MODULE"             Value="0x00000004" />
+                <Set Name="DEBUG_MODULE_EXPLICIT"               Value="0x00000008" />
+                <Set Name="DEBUG_MODULE_SECONDARY"              Value="0x00000010" />
+                <Set Name="DEBUG_MODULE_SYNTHETIC"              Value="0x00000020" />
+                <Set Name="DEBUG_MODULE_SYM_BAD_CHECKSUM"       Value="0x00010000" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_SYMTYPE] -->
+        <Variable Name="[DEBUG_SYMTYPE]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="DEBUG_SYMTYPE_NONE"          Value="0" />
+                <Set Name="DEBUG_SYMTYPE_COFF"          Value="1" />
+                <Set Name="DEBUG_SYMTYPE_CODEVIEW"      Value="2" />
+                <Set Name="DEBUG_SYMTYPE_PDB"           Value="3" />
+                <Set Name="DEBUG_SYMTYPE_EXPORT"        Value="4" />
+                <Set Name="DEBUG_SYMTYPE_DEFERRED"      Value="5" />
+                <Set Name="DEBUG_SYMTYPE_SYM"           Value="6" />
+                <Set Name="DEBUG_SYMTYPE_DIA"           Value="7" />
+            </Enum>
+        </Variable>
+
+        <!-- [DEBUG_BREAKPOINT_TYPE] -->
+        <Variable Name="[DEBUG_BREAKPOINT_TYPE]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="DEBUG_BREAKPOINT_CODE"       Value="0" />
+                <Set Name="DEBUG_BREAKPOINT_DATA"       Value="1" />
+                <Set Name="DEBUG_BREAKPOINT_TIME"       Value="2" />
+            </Enum>
+        </Variable>
+        <Variable Name="[PDEBUG_BREAKPOINT_TYPE]" Type="Pointer" Base="[DEBUG_BREAKPOINT_TYPE]">
+            <Display Name="PULONG" />
+        </Variable>
+
+        <!-- [DEBUG_BREAKPOINT_FLAGS] -->
+        <Variable Name="[DEBUG_BREAKPOINT_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_BREAKPOINT_GO_ONLY"        Value="0x00000001" />
+                <Set Name="DEBUG_BREAKPOINT_DEFERRED"       Value="0x00000002" />
+                <Set Name="DEBUG_BREAKPOINT_ENABLED"        Value="0x00000004" />
+                <Set Name="DEBUG_BREAKPOINT_ADDER_ONLY"     Value="0x00000008" />
+                <Set Name="DEBUG_BREAKPOINT_ONE_SHOT"       Value="0x00000010" />
+            </Flag>
+        </Variable>
+        <Variable Name="[PDEBUG_BREAKPOINT_FLAGS]" Type="Pointer" Base="[DEBUG_BREAKPOINT_FLAGS]">
+            <Display Name="PULONG" />
+        </Variable>
+
+        <!-- [DEBUG_ACCESS_TYPE] -->
+        <Variable Name="[DEBUG_ACCESS_TYPE]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_BREAK_READ"        Value="0x00000001" />
+                <Set Name="DEBUG_BREAK_WRITE"       Value="0x00000002" />
+                <Set Name="DEBUG_BREAK_EXECUTE"     Value="0x00000004" />
+                <Set Name="DEBUG_BREAK_IO"          Value="0x00000008" />
+            </Flag>
+        </Variable>
+        <Variable Name="[PDEBUG_ACCESS_TYPE]" Type="Pointer" Base="[DEBUG_ACCESS_TYPE]">
+            <Display Name="PULONG" />
+        </Variable>
+
+        <!-- [DEBUG_FILTER_BREAK_STATUS] -->
+        <Variable Name="[DEBUG_FILTER_BREAK_STATUS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="DEBUG_FILTER_BREAK"                  Value="0x00000000" />
+                <Set Name="DEBUG_FILTER_SECOND_CHANCE_BREAK"    Value="0x00000001" />
+                <Set Name="DEBUG_FILTER_OUTPUT"                 Value="0x00000002" />
+                <Set Name="DEBUG_FILTER_IGNORE"                 Value="0x00000003" />
+                <Set Name="DEBUG_FILTER_REMOVE"                 Value="0x00000004" />
+            </Enum>
+        </Variable>
+
+        <!-- [DEBUG_FILTER_HANDLING_STATUS] -->
+        <Variable Name="[DEBUG_FILTER_HANDLING_STATUS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="DEBUG_FILTER_GO_HANDLED"         Value="0x00000000" />
+                <Set Name="DEBUG_FILTER_GO_NOT_HANDLED"     Value="0x00000001" />
+            </Enum>
+        </Variable>
+
+        <!-- EXCEPTION_RECORD64 -->
+        <Variable Name="EXCEPTION_RECORD64" Type="Struct">
+            <Field Type="[ExceptionCode]"                           Name="ExceptionCode" />
+            <Field Type="DWORD"                                     Name="ExceptionFlags" />
+            <Field Type="DWORD64"                                   Name="ExceptionRecord" />
+            <Field Type="DWORD64"                                   Name="ExceptionAddress" />
+            <Field Type="DWORD"                                     Name="NumberParameters" />
+            <Field Type="DWORD"                                     Name="__unusedAlignment" />
+            <Field Type="DWORD64 [EXCEPTION_MAXIMUM_PARAMETERS]"    Name="ExceptionInformation" />
+        </Variable>
+        <Variable Name="PEXCEPTION_RECORD64" Type="Pointer" Base="EXCEPTION_RECORD64" />
+
+        <!-- DEBUG_EXCEPTION_FILTER_PARAMETERS -->
+        <Variable Name="DEBUG_EXCEPTION_FILTER_PARAMETERS" Type="Struct">
+            <Field Type="[DEBUG_FILTER_BREAK_STATUS]"       Name="ExecutionOption" />
+            <Field Type="[DEBUG_FILTER_HANDLING_STATUS]"    Name="ContinueOption" />
+            <Field Type="ULONG"                             Name="TextSize" />
+            <Field Type="ULONG"                             Name="CommandSize" />
+            <Field Type="ULONG"                             Name="SecondCommandSize" />
+            <Field Type="ULONG"                             Name="ExceptionCode" />
+        </Variable>
+        <Variable Name="PDEBUG_EXCEPTION_FILTER_PARAMETERS" Type="Pointer" Base="DEBUG_EXCEPTION_FILTER_PARAMETERS" />
+
+        <!-- DEBUG_SPECIFIC_FILTER_PARAMETERS -->
+        <Variable Name="DEBUG_SPECIFIC_FILTER_PARAMETERS" Type="Struct">
+            <Field Type="[DEBUG_FILTER_BREAK_STATUS]"       Name="ExecutionOption" />
+            <Field Type="[DEBUG_FILTER_HANDLING_STATUS]"    Name="ContinueOption" />
+            <Field Type="ULONG"                             Name="TextSize" />
+            <Field Type="ULONG"                             Name="CommandSize" />
+            <Field Type="ULONG"                             Name="ArgumentSize" />
+        </Variable>
+        <Variable Name="PDEBUG_SPECIFIC_FILTER_PARAMETERS" Type="Pointer" Base="DEBUG_SPECIFIC_FILTER_PARAMETERS" />
+
+        <!-- DEBUG_BREAKPOINT_PARAMETERS -->
+        <Variable Name="DEBUG_BREAKPOINT_PARAMETERS" Type="Struct">
+            <Field Type="[DEBUG_OFFSET]"            Name="Offset" />
+            <Field Type="ULONG"                     Name="Id" />
+            <Field Type="[DEBUG_BREAKPOINT_TYPE]"   Name="BreakType" />
+            <Field Type="ULONG"                     Name="ProcType" />
+            <Field Type="[DEBUG_BREAKPOINT_FLAGS]"  Name="Flags" />
+            <Field Type="ULONG"                     Name="DataSize" />
+            <Field Type="[DEBUG_ACCESS_TYPE]"       Name="DataAccessType" />
+            <Field Type="ULONG"                     Name="PassCount" />
+            <Field Type="ULONG"                     Name="CurrentPassCount" />
+            <Field Type="[DEBUG_ANY]"               Name="MatchThread" />
+            <Field Type="ULONG"                     Name="CommandSize" />
+            <Field Type="ULONG"                     Name="OffsetExpressionSize" />
+        </Variable>
+        <Variable Name="PDEBUG_BREAKPOINT_PARAMETERS" Type="Pointer" Base="DEBUG_BREAKPOINT_PARAMETERS" />
+
+        <!-- DEBUG_STACK_FRAME -->
+        <Variable Name="DEBUG_STACK_FRAME" Type="Struct">
+            <Field Type="ULONG64"       Name="InstructionOffset" />
+            <Field Type="ULONG64"       Name="ReturnOffset" />
+            <Field Type="ULONG64"       Name="FrameOffset" />
+            <Field Type="ULONG64"       Name="StackOffset" />
+            <Field Type="ULONG64"       Name="FuncTableEntry" />
+            <Field Type="ULONG64 [4]"   Name="Params" />
+            <Field Type="ULONG64 [6]"   Name="Reserved" />
+            <Field Type="BOOL"          Name="Virtual" />
+            <Field Type="ULONG"         Name="FrameNumber" />
+        </Variable>
+        <Variable Name="PDEBUG_STACK_FRAME" Type="Pointer" Base="DEBUG_STACK_FRAME" />
+
+        <!-- [DEBUG_REGISTER_FLAGS] -->
+        <Variable Name="[DEBUG_REGISTER_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_REGISTER_SUB_REGISTER" Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- DEBUG_REGISTER_DESCRIPTION -->
+        <Variable Name="DEBUG_REGISTER_DESCRIPTION" Type="Struct">
+            <Field Type="[DEBUG_VALUE_TYPE]"        Name="Type" />
+            <Field Type="[DEBUG_REGISTER_FLAGS]"    Name="Flags" />
+            <Field Type="ULONG"                     Name="SubregMaster" />
+            <Field Type="ULONG"                     Name="SubregLength" />
+            <Field Type="ULONG64"                   Name="SubregMask" />
+            <Field Type="ULONG"                     Name="SubregShift" />
+            <Field Type="ULONG"                     Name="Reserved0" />
+        </Variable>
+        <Variable Name="PDEBUG_REGISTER_DESCRIPTION" Type="Pointer" Base="DEBUG_REGISTER_DESCRIPTION" />
+
+        <!-- [DEBUG_SYMBOL_FLAGS] -->
+        <Variable Name="[DEBUG_SYMBOL_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_SYMBOL_EXPANDED"       Value="0x00000010" />
+                <Set Name="DEBUG_SYMBOL_READ_ONLY"      Value="0x00000020" />
+                <Set Name="DEBUG_SYMBOL_IS_ARRAY"       Value="0x00000040" />
+                <Set Name="DEBUG_SYMBOL_IS_FLOAT"       Value="0x00000080" />
+                <Set Name="DEBUG_SYMBOL_IS_ARGUMENT"    Value="0x00000100" />
+                <Set Name="DEBUG_SYMBOL_IS_LOCAL"       Value="0x00000200" />
+            </Flag>
+        </Variable>
+
+        <!-- DEBUG_SYMBOL_PARAMETERS -->
+        <Variable Name="DEBUG_SYMBOL_PARAMETERS" Type="Struct">
+            <Field Type="ULONG64"                   Name="Module" />
+            <Field Type="ULONG"                     Name="TypeId" />
+            <Field Type="[DEBUG_ANY]"               Name="ParentSymbol" />
+            <Field Type="ULONG"                     Name="SubElements" />
+            <Field Type="[DEBUG_SYMBOL_FLAGS]"      Name="Flags" />
+            <Field Type="ULONG64"                   Name="Reserved" />
+        </Variable>
+        <Variable Name="PDEBUG_SYMBOL_PARAMETERS" Type="Pointer" Base="DEBUG_SYMBOL_PARAMETERS" />
+
+        <!-- DEBUG_SYMBOL_ENTRY -->
+        <Variable Name="DEBUG_SYMBOL_ENTRY" Type="Struct">
+            <Field Type="ULONG64"           Name="ModuleBase" />
+            <Field Type="ULONG64"           Name="Offset" />
+            <Field Type="[DEBUG_OFFSET]"    Name="Id" />
+            <Field Type="ULONG64"           Name="Arg64" />
+            <Field Type="ULONG"             Name="Size" />
+            <Field Type="ULONG"             Name="Flags" />
+            <Field Type="SymTagEnum"        Name="TypeId" />
+            <Field Type="ULONG"             Name="NameSize" />
+            <Field Type="ULONG"             Name="Token" />
+            <Field Type="ULONG"             Name="Tag" />
+            <Field Type="ULONG"             Name="Arg32" />
+            <Field Type="ULONG"             Name="Reserved" />
+        </Variable>
+        <Variable Name="PDEBUG_SYMBOL_ENTRY" Type="Pointer" Base="DEBUG_SYMBOL_ENTRY" />
+
+        <!-- DEBUG_MODULE_PARAMETERS -->
+        <Variable Name="DEBUG_MODULE_PARAMETERS" Type="Struct">
+            <Field Type="[DEBUG_OFFSET]"            Name="Base" />
+            <Field Type="ULONG"                     Name="Size" />
+            <Field Type="ULONG"                     Name="TimeDateStamp" />
+            <Field Type="ULONG"                     Name="Checksum" />
+            <Field Type="[DEBUG_MODULE_FLAGS]"      Name="Flags" />
+            <Field Type="[DEBUG_SYMTYPE]"           Name="SymbolType" />
+            <Field Type="ULONG"                     Name="ImageNameSize" />
+            <Field Type="ULONG"                     Name="ModuleNameSize" />
+            <Field Type="ULONG"                     Name="LoadedImageNameSize" />
+            <Field Type="ULONG"                     Name="SymbolFileNameSize" />
+            <Field Type="ULONG"                     Name="MappedImageNameSize" />
+            <Field Type="ULONG64 [2]"               Name="Reserved" />
+        </Variable>
+        <Variable Name="PDEBUG_MODULE_PARAMETERS" Type="Pointer" Base="DEBUG_MODULE_PARAMETERS" />
+
+        <!-- DEBUG_MODULE_AND_ID -->
+        <Variable Name="DEBUG_MODULE_AND_ID" Type="Struct">
+            <Field Type="ULONG64"   Name="ModuleBase" />
+            <Field Type="ULONG64"   Name="Id" />
+        </Variable>
+        <Variable Name="PDEBUG_MODULE_AND_ID" Type="Pointer" Base="DEBUG_MODULE_AND_ID" />
+
+        <!-- DEBUG_SYMBOL_SOURCE_ENTRY -->
+        <Variable Name="DEBUG_SYMBOL_SOURCE_ENTRY" Type="Struct">
+            <Field Type="ULONG64"       Name="ModuleBase" />
+            <Field Type="ULONG64"       Name="Offset" />
+            <Field Type="ULONG64"       Name="FileNameId" />
+            <Field Type="ULONG64"       Name="EngineInternal" />
+            <Field Type="ULONG"         Name="Size" />
+            <Field Type="ULONG"         Name="Flags" />
+            <Field Type="ULONG"         Name="FileNameSize" />
+            <Field Type="[DEBUG_ANY]"   Name="StartLine" />
+            <Field Type="[DEBUG_ANY]"   Name="EndLine" />
+            <Field Type="[DEBUG_ANY]"   Name="StartColumn" />
+            <Field Type="[DEBUG_ANY]"   Name="EndColumn" />
+            <Field Type="ULONG"         Name="Reserved" />
+        </Variable>
+        <Variable Name="PDEBUG_SYMBOL_SOURCE_ENTRY" Type="Pointer" Base="DEBUG_SYMBOL_SOURCE_ENTRY" />
+
+        <!-- DEBUG_OFFSET_REGION -->
+        <Variable Name="DEBUG_OFFSET_REGION" Type="Struct">
+            <Field Type="ULONG64"   Name="Base" />
+            <Field Type="ULONG64"   Name="Size" />
+        </Variable>
+        <Variable Name="PDEBUG_OFFSET_REGION" Type="Pointer" Base="DEBUG_OFFSET_REGION" />
+
+        <!-- [IMAGE_FILE_MACHINE] -->
+        <Variable Name="[IMAGE_FILE_MACHINE]" Type="Alias" Base="WORD">
+            <Display Name="WORD" />
+            <Enum>
+                <Set Name="IMAGE_FILE_MACHINE_UNKNOWN"      Value="0" />
+                <Set Name="IMAGE_FILE_MACHINE_I386"         Value="0x014c" />
+                <Set Name="IMAGE_FILE_MACHINE_IA64"         Value="0x0200" />
+                <Set Name="IMAGE_FILE_MACHINE_AMD64"        Value="0x8664" />
+            </Enum>
+        </Variable>
+
+        <!-- [IMAGE_FILE_CHARACTERISTICS] -->
+        <Variable Name="[IMAGE_FILE_CHARACTERISTICS]" Type="Alias" Base="WORD">
+            <Display Name="WORD" />
+            <Flag>
+                <Set Name="IMAGE_FILE_RELOCS_STRIPPED"          Value="0x0001" />
+                <Set Name="IMAGE_FILE_EXECUTABLE_IMAGE"         Value="0x0002" />
+                <Set Name="IMAGE_FILE_LINE_NUMS_STRIPPED"       Value="0x0004" />
+                <Set Name="IMAGE_FILE_LOCAL_SYMS_STRIPPED"      Value="0x0008" />
+                <Set Name="IMAGE_FILE_AGGRESIVE_WS_TRIM"        Value="0x0010" />
+                <Set Name="IMAGE_FILE_LARGE_ADDRESS_AWARE"      Value="0x0020" />
+                <Set Name="IMAGE_FILE_BYTES_REVERSED_LO"        Value="0x0080" />
+                <Set Name="IMAGE_FILE_32BIT_MACHINE"            Value="0x0100" />
+                <Set Name="IMAGE_FILE_DEBUG_STRIPPED"           Value="0x0200" />
+                <Set Name="IMAGE_FILE_REMOVABLE_RUN_FROM_SWAP"  Value="0x0400" />
+                <Set Name="IMAGE_FILE_NET_RUN_FROM_SWAP"        Value="0x0800" />
+                <Set Name="IMAGE_FILE_SYSTEM"                   Value="0x1000" />
+                <Set Name="IMAGE_FILE_DLL"                      Value="0x2000" />
+                <Set Name="IMAGE_FILE_UP_SYSTEM_ONLY"           Value="0x4000" />
+                <Set Name="IMAGE_FILE_BYTES_REVERSED_HI"        Value="0x8000" />
+            </Flag>
+        </Variable>
+
+        <!-- IMAGE_FILE_HEADER -->
+        <Variable Name="IMAGE_FILE_HEADER" Type="Struct">
+            <Field Type="[IMAGE_FILE_MACHINE]"          Name="Machine" />
+            <Field Type="WORD"                          Name="NumberOfSections" />
+            <Field Type="DWORD"                         Name="TimeDateStamp" />
+            <Field Type="DWORD"                         Name="PointerToSymbolTable" />
+            <Field Type="DWORD"                         Name="NumberOfSymbols" />
+            <Field Type="WORD"                          Name="SizeOfOptionalHeader" />
+            <Field Type="[IMAGE_FILE_CHARACTERISTICS]"  Name="Characteristics" />
+        </Variable>
+
+        <!-- IMAGE_DATA_DIRECTORY -->
+        <Variable Name="IMAGE_DATA_DIRECTORY" Type="Struct">
+            <Field Type="DWORD"     Name="VirtualAddress" />
+            <Field Type="DWORD"     Name="Size" />
+        </Variable>
+        <Variable Name="IMAGE_DATA_DIRECTORY [IMAGE_NUMBEROF_DIRECTORY_ENTRIES]" Type="Array" Base="IMAGE_DATA_DIRECTORY" Count="16" />
+
+        <!-- [IMAGE_OPTIONAL_MAGIC] -->
+        <Variable Name="[IMAGE_OPTIONAL_MAGIC]" Type="Alias" Base="WORD">
+            <Display Name="WORD" />
+            <Enum>
+                <Set Name="IMAGE_NT_OPTIONAL_HDR32_MAGIC"   Value="0x10b" />
+                <Set Name="IMAGE_NT_OPTIONAL_HDR64_MAGIC"   Value="0x20b" />
+                <Set Name="IMAGE_ROM_OPTIONAL_HDR_MAGIC"    Value="0x107" />
+            </Enum>
+        </Variable>
+
+        <!-- [IMAGE_SUBSYSTEM] -->
+        <Variable Name="[IMAGE_SUBSYSTEM]" Type="Alias" Base="WORD">
+            <Display Name="WORD" />
+            <Enum>
+                <Set Name="IMAGE_SUBSYSTEM_UNKNOWN"                         Value="0" />
+                <Set Name="IMAGE_SUBSYSTEM_NATIVE"                          Value="1" />
+                <Set Name="IMAGE_SUBSYSTEM_WINDOWS_GUI"                     Value="2" />
+                <Set Name="IMAGE_SUBSYSTEM_WINDOWS_CUI"                     Value="3" />
+                <Set Name="IMAGE_SUBSYSTEM_OS2_CUI"                         Value="5" />
+                <Set Name="IMAGE_SUBSYSTEM_POSIX_CUI"                       Value="7" />
+                <Set Name="IMAGE_SUBSYSTEM_NATIVE_WINDOWS"                  Value="8" />
+                <Set Name="IMAGE_SUBSYSTEM_WINDOWS_CE_GUI"                  Value="9" />
+                <Set Name="IMAGE_SUBSYSTEM_EFI_APPLICATION"                 Value="10" />
+                <Set Name="IMAGE_SUBSYSTEM_EFI_BOOT_SERVICE_DRIVER"         Value="11" />
+                <Set Name="IMAGE_SUBSYSTEM_EFI_RUNTIME_DRIVER"              Value="12" />
+                <Set Name="IMAGE_SUBSYSTEM_EFI_ROM"                         Value="13" />
+                <Set Name="IMAGE_SUBSYSTEM_XBOX"                            Value="14" />
+                <Set Name="IMAGE_SUBSYSTEM_WINDOWS_BOOT_APPLICATION"        Value="16" />
+            </Enum>
+        </Variable>
+
+        <!-- [IMAGE_DLLCHARACTERISTICS] -->
+        <Variable Name="[IMAGE_DLLCHARACTERISTICS]" Type="Alias" Base="WORD">
+            <Display Name="WORD" />
+            <Flag>
+                <Set Name="IMAGE_LIBRARY_PROCESS_INIT"                          Value="0x0001" />
+                <Set Name="IMAGE_LIBRARY_PROCESS_TERM"                          Value="0x0002" />
+                <Set Name="IMAGE_LIBRARY_THREAD_INIT"                           Value="0x0004" />
+                <Set Name="IMAGE_LIBRARY_THREAD_TERM"                           Value="0x0008" />
+                <Set Name="IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE"               Value="0x0040" />
+                <Set Name="IMAGE_DLLCHARACTERISTICS_FORCE_INTEGRITY"            Value="0x0080" />
+                <Set Name="IMAGE_DLLCHARACTERISTICS_NX_COMPAT"                  Value="0x0100" />
+                <Set Name="IMAGE_DLLCHARACTERISTICS_NO_ISOLATION"               Value="0x0200" />
+                <Set Name="IMAGE_DLLCHARACTERISTICS_NO_SEH"                     Value="0x0400" />
+                <Set Name="IMAGE_DLLCHARACTERISTICS_NO_BIND"                    Value="0x0800" />
+                <Set Name="IMAGE_DLLCHARACTERISTICS_WDM_DRIVER"                 Value="0x2000" />
+                <Set Name="IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE"      Value="0x8000" />
+            </Flag>
+        </Variable>
+
+        <!-- IMAGE_OPTIONAL_HEADER64 -->
+        <Variable Name="IMAGE_OPTIONAL_HEADER64" Type="Struct">
+            <Field Type="[IMAGE_OPTIONAL_MAGIC]"        Name="Magic" />
+            <Field Type="BYTE"                          Name="MajorLinkerVersion" />
+            <Field Type="BYTE"                          Name="MinorLinkerVersion" />
+            <Field Type="DWORD"                         Name="SizeOfCode" />
+            <Field Type="DWORD"                         Name="SizeOfInitializedData" />
+            <Field Type="DWORD"                         Name="SizeOfUninitializedData" />
+            <Field Type="DWORD"                         Name="AddressOfEntryPoint" />
+            <Field Type="DWORD"                         Name="BaseOfCode" />
+            <Field Type="ULONGLONG"                     Name="ImageBase" />
+            <Field Type="DWORD"                         Name="SectionAlignment" />
+            <Field Type="DWORD"                         Name="FileAlignment" />
+            <Field Type="WORD"                          Name="MajorOperatingSystemVersion" />
+            <Field Type="WORD"                          Name="MinorOperatingSystemVersion" />
+            <Field Type="WORD"                          Name="MajorImageVersion" />
+            <Field Type="WORD"                          Name="MinorImageVersion" />
+            <Field Type="WORD"                          Name="MajorSubsystemVersion" />
+            <Field Type="WORD"                          Name="MinorSubsystemVersion" />
+            <Field Type="DWORD"                         Name="Win32VersionValue" />
+            <Field Type="DWORD"                         Name="SizeOfImage" />
+            <Field Type="DWORD"                         Name="SizeOfHeaders" />
+            <Field Type="DWORD"                         Name="CheckSum" />
+            <Field Type="[IMAGE_SUBSYSTEM]"             Name="Subsystem" />
+            <Field Type="[IMAGE_DLLCHARACTERISTICS]"    Name="DllCharacteristics" />
+            <Field Type="ULONGLONG"                     Name="SizeOfStackReserve" />
+            <Field Type="ULONGLONG"                     Name="SizeOfStackCommit" />
+            <Field Type="ULONGLONG"                     Name="SizeOfHeapReserve" />
+            <Field Type="ULONGLONG"                     Name="SizeOfHeapCommit" />
+            <Field Type="DWORD"                         Name="LoaderFlags" />
+            <Field Type="DWORD"                         Name="NumberOfRvaAndSizes" />
+            <Field Type="IMAGE_DATA_DIRECTORY [IMAGE_NUMBEROF_DIRECTORY_ENTRIES]" Name="DataDirectory" />
+        </Variable>
+
+        <!-- MEMORY_BASIC_INFORMATION64 -->
+        <Variable Name="MEMORY_BASIC_INFORMATION64" Type="Struct">
+            <Field Type="ULONGLONG"                 Name="BaseAddress" />
+            <Field Type="ULONGLONG"                 Name="AllocationBase" />
+            <Field Type="DWORD"                     Name="AllocationProtect" />
+            <Field Type="DWORD"                     Name="__alignment1" />
+            <Field Type="ULONGLONG"                 Name="RegionSize" />
+            <Field Type="[MemoryAllocationFlags]"   Name="State" />
+            <Field Type="[NtProtectionFlags]"       Name="Protect" Display="DWORD" />
+            <Field Type="[MemoryType]"              Name="Type" />
+            <Field Type="DWORD"                     Name="__alignment2" />
+        </Variable>
+        <Variable Name="PMEMORY_BASIC_INFORMATION64" Type="Pointer" Base="MEMORY_BASIC_INFORMATION64" />
+
+        <!-- IMAGE_NT_HEADERS64 -->
+        <Variable Name="IMAGE_NT_HEADERS64" Type="Struct">
+            <Field Type="DWORD"                     Name="Signature" />
+            <Field Type="IMAGE_FILE_HEADER"         Name="FileHeader" />
+            <Field Type="IMAGE_OPTIONAL_HEADER64"   Name="OptionalHeader" />
+        </Variable>
+        <Variable Name="PIMAGE_NT_HEADERS64" Type="Pointer" Base="IMAGE_NT_HEADERS64" />
+
+        <!-- [DEBUG_SRCFILE_TYPE] -->
+        <Variable Name="[DEBUG_SRCFILE_TYPE]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="DEBUG_SRCFILE_SYMBOL_TOKEN"                      Value="0" />
+                <Set Name="DEBUG_SRCFILE_SYMBOL_TOKEN_SOURCE_COMMAND_WIDE"  Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- [DEBUG_SYMINFO_TYPE] -->
+        <Variable Name="[DEBUG_SYMINFO_TYPE]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="DEBUG_SYMINFO_BREAKPOINT_SOURCE_LINE"                    Value="0" />
+                <Set Name="DEBUG_SYMINFO_IMAGEHLP_MODULEW64"                        Value="1" />
+                <Set Name="DEBUG_SYMINFO_GET_SYMBOL_NAME_BY_OFFSET_AND_TAG_WIDE"    Value="2" />
+                <Set Name="DEBUG_SYMINFO_GET_MODULE_SYMBOL_NAMES_AND_OFFSETS"       Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- [DEBUG_SYSOBJINFO_TYPE] -->
+        <Variable Name="[DEBUG_SYSOBJINFO_TYPE]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="DEBUG_SYSOBJINFO_THREAD_BASIC_INFORMATION"   Value="0" />
+                <Set Name="DEBUG_SYSOBJINFO_THREAD_NAME_WIDE"           Value="1" />
+                <Set Name="DEBUG_SYSOBJINFO_CURRENT_PROCESS_COOKIE"     Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- [DEBUG_ATTACH_KERNEL_FLAGS] -->
+        <Variable Name="[DEBUG_ATTACH_KERNEL_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_ATTACH_KERNEL_CONNECTION"      Value="0x00000000" />
+                <Set Name="DEBUG_ATTACH_LOCAL_KERNEL"           Value="0x00000001" />
+                <Set Name="DEBUG_ATTACH_EXDI_DRIVER"            Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_GET_PROC_FLAGS] -->
+        <Variable Name="[DEBUG_GET_PROC_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_GET_PROC_DEFAULT"          Value="0x00000000" />
+                <Set Name="DEBUG_GET_PROC_FULL_MATCH"       Value="0x00000001" />
+                <Set Name="DEBUG_GET_PROC_ONLY_MATCH"       Value="0x00000002" />
+                <Set Name="DEBUG_GET_PROC_SERVICE_NAME"     Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_PROC_DESC_FLAGS] -->
+        <Variable Name="[DEBUG_PROC_DESC_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_PROC_DESC_DEFAULT"             Value="0x00000000" />
+                <Set Name="DEBUG_PROC_DESC_NO_PATHS"            Value="0x00000001" />
+                <Set Name="DEBUG_PROC_DESC_NO_SERVICES"         Value="0x00000002" />
+                <Set Name="DEBUG_PROC_DESC_NO_MTS_PACKAGES"     Value="0x00000004" />
+                <Set Name="DEBUG_PROC_DESC_NO_COMMAND_LINE"     Value="0x00000008" />
+                <Set Name="DEBUG_PROC_DESC_NO_SESSION_ID"       Value="0x00000010" />
+                <Set Name="DEBUG_PROC_DESC_NO_USER_NAME"        Value="0x00000020" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_CONNECT_SESSION_FLAGS] -->
+        <Variable Name="[DEBUG_CONNECT_SESSION_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_CONNECT_SESSION_DEFAULT"           Value="0x00000000" />
+                <Set Name="DEBUG_CONNECT_SESSION_NO_VERSION"        Value="0x00000001" />
+                <Set Name="DEBUG_CONNECT_SESSION_NO_ANNOUNCE"       Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_ATTACH_PROC_FLAGS] -->
+        <Variable Name="[DEBUG_ATTACH_PROC_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_ATTACH_DEFAULT"                        Value="0x00000000" />
+                <Set Name="DEBUG_ATTACH_NONINVASIVE"                    Value="0x00000001" />
+                <Set Name="DEBUG_ATTACH_EXISTING"                       Value="0x00000002" />
+                <Set Name="DEBUG_ATTACH_NONINVASIVE_NO_SUSPEND"         Value="0x00000004" />
+                <Set Name="DEBUG_ATTACH_INVASIVE_NO_INITIAL_BREAK"      Value="0x00000008" />
+                <Set Name="DEBUG_ATTACH_INVASIVE_RESUME_PROCESS"        Value="0x00000010" />
+                <Set Name="DEBUG_ATTACH_NONINVASIVE_ALLOW_PARTIAL"      Value="0x00000020" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_CREATE_PROCESS_FLAGS] -->
+        <Variable Name="[DEBUG_CREATE_PROCESS_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_CREATE_PROCESS_NO_DEBUG_HEAP"      Value="0x00000400" />
+                <Set Name="DEBUG_CREATE_PROCESS_THROUGH_RTL"        Value="0x00010000" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_SERVERS_FLAGS] -->
+        <Variable Name="[DEBUG_SERVERS_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_SERVERS_DEBUGGER"  Value="0x00000001" />
+                <Set Name="DEBUG_SERVERS_PROCESS"   Value="0x00000002" />
+                <Set Name="DEBUG_SERVERS_ALL"       Value="0x00000003" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_END_TYPE] -->
+        <Variable Name="[DEBUG_END_TYPE]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="DEBUG_END_PASSIVE"               Value="0x00000000" />
+                <Set Name="DEBUG_END_ACTIVE_TERMINATE"      Value="0x00000001" />
+                <Set Name="DEBUG_END_ACTIVE_DETACH"         Value="0x00000002" />
+                <Set Name="DEBUG_END_REENTRANT"             Value="0x00000003" />
+                <Set Name="DEBUG_END_DISCONNECT"            Value="0x00000004" />
+            </Enum>
+        </Variable>
+
+        <!-- [DEBUG_OUTPUT_FLAGS] -->
+        <Variable Name="[DEBUG_OUTPUT_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_OUTPUT_NORMAL"                 Value="0x00000001" />
+                <Set Name="DEBUG_OUTPUT_ERROR"                  Value="0x00000002" />
+                <Set Name="DEBUG_OUTPUT_WARNING"                Value="0x00000004" />
+                <Set Name="DEBUG_OUTPUT_VERBOSE"                Value="0x00000008" />
+                <Set Name="DEBUG_OUTPUT_PROMPT"                 Value="0x00000010" />
+                <Set Name="DEBUG_OUTPUT_PROMPT_REGISTERS"       Value="0x00000020" />
+                <Set Name="DEBUG_OUTPUT_EXTENSION_WARNING"      Value="0x00000040" />
+                <Set Name="DEBUG_OUTPUT_DEBUGGEE"               Value="0x00000080" />
+                <Set Name="DEBUG_OUTPUT_DEBUGGEE_PROMPT"        Value="0x00000100" />
+                <Set Name="DEBUG_OUTPUT_SYMBOLS"                Value="0x00000200" />
+            </Flag>
+        </Variable>
+        <Variable Name="[PDEBUG_OUTPUT_FLAGS]" Type="Pointer" Base="[DEBUG_OUTPUT_FLAGS]">
+            <Display Name="PULONG" />
+        </Variable>
+
+        <!-- [DEBUG_OUTCTL_FLAGS] -->
+        <Variable Name="[DEBUG_OUTCTL_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_OUTCTL_THIS_CLIENT"            Value="0x00000000" />
+                <Set Name="DEBUG_OUTCTL_ALL_CLIENTS"            Value="0x00000001" />
+                <Set Name="DEBUG_OUTCTL_ALL_OTHER_CLIENTS"      Value="0x00000002" />
+                <Set Name="DEBUG_OUTCTL_IGNORE"                 Value="0x00000003" />
+                <Set Name="DEBUG_OUTCTL_LOG_ONLY"               Value="0x00000004" />
+                <Set Name="DEBUG_OUTCTL_SEND_MASK"              Value="0x00000007" />
+                <Set Name="DEBUG_OUTCTL_NOT_LOGGED"             Value="0x00000008" />
+                <Set Name="DEBUG_OUTCTL_OVERRIDE_MASK"          Value="0x00000010" />
+                <Set Name="DEBUG_OUTCTL_DML"                    Value="0x00000020" />
+                <Set Name="DEBUG_OUTCTL_AMBIENT_DML"            Value="0xfffffffe" />
+                <Set Name="DEBUG_OUTCTL_AMBIENT_TEXT"           Value="0xffffffff" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_FORMAT_FLAGS] -->
+        <Variable Name="[DEBUG_FORMAT_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_FORMAT_DEFAULT"                                    Value="0x00000000" />
+                <Set Name="DEBUG_FORMAT_CAB_SECONDARY_ALL_IMAGES"                   Value="0x10000000" />
+                <Set Name="DEBUG_FORMAT_WRITE_CAB"                                  Value="0x20000000" />
+                <Set Name="DEBUG_FORMAT_CAB_SECONDARY_FILES"                        Value="0x40000000" />
+                <Set Name="DEBUG_FORMAT_NO_OVERWRITE"                               Value="0x80000000" />
+                <Set Name="DEBUG_FORMAT_USER_SMALL_FULL_MEMORY"                     Value="0x00000001" />
+                <Set Name="DEBUG_FORMAT_USER_SMALL_HANDLE_DATA"                     Value="0x00000002" />
+                <Set Name="DEBUG_FORMAT_USER_SMALL_UNLOADED_MODULES"                Value="0x00000004" />
+                <Set Name="DEBUG_FORMAT_USER_SMALL_INDIRECT_MEMORY"                 Value="0x00000008" />
+                <Set Name="DEBUG_FORMAT_USER_SMALL_DATA_SEGMENTS"                   Value="0x00000010" />
+                <Set Name="DEBUG_FORMAT_USER_SMALL_FILTER_MEMORY"                   Value="0x00000020" />
+                <Set Name="DEBUG_FORMAT_USER_SMALL_FILTER_PATHS"                    Value="0x00000040" />
+                <Set Name="DEBUG_FORMAT_USER_SMALL_PROCESS_THREAD_DATA"             Value="0x00000080" />
+                <Set Name="DEBUG_FORMAT_USER_SMALL_PRIVATE_READ_WRITE_MEMORY"       Value="0x00000100" />
+                <Set Name="DEBUG_FORMAT_USER_SMALL_NO_OPTIONAL_DATA"                Value="0x00000200" />
+                <Set Name="DEBUG_FORMAT_USER_SMALL_FULL_MEMORY_INFO"                Value="0x00000400" />
+                <Set Name="DEBUG_FORMAT_USER_SMALL_THREAD_INFO"                     Value="0x00000800" />
+                <Set Name="DEBUG_FORMAT_USER_SMALL_CODE_SEGMENTS"                   Value="0x00001000" />
+                <Set Name="DEBUG_FORMAT_USER_SMALL_NO_AUXILIARY_STATE"              Value="0x00002000" />
+                <Set Name="DEBUG_FORMAT_USER_SMALL_FULL_AUXILIARY_STATE"            Value="0x00004000" />
+                <Set Name="DEBUG_FORMAT_USER_SMALL_IGNORE_INACCESSIBLE_MEM"         Value="0x08000000" />
+            </Flag>
+        </Variable>
+        <Variable Name="[PDEBUG_FORMAT_FLAGS]" Type="Pointer" Base="[DEBUG_FORMAT_FLAGS]">
+            <Display Name="PULONG" />
+        </Variable>
+
+        <!-- [DEBUG_DUMP_FILE_INDEX] -->
+        <Variable Name="[DEBUG_DUMP_FILE_INDEX]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="DEBUG_DUMP_FILE_LOAD_FAILED_INDEX"   Value="0xffffffff" />
+                <Set Name="DEBUG_DUMP_FILE_ORIGINAL_CAB_INDEX"  Value="0xfffffffe" />
+            </Enum>
+        </Variable>
+
+        <!-- [DEBUG_CURRENT_FLAGS] -->
+        <Variable Name="[DEBUG_CURRENT_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_CURRENT_DEFAULT"           Value="0x0000000f" />
+                <Set Name="DEBUG_CURRENT_SYMBOL"            Value="0x00000001" />
+                <Set Name="DEBUG_CURRENT_DISASM"            Value="0x00000002" />
+                <Set Name="DEBUG_CURRENT_REGISTERS"         Value="0x00000004" />
+                <Set Name="DEBUG_CURRENT_SOURCE_LINE"       Value="0x00000008" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_DISASM_FLAGS] -->
+        <Variable Name="[DEBUG_DISASM_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_DISASM_EFFECTIVE_ADDRESS"      Value="0x00000001" />
+                <Set Name="DEBUG_DISASM_MATCHING_SYMBOLS"       Value="0x00000002" />
+                <Set Name="DEBUG_DISASM_SOURCE_LINE_NUMBER"     Value="0x00000004" />
+                <Set Name="DEBUG_DISASM_SOURCE_FILE_NAME"       Value="0x00000008" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_ENGOPT_FLAGS] -->
+        <Variable Name="[DEBUG_ENGOPT_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_ENGOPT_IGNORE_DBGHELP_VERSION"             Value="0x00000001" />
+                <Set Name="DEBUG_ENGOPT_IGNORE_EXTENSION_VERSIONS"          Value="0x00000002" />
+                <Set Name="DEBUG_ENGOPT_ALLOW_NETWORK_PATHS"                Value="0x00000004" />
+                <Set Name="DEBUG_ENGOPT_DISALLOW_NETWORK_PATHS"             Value="0x00000008" />
+                <Set Name="DEBUG_ENGOPT_NETWORK_PATHS"                      Value="0x0000000C" />
+                <Set Name="DEBUG_ENGOPT_IGNORE_LOADER_EXCEPTIONS"           Value="0x00000010" />
+                <Set Name="DEBUG_ENGOPT_INITIAL_BREAK"                      Value="0x00000020" />
+                <Set Name="DEBUG_ENGOPT_INITIAL_MODULE_BREAK"               Value="0x00000040" />
+                <Set Name="DEBUG_ENGOPT_FINAL_BREAK"                        Value="0x00000080" />
+                <Set Name="DEBUG_ENGOPT_NO_EXECUTE_REPEAT"                  Value="0x00000100" />
+                <Set Name="DEBUG_ENGOPT_FAIL_INCOMPLETE_INFORMATION"        Value="0x00000200" />
+                <Set Name="DEBUG_ENGOPT_ALLOW_READ_ONLY_BREAKPOINTS"        Value="0x00000400" />
+                <Set Name="DEBUG_ENGOPT_SYNCHRONIZE_BREAKPOINTS"            Value="0x00000800" />
+                <Set Name="DEBUG_ENGOPT_DISALLOW_SHELL_COMMANDS"            Value="0x00001000" />
+                <Set Name="DEBUG_ENGOPT_KD_QUIET_MODE"                      Value="0x00002000" />
+                <Set Name="DEBUG_ENGOPT_DISABLE_MANAGED_SUPPORT"            Value="0x00004000" />
+                <Set Name="DEBUG_ENGOPT_DISABLE_MODULE_SYMBOL_LOAD"         Value="0x00008000" />
+                <Set Name="DEBUG_ENGOPT_DISABLE_EXECUTION_COMMANDS"         Value="0x00010000" />
+                <Set Name="DEBUG_ENGOPT_DISALLOW_IMAGE_FILE_MAPPING"        Value="0x00020000" />
+                <Set Name="DEBUG_ENGOPT_PREFER_DML"                         Value="0x00040000" />
+                <Set Name="DEBUG_ENGOPT_ALL"                                Value="0x0007FFFF" />
+            </Flag>
+        </Variable>
+        <Variable Name="[PDEBUG_ENGOPT_FLAGS]" Type="Alias" Base="[DEBUG_ENGOPT_FLAGS]">
+            <Display Name="PULONG" />
+        </Variable>
+
+        <!-- [DEBUG_STACK_FLAGS] -->
+        <Variable Name="[DEBUG_STACK_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_STACK_ARGUMENTS"                   Value="0x00000001" />
+                <Set Name="DEBUG_STACK_FUNCTION_INFO"               Value="0x00000002" />
+                <Set Name="DEBUG_STACK_SOURCE_LINE"                 Value="0x00000004" />
+                <Set Name="DEBUG_STACK_FRAME_ADDRESSES"             Value="0x00000008" />
+                <Set Name="DEBUG_STACK_COLUMN_NAMES"                Value="0x00000010" />
+                <Set Name="DEBUG_STACK_NONVOLATILE_REGISTERS"       Value="0x00000020" />
+                <Set Name="DEBUG_STACK_FRAME_NUMBERS"               Value="0x00000040" />
+                <Set Name="DEBUG_STACK_PARAMETERS"                  Value="0x00000080" />
+                <Set Name="DEBUG_STACK_FRAME_ADDRESSES_RA_ONLY"     Value="0x00000100" />
+                <Set Name="DEBUG_STACK_FRAME_MEMORY_USAGE"          Value="0x00000200" />
+                <Set Name="DEBUG_STACK_PARAMETERS_NEWLINE"          Value="0x00000400" />
+                <Set Name="DEBUG_STACK_DML"                         Value="0x00000800" />
+                <Set Name="DEBUG_STACK_FRAME_OFFSETS"               Value="0x00001000" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_EXECUTE_FLAGS] -->
+        <Variable Name="[DEBUG_EXECUTE_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_EXECUTE_DEFAULT"       Value="0x00000000" />
+                <Set Name="DEBUG_EXECUTE_ECHO"          Value="0x00000001" />
+                <Set Name="DEBUG_EXECUTE_NOT_LOGGED"    Value="0x00000002" />
+                <Set Name="DEBUG_EXECUTE_NO_REPEAT"     Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_EINDEX_RELATION] -->
+        <Variable Name="[DEBUG_EINDEX_RELATION]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_EINDEX_FROM_START"     Value="0x00000000" />
+                <Set Name="DEBUG_EINDEX_FROM_END"       Value="0x00000001" />
+                <Set Name="DEBUG_EINDEX_FROM_CURRENT"   Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_MANAGED_FLAGS] -->
+        <Variable Name="[DEBUG_MANAGED_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_MANAGED_DISABLED"              Value="0x00000000" />
+                <Set Name="DEBUG_MANAGED_ALLOWED"               Value="0x00000001" />
+                <Set Name="DEBUG_MANAGED_DLL_LOADED"            Value="0x00000002" />
+            </Flag>
+        </Variable>
+        <Variable Name="[PDEBUG_MANAGED_FLAGS]" Type="Pointer" Base="[DEBUG_MANAGED_FLAGS]">
+            <Display Name="PULONG" />
+        </Variable>
+
+        <!-- [DEBUG_MANSTR_FLAGS] -->
+        <Variable Name="[DEBUG_MANSTR_TYPE]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="DEBUG_MANSTR_NONE"                   Value="0x00000000" />
+                <Set Name="DEBUG_MANSTR_LOADED_SUPPORT_DLL"     Value="0x00000001" />
+                <Set Name="DEBUG_MANSTR_LOAD_STATUS"            Value="0x00000002" />
+            </Enum>
+        </Variable>
+
+        <!-- [DEBUG_MANRESET_FLAGS] -->
+        <Variable Name="[DEBUG_MANRESET_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_MANRESET_DEFAULT"      Value="0x00000000" />
+                <Set Name="DEBUG_MANRESET_LOAD_DLL"     Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_DATA_INDEX] -->
+        <Variable Name="[DEBUG_DATA_INDEX]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="DEBUG_DATA_KernBase"                                 Value="24" />
+                <Set Name="DEBUG_DATA_BreakpointWithStatusAddr"                 Value="32" />
+                <Set Name="DEBUG_DATA_SavedContextAddr"                         Value="40" />
+                <Set Name="DEBUG_DATA_KiCallUserModeAddr"                       Value="56" />
+                <Set Name="DEBUG_DATA_KeUserCallbackDispatcherAddr"             Value="64" />
+                <Set Name="DEBUG_DATA_PsLoadedModuleListAddr"                   Value="72" />
+                <Set Name="DEBUG_DATA_PsActiveProcessHeadAddr"                  Value="80" />
+                <Set Name="DEBUG_DATA_PspCidTableAddr"                          Value="88" />
+                <Set Name="DEBUG_DATA_ExpSystemResourcesListAddr"               Value="96" />
+                <Set Name="DEBUG_DATA_ExpPagedPoolDescriptorAddr"               Value="104" />
+                <Set Name="DEBUG_DATA_ExpNumberOfPagedPoolsAddr"                Value="112" />
+                <Set Name="DEBUG_DATA_KeTimeIncrementAddr"                      Value="120" />
+                <Set Name="DEBUG_DATA_KeBugCheckCallbackListHeadAddr"           Value="128" />
+                <Set Name="DEBUG_DATA_KiBugcheckDataAddr"                       Value="136" />
+                <Set Name="DEBUG_DATA_IopErrorLogListHeadAddr"                  Value="144" />
+                <Set Name="DEBUG_DATA_ObpRootDirectoryObjectAddr"               Value="152" />
+                <Set Name="DEBUG_DATA_ObpTypeObjectTypeAddr"                    Value="160" />
+                <Set Name="DEBUG_DATA_MmSystemCacheStartAddr"                   Value="168" />
+                <Set Name="DEBUG_DATA_MmSystemCacheEndAddr"                     Value="176" />
+                <Set Name="DEBUG_DATA_MmSystemCacheWsAddr"                      Value="184" />
+                <Set Name="DEBUG_DATA_MmPfnDatabaseAddr"                        Value="192" />
+                <Set Name="DEBUG_DATA_MmSystemPtesStartAddr"                    Value="200" />
+                <Set Name="DEBUG_DATA_MmSystemPtesEndAddr"                      Value="208" />
+                <Set Name="DEBUG_DATA_MmSubsectionBaseAddr"                     Value="216" />
+                <Set Name="DEBUG_DATA_MmNumberOfPagingFilesAddr"                Value="224" />
+                <Set Name="DEBUG_DATA_MmLowestPhysicalPageAddr"                 Value="232" />
+                <Set Name="DEBUG_DATA_MmHighestPhysicalPageAddr"                Value="240" />
+                <Set Name="DEBUG_DATA_MmNumberOfPhysicalPagesAddr"              Value="248" />
+                <Set Name="DEBUG_DATA_MmMaximumNonPagedPoolInBytesAddr"         Value="256" />
+                <Set Name="DEBUG_DATA_MmNonPagedSystemStartAddr"                Value="264" />
+                <Set Name="DEBUG_DATA_MmNonPagedPoolStartAddr"                  Value="272" />
+                <Set Name="DEBUG_DATA_MmNonPagedPoolEndAddr"                    Value="280" />
+                <Set Name="DEBUG_DATA_MmPagedPoolStartAddr"                     Value="288" />
+                <Set Name="DEBUG_DATA_MmPagedPoolEndAddr"                       Value="296" />
+                <Set Name="DEBUG_DATA_MmPagedPoolInformationAddr"               Value="304" />
+                <Set Name="DEBUG_DATA_MmPageSize"                               Value="312" />
+                <Set Name="DEBUG_DATA_MmSizeOfPagedPoolInBytesAddr"             Value="320" />
+                <Set Name="DEBUG_DATA_MmTotalCommitLimitAddr"                   Value="328" />
+                <Set Name="DEBUG_DATA_MmTotalCommittedPagesAddr"                Value="336" />
+                <Set Name="DEBUG_DATA_MmSharedCommitAddr"                       Value="344" />
+                <Set Name="DEBUG_DATA_MmDriverCommitAddr"                       Value="352" />
+                <Set Name="DEBUG_DATA_MmProcessCommitAddr"                      Value="360" />
+                <Set Name="DEBUG_DATA_MmPagedPoolCommitAddr"                    Value="368" />
+                <Set Name="DEBUG_DATA_MmExtendedCommitAddr"                     Value="376" />
+                <Set Name="DEBUG_DATA_MmZeroedPageListHeadAddr"                 Value="384" />
+                <Set Name="DEBUG_DATA_MmFreePageListHeadAddr"                   Value="392" />
+                <Set Name="DEBUG_DATA_MmStandbyPageListHeadAddr"                Value="400" />
+                <Set Name="DEBUG_DATA_MmModifiedPageListHeadAddr"               Value="408" />
+                <Set Name="DEBUG_DATA_MmModifiedNoWritePageListHeadAddr"        Value="416" />
+                <Set Name="DEBUG_DATA_MmAvailablePagesAddr"                     Value="424" />
+                <Set Name="DEBUG_DATA_MmResidentAvailablePagesAddr"             Value="432" />
+                <Set Name="DEBUG_DATA_PoolTrackTableAddr"                       Value="440" />
+                <Set Name="DEBUG_DATA_NonPagedPoolDescriptorAddr"               Value="448" />
+                <Set Name="DEBUG_DATA_MmHighestUserAddressAddr"                 Value="456" />
+                <Set Name="DEBUG_DATA_MmSystemRangeStartAddr"                   Value="464" />
+                <Set Name="DEBUG_DATA_MmUserProbeAddressAddr"                   Value="472" />
+                <Set Name="DEBUG_DATA_KdPrintCircularBufferAddr"                Value="480" />
+                <Set Name="DEBUG_DATA_KdPrintCircularBufferEndAddr"             Value="488" />
+                <Set Name="DEBUG_DATA_KdPrintWritePointerAddr"                  Value="496" />
+                <Set Name="DEBUG_DATA_KdPrintRolloverCountAddr"                 Value="504" />
+                <Set Name="DEBUG_DATA_MmLoadedUserImageListAddr"                Value="512" />
+                <Set Name="DEBUG_DATA_NtBuildLabAddr"                           Value="520" />
+                <Set Name="DEBUG_DATA_KiNormalSystemCall"                       Value="528" />
+                <Set Name="DEBUG_DATA_KiProcessorBlockAddr"                     Value="536" />
+                <Set Name="DEBUG_DATA_MmUnloadedDriversAddr"                    Value="544" />
+                <Set Name="DEBUG_DATA_MmLastUnloadedDriverAddr"                 Value="552" />
+                <Set Name="DEBUG_DATA_MmTriageActionTakenAddr"                  Value="560" />
+                <Set Name="DEBUG_DATA_MmSpecialPoolTagAddr"                     Value="568" />
+                <Set Name="DEBUG_DATA_KernelVerifierAddr"                       Value="576" />
+                <Set Name="DEBUG_DATA_MmVerifierDataAddr"                       Value="584" />
+                <Set Name="DEBUG_DATA_MmAllocatedNonPagedPoolAddr"              Value="592" />
+                <Set Name="DEBUG_DATA_MmPeakCommitmentAddr"                     Value="600" />
+                <Set Name="DEBUG_DATA_MmTotalCommitLimitMaximumAddr"            Value="608" />
+                <Set Name="DEBUG_DATA_CmNtCSDVersionAddr"                       Value="616" />
+                <Set Name="DEBUG_DATA_MmPhysicalMemoryBlockAddr"                Value="624" />
+                <Set Name="DEBUG_DATA_MmSessionBase"                            Value="632" />
+                <Set Name="DEBUG_DATA_MmSessionSize"                            Value="640" />
+                <Set Name="DEBUG_DATA_MmSystemParentTablePage"                  Value="648" />
+                <Set Name="DEBUG_DATA_MmVirtualTranslationBase"                 Value="656" />
+                <Set Name="DEBUG_DATA_OffsetKThreadNextProcessor"               Value="664" />
+                <Set Name="DEBUG_DATA_OffsetKThreadTeb"                         Value="666" />
+                <Set Name="DEBUG_DATA_OffsetKThreadKernelStack"                 Value="668" />
+                <Set Name="DEBUG_DATA_OffsetKThreadInitialStack"                Value="670" />
+                <Set Name="DEBUG_DATA_OffsetKThreadApcProcess"                  Value="672" />
+                <Set Name="DEBUG_DATA_OffsetKThreadState"                       Value="674" />
+                <Set Name="DEBUG_DATA_OffsetKThreadBStore"                      Value="676" />
+                <Set Name="DEBUG_DATA_OffsetKThreadBStoreLimit"                 Value="678" />
+                <Set Name="DEBUG_DATA_SizeEProcess"                             Value="680" />
+                <Set Name="DEBUG_DATA_OffsetEprocessPeb"                        Value="682" />
+                <Set Name="DEBUG_DATA_OffsetEprocessParentCID"                  Value="684" />
+                <Set Name="DEBUG_DATA_OffsetEprocessDirectoryTableBase"         Value="686" />
+                <Set Name="DEBUG_DATA_SizePrcb"                                 Value="688" />
+                <Set Name="DEBUG_DATA_OffsetPrcbDpcRoutine"                     Value="690" />
+                <Set Name="DEBUG_DATA_OffsetPrcbCurrentThread"                  Value="692" />
+                <Set Name="DEBUG_DATA_OffsetPrcbMhz"                            Value="694" />
+                <Set Name="DEBUG_DATA_OffsetPrcbCpuType"                        Value="696" />
+                <Set Name="DEBUG_DATA_OffsetPrcbVendorString"                   Value="698" />
+                <Set Name="DEBUG_DATA_OffsetPrcbProcessorState"                 Value="700" />
+                <Set Name="DEBUG_DATA_OffsetPrcbNumber"                         Value="702" />
+                <Set Name="DEBUG_DATA_SizeEThread"                              Value="704" />
+                <Set Name="DEBUG_DATA_KdPrintCircularBufferPtrAddr"             Value="712" />
+                <Set Name="DEBUG_DATA_KdPrintBufferSizeAddr"                    Value="720" />
+                <Set Name="DEBUG_DATA_MmBadPagesDetected"                       Value="800" />
+                <Set Name="DEBUG_DATA_EtwpDebuggerData"                         Value="816" />
+                <Set Name="DEBUG_DATA_PaeEnabled"                               Value="100000" />
+                <Set Name="DEBUG_DATA_SharedUserData"                           Value="100008" />
+                <Set Name="DEBUG_DATA_ProductType"                              Value="100016" />
+                <Set Name="DEBUG_DATA_SuiteMask"                                Value="100024" />
+                <Set Name="DEBUG_DATA_DumpWriterStatus"                         Value="100032" />
+                <Set Name="DEBUG_DATA_DumpFormatVersion"                        Value="100040" />
+                <Set Name="DEBUG_DATA_DumpWriterVersion"                        Value="100048" />
+                <Set Name="DEBUG_DATA_DumpPowerState"                           Value="100056" />
+                <Set Name="DEBUG_DATA_DumpMmStorage"                            Value="100064" />
+            </Enum>
+        </Variable>
+
+        <!-- [DEBUG_DATA_INDEX_PROCESSOR] -->
+        <Variable Name="[DEBUG_DATA_INDEX_PROCESSOR]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="DEBUG_DATA_KPCR_OFFSET"                          Value="0" />
+                <Set Name="DEBUG_DATA_KPRCB_OFFSET"                         Value="1" />
+                <Set Name="DEBUG_DATA_KTHREAD_OFFSET"                       Value="2" />
+                <Set Name="DEBUG_DATA_BASE_TRANSLATION_VIRTUAL_OFFSET"      Value="3" />
+                <Set Name="DEBUG_DATA_PROCESSOR_IDENTIFICATION"             Value="4" />
+                <Set Name="DEBUG_DATA_PROCESSOR_SPEED"                      Value="5" />
+            </Enum>
+        </Variable>
+
+        <!-- [DEBUG_VSEARCH_FLAGS] -->
+        <Variable Name="[DEBUG_VSEARCH_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_VSEARCH_DEFAULT"           Value="0x00000000" />
+                <Set Name="DEBUG_VSEARCH_WRITABLE_ONLY"     Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_PHYSICAL_FLAGS] -->
+        <Variable Name="[DEBUG_PHYSICAL_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_PHYSICAL_DEFAULT"          Value="0x00000000" />
+                <Set Name="DEBUG_PHYSICAL_CACHED"           Value="0x00000001" />
+                <Set Name="DEBUG_PHYSICAL_UNCACHED"         Value="0x00000002" />
+                <Set Name="DEBUG_PHYSICAL_WRITE_COMBINED"   Value="0x00000003" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_EVENT_FLAGS] -->
+        <Variable Name="[DEBUG_EVENT_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_EVENT_BREAKPOINT"              Value="0x00000001" />
+                <Set Name="DEBUG_EVENT_EXCEPTION"               Value="0x00000002" />
+                <Set Name="DEBUG_EVENT_CREATE_THREAD"           Value="0x00000004" />
+                <Set Name="DEBUG_EVENT_EXIT_THREAD"             Value="0x00000008" />
+                <Set Name="DEBUG_EVENT_CREATE_PROCESS"          Value="0x00000010" />
+                <Set Name="DEBUG_EVENT_EXIT_PROCESS"            Value="0x00000020" />
+                <Set Name="DEBUG_EVENT_LOAD_MODULE"             Value="0x00000040" />
+                <Set Name="DEBUG_EVENT_UNLOAD_MODULE"           Value="0x00000080" />
+                <Set Name="DEBUG_EVENT_SYSTEM_ERROR"            Value="0x00000100" />
+                <Set Name="DEBUG_EVENT_SESSION_STATUS"          Value="0x00000200" />
+                <Set Name="DEBUG_EVENT_CHANGE_DEBUGGEE_STATE"   Value="0x00000400" />
+                <Set Name="DEBUG_EVENT_CHANGE_ENGINE_STATE"     Value="0x00000800" />
+                <Set Name="DEBUG_EVENT_CHANGE_SYMBOL_STATE"     Value="0x00001000" />
+            </Flag>
+        </Variable>
+        <Variable Name="[PDEBUG_EVENT_FLAGS]" Type="Pointer" Base="[DEBUG_EVENT_FLAGS]">
+            <Display Name="PULONG" />
+        </Variable>
+
+        <!-- [DEBUG_SESSION_STATUS] -->
+        <Variable Name="[DEBUG_SESSION_STATUS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="DEBUG_SESSION_ACTIVE"                            Value="0x00000000" />
+                <Set Name="DEBUG_SESSION_END_SESSION_ACTIVE_TERMINATE"      Value="0x00000001" />
+                <Set Name="DEBUG_SESSION_END_SESSION_ACTIVE_DETACH"         Value="0x00000002" />
+                <Set Name="DEBUG_SESSION_END_SESSION_PASSIVE"               Value="0x00000003" />
+                <Set Name="DEBUG_SESSION_END"                               Value="0x00000004" />
+                <Set Name="DEBUG_SESSION_REBOOT"                            Value="0x00000005" />
+                <Set Name="DEBUG_SESSION_HIBERNATE"                         Value="0x00000006" />
+                <Set Name="DEBUG_SESSION_FAILURE"                           Value="0x00000007" />
+            </Enum>
+        </Variable>
+
+        <!-- [DEBUG_CDS_FLAGS] -->
+        <Variable Name="[DEBUG_CDS_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_CDS_ALL"           Value="0xffffffff" />
+                <Set Name="DEBUG_CDS_REGISTERS"     Value="0x00000001" />
+                <Set Name="DEBUG_CDS_DATA"          Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_CES_FLAGS] -->
+        <Variable Name="[DEBUG_CES_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_CES_ALL"                       Value="0xffffffff" />
+                <Set Name="DEBUG_CES_CURRENT_THREAD"            Value="0x00000001" />
+                <Set Name="DEBUG_CES_EFFECTIVE_PROCESSOR"       Value="0x00000002" />
+                <Set Name="DEBUG_CES_BREAKPOINTS"               Value="0x00000004" />
+                <Set Name="DEBUG_CES_CODE_LEVEL"                Value="0x00000008" />
+                <Set Name="DEBUG_CES_EXECUTION_STATUS"          Value="0x00000010" />
+                <Set Name="DEBUG_CES_ENGINE_OPTIONS"            Value="0x00000020" />
+                <Set Name="DEBUG_CES_LOG_FILE"                  Value="0x00000040" />
+                <Set Name="DEBUG_CES_RADIX"                     Value="0x00000080" />
+                <Set Name="DEBUG_CES_EVENT_FILTERS"             Value="0x00000100" />
+                <Set Name="DEBUG_CES_PROCESS_OPTIONS"           Value="0x00000200" />
+                <Set Name="DEBUG_CES_EXTENSIONS"                Value="0x00000400" />
+                <Set Name="DEBUG_CES_SYSTEMS"                   Value="0x00000800" />
+                <Set Name="DEBUG_CES_ASSEMBLY_OPTIONS"          Value="0x00001000" />
+                <Set Name="DEBUG_CES_EXPRESSION_SYNTAX"         Value="0x00002000" />
+                <Set Name="DEBUG_CES_TEXT_REPLACEMENTS"         Value="0x00004000" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_CSS_FLAGS] -->
+        <Variable Name="[DEBUG_CSS_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_CSS_ALL"                       Value="0xffffffff" />
+                <Set Name="DEBUG_CSS_LOADS"                     Value="0x00000001" />
+                <Set Name="DEBUG_CSS_UNLOADS"                   Value="0x00000002" />
+                <Set Name="DEBUG_CSS_SCOPE"                     Value="0x00000004" />
+                <Set Name="DEBUG_CSS_PATHS"                     Value="0x00000008" />
+                <Set Name="DEBUG_CSS_SYMBOL_OPTIONS"            Value="0x00000010" />
+                <Set Name="DEBUG_CSS_TYPE_OPTIONS"              Value="0x00000020" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_OUTCB_INTEREST] -->
+        <Variable Name="[DEBUG_OUTCB_INTEREST]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_OUTCBI_EXPLICIT_FLUSH"     Value="0x00000001" />
+                <Set Name="DEBUG_OUTCBI_TEXT"               Value="0x00000002" />
+                <Set Name="DEBUG_OUTCBI_DML"                Value="0x00000004" />
+                <Set Name="DEBUG_OUTCBI_ANY_FORMAT"         Value="0x00000006" />
+            </Flag>
+        </Variable>
+        <Variable Name="[PDEBUG_OUTCB_INTEREST]" Type="Pointer" Base="[DEBUG_OUTCB_INTEREST]">
+            <Display Name="PULONG" />
+        </Variable>
+
+        <!-- [DEBUG_OUTCB_TYPE] -->
+        <Variable Name="[DEBUG_OUTCB_TYPE]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="DEBUG_OUTCB_TEXT"                Value="0" />
+                <Set Name="DEBUG_OUTCB_DML"                 Value="1" />
+                <Set Name="DEBUG_OUTCB_EXPLICIT_FLUSH"      Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- [DEBUG_OUTCB_FLAGS] -->
+        <Variable Name="[DEBUG_OUTCB_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_OUTCBF_COMBINED_EXPLICIT_FLUSH"        Value="0x00000001" />
+                <Set Name="DEBUG_OUTCBF_DML_HAS_TAGS"                   Value="0x00000002" />
+                <Set Name="DEBUG_OUTCBF_DML_HAS_SPECIAL_CHARACTERS"     Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_REGSRC] -->
+        <Variable Name="[DEBUG_REGSRC]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="DEBUG_REGSRC_DEBUGGEE"   Value="0x00000000" />
+                <Set Name="DEBUG_REGSRC_EXPLICIT"   Value="0x00000001" />
+                <Set Name="DEBUG_REGSRC_FRAME"      Value="0x00000002" />
+            </Enum>
+        </Variable>
+
+        <!-- [DEBUG_OUTPUT_SYMBOLS_FLAGS] -->
+        <Variable Name="[DEBUG_OUTPUT_SYMBOLS_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_OUTPUT_SYMBOLS_DEFAULT"        Value="0x00000000" />
+                <Set Name="DEBUG_OUTPUT_SYMBOLS_NO_NAMES"       Value="0x00000001" />
+                <Set Name="DEBUG_OUTPUT_SYMBOLS_NO_OFFSETS"     Value="0x00000002" />
+                <Set Name="DEBUG_OUTPUT_SYMBOLS_NO_VALUES"      Value="0x00000004" />
+                <Set Name="DEBUG_OUTPUT_SYMBOLS_NO_TYPES"       Value="0x00000010" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_FIND_SOURCE_FLAGS] -->
+        <Variable Name="[DEBUG_FIND_SOURCE_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_FIND_SOURCE_DEFAULT"           Value="0x00000000" />
+                <Set Name="DEBUG_FIND_SOURCE_FULL_PATH"         Value="0x00000001" />
+                <Set Name="DEBUG_FIND_SOURCE_BEST_MATCH"        Value="0x00000002" />
+                <Set Name="DEBUG_FIND_SOURCE_NO_SRCSRV"         Value="0x00000004" />
+                <Set Name="DEBUG_FIND_SOURCE_TOKEN_LOOKUP"      Value="0x00000008" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_MODNAME] -->
+        <Variable Name="[DEBUG_MODNAME]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="DEBUG_MODNAME_IMAGE"             Value="0x00000000" />
+                <Set Name="DEBUG_MODNAME_MODULE"            Value="0x00000001" />
+                <Set Name="DEBUG_MODNAME_LOADED_IMAGE"      Value="0x00000002" />
+                <Set Name="DEBUG_MODNAME_SYMBOL_FILE"       Value="0x00000003" />
+                <Set Name="DEBUG_MODNAME_MAPPED_IMAGE"      Value="0x00000004" />
+            </Enum>
+        </Variable>
+
+        <!-- [DEBUG_TYPEOPTS] -->
+        <Variable Name="[DEBUG_TYPEOPTS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_TYPEOPTS_UNICODE_DISPLAY"      Value="0x00000001" />
+                <Set Name="DEBUG_TYPEOPTS_LONGSTATUS_DISPLAY"   Value="0x00000002" />
+                <Set Name="DEBUG_TYPEOPTS_FORCERADIX_OUTPUT"    Value="0x00000004" />
+                <Set Name="DEBUG_TYPEOPTS_MATCH_MAXSIZE"        Value="0x00000008" />
+            </Flag>
+        </Variable>
+        <Variable Name="[PDEBUG_TYPEOPTS]" Type="Pointer" Base="[DEBUG_TYPEOPTS]">
+            <Display Name="PULONG" />
+        </Variable>
+
+        <!-- [DEBUG_GETMOD_FLAGS] -->
+        <Variable Name="[DEBUG_GETMOD_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_GETMOD_DEFAULT"                Value="0x00000000" />
+                <Set Name="DEBUG_GETMOD_NO_LOADED_MODULES"      Value="0x00000001" />
+                <Set Name="DEBUG_GETMOD_NO_UNLOADED_MODULES"    Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_OUTSYM_FLAGS] -->
+        <Variable Name="[DEBUG_OUTSYM_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_OUTSYM_DEFAULT"                Value="0x00000000" />
+                <Set Name="DEBUG_OUTSYM_FORCE_OFFSET"           Value="0x00000001" />
+                <Set Name="DEBUG_OUTSYM_SOURCE_LINE"            Value="0x00000002" />
+                <Set Name="DEBUG_OUTSYM_ALLOW_DISPLACEMENT"     Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_GETFNENT_FLAGS] -->
+        <Variable Name="[DEBUG_GETFNENT_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_GETFNENT_DEFAULT"              Value="0x00000000" />
+                <Set Name="DEBUG_GETFNENT_RAW_ENTRY_ONLY"       Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_GSEL_FLAGS] -->
+        <Variable Name="[DEBUG_GSEL_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_GSEL_DEFAULT"              Value="0x00000000" />
+                <Set Name="DEBUG_GSEL_NO_SYMBOL_LOADS"      Value="0x00000001" />
+                <Set Name="DEBUG_GSEL_ALLOW_LOWER"          Value="0x00000002" />
+                <Set Name="DEBUG_GSEL_ALLOW_HIGHER"         Value="0x00000004" />
+                <Set Name="DEBUG_GSEL_NEAREST_ONLY"         Value="0x00000008" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_TIMEOUT] -->
+        <Variable Name="[DEBUG_TIMEOUT]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="INFINITE"            Value="0xFFFFFFFF" />
+            </Enum>
+        </Variable>
+
+        <!-- [DEBUG_LOG_FLAGS] -->
+        <Variable Name="[DEBUG_LOG_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_LOG_DEFAULT"   Value="0x00000000" />
+                <Set Name="DEBUG_LOG_APPEND"    Value="0x00000001" />
+                <Set Name="DEBUG_LOG_UNICODE"   Value="0x00000002" />
+                <Set Name="DEBUG_LOG_DML"       Value="0x00000004" />
+            </Flag>
+        </Variable>
+        <Variable Name="[PDEBUG_LOG_FLAGS]" Type="Pointer" Base="[DEBUG_LOG_FLAGS]">
+            <Display Name="PULONG" />
+        </Variable>
+
+        <!-- [DEBUG_EXPR] -->
+        <Variable Name="[DEBUG_EXPR]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="DEBUG_EXPR_MASM"         Value="0x00000000" />
+                <Set Name="DEBUG_EXPR_CPLUSPLUS"    Value="0x00000001" />
+            </Enum>
+        </Variable>
+        <Variable Name="[PDEBUG_EXPR]" Type="Pointer" Base="[DEBUG_EXPR]">
+            <Display Name="PULONG" />
+        </Variable>
+
+        <!-- [DEBUG_CLASS] -->
+        <Variable Name="[DEBUG_CLASS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="DEBUG_CLASS_UNINITIALIZED"   Value="0" />
+                <Set Name="DEBUG_CLASS_KERNEL"          Value="1" />
+                <Set Name="DEBUG_CLASS_USER_WINDOWS"    Value="2" />
+                <Set Name="DEBUG_CLASS_IMAGE_FILE"      Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- [DEBUG_INTERRUPT_TYPE] -->
+        <Variable Name="[DEBUG_INTERRUPT_TYPE]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="DEBUG_INTERRUPT_ACTIVE"      Value="0" />
+                <Set Name="DEBUG_INTERRUPT_PASSIVE"     Value="1" />
+                <Set Name="DEBUG_INTERRUPT_EXIT"        Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- [DEBUG_REGISTERS_FLAGS] -->
+        <Variable Name="[DEBUG_REGISTERS_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_REGISTERS_DEFAULT"     Value="0x00000000" />
+                <Set Name="DEBUG_REGISTERS_INT32"       Value="0x00000001" />
+                <Set Name="DEBUG_REGISTERS_INT64"       Value="0x00000002" />
+                <Set Name="DEBUG_REGISTERS_FLOAT"       Value="0x00000004" />
+                <Set Name="DEBUG_REGISTERS_ALL"         Value="0x00000007" />
+            </Flag>
+        </Variable>
+
+        <!-- [DEBUG_SCOPE_GROUP_FLAGS] -->
+        <Variable Name="[DEBUG_SCOPE_GROUP_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEBUG_SCOPE_GROUP_ARGUMENTS"     Value="0x00000001" />
+                <Set Name="DEBUG_SCOPE_GROUP_LOCALS"        Value="0x00000002" />
+                <Set Name="DEBUG_SCOPE_GROUP_ALL"           Value="0x00000003" />
+            </Flag>
+        </Variable>
+
+        <!-- Debugger Engine -->
+        <Category Name="Diagnostics/Debugging Tools for Windows/Debugger Engine/Client Functions" />
+
+        <Api Name="DebugCreate">
+            <Param Type="REFIID" Name="InterfaceId" />
+            <Param Type="PVOID*" Name="Interface" InterfaceId="InterfaceId" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="DebugConnect">
+            <Param Type="PCSTR" Name="RemoteOptions" />
+            <Param Type="REFIID" Name="InterfaceId" />
+            <Param Type="PVOID*" Name="Interface" InterfaceId="InterfaceId" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="DebugConnectWide">
+            <Param Type="PCWSTR" Name="RemoteOptions" />
+            <Param Type="REFIID" Name="InterfaceId" />
+            <Param Type="PVOID*" Name="Interface" InterfaceId="InterfaceId" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+
+    </Module>
+</ApiMonitor>

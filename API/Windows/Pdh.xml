@@ -6,23 +6,122 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Pdh.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
+
+        <!-- TODO: Structures (Bitfields) -->
+        <Variable Name="PPDH_BROWSE_DLG_CONFIG"     Type="Alias"    Base="LPVOID" />
+
         <!-- Variables -->
-        <Variable Name="PDH_HQUERY"                     Type="Alias"    Base="HANDLE" />
-        <Variable Name="PDH_HQUERY*"                    Type="Pointer"  Base="PDH_HQUERY" />
-        <Variable Name="PDH_HCOUNTER"                   Type="Alias"    Base="HANDLE" />
-        <Variable Name="PDH_HCOUNTER*"                  Type="Pointer"  Base="PDH_HCOUNTER" />
-        <Variable Name="PDH_HLOG"                       Type="Alias"    Base="HANDLE" />
-        <Variable Name="PDH_HLOG*"                      Type="Pointer"  Base="PDH_HLOG" />
-        <Variable Name="volatile DWORD"                 Type="Alias"    Base="DWORD" />
-        
-        <!-- TODO: Structures -->
-        <Variable Name="PPDH_BROWSE_DLG_CONFIG"          Type="Alias"       Base="LPVOID" />
-        <Variable Name="PPDH_FMT_COUNTERVALUE"           Type="Alias"       Base="LPVOID" />
-        <Variable Name="PPDH_STATISTICS"                 Type="Alias"       Base="LPVOID" />
-        <Variable Name="PPDH_COUNTER_INFO"               Type="Alias"       Base="LPVOID" />
-        <Variable Name="PPDH_FMT_COUNTERVALUE_ITEM"      Type="Alias"       Base="LPVOID" />
-        <Variable Name="PPDH_RAW_COUNTER_ITEM"           Type="Alias"       Base="LPVOID" />
-        <Variable Name="PPDH_RAW_LOG_RECORD"             Type="Alias"        Base="LPVOID" />
+        <Variable Name="PDH_HQUERY"                 Type="Alias"    Base="HANDLE" />
+        <Variable Name="PDH_HQUERY*"                Type="Pointer"  Base="PDH_HQUERY" />
+        <Variable Name="PDH_HCOUNTER"               Type="Alias"    Base="HANDLE" />
+        <Variable Name="PDH_HCOUNTER*"              Type="Pointer"  Base="PDH_HCOUNTER" />
+        <Variable Name="PDH_HLOG"                   Type="Alias"    Base="HANDLE" />
+        <Variable Name="PDH_HLOG*"                  Type="Pointer"  Base="PDH_HLOG" />
+        <Variable Name="volatile DWORD"             Type="Alias"    Base="DWORD" />
+
+        <!-- [PDH_LOG_TYPE] -->
+        <Variable Name="[PDH_LOG_TYPE]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="PDH_LOG_TYPE_UNDEFINED"          Value="0" />
+                <Set Name="PDH_LOG_TYPE_CSV"                Value="1" />
+                <Set Name="PDH_LOG_TYPE_TSV"                Value="2" />
+                <Set Name="PDH_LOG_TYPE_TRACE_KERNEL"       Value="4" />
+                <Set Name="PDH_LOG_TYPE_TRACE_GENERIC"      Value="5" />
+                <Set Name="PDH_LOG_TYPE_PERFMON"            Value="6" />
+                <Set Name="PDH_LOG_TYPE_SQL"                Value="7" />
+                <Set Name="PDH_LOG_TYPE_BINARY"             Value="8" />
+            </Enum>
+        </Variable>
+
+        <!-- [PDH_COUNTER_INFO_u_s] -->
+        <Variable Name="[PDH_COUNTER_INFO_u_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="LPTSTR"    Name="szMachineName" />
+            <Field Type="LPTSTR"    Name="szObjectName" />
+            <Field Type="LPTSTR"    Name="szInstanceName" />
+            <Field Type="LPTSTR"    Name="szParentInstance" />
+            <Field Type="DWORD"     Name="dwInstanceIndex" />
+            <Field Type="LPTSTR"    Name="szCounterName" />
+        </Variable>
+
+        <!-- PDH_DATA_ITEM_PATH_ELEMENTS -->
+        <Variable Name="PDH_DATA_ITEM_PATH_ELEMENTS" Type="Struct">
+            <Field Type="LPTSTR"    Name="szMachineName" />
+            <Field Type="GUID"      Name="ObjectGUID" />
+            <Field Type="DWORD"     Name="dwItemId" />
+            <Field Type="LPTSTR"    Name="szInstanceName" />
+        </Variable>
+
+        <!-- PDH_COUNTER_PATH_ELEMENTS -->
+        <Variable Name="PDH_COUNTER_PATH_ELEMENTS" Type="Struct">
+            <Field Type="LPTSTR"    Name="szMachineName" />
+            <Field Type="LPTSTR"    Name="szObjectName" />
+            <Field Type="LPTSTR"    Name="szInstanceName" />
+            <Field Type="LPTSTR"    Name="szParentInstance" />
+            <Field Type="DWORD"     Name="dwInstanceIndex" />
+            <Field Type="LPTSTR"    Name="szCounterName" />
+        </Variable>
+        <Variable Name="PDH_COUNTER_PATH_ELEMENTS*" Type="Pointer" Base="PDH_COUNTER_PATH_ELEMENTS" />
+
+        <!-- [PDH_COUNTER_INFO_u] -->
+        <Variable Name="[PDH_COUNTER_INFO_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="PDH_DATA_ITEM_PATH_ELEMENTS"   Name="DataItemPath" />
+            <Field Type="PDH_COUNTER_PATH_ELEMENTS"     Name="CounterPath" />
+            <Field Type="[PDH_COUNTER_INFO_u_s]"        Name="" />
+        </Variable>
+
+        <!-- PDH_COUNTER_INFO -->
+        <Variable Name="PDH_COUNTER_INFO" Type="Struct">
+            <Field Type="DWORD"                 Name="dwLength" />
+            <Field Type="DWORD"                 Name="dwType" />
+            <Field Type="DWORD"                 Name="CVersion" />
+            <Field Type="DWORD"                 Name="CStatus" />
+            <Field Type="LONG"                  Name="lScale" />
+            <Field Type="LONG"                  Name="lDefaultScale" />
+            <Field Type="DWORD_PTR"             Name="dwUserData" />
+            <Field Type="DWORD_PTR"             Name="dwQueryUserData" />
+            <Field Type="LPTSTR"                Name="szFullPath" />
+            <Field Type="[PDH_COUNTER_INFO_u]"  Name="" />
+            <Field Type="LPTSTR"                Name="szExplainText" />
+            <Field Type="DWORD [1]"             Name="DataBuffer" />
+        </Variable>
+        <Variable Name="PPDH_COUNTER_INFO" Type="Pointer" Base="PDH_COUNTER_INFO" />
+
+        <!-- [PDH_FMT_COUNTERVALUE_u] -->
+        <Variable Name="[PDH_FMT_COUNTERVALUE_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="LONG"          Name="longValue" />
+            <Field Type="double"        Name="doubleValue" />
+            <Field Type="LONGLONG"      Name="largeValue" />
+            <Field Type="LPCSTR"        Name="AnsiStringValue" />
+            <Field Type="LPCWSTR"       Name="WideStringValue" />
+        </Variable>
+
+        <!-- PDH_FMT_COUNTERVALUE -->
+        <Variable Name="PDH_FMT_COUNTERVALUE" Type="Struct">
+            <Field Type="DWORD"                     Name="CStatus" />
+            <Field Type="[PDH_FMT_COUNTERVALUE_u]"  Name="" />
+        </Variable>
+        <Variable Name="PPDH_FMT_COUNTERVALUE" Type="Pointer" Base="PDH_FMT_COUNTERVALUE" />
+
+        <!-- PDH_FMT_COUNTERVALUE_ITEM -->
+        <Variable Name="PDH_FMT_COUNTERVALUE_ITEM" Type="Struct">
+            <Field Type="LPTSTR"                    Name="szName" />
+            <Field Type="PDH_FMT_COUNTERVALUE"      Name="FmtValue" />
+        </Variable>
+        <Variable Name="PPDH_FMT_COUNTERVALUE_ITEM" Type="Pointer" Base="PDH_FMT_COUNTERVALUE_ITEM" />
+
+        <!-- PDH_STATISTICS -->
+        <Variable Name="PDH_STATISTICS" Type="Struct">
+            <Field Type="DWORD"                     Name="dwFormat" />
+            <Field Type="DWORD"                     Name="count" />
+            <Field Type="PDH_FMT_COUNTERVALUE"      Name="min" />
+            <Field Type="PDH_FMT_COUNTERVALUE"      Name="max" />
+            <Field Type="PDH_FMT_COUNTERVALUE"      Name="mean" />
+        </Variable>
+        <Variable Name="PPDH_STATISTICS" Type="Pointer" Base="PDH_STATISTICS" />
 
         <!-- PDH_RAW_COUNTER -->
         <Variable Name="PDH_RAW_COUNTER" Type="Struct">
@@ -34,6 +133,22 @@
         </Variable>
         <Variable Name="PPDH_RAW_COUNTER" Type="Pointer" Base="PDH_RAW_COUNTER" />
 
+        <!-- PDH_RAW_COUNTER_ITEM -->
+        <Variable Name="PDH_RAW_COUNTER_ITEM" Type="Struct">
+            <Field Type="LPTSTR"            Name="szName" />
+            <Field Type="PDH_RAW_COUNTER"   Name="RawValue" />
+        </Variable>
+        <Variable Name="PPDH_RAW_COUNTER_ITEM" Type="Pointer" Base="PDH_RAW_COUNTER_ITEM" />
+
+        <!-- PDH_RAW_LOG_RECORD -->
+        <Variable Name="PDH_RAW_LOG_RECORD" Type="Struct">
+            <Field Type="DWORD"             Name="dwStructureSize" />
+            <Field Type="[PDH_LOG_TYPE]"    Name="dwRecordType" />
+            <Field Type="DWORD"             Name="dwItems" />
+            <Field Type="UCHAR [1]"         Name="RawBytes" />
+        </Variable>
+        <Variable Name="PPDH_RAW_LOG_RECORD" Type="Pointer" Base="PDH_RAW_LOG_RECORD" />
+
         <!-- PDH_TIME_INFO -->
         <Variable Name="PDH_TIME_INFO" Type="Struct">
             <Field Type="LONGLONG"    	Name="StartTime" />
@@ -42,18 +157,8 @@
         </Variable>
         <Variable Name="PPDH_TIME_INFO" Type="Pointer" Base="PDH_TIME_INFO" />
 
-        <!-- PDH_COUNTER_PATH_ELEMENTS -->
-        <Variable Name="PDH_COUNTER_PATH_ELEMENTS" Type="Struct">
-            <Field Type="LPTSTR"   	Name="szMachineName" />
-            <Field Type="LPTSTR"   	Name="szObjectName" />
-            <Field Type="LPTSTR"   	Name="szInstanceName" />
-            <Field Type="LPTSTR"   	Name="szParentInstance" />
-            <Field Type="DWORD"   	Name="dwInstanceIndex" />
-            <Field Type="LPTSTR"   	Name="szCounterName" />
-        </Variable>
-        <Variable Name="PDH_COUNTER_PATH_ELEMENTS*" Type="Pointer" Base="PDH_COUNTER_PATH_ELEMENTS" />
-        
         <!-- PDH_STATUS -->
+        <!-- TODO: CHECKME: Is this CSTATUS or STATUS? CSTATUS is used in structures -->
         <Variable Name="PDH_STATUS" Type="Alias" Base="LONG">
             <Enum>
                 <Set Name="PDH_CSTATUS_VALID_DATA"                          Value="0x00000000" />
@@ -201,21 +306,7 @@
             </Flag>
         </Variable>
         
-        <Variable Name="[PdhLogType]" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
-            <Enum>
-                <Set Name="PDH_LOG_TYPE_UNDEFINED"          Value="0" />
-                <Set Name="PDH_LOG_TYPE_CSV"                Value="1" />
-                <Set Name="PDH_LOG_TYPE_TSV"                Value="2" />
-                <Set Name="PDH_LOG_TYPE_TRACE_KERNEL"       Value="4" />
-                <Set Name="PDH_LOG_TYPE_TRACE_GENERIC"      Value="5" />
-                <Set Name="PDH_LOG_TYPE_PERFMON"            Value="6" />
-                <Set Name="PDH_LOG_TYPE_SQL"                Value="7" />
-                <Set Name="PDH_LOG_TYPE_BINARY"             Value="8" />
-            </Enum>
-        </Variable>
-        
-        <Variable Name="[PdhLogType*]" Type="Pointer" Base="[PdhLogType]">
+        <Variable Name="[PDH_LOG_TYPE*]" Type="Pointer" Base="[PDH_LOG_TYPE]">
             <Display Name="LPDWORD" />
         </Variable>
             
@@ -546,7 +637,7 @@
         <Api Name="PdhOpenLog" BothCharset="True">
             <Param Type="LPCTSTR" Name="szLogFileName" />
             <Param Type="[PdhOpenLogFlags]" Name="dwAccessFlags" />
-            <Param Type="[PdhLogType*]" Name="lpdwLogType" />
+            <Param Type="[PDH_LOG_TYPE*]" Name="lpdwLogType" />
             <Param Type="PDH_HQUERY" Name="hQuery" />
             <Param Type="DWORD" Name="dwMaxSize" />
             <Param Type="LPCTSTR" Name="szUserCaption" />

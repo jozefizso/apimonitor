@@ -7,15 +7,275 @@
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\cryptography.h.xml" />
     <Module Name="Cryptui.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        <!-- Variables -->
 
-        <!-- TODO: Structures -->
-        <Variable Name="PCCRYPTUI_WIZ_DIGITAL_SIGN_INFO"         Type="Alias" Base="LPVOID" />
-        <Variable Name="PCCRYPTUI_WIZ_EXPORT_INFO"               Type="Alias" Base="LPVOID" />
-        <Variable Name="PCCRYPTUI_WIZ_IMPORT_SRC_INFO"           Type="Alias" Base="LPVOID" />
-        <Variable Name="PCCRYPTUI_VIEWCERTIFICATE_STRUCTW"       Type="Alias" Base="LPVOID" />
-        <Variable Name="CRYPTUI_VIEWSIGNERINFO_STRUCT*"          Type="Alias" Base="LPVOID" />
-        <Variable Name="PCCRYPTUI_SELECTCERTIFICATE_STRUCT"      Type="Alias" Base="LPVOID" />
+        <!-- Variables -->
+        <Variable Name="PFNCFILTERPROC"         Type="Alias" Base="LPVOID" />
+        <Variable Name="PFNCCERTDISPLAYPROC"    Type="Alias" Base="LPVOID" />
+
+        <!-- [CRYPTUI_WIZ_EXPORT_INFO_u] -->
+        <Variable Name="[CRYPTUI_WIZ_EXPORT_INFO_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="PCCERT_CONTEXT"    Name="pCertContext" />
+            <Field Type="PCCTL_CONTEXT"     Name="pCTLContext" />
+            <Field Type="PCCRL_CONTEXT"     Name="pCRLContext" />
+            <Field Type="HCERTSTORE"        Name="hCertStore" />
+        </Variable>
+
+        <!-- CRYPTUI_WIZ_EXPORT_INFO -->
+        <Variable Name="CRYPTUI_WIZ_EXPORT_INFO" Type="Struct">
+            <Field Type="DWORD"                         Name="dwSize" />
+            <Field Type="LPCWSTR"                       Name="pwszExportFileName" />
+            <Field Type="DWORD"                         Name="dwSubjectChoice" />
+            <Field Type="[CRYPTUI_WIZ_EXPORT_INFO_u]"   Name="" />
+            <Field Type="DWORD"                         Name="cStores" />
+            <Field Type="HCERTSTORE*"                   Name="rghStores" Count="cStores" />
+        </Variable>
+        <Variable Name="PCCRYPTUI_WIZ_EXPORT_INFO" Type="Pointer" Base="CRYPTUI_WIZ_EXPORT_INFO" />
+
+        <!-- [CRYPTUI_WIZ_IMPORT_SRC_INFO_CHOICE] -->
+        <Variable Name="[CRYPTUI_WIZ_IMPORT_SRC_INFO_CHOICE]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="CRYPTUI_WIZ_IMPORT_SUBJECT_FILE"             Value="1" />
+                <Set Name="CRYPTUI_WIZ_IMPORT_SUBJECT_CERT_CONTEXT"     Value="2" />
+                <Set Name="CRYPTUI_WIZ_IMPORT_SUBJECT_CTL_CONTEXT"      Value="3" />
+                <Set Name="CRYPTUI_WIZ_IMPORT_SUBJECT_CRL_CONTEXT"      Value="4" />
+                <Set Name="CRYPTUI_WIZ_IMPORT_SUBJECT_CERT_STORE"       Value="5" />
+            </Enum>
+        </Variable>
+
+        <!-- [CRYPTUI_WIZ_IMPORT_SRC_INFO_u] -->
+        <Variable Name="[CRYPTUI_WIZ_IMPORT_SRC_INFO_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="LPCWSTR"               Name="pwszFileName" />
+            <Field Type="PCCERT_CONTEXT"        Name="pCertContext" />
+            <Field Type="PCCTL_CONTEXT"         Name="pCTLContext" />
+            <Field Type="PCCRL_CONTEXT"         Name="pCRLContext" />
+            <Field Type="HCERTSTORE"            Name="hCertStore" />
+        </Variable>
+
+        <!-- CRYPTUI_WIZ_IMPORT_SRC_INFO -->
+        <Variable Name="CRYPTUI_WIZ_IMPORT_SRC_INFO" Type="Struct">
+            <Field Type="DWORD"                                 Name="dwSize" />
+            <Field Type="[CRYPTUI_WIZ_IMPORT_SRC_INFO_CHOICE]"  Name="dwSubjectChoice" />
+            <Field Type="[CRYPTUI_WIZ_IMPORT_SRC_INFO_u]"       Name="" />
+            <Field Type="DWORD"                                 Name="dwFlags" />
+            <Field Type="LPCWSTR"                               Name="pwszPassword" />
+        </Variable>
+        <Variable Name="PCCRYPTUI_WIZ_IMPORT_SRC_INFO" Type="Pointer" Base="CRYPTUI_WIZ_IMPORT_SRC_INFO" />
+
+        <!-- [CRYPTUI_VIEWCERTIFICATE_STRUCT_u] -->
+        <Variable Name="[CRYPTUI_VIEWCERTIFICATE_STRUCT_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="CRYPT_PROVIDER_DATA*"  Name="pCryptProviderData" />
+            <Field Type="HANDLE"                Name="hWVTStateData" />
+        </Variable>
+
+        <!-- [CRYPTUI_VIEWCERTIFICATE_STRUCT_FLAGS] -->
+        <Variable Name="[CRYPTUI_VIEWCERTIFICATE_STRUCT_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="CRYPTUI_HIDE_HIERARCHYPAGE"                      Value="0x00000001" />
+                <Set Name="CRYPTUI_HIDE_DETAILPAGE"                         Value="0x00000002" />
+                <Set Name="CRYPTUI_DISABLE_EDITPROPERTIES"                  Value="0x00000004" />
+                <Set Name="CRYPTUI_ENABLE_EDITPROPERTIES"                   Value="0x00000008" />
+                <Set Name="CRYPTUI_DISABLE_ADDTOSTORE"                      Value="0x00000010" />
+                <Set Name="CRYPTUI_ENABLE_ADDTOSTORE"                       Value="0x00000020" />
+                <Set Name="CRYPTUI_ACCEPT_DECLINE_STYLE"                    Value="0x00000040" />
+                <Set Name="CRYPTUI_IGNORE_UNTRUSTED_ROOT"                   Value="0x00000080" />
+                <Set Name="CRYPTUI_DONT_OPEN_STORES"                        Value="0x00000100" />
+                <Set Name="CRYPTUI_ONLY_OPEN_ROOT_STORE"                    Value="0x00000200" />
+                <Set Name="CRYPTUI_WARN_UNTRUSTED_ROOT"                     Value="0x00000400" />
+                <Set Name="CRYPTUI_ENABLE_REVOCATION_CHECKING"              Value="0x00000800" />
+                <Set Name="CRYPTUI_WARN_REMOTE_TRUST"                       Value="0x00001000" />
+                <Set Name="CRYPTUI_DISABLE_EXPORT"                          Value="0x00002000" />
+                <Set Name="CRYPTUI_ENABLE_REVOCATION_CHECK_END_CERT"        Value="0x00004000" />
+                <Set Name="CRYPTUI_ENABLE_REVOCATION_CHECK_CHAIN"           Value="0x00008000" />
+                <Set Name="CRYPTUI_DISABLE_HTMLLINK"                        Value="0x00010000" />
+                <Set Name="CRYPTUI_DISABLE_ISSUERSTATEMENT"                 Value="0x00020000" />
+                <Set Name="CRYPTUI_CACHE_ONLY_URL_RETRIEVAL"                Value="0x00040000" />
+            </Flag>
+        </Variable>
+
+        <!-- CRYPTUI_VIEWCERTIFICATE_STRUCT -->
+        <Variable Name="CRYPTUI_VIEWCERTIFICATE_STRUCT" Type="Struct">
+            <Field Type="DWORD"                                     Name="dwSize" />
+            <Field Type="HWND"                                      Name="hwndParent" />
+            <Field Type="[CRYPTUI_VIEWCERTIFICATE_STRUCT_FLAGS]"    Name="dwFlags" />
+            <Field Type="LPCTSTR"                                   Name="szTitle" />
+            <Field Type="PCCERT_CONTEXT"                            Name="pCertContext" />
+            <Field Type="LPCSTR*"                                   Name="rgszPurposes" Count="cPurposes" />
+            <Field Type="DWORD"                                     Name="cPurposes" />
+            <Field Type="[CRYPTUI_VIEWCERTIFICATE_STRUCT_u]"        Name="" />
+            <Field Type="BOOL"                                      Name="fpCryptProviderDataTrustedUsage" />
+            <Field Type="DWORD"                                     Name="idxSigner" />
+            <Field Type="DWORD"                                     Name="idxCert" />
+            <Field Type="BOOL"                                      Name="fCounterSigner" />
+            <Field Type="DWORD"                                     Name="idxCounterSigner" />
+            <Field Type="DWORD"                                     Name="cStores" />
+            <Field Type="HCERTSTORE*"                               Name="rghStores" Count="cStores" />
+            <Field Type="DWORD"                                     Name="cPropSheetPages" />
+            <Field Type="LPCPROPSHEETPAGE"                          Name="rgPropSheetPages" Count="cPropSheetPages" />
+            <Field Type="DWORD"                                     Name="nStartPage" />
+        </Variable>
+        <Variable Name="PCCRYPTUI_VIEWCERTIFICATE_STRUCT" Type="Pointer" Base="CRYPTUI_VIEWCERTIFICATE_STRUCT" />
+
+        <!-- CRYPTUI_VIEWSIGNERINFO_STRUCT -->
+        <Variable Name="CRYPTUI_VIEWSIGNERINFO_STRUCT" Type="Struct">
+            <Field Type="DWORD"                 Name="dwSize" />
+            <Field Type="HWND"                  Name="hwndParent" />
+            <Field Type="DWORD"                 Name="dwFlags" />
+            <Field Type="LPCTSTR"               Name="szTitle" />
+            <Field Type="CMSG_SIGNER_INFO*"     Name="pSignerInfo" />
+            <Field Type="HCRYPTMSG"             Name="hMsg" />
+            <Field Type="LPCSTR"                Name="pszOID" />
+            <Field Type="DWORD_PTR"             Name="dwReserved" />
+            <Field Type="DWORD"                 Name="cStores" />
+            <Field Type="HCERTSTORE*"           Name="rghStores" Count="cStores" />
+            <Field Type="DWORD"                 Name="cPropSheetPages" />
+            <Field Type="LPCPROPSHEETPAGE"      Name="rgPropSheetPages" Count="cPropSheetPages" />
+        </Variable>
+        <Variable Name="CRYPTUI_VIEWSIGNERINFO_STRUCT*" Type="Pointer" Base="CRYPTUI_VIEWSIGNERINFO_STRUCT" />
+
+        <!-- [CRYPTUI_SELECT_FLAGS] -->
+        <Variable Name="[CRYPTUI_SELECT_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="CRYPTUI_SELECT_ISSUEDTO_COLUMN"          Value="0x1" />
+                <Set Name="CRYPTUI_SELECT_ISSUEDBY_COLUMN"          Value="0x2" />
+                <Set Name="CRYPTUI_SELECT_INTENDEDUSE_COLUMN"       Value="0x4" />
+                <Set Name="CRYPTUI_SELECT_FRIENDLYNAME_COLUMN"      Value="0x8" />
+                <Set Name="CRYPTUI_SELECT_LOCATION_COLUMN"          Value="0x10" />
+                <Set Name="CRYPTUI_SELECT_EXPIRATION_COLUMN"        Value="0x20" />
+            </Flag>
+        </Variable>
+
+        <!-- CRYPTUI_SELECTCERTIFICATE_STRUCT -->
+        <!-- TODO: Decode dwFlags -->
+        <Variable Name="CRYPTUI_SELECTCERTIFICATE_STRUCT" Type="Struct">
+            <Field Type="DWORD"                     Name="dwSize" />
+            <Field Type="HWND"                      Name="hwndParent" />
+            <Field Type="DWORD"                     Name="dwFlags" />
+            <Field Type="LPCTSTR"                   Name="szTitle" />
+            <Field Type="[CRYPTUI_SELECT_FLAGS]"    Name="dwDontUseColumn" />
+            <Field Type="LPCTSTR"                   Name="szDisplayString" />
+            <Field Type="PFNCFILTERPROC"            Name="pFilterCallback" />
+            <Field Type="PFNCCERTDISPLAYPROC"       Name="pDisplayCallback" />
+            <Field Type="void*"                     Name="pvCallbackData" />
+            <Field Type="DWORD"                     Name="cDisplayStores" />
+            <Field Type="HCERTSTORE*"               Name="rghDisplayStores" Count="cDisplayStores" />
+            <Field Type="DWORD"                     Name="cStores" />
+            <Field Type="HCERTSTORE*"               Name="rghStores" Count="cStores" />
+            <Field Type="DWORD"                     Name="cPropSheetPages" />
+            <Field Type="LPCPROPSHEETPAGE"          Name="rgPropSheetPages" Count="cPropSheetPages" />
+            <Field Type="HCERTSTORE"                Name="hSelectedCertStore" />
+        </Variable>
+        <Variable Name="PCCRYPTUI_SELECTCERTIFICATE_STRUCT" Type="Pointer" Base="CRYPTUI_SELECTCERTIFICATE_STRUCT" />
+
+        <!-- CRYPTUI_WIZ_DIGITAL_SIGN_BLOB_INFO -->
+        <Variable Name="CRYPTUI_WIZ_DIGITAL_SIGN_BLOB_INFO" Type="Struct">
+            <Field Type="DWORD"     Name="dwSize" />
+            <Field Type="GUID*"     Name="pGuidSubject" />
+            <Field Type="DWORD"     Name="cbBlob" />
+            <Field Type="BYTE*"     Name="pbBlob" Length="cbBlob" />
+            <Field Type="LPCWSTR"   Name="pwszDisplayName" />
+        </Variable>
+        <Variable Name="PCCRYPTUI_WIZ_DIGITAL_SIGN_BLOB_INFO" Type="Pointer" Base="CRYPTUI_WIZ_DIGITAL_SIGN_BLOB_INFO" />
+
+        <!-- [CRYPTUI_WIZ_DIGITAL_SIGN_INFO_u1] -->
+        <Variable Name="[CRYPTUI_WIZ_DIGITAL_SIGN_INFO_u1]" Type="Union">
+            <Display Name="union" />
+            <Field Type="LPCWSTR"                               Name="pwszFileName" />
+            <Field Type="PCCRYPTUI_WIZ_DIGITAL_SIGN_BLOB_INFO"  Name="pSignBlobInfo" />
+        </Variable>
+
+        <!-- CRYPTUI_WIZ_DIGITAL_SIGN_STORE_INFO -->
+        <Variable Name="CRYPTUI_WIZ_DIGITAL_SIGN_STORE_INFO" Type="Struct">
+            <Field Type="DWORD"             Name="dwSize" />
+            <Field Type="DWORD"             Name="cCertStore" />
+            <Field Type="HCERTSTORE*"       Name="rghCertStore" Count="cCertStore" />
+            <Field Type="PFNCFILTERPROC"    Name="pFilterCallback" />
+            <Field Type="void*"             Name="pvCallbackData" />
+        </Variable>
+        <Variable Name="PCCRYPTUI_WIZ_DIGITAL_SIGN_STORE_INFO" Type="Pointer" Base="CRYPTUI_WIZ_DIGITAL_SIGN_STORE_INFO" />
+
+        <!-- CRYPTUI_WIZ_DIGITAL_SIGN_PVK_FILE_INFO -->
+        <Variable Name="CRYPTUI_WIZ_DIGITAL_SIGN_PVK_FILE_INFO" Type="Struct">
+            <Field Type="DWORD"         Name="dwSize" />
+            <Field Type="LPWSTR"        Name="pwszPvkFileName" />
+            <Field Type="LPWSTR"        Name="pwszProvName" />
+            <Field Type="[CryptProv]"   Name="dwProvType" />
+        </Variable>
+        <Variable Name="PCCRYPTUI_WIZ_DIGITAL_SIGN_PVK_FILE_INFO" Type="Pointer" Base="CRYPTUI_WIZ_DIGITAL_SIGN_PVK_FILE_INFO" />
+
+        <!-- [CRYPTUI_WIZ_DIGITAL_SIGN_CERT_PVK_INFO_u] -->
+        <Variable Name="[CRYPTUI_WIZ_DIGITAL_SIGN_CERT_PVK_INFO_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="PCCRYPTUI_WIZ_DIGITAL_SIGN_PVK_FILE_INFO"  Name="pPvkFileInfo" />
+            <Field Type="PCRYPT_KEY_PROV_INFO"                      Name="pPvkProvInfo" />
+        </Variable>
+
+        <!-- [CRYPTUI_WIZ_DIGITAL_SIGN_CERT_PVK_INFO_CHOICE] -->
+        <Variable Name="[CRYPTUI_WIZ_DIGITAL_SIGN_CERT_PVK_INFO_CHOICE]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="CRYPTUI_WIZ_DIGITAL_SIGN_PVK_FILE"   Value="0x01" />
+                <Set Name="CRYPTUI_WIZ_DIGITAL_SIGN_PVK_PROV"   Value="0x02" />
+            </Enum>
+        </Variable>
+
+        <!-- CRYPTUI_WIZ_DIGITAL_SIGN_CERT_PVK_INFO -->
+        <Variable Name="CRYPTUI_WIZ_DIGITAL_SIGN_CERT_PVK_INFO" Type="Struct">
+            <Field Type="DWORD"                                             Name="dwSize" />
+            <Field Type="LPWSTR"                                            Name="pwszSigningCertFileName" />
+            <Field Type="[CRYPTUI_WIZ_DIGITAL_SIGN_CERT_PVK_INFO_CHOICE]"   Name="dwPvkChoice" />
+            <Field Type="[CRYPTUI_WIZ_DIGITAL_SIGN_CERT_PVK_INFO_u]"        Name="" />
+        </Variable>
+        <Variable Name="PCCRYPTUI_WIZ_DIGITAL_SIGN_CERT_PVK_INFO" Type="Pointer" Base="CRYPTUI_WIZ_DIGITAL_SIGN_CERT_PVK_INFO" />
+
+        <!-- [CRYPTUI_WIZ_DIGITAL_SIGN_INFO_u2] -->
+        <Variable Name="[CRYPTUI_WIZ_DIGITAL_SIGN_INFO_u2]" Type="Union">
+            <Display Name="union" />
+            <Field Type="PCCERT_CONTEXT"                            Name="pSigningCertContext" />
+            <Field Type="PCCRYPTUI_WIZ_DIGITAL_SIGN_STORE_INFO"     Name="pSigningCertStore" />
+            <Field Type="PCCRYPTUI_WIZ_DIGITAL_SIGN_CERT_PVK_INFO"  Name="pSigningCertPvkInfo" />
+        </Variable>
+
+        <!-- [CRYPTUI_WIZ_DIGITAL_SIGN_EXTENDED_INFO_FLAGS] -->
+        <Variable Name="[CRYPTUI_WIZ_DIGITAL_SIGN_EXTENDED_INFO_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="CRYPTUI_WIZ_DIGITAL_SIGN_COMMERCIAL"     Value="0x0001" />
+                <Set Name="CRYPTUI_WIZ_DIGITAL_SIGN_INDIVIDUAL"     Value="0x0002" />
+            </Flag>
+        </Variable>
+
+        <!-- CRYPTUI_WIZ_DIGITAL_SIGN_EXTENDED_INFO -->
+        <Variable Name="CRYPTUI_WIZ_DIGITAL_SIGN_EXTENDED_INFO" Type="Struct">
+            <Field Type="DWORD"                                             Name="dwSize" />
+            <Field Type="[CRYPTUI_WIZ_DIGITAL_SIGN_EXTENDED_INFO_FLAGS]"    Name="dwAttrFlags" />
+            <Field Type="LPCWSTR"                                           Name="pwszDescription" />
+            <Field Type="LPCWSTR"                                           Name="pwszMoreInfoLocation" />
+            <Field Type="LPCSTR"                                            Name="pszHashAlg" />
+            <Field Type="LPCWSTR"                                           Name="pwszSigningCertDisplayString" />
+            <Field Type="HCERTSTORE"                                        Name="hAdditionalCertStore" />
+            <Field Type="PCRYPT_ATTRIBUTES"                                 Name="psAuthenticated" />
+            <Field Type="PCRYPT_ATTRIBUTES"                                 Name="psUnauthenticated" />
+        </Variable>
+        <Variable Name="PCCRYPTUI_WIZ_DIGITAL_SIGN_EXTENDED_INFO" Type="Pointer" Base="CRYPTUI_WIZ_DIGITAL_SIGN_EXTENDED_INFO" />
+
+        <!-- CRYPTUI_WIZ_DIGITAL_SIGN_INFO -->
+        <Variable Name="CRYPTUI_WIZ_DIGITAL_SIGN_INFO" Type="Struct">
+            <Field Type="DWORD"                                     Name="dwSize" />
+            <Field Type="DWORD"                                     Name="dwSubjectChoice" />
+            <Field Type="[CRYPTUI_WIZ_DIGITAL_SIGN_INFO_u1]"        Name="" />
+            <Field Type="DWORD"                                     Name="dwSigningCertChoice" />
+            <Field Type="[CRYPTUI_WIZ_DIGITAL_SIGN_INFO_u2]"        Name="" />
+            <Field Type="LPCWSTR"                                   Name="pwszTimestampURL" />
+            <Field Type="DWORD"                                     Name="dwAdditionalCertChoice" />
+            <Field Type="PCCRYPTUI_WIZ_DIGITAL_SIGN_EXTENDED_INFO"  Name="pSignExtInfo" />
+        </Variable>
+        <Variable Name="PCCRYPTUI_WIZ_DIGITAL_SIGN_INFO" Type="Pointer" Base="CRYPTUI_WIZ_DIGITAL_SIGN_INFO" />
 
         <!-- CRYPTUI_WIZ_DIGITAL_SIGN_CONTEXT -->
         <Variable Name="CRYPTUI_WIZ_DIGITAL_SIGN_CONTEXT" Type="Struct">
@@ -35,7 +295,7 @@
             <Field Type="LPCSTR"        Name="pszInitUsageOID" />
         </Variable>
         <Variable Name="PCCRYPTUI_CERT_MGR_STRUCT" Type="Pointer" Base="CRYPTUI_CERT_MGR_STRUCT" />
-        
+
         <Variable Name="[CryptUiWizFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -53,7 +313,7 @@
                 <Set Name="CRYPTUI_WIZ_IMPORT_REMOTE_DEST_STORE"            Value="0x00400000" />
             </Flag>
         </Variable>
-        
+
         <!-- Cryptography -->
         <Category Name="Security/Cryptography/Hash and Digital Signature" />
         <Api Name="CryptUIWizDigitalSign">
@@ -112,7 +372,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="CryptUIDlgViewCertificate" BothCharset="True">
-            <Param Type="PCCRYPTUI_VIEWCERTIFICATE_STRUCTW" Name="pCertViewInfo" />
+            <Param Type="PCCRYPTUI_VIEWCERTIFICATE_STRUCT" Name="pCertViewInfo" />
             <Param Type="BOOL*" Name="pfPropertiesChanged" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />

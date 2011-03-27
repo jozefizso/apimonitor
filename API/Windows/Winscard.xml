@@ -6,15 +6,47 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Winscard.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        <!-- Variables -->
-        <Variable Name="SCARDCONTEXT"           Type="Alias"    Base="ULONG_PTR" />
-        <Variable Name="LPSCARDCONTEXT"         Type="Pointer"  Base="SCARDCONTEXT" />
-        <Variable Name="SCARDHANDLE"            Type="Alias"    Base="ULONG_PTR" />
-        <Variable Name="LPSCARDHANDLE"          Type="Pointer"  Base="SCARDHANDLE" />
         
-        <!-- TODO: Structures -->
-        <Variable Name="LPSCARD_READERSTATE"     Type="Alias"        Base="LPVOID" />
-        <Variable Name="LPSCARD_ATRMASK"         Type="Alias"        Base="LPVOID" />
+        <!-- Variables -->
+        <Variable Name="BYTE [36]" Type="Array" Base="BYTE" Count="36"/>
+
+        <!-- [SCARD_STATE] -->
+        <Variable Name="[SCARD_STATE]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="SCARD_STATE_UNAWARE"             Value="0x00000000" />
+                <Set Name="SCARD_STATE_IGNORE"              Value="0x00000001" />
+                <Set Name="SCARD_STATE_CHANGED"             Value="0x00000002" />
+                <Set Name="SCARD_STATE_UNKNOWN"             Value="0x00000004" />
+                <Set Name="SCARD_STATE_UNAVAILABLE"         Value="0x00000008" />
+                <Set Name="SCARD_STATE_EMPTY"               Value="0x00000010" />
+                <Set Name="SCARD_STATE_PRESENT"             Value="0x00000020" />
+                <Set Name="SCARD_STATE_ATRMATCH"            Value="0x00000040" />
+                <Set Name="SCARD_STATE_EXCLUSIVE"           Value="0x00000080" />
+                <Set Name="SCARD_STATE_INUSE"               Value="0x00000100" />
+                <Set Name="SCARD_STATE_MUTE"                Value="0x00000200" />
+                <Set Name="SCARD_STATE_UNPOWERED"           Value="0x00000400" />
+            </Flag>
+        </Variable>
+
+        <!-- SCARD_READERSTATE -->
+        <Variable Name="SCARD_READERSTATE" Type="Struct">
+            <Field Type="LPCTSTR"           Name="szReader" />
+            <Field Type="LPVOID"            Name="pvUserData" />
+            <Field Type="[SCARD_STATE]"     Name="dwCurrentState" />
+            <Field Type="[SCARD_STATE]"     Name="dwEventState" />
+            <Field Type="DWORD"             Name="cbAtr" />
+            <Field Type="BYTE [36]"         Name="rgbAtr" Count="cbAtr" />
+        </Variable>
+        <Variable Name="LPSCARD_READERSTATE" Type="Pointer" Base="SCARD_READERSTATE" />
+
+        <!-- SCARD_ATRMASK -->
+        <Variable Name="SCARD_ATRMASK" Type="Struct">
+            <Field Type="DWORD"         Name="cbAtr" />
+            <Field Type="BYTE [36]"     Name="rgbAtr" Count="cbAtr" />
+            <Field Type="BYTE [36]"     Name="rgbMask" Count="cbAtr" />
+        </Variable>
+        <Variable Name="LPSCARD_ATRMASK" Type="Pointer" Base="SCARD_ATRMASK" />
 
         <!-- SCARD_IO_REQUEST -->
         <Variable Name="SCARD_IO_REQUEST" Type="Struct">
@@ -23,7 +55,8 @@
         </Variable>
         <Variable Name="LPSCARD_IO_REQUEST"  Type="Pointer" Base="SCARD_IO_REQUEST" />
         <Variable Name="LPCSCARD_IO_REQUEST" Type="Pointer" Base="SCARD_IO_REQUEST" />
-        
+
+        <!-- [SCardScope] -->
         <Variable Name="[SCardScope]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>

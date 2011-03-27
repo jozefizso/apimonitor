@@ -7,48 +7,518 @@
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\multimedia.h.xml" />
     <Module Name="Winmm.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        <!-- Variables -->
-        <Variable Name="MCIDEVICEID"                Type="Alias"    Base="UINT" />
-        <Variable Name="YIELDPROC"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="HMIDI"                      Type="Alias"    Base="HANDLE" />
-        <Variable Name="HMIDIOUT"                   Type="Alias"    Base="HANDLE" />
-        <Variable Name="LPHMIDIOUT"                 Type="Pointer"  Base="HMIDIOUT" />
-        <Variable Name="HMIDIIN"                    Type="Alias"    Base="HANDLE" />
-        <Variable Name="LPHMIDIIN"                  Type="Pointer"  Base="HMIDIIN" />
-        <Variable Name="HMIDISTRM"                  Type="Alias"    Base="HANDLE" />
-        <Variable Name="LPHMIDISTRM"                Type="Pointer"  Base="HMIDISTRM" />
-        <Variable Name="HMIXER"                     Type="Alias"    Base="HANDLE" />
-        <Variable Name="LPHMIXER"                   Type="Pointer"  Base="HMIXER" />
-        <Variable Name="HMIXEROBJ"                  Type="Alias"    Base="HMIXER" />
-        <Variable Name="HMMIO"                      Type="Alias"    Base="HANDLE" />
-        <Variable Name="LPMMIOPROC"                 Type="Alias"    Base="LPVOID" />
-        <Variable Name="HPSTR"                      Type="Alias"    Base="char*" />
-        <Variable Name="char _huge*"                Type="Alias"    Base="char*" />
-        <Variable Name="HWAVEIN"                    Type="Alias"    Base="HANDLE" />
-        <Variable Name="LPHWAVEIN"                  Type="Pointer"  Base="HWAVEIN" />
-        <Variable Name="HWAVEOUT"                   Type="Alias"    Base="HANDLE" />
-        <Variable Name="LPHWAVEOUT"                 Type="Pointer"  Base="HWAVEOUT" />
-        <Variable Name="LPTIMECALLBACK"             Type="Alias"    Base="LPVOID" />
 
-        <!-- TODO: Should we display FOURCC as String/Char ? -->
-        <Variable Name="FOURCC"                     Type="Alias"    Base="DWORD" />
-        
-        <!-- TODO: Structures -->
-        <Variable Name="LPAUXCAPS"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPJOYCAPS"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPMIDIHDR"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPMIDIINCAPS"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPMIDIOUTCAPS"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPMMTIME"                   Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPMIXERCONTROLDETAILS"      Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPMIXERCAPS"                Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPMIXERLINECONTROLS"        Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPMIXERLINE"                Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPMMIOINFO"                 Type="Alias"    Base="LPVOID" />
-        <Variable Name="const LPMMIOINFO"           Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPWAVEHDR"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPWAVEINCAPS"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPWAVEOUTCAPS"              Type="Alias"    Base="LPVOID" />
+        <!-- Variables -->
+        <Variable Name="MCIDEVICEID"                        Type="Alias"    Base="UINT" />
+        <Variable Name="YIELDPROC"                          Type="Alias"    Base="LPVOID" />
+        <Variable Name="HMIDI"                              Type="Alias"    Base="HANDLE" />
+        <Variable Name="HMIDIOUT"                           Type="Alias"    Base="HANDLE" />
+        <Variable Name="LPHMIDIOUT"                         Type="Pointer"  Base="HMIDIOUT" />
+        <Variable Name="HMIDIIN"                            Type="Alias"    Base="HANDLE" />
+        <Variable Name="LPHMIDIIN"                          Type="Pointer"  Base="HMIDIIN" />
+        <Variable Name="HMIDISTRM"                          Type="Alias"    Base="HANDLE" />
+        <Variable Name="LPHMIDISTRM"                        Type="Pointer"  Base="HMIDISTRM" />
+        <Variable Name="HMIXER"                             Type="Alias"    Base="HANDLE" />
+        <Variable Name="LPHMIXER"                           Type="Pointer"  Base="HMIXER" />
+        <Variable Name="HMIXEROBJ"                          Type="Alias"    Base="HMIXER" />
+        <Variable Name="HMMIO"                              Type="Alias"    Base="HANDLE" />
+        <Variable Name="LPMMIOPROC"                         Type="Alias"    Base="LPVOID" />
+        <Variable Name="HPSTR"                              Type="Alias"    Base="LPVOID" />
+        <Variable Name="HWAVEIN"                            Type="Alias"    Base="HANDLE" />
+        <Variable Name="LPHWAVEIN"                          Type="Pointer"  Base="HWAVEIN" />
+        <Variable Name="HWAVEOUT"                           Type="Alias"    Base="HANDLE" />
+        <Variable Name="LPHWAVEOUT"                         Type="Pointer"  Base="HWAVEOUT" />
+        <Variable Name="LPTIMECALLBACK"                     Type="Alias"    Base="LPVOID" />
+        <Variable Name="MMVERSION"                          Type="Alias"    Base="UINT" />
+        <Variable Name="DWORD [6]"                          Type="Array"    Base="DWORD"        Count="6" />
+        <Variable Name="DWORD_PTR [8]"                      Type="Array"    Base="DWORD_PTR"    Count="8" />
+        <Variable Name="TCHAR [MAXPNAMELEN]"                Type="Array"    Base="TCHAR"        Count="32" />
+        <Variable Name="TCHAR [MIXER_SHORT_NAME_CHARS]"     Type="Array"    Base="TCHAR"        Count="16" />
+        <Variable Name="TCHAR [MIXER_LONG_NAME_CHARS]"      Type="Array"    Base="TCHAR"        Count="64" />
+        <Variable Name="TCHAR [MAX_JOYSTICKOEMVXDNAME]"     Type="Array"    Base="TCHAR"        Count="260" />
+
+        <!-- [WAVE_FORMAT] -->
+        <Variable Name="[WAVE_FORMAT]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="WAVE_INVALIDFORMAT"      Value="0x00000000" />
+                <Set Name="WAVE_FORMAT_1M08"        Value="0x00000001" />
+                <Set Name="WAVE_FORMAT_1S08"        Value="0x00000002" />
+                <Set Name="WAVE_FORMAT_1M16"        Value="0x00000004" />
+                <Set Name="WAVE_FORMAT_1S16"        Value="0x00000008" />
+                <Set Name="WAVE_FORMAT_2M08"        Value="0x00000010" />
+                <Set Name="WAVE_FORMAT_2S08"        Value="0x00000020" />
+                <Set Name="WAVE_FORMAT_2M16"        Value="0x00000040" />
+                <Set Name="WAVE_FORMAT_2S16"        Value="0x00000080" />
+                <Set Name="WAVE_FORMAT_4M08"        Value="0x00000100" />
+                <Set Name="WAVE_FORMAT_4S08"        Value="0x00000200" />
+                <Set Name="WAVE_FORMAT_4M16"        Value="0x00000400" />
+                <Set Name="WAVE_FORMAT_4S16"        Value="0x00000800" />
+                <Set Name="WAVE_FORMAT_44M08"       Value="0x00000100" />
+                <Set Name="WAVE_FORMAT_44S08"       Value="0x00000200" />
+                <Set Name="WAVE_FORMAT_44M16"       Value="0x00000400" />
+                <Set Name="WAVE_FORMAT_44S16"       Value="0x00000800" />
+                <Set Name="WAVE_FORMAT_48M08"       Value="0x00001000" />
+                <Set Name="WAVE_FORMAT_48S08"       Value="0x00002000" />
+                <Set Name="WAVE_FORMAT_48M16"       Value="0x00004000" />
+                <Set Name="WAVE_FORMAT_48S16"       Value="0x00008000" />
+                <Set Name="WAVE_FORMAT_96M08"       Value="0x00010000" />
+                <Set Name="WAVE_FORMAT_96S08"       Value="0x00020000" />
+                <Set Name="WAVE_FORMAT_96M16"       Value="0x00040000" />
+                <Set Name="WAVE_FORMAT_96S16"       Value="0x00080000" />
+            </Flag>
+        </Variable>
+
+        <!-- [AUXCAPS_TECH] -->
+        <Variable Name="[AUXCAPS_TECH]" Type="Alias" Base="WORD">
+            <Display Name="WORD" />
+            <Enum>
+                <Set Name="AUXCAPS_CDAUDIO"     Value="1" />
+                <Set Name="AUXCAPS_AUXIN"       Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- [AUXCAPS_SUPPORT] -->
+        <Variable Name="[AUXCAPS_SUPPORT]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="AUXCAPS_VOLUME"      Value="0x0001" />
+                <Set Name="AUXCAPS_LRVOLUME"    Value="0x0002" />
+            </Flag>
+        </Variable>
+
+        <!-- AUXCAPS -->
+        <Variable Name="AUXCAPS" Type="Struct" Pack="1">
+            <Field Type="WORD"                  Name="wMid" />
+            <Field Type="WORD"                  Name="wPid" />
+            <Field Type="MMVERSION"             Name="vDriverVersion" />
+            <Field Type="TCHAR [MAXPNAMELEN]"   Name="szPname" />
+            <Field Type="[AUXCAPS_TECH]"        Name="wTechnology" />
+            <Field Type="WORD"                  Name="wReserved1" />
+            <Field Type="[AUXCAPS_SUPPORT]"     Name="dwSupport" />
+        </Variable>
+        <Variable Name="LPAUXCAPS" Type="Pointer" Base="AUXCAPS" />
+
+        <!-- [JOYCAPS_FLAGS] -->
+        <Variable Name="[JOYCAPS_FLAGS]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Flag>
+                <Set Name="JOYCAPS_HASZ"        Value="0x0001" />
+                <Set Name="JOYCAPS_HASR"        Value="0x0002" />
+                <Set Name="JOYCAPS_HASU"        Value="0x0004" />
+                <Set Name="JOYCAPS_HASV"        Value="0x0008" />
+                <Set Name="JOYCAPS_HASPOV"      Value="0x0010" />
+                <Set Name="JOYCAPS_POV4DIR"     Value="0x0020" />
+                <Set Name="JOYCAPS_POVCTS"      Value="0x0040" />
+            </Flag>
+        </Variable>
+
+        <!-- JOYCAPS -->
+        <Variable Name="JOYCAPS" Type="Struct" Pack="1">
+            <Field Type="WORD"                              Name="wMid" />
+            <Field Type="WORD"                              Name="wPid" />
+            <Field Type="TCHAR [MAXPNAMELEN]"               Name="szPname" />
+            <Field Type="UINT"                              Name="wXmin" />
+            <Field Type="UINT"                              Name="wXmax" />
+            <Field Type="UINT"                              Name="wYmin" />
+            <Field Type="UINT"                              Name="wYmax" />
+            <Field Type="UINT"                              Name="wZmin" />
+            <Field Type="UINT"                              Name="wZmax" />
+            <Field Type="UINT"                              Name="wNumButtons" />
+            <Field Type="UINT"                              Name="wPeriodMin" />
+            <Field Type="UINT"                              Name="wPeriodMax" />
+            <Field Type="UINT"                              Name="wRmin" />
+            <Field Type="UINT"                              Name="wRmax" />
+            <Field Type="UINT"                              Name="wUmin" />
+            <Field Type="UINT"                              Name="wUmax" />
+            <Field Type="UINT"                              Name="wVmin" />
+            <Field Type="UINT"                              Name="wVmax" />
+            <Field Type="[JOYCAPS_FLAGS]"                   Name="wCaps" />
+            <Field Type="UINT"                              Name="wMaxAxes" />
+            <Field Type="UINT"                              Name="wNumAxes" />
+            <Field Type="UINT"                              Name="wMaxButtons" />
+            <Field Type="TCHAR [MAXPNAMELEN]"               Name="szRegKey" />
+            <Field Type="TCHAR [MAX_JOYSTICKOEMVXDNAME]"    Name="szOEMVxD" />
+        </Variable>
+        <Variable Name="LPJOYCAPS" Type="Pointer" Base="JOYCAPS" />
+
+        <!-- [MIDIHDR_FLAGS] -->
+        <Variable Name="[MIDIHDR_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="MHDR_DONE"       Value="0x00000001" />
+                <Set Name="MHDR_PREPARED"   Value="0x00000002" />
+                <Set Name="MHDR_INQUEUE"    Value="0x00000004" />
+                <Set Name="MHDR_ISSTRM"     Value="0x00000008" />
+            </Flag>
+        </Variable>
+
+        <!-- MIDIHDR -->
+        <Variable Name="MIDIHDR" Type="Struct" Pack="1">
+            <Field Type="LPVOID"            Name="lpData" Display="LPSTR" />
+            <Field Type="DWORD"             Name="dwBufferLength" />
+            <Field Type="DWORD"             Name="dwBytesRecorded" />
+            <Field Type="DWORD_PTR"         Name="dwUser" />
+            <Field Type="[MIDIHDR_FLAGS]"   Name="dwFlags" />
+            <!-- TODO: Self-Referencing Structure lpNext is MIDIHDR* -->
+            <Field Type="LPVOID"            Name="lpNext" Display="MIDIHDR*" />
+            <Field Type="DWORD_PTR"         Name="reserved" />
+            <Field Type="DWORD"             Name="dwOffset" />
+            <Field Type="DWORD_PTR [8]"     Name="dwReserved" />
+        </Variable>
+        <Variable Name="LPMIDIHDR" Type="Pointer" Base="MIDIHDR" />
+
+        <!-- MIDIINCAPS -->
+        <Variable Name="MIDIINCAPS" Type="Struct" Pack="1">
+            <Field Type="WORD"                  Name="wMid" />
+            <Field Type="WORD"                  Name="wPid" />
+            <Field Type="MMVERSION"             Name="vDriverVersion" />
+            <Field Type="TCHAR [MAXPNAMELEN]"   Name="szPname" />
+            <Field Type="DWORD"                 Name="dwSupport" />
+        </Variable>
+        <Variable Name="LPMIDIINCAPS" Type="Pointer" Base="MIDIINCAPS" />
+
+        <!-- [MIDIOUTCAPS_TECH] -->
+        <Variable Name="[MIDIOUTCAPS_TECH]" Type="Alias" Base="WORD">
+            <Display Name="WORD" />
+            <Enum>
+                <Set Name="MOD_MIDIPORT"        Value="1" />
+                <Set Name="MOD_SYNTH"           Value="2" />
+                <Set Name="MOD_SQSYNTH"         Value="3" />
+                <Set Name="MOD_FMSYNTH"         Value="4" />
+                <Set Name="MOD_MAPPER"          Value="5" />
+                <Set Name="MOD_WAVETABLE"       Value="6" />
+                <Set Name="MOD_SWSYNTH"         Value="7" />
+            </Enum>
+        </Variable>
+
+        <!-- [MIDICAPS_FLAGS] -->
+        <Variable Name="[MIDICAPS_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="MIDICAPS_VOLUME"     Value="0x0001" />
+                <Set Name="MIDICAPS_LRVOLUME"   Value="0x0002" />
+                <Set Name="MIDICAPS_CACHE"      Value="0x0004" />
+                <Set Name="MIDICAPS_STREAM"     Value="0x0008" />
+            </Flag>
+        </Variable>
+
+        <!-- MIDIOUTCAPS -->
+        <Variable Name="MIDIOUTCAPS" Type="Struct" Pack="1">
+            <Field Type="WORD"                  Name="wMid" />
+            <Field Type="WORD"                  Name="wPid" />
+            <Field Type="MMVERSION"             Name="vDriverVersion" />
+            <Field Type="TCHAR [MAXPNAMELEN]"   Name="szPname" />
+            <Field Type="[MIDIOUTCAPS_TECH]"    Name="wTechnology" />
+            <Field Type="WORD"                  Name="wVoices" />
+            <Field Type="WORD"                  Name="wNotes" />
+            <Field Type="WORD"                  Name="wChannelMask" />
+            <Field Type="[MIDICAPS_FLAGS]"      Name="dwSupport" />
+        </Variable>
+        <Variable Name="LPMIDIOUTCAPS" Type="Pointer" Base="MIDIOUTCAPS" />
+
+        <!-- [MIXERCONTROLDETAILS_u] -->
+        <Variable Name="[MIXERCONTROLDETAILS_u]" Type="Union" Pack="1">
+            <Display Name="union" />
+            <Field Type="HWND"      Name="hwndOwner" />
+            <Field Type="DWORD"     Name="cMultipleItems" />
+        </Variable>
+
+        <!-- MIXERCONTROLDETAILS -->
+        <Variable Name="MIXERCONTROLDETAILS" Type="Struct" Pack="1">
+            <Field Type="DWORD"                     Name="cbStruct" />
+            <Field Type="DWORD"                     Name="dwControlID" />
+            <Field Type="DWORD"                     Name="cChannels" />
+            <Field Type="[MIXERCONTROLDETAILS_u]"   Name="" />
+            <Field Type="DWORD"                     Name="cbDetails" />
+            <Field Type="LPVOID"                    Name="paDetails" />
+        </Variable>
+        <Variable Name="LPMIXERCONTROLDETAILS" Type="Pointer" Base="MIXERCONTROLDETAILS" />
+
+        <!-- MIXERCAPS -->
+        <Variable Name="MIXERCAPS" Type="Struct" Pack="1">
+            <Field Type="WORD"                  Name="wMid" />
+            <Field Type="WORD"                  Name="wPid" />
+            <Field Type="MMVERSION"             Name="vDriverVersion" />
+            <Field Type="TCHAR [MAXPNAMELEN]"   Name="szPname" />
+            <Field Type="DWORD"                 Name="fdwSupport" />
+            <Field Type="DWORD"                 Name="cDestinations" />
+        </Variable>
+        <Variable Name="LPMIXERCAPS" Type="Pointer" Base="MIXERCAPS" />
+
+        <!-- [MIXERLINECONTROLS_u] -->
+        <Variable Name="[MIXERLINECONTROLS_u]" Type="Union" Pack="1">
+            <Display Name="union" />
+            <Field Type="DWORD"     Name="dwControlID" />
+            <Field Type="DWORD"     Name="dwControlType" />
+        </Variable>
+
+        <!-- [MIXERCONTROL_u1_s1] -->
+        <Variable Name="[MIXERCONTROL_u1_s1]" Type="Struct" Pack="1">
+            <Display Name="struct" />
+            <Field Type="LONG"      Name="lMinimum" />
+            <Field Type="LONG"      Name="lMaximum" />
+        </Variable>
+
+        <!-- [MIXERCONTROL_u1_s2] -->
+        <Variable Name="[MIXERCONTROL_u1_s2]" Type="Struct" Pack="1">
+            <Display Name="struct" />
+            <Field Type="DWORD"     Name="dwMinimum" />
+            <Field Type="DWORD"     Name="dwMaximum" />
+        </Variable>
+
+        <!-- [MIXERCONTROL_u1] -->
+        <Variable Name="[MIXERCONTROL_u1]" Type="Union" Pack="1">
+            <Display Name="union" />
+            <Field Type="[MIXERCONTROL_u1_s1]"  Name="" />
+            <Field Type="[MIXERCONTROL_u1_s2]"  Name="" />
+            <Field Type="DWORD [6]"             Name="dwReserved" />
+        </Variable>
+
+        <!-- [MIXERCONTROL_u2] -->
+        <Variable Name="[MIXERCONTROL_u2]" Type="Union" Pack="1">
+            <Display Name="union" />
+            <Field Type="DWORD"         Name="cSteps" />
+            <Field Type="DWORD"         Name="cbCustomData" />
+            <Field Type="DWORD [6]"     Name="dwReserved" />
+        </Variable>
+
+        <!-- [MIXERCONTROL_CT_CLASS] -->
+        <Variable Name="[MIXERCONTROL_CT_CLASS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="MIXERCONTROL_CT_CLASS_CUSTOM"        Value="0x00000000" />
+                <Set Name="MIXERCONTROL_CT_CLASS_METER"         Value="0x10000000" />
+                <Set Name="MIXERCONTROL_CT_CLASS_SWITCH"        Value="0x20000000" />
+                <Set Name="MIXERCONTROL_CT_CLASS_NUMBER"        Value="0x30000000" />
+                <Set Name="MIXERCONTROL_CT_CLASS_SLIDER"        Value="0x40000000" />
+                <Set Name="MIXERCONTROL_CT_CLASS_FADER"         Value="0x50000000" />
+                <Set Name="MIXERCONTROL_CT_CLASS_TIME"          Value="0x60000000" />
+                <Set Name="MIXERCONTROL_CT_CLASS_LIST"          Value="0x70000000" />
+            </Enum>
+        </Variable>
+
+        <!-- [MIXERCONTROL_CONTROLF] -->
+        <Variable Name="[MIXERCONTROL_CONTROLF]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="MIXERCONTROL_CONTROLF_UNIFORM"       Value="0x00000001" />
+                <Set Name="MIXERCONTROL_CONTROLF_MULTIPLE"      Value="0x00000002" />
+                <Set Name="MIXERCONTROL_CONTROLF_DISABLED"      Value="0x80000000" />
+            </Flag>
+        </Variable>
+
+        <!-- MIXERCONTROL -->
+        <Variable Name="MIXERCONTROL" Type="Struct" Pack="1">
+            <Field Type="DWORD"                             Name="cbStruct" />
+            <Field Type="DWORD"                             Name="dwControlID" />
+            <Field Type="[MIXERCONTROL_CT_CLASS]"           Name="dwControlType" />
+            <Field Type="[MIXERCONTROL_CONTROLF]"           Name="fdwControl" />
+            <Field Type="DWORD"                             Name="cMultipleItems" />
+            <Field Type="TCHAR [MIXER_SHORT_NAME_CHARS]"    Name="szShortName" />
+            <Field Type="TCHAR [MIXER_LONG_NAME_CHARS]"     Name="szName" />
+            <Field Type="[MIXERCONTROL_u1]"                 Name="Bounds" />
+            <Field Type="[MIXERCONTROL_u2]"                 Name="Metrics" />
+        </Variable>
+        <Variable Name="LPMIXERCONTROL" Type="Pointer" Base="MIXERCONTROL" />
+
+        <!-- MIXERLINECONTROLS -->
+        <Variable Name="MIXERLINECONTROLS" Type="Struct" Pack="1">
+            <Field Type="DWORD"                     Name="cbStruct" />
+            <Field Type="DWORD"                     Name="dwLineID" />
+            <Field Type="[MIXERLINECONTROLS_u]"     Name="" />
+            <Field Type="DWORD"                     Name="cControls" />
+            <Field Type="DWORD"                     Name="cbmxctrl" />
+            <Field Type="LPMIXERCONTROL"            Name="pamxctrl" />
+        </Variable>
+        <Variable Name="LPMIXERLINECONTROLS" Type="Pointer" Base="MIXERLINECONTROLS" />
+
+        <!-- [MIXERLINE_LINEF] -->
+        <Variable Name="[MIXERLINE_LINEF]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="MIXERLINE_LINEF_ACTIVE"          Value="0x00000001" />
+                <Set Name="MIXERLINE_LINEF_DISCONNECTED"    Value="0x00008000" />
+                <Set Name="MIXERLINE_LINEF_SOURCE"          Value="0x80000000" />
+            </Flag>
+        </Variable>
+
+        <!-- [MIXERLINE_COMPONENTTYPE] -->
+        <Variable Name="[MIXERLINE_COMPONENTTYPE]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="MIXERLINE_COMPONENTTYPE_DST_UNDEFINED"       Value="0" />
+                <Set Name="MIXERLINE_COMPONENTTYPE_DST_DIGITAL"         Value="1" />
+                <Set Name="MIXERLINE_COMPONENTTYPE_DST_LINE"            Value="2" />
+                <Set Name="MIXERLINE_COMPONENTTYPE_DST_MONITOR"         Value="3" />
+                <Set Name="MIXERLINE_COMPONENTTYPE_DST_SPEAKERS"        Value="4" />
+                <Set Name="MIXERLINE_COMPONENTTYPE_DST_HEADPHONES"      Value="5" />
+                <Set Name="MIXERLINE_COMPONENTTYPE_DST_TELEPHONE"       Value="6" />
+                <Set Name="MIXERLINE_COMPONENTTYPE_DST_WAVEIN"          Value="7" />
+                <Set Name="MIXERLINE_COMPONENTTYPE_DST_VOICEIN"         Value="8" />
+                <Set Name="MIXERLINE_COMPONENTTYPE_SRC_UNDEFINED"       Value="0x00001000" />
+                <Set Name="MIXERLINE_COMPONENTTYPE_SRC_DIGITAL"         Value="0x00001001" />
+                <Set Name="MIXERLINE_COMPONENTTYPE_SRC_LINE"            Value="0x00001002" />
+                <Set Name="MIXERLINE_COMPONENTTYPE_SRC_MICROPHONE"      Value="0x00001003" />
+                <Set Name="MIXERLINE_COMPONENTTYPE_SRC_SYNTHESIZER"     Value="0x00001004" />
+                <Set Name="MIXERLINE_COMPONENTTYPE_SRC_COMPACTDISC"     Value="0x00001005" />
+                <Set Name="MIXERLINE_COMPONENTTYPE_SRC_TELEPHONE"       Value="0x00001006" />
+                <Set Name="MIXERLINE_COMPONENTTYPE_SRC_PCSPEAKER"       Value="0x00001007" />
+                <Set Name="MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT"         Value="0x00001008" />
+                <Set Name="MIXERLINE_COMPONENTTYPE_SRC_AUXILIARY"       Value="0x00001009" />
+                <Set Name="MIXERLINE_COMPONENTTYPE_SRC_ANALOG"          Value="0x0000100A" />
+            </Enum>
+        </Variable>
+
+        <!-- [MIXERLINE_TARGETTYPE] -->
+        <Variable Name="[MIXERLINE_TARGETTYPE]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="MIXERLINE_TARGETTYPE_UNDEFINED"      Value="0" />
+                <Set Name="MIXERLINE_TARGETTYPE_WAVEOUT"        Value="1" />
+                <Set Name="MIXERLINE_TARGETTYPE_WAVEIN"         Value="2" />
+                <Set Name="MIXERLINE_TARGETTYPE_MIDIOUT"        Value="3" />
+                <Set Name="MIXERLINE_TARGETTYPE_MIDIIN"         Value="4" />
+                <Set Name="MIXERLINE_TARGETTYPE_AUX"            Value="5" />
+            </Enum>
+        </Variable>
+
+        <!-- [MIXERLINE_s] -->
+        <Variable Name="[MIXERLINE_s]" Type="Struct" Pack="1">
+            <Display Name="struct" />
+            <Field Type="[MIXERLINE_TARGETTYPE]"    Name="dwType" />
+            <Field Type="DWORD"                     Name="dwDeviceID" />
+            <Field Type="WORD"                      Name="wMid" />
+            <Field Type="WORD"                      Name="wPid" />
+            <Field Type="MMVERSION"                 Name="vDriverVersion" />
+            <Field Type="TCHAR [MAXPNAMELEN]"       Name="szPname" />
+        </Variable>
+
+        <!-- MIXERLINE -->
+        <Variable Name="MIXERLINE" Type="Struct" Pack="1">
+            <Field Type="DWORD"                             Name="cbStruct" />
+            <Field Type="DWORD"                             Name="dwDestination" />
+            <Field Type="DWORD"                             Name="dwSource" />
+            <Field Type="DWORD"                             Name="dwLineID" />
+            <Field Type="[MIXERLINE_LINEF]"                 Name="fdwLine" />
+            <Field Type="DWORD_PTR"                         Name="dwUser" />
+            <Field Type="[MIXERLINE_COMPONENTTYPE]"         Name="dwComponentType" />
+            <Field Type="DWORD"                             Name="cChannels" />
+            <Field Type="DWORD"                             Name="cConnections" />
+            <Field Type="DWORD"                             Name="cControls" />
+            <Field Type="TCHAR [MIXER_SHORT_NAME_CHARS]"    Name="szShortName" />
+            <Field Type="TCHAR [MIXER_LONG_NAME_CHARS]"     Name="szName" />
+            <Field Type="[MIXERLINE_s]"                     Name="Target" />
+        </Variable>
+        <Variable Name="LPMIXERLINE" Type="Pointer" Base="MIXERLINE" />
+
+        <!-- [MMIOINFO_FLAGS] -->
+        <Variable Name="[MMIOINFO_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="MMIO_READ"           Value="0x00000000" />
+                <Set Name="MMIO_WRITE"          Value="0x00000001" />
+                <Set Name="MMIO_READWRITE"      Value="0x00000002" />
+                <Set Name="MMIO_COMPAT"         Value="0x00000000" />
+                <Set Name="MMIO_EXCLUSIVE"      Value="0x00000010" />
+                <Set Name="MMIO_DENYWRITE"      Value="0x00000020" />
+                <Set Name="MMIO_DENYREAD"       Value="0x00000030" />
+                <Set Name="MMIO_DENYNONE"       Value="0x00000040" />
+                <Set Name="MMIO_PARSE"          Value="0x00000100" />
+                <Set Name="MMIO_DELETE"         Value="0x00000200" />
+                <Set Name="MMIO_CREATE"         Value="0x00001000" />
+                <Set Name="MMIO_EXIST"          Value="0x00004000" />
+                <Set Name="MMIO_ALLOCBUF"       Value="0x00010000" />
+                <Set Name="MMIO_GETTEMP"        Value="0x00020000" />
+                <Set Name="MMIO_DIRTY"          Value="0x10000000" />
+            </Flag>
+        </Variable>
+
+        <!-- MMIOINFO -->
+        <Variable Name="MMIOINFO" Type="Struct" Pack="1">
+            <Field Type="[MMIOINFO_FLAGS]"      Name="dwFlags" />
+            <Field Type="FOURCC"                Name="fccIOProc" />
+            <Field Type="LPMMIOPROC"            Name="pIOProc" />
+            <Field Type="UINT"                  Name="wErrorRet" />
+            <Field Type="HTASK"                 Name="htask" />
+            <Field Type="LONG"                  Name="cchBuffer" />
+            <Field Type="HPSTR"                 Name="pchBuffer" />
+            <Field Type="HPSTR"                 Name="pchNext" />
+            <Field Type="HPSTR"                 Name="pchEndRead" />
+            <Field Type="HPSTR"                 Name="pchEndWrite" />
+            <Field Type="LONG"                  Name="lBufOffset" />
+            <Field Type="LONG"                  Name="lDiskOffset" />
+            <Field Type="DWORD [3]"             Name="adwInfo" />
+            <Field Type="DWORD"                 Name="dwReserved1" />
+            <Field Type="DWORD"                 Name="dwReserved2" />
+            <Field Type="HMMIO"                 Name="hmmio" />
+        </Variable>
+        <Variable Name="LPMMIOINFO"         Type="Pointer" Base="MMIOINFO" />
+        <Variable Name="const LPMMIOINFO"   Type="Pointer" Base="MMIOINFO" />
+
+        <!-- [WHDR_FLAGS] -->
+        <Variable Name="[WHDR_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="WHDR_DONE"           Value="0x00000001" />
+                <Set Name="WHDR_PREPARED"       Value="0x00000002" />
+                <Set Name="WHDR_BEGINLOOP"      Value="0x00000004" />
+                <Set Name="WHDR_ENDLOOP"        Value="0x00000008" />
+                <Set Name="WHDR_INQUEUE"        Value="0x00000010" />
+            </Flag>
+        </Variable>
+
+        <!-- WAVEHDR -->
+        <Variable Name="WAVEHDR" Type="Struct" Pack="1">
+            <Field Type="LPVOID"            Name="lpData" Display="LPSTR" />
+            <Field Type="DWORD"             Name="dwBufferLength" />
+            <Field Type="DWORD"             Name="dwBytesRecorded" />
+            <Field Type="DWORD_PTR"         Name="dwUser" />
+            <Field Type="[WHDR_FLAGS]"      Name="dwFlags" />
+            <Field Type="DWORD"             Name="dwLoops" />
+            <!-- TODO: Self-Referencing Structure lpNext is WAVEHDR* -->
+            <Field Type="LPVOID"            Name="lpNext" Display="WAVEHDR*" />
+            <Field Type="DWORD_PTR"         Name="reserved" />
+        </Variable>
+        <Variable Name="LPWAVEHDR" Type="Pointer" Base="WAVEHDR" />
+
+        <!-- WAVEINCAPS -->
+        <Variable Name="WAVEINCAPS" Type="Struct" Pack="1">
+            <Field Type="WORD"                  Name="wMid" />
+            <Field Type="WORD"                  Name="wPid" />
+            <Field Type="MMVERSION"             Name="vDriverVersion" />
+            <Field Type="TCHAR [MAXPNAMELEN]"   Name="szPname" />
+            <Field Type="[WAVE_FORMAT]"         Name="dwFormats" />
+            <Field Type="WORD"                  Name="wChannels" />
+            <Field Type="WORD"                  Name="wReserved1" />
+        </Variable>
+        <Variable Name="LPWAVEINCAPS" Type="Pointer" Base="WAVEINCAPS" />
+
+        <!-- [WAVEOUTCAPS_SUPPORT] -->
+        <Variable Name="[WAVEOUTCAPS_SUPPORT]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="WAVECAPS_PITCH"              Value="0x0001" />
+                <Set Name="WAVECAPS_PLAYBACKRATE"       Value="0x0002" />
+                <Set Name="WAVECAPS_VOLUME"             Value="0x0004" />
+                <Set Name="WAVECAPS_LRVOLUME"           Value="0x0008" />
+                <Set Name="WAVECAPS_SYNC"               Value="0x0010" />
+                <Set Name="WAVECAPS_SAMPLEACCURATE"     Value="0x0020" />
+            </Flag>
+        </Variable>
+
+        <!-- WAVEOUTCAPS -->
+        <Variable Name="WAVEOUTCAPS" Type="Struct" Pack="1">
+            <Field Type="WORD"                      Name="wMid" />
+            <Field Type="WORD"                      Name="wPid" />
+            <Field Type="MMVERSION"                 Name="vDriverVersion" />
+            <Field Type="TCHAR [MAXPNAMELEN]"       Name="szPname" />
+            <Field Type="[WAVE_FORMAT]"             Name="dwFormats" />
+            <Field Type="WORD"                      Name="wChannels" />
+            <Field Type="WORD"                      Name="wReserved1" />
+            <Field Type="[WAVEOUTCAPS_SUPPORT]"     Name="dwSupport" />
+        </Variable>
+        <Variable Name="LPWAVEOUTCAPS" Type="Pointer" Base="WAVEOUTCAPS" />
 
         <!-- [JoyButton] -->
         <Variable Name="[JoyButton]" Type="Alias" Base="UINT">
@@ -62,7 +532,7 @@
         </Variable>
 
         <!-- JOYINFO -->
-        <Variable Name="JOYINFO" Type="Struct">
+        <Variable Name="JOYINFO" Type="Struct" Pack="1">
             <Field Type="UINT" 	        Name="wXpos" />
             <Field Type="UINT" 	        Name="wYpos" />
             <Field Type="UINT" 	        Name="wZpos" />
@@ -154,7 +624,7 @@
         </Variable>
 
         <!-- JOYINFOEX -->
-        <Variable Name="JOYINFOEX" Type="Struct">
+        <Variable Name="JOYINFOEX" Type="Struct" Pack="1">
             <Field Type="DWORD" 	        Name="dwSize" />
             <Field Type="[JOYINFOEX_Flags]" Name="dwFlags" />
             <Field Type="DWORD" 	        Name="dwXpos" />
@@ -180,7 +650,7 @@
         </Variable>
 
         <!-- MMCKINFO -->
-        <Variable Name="MMCKINFO" Type="Struct">
+        <Variable Name="MMCKINFO" Type="Struct" Pack="1">
             <Field Type="FOURCC"          	Name="ckid" />
             <Field Type="DWORD"           	Name="cksize" />
             <Field Type="FOURCC"          	Name="fccType" />
@@ -190,12 +660,13 @@
         <Variable Name="LPMMCKINFO" Type="Pointer" Base="MMCKINFO" />
 
         <!-- TIMECAPS -->
-        <Variable Name="TIMECAPS" Type="Struct">
+        <Variable Name="TIMECAPS" Type="Struct" Pack="1">
             <Field Type="UINT"    	Name="wPeriodMin" />
             <Field Type="UINT"    	Name="wPeriodMax" />
         </Variable>
         <Variable Name="LPTIMECAPS" Type="Pointer" Base="TIMECAPS" />
 
+        <!-- MCIERROR -->
         <Variable Name="MCIERROR" Type="Alias" Base="DWORD">
             <Enum>
                 <Set Name="MCIERR_INVALID_DEVICE_ID"            Value="257"/>
@@ -276,6 +747,7 @@
             </Enum>
         </Variable>
 
+        <!-- [waveInOutOpenFlags] -->
         <Variable Name="[waveInOutOpenFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -294,6 +766,7 @@
             </Flag>
         </Variable>
 
+        <!-- [midiInOutOpenFlags] -->
         <Variable Name="[midiInOutOpenFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -307,6 +780,7 @@
             </Flag>
         </Variable>
 
+        <!-- [mmioInstallIOProcFlags] -->
         <Variable Name="[mmioInstallIOProcFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -318,6 +792,7 @@
             </Flag>
         </Variable>
 
+        <!-- [mmioCloseFlags] -->
         <Variable Name="[mmioCloseFlags]" Type="Alias" Base="UINT">
             <Display Name="UINT" />
             <Flag>
@@ -325,6 +800,7 @@
             </Flag>
         </Variable>
 
+        <!-- [mmioFlushFlags] -->
         <Variable Name="[mmioFlushFlags]" Type="Alias" Base="UINT">
             <Display Name="UINT" />
             <Flag>
@@ -332,6 +808,7 @@
             </Flag>
         </Variable>
 
+        <!-- [mmioStringToFOURCCFlags] -->
         <Variable Name="[mmioStringToFOURCCFlags]" Type="Alias" Base="UINT">
             <Display Name="UINT" />
             <Flag>
@@ -339,6 +816,7 @@
             </Flag>
         </Variable>
 
+        <!-- [mmioDescendFlags] -->
         <Variable Name="[mmioDescendFlags]" Type="Alias" Base="UINT">
             <Display Name="UINT" />
             <Flag>
@@ -348,6 +826,7 @@
             </Flag>
         </Variable>
 
+        <!-- [mmioCreateChunkFlags] -->
         <Variable Name="[mmioCreateChunkFlags]" Type="Alias" Base="UINT">
             <Display Name="UINT" />
             <Flag>
@@ -356,6 +835,7 @@
             </Flag>
         </Variable>
 
+        <!-- [mmioSeekOffset] -->
         <Variable Name="[mmioSeekOffset]" Type="Alias" Base="int">
             <Display Name="int" />
             <Enum>
@@ -364,6 +844,55 @@
                 <Set Name="SEEK_END"    Value="2" />
             </Enum>
         </Variable>
+
+        <!-- [MMTIME_u_s1] -->
+        <Variable Name="[MMTIME_u_s1]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="BYTE"          Name="hour" />
+            <Field Type="BYTE"          Name="min" />
+            <Field Type="BYTE"          Name="sec" />
+            <Field Type="BYTE"          Name="frame" />
+            <Field Type="BYTE"          Name="fps" />
+            <Field Type="BYTE"          Name="dummy" />
+            <Field Type="BYTE [2]"      Name="pad" />
+        </Variable>
+
+        <!-- [MMTIME_u_s2] -->
+        <Variable Name="[MMTIME_u_s2]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="DWORD"         Name="songptrpos" />
+        </Variable>
+
+        <!-- [MMTIME_u] -->
+        <Variable Name="[MMTIME_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="DWORD"             Name="ms" />
+            <Field Type="DWORD"             Name="sample" />
+            <Field Type="DWORD"             Name="cb" />
+            <Field Type="DWORD"             Name="ticks" />
+            <Field Type="[MMTIME_u_s1]"     Name="smpte" />
+            <Field Type="[MMTIME_u_s2]"     Name="midi" />
+        </Variable>
+
+        <!-- [MMTIME_TYPE] -->
+        <Variable Name="[MMTIME_TYPE]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Enum>
+                <Set Name="TIME_MS"         Value="0x0001" />
+                <Set Name="TIME_SAMPLES"    Value="0x0002" />
+                <Set Name="TIME_BYTES"      Value="0x0004" />
+                <Set Name="TIME_SMPTE"      Value="0x0008" />
+                <Set Name="TIME_MIDI"       Value="0x0010" />
+                <Set Name="TIME_TICKS"      Value="0x0020" />
+            </Enum>
+        </Variable>
+
+        <!-- MMTIME -->
+        <Variable Name="MMTIME" Type="Struct">
+            <Field Type="[MMTIME_TYPE]"     Name="wType" />
+            <Field Type="[MMTIME_u]"        Name="u" />
+        </Variable>
+        <Variable Name="LPMMTIME" Type="Pointer" Base="MMTIME" />
 
         <!-- Multimedia -->
         <Category Name="Graphics and Multimedia/Audio and Video/Windows Multimedia" />
@@ -940,7 +1469,7 @@
         </Api>
         <Api Name="mmioWrite">
             <Param Type="HMMIO" Name="hmmio" />
-            <Param Type="char _huge*" Name="pch" />
+            <Param Type="LPVOID" Name="pch" Display="char*" />
             <Param Type="LONG" Name="cch" />
             <Return Type="LONG" />
             <Success Return="NotEqual" Value="0" />

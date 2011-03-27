@@ -5,30 +5,100 @@
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\multimedia.h.xml" />
+    
     <Module Name="avifil32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        
-        <!-- TODO: Structures -->
-        <Variable Name="AVISTREAMINFO*"              Type="Alias"   Base="LPVOID" />
-        <Variable Name="AVIFILEINFO*"                Type="Alias"   Base="LPVOID" />
-        
-        <!-- Variables -->
-        <Variable Name="STDAPI_(VOID)"               Type="Alias"   Base="VOID" />
-        <Variable Name="STDAPI_(LONG)"               Type="Alias"   Base="LONG" />
-        <Variable Name="STDAPI_(ULONG)"              Type="Alias"   Base="ULONG" />
-        <Variable Name="STDAPI_(LPVOID)"             Type="Alias"   Base="LPVOID" />
-        <Variable Name="AVISAVECALLBACK"             Type="Alias"   Base="LPVOID" />
-        
-        <!-- TODO: PAVIFILE is IAVIFile* -->
-        <Variable Name="PAVIFILE"                    Type="Alias"   Base="LPVOID" />
-        <Variable Name="PAVIFILE*"                   Type="Pointer" Base="PAVIFILE" />
-        
-        <!-- TODO: PAVISTREAM is IAVIStream* -->
-        <Variable Name="PAVISTREAM"                  Type="Alias"   Base="LPVOID" />
-        <Variable Name="PAVISTREAM*"                 Type="Pointer" Base="PAVISTREAM" />
 
-        <!-- TODO: PGETFRAME is IGetFrame* -->
-        <Variable Name="PGETFRAME"                   Type="Alias"   Base="LPVOID" />
-        <Variable Name="STDAPI_(PGETFRAME)"          Type="Alias"   Base="PGETFRAME" />
+        <!-- Variables -->
+        <Variable Name="STDAPI_(VOID)"              Type="Alias"    Base="VOID" />
+        <Variable Name="STDAPI_(LONG)"              Type="Alias"    Base="LONG" />
+        <Variable Name="STDAPI_(ULONG)"             Type="Alias"    Base="ULONG" />
+        <Variable Name="STDAPI_(LPVOID)"            Type="Alias"    Base="LPVOID" />
+        <Variable Name="AVISAVECALLBACK"            Type="Alias"    Base="LPVOID" />
+        <Variable Name="TCHAR [64]"                 Type="Array"    Base="TCHAR" Count="64" />
+
+        <!-- Interfaces (TODO: Define Interfaces) -->
+        <Variable Name="IAVIFile"                   Type="Interface" />
+        <Variable Name="IAVIStream"                 Type="Interface" />
+        <Variable Name="IGetFrame"                  Type="Interface" />
+
+        <!-- Interface Aliases -->
+        <Variable Name="PAVIFILE"                   Type="Alias"    Base="IAVIFile*" />
+        <Variable Name="PAVIFILE*"                  Type="Pointer"  Base="PAVIFILE" />
+        <Variable Name="PAVISTREAM"                 Type="Alias"    Base="IAVIStream*" />
+        <Variable Name="PAVISTREAM*"                Type="Pointer"  Base="PAVISTREAM" />
+        <Variable Name="PGETFRAME"                  Type="Alias"    Base="IGetFrame*" />
+        <Variable Name="STDAPI_(PGETFRAME)"         Type="Alias"    Base="PGETFRAME" />
+
+        <!-- [AVISTREAMINFO_FLAGS] -->
+        <Variable Name="[AVISTREAMINFO_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+            </Flag>
+        </Variable>
+
+        <!-- AVISTREAMINFO -->
+        <Variable Name="AVISTREAMINFO" Type="Struct">
+            <Field Type="FOURCC"                    Name="fccType" Display="DWORD" />
+            <Field Type="DWORD"                     Name="fccHandler" />
+            <Field Type="[AVISTREAMINFO_FLAGS]"     Name="dwFlags" />
+            <Field Type="DWORD"                     Name="dwCaps" />
+            <Field Type="WORD"                      Name="wPriority" />
+            <Field Type="WORD"                      Name="wLanguage" />
+            <Field Type="DWORD"                     Name="dwScale" />
+            <Field Type="DWORD"                     Name="dwRate" />
+            <Field Type="DWORD"                     Name="dwStart" />
+            <Field Type="DWORD"                     Name="dwLength" />
+            <Field Type="DWORD"                     Name="dwInitialFrames" />
+            <Field Type="DWORD"                     Name="dwSuggestedBufferSize" />
+            <Field Type="DWORD"                     Name="dwQuality" />
+            <Field Type="DWORD"                     Name="dwSampleSize" />
+            <Field Type="RECT"                      Name="rcFrame" />
+            <Field Type="DWORD"                     Name="dwEditCount" />
+            <Field Type="DWORD"                     Name="dwFormatChangeCount" />
+            <Field Type="TCHAR [64]"                Name="szName" />
+        </Variable>
+        <Variable Name="AVISTREAMINFO*" Type="Pointer" Base="AVISTREAMINFO" />
+
+        <!-- [AVIFILEINFO_FLAGS] -->
+        <Variable Name="[AVIFILEINFO_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="AVIFILEINFO_HASINDEX"        Value="0x00000010" />
+                <Set Name="AVIFILEINFO_MUSTUSEINDEX"    Value="0x00000020" />
+                <Set Name="AVIFILEINFO_ISINTERLEAVED"   Value="0x00000100" />
+                <Set Name="AVIFILEINFO_WASCAPTUREFILE"  Value="0x00010000" />
+                <Set Name="AVIFILEINFO_COPYRIGHTED"     Value="0x00020000" />
+            </Flag>
+        </Variable>
+
+        <!-- [AVIFILECAPS] -->
+        <Variable Name="[AVIFILECAPS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="AVIFILECAPS_CANREAD"         Value="0x00000001" />
+                <Set Name="AVIFILECAPS_CANWRITE"        Value="0x00000002" />
+                <Set Name="AVIFILECAPS_ALLKEYFRAMES"    Value="0x00000010" />
+                <Set Name="AVIFILECAPS_NOCOMPRESSION"   Value="0x00000020" />
+            </Flag>
+        </Variable>
+
+        <!-- AVIFILEINFO -->
+        <Variable Name="AVIFILEINFO" Type="Struct">
+            <Field Type="DWORD"                 Name="dwMaxBytesPerSec" />
+            <Field Type="[AVIFILEINFO_FLAGS]"   Name="dwFlags" />
+            <Field Type="[AVIFILECAPS]"         Name="dwCaps" />
+            <Field Type="DWORD"                 Name="dwStreams" />
+            <Field Type="DWORD"                 Name="dwSuggestedBufferSize" />
+            <Field Type="DWORD"                 Name="dwWidth" />
+            <Field Type="DWORD"                 Name="dwHeight" />
+            <Field Type="DWORD"                 Name="dwScale" />
+            <Field Type="DWORD"                 Name="dwRate" />
+            <Field Type="DWORD"                 Name="dwLength" />
+            <Field Type="DWORD"                 Name="dwEditCount" />
+            <Field Type="TCHAR [64]"            Name="szFileType" />
+        </Variable>
+        <Variable Name="AVIFILEINFO*" Type="Pointer" Base="AVIFILEINFO" />
 
         <!-- AVICOMPRESSOPTIONS -->
         <Variable Name="AVICOMPRESSOPTIONS" Type="Struct">
@@ -44,9 +114,10 @@
             <Field Type="DWORD"     Name="cbParms" />
             <Field Type="DWORD"     Name="dwInterleaveEvery" />
         </Variable>
-        <Variable Name="AVICOMPRESSOPTIONS*" Type="Pointer" Base="AVICOMPRESSOPTIONS" />
-        <Variable Name="LPAVICOMPRESSOPTIONS*" Type="Pointer" Base="AVICOMPRESSOPTIONS*" />
-        
+        <Variable Name="AVICOMPRESSOPTIONS*"    Type="Pointer"  Base="AVICOMPRESSOPTIONS" />
+        <Variable Name="LPAVICOMPRESSOPTIONS"   Type="Pointer"  Base="AVICOMPRESSOPTIONS" />
+        <Variable Name="LPAVICOMPRESSOPTIONS*"  Type="Pointer"  Base="LPAVICOMPRESSOPTIONS" />
+
         <!-- Multimedia -->
         <Category Name="Graphics and Multimedia/Audio and Video/Windows Multimedia" />
         <Api Name="AVIBuildFilter" BothCharset="True">
@@ -159,19 +230,16 @@
             <Return Type="STDAPI" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <!-- Variable Arguments NOT Supported
-    <Api Name="AVISave" BothCharset="True">
-        <Param Type="LPCTSTR" Name="szFile" />
-        <Param Type="CLSID*" Name="pclsidHandler" />
-        <Param Type="AVISAVECALLBACK" Name="lpfnCallback" />
-        <Param Type="int" Name="nStreams" />
-        <Param Type="PAVISTREAM" Name="pavi" />
-        <Param Type="LPAVICOMPRESSOPTIONS" Name="lpOptions" />
-        <Param Type="..." />
-        <Return Type="HRESULT" />
-        <Success Return="Equal" Value="0" />
-    </Api>
-    -->
+        <Api Name="AVISave" BothCharset="True" VarArgs="True">
+            <Param Type="LPCTSTR" Name="szFile" />
+            <Param Type="CLSID*" Name="pclsidHandler" />
+            <Param Type="AVISAVECALLBACK" Name="lpfnCallback" />
+            <Param Type="int" Name="nStreams" />
+            <Param Type="PAVISTREAM" Name="pavi" />
+            <Param Type="LPAVICOMPRESSOPTIONS" Name="lpOptions" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
         <Api Name="AVISaveOptions">
             <Param Type="HWND" Name="hwnd" />
             <Param Type="UINT" Name="uiFlags" />

@@ -10,90 +10,866 @@
     <Include Filename="Headers\security.h.xml" />
     <Include Filename="Headers\registry.h.xml" />
     <Include Filename="Headers\native.h.xml" />
-    
+
     <Module Name="Ntdll.dll" CallingConvention="STDCALL" ErrorFunc="NTSTATUS" OnlineHelp="MSDN">
-        
+
+        <!-- TODO: Unions (Very Complex) -->
+        <Variable Name="CSR_API_MESSAGE*"                   Type="Alias"    Base="LPVOID" />
+
+        <!-- TODO: Unions (Complex) -->
+        <Variable Name="PPLUGPLAY_EVENT_BLOCK"              Type="Alias"    Base="LPVOID" />
+        <Variable Name="PDBGUI_WAIT_STATE_CHANGE"           Type="Alias"    Base="LPVOID" />
+
         <!-- Variables -->
+        <Variable Name="RTL_ATOM"                           Type="Alias"    Base="USHORT" />
+        <Variable Name="PRTL_ATOM"                          Type="Pointer"  Base="RTL_ATOM" />
+        <Variable Name="CSHORT"                             Type="Alias"    Base="short" />
+        <Variable Name="CLONG"                              Type="Alias"    Base="ULONG" />
         <Variable Name="PCCH"                               Type="Alias"    Base="CHAR*" />
         <Variable Name="PCH"                                Type="Alias"    Base="CHAR*" />
         <Variable Name="PCSZ"                               Type="Alias"    Base="char*" />
-        <Variable Name="KAFFINITY"                          Type="Alias"    Base="ULONG_PTR" />
         <Variable Name="PTHREAD_START_ROUTINE"              Type="Alias"    Base="LPVOID" />
         <Variable Name="WORKERCALLBACKFUNC"                 Type="Alias"    Base="LPVOID" />
         <Variable Name="WAITORTIMERCALLBACKFUNC"            Type="Alias"    Base="LPVOID" />
-        <!-- TODO: Check CLONG -->
-        <Variable Name="CLONG"                              Type="Alias"    Base="LONG" />
-
-        <!-- TODO: Structures -->
-        <Variable Name="PTEB"                               Type="Alias"    Base="LPVOID" />
-        <Variable Name="struct _CSR_CAPTURE_BUFFER*"        Type="Alias"    Base="LPVOID" />
-        <Variable Name="struct _CSR_API_MESSAGE*"           Type="Alias"    Base="LPVOID" />
-        <Variable Name="PLDR_DATA_TABLE_ENTRY"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="PLDR_DATA_TABLE_ENTRY*"             Type="Pointer"  Base="PLDR_DATA_TABLE_ENTRY" />
-        <Variable Name="PIMAGE_BASE_RELOCATION"             Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRTL_PROCESS_MODULES"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="KPROFILE_SOURCE"                    Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRTL_ATOM_TABLE"                    Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRTL_ATOM_TABLE*"                   Type="Pointer"  Base="PRTL_ATOM_TABLE" />
-        <Variable Name="PRTL_ATOM"                          Type="Alias"    Base="LPVOID" />
-        <Variable Name="RTL_ATOM"                           Type="Alias"    Base="LPVOID" />
-        <Variable Name="PPEB"                               Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRTL_USER_PROCESS_PARAMETERS"       Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRTL_USER_PROCESS_PARAMETERS*"      Type="Pointer"  Base="PRTL_USER_PROCESS_PARAMETERS" />
-        <Variable Name="PRTL_USER_PROCESS_INFORMATION"      Type="Alias"    Base="LPVOID" />
-        <Variable Name="PCLIENT_ID"                         Type="Alias"    Base="LPVOID" />
-        <Variable Name="PINITIAL_TEB"                       Type="Alias"    Base="LPVOID" />
-        <Variable Name="CURDIR*"                            Type="Alias"    Base="LPVOID" />
-        <Variable Name="RTL_PATH_TYPE*"                     Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRTL_CRITICAL_SECTION"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRTL_RESOURCE"                      Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRTL_DEBUG_INFORMATION"             Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRTL_BITMAP"                        Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRTL_RANGE_LIST"                    Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRTL_GENERIC_TABLE"                 Type="Alias"    Base="LPVOID" />
-        <Variable Name="TABLE_SEARCH_RESULT"                Type="Alias"    Base="LPVOID" />
-        <Variable Name="TABLE_SEARCH_RESULT*"               Type="Pointer"  Base="TABLE_SEARCH_RESULT" />
-        <Variable Name="PRTL_HANDLE_TABLE"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRTL_HANDLE_TABLE_ENTRY"            Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRTL_HANDLE_TABLE_ENTRY*"           Type="Pointer"  Base="PRTL_HANDLE_TABLE_ENTRY" />
-        <Variable Name="PRTL_MESSAGE_RESOURCE_ENTRY"        Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRTL_MESSAGE_RESOURCE_ENTRY*"       Type="Pointer"  Base="PRTL_MESSAGE_RESOURCE_ENTRY" />
-        <Variable Name="PRTL_QUERY_REGISTRY_TABLE"          Type="Alias"    Base="LPVOID" />
-        <Variable Name="PNLSTABLEINFO"                      Type="Alias"    Base="LPVOID" />
-        <Variable Name="PCPTABLEINFO"                       Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRTL_TIME_ZONE_INFORMATION"         Type="Alias"    Base="LPVOID" />
-        <Variable Name="PTIME_FIELDS"                       Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRTL_OSVERSIONINFOEXW"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRTL_OSVERSIONINFOW"                Type="Alias"    Base="LPVOID" />
-        <Variable Name="PNT_PRODUCT_TYPE"                   Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRTL_SECURE_MEMORY_CACHE_CALLBACK"  Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRTL_AVL_TABLE"                     Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPC_SIZE_T"                         Type="Alias"    Base="SIZE_T" />
+        <Variable Name="LPC_PVOID"                          Type="Alias"    Base="PVOID" />
+        <Variable Name="LPC_HANDLE"                         Type="Alias"    Base="HANDLE" />
+        <Variable Name="PTIMER_APC_ROUTINE"                 Type="Alias"    Base="LPVOID" />
+        <Variable Name="PHEAP_ENUMERATION_ROUTINE"          Type="Alias"    Base="LPVOID" />
+        <Variable Name="PRTL_HEAP_COMMIT_ROUTINE"           Type="Alias"    Base="LPVOID" />
         <Variable Name="PRTL_AVL_COMPARE_ROUTINE"           Type="Alias"    Base="LPVOID" />
         <Variable Name="PRTL_AVL_ALLOCATE_ROUTINE"          Type="Alias"    Base="LPVOID" />
         <Variable Name="PRTL_AVL_FREE_ROUTINE"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="PCOMPRESSED_DATA_INFO"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="PGENERATE_NAME_CONTEXT"             Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRTL_SPLAY_LINKS"                   Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRTL_SPLAY_LINKS*"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRTL_HEAP_PARAMETERS"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRTL_HEAP_TAG_INFO"                 Type="Alias"    Base="LPVOID" />
-        <Variable Name="PRTL_HEAP_USAGE"                    Type="Alias"    Base="LPVOID" />
-        <Variable Name="PHEAP_ENUMERATION_ROUTINE"          Type="Alias"    Base="LPVOID" />
-        <Variable Name="PPLUGPLAY_EVENT_BLOCK"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="PIO_STATUS_BLOCK"                   Type="Alias"    Base="LPVOID" />
-        <Variable Name="PKEY_VALUE_ENTRY"                   Type="Alias"    Base="LPVOID" />
-        <Variable Name="PDBGUI_WAIT_STATE_CHANGE"           Type="Alias"    Base="LPVOID" />
-        <Variable Name="PTIMER_APC_ROUTINE"                 Type="Alias"    Base="LPVOID" />
-        <Variable Name="PBOOT_ENTRY"                        Type="Alias"    Base="LPVOID" />
-        <Variable Name="PEFI_DRIVER_ENTRY"                  Type="Alias"    Base="LPVOID" />
-        <Variable Name="PFILE_BASIC_INFORMATION"            Type="Alias"    Base="LPVOID" />
-        <Variable Name="PBOOT_OPTIONS"                      Type="Alias"    Base="LPVOID" />
-        <Variable Name="PFILE_NETWORK_OPEN_INFORMATION"     Type="Alias"    Base="LPVOID" />
-        <Variable Name="PFILE_PATH"                         Type="Alias"    Base="LPVOID" />
-        <Variable Name="PLDR_RESOURCE_INFO"                 Type="Alias"    Base="LPVOID" />
-        <Variable Name="PPORT_MESSAGE"                      Type="Alias"    Base="LPVOID" />
-        <Variable Name="PPORT_VIEW"                         Type="Alias"    Base="LPVOID" />
-        <Variable Name="PREMOTE_PORT_VIEW"                  Type="Alias"    Base="LPVOID" />
+        <Variable Name="PRTL_SECURE_MEMORY_CACHE_CALLBACK"  Type="Alias"    Base="LPVOID" />
+        <Variable Name="PRTL_QUERY_REGISTRY_ROUTINE"        Type="Alias"    Base="LPVOID" />
+        <Variable Name="PRTL_GENERIC_COMPARE_ROUTINE"       Type="Alias"    Base="LPVOID" />
+        <Variable Name="PRTL_GENERIC_ALLOCATE_ROUTINE"      Type="Alias"    Base="LPVOID" />
+        <Variable Name="PRTL_GENERIC_FREE_ROUTINE"          Type="Alias"    Base="LPVOID" />
+        <Variable Name="PEXCEPTION_ROUTINE"                 Type="Alias"    Base="LPVOID" />
+
+        <!-- Arrays -->
+        <Variable Name="SIZE_T [2]"                         Type="Array"    Base="SIZE_T"       Count="2" />
+        <Variable Name="UCHAR [3]"                          Type="Array"    Base="UCHAR"        Count="3" />
+        <Variable Name="UCHAR [32]"                         Type="Array"    Base="UCHAR"        Count="32" />
+        <Variable Name="UCHAR [MAXIMUM_LEADBYTES]"          Type="Array"    Base="UCHAR"        Count="12" />
+        <Variable Name="CHAR [1]"                           Type="Array"    Base="CHAR"         Count="1" />
+        <Variable Name="CHAR [256]"                         Type="Array"    Base="CHAR"         Count="256" />
+        <Variable Name="WCHAR [4]"                          Type="Array"    Base="WCHAR"        Count="4" />
+        <Variable Name="WCHAR [8]"                          Type="Array"    Base="WCHAR"        Count="8" />
+        <Variable Name="WCHAR [261]"                        Type="Array"    Base="WCHAR"        Count="261" />
+        <Variable Name="ULONG [ANYSIZE_ARRAY]"              Type="Array"    Base="ULONG"        Count="1" />
+        <Variable Name="ULONG [3]"                          Type="Array"    Base="ULONG"        Count="3" />
+        <Variable Name="ULONG [26]"                         Type="Array"    Base="ULONG"        Count="26" />
+        <Variable Name="ULONG [31]"                         Type="Array"    Base="ULONG"        Count="31" />
+        <Variable Name="ULONG [32]"                         Type="Array"    Base="ULONG"        Count="32" />
+        <Variable Name="ULONG [34]"                         Type="Array"    Base="ULONG"        Count="34" />
+        <Variable Name="ULONG [0x136]"                      Type="Array"    Base="ULONG"        Count="0x136" />
+        <Variable Name="PVOID [2]"                          Type="Array"    Base="PVOID"        Count="2" />
+        <Variable Name="PVOID [3]"                          Type="Array"    Base="PVOID"        Count="3" />
+        <Variable Name="PVOID [4]"                          Type="Array"    Base="PVOID"        Count="4" />
+        <Variable Name="PVOID [5]"                          Type="Array"    Base="PVOID"        Count="5" />
+        <Variable Name="PVOID [10]"                         Type="Array"    Base="PVOID"        Count="10" />
+        <Variable Name="PVOID [16]"                         Type="Array"    Base="PVOID"        Count="16" />
+        <Variable Name="PVOID [54]"                         Type="Array"    Base="PVOID"        Count="54" />
+        <Variable Name="PVOID [64]"                         Type="Array"    Base="PVOID"        Count="64" />
+        <Variable Name="PVOID [280]"                        Type="Array"    Base="PVOID"        Count="280" />
+        <Variable Name="ULONG_PTR [1]"                      Type="Array"    Base="ULONG_PTR"    Count="1" />
+        <Variable Name="BYTE [4]"                           Type="Array"    Base="BYTE"         Count="4" />
+        <Variable Name="BYTE [40]"                          Type="Array"    Base="BYTE"         Count="40" />
+
+        <!-- CURDIR -->
+        <Variable Name="CURDIR" Type="Struct">
+            <Field Type="UNICODE_STRING"    Name="DosPath" />
+            <Field Type="HANDLE"            Name="Handle" />
+        </Variable>
+        <Variable Name="CURDIR*" Type="Pointer" Base="CURDIR" />
+
+        <!-- CLIENT_ID -->
+        <Variable Name="CLIENT_ID" Type="Struct">
+            <Field Type="HANDLE"    Name="UniqueProcess" />
+            <Field Type="HANDLE"    Name="UniqueThread" />
+        </Variable>
+        <Variable Name="PCLIENT_ID" Type="Pointer" Base="CLIENT_ID" />
+
+        <!-- CSR_CAPTURE_BUFFER -->
+        <Variable Name="CSR_CAPTURE_BUFFER" Type="Struct">
+            <Field Type="ULONG"             Name="Size" />
+            <!-- TODO: Self-Referencing - PreviousCaptureBuffer is CSR_CAPTURE_BUFFER*-->
+            <Field Type="LPVOID"            Name="PreviousCaptureBuffer" Display="CSR_CAPTURE_BUFFER*" />
+            <Field Type="ULONG"             Name="PointerCount" />
+            <Field Type="ULONG_PTR"         Name="BufferEnd" />
+            <Field Type="ULONG_PTR [1]"     Name="PointerArray" Count="PointerCount" />
+        </Variable>
+        <Variable Name="CSR_CAPTURE_BUFFER*" Type="Pointer" Base="CSR_CAPTURE_BUFFER" />
+
+        <!-- [LDRP_FLAGS] -->
+        <Variable Name="[LDRP_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="LDRP_STATIC_LINK"                    Value="0x00000002" />
+                <Set Name="LDRP_IMAGE_DLL"                      Value="0x00000004" />
+                <Set Name="LDRP_LOAD_IN_PROGRESS"               Value="0x00001000" />
+                <Set Name="LDRP_UNLOAD_IN_PROGRESS"             Value="0x00002000" />
+                <Set Name="LDRP_ENTRY_PROCESSED"                Value="0x00004000" />
+                <Set Name="LDRP_ENTRY_INSERTED"                 Value="0x00008000" />
+                <Set Name="LDRP_CURRENT_LOAD"                   Value="0x00010000" />
+                <Set Name="LDRP_FAILED_BUILTIN_LOAD"            Value="0x00020000" />
+                <Set Name="LDRP_DONT_CALL_FOR_THREADS"          Value="0x00040000" />
+                <Set Name="LDRP_PROCESS_ATTACH_CALLED"          Value="0x00080000" />
+                <Set Name="LDRP_DEBUG_SYMBOLS_LOADED"           Value="0x00100000" />
+                <Set Name="LDRP_IMAGE_NOT_AT_BASE"              Value="0x00200000" />
+                <Set Name="LDRP_COR_IMAGE"                      Value="0x00400000" />
+                <Set Name="LDR_COR_OWNS_UNMAP"                  Value="0x00800000" />
+                <Set Name="LDRP_SYSTEM_MAPPED"                  Value="0x01000000" />
+                <Set Name="LDRP_IMAGE_VERIFYING"                Value="0x02000000" />
+                <Set Name="LDRP_DRIVER_DEPENDENT_DLL"           Value="0x04000000" />
+                <Set Name="LDRP_ENTRY_NATIVE"                   Value="0x08000000" />
+                <Set Name="LDRP_REDIRECTED"                     Value="0x10000000" />
+                <Set Name="LDRP_NON_PAGED_DEBUG_INFO"           Value="0x20000000" />
+                <Set Name="LDRP_MM_LOADED"                      Value="0x40000000" />
+                <Set Name="LDRP_COMPAT_DATABASE_PROCESSED"      Value="0x80000000" />
+            </Flag>
+        </Variable>
+
+        <!-- [LDR_DATA_TABLE_ENTRY_u1_s] -->
+        <Variable Name="[LDR_DATA_TABLE_ENTRY_u1_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="PVOID"     Name="SectionPointer" />
+            <Field Type="ULONG"     Name="CheckSum" />
+        </Variable>
+
+        <!-- [LDR_DATA_TABLE_ENTRY_u1] -->
+        <Variable Name="[LDR_DATA_TABLE_ENTRY_u1]" Type="Union">
+            <Display Name="union" />
+            <Field Type="LIST_ENTRY"                    Name="HashLinks" />
+            <Field Type="[LDR_DATA_TABLE_ENTRY_u1_s]"   Name="" />
+        </Variable>
+
+        <!-- [LDR_DATA_TABLE_ENTRY_u2] -->
+        <Variable Name="[LDR_DATA_TABLE_ENTRY_u2]" Type="Union">
+            <Display Name="union" />
+            <Field Type="ULONG"     Name="TimeDateStamp" />
+            <Field Type="PVOID"     Name="LoadedImports" />
+        </Variable>
+
+        <!-- LDR_DATA_TABLE_ENTRY -->
+        <Variable Name="LDR_DATA_TABLE_ENTRY" Type="Struct">
+            <Field Type="LIST_ENTRY"                    Name="InLoadOrderLinks" />
+            <Field Type="LIST_ENTRY"                    Name="InMemoryOrderModuleList" />
+            <Field Type="LIST_ENTRY"                    Name="InInitializationOrderModuleList" />
+            <Field Type="PVOID"                         Name="DllBase" />
+            <Field Type="PVOID"                         Name="EntryPoint" />
+            <Field Type="ULONG"                         Name="SizeOfImage" />
+            <Field Type="UNICODE_STRING"                Name="FullDllName" />
+            <Field Type="UNICODE_STRING"                Name="BaseDllName" />
+            <Field Type="[LDRP_FLAGS]"                  Name="Flags" />
+            <Field Type="USHORT"                        Name="LoadCount" />
+            <Field Type="USHORT"                        Name="TlsIndex" />
+            <Field Type="[LDR_DATA_TABLE_ENTRY_u1]"     Name="" />
+            <Field Type="[LDR_DATA_TABLE_ENTRY_u2]"     Name="" />
+            <Field Type="PVOID"                         Name="EntryPointActivationContext" />
+            <Field Type="PVOID"                         Name="PatchInformation" />
+        </Variable>
+        <Variable Name="PLDR_DATA_TABLE_ENTRY"  Type="Pointer" Base="LDR_DATA_TABLE_ENTRY" />
+        <Variable Name="PLDR_DATA_TABLE_ENTRY*" Type="Pointer" Base="PLDR_DATA_TABLE_ENTRY" />
+
+        <!-- IMAGE_BASE_RELOCATION -->
+        <Variable Name="IMAGE_BASE_RELOCATION" Type="Struct">
+            <Field Type="ULONG"     Name="VirtualAddress" />
+            <Field Type="ULONG"     Name="SizeOfBlock" />
+        </Variable>
+        <Variable Name="PIMAGE_BASE_RELOCATION" Type="Pointer" Base="IMAGE_BASE_RELOCATION" />
+
+        <!-- KPROFILE_SOURCE -->
+        <Variable Name="KPROFILE_SOURCE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="ProfileTime"                     Value="0" />
+                <Set Name="ProfileAlignmentFixup"           Value="1" />
+                <Set Name="ProfileTotalIssues"              Value="2" />
+                <Set Name="ProfilePipelineDry"              Value="3" />
+                <Set Name="ProfileLoadInstructions"         Value="4" />
+                <Set Name="ProfilePipelineFrozen"           Value="5" />
+                <Set Name="ProfileBranchInstructions"       Value="6" />
+                <Set Name="ProfileTotalNonissues"           Value="7" />
+                <Set Name="ProfileDcacheMisses"             Value="8" />
+                <Set Name="ProfileIcacheMisses"             Value="9" />
+                <Set Name="ProfileCacheMisses"              Value="10" />
+                <Set Name="ProfileBranchMispredictions"     Value="11" />
+                <Set Name="ProfileStoreInstructions"        Value="12" />
+                <Set Name="ProfileFpInstructions"           Value="13" />
+                <Set Name="ProfileIntegerInstructions"      Value="14" />
+                <Set Name="Profile2Issue"                   Value="15" />
+                <Set Name="Profile3Issue"                   Value="16" />
+                <Set Name="Profile4Issue"                   Value="17" />
+                <Set Name="ProfileSpecialInstructions"      Value="18" />
+                <Set Name="ProfileTotalCycles"              Value="19" />
+                <Set Name="ProfileIcacheIssues"             Value="20" />
+                <Set Name="ProfileDcacheAccesses"           Value="21" />
+                <Set Name="ProfileMemoryBarrierCycles"      Value="22" />
+                <Set Name="ProfileLoadLinkedIssues"         Value="23" />
+            </Enum>
+        </Variable>
+
+        <!-- RTL_DRIVE_LETTER_CURDIR -->
+        <Variable Name="RTL_DRIVE_LETTER_CURDIR" Type="Struct">
+            <Field Type="USHORT"            Name="Flags" />
+            <Field Type="USHORT"            Name="Length" />
+            <Field Type="ULONG"             Name="TimeStamp" />
+            <Field Type="UNICODE_STRING"    Name="DosPath" />
+        </Variable>
+        <Variable Name="RTL_DRIVE_LETTER_CURDIR [32]" Type="Array" Base="RTL_DRIVE_LETTER_CURDIR" Count="32" />
+
+        <!-- [RTL_USER_PROCESS_PARAMETERS_FLAGS] -->
+        <Variable Name="[RTL_USER_PROCESS_PARAMETERS_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="RTL_USER_PROCESS_PARAMETERS_NORMALIZED"              Value="0x01" />
+                <Set Name="RTL_USER_PROCESS_PARAMETERS_PROFILE_USER"            Value="0x02" />
+                <Set Name="RTL_USER_PROCESS_PARAMETERS_PROFILE_SERVER"          Value="0x04" />
+                <Set Name="RTL_USER_PROCESS_PARAMETERS_PROFILE_KERNEL"          Value="0x08" />
+                <Set Name="RTL_USER_PROCESS_PARAMETERS_UNKNOWN"                 Value="0x10" />
+                <Set Name="RTL_USER_PROCESS_PARAMETERS_RESERVE_1MB"             Value="0x20" />
+                <Set Name="RTL_USER_PROCESS_PARAMETERS_DISABLE_HEAP_CHECKS"     Value="0x100" />
+                <Set Name="RTL_USER_PROCESS_PARAMETERS_PROCESS_OR_1"            Value="0x200" />
+                <Set Name="RTL_USER_PROCESS_PARAMETERS_PROCESS_OR_2"            Value="0x400" />
+                <Set Name="RTL_USER_PROCESS_PARAMETERS_PRIVATE_DLL_PATH"        Value="0x1000" />
+                <Set Name="RTL_USER_PROCESS_PARAMETERS_LOCAL_DLL_PATH"          Value="0x2000" />
+                <Set Name="RTL_USER_PROCESS_PARAMETERS_NX"                      Value="0x20000" />
+            </Enum>
+        </Variable>
+
+        <!-- RTL_USER_PROCESS_PARAMETERS -->
+        <Variable Name="RTL_USER_PROCESS_PARAMETERS" Type="Struct">
+            <Field Type="ULONG"                                 Name="MaximumLength" />
+            <Field Type="ULONG"                                 Name="Length" />
+            <Field Type="[RTL_USER_PROCESS_PARAMETERS_FLAGS]"   Name="Flags" />
+            <Field Type="ULONG"                                 Name="DebugFlags" />
+            <Field Type="HANDLE"                                Name="ConsoleHandle" />
+            <Field Type="ULONG"                                 Name="ConsoleFlags" />
+            <Field Type="HANDLE"                                Name="StandardInput" />
+            <Field Type="HANDLE"                                Name="StandardOutput" />
+            <Field Type="HANDLE"                                Name="StandardError" />
+            <Field Type="CURDIR"                                Name="CurrentDirectory" />
+            <Field Type="UNICODE_STRING"                        Name="DllPath" />
+            <Field Type="UNICODE_STRING"                        Name="ImagePathName" />
+            <Field Type="UNICODE_STRING"                        Name="CommandLine" />
+            <Field Type="PWSTR"                                 Name="Environment" />
+            <Field Type="ULONG"                                 Name="StartingX" />
+            <Field Type="ULONG"                                 Name="StartingY" />
+            <Field Type="ULONG"                                 Name="CountX" />
+            <Field Type="ULONG"                                 Name="CountY" />
+            <Field Type="ULONG"                                 Name="CountCharsX" />
+            <Field Type="ULONG"                                 Name="CountCharsY" />
+            <Field Type="ULONG"                                 Name="FillAttribute" />
+            <Field Type="[STARTUPINFO_Flags]"                   Name="WindowFlags" Display="ULONG" />
+            <Field Type="[ShowWindowCmd]"                       Name="ShowWindowFlags" Display="ULONG" />
+            <Field Type="UNICODE_STRING"                        Name="WindowTitle" />
+            <Field Type="UNICODE_STRING"                        Name="DesktopInfo" />
+            <Field Type="UNICODE_STRING"                        Name="ShellInfo" />
+            <Field Type="UNICODE_STRING"                        Name="RuntimeData" />
+            <Field Type="RTL_DRIVE_LETTER_CURDIR [32]"          Name="CurrentDirectories" />
+        </Variable>
+        <Variable Name="RTL_USER_PROCESS_PARAMETERS*"   Type="Pointer" Base="RTL_USER_PROCESS_PARAMETERS" />
+        <Variable Name="PRTL_USER_PROCESS_PARAMETERS"   Type="Pointer" Base="RTL_USER_PROCESS_PARAMETERS" />
+        <Variable Name="PRTL_USER_PROCESS_PARAMETERS*"  Type="Pointer" Base="PRTL_USER_PROCESS_PARAMETERS" />
+
+        <!-- SECTION_IMAGE_INFORMATION -->
+        <Variable Name="SECTION_IMAGE_INFORMATION" Type="Struct">
+            <Field Type="PVOID"         Name="EntryPoint" />
+            <Field Type="ULONG"         Name="StackZeroBits" />
+            <Field Type="ULONG"         Name="StackReserved" />
+            <Field Type="ULONG"         Name="StackCommit" />
+            <Field Type="ULONG"         Name="ImageSubsystem" />
+            <Field Type="WORD"          Name="SubsystemVersionLow" />
+            <Field Type="WORD"          Name="SubsystemVersionHigh" />
+            <Field Type="ULONG"         Name="Unknown1" />
+            <Field Type="ULONG"         Name="ImageCharacteristics" />
+            <Field Type="ULONG"         Name="ImageMachineType" />
+            <Field Type="ULONG [3]"     Name="Unknown2" />
+        </Variable>
+
+        <!-- RTL_USER_PROCESS_INFORMATION -->
+        <Variable Name="RTL_USER_PROCESS_INFORMATION" Type="Struct">
+            <Field Type="ULONG"                         Name="Size" />
+            <Field Type="HANDLE"                        Name="ProcessHandle" />
+            <Field Type="HANDLE"                        Name="ThreadHandle" />
+            <Field Type="CLIENT_ID"                     Name="ClientId" />
+            <Field Type="SECTION_IMAGE_INFORMATION"     Name="ImageInformation" />
+        </Variable>
+        <Variable Name="PRTL_USER_PROCESS_INFORMATION" Type="Pointer" Base="RTL_USER_PROCESS_INFORMATION" />
+
+        <!-- INITIAL_TEB -->
+        <Variable Name="INITIAL_TEB" Type="Struct">
+            <Field Type="PVOID"   Name="StackBase" />
+            <Field Type="PVOID"   Name="StackLimit" />
+            <Field Type="PVOID"   Name="StackCommit" />
+            <Field Type="PVOID"   Name="StackCommitMax" />
+            <Field Type="PVOID"   Name="StackReserved" />
+        </Variable>
+        <Variable Name="PINITIAL_TEB" Type="Pointer" Base="INITIAL_TEB" />
+
+        <!-- RTL_PATH_TYPE -->
+        <Variable Name="RTL_PATH_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="RtlPathTypeUnknown"          Value="0" />
+                <Set Name="RtlPathTypeUncAbsolute"      Value="1" />
+                <Set Name="RtlPathTypeDriveAbsolute"    Value="2" />
+                <Set Name="RtlPathTypeDriveRelative"    Value="3" />
+                <Set Name="RtlPathTypeRooted"           Value="4" />
+                <Set Name="RtlPathTypeRelative"         Value="5" />
+                <Set Name="RtlPathTypeLocalDevice"      Value="6" />
+                <Set Name="RtlPathTypeRootLocalDevice"  Value="7" />
+            </Enum>
+        </Variable>
+        <Variable Name="RTL_PATH_TYPE*" Type="Pointer" Base="RTL_PATH_TYPE" />
+
+        <!-- RTL_RESOURCE -->
+        <Variable Name="RTL_RESOURCE" Type="Struct">
+            <Field Type="RTL_CRITICAL_SECTION"  Name="Lock" />
+            <Field Type="HANDLE"                Name="SharedSemaphore" />
+            <Field Type="ULONG"                 Name="SharedWaiters" />
+            <Field Type="HANDLE"                Name="ExclusiveSemaphore" />
+            <Field Type="ULONG"                 Name="ExclusiveWaiters" />
+            <Field Type="LONG"                  Name="NumberActive" />
+            <Field Type="HANDLE"                Name="OwningThread" />
+            <Field Type="ULONG"                 Name="TimeoutBoost" />
+            <Field Type="PVOID"                 Name="DebugInfo" />
+        </Variable>
+        <Variable Name="PRTL_RESOURCE" Type="Pointer" Base="RTL_RESOURCE" />
+
+        <!-- RTL_PROCESS_VERIFIER_OPTIONS -->
+        <Variable Name="RTL_PROCESS_VERIFIER_OPTIONS" Type="Struct">
+            <Field Type="ULONG"         Name="SizeStruct" />
+            <Field Type="ULONG"         Name="Option" />
+            <Field Type="UCHAR [1]"     Name="OptionData" />
+        </Variable>
+        <Variable Name="PRTL_PROCESS_VERIFIER_OPTIONS" Type="Pointer" Base="RTL_PROCESS_VERIFIER_OPTIONS" />
+
+        <!-- RTL_PROCESS_LOCK_INFORMATION -->
+        <Variable Name="RTL_PROCESS_LOCK_INFORMATION" Type="Struct">
+            <Field Type="PVOID"     Name="Address" />
+            <Field Type="USHORT"    Name="Type" />
+            <Field Type="USHORT"    Name="CreatorBackTraceIndex" />
+            <Field Type="ULONG"     Name="OwnerThreadId" />
+            <Field Type="ULONG"     Name="ActiveCount" />
+            <Field Type="ULONG"     Name="ContentionCount" />
+            <Field Type="ULONG"     Name="EntryCount" />
+            <Field Type="ULONG"     Name="RecursionCount" />
+            <Field Type="ULONG"     Name="NumberOfSharedWaiters" />
+            <Field Type="ULONG"     Name="NumberOfExclusiveWaiters" />
+        </Variable>
+        <Variable Name="RTL_PROCESS_LOCK_INFORMATION [1]" Type="Array" Base="RTL_PROCESS_LOCK_INFORMATION" Count="1" />
+
+        <!-- RTL_PROCESS_LOCKS -->
+        <Variable Name="RTL_PROCESS_LOCKS" Type="Struct">
+            <Field Type="ULONG"                             Name="NumberOfLocks" />
+            <Field Type="RTL_PROCESS_LOCK_INFORMATION [1]"  Name="Locks" Count="NumberOfLocks" />
+        </Variable>
+        <Variable Name="PRTL_PROCESS_LOCKS" Type="Pointer" Base="RTL_PROCESS_LOCKS" />
+
+        <!-- RTL_HEAP_INFORMATION -->
+        <Variable Name="RTL_HEAP_INFORMATION" Type="Struct">
+            <Field Type="PVOID"         Name="BaseAddress" />
+            <Field Type="ULONG"         Name="Flags" />
+            <Field Type="USHORT"        Name="EntryOverhead" />
+            <Field Type="USHORT"        Name="CreatorBackTraceIndex" />
+            <Field Type="ULONG"         Name="BytesAllocated" />
+            <Field Type="ULONG"         Name="BytesCommitted" />
+            <Field Type="ULONG"         Name="NumberOfTags" />
+            <Field Type="ULONG"         Name="NumberOfEntries" />
+            <Field Type="ULONG"         Name="NumberOfPseudoTags" />
+            <Field Type="ULONG"         Name="PseudoTagGranularity" />
+            <Field Type="ULONG [4]"     Name="Reserved" />
+            <Field Type="PVOID"         Name="Tags" />
+            <Field Type="PVOID"         Name="Entries" />
+        </Variable>
+        <Variable Name="RTL_HEAP_INFORMATION [1]" Type="Array" Base="RTL_HEAP_INFORMATION" Count="1" />
+
+        <!-- RTL_PROCESS_HEAPS -->
+        <Variable Name="RTL_PROCESS_HEAPS" Type="Struct">
+            <Field Type="ULONG"                     Name="NumberOfHeaps" />
+            <Field Type="RTL_HEAP_INFORMATION [1]"  Name="Heaps" Count="NumberOfHeaps" />
+        </Variable>
+        <Variable Name="PRTL_PROCESS_HEAPS" Type="Pointer" Base="RTL_PROCESS_HEAPS" />
+
+        <!-- RTL_PROCESS_BACKTRACE_INFORMATION -->
+        <Variable Name="RTL_PROCESS_BACKTRACE_INFORMATION" Type="Struct">
+            <Field Type="PVOID"         Name="SymbolicBackTrace" />
+            <Field Type="ULONG"         Name="TraceCount" />
+            <Field Type="USHORT"        Name="Index" />
+            <Field Type="USHORT"        Name="Depth" />
+            <Field Type="PVOID [16]"    Name="BackTrace" />
+        </Variable>
+        <Variable Name="RTL_PROCESS_BACKTRACE_INFORMATION [1]" Type="Array" Base="RTL_PROCESS_BACKTRACE_INFORMATION" Count="1" />
+
+        <!-- RTL_PROCESS_BACKTRACES -->
+        <Variable Name="RTL_PROCESS_BACKTRACES" Type="Struct">
+            <Field Type="ULONG"                                 Name="CommittedMemory" />
+            <Field Type="ULONG"                                 Name="ReservedMemory" />
+            <Field Type="ULONG"                                 Name="NumberOfBackTraceLookups" />
+            <Field Type="ULONG"                                 Name="NumberOfBackTraces" />
+            <Field Type="RTL_PROCESS_BACKTRACE_INFORMATION [1]" Name="BackTraces" Count="NumberOfBackTraces" />
+        </Variable>
+        <Variable Name="PRTL_PROCESS_BACKTRACES" Type="Pointer" Base="RTL_PROCESS_BACKTRACES" />
+
+        <!-- RTL_PROCESS_MODULE_INFORMATION -->
+        <Variable Name="RTL_PROCESS_MODULE_INFORMATION" Type="Struct">
+            <Field Type="ULONG"         Name="Section" />
+            <Field Type="PVOID"         Name="MappedBase" />
+            <Field Type="PVOID"         Name="ImageBase" />
+            <Field Type="ULONG"         Name="ImageSize" />
+            <Field Type="ULONG"         Name="Flags" />
+            <Field Type="USHORT"        Name="LoadOrderIndex" />
+            <Field Type="USHORT"        Name="InitOrderIndex" />
+            <Field Type="USHORT"        Name="LoadCount" />
+            <Field Type="USHORT"        Name="OffsetToFileName" />
+            <Field Type="CHAR [256]"    Name="FullPathName" />
+        </Variable>
+        <Variable Name="RTL_PROCESS_MODULE_INFORMATION [1]" Type="Array" Base="RTL_PROCESS_MODULE_INFORMATION" Count="1" />
+
+        <!-- RTL_PROCESS_MODULES -->
+        <Variable Name="RTL_PROCESS_MODULES" Type="Struct">
+            <Field Type="ULONG"                                 Name="NumberOfModules" />
+            <Field Type="RTL_PROCESS_MODULE_INFORMATION [1]"    Name="Modules" Count="NumberOfModules" />
+        </Variable>
+        <Variable Name="PRTL_PROCESS_MODULES" Type="Pointer" Base="RTL_PROCESS_MODULES" />
+
+        <!-- RTL_PROCESS_MODULE_INFORMATION_EX -->
+        <Variable Name="RTL_PROCESS_MODULE_INFORMATION_EX" Type="Struct">
+            <Field Type="ULONG"                             Name="NextOffset" />
+            <Field Type="RTL_PROCESS_MODULE_INFORMATION"    Name="BaseInfo" />
+            <Field Type="ULONG"                             Name="ImageCheckSum" />
+            <Field Type="ULONG"                             Name="TimeDateStamp" />
+            <Field Type="PVOID"                             Name="DefaultBase" />
+        </Variable>
+        <Variable Name="PRTL_PROCESS_MODULE_INFORMATION_EX" Type="Pointer" Base="RTL_PROCESS_MODULE_INFORMATION_EX" />
+
+        <!-- [RTL_DEBUG_INFORMATION_u] -->
+        <Variable Name="[RTL_DEBUG_INFORMATION_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="PRTL_PROCESS_MODULES"                  Name="Modules" />
+            <Field Type="PRTL_PROCESS_MODULE_INFORMATION_EX"    Name="ModulesEx" />
+        </Variable>
+
+        <!-- RTL_DEBUG_INFORMATION -->
+        <Variable Name="RTL_DEBUG_INFORMATION" Type="Struct">
+            <Field Type="HANDLE"                        Name="SectionHandleClient" />
+            <Field Type="PVOID"                         Name="ViewBaseClient" />
+            <Field Type="PVOID"                         Name="ViewBaseTarget" />
+            <Field Type="ULONG"                         Name="ViewBaseDelta" />
+            <Field Type="HANDLE"                        Name="EventPairClient" />
+            <Field Type="PVOID"                         Name="EventPairTarget" />
+            <Field Type="HANDLE"                        Name="TargetProcessId" />
+            <Field Type="HANDLE"                        Name="TargetThreadHandle" />
+            <Field Type="ULONG"                         Name="Flags" />
+            <Field Type="ULONG"                         Name="OffsetFree" />
+            <Field Type="ULONG"                         Name="CommitSize" />
+            <Field Type="ULONG"                         Name="ViewSize" />
+            <Field Type="[RTL_DEBUG_INFORMATION_u]"     Name="" />
+            <Field Type="PRTL_PROCESS_BACKTRACES"       Name="BackTraces" />
+            <Field Type="PRTL_PROCESS_HEAPS"            Name="Heaps" />
+            <Field Type="PRTL_PROCESS_LOCKS"            Name="Locks" />
+            <Field Type="HANDLE"                        Name="SpecificHeap" />
+            <Field Type="HANDLE"                        Name="TargetProcessHandle" />
+            <Field Type="RTL_PROCESS_VERIFIER_OPTIONS"  Name="VerifierOptions" />
+            <Field Type="HANDLE"                        Name="ProcessHeap" />
+            <Field Type="HANDLE"                        Name="CriticalSectionHandle" />
+            <Field Type="HANDLE"                        Name="CriticalSectionOwnerThread" />
+            <Field Type="PVOID [4]"                     Name="Reserved" />
+        </Variable>
+        <Variable Name="PRTL_DEBUG_INFORMATION" Type="Pointer" Base="RTL_DEBUG_INFORMATION" />
+
+        <!-- RTL_BITMAP -->
+        <Variable Name="RTL_BITMAP" Type="Struct">
+            <Field Type="ULONG"     Name="SizeOfBitMap" />
+            <Field Type="PULONG"    Name="Buffer" />
+        </Variable>
+        <Variable Name="PRTL_BITMAP" Type="Pointer" Base="RTL_BITMAP" />
+
+        <!-- RTL_RANGE_LIST -->
+        <Variable Name="RTL_RANGE_LIST" Type="Struct">
+            <Field Type="LIST_ENTRY"    Name="ListHead" />
+            <Field Type="ULONG"         Name="Flags" />
+            <Field Type="ULONG"         Name="Count" />
+            <Field Type="ULONG"         Name="Stamp" />
+        </Variable>
+        <Variable Name="PRTL_RANGE_LIST" Type="Pointer" Base="RTL_RANGE_LIST" />
+
+        <!-- RTL_SPLAY_LINKS -->
+        <Variable Name="RTL_SPLAY_LINKS" Type="Struct">
+            <!-- TODO: Self-Referencing - All fields are PRTL_SPLAY_LINKS -->
+            <Field Type="LPVOID"    Name="Parent"       Display="PRTL_SPLAY_LINKS" />
+            <Field Type="LPVOID"    Name="LeftChild"    Display="PRTL_SPLAY_LINKS" />
+            <Field Type="LPVOID"    Name="RightChild"   Display="PRTL_SPLAY_LINKS" />
+        </Variable>
+        <Variable Name="PRTL_SPLAY_LINKS"   Type="Pointer" Base="RTL_SPLAY_LINKS" />
+        <Variable Name="PRTL_SPLAY_LINKS*"  Type="Pointer" Base="PRTL_SPLAY_LINKS" />
+
+        <!-- RTL_GENERIC_TABLE -->
+        <Variable Name="RTL_GENERIC_TABLE" Type="Struct">
+            <Field Type="PRTL_SPLAY_LINKS"                  Name="TableRoot" />
+            <Field Type="LIST_ENTRY"                        Name="InsertOrderList" />
+            <Field Type="PLIST_ENTRY"                       Name="OrderedPointer" />
+            <Field Type="ULONG"                             Name="WhichOrderedElement" />
+            <Field Type="ULONG"                             Name="NumberGenericTableElements" />
+            <Field Type="PRTL_GENERIC_COMPARE_ROUTINE"      Name="CompareRoutine" />
+            <Field Type="PRTL_GENERIC_ALLOCATE_ROUTINE"     Name="AllocateRoutine" />
+            <Field Type="PRTL_GENERIC_FREE_ROUTINE"         Name="FreeRoutine" />
+            <Field Type="PVOID"                             Name="TableContext" />
+        </Variable>
+        <Variable Name="PRTL_GENERIC_TABLE" Type="Pointer" Base="RTL_GENERIC_TABLE" />
+
+        <!-- TABLE_SEARCH_RESULT -->
+        <Variable Name="TABLE_SEARCH_RESULT" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="TableEmptyTree"      Value="0" />
+                <Set Name="TableFoundNode"      Value="1" />
+                <Set Name="TableInsertAsLeft"   Value="2" />
+                <Set Name="TableInsertAsRight"  Value="3" />
+            </Enum>
+        </Variable>
+        <Variable Name="TABLE_SEARCH_RESULT*" Type="Pointer" Base="TABLE_SEARCH_RESULT" />
+
+        <!-- RTL_HANDLE_TABLE_ENTRY -->
+        <Variable Name="RTL_HANDLE_TABLE_ENTRY" Type="Union">
+            <Field Type="ULONG"     Name="Flags" />
+            <!-- TODO: NextFree is PRTL_HANDLE_TABLE_ENTRY-->
+            <Field Type="LPVOID"    Name="NextFree"  Display="PRTL_HANDLE_TABLE_ENTRY"/>
+        </Variable>
+        <Variable Name="PRTL_HANDLE_TABLE_ENTRY"    Type="Pointer" Base="RTL_HANDLE_TABLE_ENTRY" />
+        <Variable Name="PRTL_HANDLE_TABLE_ENTRY*"   Type="Pointer" Base="PRTL_HANDLE_TABLE_ENTRY" />
+
+        <!-- RTL_HANDLE_TABLE -->
+        <Variable Name="RTL_HANDLE_TABLE" Type="Struct">
+            <Field Type="ULONG"                     Name="MaximumNumberOfHandles" />
+            <Field Type="ULONG"                     Name="SizeOfHandleTableEntry" />
+            <Field Type="ULONG [2]"                 Name="Reserved" />
+            <Field Type="PRTL_HANDLE_TABLE_ENTRY"   Name="FreeHandles" />
+            <Field Type="PRTL_HANDLE_TABLE_ENTRY"   Name="CommittedHandles" />
+            <Field Type="PRTL_HANDLE_TABLE_ENTRY"   Name="UnCommittedHandles" />
+            <Field Type="PRTL_HANDLE_TABLE_ENTRY"   Name="MaxReservedHandles" />
+        </Variable>
+        <Variable Name="PRTL_HANDLE_TABLE" Type="Pointer" Base="RTL_HANDLE_TABLE" />
+
+        <!-- RTL_MESSAGE_RESOURCE_ENTRY -->
+        <Variable Name="RTL_MESSAGE_RESOURCE_ENTRY" Type="Struct">
+            <Field Type="USHORT"    Name="Length" />
+            <Field Type="USHORT"    Name="Flags" />
+            <Field Type="CHAR [1]"  Name="Text" />
+        </Variable>
+        <Variable Name="PRTL_MESSAGE_RESOURCE_ENTRY"    Type="Pointer" Base="RTL_MESSAGE_RESOURCE_ENTRY" />
+        <Variable Name="PRTL_MESSAGE_RESOURCE_ENTRY*"   Type="Pointer" Base="PRTL_MESSAGE_RESOURCE_ENTRY" />
+
+        <!-- [RTL_QUERY_REGISTRY_FLAGS] -->
+        <Variable Name="[RTL_QUERY_REGISTRY_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="RTL_QUERY_REGISTRY_SUBKEY"       Value="0x00000001" />
+                <Set Name="RTL_QUERY_REGISTRY_TOPKEY"       Value="0x00000002" />
+                <Set Name="RTL_QUERY_REGISTRY_REQUIRED"     Value="0x00000004" />
+                <Set Name="RTL_QUERY_REGISTRY_NOVALUE"      Value="0x00000008" />
+                <Set Name="RTL_QUERY_REGISTRY_NOEXPAND"     Value="0x00000010" />
+                <Set Name="RTL_QUERY_REGISTRY_DIRECT"       Value="0x00000020" />
+                <Set Name="RTL_QUERY_REGISTRY_DELETE"       Value="0x00000040" />
+            </Flag>
+        </Variable>
+
+        <!-- RTL_QUERY_REGISTRY_TABLE -->
+        <Variable Name="RTL_QUERY_REGISTRY_TABLE" Type="Struct">
+            <Field Type="PRTL_QUERY_REGISTRY_ROUTINE"   Name="QueryRoutine" />
+            <Field Type="[RTL_QUERY_REGISTRY_FLAGS]"    Name="Flags" />
+            <Field Type="PWSTR"                         Name="Name" />
+            <Field Type="PVOID"                         Name="EntryContext" />
+            <Field Type="ULONG"                         Name="DefaultType" />
+            <Field Type="PVOID"                         Name="DefaultData" />
+            <Field Type="ULONG"                         Name="DefaultLength" />
+        </Variable>
+        <Variable Name="PRTL_QUERY_REGISTRY_TABLE" Type="Pointer" Base="RTL_QUERY_REGISTRY_TABLE" />
+
+        <!-- CPTABLEINFO -->
+        <Variable Name="CPTABLEINFO" Type="Struct">
+            <Field Type="USHORT"                        Name="CodePage" />
+            <Field Type="USHORT"                        Name="MaximumCharacterSize" />
+            <Field Type="USHORT"                        Name="DefaultChar" />
+            <Field Type="USHORT"                        Name="UniDefaultChar" />
+            <Field Type="USHORT"                        Name="TransDefaultChar" />
+            <Field Type="USHORT"                        Name="TransUniDefaultChar" />
+            <Field Type="USHORT"                        Name="DBCSCodePage" />
+            <Field Type="UCHAR [MAXIMUM_LEADBYTES]"     Name="LeadByte" />
+            <Field Type="PUSHORT"                       Name="MultiByteTable" />
+            <Field Type="PVOID"                         Name="WideCharTable" />
+            <Field Type="PUSHORT"                       Name="DBCSRanges" />
+            <Field Type="PUSHORT"                       Name="DBCSOffsets" />
+        </Variable>
+        <Variable Name="PCPTABLEINFO" Type="Pointer" Base="CPTABLEINFO" />
+
+        <!-- NLSTABLEINFO -->
+        <Variable Name="NLSTABLEINFO" Type="Struct">
+            <Field Type="CPTABLEINFO"   Name="OemTableInfo" />
+            <Field Type="CPTABLEINFO"   Name="AnsiTableInfo" />
+            <Field Type="PUSHORT"       Name="UpperCaseTable" />
+            <Field Type="PUSHORT"       Name="LowerCaseTable" />
+        </Variable>
+        <Variable Name="PNLSTABLEINFO" Type="Pointer" Base="NLSTABLEINFO" />
+
+        <!-- RTL_SYSTEM_TIME -->
+        <Variable Name="RTL_SYSTEM_TIME" Type="Struct">
+            <Field Type="WORD"      Name="wYear" />
+            <Field Type="WORD"      Name="wMonth" />
+            <Field Type="WORD"      Name="wDayOfWeek" />
+            <Field Type="WORD"      Name="wDay" />
+            <Field Type="WORD"      Name="wHour" />
+            <Field Type="WORD"      Name="wMinute" />
+            <Field Type="WORD"      Name="wSecond" />
+            <Field Type="WORD"      Name="wMilliseconds" />
+        </Variable>
+
+        <!-- RTL_TIME_ZONE_INFORMATION -->
+        <Variable Name="RTL_TIME_ZONE_INFORMATION" Type="Struct">
+            <Field Type="LONG"              Name="Bias" />
+            <Field Type="WCHAR [32]"        Name="StandardName" />
+            <Field Type="RTL_SYSTEM_TIME"   Name="StandardDate" />
+            <Field Type="LONG"              Name="StandardBias" />
+            <Field Type="WCHAR [32]"        Name="DaylightName" />
+            <Field Type="RTL_SYSTEM_TIME"   Name="DaylightDate" />
+            <Field Type="LONG"              Name="DaylightBias" />
+        </Variable>
+        <Variable Name="PRTL_TIME_ZONE_INFORMATION" Type="Pointer" Base="RTL_TIME_ZONE_INFORMATION" />
+
+        <!-- TIME_FIELDS -->
+        <Variable Name="TIME_FIELDS" Type="Struct">
+            <Field Type="CSHORT"    Name="Year" />
+            <Field Type="CSHORT"    Name="Month" />
+            <Field Type="CSHORT"    Name="Day" />
+            <Field Type="CSHORT"    Name="Hour" />
+            <Field Type="CSHORT"    Name="Minute" />
+            <Field Type="CSHORT"    Name="Second" />
+            <Field Type="CSHORT"    Name="Milliseconds" />
+            <Field Type="CSHORT"    Name="Weekday" />
+        </Variable>
+        <Variable Name="PTIME_FIELDS" Type="Pointer" Base="TIME_FIELDS" />
+
+        <!-- NT_PRODUCT_TYPE -->
+        <Variable Name="NT_PRODUCT_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="NtProductWinNt"      Value="1" />
+                <Set Name="NtProductLanManNt"   Value="2" />
+                <Set Name="NtProductServer"     Value="3" />
+            </Enum>
+        </Variable>
+        <Variable Name="PNT_PRODUCT_TYPE" Type="Pointer" Base="NT_PRODUCT_TYPE" />
+
+        <!-- RTL_BALANCED_LINKS -->
+        <Variable Name="RTL_BALANCED_LINKS" Type="Struct">
+            <!-- TODO: Self-Referencing - Parent, LeftChild and RightChild are PRTL_BALANCED_LINKS -->
+            <Field Type="LPVOID"        Name="Parent"       Display="PRTL_BALANCED_LINKS" />
+            <Field Type="LPVOID"        Name="LeftChild"    Display="PRTL_BALANCED_LINKS" />
+            <Field Type="LPVOID"        Name="RightChild"   Display="PRTL_BALANCED_LINKS" />
+            <Field Type="CHAR"          Name="Balance" />
+            <Field Type="UCHAR [3]"     Name="Reserved" />
+        </Variable>
+        <Variable Name="PRTL_BALANCED_LINKS" Type="Pointer" Base="RTL_BALANCED_LINKS" />
+
+        <!-- RTL_AVL_TABLE -->
+        <Variable Name="RTL_AVL_TABLE" Type="Struct">
+            <Field Type="RTL_BALANCED_LINKS"            Name="BalancedRoot" />
+            <Field Type="PVOID"                         Name="OrderedPointer" />
+            <Field Type="ULONG"                         Name="WhichOrderedElement" />
+            <Field Type="ULONG"                         Name="NumberGenericTableElements" />
+            <Field Type="ULONG"                         Name="DepthOfTree" />
+            <Field Type="PRTL_BALANCED_LINKS"           Name="RestartKey" />
+            <Field Type="ULONG"                         Name="DeleteCount" />
+            <Field Type="PRTL_AVL_COMPARE_ROUTINE"      Name="CompareRoutine" />
+            <Field Type="PRTL_AVL_ALLOCATE_ROUTINE"     Name="AllocateRoutine" />
+            <Field Type="PRTL_AVL_FREE_ROUTINE"         Name="FreeRoutine" />
+            <Field Type="PVOID"                         Name="TableContext" />
+        </Variable>
+        <Variable Name="PRTL_AVL_TABLE" Type="Pointer" Base="RTL_AVL_TABLE" />
+
+        <!-- COMPRESSED_DATA_INFO -->
+        <Variable Name="COMPRESSED_DATA_INFO" Type="Struct">
+            <Field Type="USHORT"                    Name="CompressionFormatAndEngine" />
+            <Field Type="UCHAR"                     Name="CompressionUnitShift" />
+            <Field Type="UCHAR"                     Name="ChunkShift" />
+            <Field Type="UCHAR"                     Name="ClusterShift" />
+            <Field Type="UCHAR"                     Name="Reserved" />
+            <Field Type="USHORT"                    Name="NumberOfChunks" />
+            <Field Type="ULONG [ANYSIZE_ARRAY]"     Name="CompressedChunkSizes" Count="NumberOfChunks" />
+        </Variable>
+        <Variable Name="PCOMPRESSED_DATA_INFO" Type="Pointer" Base="COMPRESSED_DATA_INFO" />
+
+        <!-- GENERATE_NAME_CONTEXT -->
+        <Variable Name="GENERATE_NAME_CONTEXT" Type="Struct">
+            <Field Type="USHORT"        Name="Checksum" />
+            <Field Type="BOOLEAN"       Name="CheckSumInserted" />
+            <Field Type="UCHAR"         Name="NameLength" />
+            <Field Type="WCHAR [8]"     Name="NameBuffer" />
+            <Field Type="ULONG"         Name="ExtensionLength" />
+            <Field Type="WCHAR [4]"     Name="ExtensionBuffer" />
+            <Field Type="ULONG"         Name="LastIndexValue" />
+        </Variable>
+        <Variable Name="PGENERATE_NAME_CONTEXT" Type="Pointer" Base="GENERATE_NAME_CONTEXT" />
+
+        <!-- RTL_HEAP_PARAMETERS -->
+        <Variable Name="RTL_HEAP_PARAMETERS" Type="Struct">
+            <Field Type="ULONG"                     Name="Length" />
+            <Field Type="SIZE_T"                    Name="SegmentReserve" />
+            <Field Type="SIZE_T"                    Name="SegmentCommit" />
+            <Field Type="SIZE_T"                    Name="DeCommitFreeBlockThreshold" />
+            <Field Type="SIZE_T"                    Name="DeCommitTotalFreeThreshold" />
+            <Field Type="SIZE_T"                    Name="MaximumAllocationSize" />
+            <Field Type="SIZE_T"                    Name="VirtualMemoryThreshold" />
+            <Field Type="SIZE_T"                    Name="InitialCommit" />
+            <Field Type="SIZE_T"                    Name="InitialReserve" />
+            <Field Type="PRTL_HEAP_COMMIT_ROUTINE"  Name="CommitRoutine" />
+            <Field Type="SIZE_T [2]"                Name="Reserved" />
+        </Variable>
+        <Variable Name="PRTL_HEAP_PARAMETERS" Type="Pointer" Base="RTL_HEAP_PARAMETERS" />
+
+        <!-- RTL_HEAP_TAG_INFO -->
+        <Variable Name="RTL_HEAP_TAG_INFO" Type="Struct">
+            <Field Type="ULONG"     Name="NumberOfAllocations" />
+            <Field Type="ULONG"     Name="NumberOfFrees" />
+            <Field Type="ULONG"     Name="BytesAllocated" />
+        </Variable>
+        <Variable Name="PRTL_HEAP_TAG_INFO" Type="Pointer" Base="RTL_HEAP_TAG_INFO" />
+
+        <!-- RTL_HEAP_USAGE_ENTRY -->
+        <Variable Name="RTL_HEAP_USAGE_ENTRY" Type="Struct">
+            <!-- TODO: Self-Referencing - Next is PRTL_HEAP_USAGE_ENTRY -->
+            <Field Type="LPVOID" Name="Next" Display="PRTL_HEAP_USAGE_ENTRY"/>
+        </Variable>
+        <Variable Name="PRTL_HEAP_USAGE_ENTRY" Type="Pointer" Base="RTL_HEAP_USAGE_ENTRY" />
+
+        <!-- RTL_HEAP_USAGE -->
+        <Variable Name="RTL_HEAP_USAGE" Type="Struct">
+            <Field Type="ULONG"                     Name="Length" />
+            <Field Type="ULONG"                     Name="BytesAllocated" />
+            <Field Type="ULONG"                     Name="BytesCommitted" />
+            <Field Type="ULONG"                     Name="BytesReserved" />
+            <Field Type="ULONG"                     Name="BytesReservedMaximum" />
+            <Field Type="PRTL_HEAP_USAGE_ENTRY"     Name="Entries" />
+            <Field Type="PRTL_HEAP_USAGE_ENTRY"     Name="AddedEntries" />
+            <Field Type="PRTL_HEAP_USAGE_ENTRY"     Name="RemovedEntries" />
+            <Field Type="UCHAR [32]"                Name="Reserved" />
+        </Variable>
+        <Variable Name="PRTL_HEAP_USAGE" Type="Pointer" Base="RTL_HEAP_USAGE" />
+
+        <!-- [IO_STATUS_BLOCK_u] -->
+        <Variable Name="[IO_STATUS_BLOCK_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="NTSTATUS"  Name="Status" />
+            <Field Type="PVOID"     Name="Pointer" />
+        </Variable>
+
+        <!-- IO_STATUS_BLOCK -->
+        <Variable Name="IO_STATUS_BLOCK" Type="Struct">
+            <Field Type="[IO_STATUS_BLOCK_u]"   Name="" />
+            <Field Type="ULONG_PTR"             Name="Information" />
+        </Variable>
+        <Variable Name="PIO_STATUS_BLOCK" Type="Pointer" Base="IO_STATUS_BLOCK" />
+
+        <!-- KEY_VALUE_ENTRY -->
+        <Variable Name="KEY_VALUE_ENTRY" Type="Struct">
+            <Field Type="PUNICODE_STRING"   Name="ValueName" />
+            <Field Type="ULONG"             Name="DataLength" />
+            <Field Type="ULONG"             Name="DataOffset" />
+            <Field Type="ULONG"             Name="Type" />
+        </Variable>
+        <Variable Name="PKEY_VALUE_ENTRY" Type="Pointer" Base="KEY_VALUE_ENTRY" />
+
+        <!-- EFI_DRIVER_ENTRY -->
+        <Variable Name="EFI_DRIVER_ENTRY" Type="Struct">
+            <Field Type="ULONG"     Name="Version" />
+            <Field Type="ULONG"     Name="Length" />
+            <Field Type="ULONG"     Name="Id" />
+            <Field Type="ULONG"     Name="Attributes" />
+            <Field Type="ULONG"     Name="FriendlyNameOffset" />
+            <Field Type="ULONG"     Name="DriverFilePathOffset" />
+        </Variable>
+        <Variable Name="PEFI_DRIVER_ENTRY" Type="Pointer" Base="EFI_DRIVER_ENTRY" />
+
+        <!-- FILE_BASIC_INFORMATION -->
+        <Variable Name="FILE_BASIC_INFORMATION" Type="Struct">
+            <Field Type="LARGE_INTEGER"     Name="CreationTime" />
+            <Field Type="LARGE_INTEGER"     Name="LastAccessTime" />
+            <Field Type="LARGE_INTEGER"     Name="LastWriteTime" />
+            <Field Type="LARGE_INTEGER"     Name="ChangeTime" />
+            <Field Type="ULONG"             Name="FileAttributes" />
+        </Variable>
+        <Variable Name="PFILE_BASIC_INFORMATION" Type="Pointer" Base="FILE_BASIC_INFORMATION" />
+
+        <!-- FILE_NETWORK_OPEN_INFORMATION -->
+        <Variable Name="FILE_NETWORK_OPEN_INFORMATION" Type="Struct">
+            <Field Type="LARGE_INTEGER"     Name="CreationTime" />
+            <Field Type="LARGE_INTEGER"     Name="LastAccessTime" />
+            <Field Type="LARGE_INTEGER"     Name="LastWriteTime" />
+            <Field Type="LARGE_INTEGER"     Name="ChangeTime" />
+            <Field Type="LARGE_INTEGER"     Name="AllocationSize" />
+            <Field Type="LARGE_INTEGER"     Name="EndOfFile" />
+            <Field Type="ULONG"             Name="FileAttributes" />
+        </Variable>
+        <Variable Name="PFILE_NETWORK_OPEN_INFORMATION" Type="Pointer" Base="FILE_NETWORK_OPEN_INFORMATION" />
+
+        <!-- BOOT_ENTRY -->
+        <Variable Name="BOOT_ENTRY" Type="Struct">
+            <Field Type="ULONG"     Name="Version" />
+            <Field Type="ULONG"     Name="Length" />
+            <Field Type="ULONG"     Name="Id" />
+            <Field Type="ULONG"     Name="Attributes" />
+            <Field Type="ULONG"     Name="FriendlyNameOffset" />
+            <Field Type="ULONG"     Name="BootFilePathOffset" />
+            <Field Type="ULONG"     Name="OsOptionsLength" />
+            <Field Type="CHAR [1]"  Name="OsOptions" />
+        </Variable>
+        <Variable Name="PBOOT_ENTRY" Type="Pointer" Base="BOOT_ENTRY" />
+
+        <!-- BOOT_OPTIONS -->
+        <Variable Name="BOOT_OPTIONS" Type="Struct">
+            <Field Type="ULONG"         Name="Version" />
+            <Field Type="ULONG"         Name="Length" />
+            <Field Type="ULONG"         Name="Timeout" />
+            <Field Type="ULONG"         Name="CurrentBootEntryId" />
+            <Field Type="ULONG"         Name="NextBootEntryId" />
+            <Field Type="WCHAR [1]"     Name="HeadlessRedirection" />
+        </Variable>
+        <Variable Name="PBOOT_OPTIONS" Type="Pointer" Base="BOOT_OPTIONS" />
+
+        <!-- FILE_PATH -->
+        <Variable Name="FILE_PATH" Type="Struct">
+            <Field Type="ULONG"         Name="Version" />
+            <Field Type="ULONG"         Name="Length" />
+            <Field Type="ULONG"         Name="Type" />
+            <Field Type="CHAR [1]"      Name="FilePath" />
+        </Variable>
+        <Variable Name="PFILE_PATH" Type="Pointer" Base="FILE_PATH" />
+
+        <!-- LDR_RESOURCE_INFO -->
+        <Variable Name="LDR_RESOURCE_INFO" Type="Struct">
+            <Field Type="ULONG_PTR"     Name="Type" />
+            <Field Type="ULONG_PTR"     Name="Name" />
+            <Field Type="ULONG"         Name="Language" />
+        </Variable>
+        <Variable Name="PLDR_RESOURCE_INFO" Type="Pointer" Base="LDR_RESOURCE_INFO" />
+
+        <!-- PORT_VIEW -->
+        <Variable Name="PORT_VIEW" Type="Struct">
+            <Field Type="ULONG"         Name="Length" />
+            <Field Type="LPC_HANDLE"    Name="SectionHandle" />
+            <Field Type="ULONG"         Name="SectionOffset" />
+            <Field Type="LPC_SIZE_T"    Name="ViewSize" />
+            <Field Type="LPC_PVOID"     Name="ViewBase" />
+            <Field Type="LPC_PVOID"     Name="ViewRemoteBase" />
+        </Variable>
+        <Variable Name="PPORT_VIEW" Type="Pointer" Base="PORT_VIEW" />
+
+        <!-- REMOTE_PORT_VIEW -->
+        <Variable Name="REMOTE_PORT_VIEW" Type="Struct">
+            <Field Type="ULONG"         Name="Length" />
+            <Field Type="LPC_SIZE_T"    Name="ViewSize" />
+            <Field Type="LPC_PVOID"     Name="ViewBase" />
+        </Variable>
+        <Variable Name="PREMOTE_PORT_VIEW" Type="Pointer" Base="REMOTE_PORT_VIEW" />
 
         <!-- JOB_SET_ARRAY -->
         <Variable Name="JOB_SET_ARRAY" Type="Struct">
@@ -120,7 +896,7 @@
             <Field Type="PSID" Name="PrimaryGroup" />
         </Variable>
         <Variable Name="PTOKEN_PRIMARY_GROUP" Type="Pointer" Base="TOKEN_PRIMARY_GROUP" />
-        
+
         <!-- TOKEN_DEFAULT_DACL -->
         <Variable Name="TOKEN_DEFAULT_DACL" Type="Struct">
             <Field Type="PACL" Name="DefaultDacl" />
@@ -149,7 +925,7 @@
         </Variable>
         <Variable Name="PIMAGE_RESOURCE_DIRECTORY"  Type="Pointer" Base="IMAGE_RESOURCE_DIRECTORY" />
         <Variable Name="PIMAGE_RESOURCE_DIRECTORY*" Type="Pointer"      Base="PIMAGE_RESOURCE_DIRECTORY" />
-        
+
         <Variable Name="KEY_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="KeyBasicInformation"     Value="0" />
@@ -160,7 +936,7 @@
                 <Set Name="KeyFlagsInformation"     Value="5" />
             </Enum>
         </Variable>
-        
+
         <Variable Name="KEY_VALUE_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="KeyValueBasicInformation"            Value="0" />
@@ -170,7 +946,7 @@
                 <Set Name="KeyValuePartialInformationAlign64"   Value="2" />
             </Enum>
         </Variable>
-        
+
         <Variable Name="PLUGPLAY_CONTROL_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="PlugPlayControlUserResponse"     Value="0x07" />
@@ -181,60 +957,60 @@
                 <Set Name="PlugPlayControlResetDevice"      Value="0x14" />
             </Enum>
         </Variable>
-        
+
         <Variable Name="KEY_SET_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="KeyWriteTimeInformation" Value="0" />
                 <Set Name="KeyUserFlagsInformation" Value="1" />
             </Enum>
         </Variable>
-        
+
         <Variable Name="DEBUGOBJECTINFOCLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="DebugObjectUnusedInformation"                Value="0" />
                 <Set Name="DebugObjectKillProcessOnExitInformation"     Value="1" />
             </Enum>
         </Variable>
-        
+
         <Variable Name="TIMER_TYPE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="NotificationTimer"       Value="0" />
                 <Set Name="SynchronizationTimer"    Value="1" />
             </Enum>
         </Variable>
-        
+
         <Variable Name="EVENT_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="EventBasicInformation" Value="0" />
             </Enum>
         </Variable>
-        
+
         <Variable Name="ATOM_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="AtomBasicInformation"    Value="0" />
                 <Set Name="AtomTableInformation"    Value="0" />
             </Enum>
         </Variable>
-        
+
         <Variable Name="MUTANT_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="MutantBasicInformation"  Value="0" />
                 <Set Name="MutantOwnerInformation"  Value="0" />
             </Enum>
         </Variable>
-        
+
         <Variable Name="SEMAPHORE_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="SemaphoreBasicInformation" Value="0" />
             </Enum>
         </Variable>
-        
+
         <Variable Name="TIMER_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="TimerBasicInformation" Value="0" />
             </Enum>
         </Variable>
-        
+
         <Variable Name="SHUTDOWN_ACTION" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="ShutdownNoReboot"    Value="0" />
@@ -242,7 +1018,7 @@
                 <Set Name="ShutdownPowerOff"    Value="2" />
             </Enum>
         </Variable>
-        
+
         <Variable Name="FILE_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="FileDirectoryInformation"                Value="1" />
@@ -296,13 +1072,13 @@
                 <Set Name="FileNetworkPhysicalNameInformation"      Value="49" />
             </Enum>
         </Variable>
-        
+
         <Variable Name="IO_COMPLETION_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="IoCompletionBasicInformation" Value="0" />
             </Enum>
         </Variable>
-        
+
         <Variable Name="FS_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="FileFsVolumeInformation"         Value="1" />
@@ -316,7 +1092,7 @@
                 <Set Name="FileFsMaximumInformation"        Value="9" />
             </Enum>
         </Variable>
-        
+
         <Variable Name="SYSDBG_COMMAND" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="SysDbgQueryModuleInformation"    Value="1" />
@@ -327,27 +1103,27 @@
                 <Set Name="SysDbgQuerySpecialCalls"         Value="6" />
             </Enum>
         </Variable>
-        
+
         <Variable Name="PORT_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="PortNoInformation" Value="0" />
             </Enum>
         </Variable>
-        
+
         <Variable Name="SECTION_INHERIT" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="ViewShare" Value="1" />
                 <Set Name="ViewUnmap" Value="2" />
             </Enum>
         </Variable>
-        
+
         <Variable Name="SECTION_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="SectionBasicInformation"     Value="0" />
                 <Set Name="SectionImageInformation"     Value="1" />
             </Enum>
         </Variable>
-        
+
         <Variable Name="MEMORY_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="MemoryBasicInformation"      Value="0" />
@@ -356,7 +1132,7 @@
                 <Set Name="MemoryBasicVlmInformation"   Value="3" />
             </Enum>
         </Variable>
-        
+
         <Variable Name="OBJECT_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="ObjectBasicInformation"      Value="0" />
@@ -366,14 +1142,15 @@
                 <Set Name="ObjectHandleInformation"     Value="4" />
             </Enum>
         </Variable>
-        
+
         <Variable Name="WAIT_TYPE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="WaitAll"     Value="0" />
                 <Set Name="WaitAny"     Value="1" />
             </Enum>
         </Variable>
-        
+
+        <!-- POWER_ACTION -->
         <Variable Name="POWER_ACTION" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="PowerActionNone"             Value="0" />
@@ -386,7 +1163,8 @@
                 <Set Name="PowerActionWarmEject"        Value="7" />
             </Enum>
         </Variable>
-        
+
+        <!-- SYSTEM_POWER_STATE -->
         <Variable Name="SYSTEM_POWER_STATE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="PowerSystemUnspecified"      Value="0" />
@@ -398,7 +1176,7 @@
                 <Set Name="PowerSystemShutdown"         Value="6" />
             </Enum>
         </Variable>
-        
+
         <Variable Name="APPHELPCACHESERVICECLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="ApphelpCacheServiceLookup"   Value="0" />
@@ -408,7 +1186,7 @@
                 <Set Name="ApphelpCacheServiceDump"     Value="4" />
             </Enum>
         </Variable>
-        
+
         <Variable Name="SYSTEM_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="SystemBasicInformation"                          Value="0" />
@@ -550,22 +1328,228 @@
             </Flag>
         </Variable>
 
-        <Variable Name="[NtProtectionFlags]" Type="Alias" Base="ULONG">
-            <Display Name="ULONG" />
-            <Flag>
-                <Set Name="PAGE_NOACCESS"           Value="0x01" />
-                <Set Name="PAGE_READONLY"           Value="0x02" />
-                <Set Name="PAGE_READWRITE"          Value="0x04" />
-                <Set Name="PAGE_WRITECOPY"          Value="0x08" />
-                <Set Name="PAGE_EXECUTE"            Value="0x10" />
-                <Set Name="PAGE_EXECUTE_READ"       Value="0x20" />
-                <Set Name="PAGE_EXECUTE_READWRITE"  Value="0x40" />
-                <Set Name="PAGE_EXECUTE_WRITECOPY"  Value="0x80" />
-                <Set Name="PAGE_GUARD"              Value="0x100" />
-                <Set Name="PAGE_NOCACHE"            Value="0x200" />
-                <Set Name="PAGE_WRITECOMBINE"       Value="0x400" />
-            </Flag>
+        <!-- PEB_LDR_DATA -->
+        <Variable Name="PEB_LDR_DATA" Type="Struct">
+            <Field Type="ULONG"             Name="Length" />
+            <Field Type="BOOLEAN"           Name="Initialized" />
+            <Field Type="PVOID"             Name="SsHandle" />
+            <Field Type="LIST_ENTRY"        Name="InLoadOrderModuleList" />
+            <Field Type="LIST_ENTRY"        Name="InMemoryOrderModuleList" />
+            <Field Type="LIST_ENTRY"        Name="InInitializationOrderModuleList" />
+            <Field Type="PVOID"             Name="EntryInProgress" />
         </Variable>
+        <Variable Name="PPEB_LDR_DATA" Type="Pointer" Base="PEB_LDR_DATA" />
+
+        <!-- PEB -->
+        <Variable Name="PEB" Type="Struct">
+            <Field Type="BOOLEAN"                       Name="InheritedAddressSpace" />
+            <Field Type="BOOLEAN"                       Name="ReadImageFileExecOptions" />
+            <Field Type="BOOLEAN"                       Name="BeingDebugged" />
+            <Field Type="BOOLEAN"                       Name="SpareBool" />
+            <Field Type="HANDLE"                        Name="Mutant" />
+            <Field Type="HMODULE"                       Name="ImageBaseAddress" />
+            <Field Type="PPEB_LDR_DATA"                 Name="LdrData" />
+            <Field Type="RTL_USER_PROCESS_PARAMETERS*"  Name="ProcessParameters" />
+            <Field Type="PVOID"                         Name="SubSystemData" />
+            <Field Type="HANDLE"                        Name="ProcessHeap" />
+            <Field Type="PRTL_CRITICAL_SECTION"         Name="FastPebLock" />
+            <Field Type="PVOID"                         Name="FastPebLockRoutine" />
+            <Field Type="PVOID"                         Name="FastPebUnlockRoutine" />
+            <Field Type="ULONG"                         Name="EnvironmentUpdateCount" />
+            <Field Type="PVOID"                         Name="KernelCallbackTable" />
+            <Field Type="PVOID"                         Name="EventLogSection" />
+            <Field Type="PVOID"                         Name="EventLog" />
+            <Field Type="PVOID"                         Name="FreeList" />
+            <Field Type="ULONG"                         Name="TlsExpansionCounter" />
+            <Field Type="PRTL_BITMAP"                   Name="TlsBitmap" />
+            <Field Type="ULONG [2]"                     Name="TlsBitmapBits" />
+            <Field Type="PVOID"                         Name="ReadOnlySharedMemoryBase" />
+            <Field Type="PVOID"                         Name="ReadOnlySharedMemoryHeap" />
+            <Field Type="PVOID*"                        Name="ReadOnlyStaticServerData" />
+            <Field Type="PVOID"                         Name="AnsiCodePageData" />
+            <Field Type="PVOID"                         Name="OemCodePageData" />
+            <Field Type="PVOID"                         Name="UnicodeCaseTableData" />
+            <Field Type="ULONG"                         Name="NumberOfProcessors" />
+            <Field Type="ULONG"                         Name="NtGlobalFlag" />
+            <Field Type="BYTE [4]"                      Name="Spare2" />
+            <Field Type="LARGE_INTEGER"                 Name="CriticalSectionTimeout" />
+            <Field Type="ULONG"                         Name="HeapSegmentReserve" />
+            <Field Type="ULONG"                         Name="HeapSegmentCommit" />
+            <Field Type="ULONG"                         Name="HeapDeCommitTotalFreeThreshold" />
+            <Field Type="ULONG"                         Name="HeapDeCommitFreeBlockThreshold" />
+            <Field Type="ULONG"                         Name="NumberOfHeaps" />
+            <Field Type="ULONG"                         Name="MaximumNumberOfHeaps" />
+            <Field Type="PVOID*"                        Name="ProcessHeaps" />
+            <Field Type="PVOID"                         Name="GdiSharedHandleTable" />
+            <Field Type="PVOID"                         Name="ProcessStarterHelper" />
+            <Field Type="PVOID"                         Name="GdiDCAttributeList" />
+            <Field Type="PVOID"                         Name="LoaderLock" />
+            <Field Type="ULONG"                         Name="OSMajorVersion" />
+            <Field Type="ULONG"                         Name="OSMinorVersion" />
+            <Field Type="ULONG"                         Name="OSBuildNumber" />
+            <Field Type="ULONG"                         Name="OSPlatformId" />
+            <Field Type="ULONG"                         Name="ImageSubSystem" />
+            <Field Type="ULONG"                         Name="ImageSubSystemMajorVersion" />
+            <Field Type="ULONG"                         Name="ImageSubSystemMinorVersion" />
+            <Field Type="ULONG"                         Name="ImageProcessAffinityMask" />
+            <Field Type="ULONG [34]"                    Name="GdiHandleBuffer" />
+            <Field Type="ULONG"                         Name="PostProcessInitRoutine" />
+            <Field Type="PRTL_BITMAP"                   Name="TlsExpansionBitmap" />
+            <Field Type="ULONG [32]"                    Name="TlsExpansionBitmapBits" />
+            <Field Type="ULONG"                         Name="SessionId" />
+        </Variable>
+        <Variable Name="PPEB" Type="Pointer" Base="PEB" />
+
+        <!-- EXCEPTION_REGISTRATION_RECORD -->
+        <Variable Name="EXCEPTION_REGISTRATION_RECORD" Type="Struct">
+            <!-- TODO: Self-Referencing - Next is EXCEPTION_REGISTRATION_RECORD*-->
+            <Field Type="LPVOID"                Name="Next" Display="EXCEPTION_REGISTRATION_RECORD*" />
+            <Field Type="PEXCEPTION_ROUTINE"    Name="Handler" />
+        </Variable>
+        <Variable Name="EXCEPTION_REGISTRATION_RECORD*" Type="Pointer" Base="EXCEPTION_REGISTRATION_RECORD" />
+
+        <!-- [NT_TIB_u] -->
+        <Variable Name="[NT_TIB_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="PVOID"     Name="FiberData" />
+            <Field Type="DWORD"     Name="Version" />
+        </Variable>
+
+        <!-- NT_TIB -->
+        <Variable Name="NT_TIB" Type="Struct">
+            <Field Type="EXCEPTION_REGISTRATION_RECORD*"    Name="ExceptionList" />
+            <Field Type="PVOID"                             Name="StackBase" />
+            <Field Type="PVOID"                             Name="StackLimit" />
+            <Field Type="PVOID"                             Name="SubSystemTib" />
+            <Field Type="[NT_TIB_u]"                        Name="" />
+            <Field Type="PVOID"                             Name="ArbitraryUserPointer" />
+            <Field Type="LPVOID"                            Name="Self" Display="NT_TIB*" />
+        </Variable>
+
+        <!-- GDI_TEB_BATCH -->
+        <Variable Name="GDI_TEB_BATCH" Type="Struct">
+            <Field Type="ULONG"             Name="Offset" />
+            <Field Type="HANDLE"            Name="HDC" />
+            <Field Type="ULONG [0x136]"     Name="Buffer" />
+        </Variable>
+
+        <!-- TEB -->
+        <Variable Name="TEB" Type="Struct">
+            <Field Type="NT_TIB"            Name="Tib" />
+            <Field Type="PVOID"             Name="EnvironmentPointer" />
+            <Field Type="CLIENT_ID"         Name="ClientId" />
+            <Field Type="PVOID"             Name="ActiveRpcHandle" />
+            <Field Type="PVOID"             Name="ThreadLocalStoragePointer" />
+            <Field Type="PPEB"              Name="Peb" />
+            <Field Type="ULONG"             Name="LastErrorValue" />
+            <Field Type="ULONG"             Name="CountOfOwnedCriticalSections" />
+            <Field Type="PVOID"             Name="CsrClientThread" />
+            <Field Type="PVOID"             Name="Win32ThreadInfo" />
+            <Field Type="ULONG [31]"        Name="Win32ClientInfo" />
+            <Field Type="PVOID"             Name="WOW32Reserved" />
+            <Field Type="ULONG"             Name="CurrentLocale" />
+            <Field Type="ULONG"             Name="FpSoftwareStatusRegister" />
+            <Field Type="PVOID [54]"        Name="SystemReserved1" />
+            <Field Type="PVOID"             Name="Spare1" />
+            <Field Type="LONG"              Name="ExceptionCode" />
+            <Field Type="BYTE [40]"         Name="SpareBytes1" />
+            <Field Type="PVOID [10]"        Name="SystemReserved2" />
+            <Field Type="GDI_TEB_BATCH"     Name="GdiTebBatch" />
+            <Field Type="ULONG"             Name="gdiRgn" />
+            <Field Type="ULONG"             Name="gdiPen" />
+            <Field Type="ULONG"             Name="gdiBrush" />
+            <Field Type="CLIENT_ID"         Name="RealClientId" />
+            <Field Type="HANDLE"            Name="GdiCachedProcessHandle" />
+            <Field Type="ULONG"             Name="GdiClientPID" />
+            <Field Type="ULONG"             Name="GdiClientTID" />
+            <Field Type="PVOID"             Name="GdiThreadLocaleInfo" />
+            <Field Type="PVOID [5]"         Name="UserReserved" />
+            <Field Type="PVOID [280]"       Name="glDispatchTable" />
+            <Field Type="ULONG [26]"        Name="glReserved1" />
+            <Field Type="PVOID"             Name="glReserved2" />
+            <Field Type="PVOID"             Name="glSectionInfo" />
+            <Field Type="PVOID"             Name="glSection" />
+            <Field Type="PVOID"             Name="glTable" />
+            <Field Type="PVOID"             Name="glCurrentRC" />
+            <Field Type="PVOID"             Name="glContext" />
+            <Field Type="ULONG"             Name="LastStatusValue" />
+            <Field Type="UNICODE_STRING"    Name="StaticUnicodeString" />
+            <Field Type="WCHAR [261]"       Name="StaticUnicodeBuffer" />
+            <Field Type="PVOID"             Name="DeallocationStack" />
+            <Field Type="PVOID [64]"        Name="TlsSlots" />
+            <Field Type="LIST_ENTRY"        Name="TlsLinks" />
+            <Field Type="PVOID"             Name="Vdm" />
+            <Field Type="PVOID"             Name="ReservedForNtRpc" />
+            <Field Type="PVOID [2]"         Name="DbgSsReserved" />
+            <Field Type="ULONG"             Name="HardErrorDisabled" />
+            <Field Type="PVOID [16]"        Name="Instrumentation" />
+            <Field Type="PVOID"             Name="WinSockData" />
+            <Field Type="ULONG"             Name="GdiBatchCount" />
+            <Field Type="ULONG"             Name="Spare2" />
+            <Field Type="ULONG"             Name="Spare3" />
+            <Field Type="ULONG"             Name="Spare4" />
+            <Field Type="PVOID"             Name="ReservedForOle" />
+            <Field Type="ULONG"             Name="WaitingOnLoaderLock" />
+            <Field Type="PVOID [3]"         Name="Reserved5" />
+            <Field Type="PVOID*"            Name="TlsExpansionSlots" />
+        </Variable>
+        <Variable Name="PTEB" Type="Pointer" Base="TEB" />
+
+        <!-- RTL_ATOM_TABLE_ENTRY -->
+        <Variable Name="RTL_ATOM_TABLE_ENTRY" Type="Struct">
+            <!-- TODO: Self-Referencing HashLink is RTL_ATOM_TABLE_ENTRY*-->
+            <Field Type="LPVOID"        Name="HashLink" Display="RTL_ATOM_TABLE_ENTRY*" />
+            <Field Type="USHORT"        Name="HandleIndex" />
+            <Field Type="USHORT"        Name="Atom" />
+            <Field Type="USHORT"        Name="ReferenceCount" />
+            <Field Type="UCHAR"         Name="Flags" />
+            <Field Type="UCHAR"         Name="NameLength" />
+            <Field Type="WCHAR [1]"     Name="Name" Count="NameLength" />
+        </Variable>
+        <Variable Name="PRTL_ATOM_TABLE_ENTRY" Type="Pointer" Base="RTL_ATOM_TABLE_ENTRY" />
+        <Variable Name="PRTL_ATOM_TABLE_ENTRY [1]" Type="Array" Base="PRTL_ATOM_TABLE_ENTRY" Count="1" />
+
+        <!-- RTL_ATOM_TABLE -->
+        <Variable Name="RTL_ATOM_TABLE" Type="Struct">
+            <Field Type="ULONG"                         Name="Signature" />
+            <Field Type="RTL_CRITICAL_SECTION"          Name="CriticalSection" />
+            <Field Type="RTL_HANDLE_TABLE"              Name="RtlHandleTable" />
+            <Field Type="ULONG"                         Name="NumberOfBuckets" />
+            <Field Type="PRTL_ATOM_TABLE_ENTRY [1]"     Name="Buckets" Count="NumberOfBuckets" />
+        </Variable>
+        <Variable Name="PRTL_ATOM_TABLE"    Type="Pointer" Base="RTL_ATOM_TABLE" />
+        <Variable Name="PRTL_ATOM_TABLE*"   Type="Pointer" Base="PRTL_ATOM_TABLE" />
+
+        <!-- LPC_TYPE -->
+        <Variable Name="LPC_TYPE" Type="Alias" Base="USHORT">
+            <Display name="USHORT" />
+            <Enum>
+                <Set Name="LPC_NEW_MESSAGE"             Value="0" />
+                <Set Name="LPC_REQUEST"                 Value="1" />
+                <Set Name="LPC_REPLY"                   Value="2" />
+                <Set Name="LPC_DATAGRAM"                Value="3" />
+                <Set Name="LPC_LOST_REPLY"              Value="4" />
+                <Set Name="LPC_PORT_CLOSED"             Value="5" />
+                <Set Name="LPC_CLIENT_DIED"             Value="6" />
+                <Set Name="LPC_EXCEPTION"               Value="7" />
+                <Set Name="LPC_DEBUG_EVENT"             Value="8" />
+                <Set Name="LPC_ERROR_EVENT"             Value="9" />
+                <Set Name="LPC_CONNECTION_REQUEST"      Value="10" />
+                <Set Name="LPC_CONNECTION_REFUSED"      Value="11" />
+            </Enum>
+        </Variable>
+
+        <!-- PORT_MESSAGE -->
+        <Variable Name="PORT_MESSAGE" Type="Struct">
+            <Field Type="USHORT"        Name="DataSize" />
+            <Field Type="USHORT"        Name="MessageSize" />
+            <Field Type="LPC_TYPE"      Name="MessageType" />
+            <Field Type="USHORT"        Name="VirtualRangesOffset" />
+            <Field Type="CLIENT_ID"     Name="ClientId" />
+            <Field Type="ULONG"         Name="MessageId" />
+            <Field Type="ULONG"         Name="SectionSize" />
+        </Variable>
+        <Variable Name="PPORT_MESSAGE" Type="Pointer" Base="PORT_MESSAGE" />
 
         <!-- Runtime Library Routines -->
         <Category Name="NT Native/Runtime Library Routines (RTL)" />
@@ -2543,10 +3527,11 @@
             <Return Type="VOID" />
         </Api>
         <Api Name="RtlUnhandledExceptionFilter">
-            <Param Type="struct _EXCEPTION_POINTERS*" Name="ExceptionInfo" />
+            <Param Type="EXCEPTION_POINTERS*" Name="ExceptionInfo" />
             <Return Type="LONG" />
             <Success Return="NotEqual" Value="0" />
         </Api>
+        <!-- Crashes - DO NOT USE        
         <Api Name="RtlUnwind">
             <Param Type="PVOID" Name="TargetFrame" />
             <Param Type="PVOID" Name="TargetIp" />
@@ -2554,6 +3539,7 @@
             <Param Type="PVOID" Name="ReturnValue" />
             <Return Type="VOID" />
         </Api>
+        -->
         <Api Name="RtlWalkFrameChain">
             <Param Type="PVOID*" Name="Callers" />
             <Param Type="ULONG" Name="Count" />
@@ -3930,7 +4916,7 @@
             <Param Type="PIO_APC_ROUTINE" Name="ApcRoutine" />
             <Param Type="PVOID" Name="ApcContext" />
             <Param Type="PIO_STATUS_BLOCK" Name="IoStatusBlock" />
-            <Param Type="PVOID" Name="Buffer" />
+            <Param Type="PVOID" Name="Buffer" Length="Length" />
             <Param Type="ULONG" Name="Length" />
             <Param Type="PLARGE_INTEGER" Name="ByteOffset" />
             <Param Type="PULONG" Name="Key" />
@@ -4195,7 +5181,7 @@
             <Param Type="PVOID*" Name="BaseAddress" />
             <Param Type="ULONG_PTR" Name="ZeroBits" />
             <Param Type="PSIZE_T" Name="RegionSize" />
-            <Param Type="[MemoryFlags]" Display="ULONG" Name="AllocationType" />
+            <Param Type="[MemoryAllocationFlags]" Display="ULONG" Name="AllocationType" />
             <Param Type="[NtProtectionFlags]" Name="Protect" />
             <Return Type="NTSTATUS" />
             <Success Return="Equal" Value="0" />
@@ -4290,7 +5276,7 @@
             <Param Type="PLARGE_INTEGER" Name="SectionOffset" />
             <Param Type="PSIZE_T" Name="ViewSize" />
             <Param Type="SECTION_INHERIT" Name="InheritDisposition" />
-            <Param Type="[MemoryFlags]" Display="ULONG" Name="AllocationType" />
+            <Param Type="[MemoryAllocationFlags]" Display="ULONG" Name="AllocationType" />
             <Param Type="ULONG" Name="AccessProtection" />
             <Return Type="NTSTATUS" />
             <Success Return="Equal" Value="0" />
@@ -4778,24 +5764,18 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Category Name="NT Native/Debugging (DBG)" />
-        <!-- Variable Arguments NOT supported
-    <Api Name="DbgPrint" CallingConvention="CDECL">
-        <Param Type="PCCH" Name="Format" />
-        <Param Type="..." />
-        <Return Type="ULONG" />
-        <Success Return="NotEqual" Value="0" />
-    </Api>
-    -->
-        <!-- Variable Arguments NOT supported
-    <Api Name="DbgPrintEx" CallingConvention="CDECL">
-        <Param Type="ULONG" Name="ComponentId" />
-        <Param Type="ULONG" Name="Level" />
-        <Param Type="PCCH" Name="Format" />
-        <Param Type="..." />
-        <Return Type="ULONG" />
-        <Success Return="NotEqual" Value="0" />
-    </Api>
-    -->
+        <Api Name="DbgPrint" VarArgs="True">
+            <Param Type="PCCH" Name="Format" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="DbgPrintEx" VarArgs="True">
+            <Param Type="ULONG" Name="ComponentId" />
+            <Param Type="ULONG" Name="Level" />
+            <Param Type="PCCH" Name="Format" />
+            <Return Type="ULONG" />
+            <Success Return="Equal" Value="0" />
+        </Api>
         <Api Name="DbgPrompt">
             <Param Type="PCCH" Name="Prompt" />
             <Param Type="PCH" Name="Response" />
@@ -5022,14 +6002,14 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="CsrAllocateMessagePointer">
-            <Param Type="struct _CSR_CAPTURE_BUFFER*" Name="CaptureBuffer" />
+            <Param Type="CSR_CAPTURE_BUFFER*" Name="CaptureBuffer" />
             <Param Type="ULONG" Name="MessageLength" />
             <Param Type="PVOID*" Name="CaptureData" />
             <Return Type="ULONG" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="CsrCaptureMessageBuffer">
-            <Param Type="struct _CSR_CAPTURE_BUFFER*" Name="CaptureBuffer" />
+            <Param Type="CSR_CAPTURE_BUFFER*" Name="CaptureBuffer" />
             <Param Type="PVOID" Name="MessageString" />
             <Param Type="ULONG" Name="StringLength" />
             <Param Type="PVOID*" Name="CapturedData" />
@@ -5045,8 +6025,8 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="CsrClientCallServer">
-            <Param Type="struct _CSR_API_MESSAGE*" Name="Request" />
-            <Param Type="struct _CSR_CAPTURE_BUFFER*" Name="CaptureBuffer" />
+            <Param Type="CSR_API_MESSAGE*" Name="Request" />
+            <Param Type="CSR_CAPTURE_BUFFER*" Name="CaptureBuffer" />
             <Param Type="ULONG" Name="ApiNumber" />
             <Param Type="ULONG" Name="RequestLength" />
             <Return Type="NTSTATUS" />
@@ -5057,7 +6037,7 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="CsrFreeCaptureBuffer">
-            <Param Type="struct _CSR_CAPTURE_BUFFER*" Name="CaptureBuffer" />
+            <Param Type="CSR_CAPTURE_BUFFER*" Name="CaptureBuffer" />
             <Return Type="VOID" />
         </Api>
         <Api Name="CsrGetProcessId">

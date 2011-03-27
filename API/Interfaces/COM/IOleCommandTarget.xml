@@ -6,14 +6,15 @@
 <ApiMonitor>
     <Include Filename="Interfaces\IUnknown.xml" />
     <Interface Name="IOleCommandTarget" Id="{b722bccb-4e68-101b-a2bc-00aa00404770}" BaseInterface="IUnknown" OnlineHelp="MSDN" ErrorFunc="HRESULT" Category="Component Development/COM/Component Object Model (COM)/OLE and Data Transfer/Interfaces">
+        
         <!-- Variables -->
+        <Variable Name="wchar_t [1]" Type="Array" Base="wchar_t" Count="1" />
 
         <!-- OLECMD -->
         <Variable Name="OLECMD" Type="Struct">
             <Field Type="ULONG"     Name="cmdID" />
             <Field Type="OLECMDF"   Name="cmdf" />
         </Variable>
-        <!-- TODO: Array -->
         <Variable Name="OLECMD[]" Type="Pointer" Base="OLECMD" />
 
         <!-- OLECMDTEXTF -->
@@ -26,14 +27,20 @@
             </Flag>
         </Variable>
 
-        <!-- TODO: Structures -->
-        <Variable Name="OLECMDTEXT*" Type="Alias" Base="LPVOID" />
+        <!-- OLECMDTEXT -->
+        <Variable Name="OLECMDTEXT" Type="Struct">
+            <Field Type="DWORD"         Name="cmdtextf" />
+            <Field Type="ULONG"         Name="cwActual" />
+            <Field Type="ULONG"         Name="cwBuf" />
+            <Field Type="wchar_t [1]"   Name="rgwz" Count="cwActual"  />
+        </Variable>
+        <Variable Name="OLECMDTEXT*" Type="Pointer" Base="OLECMDTEXT" />
 
         <!-- Methods -->
         <Api Name="QueryStatus">
             <Param Type="const GUID*" Name="pguidCmdGroup" />
             <Param Type="ULONG" Name="cCmds" />
-            <Param Type="OLECMD[]" Name="prgCmds" />
+            <Param Type="OLECMD[]" Name="prgCmds" Count="cCmds" />
             <Param Type="OLECMDTEXT*" Name="pCmdText" />
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
