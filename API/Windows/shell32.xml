@@ -43,7 +43,9 @@
         <Variable Name="LPFNADDPROPSHEETPAGE"               Type="Alias"    Base="LPVOID" />
         <Variable Name="LPFNVIEWCALLBACK"                   Type="Alias"    Base="LPVOID" />
         <Variable Name="PFNASYNCICONTASKBALLBACK"           Type="Alias"    Base="LPVOID" />
-        
+        <Variable Name="PROPVARIANT[]"                      Type="Pointer"  Base="PROPVARIANT" />
+
+        <!-- Arrays -->
         <Variable Name="TCHAR [80]"                         Type="Array"    Base="TCHAR"    Count="80" />
         <Variable Name="POINT [NUM_POINTS]"                 Type="Array"    Base="POINT"    Count="3" />
         <Variable Name="DWORD [NUM_POINTS]"                 Type="Array"    Base="DWORD"    Count="3" />
@@ -161,79 +163,6 @@
             <Field Type="HICON"                     Name="hBalloonIcon" />
         </Variable>
         <Variable Name="PNOTIFYICONDATA" Type="Pointer" Base="NOTIFYICONDATA" />
-
-        <!-- [SHELLEXECUTEINFO_u] -->
-        <Variable Name="[SHELLEXECUTEINFO_u]" Type="Union">
-            <Display Name="union" />
-            <Field Type="HANDLE"    Name="hIcon" />
-            <Field Type="HANDLE"    Name="hMonitor" />
-        </Variable>
-
-        <!-- [SEE_MASK] -->
-        <Variable Name="[SEE_MASK]" Type="Alias" Base="ULONG">
-            <Display Name="ULONG" />
-            <Flag>
-                <Set Name="SEE_MASK_DEFAULT"                Value="0x00000000" />
-                <Set Name="SEE_MASK_CLASSNAME"              Value="0x00000001" />
-                <Set Name="SEE_MASK_CLASSKEY"               Value="0x00000003" />
-                <Set Name="SEE_MASK_IDLIST"                 Value="0x00000004" />
-                <Set Name="SEE_MASK_INVOKEIDLIST"           Value="0x0000000c" />
-                <Set Name="SEE_MASK_ICON"                   Value="0x00000010" />
-                <Set Name="SEE_MASK_HOTKEY"                 Value="0x00000020" />
-                <Set Name="SEE_MASK_NOCLOSEPROCESS"         Value="0x00000040" />
-                <Set Name="SEE_MASK_CONNECTNETDRV"          Value="0x00000080" />
-                <Set Name="SEE_MASK_NOASYNC"                Value="0x00000100" />
-                <Set Name="SEE_MASK_DOENVSUBST"             Value="0x00000200" />
-                <Set Name="SEE_MASK_FLAG_NO_UI"             Value="0x00000400" />
-                <Set Name="SEE_MASK_UNICODE"                Value="0x00004000" />
-                <Set Name="SEE_MASK_NO_CONSOLE"             Value="0x00008000" />
-                <Set Name="SEE_MASK_ASYNCOK"                Value="0x00100000" />
-                <Set Name="SEE_MASK_HMONITOR"               Value="0x00200000" />
-                <Set Name="SEE_MASK_NOZONECHECKS"           Value="0x00800000" />
-                <Set Name="SEE_MASK_NOQUERYCLASSSTORE"      Value="0x01000000" />
-                <Set Name="SEE_MASK_WAITFORINPUTIDLE"       Value="0x02000000" />
-                <Set Name="SEE_MASK_FLAG_LOG_USAGE"         Value="0x04000000" />
-            </Flag>
-        </Variable>
-
-        <!-- [SEE_HINSTANCE] -->
-        <Variable Name="[SEE_HINSTANCE]" Type="Alias" Base="UINT_PTR">
-            <Display Name="HINSTANCE" />
-            <Enum>
-                <Set Name="SE_ERR_FNF"                  Value="2" />
-                <Set Name="SE_ERR_PNF"                  Value="3" />
-                <Set Name="SE_ERR_ACCESSDENIED"         Value="5" />
-                <Set Name="SE_ERR_OOM"                  Value="8" />
-                <Set Name="SE_ERR_DLLNOTFOUND"          Value="32" />
-                <Set Name="SE_ERR_SHARE"                Value="26" />
-                <Set Name="SE_ERR_ASSOCINCOMPLETE"      Value="27" />
-                <Set Name="SE_ERR_DDETIMEOUT"           Value="28" />
-                <Set Name="SE_ERR_DDEFAIL"              Value="29" />
-                <Set Name="SE_ERR_DDEBUSY"              Value="30" />
-                <Set Name="SE_ERR_NOASSOC"              Value="31" />
-            </Enum>
-        </Variable>
-
-        <!-- SHELLEXECUTEINFO -->
-        <Variable Name="SHELLEXECUTEINFO" Type="Struct">
-            <Field Type="DWORD"                 Name="cbSize" />
-            <Field Type="[SEE_MASK]"            Name="fMask" />
-            <Field Type="HWND"                  Name="hwnd" />
-            <Field Type="LPCTSTR"               Name="lpVerb" />
-            <Field Type="LPCTSTR"               Name="lpFile" />
-            <Field Type="LPCTSTR"               Name="lpParameters" />
-            <Field Type="LPCTSTR"               Name="lpDirectory" />
-            <Field Type="[ShowWindowCmd]"       Name="nShow" />
-            <Field Type="[SEE_HINSTANCE]"       Name="hInstApp" />
-            <!-- TODO: lpIDList is PCIDLIST_ABSOLUTE -->
-            <Field Type="void*"                 Name="lpIDList" />
-            <Field Type="LPCTSTR"               Name="lpClass" />
-            <Field Type="HKEY"                  Name="hkeyClass" />
-            <Field Type="DWORD"                 Name="dwHotKey" />
-            <Field Type="[SHELLEXECUTEINFO_u]"  Name="" />
-            <Field Type="HANDLE"                Name="hProcess" />
-        </Variable>
-        <Variable Name="LPSHELLEXECUTEINFO" Type="Pointer" Base="SHELLEXECUTEINFO" />
 
         <!-- SHFILEINFO -->
         <Variable Name="SHFILEINFO" Type="Struct">
@@ -454,6 +383,7 @@
         </Variable>
         <Variable Name="LPSHQUERYRBINFO" Type="Pointer" Base="SHQUERYRBINFO" />
 
+        <!-- [SHGetDataFromIDListFormats] -->
         <Variable Name="[SHGetDataFromIDListFormats]" Type="Alias" Base="int">
             <Display Name="int" />
             <Enum>
@@ -463,6 +393,7 @@
             </Enum>
         </Variable>
 
+        <!-- KNOWN_FOLDER_FLAG -->
         <Variable Name="KNOWN_FOLDER_FLAG" Type="Alias" Base="DWORD">
             <Flag>
                 <Set Name="KF_FLAG_CREATE"              Value="0x00008000" />
@@ -476,6 +407,7 @@
             </Flag>
         </Variable>
 
+        <!-- [SHGetFolderPathFlags] -->
         <Variable Name="[SHGetFolderPathFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>
@@ -484,6 +416,7 @@
             </Enum>
         </Variable>
 
+        <!-- [ShellChangeNotifyEvent] -->
         <Variable Name="[ShellChangeNotifyEvent]" Type="Alias" Base="ULONG">
             <Display Name="LONG" />
             <Flag>
@@ -515,6 +448,7 @@
             </Flag>
         </Variable>
 
+        <!-- [ShellChangeNotifyFlag] -->
         <Variable Name="[ShellChangeNotifyFlag]" Type="Alias" Base="UINT">
             <Display Name="UINT" />
             <Flag>
@@ -531,6 +465,7 @@
             </Flag>
         </Variable>
 
+        <!-- ASSOC_FILTER -->
         <Variable Name="ASSOC_FILTER" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="ASSOC_FILTER_NONE"           Value="0" />
@@ -538,6 +473,7 @@
             </Enum>
         </Variable>
 
+        <!-- SCNRT_STATUS -->
         <Variable Name="SCNRT_STATUS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="SCNRT_ENABLE"    Value="0" />
@@ -545,6 +481,7 @@
             </Enum>
         </Variable>
 
+        <!-- DATAOBJ_GET_ITEM_FLAGS -->
         <Variable Name="DATAOBJ_GET_ITEM_FLAGS" Type="Alias" Base="DWORD">
             <Flag>
                 <Set Name="DOGIF_DEFAULT"           Value="0x0000" />
@@ -555,6 +492,7 @@
             </Flag>
         </Variable>
 
+        <!-- GPFIDL_FLAGS -->
         <Variable Name="GPFIDL_FLAGS" Type="Alias" Base="UINT">
             <Flag>
                 <Set Name="GPFIDL_DEFAULT"      Value="0x0000" />
@@ -563,6 +501,7 @@
             </Flag>
         </Variable>
 
+        <!-- SHSTOCKICONID -->
         <Variable Name="SHSTOCKICONID" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="SIID_DOCNOASSOC"             Value="0" />
@@ -653,6 +592,7 @@
             </Enum>
         </Variable>
 
+        <!-- QUERY_USER_NOTIFICATION_STATE -->
         <Variable Name="QUERY_USER_NOTIFICATION_STATE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="QUNS_NOT_PRESENT"                Value="1"/>
@@ -664,6 +604,7 @@
         </Variable>
         <Variable Name="QUERY_USER_NOTIFICATION_STATE*" Type="Pointer" Base="QUERY_USER_NOTIFICATION_STATE" />
 
+        <!-- LIBRARYMANAGEDIALOGOPTIONS -->
         <Variable Name="LIBRARYMANAGEDIALOGOPTIONS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="LMD_DEFAULT"                             Value="0x00000000"/>
@@ -671,6 +612,7 @@
             </Enum>
         </Variable>
 
+        <!-- [RunFileDlgFlags] -->
         <Variable Name="[RunFileDlgFlags]" Type="Alias" Base="UINT">
             <Display Name="UINT" />
             <Flag>
@@ -681,6 +623,29 @@
                 <Set Name="RFF_NOSEPARATEMEM"   Value="0x00000010"/>
             </Flag>
         </Variable>
+
+        <!-- [PROPSPEC_KIND] -->
+        <Variable Name="[PROPSPEC_KIND]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="PRSPEC_LPWSTR"   Value="0" />
+                <Set Name="PRSPEC_PROPID"   Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- [PROPSPEC_u] -->
+        <Variable Name="[PROPSPEC_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="PROPID"    Name="propid" />
+            <Field Type="LPOLESTR"  Name="lpwstr" />
+        </Variable>
+
+        <!-- PROPSPEC -->
+        <Variable Name="PROPSPEC" Type="Struct">
+            <Field Type="[PROPSPEC_KIND]"   Name="ulKind" />
+            <Field Type="[PROPSPEC_u]"      Name="" />
+        </Variable>
+        <Variable Name="PROPSPEC const[]" Type="Pointer" Base="PROPSPEC" />
 
         <!-- Icons -->
         <Category Name="Windows Application UI Development/Menus and Other Resources/Icons" />
@@ -742,7 +707,7 @@
             <Return Type="int" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="CDefFolderMenu_Create2">
+        <Api Name="CDefFolderMenu_Create2" Ordinal="701">
             <Param Type="PCIDLIST_ABSOLUTE" Name="pidlFolder" />
             <Param Type="HWND" Name="hwnd" />
             <Param Type="UINT" Name="cidl" />
@@ -755,7 +720,7 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="CIDLData_CreateFromIDArray">
+        <Api Name="CIDLData_CreateFromIDArray" Ordinal="83">
             <Param Type="PCIDLIST_ABSOLUTE" Name="pidlFolder" />
             <Param Type="UINT" Name="cidl" />
             <Param Type="PCUIDLIST_RELATIVE_ARRAY" Name="apidl" />
@@ -769,35 +734,35 @@
             <Return Type="LPWSTR*" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="DAD_AutoScroll">
+        <Api Name="DAD_AutoScroll" Ordinal="129">
             <Param Type="HWND" Name="hwnd" />
             <Param Type="AUTO_SCROLL_DATA*" Name="pad" />
             <Param Type="const POINT*" Name="pptNow" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="DAD_DragEnterEx">
+        <Api Name="DAD_DragEnterEx" Ordinal="131">
             <Param Type="HWND" Name="hwndTarget" />
             <Param Type="const POINT" Name="ptStart" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="DAD_DragLeave">
+        <Api Name="DAD_DragLeave" Ordinal="132">
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="DAD_DragMove">
+        <Api Name="DAD_DragMove" Ordinal="134">
             <Param Type="POINT" Name="pt" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="DAD_SetDragImage">
+        <Api Name="DAD_SetDragImage" Ordinal="136">
             <Param Type="HIMAGELIST" Name="him" />
             <Param Type="POINT*" Name="pptOffset" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="DAD_ShowDragImage">
+        <Api Name="DAD_ShowDragImage" Ordinal="137">
             <Param Type="BOOL" Name="fShow" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
@@ -836,7 +801,7 @@
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="DriveType">
+        <Api Name="DriveType" Ordinal="64">
             <Param Type="int" Name="iDrive" />
             <Return Type="int" />
             <Success Return="NotEqual" Value="0" />
@@ -866,7 +831,7 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="GetFileNameFromBrowse">
+        <Api Name="GetFileNameFromBrowse" Ordinal="63">
             <Param Type="HWND" Name="hwnd" />
             <Param Type="LPWSTR" Name="pszFilePath" />
             <Param Type="UINT" Name="cchFilePath" />
@@ -883,66 +848,71 @@
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="ILAppendID">
+        <Api Name="ILAppendID" Ordinal="154">
             <Param Type="PIDLIST_RELATIVE" Name="pidl" />
             <Param Type="LPSHITEMID" Name="pmkid" />
             <Param Type="BOOL" Name="fAppend" />
             <Return Type="PIDLIST_RELATIVE" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="ILClone">
+        <Api Name="ILClone" Ordinal="18">
             <Param Type="PCUIDLIST_RELATIVE" Name="pidl" />
             <Return Type="PIDLIST_RELATIVE" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="ILCloneFirst">
+        <Api Name="ILCloneFirst" Ordinal="19">
             <Param Type="PCUIDLIST_RELATIVE" Name="pidl" />
             <Return Type="PITEMID_CHILD" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="ILCombine">
+        <Api Name="ILCombine" Ordinal="25">
             <Param Type="PCIDLIST_ABSOLUTE" Name="pidl1" />
             <Param Type="PCUIDLIST_RELATIVE" Name="pidl2" />
             <Return Type="PIDLIST_ABSOLUTE" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="ILCreateFromPath" BothCharset="True">
+        <Api Name="ILCreateFromPath" Ordinal="157">
+            <Param Type="LPCWSTR" Name="pszPath" />
+            <Return Type="PIDLIST_ABSOLUTE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ILCreateFromPath" BothCharset="True" OrdinalA="189" OrdinalW="190">
             <Param Type="LPCSTR" Name="pszPath" />
             <Return Type="PIDLIST_ABSOLUTE" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="ILFindChild">
+        <Api Name="ILFindChild" Ordinal="24">
             <Param Type="PCIDLIST_ABSOLUTE" Name="pidlParent" />
             <Param Type="PCIDLIST_ABSOLUTE" Name="pidlChild" />
             <Return Type="PUIDLIST_RELATIVE" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="ILFindLastID">
+        <Api Name="ILFindLastID" Ordinal="16">
             <Param Type="PCUIDLIST_RELATIVE" Name="pidl" />
             <Return Type="PUITEMID_CHILD" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="ILFree">
+        <Api Name="ILFree" Ordinal="155">
             <Param Type="PIDLIST_RELATIVE" Name="pidl" />
             <Return Type="void" />
         </Api>
-        <Api Name="ILGetNext">
+        <Api Name="ILGetNext" Ordinal="153">
             <Param Type="PCUIDLIST_RELATIVE" Name="pidl" />
             <Return Type="PUIDLIST_RELATIVE" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="ILGetSize">
+        <Api Name="ILGetSize" Ordinal="152">
             <Param Type="PCUIDLIST_RELATIVE" Name="pidl" />
             <Return Type="UINT" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="ILIsEqual">
+        <Api Name="ILIsEqual" Ordinal="21">
             <Param Type="PCIDLIST_ABSOLUTE" Name="pidl1" />
             <Param Type="PCIDLIST_ABSOLUTE" Name="pidl2" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="ILIsParent">
+        <Api Name="ILIsParent" Ordinal="23">
             <Param Type="PCIDLIST_ABSOLUTE" Name="pidl1" />
             <Param Type="PCIDLIST_ABSOLUTE" Name="pidl2" />
             <Param Type="BOOL" Name="fImmediate" />
@@ -955,12 +925,12 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="ILRemoveLastID">
+        <Api Name="ILRemoveLastID" Ordinal="17">
             <Param Type="PUIDLIST_RELATIVE" Name="pidl" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="ILSaveToStream">
+        <Api Name="ILSaveToStream" Ordinal="27">
             <Param Type="IStream*" Name="pstm" />
             <Param Type="PCUIDLIST_RELATIVE" Name="pidl" />
             <Return Type="HRESULT" />
@@ -970,11 +940,11 @@
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="IsNetDrive">
+        <Api Name="IsNetDrive" Ordinal="66">
             <Param Type="int" Name="iDrive" />
             <Return Type="int" />
         </Api>
-        <Api Name="IsUserAnAdmin">
+        <Api Name="IsUserAnAdmin" Ordinal="680">
             <Return Type="BOOL" />
         </Api>
         <Api Name="LinkWindow_RegisterClass">
@@ -1007,7 +977,7 @@
             <Return Type="ULONG" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="OpenRegStream">
+        <Api Name="OpenRegStream" Ordinal="85">
             <Param Type="HKEY" Name="hkey" />
             <Param Type="LPCWSTR" Name="pszSubkey" />
             <Param Type="LPCWSTR" Name="pszValue" />
@@ -1023,28 +993,28 @@
             <Return Type="bool" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="PathCleanupSpec">
+        <Api Name="PathCleanupSpec" Ordinal="171">
             <Param Type="LPCWSTR" Name="pszDir" />
             <Param Type="LPWSTR" Name="pszSpec" />
             <Return Type="int" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="PathGetShortPath">
+        <Api Name="PathGetShortPath" Ordinal="92">
             <Param Type="LPWSTR" Name="pszLongPath" />
             <Return Type="void" />
         </Api>
-        <Api Name="PathIsExe">
+        <Api Name="PathIsExe" Ordinal="43">
             <Param Type="LPCWSTR" Name="szfile" />
             <Return Type="int" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="PathIsSlow" BothCharset="True">
+        <Api Name="PathIsSlow" BothCharset="True" OrdinalA="240" OrdinalW="239">
             <Param Type="LPCTSTR" Name="pszFile" />
             <Param Type="DWORD" Name="dwFileAttr" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="PathMakeUniqueName">
+        <Api Name="PathMakeUniqueName" Ordinal="47">
             <Param Type="LPWSTR" Name="pszUniqueName" />
             <Param Type="UINT" Name="cchMax" />
             <Param Type="LPCWSTR" Name="pszTemplate" />
@@ -1061,14 +1031,14 @@
             <Return Type="LONG" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="PathResolve">
+        <Api Name="PathResolve" Ordinal="51">
             <Param Type="LPWSTR" Name="pszPath" />
             <Param Type="LPCWSTR*" Name="dirs" />
             <Param Type="UINT" Name="fFlags" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="PathYetAnotherMakeUniqueName">
+        <Api Name="PathYetAnotherMakeUniqueName" Ordinal="75">
             <Param Type="LPWSTR" Name="pszUniqueName" />
             <Param Type="LPCWSTR" Name="pszPath" />
             <Param Type="LPCWSTR" Name="pszShort" />
@@ -1076,7 +1046,7 @@
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="PickIconDlg">
+        <Api Name="PickIconDlg" Ordinal="62">
             <Param Type="HWND" Name="hwnd" />
             <Param Type="LPWSTR" Name="pszIconPath" />
             <Param Type="UINT" Name="cchIconPath" />
@@ -1084,58 +1054,26 @@
             <Return Type="int" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="PifMgr_CloseProperties">
-            <Param Type="HANDLE" Name="hProps" />
-            <Param Type="UINT" Name="flOpt" />
-            <Return Type="int" />
-            <Success Return="NotEqual" Value="0" />
-        </Api>
-        <Api Name="PifMgr_OpenProperties">
-            <Param Type="LPCWSTR" Name="pszApp" />
-            <Param Type="LPCWSTR" Name="lpszPIF" />
-            <Param Type="UINT" Name="hInf" />
-            <Param Type="UINT" Name="flOpt" />
-            <Return Type="HANDLE" />
-            <Success Return="NotEqual" Value="0" />
-        </Api>
-        <Api Name="PifMgr_GetProperties">
-            <Param Type="HANDLE" Name="hProps" />
-            <Param Type="LPCSTR" Name="pszGroup" />
-            <Param Type="VOID*" Name="lpProps" />
-            <Param Type="int" Name="cbProps" />
-            <Param Type="UINT" Name="flOpt" />
-            <Return Type="int" />
-            <Success Return="NotEqual" Value="0" />
-        </Api>
-        <Api Name="PifMgr_SetProperties">
-            <Param Type="HANDLE" Name="hProps" />
-            <Param Type="LPCSTR" Name="pszGroup" />
-            <Param Type="VOID*" Name="lpProps" />
-            <Param Type="int" Name="cbProps" />
-            <Param Type="UINT" Name="flOpt" />
-            <Return Type="int" />
-            <Success Return="NotEqual" Value="0" />
-        </Api>
-        <Api Name="ReadCabinetState">
+        <Api Name="ReadCabinetState" Ordinal="654">
             <Param Type="CABINETSTATE*" Name="pcs" />
             <Param Type="int" Name="cLength" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="RealDriveType">
+        <Api Name="RealDriveType" Ordinal="524">
             <Param Type="int" Name="iDrive" />
             <Param Type="BOOL" Name="fOKToHitNet" />
             <Return Type="int" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="RestartDialog">
+        <Api Name="RestartDialog" Ordinal="59">
             <Param Type="HWND" Name="hParent" />
             <Param Type="LPCWSTR" Name="pszPrompt" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="int" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="RestartDialogEx">
+        <Api Name="RestartDialogEx" Ordinal="730">
             <Param Type="HWND" Name="hParent" />
             <Param Type="LPCWSTR" Name="pszPrompt" />
             <Param Type="DWORD" Name="dwFlags" />
@@ -1148,13 +1086,7 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHAddDefaultPropertiesByExt">
-            <Param Type="PCWSTR" Name="pszExt" />
-            <Param Type="IPropertyStore*" Name="pPropStore" />
-            <Return Type="HRESULT" />
-            <Success Return="Equal" Value="0" />
-        </Api>
-        <Api Name="SHAddFromPropSheetExtArray">
+        <Api Name="SHAddFromPropSheetExtArray" Ordinal="167">
             <Param Type="HPSXA" Name="hpsxa" />
             <Param Type="LPFNADDPROPSHEETPAGE" Name="lpfnAddPage" />
             <Param Type="LPARAM" Name="lParam" />
@@ -1166,7 +1098,7 @@
             <Param Type="LPCVOID" Name="pv" />
             <Return Type="void" />
         </Api>
-        <Api Name="SHAlloc">
+        <Api Name="SHAlloc" Ordinal="196">
             <Param Type="SIZE_T" Name="cb" />
             <Return Type="LPVOID" />
             <Success Return="NotEqual" Value="0" />
@@ -1222,7 +1154,7 @@
             <Return Type="PIDLIST_ABSOLUTE" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="SHChangeNotification_Lock">
+        <Api Name="SHChangeNotification_Lock" Ordinal="644">
             <Param Type="HANDLE" Name="hChange" />
             <Param Type="DWORD" Name="dwProcId" />
             <Param Type="PIDLIST_ABSOLUTE**" Name="pppidl" />
@@ -1230,17 +1162,17 @@
             <Return Type="HANDLE" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="SHChangeNotification_Unlock">
+        <Api Name="SHChangeNotification_Unlock" Ordinal="645">
             <Param Type="HANDLE" Name="hLock" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="SHChangeNotifyDeregister">
+        <Api Name="SHChangeNotifyDeregister" Ordinal="4">
             <Param Type="ULONG" Name="ulID" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="SHChangeNotifyRegister">
+        <Api Name="SHChangeNotifyRegister" Ordinal="2">
             <Param Type="HWND" Name="hwnd" />
             <Param Type="int" Name="fSources" />
             <Param Type="LONG" Name="fEvents" />
@@ -1254,20 +1186,20 @@
             <Param Type="SCNRT_STATUS" Name="status" />
             <Return Type="void" />
         </Api>
-        <Api Name="SHCloneSpecialIDList">
+        <Api Name="SHCloneSpecialIDList" Ordinal="89">
             <Param Type="HWND" Name="hwndOwner" />
             <Param Type="[CSIDL]" Name="csidl" />
             <Param Type="BOOL" Name="fCreate" />
             <Return Type="PIDLIST_ABSOLUTE" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="SHCLSIDFromString">
+        <Api Name="SHCLSIDFromString" Ordinal="147">
             <Param Type="LPCWSTR" Name="psz" />
             <Param Type="CLSID*" Name="pclsid" />
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHCoCreateInstance">
+        <Api Name="SHCoCreateInstance" Ordinal="102">
             <Param Type="LPCWSTR" Name="pszCLSID" />
             <Param Type="const CLSID*" Name="pclsid" />
             <Param Type="IUnknown*" Name="pUnkOuter" />
@@ -1311,7 +1243,7 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHCreateDirectory">
+        <Api Name="SHCreateDirectory" Ordinal="165">
             <Param Type="HWND" Name="hwnd" />
             <Param Type="LPCWSTR" Name="pszPath" />
             <Return Type="int" />
@@ -1324,7 +1256,7 @@
             <Return Type="int" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="SHCreateFileExtractIconW">
+        <Api Name="SHCreateFileExtractIconW" Ordinal="743">
             <Param Type="LPCWSTR" Name="pszFile" />
             <Param Type="DWORD" Name="dwFileAttributes" />
             <Param Type="REFIID" Name="riid" />
@@ -1363,7 +1295,7 @@
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="SHCreatePropSheetExtArray">
+        <Api Name="SHCreatePropSheetExtArray" Ordinal="168">
             <Param Type="HKEY" Name="hkey" />
             <Param Type="LPCWSTR" Name="pszSubkey" />
             <Param Type="UINT" Name="max_iface" />
@@ -1375,13 +1307,13 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHCreateShellFolderViewEx">
+        <Api Name="SHCreateShellFolderViewEx" Ordinal="174">
             <Param Type="LPCSFV" Name="pcsfv" />
             <Param Type="IShellView**" Name="ppsv" />
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHCreateShellFolderView">
+        <Api Name="SHCreateShellFolderView" Ordinal="256">
             <Param Type="const SFV_CREATE*" Name="pcsfv" />
             <Param Type="IShellView**" Name="ppsv" />
             <Return Type="HRESULT" />
@@ -1441,13 +1373,13 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHCreateStdEnumFmtEtc">
+        <Api Name="SHCreateStdEnumFmtEtc" Ordinal="74">
             <Param Type="UINT" Name="cfmt" />
             <Param Type="IEnumFORMATETC**" Name="ppenumFormatEtc" />
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHDefExtractIcon" BothCharset="True">
+        <Api Name="SHDefExtractIcon" BothCharset="True" OrdinalA="3" OrdinalW="6">
             <Param Type="LPCTSTR" Name="pszIconFile" />
             <Param Type="int" Name="iIndex" />
             <Param Type="UINT" Name="uFlags" />
@@ -1457,11 +1389,11 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHDestroyPropSheetExtArray">
+        <Api Name="SHDestroyPropSheetExtArray" Ordinal="169">
             <Param Type="HPSXA" Name="hpsxa" />
             <Return Type="void" />
         </Api>
-        <Api Name="SHDoDragDrop">
+        <Api Name="SHDoDragDrop" Ordinal="88">
             <Param Type="HWND" Name="hwnd" />
             <Param Type="IDataObject*" Name="pdtobj" />
             <Param Type="IDropSource*" Name="pdsrc" />
@@ -1470,20 +1402,27 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="Shell_GetCachedImageIndex" BothCharset="True">
+        <Api Name="Shell_GetCachedImageIndex" Ordinal="72">
             <Param Type="LPCWSTR" Name="pwszIconPath" />
             <Param Type="int" Name="iIconIndex" />
             <Param Type="UINT" Name="uIconFlags" />
             <Return Type="int" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="Shell_GetImageLists">
+        <Api Name="Shell_GetCachedImageIndex" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszIconPath" />
+            <Param Type="int" Name="iIconIndex" />
+            <Param Type="UINT" Name="uIconFlags" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="Shell_GetImageLists" Ordinal="71">
             <Param Type="HIMAGELIST*" Name="phiml" />
             <Param Type="HIMAGELIST*" Name="phimlSmall" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="Shell_MergeMenus">
+        <Api Name="Shell_MergeMenus" Ordinal="67">
             <Param Type="HMENU" Name="hmDst" />
             <Param Type="HMENU" Name="hmSrc" />
             <Param Type="UINT" Name="uInsert" />
@@ -1563,7 +1502,7 @@
             <Return Type="UINT" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="SHFind_InitMenuPopup">
+        <Api Name="SHFind_InitMenuPopup" Ordinal="149">
             <Param Type="HMENU" Name="hmenu" />
             <Param Type="HWND" Name="hwnd" />
             <Param Type="UINT" Name="idCmdFirst" />
@@ -1571,7 +1510,7 @@
             <Return Type="IContextMenu*" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="SHFindFiles">
+        <Api Name="SHFindFiles" Ordinal="90">
             <Param Type="PCIDLIST_ABSOLUTE" Name="pidlFolder" />
             <Param Type="PCIDLIST_ABSOLUTE" Name="pidlSaveFile" />
             <Return Type="BOOL" />
@@ -1581,7 +1520,7 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHFlushSFCache">
+        <Api Name="SHFlushSFCache" Ordinal="526">
             <Return Type="void" />
         </Api>
         <Api Name="SHFormatDrive">
@@ -1592,7 +1531,7 @@
             <Return Type="DWORD" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="SHFree">
+        <Api Name="SHFree" Ordinal="195">
             <Param Type="void*" Name="pv" />
             <Return Type="void" />
         </Api>
@@ -1605,7 +1544,7 @@
             <Return Type="int" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="SHGetAttributesFromDataObject">
+        <Api Name="SHGetAttributesFromDataObject" Ordinal="750">
             <Param Type="IDataObject*" Name="pdo" />
             <Param Type="DWORD" Name="dwAttributeMask" />
             <Param Type="DWORD*" Name="pdwAttributes" />
@@ -1698,7 +1637,7 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHGetImageList">
+        <Api Name="SHGetImageList" Ordinal="727">
             <Param Type="int" Name="iImageList" />
             <Param Type="REFIID" Name="riid" />
             <Param Type="void**" Name="ppv" InterfaceId="riid" />
@@ -1776,7 +1715,7 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHGetNewLinkInfo" BothCharset="True">
+        <Api Name="SHGetNewLinkInfo" BothCharset="True" OrdinalA="179" OrdinalW="180">
             <Param Type="LPCTSTR" Name="pszLinkTo" />
             <Param Type="LPCTSTR" Name="pszDir" />
             <Param Type="LPTSTR" Name="pszName" />
@@ -1799,45 +1738,21 @@
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="SHGetPropertyStoreForWindow">
-            <Param Type="HWND" Name="hwnd" />
-            <Param Type="REFIID" Name="riid" />
-            <Param Type="void**" Name="ppv" InterfaceId="riid" />
-            <Return Type="HRESULT" />
-            <Success Return="Equal" Value="0" />
-        </Api>
-        <Api Name="SHGetPropertyStoreFromIDList">
-            <Param Type="PCIDLIST_ABSOLUTE" Name="pidl" />
-            <Param Type="GETPROPERTYSTOREFLAGS" Name="flags" />
-            <Param Type="REFIID" Name="riid" />
-            <Param Type="void**" Name="ppv" InterfaceId="riid" />
-            <Return Type="HRESULT" />
-            <Success Return="Equal" Value="0" />
-        </Api>
-        <Api Name="SHGetPropertyStoreFromParsingName">
-            <Param Type="PCWSTR" Name="pszPath" />
-            <Param Type="IBindCtx*" Name="pbc" />
-            <Param Type="GETPROPERTYSTOREFLAGS" Name="flags" />
-            <Param Type="REFIID" Name="riid" />
-            <Param Type="void**" Name="ppv" InterfaceId="riid" />
-            <Return Type="HRESULT" />
-            <Success Return="Equal" Value="0" />
-        </Api>
-        <Api Name="SHGetRealIDL">
+        <Api Name="SHGetRealIDL" Ordinal="98">
             <Param Type="IShellFolder*" Name="psf" />
             <Param Type="PCUITEMID_CHILD" Name="pidlSimple" />
             <Param Type="PITEMID_CHILD*" Name="ppidlReal" />
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHGetSetFolderCustomSettings">
+        <Api Name="SHGetSetFolderCustomSettings" Ordinal="709">
             <Param Type="LPSHFOLDERCUSTOMSETTINGS" Name="pfcs" />
             <Param Type="LPCTSTR" Name="pszPath" />
             <Param Type="DWORD" Name="dwReadWrite" />
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHGetSetSettings">
+        <Api Name="SHGetSetSettings" Ordinal="68">
             <Param Type="LPSHELLSTATE" Name="lpss" />
             <Param Type="DWORD" Name="dwMask" />
             <Param Type="BOOL" Name="bSet" />
@@ -1858,6 +1773,14 @@
             <Param Type="PIDLIST_ABSOLUTE*" Name="ppidl" />
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHGetSpecialFolderPath" Ordinal="175">
+            <Param Type="HWND" Name="hwndOwner" />
+            <Param Type="LPWSTR" Name="lpwszPath" OutputOnly="True" />
+            <Param Type="[CSIDL]" Name="csidl" />
+            <Param Type="BOOL" Name="fCreate" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SHGetSpecialFolderPath" BothCharset="True">
             <Param Type="HWND" Name="hwndOwner" />
@@ -1891,12 +1814,12 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHHandleUpdateImage">
+        <Api Name="SHHandleUpdateImage" Ordinal="193">
             <Param Type="PCIDLIST_ABSOLUTE" Name="pidlExtra" />
             <Return Type="int" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="SHILCreateFromPath">
+        <Api Name="SHILCreateFromPath" Ordinal="28">
             <Param Type="LPCWSTR" Name="pszPath" />
             <Param Type="PIDLIST_ABSOLUTE*" Name="ppidl" />
             <Param Type="DWORD*" Name="rgflnOut" />
@@ -1918,7 +1841,7 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHLimitInputEdit">
+        <Api Name="SHLimitInputEdit" Ordinal="747">
             <Param Type="HWND" Name="hwndEdit" />
             <Param Type="IShellFolder*" Name="psf" />
             <Return Type="HRESULT" />
@@ -1957,20 +1880,20 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHMapPIDLToSystemImageListIndex">
+        <Api Name="SHMapPIDLToSystemImageListIndex" Ordinal="77">
             <Param Type="IShellFolder*" Name="psf" />
             <Param Type="PCUITEMID_CHILD" Name="pidl" />
             <Param Type="int*" Name="piIndex" />
             <Return Type="int" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="SHMultiFileProperties">
+        <Api Name="SHMultiFileProperties" Ordinal="716">
             <Param Type="IDataObject*" Name="pdtobj" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHObjectProperties">
+        <Api Name="SHObjectProperties" Ordinal="178">
             <Param Type="HWND" Name="hwnd" />
             <Param Type="DWORD" Name="shopObjectType" />
             <Param Type="PCWSTR" Name="pszObjectName" />
@@ -1986,7 +1909,7 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHOpenPropSheetW">
+        <Api Name="SHOpenPropSheetW" Ordinal="80">
             <Param Type="LPCWSTR" Name="pszCaption" />
             <Param Type="UINT" Name="ckeys" />
             <Param Type="const CLSID*" Name="pclsidDef" />
@@ -2019,33 +1942,6 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHPropStgCreate">
-            <Param Type="IPropertySetStorage*" Name="psstg" />
-            <Param Type="REFFMTID" Name="fmtid" />
-            <Param Type="const CLSID*" Name="pclsid" />
-            <Param Type="DWORD" Name="grfFlags" />
-            <Param Type="[StgmFlags]" Name="grfMode" />
-            <Param Type="DWORD" Name="dwDisposition" />
-            <Param Type="IPropertyStorage**" Name="ppstg" />
-            <Param Type="UINT*" Name="puCodePage" />
-            <Return Type="HRESULT" />
-            <Success Return="Equal" Value="0" />
-        </Api>
-        <Api Name="SHPropStgReadMultiple">
-            <Param Type="IPropertyStorage*" Name="pps" />
-            <Param Type="UINT" Name="uCodePage" />
-            <Param Type="ULONG" Name="cpspec" />
-            <Return Type="HRESULT" />
-            <Success Return="Equal" Value="0" />
-        </Api>
-        <Api Name="SHPropStgWriteMultiple">
-            <Param Type="IPropertyStorage*" Name="pps" />
-            <Param Type="UINT*" Name="uCodePage" />
-            <Param Type="ULONG" Name="cpspec" />
-            <Param Type="PROPID" Name="propidNameFirst" />
-            <Return Type="HRESULT" />
-            <Success Return="Equal" Value="0" />
-        </Api>
         <Api Name="SHQueryRecycleBin" BothCharset="True">
             <Param Type="LPCTSTR" Name="pszRootPath" />
             <Param Type="LPSHQUERYRBINFO" Name="pSHQueryRBInfo" />
@@ -2062,7 +1958,7 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHReplaceFromPropSheetExtArray">
+        <Api Name="SHReplaceFromPropSheetExtArray" Ordinal="170">
             <Param Type="HPSXA" Name="hpsxa" />
             <Param Type="UINT" Name="uPageID" />
             <Param Type="LPFNADDPROPSHEETPAGE" Name="lpfnReplaceWith" />
@@ -2075,10 +1971,9 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHRestricted">
+        <Api Name="SHRestricted" Ordinal="100">
             <Param Type="RESTRICTIONS" Name="rest" />
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SHRunControlPanel">
             <Param Type="LPCWSTR" Name="lpcszCmdLine" />
@@ -2094,7 +1989,7 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHSetFolderPath" BothCharset="True">
+        <Api Name="SHSetFolderPath" BothCharset="True" OrdinalA="231" OrdinalW="232">
             <Param Type="[CSIDL]" Name="csidl" />
             <Param Type="HANDLE" Name="hToken" />
             <Param Type="DWORD" Name="dwFlags" />
@@ -2102,7 +1997,7 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHSetInstanceExplorer">
+        <Api Name="SHSetInstanceExplorer" Ordinal="176">
             <Param Type="IUnknown*" Name="punk" />
             <Return Type="void" />
         </Api>
@@ -2135,7 +2030,7 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHShellFolderView_Message">
+        <Api Name="SHShellFolderView_Message" Ordinal="73">
             <Param Type="HWND" Name="hwnd" />
             <Param Type="UINT" Name="uMsg" />
             <Param Type="LPARAM" Name="lparam" />
@@ -2151,49 +2046,44 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHSimpleIDListFromPath">
+        <Api Name="SHSimpleIDListFromPath" Ordinal="162">
             <Param Type="LPCWSTR" Name="pszPath" />
             <Return Type="PIDLIST_ABSOLUTE" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="SHStartNetConnectionDialogW">
+        <Api Name="SHStartNetConnectionDialogW" Ordinal="14">
             <Param Type="HWND" Name="hwnd" />
             <Param Type="LPCWSTR" Name="pszRemoteName" />
             <Param Type="DWORD" Name="dwType" />
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHTestTokenMembership">
+        <Api Name="SHTestTokenMembership" Ordinal="245">
             <Param Type="HANDLE" Name="hToken" />
             <Param Type="ULONG" Name="ulRID" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="SHUnlockShared" Ordinal="9">
-            <Param Type="void*" Name="pvData" />
-            <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
-        </Api>
-        <Api Name="SHUpdateImage" BothCharset="True">
+        <Api Name="SHUpdateImage" BothCharset="True" OrdinalA="191" OrdinalW="192">
             <Param Type="LPCTSTR" Name="pszHashItem" />
             <Param Type="int" Name="iIndex" />
             <Param Type="UINT" Name="uFlags" />
             <Param Type="int" Name="iImageIndex" />
             <Return Type="void" />
         </Api>
-        <Api Name="SHValidateUNC">
+        <Api Name="SHValidateUNC" Ordinal="173">
             <Param Type="HWND" Name="hwndOwner" />
             <Param Type="LPWSTR" Name="pszFile" />
             <Param Type="UINT" Name="fConnect" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="SignalFileOpen">
+        <Api Name="SignalFileOpen" Ordinal="103">
             <Param Type="PCIDLIST_ABSOLUTE" Name="pidl" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="StgMakeUniqueName">
+        <Api Name="StgMakeUniqueName" Ordinal="682">
             <Param Type="IStorage*" Name="pstgParent" />
             <Param Type="PCWSTR" Name="pszFileSpec" />
             <Param Type="[StgmFlags]" Name="grfMode" />
@@ -2202,7 +2092,7 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="Win32DeleteFile">
+        <Api Name="Win32DeleteFile" Ordinal="164">
             <Param Type="LPCTSTR" Name="pszFileName" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
@@ -2218,14 +2108,14 @@
             <Return Type="HINSTANCE" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="WriteCabinetState">
+        <Api Name="WriteCabinetState" Ordinal="652">
             <Param Type="CABINETSTATE*" Name="pcs" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
 
-        <!-- Undocumented -->
-        <Category Name="Windows Environment Development/Undocumented" />
+        <!-- Windows Environment Development/Undocumented -->
+        <Category Name="Windows Environment Development/Windows Shell/Undocumented" />
         <Api Name="RunFileDlg" Ordinal="61">
             <Param Type="HWND" Name="hwndOwner" />
             <Param Type="HICON" Name="hIcon" />
@@ -2235,5 +2125,111 @@
             <Param Type="[RunFileDlgFlags]" Name="uFlags" />
             <Return Type="VOID" />
         </Api>
+
+        <!-- Windows Environment Development/Windows Shell/Shell Lightweight Utility/String -->
+        <Category Name="Windows Environment Development/Windows Shell/Shell Lightweight Utility/String" />
+        <Api Name="StrRetToStrN">
+            <Param Type="LPTSTR" Name="pszOut" />
+            <Param Type="UINT" Name="cchOut" />
+            <Param Type="LPSTRRET" Name="pStrRet" />
+            <Param Type="LPCITEMIDLIST" Name="pidl" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+
+        <!-- Windows Environment Development/Windows Property System -->
+        <Category Name="Windows Environment Development/Windows Property System" />
+        <Api Name="PifMgr_CloseProperties" Ordinal="13">
+            <Param Type="HANDLE" Name="hProps" />
+            <Param Type="UINT" Name="flOpt" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PifMgr_OpenProperties" Ordinal="9">
+            <Param Type="LPCWSTR" Name="pszApp" />
+            <Param Type="LPCWSTR" Name="lpszPIF" />
+            <Param Type="UINT" Name="hInf" />
+            <Param Type="UINT" Name="flOpt" />
+            <Return Type="HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PifMgr_GetProperties" Ordinal="10">
+            <Param Type="HANDLE" Name="hProps" />
+            <Param Type="LPCSTR" Name="pszGroup" />
+            <Param Type="VOID*" Name="lpProps" />
+            <Param Type="int" Name="cbProps" />
+            <Param Type="UINT" Name="flOpt" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PifMgr_SetProperties" Ordinal="11">
+            <Param Type="HANDLE" Name="hProps" />
+            <Param Type="LPCSTR" Name="pszGroup" />
+            <Param Type="VOID*" Name="lpProps" />
+            <Param Type="int" Name="cbProps" />
+            <Param Type="UINT" Name="flOpt" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SHAddDefaultPropertiesByExt">
+            <Param Type="PCWSTR" Name="pszExt" />
+            <Param Type="IPropertyStore*" Name="pPropStore" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHGetPropertyStoreForWindow">
+            <Param Type="HWND" Name="hwnd" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppv" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHGetPropertyStoreFromIDList">
+            <Param Type="PCIDLIST_ABSOLUTE" Name="pidl" />
+            <Param Type="GETPROPERTYSTOREFLAGS" Name="flags" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppv" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHGetPropertyStoreFromParsingName">
+            <Param Type="PCWSTR" Name="pszPath" />
+            <Param Type="IBindCtx*" Name="pbc" />
+            <Param Type="GETPROPERTYSTOREFLAGS" Name="flags" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppv" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHPropStgCreate" Ordinal="685">
+            <Param Type="IPropertySetStorage*" Name="psstg" />
+            <Param Type="REFFMTID" Name="fmtid" />
+            <Param Type="const CLSID*" Name="pclsid" />
+            <Param Type="DWORD" Name="grfFlags" />
+            <Param Type="[StgmFlags]" Name="grfMode" />
+            <Param Type="DWORD" Name="dwDisposition" />
+            <Param Type="IPropertyStorage**" Name="ppstg" />
+            <Param Type="UINT*" Name="puCodePage" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHPropStgReadMultiple" Ordinal="688">
+            <Param Type="IPropertyStorage*" Name="pps" />
+            <Param Type="[CodePageEnum]" Name="uCodePage" />
+            <Param Type="ULONG" Name="cpspec" />
+            <Param Type="PROPSPEC const[]" Name="rgpspec" Count="cpspec" />
+            <Param Type="PROPVARIANT[]" Name="rgvar" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHPropStgWriteMultiple" Ordinal="689">
+            <Param Type="IPropertyStorage*" Name="pps" />
+            <Param Type="UINT*" Name="uCodePage" />
+            <Param Type="ULONG" Name="cpspec" />
+            <Param Type="PROPID" Name="propidNameFirst" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+
     </Module>
 </ApiMonitor>

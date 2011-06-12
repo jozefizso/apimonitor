@@ -1,0 +1,45 @@
+<!--
+    API Monitor Definitions
+    (c) 2011, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Windows\Clfsw32.xml" />
+
+    <Module Name="TxfW32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+
+        <!-- TXF_ID -->
+        <Variable Name="TXF_ID" Type="Struct">
+            <Field Type="LONGLONG"  Name="LowPart" />
+            <Field Type="LONGLONG"  Name="HighPart" />
+        </Variable>
+        <Variable Name="PTXF_ID" Type="Pointer" Base="TXF_ID" />
+
+        <!-- API's -->
+        <Category Name="System Services/File Services/Local File Systems/Transactional NTFS (TxF)" />
+        <Api Name="TxfLogCreateFileReadContext">
+            <Param Type="LPCWSTR" Name="LogPath" />
+            <Param Type="CLFS_LSN" Name="BeginningLsn" />
+            <Param Type="CLFS_LSN" Name="EndingLSN" />
+            <Param Type="PTXF_ID" Name="TxfFileId" />
+            <Param Type="PVOID*" Name="TxfLogContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="TxfLogDestroyReadContext">
+            <Param Type="PVOID" Name="TxfLogContext" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="TxfLogReadRecords">
+            <Param Type="PVOID" Name="TxfLogContext" />
+            <Param Type="ULONG" Name="BufferLength" />
+            <Param Type="PVOID" Name="Buffer" />
+            <Param Type="PULONG" Name="BytesUsed" />
+            <Param Type="PULONG" Name="RecordCount" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

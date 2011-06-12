@@ -15,6 +15,7 @@
         <Variable Name="HMENU*"                 Type="Pointer"  Base="HMENU" />
         <Variable Name="HDC"                    Type="Alias"    Base="HANDLE" />
         <Variable Name="CONST HDC"              Type="Alias"    Base="HANDLE" />
+        <Variable Name="const HDC"              Type="Alias"    Base="HANDLE" />
         <Variable Name="HDC*"                   Type="Pointer"  Base="HDC" />
         <Variable Name="HPALETTE"               Type="Alias"    Base="HANDLE" />
         <Variable Name="HCURSOR"                Type="Alias"    Base="HICON" />
@@ -34,8 +35,14 @@
         <Variable Name="LPFRHOOKPROC"           Type="Alias"    Base="LPVOID" />
         <Variable Name="LPPRINTHOOKPROC"        Type="Alias"    Base="LPVOID" />
         <Variable Name="LPSETUPHOOKPROC"        Type="Alias"    Base="LPVOID" />
+        <Variable Name="REFERENCE_TIME"         Type="Alias"    Base="LONGLONG" />
+        <Variable Name="REFERENCE_TIME*"        Type="Pointer"  Base="REFERENCE_TIME" />
+        <Variable Name="const REFERENCE_TIME*"  Type="Alias"    Base="REFERENCE_TIME*" />
+
+        <!-- Arrays -->
         <Variable Name="TCHAR [LF_FACESIZE]"    Type="Array"    Base="TCHAR"    Count="32" />
         <Variable Name="WCHAR [LF_FACESIZE]"    Type="Array"    Base="WCHAR"    Count="32" />
+
 
         <!-- RGBQUAD -->
         <Variable Name="RGBQUAD" Type="Struct">
@@ -748,6 +755,150 @@
                 <Set Name="MONITORINFOF_PRIMARY" Value="0x00000001" />
             </Flag>
         </Variable>
+
+        <!-- VIDEOINFOHEADER -->
+        <Variable Name="VIDEOINFOHEADER" Type="Struct">
+            <Field Type="RECT"                  Name="rcSource" />
+            <Field Type="RECT"                  Name="rcTarget" />
+            <Field Type="DWORD"                 Name="dwBitRate" />
+            <Field Type="DWORD"                 Name="dwBitErrorRate" />
+            <Field Type="REFERENCE_TIME"        Name="AvgTimePerFrame" />
+            <Field Type="BITMAPINFOHEADER"      Name="bmiHeader" />
+        </Variable>
+        <Variable Name="const VIDEOINFOHEADER*" Type="Pointer" Base="VIDEOINFOHEADER" />
+
+        <!-- [AMINTERLACE_FLAGS] -->
+        <Variable Name="[AMINTERLACE_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="AMINTERLACE_IsInterlaced"                Value="0x00000001" />
+                <Set Name="AMINTERLACE_1FieldPerSample"             Value="0x00000002" />
+                <Set Name="AMINTERLACE_Field1First"                 Value="0x00000004" />
+                <Set Name="AMINTERLACE_UNUSED"                      Value="0x00000008" />
+                <Set Name="AMINTERLACE_FieldPatField1Only"          Value="0x00000000" />
+                <Set Name="AMINTERLACE_FieldPatField2Only"          Value="0x00000010" />
+                <Set Name="AMINTERLACE_FieldPatBothRegular"         Value="0x00000020" />
+                <Set Name="AMINTERLACE_FieldPatBothIrregular"       Value="0x00000030" />
+                <Set Name="AMINTERLACE_DisplayModeBobOnly"          Value="0x00000000" />
+                <Set Name="AMINTERLACE_DisplayModeWeaveOnly"        Value="0x00000040" />
+                <Set Name="AMINTERLACE_DisplayModeBobOrWeave"       Value="0x00000080" />
+            </Flag>
+        </Variable>
+
+        <!-- [AMCOPYPROTECT_FLAGS] -->
+        <Variable Name="[AMCOPYPROTECT_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="AMCOPYPROTECT_RestrictDuplication" Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- [AMCONTROL_FLAGS] -->
+        <Variable Name="[AMCONTROL_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="AMCONTROL_USED"                  Value="0x00000001" />
+                <Set Name="AMCONTROL_PAD_TO_4x3"            Value="0x00000002" />
+                <Set Name="AMCONTROL_PAD_TO_16x9"           Value="0x00000004" />
+                <Set Name="AMCONTROL_COLORINFO_PRESENT"     Value="0x00000080" />
+            </Flag>
+        </Variable>
+
+        <!-- VIDEOINFOHEADER2 -->
+        <Variable Name="VIDEOINFOHEADER2" Type="Struct">
+            <Field Type="RECT"                      Name="rcSource" />
+            <Field Type="RECT"                      Name="rcTarget" />
+            <Field Type="DWORD"                     Name="dwBitRate" />
+            <Field Type="DWORD"                     Name="dwBitErrorRate" />
+            <Field Type="REFERENCE_TIME"            Name="AvgTimePerFrame" />
+            <Field Type="[AMINTERLACE_FLAGS]"       Name="dwInterlaceFlags" />
+            <Field Type="[AMCOPYPROTECT_FLAGS]"     Name="dwCopyProtectFlags" />
+            <Field Type="DWORD"                     Name="dwPictAspectRatioX" />
+            <Field Type="DWORD"                     Name="dwPictAspectRatioY" />
+            <Field Type="[AMCONTROL_FLAGS]"         Name="dwControlFlags" />
+            <Field Type="DWORD"                     Name="dwReserved2" />
+            <Field Type="BITMAPINFOHEADER"          Name="bmiHeader" />
+        </Variable>
+        <Variable Name="const VIDEOINFOHEADER2*" Type="Pointer" Base="VIDEOINFOHEADER2" />
+
+        <!-- PixelFormat -->
+        <Variable Name="PixelFormat" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="PixelFormat4bppIndexed"      Value="0x30402" />
+                <Set Name="PixelFormat8bppIndexed"      Value="0x30803" />
+                <Set Name="PixelFormat16bppGrayScale"   Value="0x101004" />
+                <Set Name="PixelFormat16bppRGB555"      Value="0x21005" />
+                <Set Name="PixelFormat16bppRGB565"      Value="0x21006" />
+                <Set Name="PixelFormat16bppARGB1555"    Value="0x61007" />
+                <Set Name="PixelFormat24bppRGB"         Value="0x21808" />
+                <Set Name="PixelFormat32bppRGB"         Value="0x22009" />
+                <Set Name="PixelFormat32bppARGB"        Value="0x26200a" />
+                <Set Name="PixelFormat32bppPARGB"       Value="0xe200b" />
+                <Set Name="PixelFormat48bppRGB"         Value="0x10300c" />
+                <Set Name="PixelFormat64bppARGB"        Value="0x34400d" />
+                <Set Name="PixelFormat64bppPARGB"       Value="0x1c400e" />
+                <Set Name="PixelFormat32bppCMYK"        Value="0x200f" />
+            </Enum>
+        </Variable>
+        <Variable Name="PixelFormat*" Type="Pointer" Base="PixelFormat" />
+
+        <!-- InterpolationMode -->
+        <Variable Name="InterpolationMode" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="InterpolationModeInvalid"                Value="-1" />
+                <Set Name="InterpolationModeDefault"                Value="0" />
+                <Set Name="InterpolationModeLowQuality"             Value="1" />
+                <Set Name="InterpolationModeHighQuality"            Value="2" />
+                <Set Name="InterpolationModeBilinear"               Value="3" />
+                <Set Name="InterpolationModeBicubic"                Value="4" />
+                <Set Name="InterpolationModeNearestNeighbor"        Value="5" />
+                <Set Name="InterpolationModeHighQualityBilinear"    Value="6" />
+                <Set Name="InterpolationModeHighQualityBicubic"     Value="7" />
+            </Enum>
+        </Variable>
+        <Variable Name="InterpolationMode*" Type="Pointer" Base="InterpolationMode" />
+
+        <!-- EncoderParameterValueType -->
+        <Variable Name="EncoderParameterValueType" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="EncoderParameterValueTypeByte"           Value="1" />
+                <Set Name="EncoderParameterValueTypeASCII"          Value="2" />
+                <Set Name="EncoderParameterValueTypeShort"          Value="3" />
+                <Set Name="EncoderParameterValueTypeLong"           Value="4" />
+                <Set Name="EncoderParameterValueTypeRational"       Value="5" />
+                <Set Name="EncoderParameterValueTypeLongRange"      Value="6" />
+                <Set Name="EncoderParameterValueTypeUndefined"      Value="7" />
+                <Set Name="EncoderParameterValueTypeRationalRange"  Value="8" />
+                <Set Name="EncoderParameterValueTypePointer"        Value="9" />
+            </Enum>
+        </Variable>
+
+        <!-- EncoderParameter -->
+        <Variable Name="EncoderParameter" Type="Struct">
+            <Field Type="GUID"                          Name="Guid" />
+            <Field Type="ULONG"                         Name="NumberOfValues" />
+            <Field Type="EncoderParameterValueType"     Name="Type" />
+            <Field Type="VOID*"                         Name="Value" />
+        </Variable>
+        <Variable Name="EncoderParameter [1]" Type="Array" Base="EncoderParameter" Count="1" />
+
+        <!-- EncoderParameters -->
+        <Variable Name="EncoderParameters" Type="Struct">
+            <Field Type="UINT"                  Name="Count" />
+            <Field Type="EncoderParameter [1]"  Name="Parameter" Count="Count" />
+        </Variable>
+        <Variable Name="EncoderParameters*"             Type="Pointer" Base="EncoderParameters" />
+        <Variable Name="EncoderParameters**"            Type="Pointer" Base="EncoderParameters*" />
+
+        <!-- ABC -->
+        <Variable Name="ABC" Type="Struct">
+            <Field Type="int"     	Name="abcA" />
+            <Field Type="UINT"    	Name="abcB" />
+            <Field Type="int"     	Name="abcC" />
+        </Variable>
+        <Variable Name="ABC*"  Type="Pointer" Base="ABC" />
+        <Variable Name="LPABC" Type="Pointer" Base="ABC" />
 
     </Headers>
 </ApiMonitor>

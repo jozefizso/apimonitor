@@ -1,0 +1,328 @@
+<!--
+    API Monitor Definitions
+    (c) 2011, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+
+    <Module Name="Ktmw32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+
+        <!-- NOTIFICATION_MASK -->
+        <Variable Name="NOTIFICATION_MASK" Type="Alias" Base="ULONG">
+            <Flag>
+                <Set Name="TRANSACTION_NOTIFY_PREPREPARE"               Value="0x00000001" />
+                <Set Name="TRANSACTION_NOTIFY_PREPARE"                  Value="0x00000002" />
+                <Set Name="TRANSACTION_NOTIFY_COMMIT"                   Value="0x00000004" />
+                <Set Name="TRANSACTION_NOTIFY_ROLLBACK"                 Value="0x00000008" />
+                <Set Name="TRANSACTION_NOTIFY_PREPREPARE_COMPLETE"      Value="0x00000010" />
+                <Set Name="TRANSACTION_NOTIFY_PREPARE_COMPLETE"         Value="0x00000020" />
+                <Set Name="TRANSACTION_NOTIFY_COMMIT_COMPLETE"          Value="0x00000040" />
+                <Set Name="TRANSACTION_NOTIFY_ROLLBACK_COMPLETE"        Value="0x00000080" />
+                <Set Name="TRANSACTION_NOTIFY_RECOVER"                  Value="0x00000100" />
+                <Set Name="TRANSACTION_NOTIFY_SINGLE_PHASE_COMMIT"      Value="0x00000200" />
+                <Set Name="TRANSACTION_NOTIFY_DELEGATE_COMMIT"          Value="0x00000400" />
+                <Set Name="TRANSACTION_NOTIFY_RECOVER_QUERY"            Value="0x00000800" />
+                <Set Name="TRANSACTION_NOTIFY_ENLIST_PREPREPARE"        Value="0x00001000" />
+                <Set Name="TRANSACTION_NOTIFY_LAST_RECOVER"             Value="0x00002000" />
+                <Set Name="TRANSACTION_NOTIFY_INDOUBT"                  Value="0x00004000" />
+                <Set Name="TRANSACTION_NOTIFY_PROPAGATE_PULL"           Value="0x00008000" />
+                <Set Name="TRANSACTION_NOTIFY_PROPAGATE_PUSH"           Value="0x00010000" />
+                <Set Name="TRANSACTION_NOTIFY_MARSHAL"                  Value="0x00020000" />
+                <Set Name="TRANSACTION_NOTIFY_ENLIST_MASK"              Value="0x00040000" />
+                <Set Name="TRANSACTION_NOTIFY_RM_DISCONNECTED"          Value="0x01000000" />
+                <Set Name="TRANSACTION_NOTIFY_TM_ONLINE"                Value="0x02000000" />
+                <Set Name="TRANSACTION_NOTIFY_COMMIT_REQUEST"           Value="0x04000000" />
+                <Set Name="TRANSACTION_NOTIFY_PROMOTE"                  Value="0x08000000" />
+                <Set Name="TRANSACTION_NOTIFY_PROMOTE_NEW"              Value="0x10000000" />
+                <Set Name="TRANSACTION_NOTIFY_REQUEST_OUTCOME"          Value="0x20000000" />
+                <Set Name="TRANSACTION_NOTIFY_COMMIT_FINALIZE"          Value="0x40000000"  />
+            </Flag>
+        </Variable>
+
+        <!-- TRANSACTION_NOTIFICATION -->
+        <Variable Name="TRANSACTION_NOTIFICATION" Type="Struct">
+            <Field Type="PVOID"                 Name="TransactionKey" />
+            <Field Type="NOTIFICATION_MASK"     Name="TransactionNotification" Display="ULONG" />
+            <Field Type="LARGE_INTEGER"         Name="TmVirtualClock" />
+            <Field Type="ULONG"                 Name="ArgumentLength" />
+        </Variable>
+        <Variable Name="PTRANSACTION_NOTIFICATION" Type="Pointer" Base="TRANSACTION_NOTIFICATION" />
+
+        <!-- System Services/Kernel Transaction Manager (KTM)/Transactions -->
+        <Category Name="System Services/Kernel Transaction Manager (KTM)/Transactions" />
+        <Api Name="CommitTransaction">
+            <Param Type="HANDLE" Name="TransactionHandle" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CommitTransactionAsync">
+            <Param Type="HANDLE" Name="TransactionHandle" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CreateTransaction">
+            <Param Type="LPSECURITY_ATTRIBUTES" Name="lpTransactionAttributes" />
+            <Param Type="LPGUID" Name="UOW" />
+            <Param Type="DWORD" Name="CreateOptions" />
+            <Param Type="DWORD" Name="IsolationLevel" />
+            <Param Type="DWORD" Name="IsolationFlags" />
+            <Param Type="DWORD" Name="Timeout" />
+            <Param Type="LPWSTR" Name="Description" />
+            <Return Type="HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetTransactionId">
+            <Param Type="HANDLE" Name="TransactionHandle" />
+            <Param Type="LPGUID" Name="TransactionId" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetTransactionInformation">
+            <Param Type="HANDLE" Name="TransactionHandle" />
+            <Param Type="PDWORD" Name="Outcome" />
+            <Param Type="PDWORD" Name="IsolationLevel" />
+            <Param Type="PDWORD" Name="IsolationFlags" />
+            <Param Type="PDWORD" Name="Timeout" />
+            <Param Type="DWORD" Name="BufferLength" />
+            <Param Type="LPWSTR" Name="Description" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="OpenTransaction">
+            <Param Type="DWORD" Name="dwDesiredAccess" />
+            <Param Type="LPGUID" Name="TransactionId" />
+            <Return Type="HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RollbackComplete">
+            <Param Type="HANDLE" Name="EnlistmentHandle" />
+            <Param Type="PLARGE_INTEGER" Name="TmVirtualClock" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RollbackTransaction">
+            <Param Type="HANDLE" Name="TransactionHandle" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RollbackTransactionAsync">
+            <Param Type="HANDLE" Name="TransactionHandle" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetTransactionInformation">
+            <Param Type="HANDLE" Name="TransactionHandle" />
+            <Param Type="DWORD" Name="IsolationLevel" />
+            <Param Type="DWORD" Name="IsolationFlags" />
+            <Param Type="DWORD" Name="Timeout" />
+            <Param Type="LPWSTR" Name="Description" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        
+        <!-- System Services/Kernel Transaction Manager (KTM)/Enlistments -->
+        <Category Name="System Services/Kernel Transaction Manager (KTM)/Enlistments" />
+        <Api Name="CommitComplete">
+            <Param Type="HANDLE" Name="EnlistmentHandle" />
+            <Param Type="PLARGE_INTEGER" Name="TmVirtualClock" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CommitEnlistment">
+            <Param Type="HANDLE" Name="EnlistmentHandle" />
+            <Param Type="PLARGE_INTEGER" Name="TmVirtualClock" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetEnlistmentId">
+            <Param Type="HANDLE" Name="EnlistmentHandle" />
+            <Param Type="LPGUID" Name="EnlistmentId" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CreateEnlistment">
+            <Param Type="LPSECURITY_ATTRIBUTES" Name="lpEnlistmentrAttributes" />
+            <Param Type="HANDLE" Name="ResourceManagerHandle" />
+            <Param Type="HANDLE" Name="TransactionHandle" />
+            <Param Type="NOTIFICATION_MASK" Name="NotificationMask" />
+            <Param Type="DWORD" Name="CreateOptions" />
+            <Param Type="PVOID" Name="EnlistmentKey" />
+            <Return Type="HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetEnlistmentRecoveryInformation">
+            <Param Type="HANDLE" Name="EnlistmentHandle" />
+            <Param Type="ULONG" Name="BufferSize" />
+            <Param Type="PVOID" Name="Buffer" />
+            <Param Type="PULONG" Name="BufferUsed" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="OpenEnlistment">
+            <Param Type="DWORD" Name="dwDesiredAccess" />
+            <Param Type="HANDLE" Name="ResourceManagerHandle" />
+            <Param Type="LPGUID" Name="EnlistmentId" />
+            <Return Type="HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PrepareEnlistment">
+            <Param Type="HANDLE" Name="EnlistmentHandle" />
+            <Param Type="PLARGE_INTEGER" Name="TmVirtualClock" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PrePrepareEnlistment">
+            <Param Type="HANDLE" Name="EnlistmentHandle" />
+            <Param Type="PLARGE_INTEGER" Name="TmVirtualClock" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RecoverEnlistment">
+            <Param Type="HANDLE" Name="EnlistmentHandle" />
+            <Param Type="PVOID" Name="EnlistmentKey" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ReadOnlyEnlistment">
+            <Param Type="HANDLE" Name="EnlistmentHandle" />
+            <Param Type="PLARGE_INTEGER" Name="TmVirtualClock" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RollbackEnlistment">
+            <Param Type="HANDLE" Name="EnlistmentHandle" />
+            <Param Type="PLARGE_INTEGER" Name="TmVirtualClock" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetEnlistmentRecoveryInformation">
+            <Param Type="HANDLE" Name="EnlistmentHandle" />
+            <Param Type="ULONG" Name="BufferSize" />
+            <Param Type="PVOID" Name="Buffer" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SinglePhaseReject">
+            <Param Type="HANDLE" Name="EnlistmentHandle" />
+            <Param Type="PLARGE_INTEGER" Name="TmVirtualClock" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        
+        <!-- System Services/Kernel Transaction Manager (KTM)/Resource Managers -->
+        <Category Name="System Services/Kernel Transaction Manager (KTM)/Resource Managers" />
+        <Api Name="CreateResourceManager">
+            <Param Type="LPSECURITY_ATTRIBUTES" Name="lpResourceManagerAttributes" />
+            <Param Type="LPGUID" Name="ResourceManagerID" />
+            <Param Type="DWORD" Name="CreateOptions" />
+            <Param Type="HANDLE" Name="TmHandle" />
+            <Param Type="LPWSTR" Name="Description" />
+            <Return Type="HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetNotificationResourceManager">
+            <Param Type="HANDLE" Name="ResourceManagerHandle" />
+            <Param Type="PTRANSACTION_NOTIFICATION" Name="TransactionNotification" />
+            <Param Type="ULONG" Name="NotificationLength" />
+            <Param Type="DWORD" Name="dwMilliseconds" />
+            <Param Type="PULONG" Name="ReturnLength" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetNotificationResourceManagerAsync">
+            <Param Type="HANDLE" Name="ResourceManagerHandle" />
+            <Param Type="PTRANSACTION_NOTIFICATION" Name="TransactionNotification" />
+            <Param Type="ULONG" Name="TransactionNotificationLength" />
+            <Param Type="PULONG" Name="ReturnLength" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="OpenResourceManager">
+            <Param Type="DWORD" Name="dwDesiredAccess" />
+            <Param Type="HANDLE" Name="TmHandle" />
+            <Param Type="LPGUID" Name="RmGuid" />
+            <Return Type="HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PrepareComplete">
+            <Param Type="HANDLE" Name="EnlistmentHandle" />
+            <Param Type="PLARGE_INTEGER" Name="TmVirtualClock" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PrePrepareComplete">
+            <Param Type="HANDLE" Name="EnlistmentHandle" />
+            <Param Type="PLARGE_INTEGER" Name="TmVirtualClock" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RecoverResourceManager">
+            <Param Type="HANDLE" Name="ResourceManagerHandle" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetResourceManagerCompletionPort">
+            <Param Type="HANDLE" Name="ResourceManagerHandle" />
+            <Param Type="HANDLE" Name="IoCompletionPortHandle" />
+            <Param Type="ULONG_PTR" Name="CompletionKey" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+
+        <!-- System Services/Kernel Transaction Manager (KTM)/Transaction Managers -->
+        <Category Name="System Services/Kernel Transaction Manager (KTM)/Transaction Managers" />
+        <Api Name="CreateTransactionManager">
+            <Param Type="LPSECURITY_ATTRIBUTES" Name="lpTransactionAttributes" />
+            <Param Type="LPWSTR" Name="LogFileName" />
+            <Param Type="ULONG" Name="CreateOptions" />
+            <Param Type="ULONG" Name="CommitStrength" />
+            <Return Type="HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetCurrentClockTransactionManager">
+            <Param Type="HANDLE" Name="TransactionManagerHandle" />
+            <Param Type="PLARGE_INTEGER" Name="TmVirtualClock" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetTransactionManagerId">
+            <Param Type="HANDLE" Name="TransactionManagerHandle" />
+            <Param Type="LPGUID" Name="TransactionManagerId" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="OpenTransactionManager">
+            <Param Type="LPWSTR" Name="LogFileName" />
+            <Param Type="ACCESS_MASK" Name="DesiredAccess" />
+            <Param Type="ULONG" Name="OpenOptions" />
+            <Return Type="HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="OpenTransactionManagerById">
+            <Param Type="LPGUID" Name="TransactionManagerId" />
+            <Param Type="ACCESS_MASK" Name="DesiredAccess" />
+            <Param Type="ULONG" Name="OpenOptions" />
+            <Return Type="HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RecoverTransactionManager">
+            <Param Type="HANDLE" Name="TransactionManagerHandle" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RenameTransactionManager">
+            <Param Type="LPWSTR" Name="LogFileName" />
+            <Param Type="LPGUID" Name="ExistingTransactionManagerGuid" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RollforwardTransactionManager">
+            <Param Type="HANDLE" Name="TransactionManagerHandle" />
+            <Param Type="PLARGE_INTEGER" Name="TmVirtualClock" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

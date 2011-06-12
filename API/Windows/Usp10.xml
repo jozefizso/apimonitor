@@ -1,0 +1,602 @@
+<!--
+    API Monitor Definitions
+    (c) 2011, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\gdi.h.xml" />
+
+    <Module Name="Usp10.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
+
+        <!-- Variables -->
+        <Variable Name="SCRIPT_CACHE"                       Type="Alias"    Base="LPVOID" />
+        <Variable Name="SCRIPT_CACHE*"                      Type="Pointer"  Base="SCRIPT_CACHE" />
+        <Variable Name="SCRIPT_STRING_ANALYSIS"             Type="Alias"    Base="LPVOID" />
+        <Variable Name="SCRIPT_STRING_ANALYSIS*"            Type="Pointer"  Base="SCRIPT_STRING_ANALYSIS" />
+        <Variable Name="OPENTYPE_TAG"                       Type="Alias"    Base="ULONG" />
+        <Variable Name="OPENTYPE_TAG*"                      Type="Pointer"  Base="OPENTYPE_TAG" />
+
+        <!-- SCRIPT_DIGITSUBSTITUTE -->
+        <Variable Name="SCRIPT_DIGITSUBSTITUTE" Type="Struct">
+            <!-- TODO: Bitfields -->
+            <Field Type="DWORD" Name="Bitfield1" />
+            <Field Type="DWORD" Name="Bitfield2" />
+            <Field Type="DWORD" Name="dwReserved" />
+        </Variable>
+        <Variable Name="SCRIPT_DIGITSUBSTITUTE*"        Type="Pointer" Base="SCRIPT_DIGITSUBSTITUTE" />
+        <Variable Name="const SCRIPT_DIGITSUBSTITUTE*"  Type="Pointer" Base="SCRIPT_DIGITSUBSTITUTE" />
+
+        <!-- SCRIPT_PROPERTIES -->
+        <Variable Name="SCRIPT_PROPERTIES" Type="Struct">
+            <!-- TODO: Bitfields -->
+            <Field Type="DWORD" Name="Bitfield1" />
+            <Field Type="DWORD" Name="Bitfield2" />
+        </Variable>
+        <Variable Name="const SCRIPT_PROPERTIES*"       Type="Pointer" Base="SCRIPT_PROPERTIES" />
+        <Variable Name="const SCRIPT_PROPERTIES**"      Type="Pointer" Base="const SCRIPT_PROPERTIES*" />
+        <Variable Name="const SCRIPT_PROPERTIES***"     Type="Pointer" Base="const SCRIPT_PROPERTIES**" />
+
+        <!-- SCRIPT_LOGATTR -->
+        <Variable Name="SCRIPT_LOGATTR" Type="Struct">
+            <!-- TODO: Bitfields -->
+            <Field Type="BYTE" Name="Bitfield" />
+        </Variable>
+        <Variable Name="SCRIPT_LOGATTR*"        Type="Pointer" Base="SCRIPT_LOGATTR" />
+        <Variable Name="const SCRIPT_LOGATTR*"  Type="Pointer" Base="SCRIPT_LOGATTR" />
+
+        <!-- SCRIPT_CHARPROP -->
+        <Variable Name="SCRIPT_CHARPROP" Type="Struct">
+            <!-- TODO: Bitfields -->
+            <Field Type="WORD" Name="Bitfield" />
+        </Variable>
+        <Variable Name="SCRIPT_CHARPROP*" Type="Pointer" Base="SCRIPT_CHARPROP" />
+
+        <!-- SCRIPT_STATE -->
+        <Variable Name="SCRIPT_STATE" Type="Struct">
+            <!-- TODO: Bitfields -->
+            <Field Type="WORD" Name="Bitfield" />
+        </Variable>
+        <Variable Name="SCRIPT_STATE*"          Type="Pointer" Base="SCRIPT_STATE" />
+        <Variable Name="const SCRIPT_STATE*"    Type="Pointer" Base="SCRIPT_STATE" />
+
+        <!-- SCRIPT_ANALYSIS -->
+        <Variable Name="SCRIPT_ANALYSIS" Type="Struct">
+            <!-- TODO: Bitfields -->
+            <Field Type="WORD" Name="Bitfield" />
+            <Field Type="SCRIPT_STATE" Name="s" />
+        </Variable>
+        <Variable Name="SCRIPT_ANALYSIS*"       Type="Pointer" Base="SCRIPT_ANALYSIS" />
+        <Variable Name="const SCRIPT_ANALYSIS*" Type="Pointer" Base="SCRIPT_ANALYSIS" />
+
+        <!-- SCRIPT_ITEM -->
+        <Variable Name="SCRIPT_ITEM" Type="Struct">
+            <Field Type="int" Name="iCharPos" />
+            <Field Type="SCRIPT_ANALYSIS" Name="a" />
+        </Variable>
+        <Variable Name="SCRIPT_ITEM*" Type="Pointer" Base="SCRIPT_ITEM" />
+
+        <!-- SCRIPT_VISATTR -->
+        <Variable Name="SCRIPT_VISATTR" Type="Struct">
+            <!-- TODO: Bitfields -->
+            <Field Type="WORD" Name="Bitfield" />
+        </Variable>
+        <Variable Name="SCRIPT_VISATTR*"        Type="Pointer" Base="SCRIPT_VISATTR" />
+        <Variable Name="const SCRIPT_VISATTR*"  Type="Pointer" Base="SCRIPT_VISATTR" />
+
+        <!-- SCRIPT_CONTROL -->
+        <Variable Name="SCRIPT_CONTROL" Type="Struct">
+            <!-- TODO: Bitfields -->
+            <Field Type="DWORD" Name="Bitfield" />
+        </Variable>
+        <Variable Name="SCRIPT_CONTROL*"        Type="Pointer" Base="SCRIPT_CONTROL" />
+        <Variable Name="const SCRIPT_CONTROL*"  Type="Pointer" Base="SCRIPT_CONTROL" />
+
+        <!-- SCRIPT_GLYPHPROP -->
+        <Variable Name="SCRIPT_GLYPHPROP" Type="Struct">
+            <Field Type="SCRIPT_VISATTR" Name="sva" />
+            <Field Type="WORD" Name="reserved" />
+        </Variable>
+        <Variable Name="SCRIPT_GLYPHPROP*"          Type="Pointer" Base="SCRIPT_GLYPHPROP" />
+        <Variable Name="const SCRIPT_GLYPHPROP*"    Type="Pointer" Base="SCRIPT_GLYPHPROP" />
+
+        <!-- SCRIPT_FONTPROPERTIES -->
+        <Variable Name="SCRIPT_FONTPROPERTIES" Type="Struct">
+            <Field Type="int"       Name="cBytes" />
+            <Field Type="WORD"      Name="wgBlank" />
+            <Field Type="WORD"      Name="wgDefault" />
+            <Field Type="WORD"      Name="wgInvalid" />
+            <Field Type="WORD"      Name="wgKashida" />
+            <Field Type="int"       Name="iKashidaWidth" />
+        </Variable>
+        <Variable Name="SCRIPT_FONTPROPERTIES*" Type="Pointer" Base="SCRIPT_FONTPROPERTIES" />
+
+        <!-- GOFFSET -->
+        <Variable Name="GOFFSET" Type="Struct">
+            <Field Type="LONG"      Name="du" />
+            <Field Type="LONG"      Name="dv" />
+        </Variable>
+        <Variable Name="GOFFSET*"       Type="Pointer" Base="GOFFSET" />
+        <Variable Name="const GOFFSET*" Type="Pointer" Base="GOFFSET" />
+
+        <!-- OPENTYPE_FEATURE_RECORD -->
+        <Variable Name="OPENTYPE_FEATURE_RECORD" Type="Struct">
+            <Field Type="OPENTYPE_TAG"  Name="tagFeature" />
+            <Field Type="LONG"          Name="lParameter" />
+        </Variable>
+        <Variable Name="OPENTYPE_FEATURE_RECORD*" Type="Pointer" Base="OPENTYPE_FEATURE_RECORD" />
+
+        <!-- TEXTRANGE_PROPERTIES -->
+        <Variable Name="TEXTRANGE_PROPERTIES" Type="Struct">
+            <Field Type="OPENTYPE_FEATURE_RECORD*"  Name="potfRecords" Count="cotfRecords" />
+            <Field Type="int"                       Name="cotfRecords" />
+        </Variable>
+        <Variable Name="TEXTRANGE_PROPERTIES*"  Type="Pointer" Base="TEXTRANGE_PROPERTIES" />
+        <Variable Name="TEXTRANGE_PROPERTIES**" Type="Pointer" Base="TEXTRANGE_PROPERTIES*" />
+
+        <!-- SCRIPT_TABDEF -->
+        <Variable Name="SCRIPT_TABDEF" Type="Struct">
+            <Field Type="int"       Name="cTabStops" />
+            <Field Type="int"       Name="iScale" />
+            <Field Type="int*"      Name="pTabStops" Count="cTabStops" />
+            <Field Type="int"       Name="iTabOrigin" />
+        </Variable>
+        <Variable Name="SCRIPT_TABDEF*" Type="Pointer" Base="SCRIPT_TABDEF" />
+
+        <!-- [SGCM_FLAGS] -->
+        <Variable Name="[SGCM_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="SGCM_RTL" Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- [SIC_FLAGS] -->
+        <Variable Name="[SIC_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="SIC_COMPLEX"     Value="1" />
+                <Set Name="SIC_ASCIIDIGIT"  Value="2" />
+                <Set Name="SIC_NEUTRAL"     Value="4" />
+            </Flag>
+        </Variable>
+
+        <!-- [SSA_FLAGS] -->
+        <Variable Name="[SSA_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="SSA_PASSWORD"            Value="0x00000001" />
+                <Set Name="SSA_TAB"                 Value="0x00000002" />
+                <Set Name="SSA_CLIP"                Value="0x00000004" />
+                <Set Name="SSA_FIT"                 Value="0x00000008" />
+                <Set Name="SSA_DZWG"                Value="0x00000010" />
+                <Set Name="SSA_FALLBACK"            Value="0x00000020" />
+                <Set Name="SSA_BREAK"               Value="0x00000040" />
+                <Set Name="SSA_GLYPHS"              Value="0x00000080" />
+                <Set Name="SSA_RTL"                 Value="0x00000100" />
+                <Set Name="SSA_GCP"                 Value="0x00000200" />
+                <Set Name="SSA_HOTKEY"              Value="0x00000400" />
+                <Set Name="SSA_METAFILE"            Value="0x00000800" />
+                <Set Name="SSA_LINK"                Value="0x00001000" />
+                <Set Name="SSA_HIDEHOTKEY"          Value="0x00002000" />
+                <Set Name="SSA_HOTKEYONLY"          Value="0x00002400" />
+                <Set Name="SSA_FULLMEASURE"         Value="0x04000000" />
+                <Set Name="SSA_LPKANSIFALLBACK"     Value="0x08000000" />
+                <Set Name="SSA_PIDX"                Value="0x10000000" />
+                <Set Name="SSA_LAYOUTRTL"           Value="0x20000000" />
+                <Set Name="SSA_DONTGLYPH"           Value="0x40000000" />
+                <Set Name="SSA_NOKASHIDA"           Value="0x80000000" />
+            </Flag>
+        </Variable>
+
+        <!-- API's -->
+        <Category Name="Windows Application UI Development/Internationalization for Windows Applications/International Fonts and Text Display/Uniscribe" />
+        <Api Name="ScriptApplyDigitSubstitution">
+            <Param Type="const SCRIPT_DIGITSUBSTITUTE*" Name="psds" />
+            <Param Type="SCRIPT_CONTROL*" Name="psc" />
+            <Param Type="SCRIPT_STATE*" Name="pss" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptApplyLogicalWidth">
+            <Param Type="const int*" Name="piDx" />
+            <Param Type="int" Name="cChars" />
+            <Param Type="int" Name="cGlyphs" />
+            <Param Type="const WORD*" Name="pwLogClust" />
+            <Param Type="const SCRIPT_VISATTR*" Name="psva" />
+            <Param Type="const int*" Name="piAdvance" />
+            <Param Type="const SCRIPT_ANALYSIS*" Name="psa" />
+            <Param Type="ABC*" Name="pABC" />
+            <Param Type="int*" Name="piJustify" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptBreak">
+            <Param Type="const WCHAR*" Name="pwcChars" />
+            <Param Type="int" Name="cChars" />
+            <Param Type="const SCRIPT_ANALYSIS*" Name="psa" />
+            <Param Type="SCRIPT_LOGATTR*" Name="psla" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptCacheGetHeight">
+            <Param Type="HDC" Name="hdc" />
+            <Param Type="SCRIPT_CACHE*" Name="psc" />
+            <Param Type="long*" Name="tmHeight" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptCPtoX">
+            <Param Type="int" Name="iCP" />
+            <Param Type="BOOL" Name="fTrailing" />
+            <Param Type="int" Name="cChars" />
+            <Param Type="int" Name="cGlyphs" />
+            <Param Type="const WORD*" Name="pwLogClust" />
+            <Param Type="const SCRIPT_VISATTR*" Name="psva" />
+            <Param Type="const int*" Name="piAdvance" />
+            <Param Type="const SCRIPT_ANALYSIS*" Name="psa" />
+            <Param Type="int*" Name="piX" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptFreeCache">
+            <Param Type="SCRIPT_CACHE*" Name="psc" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptGetCMap">
+            <Param Type="HDC" Name="hdc" />
+            <Param Type="SCRIPT_CACHE*" Name="psc" />
+            <Param Type="const WCHAR*" Name="pwcInChars" />
+            <Param Type="int" Name="cChars" />
+            <Param Type="[SGCM_FLAGS]" Name="dwFlags" />
+            <Param Type="WORD*" Name="pwOutGlyphs" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptGetFontAlternateGlyphs">
+            <Param Type="HDC" Name="hdc" />
+            <Param Type="SCRIPT_CACHE*" Name="psc" />
+            <Param Type="SCRIPT_ANALYSIS*" Name="psa" />
+            <Param Type="OPENTYPE_TAG" Name="tagScript" />
+            <Param Type="OPENTYPE_TAG" Name="tagLangSys" />
+            <Param Type="OPENTYPE_TAG" Name="tagFeature" />
+            <Param Type="WORD" Name="wGlyphId" />
+            <Param Type="int" Name="cMaxAlternates" />
+            <Param Type="WORD*" Name="pAlternateGlyphs" PostCount="pcAlternates" />
+            <Param Type="int*" Name="pcAlternates" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptGetFontFeatureTags">
+            <Param Type="HDC" Name="hdc" />
+            <Param Type="SCRIPT_CACHE*" Name="psc" />
+            <Param Type="SCRIPT_ANALYSIS*" Name="psa" />
+            <Param Type="OPENTYPE_TAG" Name="tagScript" />
+            <Param Type="OPENTYPE_TAG" Name="tagLangSys" />
+            <Param Type="int" Name="cMaxTags" />
+            <Param Type="OPENTYPE_TAG*" Name="pFeatureTags" PostCount="pcTags" />
+            <Param Type="int*" Name="pcTags" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptGetFontLanguageTags">
+            <Param Type="HDC" Name="hdc" />
+            <Param Type="SCRIPT_CACHE*" Name="psc" />
+            <Param Type="SCRIPT_ANALYSIS*" Name="psa" />
+            <Param Type="OPENTYPE_TAG" Name="tagScript" />
+            <Param Type="int" Name="cMaxTags" />
+            <Param Type="OPENTYPE_TAG*" Name="pLangSysTags" PostCount="pcTags" />
+            <Param Type="int*" Name="pcTags" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptGetFontProperties">
+            <Param Type="HDC" Name="hdc" />
+            <Param Type="SCRIPT_CACHE*" Name="psc" />
+            <Param Type="SCRIPT_FONTPROPERTIES*" Name="sfp" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptGetFontScriptTags">
+            <Param Type="HDC" Name="hdc" />
+            <Param Type="SCRIPT_CACHE*" Name="psc" />
+            <Param Type="SCRIPT_ANALYSIS*" Name="psa" />
+            <Param Type="int" Name="cMaxTags" />
+            <Param Type="OPENTYPE_TAG*" Name="pScriptTags" PostCount="pcTags" />
+            <Param Type="int*" Name="pcTags" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptGetGlyphABCWidth">
+            <Param Type="HDC" Name="hdc" />
+            <Param Type="SCRIPT_CACHE*" Name="psc" />
+            <Param Type="WORD" Name="wGlyph" />
+            <Param Type="ABC*" Name="pABC" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptGetLogicalWidths">
+            <Param Type="const SCRIPT_ANALYSIS*" Name="psa" />
+            <Param Type="int" Name="cChars" />
+            <Param Type="int" Name="cGlyphs" />
+            <Param Type="const int*" Name="piGlyphWidth" />
+            <Param Type="const WORD*" Name="pwLogClust" />
+            <Param Type="const SCRIPT_VISATTR*" Name="psva" />
+            <Param Type="int*" Name="piDx" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptGetProperties">
+            <Param Type="const SCRIPT_PROPERTIES***" Name="ppSp" />
+            <Param Type="int*" Name="piNumScripts" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptIsComplex">
+            <Param Type="const WCHAR*" Name="pwcInChars" />
+            <Param Type="int" Name="cInChars" />
+            <Param Type="[SIC_FLAGS]" Name="dwFlags" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptItemize">
+            <Param Type="const WCHAR*" Name="pwcInChars" />
+            <Param Type="int" Name="cInChars" />
+            <Param Type="int" Name="cMaxItems" />
+            <Param Type="const SCRIPT_CONTROL*" Name="psControl" />
+            <Param Type="const SCRIPT_STATE*" Name="psState" />
+            <Param Type="SCRIPT_ITEM*" Name="pItems" PostCount="pcItems" />
+            <Param Type="int*" Name="pcItems" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptItemizeOpenType">
+            <Param Type="const WCHAR*" Name="pwcInChars" />
+            <Param Type="int" Name="cInChars" />
+            <Param Type="int" Name="cMaxItems" />
+            <Param Type="const SCRIPT_CONTROL*" Name="psControl" />
+            <Param Type="const SCRIPT_STATE*" Name="psState" />
+            <Param Type="SCRIPT_ITEM*" Name="pItems" PostCount="pcItems" />
+            <Param Type="OPENTYPE_TAG*" Name="pScriptTags" />
+            <Param Type="int*" Name="pcItems" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptJustify">
+            <Param Type="const SCRIPT_VISATTR*" Name="psva" Count="cGlyphs" />
+            <Param Type="const int*" Name="piAdvance" Count="cGlyphs" />
+            <Param Type="int" Name="cGlyphs" />
+            <Param Type="int" Name="iDx" />
+            <Param Type="int" Name="iMinKashida" />
+            <Param Type="int*" Name="piJustify" PostCount="cGlyphs" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptLayout">
+            <Param Type="int" Name="cRuns" />
+            <Param Type="const BYTE*" Name="pbLevel" Count="cRuns" />
+            <Param Type="int*" Name="piVisualToLogical" PostCount="cRuns" />
+            <Param Type="int*" Name="piLogicalToVisual" PostCount="cRuns" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptPlace">
+            <Param Type="HDC" Name="hdc" />
+            <Param Type="SCRIPT_CACHE*" Name="psc" />
+            <Param Type="const WORD*" Name="pwGlyphs" Count="cGlyphs" />
+            <Param Type="int" Name="cGlyphs" />
+            <Param Type="const SCRIPT_VISATTR*" Name="psva" />
+            <Param Type="SCRIPT_ANALYSIS*" Name="psa" />
+            <Param Type="int*" Name="piAdvance" />
+            <Param Type="GOFFSET*" Name="pGoffset" PostCount="cGlyphs" />
+            <Param Type="ABC*" Name="pABC" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptPlaceOpenType">
+            <Param Type="HDC" Name="hdc" />
+            <Param Type="SCRIPT_CACHE*" Name="psc" />
+            <Param Type="SCRIPT_ANALYSIS*" Name="psa" />
+            <Param Type="OPENTYPE_TAG" Name="tagScript" />
+            <Param Type="OPENTYPE_TAG" Name="tagLangSys" />
+            <Param Type="int*" Name="rcRangeChars" />
+            <Param Type="TEXTRANGE_PROPERTIES**" Name="rpRangeProperties" />
+            <Param Type="int" Name="cRanges" />
+            <Param Type="const WCHAR*" Name="pwcChars" />
+            <Param Type="WORD*" Name="pwLogClust" />
+            <Param Type="SCRIPT_CHARPROP*" Name="pCharProps" />
+            <Param Type="int" Name="cChars" />
+            <Param Type="const WORD*" Name="pwGlyphs" />
+            <Param Type="const SCRIPT_GLYPHPROP*" Name="pGlyphProps" Count="cGlyphs" />
+            <Param Type="int" Name="cGlyphs" />
+            <Param Type="int*" Name="piAdvance" PostCount="cGlyphs" />
+            <Param Type="GOFFSET*" Name="pGoffset" PostCount="cGlyphs" />
+            <Param Type="ABC*" Name="pABC" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptPositionSingleGlyph">
+            <Param Type="HDC" Name="hdc" />
+            <Param Type="SCRIPT_CACHE*" Name="psc" />
+            <Param Type="SCRIPT_ANALYSIS*" Name="psa" />
+            <Param Type="OPENTYPE_TAG" Name="tagScript" />
+            <Param Type="OPENTYPE_TAG" Name="tagLangSys" />
+            <Param Type="OPENTYPE_TAG" Name="tagFeature" />
+            <Param Type="LONG" Name="lParameter" />
+            <Param Type="WORD" Name="wGlyphId" />
+            <Param Type="int" Name="iAdvance" />
+            <Param Type="GOFFSET" Name="Goffset" />
+            <Param Type="int*" Name="piOutAdvance" />
+            <Param Type="GOFFSET*" Name="pOutGoffset" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptRecordDigitSubstitution">
+            <Param Type="LCID" Name="Locale" />
+            <Param Type="SCRIPT_DIGITSUBSTITUTE*" Name="psds" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptShape">
+            <Param Type="HDC" Name="hdc" />
+            <Param Type="SCRIPT_CACHE*" Name="psc" />
+            <Param Type="const WCHAR*" Name="pwcChars" />
+            <Param Type="int" Name="cChars" />
+            <Param Type="int" Name="cMaxGlyphs" />
+            <Param Type="SCRIPT_ANALYSIS*" Name="psa" />
+            <Param Type="WORD*" Name="pwOutGlyphs" PostCount="pcGlyphs" />
+            <Param Type="WORD*" Name="pwLogClust" PostCount="cChars" />
+            <Param Type="SCRIPT_VISATTR*" Name="psva" PostCount="cMaxGlyphs" />
+            <Param Type="int*" Name="pcGlyphs" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptShapeOpenType">
+            <Param Type="HDC" Name="hdc" />
+            <Param Type="SCRIPT_CACHE*" Name="psc" />
+            <Param Type="SCRIPT_ANALYSIS*" Name="psa" />
+            <Param Type="OPENTYPE_TAG" Name="tagScript" />
+            <Param Type="OPENTYPE_TAG" Name="tagLangSys" />
+            <Param Type="int*" Name="rcRangeChars" />
+            <Param Type="TEXTRANGE_PROPERTIES**" Name="rpRangeProperties" />
+            <Param Type="int" Name="cRanges" />
+            <Param Type="const WCHAR*" Name="pwcChars" />
+            <Param Type="int" Name="cChars" />
+            <Param Type="int" Name="cMaxGlyphs" />
+            <Param Type="WORD*" Name="pwLogClust" />
+            <Param Type="SCRIPT_CHARPROP*" Name="pCharProps" />
+            <Param Type="WORD*" Name="pwOutGlyphs" PostCount="pcGlyphs" />
+            <Param Type="SCRIPT_GLYPHPROP*" Name="pOutGlyphProps" />
+            <Param Type="int*" Name="pcGlyphs" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptStringAnalyse">
+            <Param Type="HDC" Name="hdc" />
+            <Param Type="const void*" Name="pString" Length="cString" />
+            <Param Type="int" Name="cString" />
+            <Param Type="int" Name="cGlyphs" />
+            <Param Type="int" Name="iCharset" />
+            <Param Type="[SSA_FLAGS]" Name="dwFlags" />
+            <Param Type="int" Name="iReqWidth" />
+            <Param Type="SCRIPT_CONTROL*" Name="psControl" />
+            <Param Type="SCRIPT_STATE*" Name="psState" />
+            <Param Type="const int*" Name="piDx" />
+            <Param Type="SCRIPT_TABDEF*" Name="pTabdef" />
+            <Param Type="const BYTE*" Name="pbInClass" />
+            <Param Type="SCRIPT_STRING_ANALYSIS*" Name="pssa" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptStringCPtoX">
+            <Param Type="SCRIPT_STRING_ANALYSIS" Name="ssa" />
+            <Param Type="int" Name="icp" />
+            <Param Type="BOOL" Name="fTrailing" />
+            <Param Type="int*" Name="pX" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptStringFree">
+            <Param Type="SCRIPT_STRING_ANALYSIS*" Name="pssa" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptStringGetLogicalWidths">
+            <Param Type="SCRIPT_STRING_ANALYSIS" Name="ssa" />
+            <Param Type="int*" Name="piDx" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptStringGetOrder">
+            <Param Type="SCRIPT_STRING_ANALYSIS" Name="ssa" />
+            <Param Type="UINT*" Name="puOrder" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptStringOut">
+            <Param Type="SCRIPT_STRING_ANALYSIS" Name="ssa" />
+            <Param Type="int" Name="iX" />
+            <Param Type="int" Name="iY" />
+            <Param Type="[ExtTextOutFlags]" Name="uOptions" />
+            <Param Type="const RECT*" Name="prc" />
+            <Param Type="int" Name="iMinSel" />
+            <Param Type="int" Name="iMaxSel" />
+            <Param Type="BOOL" Name="fDisabled" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptString_pcOutChars">
+            <Param Type="SCRIPT_STRING_ANALYSIS" Name="ssa" />
+            <Return Type="const int*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ScriptString_pLogAttr">
+            <Param Type="SCRIPT_STRING_ANALYSIS" Name="ssa" />
+            <Return Type="const SCRIPT_LOGATTR*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ScriptString_pSize">
+            <Param Type="SCRIPT_STRING_ANALYSIS" Name="ssa" />
+            <Return Type="const SIZE*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ScriptStringValidate">
+            <Param Type="SCRIPT_STRING_ANALYSIS" Name="ssa" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptStringXtoCP">
+            <Param Type="SCRIPT_STRING_ANALYSIS" Name="ssa" />
+            <Param Type="int" Name="iX" />
+            <Param Type="int*" Name="piCh" />
+            <Param Type="int*" Name="piTrailing" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptSubstituteSingleGlyph">
+            <Param Type="HDC" Name="hdc" />
+            <Param Type="SCRIPT_CACHE*" Name="psc" />
+            <Param Type="SCRIPT_ANALYSIS*" Name="psa" />
+            <Param Type="OPENTYPE_TAG" Name="tagScript" />
+            <Param Type="OPENTYPE_TAG" Name="tagLangSys" />
+            <Param Type="OPENTYPE_TAG" Name="tagFeature" />
+            <Param Type="LONG" Name="lParameter" />
+            <Param Type="WORD" Name="wGlyphId" />
+            <Param Type="WORD*" Name="pwOutGlyphId" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptTextOut">
+            <Param Type="const HDC" Name="hdc" />
+            <Param Type="SCRIPT_CACHE*" Name="psc" />
+            <Param Type="int" Name="x" />
+            <Param Type="int" Name="y" />
+            <Param Type="[ExtTextOutFlags]" Name="fuOptions" />
+            <Param Type="const RECT*" Name="lprc" />
+            <Param Type="const SCRIPT_ANALYSIS*" Name="psa" />
+            <Param Type="const WCHAR*" Name="pwcReserved" />
+            <Param Type="int" Name="iReserved" />
+            <Param Type="const WORD*" Name="pwGlyphs" Count="cGlyphs" />
+            <Param Type="int" Name="cGlyphs" />
+            <Param Type="const int*" Name="piAdvance" />
+            <Param Type="const int*" Name="piJustify" />
+            <Param Type="const GOFFSET*" Name="pGoffset" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ScriptXtoCP">
+            <Param Type="int" Name="iX" />
+            <Param Type="int" Name="cChars" />
+            <Param Type="int" Name="cGlyphs" />
+            <Param Type="const WORD*" Name="pwLogClust" />
+            <Param Type="const SCRIPT_VISATTR*" Name="psva" />
+            <Param Type="const int*" Name="piAdvance" />
+            <Param Type="const SCRIPT_ANALYSIS*" Name="psa" />
+            <Param Type="int*" Name="piCP" />
+            <Param Type="int*" Name="piTrailing" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

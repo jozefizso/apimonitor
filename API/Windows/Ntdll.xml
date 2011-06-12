@@ -10,6 +10,7 @@
     <Include Filename="Headers\security.h.xml" />
     <Include Filename="Headers\registry.h.xml" />
     <Include Filename="Headers\native.h.xml" />
+    <Include Filename="Headers\sockets.h.xml" />
 
     <Module Name="Ntdll.dll" CallingConvention="STDCALL" ErrorFunc="NTSTATUS" OnlineHelp="MSDN">
 
@@ -46,6 +47,7 @@
         <Variable Name="PRTL_GENERIC_ALLOCATE_ROUTINE"      Type="Alias"    Base="LPVOID" />
         <Variable Name="PRTL_GENERIC_FREE_ROUTINE"          Type="Alias"    Base="LPVOID" />
         <Variable Name="PEXCEPTION_ROUTINE"                 Type="Alias"    Base="LPVOID" />
+        <Variable Name="HANDLE []"                          Type="Pointer"  Base="HANDLE" />
 
         <!-- Arrays -->
         <Variable Name="SIZE_T [2]"                         Type="Array"    Base="SIZE_T"       Count="2" />
@@ -1719,13 +1721,13 @@
         </Api>
         <Api Name="RtlCopyLuidAndAttributesArray">
             <Param Type="ULONG" Name="Count" />
-            <Param Type="PLUID_AND_ATTRIBUTES" Name="Src" />
+            <Param Type="PLUID_AND_ATTRIBUTES" Name="Src" Count="Count" />
             <Param Type="PLUID_AND_ATTRIBUTES" Name="Dest" />
             <Return Type="VOID" />
         </Api>
         <Api Name="RtlCopySidAndAttributesArray">
             <Param Type="ULONG" Name="Count" />
-            <Param Type="PSID_AND_ATTRIBUTES" Name="Src" />
+            <Param Type="PSID_AND_ATTRIBUTES" Name="Src" Count="Count" />
             <Param Type="ULONG" Name="SidAreaSize" />
             <Param Type="PSID_AND_ATTRIBUTES" Name="Dest" />
             <Param Type="PVOID" Name="SidArea" />
@@ -3614,7 +3616,7 @@
         </Api>
         <Api Name="RtlGetProcessHeaps">
             <Param Type="ULONG" Name="HeapCount" />
-            <Param Type="HANDLE*" Name="HeapArray" />
+            <Param Type="HANDLE*" Name="HeapArray" PostCount="[Retval]" />
             <Return Type="ULONG" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -5239,7 +5241,7 @@
             <Param Type="ULONG" Name="Flags" />
             <Param Type="PVOID" Name="BaseAddress" />
             <Param Type="SIZE_T" Name="RegionSize" />
-            <Param Type="PVOID*" Name="UserAddressArray" />
+            <Param Type="PVOID*" Name="UserAddressArray" PostCount="EntriesInUserAddressArray" />
             <Param Type="PULONG_PTR" Name="EntriesInUserAddressArray" />
             <Param Type="PULONG" Name="Granularity" />
             <Return Type="NTSTATUS" />
@@ -5492,7 +5494,7 @@
         </Api>
         <Api Name="NtWaitForMultipleObjects">
             <Param Type="ULONG" Name="Count" />
-            <Param Type="HANDLE" Name="Object" />
+            <Param Type="HANDLE []" Name="Object" Count="Count" />
             <Param Type="WAIT_TYPE" Name="WaitType" />
             <Param Type="BOOLEAN" Name="Alertable" />
             <Param Type="PLARGE_INTEGER" Name="Time" />
@@ -5505,7 +5507,7 @@
         </Api>
         <Api Name="NtWaitForMultipleObjects32">
             <Param Type="ULONG" Name="ObjectCount" />
-            <Param Type="PLONG" Name="Handles" />
+            <Param Type="PLONG" Name="Handles" Count="ObjectCount" />
             <Param Type="WAIT_TYPE" Name="WaitType" />
             <Param Type="BOOLEAN" Name="Alertable" />
             <Param Type="PLARGE_INTEGER" Name="TimeOut" />

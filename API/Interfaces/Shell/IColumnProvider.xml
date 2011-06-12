@@ -1,0 +1,97 @@
+<!--
+    API Monitor Definitions
+    (c) 2011, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Interfaces\IUnknown.xml" />
+    <Include Filename="Headers\shell.h.xml" />
+
+    <Interface Name="IColumnProvider" Id="{E8025004-1C42-11d2-BE2C-00A0C9A83DA1}" BaseInterface="IUnknown" OnlineHelp="MSDN" ErrorFunc="HRESULT" Category="Windows Environment Development/Windows Shell/Interfaces">
+        
+        <!-- [LVCFMT_FLAGS] -->
+        <Variable Name="[LVCFMT_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="LVCFMT_LEFT"                     Value="0x0000" />
+                <Set Name="LVCFMT_RIGHT"                    Value="0x0001" />
+                <Set Name="LVCFMT_CENTER"                   Value="0x0002" />
+                <Set Name="LVCFMT_JUSTIFYMASK"              Value="0x0003" />
+                <Set Name="LVCFMT_IMAGE"                    Value="0x0800" />
+                <Set Name="LVCFMT_BITMAP_ON_RIGHT"          Value="0x1000" />
+                <Set Name="LVCFMT_COL_HAS_IMAGES"           Value="0x8000" />
+                <Set Name="LVCFMT_FIXED_WIDTH"              Value="0x00100" />
+                <Set Name="LVCFMT_NO_DPI_SCALE"             Value="0x40000" />
+                <Set Name="LVCFMT_FIXED_RATIO"              Value="0x80000" />
+                <Set Name="LVCFMT_LINE_BREAK"               Value="0x100000" />
+                <Set Name="LVCFMT_FILL"                     Value="0x200000" />
+                <Set Name="LVCFMT_WRAP"                     Value="0x400000" />
+                <Set Name="LVCFMT_NO_TITLE"                 Value="0x800000" />
+                <Set Name="LVCFMT_TILE_PLACEMENTMASK"       Value="0x300000" />
+                <Set Name="LVCFMT_SPLITBUTTON"              Value="0x1000000" />
+            </Flag>
+        </Variable>
+
+        <!-- Arrays -->
+        <Variable Name="WCHAR [MAX_COLUMN_NAME_LEN]" Type="Array" Base="WCHAR" Count="80" />
+        <Variable Name="WCHAR [MAX_COLUMN_DESC_LEN]" Type="Array" Base="WCHAR" Count="128" />
+
+        <!-- SHCOLUMNINFO -->
+        <Variable Name="SHCOLUMNINFO" Type="Struct" Pack="1">
+            <Field Type="SHCOLUMNID"                    Name="scid" />
+            <Field Type="VARTYPE"                       Name="vt" />
+            <Field Type="[LVCFMT_FLAGS]"                Name="fmt" />
+            <Field Type="UINT"                          Name="cChars" />
+            <Field Type="SHCOLSTATEF"                   Name="csFlags" />
+            <Field Type="WCHAR [MAX_COLUMN_NAME_LEN]"   Name="wszTitle" />
+            <Field Type="WCHAR [MAX_COLUMN_DESC_LEN]"   Name="wszDescription" />
+        </Variable>
+        <Variable Name="SHCOLUMNINFO*" Type="Pointer" Base="SHCOLUMNINFO" />
+
+        <!-- SHCOLUMNINIT -->
+        <Variable Name="SHCOLUMNINIT" Type="Struct" Pack="8">
+            <Field Type="ULONG"                 Name="dwFlags" />
+            <Field Type="ULONG"                 Name="dwReserved" />
+            <Field Type="WCHAR [MAX_PATH]"      Name="wszFolder" />
+        </Variable>
+        <Variable Name="LPCSHCOLUMNINIT" Type="Pointer" Base="SHCOLUMNINIT" />
+
+        <!-- [SHCDF_FLAGS] -->
+        <Variable Name="[SHCDF_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="SHCDF_UPDATEITEM" Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- SHCOLUMNDATA -->
+        <Variable Name="SHCOLUMNDATA" Type="Struct" Pack="8">
+            <Field Type="[SHCDF_FLAGS]"     Name="dwFlags" />
+            <Field Type="[FileAttributes]"  Name="dwFileAttributes" />
+            <Field Type="ULONG"             Name="dwReserved" />
+            <Field Type="WCHAR*"            Name="pwszExt" />
+            <Field Type="WCHAR [MAX_PATH]"  Name="wszFile" />
+        </Variable>
+        <Variable Name="LPCSHCOLUMNDATA" Type="Pointer" Base="SHCOLUMNDATA" />
+
+        <!-- Methods -->
+        <Api Name="Initialize">
+            <Param Type="LPCSHCOLUMNINIT" Name="psci" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetColumnInfo">
+            <Param Type="DWORD" Name="dwIndex" />
+            <Param Type="SHCOLUMNINFO*" Name="psci" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetItemData">
+            <Param Type="LPCSHCOLUMNID" Name="pscid" />
+            <Param Type="LPCSHCOLUMNDATA" Name="pscd" />
+            <Param Type="VARIANT*" Name="pvarData" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+    </Interface>
+</ApiMonitor>

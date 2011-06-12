@@ -7,81 +7,28 @@
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\shell.h.xml" />
     <Include Filename="Headers\ole.h.xml" />
-    
+    <Include Filename="Headers\propsys.h.xml" />
+
     <Module Name="propsys.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        <!-- Variables -->
-        <Variable Name="PSSTDAPI"                            Type="Alias"        Base="HRESULT" />
-        <Variable Name="IDelayedPropertyStoreFactory"   Type="Interface" />
-        <Variable Name="IPropertyDescription"            Type="Interface" />
-        <Variable Name="PCUSERIALIZEDPROPSTORAGE"            Type="Alias"        Base="LPVOID" />
-
-        <Variable Name="PKA_FLAGS" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="PKA_SET"     Value="0" />
-                <Set Name="PKA_APPEND"  Value="1" />
-                <Set Name="PKA_DELETE"  Value="2" />
-            </Enum>
-        </Variable>
-        <Variable Name="const PKA_FLAGS*" Type="Pointer" Base="PKA_FLAGS" />
-
-        <Variable Name="PROPDESC_FORMAT_FLAGS" Type="Alias" Base="DWORD">
-            <Flag>
-                <Set Name="PDFF_DEFAULT"                Value="0" />
-                <Set Name="PDFF_PREFIXNAME"             Value="0x1" />
-                <Set Name="PDFF_FILENAME"               Value="0x2" />
-                <Set Name="PDFF_ALWAYSKB"               Value="0x4" />
-                <Set Name="PDFF_RESERVED_RIGHTTOLEFT"   Value="0x8" />
-                <Set Name="PDFF_SHORTTIME"              Value="0x10" />
-                <Set Name="PDFF_LONGTIME"               Value="0x20" />
-                <Set Name="PDFF_HIDETIME"               Value="0x40" />
-                <Set Name="PDFF_SHORTDATE"              Value="0x80" />
-                <Set Name="PDFF_LONGDATE"               Value="0x100" />
-                <Set Name="PDFF_HIDEDATE"               Value="0x200" />
-                <Set Name="PDFF_RELATIVEDATE"           Value="0x400" />
-                <Set Name="PDFF_USEEDITINVITATION"      Value="0x800" />
-                <Set Name="PDFF_READONLY"               Value="0x1000" />
-                <Set Name="PDFF_NOAUTOREADINGORDER"     Value="0x2000" />
-            </Flag>
-        </Variable>
-
-        <Variable Name="PROPDESC_ENUMFILTER" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="PDEF_ALL"                Value="0" />
-                <Set Name="PDEF_SYSTEM"             Value="1" />
-                <Set Name="PDEF_NONSYSTEM"          Value="2" />
-                <Set Name="PDEF_VIEWABLE"           Value="3" />
-                <Set Name="PDEF_QUERYABLE"          Value="4" />
-                <Set Name="PDEF_INFULLTEXTQUERY"    Value="5" />
-                <Set Name="PDEF_COLUMN"             Value="6" />
-            </Enum>
-        </Variable>
-
-        <!-- Shell -->
-        <Category Name="Windows Environment Development/Windows Shell" />
-        <Api Name="InitPropVariantFromGUIDAsBuffer">
-            <Param Type="REFGUID" Name="guid" />
-            <Param Type="PROPVARIANT*" Name="ppropvar" />
-            <Return Type="HRESULT" />
+        <!-- Structured Storage -->
+        <Category Name="Component Development/COM/Structured Storage" />
+        <Api Name="StgDeserializePropVariant">
+            <Param Type="SERIALIZEDPROPERTYVALUE*" Name="pprop" />
+            <Param Type="SERIALIZEDPROPERTYVALUE*" Name="cbMax" />
+            <Param Type="PROPVARIANT*" Name="pvar" />
+            <Return Type="WINOLEAPI" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="InitPropVariantFromGUIDAsString">
-            <Param Type="REFGUID" Name="guid" />
-            <Param Type="PROPVARIANT*" Name="ppropvar" />
-            <Return Type="HRESULT" />
+        <Api Name="StgSerializePropVariant">
+            <Param Type="PROPVARIANT*" Name="pVar" />
+            <Param Type="SERIALIZEDPROPERTYVALUE**" Name="ppProp" />
+            <Param Type="SERIALIZEDPROPERTYVALUE*" Name="pcb" />
+            <Return Type="WINOLEAPI" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="InitVariantFromGUIDAsBuffer">
-            <Param Type="REFGUID" Name="guid" />
-            <Param Type="VARIANT*" Name="pvar" />
-            <Return Type="HRESULT" />
-            <Success Return="Equal" Value="0" />
-        </Api>
-        <Api Name="InitVariantFromGUIDAsString">
-            <Param Type="REFGUID" Name="guid" />
-            <Param Type="VARIANT*" Name="pvar" />
-            <Return Type="HRESULT" />
-            <Success Return="Equal" Value="0" />
-        </Api>
+
+        <!-- Windows Environment Development/Windows Property System -->
+        <Category Name="Windows Environment Development/Windows Property System" />
         <Api Name="PSCoerceToCanonicalValue">
             <Param Type="REFPROPERTYKEY" Name="key" />
             <Param Type="PROPVARIANT*" Name="ppropvar" />
@@ -301,22 +248,34 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <!-- Structured Storage -->
-        <Category Name="Component Development/COM/Structured Storage" />
-        <Api Name="StgDeserializePropVariant">
-            <Param Type="SERIALIZEDPROPERTYVALUE*" Name="pprop" />
-            <Param Type="SERIALIZEDPROPERTYVALUE*" Name="cbMax" />
-            <Param Type="PROPVARIANT*" Name="pvar" />
-            <Return Type="WINOLEAPI" />
+
+        <!-- Windows Environment Development/Windows Property System/PROPVARIANT and VARIANT -->
+        <Category Name="Windows Environment Development/Windows Property System/PROPVARIANT and VARIANT" />
+        <Api Name="InitPropVariantFromGUIDAsBuffer">
+            <Param Type="REFGUID" Name="guid" />
+            <Param Type="PROPVARIANT*" Name="ppropvar" />
+            <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="StgSerializePropVariant">
-            <Param Type="PROPVARIANT*" Name="pVar" />
-            <Param Type="SERIALIZEDPROPERTYVALUE**" Name="ppProp" />
-            <Param Type="SERIALIZEDPROPERTYVALUE*" Name="pcb" />
-            <Return Type="WINOLEAPI" />
+        <Api Name="InitPropVariantFromGUIDAsString">
+            <Param Type="REFGUID" Name="guid" />
+            <Param Type="PROPVARIANT*" Name="ppropvar" />
+            <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
+        <Api Name="InitVariantFromGUIDAsBuffer">
+            <Param Type="REFGUID" Name="guid" />
+            <Param Type="VARIANT*" Name="pvar" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="InitVariantFromGUIDAsString">
+            <Param Type="REFGUID" Name="guid" />
+            <Param Type="VARIANT*" Name="pvar" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+
     </Module>
 </ApiMonitor>
 

@@ -1,0 +1,234 @@
+<!--
+    API Monitor Definitions
+    (c) 2011, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Interfaces\IUnknown.xml" />
+    <Interface Name="IActiveDesktop" Id="{f490eb00-1240-11d1-9888-006097deacf9}" BaseInterface="IUnknown" OnlineHelp="MSDN" ErrorFunc="HRESULT" Category="Windows Environment Development/Windows Shell/Interfaces">
+        
+        <!-- Arrays -->
+        <Variable Name="WCHAR [INTERNET_MAX_URL_LENGTH]" Type="Array" Base="WCHAR" Count="2084" />
+        
+        <!-- [WPSTYLE] -->
+        <Variable Name="[WPSTYLE]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="WPSTYLE_CENTER"          Value="0" />
+                <Set Name="WPSTYLE_TILE"            Value="1" />
+                <Set Name="WPSTYLE_STRETCH"         Value="2" />
+                <Set Name="WPSTYLE_KEEPASPECT"      Value="3" />
+                <Set Name="WPSTYLE_CROPTOFIT"       Value="4" />
+            </Enum>
+        </Variable>
+
+        <!-- WALLPAPEROPT -->
+        <Variable Name="WALLPAPEROPT" Type="Struct">
+            <Field Type="DWORD"         Name="dwSize" />
+            <Field Type="[WPSTYLE]"     Name="dwStyle" />
+        </Variable>
+        <Variable Name="LPWALLPAPEROPT"  Type="Pointer" Base="WALLPAPEROPT" />
+        <Variable Name="LPCWALLPAPEROPT" Type="Pointer" Base="WALLPAPEROPT" />
+
+        <!-- COMPONENTSOPT -->
+        <Variable Name="COMPONENTSOPT" Type="Struct">
+            <Field Type="DWORD"     Name="dwSize" />
+            <Field Type="BOOL"      Name="fEnableComponents" />
+            <Field Type="BOOL"      Name="fActiveDesktop" />
+        </Variable>
+        <Variable Name="LPCOMPONENTSOPT"  Type="Pointer" Base="COMPONENTSOPT" />
+        <Variable Name="LPCCOMPONENTSOPT" Type="Pointer" Base="COMPONENTSOPT" />
+
+        <!-- [COMP_TYPE] -->
+        <Variable Name="[COMP_TYPE]" Type="Alias" Base="int">
+            <Display Name="int" />
+            <Enum>
+                <Set Name="COMP_TYPE_HTMLDOC"   Value="0" />
+                <Set Name="COMP_TYPE_PICTURE"   Value="1" />
+                <Set Name="COMP_TYPE_WEBSITE"   Value="2" />
+                <Set Name="COMP_TYPE_CONTROL"   Value="3" />
+                <Set Name="COMP_TYPE_CFHTML"    Value="4" />
+                <Set Name="COMP_TYPE_MAX"       Value="4" />
+            </Enum>
+        </Variable>
+
+        <!-- COMPPOS -->
+        <Variable Name="COMPPOS" Type="Struct">
+            <Field Type="DWORD"     Name="dwSize" />
+            <Field Type="int"       Name="iLeft" />
+            <Field Type="int"       Name="iTop" />
+            <Field Type="DWORD"     Name="dwWidth" />
+            <Field Type="DWORD"     Name="dwHeight" />
+            <Field Type="int"       Name="izIndex" />
+            <Field Type="BOOL"      Name="fCanResize" />
+            <Field Type="BOOL"      Name="fCanResizeX" />
+            <Field Type="BOOL"      Name="fCanResizeY" />
+            <Field Type="int"       Name="iPreferredLeftPercent" />
+            <Field Type="int"       Name="iPreferredTopPercent" />
+        </Variable>
+
+        <!-- [COMP_ITEM_STATE] -->
+        <Variable Name="[COMP_ITEM_STATE]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="IS_NORMAL"       Value="0x00000001" />
+                <Set Name="IS_FULLSCREEN"   Value="0x00000002" />
+                <Set Name="IS_SPLIT"        Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <!-- COMPSTATEINFO -->
+        <Variable Name="COMPSTATEINFO" Type="Struct">
+            <Field Type="DWORD"                 Name="dwSize" />
+            <Field Type="int"                   Name="iLeft" />
+            <Field Type="int"                   Name="iTop" />
+            <Field Type="DWORD"                 Name="dwWidth" />
+            <Field Type="DWORD"                 Name="dwHeight" />
+            <Field Type="[COMP_ITEM_STATE]"     Name="dwItemState" />
+        </Variable>
+
+        <!-- COMPONENT -->
+        <Variable Name="COMPONENT" Type="Struct">
+            <Field Type="DWORD"                             Name="dwSize" />
+            <Field Type="DWORD"                             Name="dwID" />
+            <Field Type="[COMP_TYPE]"                       Name="iComponentType" />
+            <Field Type="BOOL"                              Name="fChecked" />
+            <Field Type="BOOL"                              Name="fDirty" />
+            <Field Type="BOOL"                              Name="fNoScroll" />
+            <Field Type="COMPPOS"                           Name="cpPos" />
+            <Field Type="WCHAR [MAX_PATH]"                  Name="wszFriendlyName" />
+            <Field Type="WCHAR [INTERNET_MAX_URL_LENGTH]"   Name="wszSource" />
+            <Field Type="WCHAR [INTERNET_MAX_URL_LENGTH]"   Name="wszSubscribedURL" />
+            <Field Type="DWORD"                             Name="dwCurItemState" />
+            <Field Type="COMPSTATEINFO"                     Name="csiOriginal" />
+            <Field Type="COMPSTATEINFO"                     Name="csiRestored" />
+        </Variable>
+        <Variable Name="LPCOMPONENT"  Type="Pointer" Base="COMPONENT" />
+        <Variable Name="LPCCOMPONENT" Type="Pointer" Base="COMPONENT" />
+
+
+        <!-- Methods -->
+        <Api Name="ApplyChanges">
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetWallpaper">
+            <Param Type="LPWSTR" Name="pwszWallpaper" />
+            <Param Type="UINT" Name="cchWallpaper" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SetWallpaper">
+            <Param Type="LPCWSTR" Name="pwszWallpaper" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetWallpaperOptions">
+            <Param Type="LPWALLPAPEROPT" Name="pwpo" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SetWallpaperOptions">
+            <Param Type="LPCWALLPAPEROPT" Name="pwpo" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetPattern">
+            <Param Type="LPWSTR" Name="pwszPattern" />
+            <Param Type="UINT" Name="cchPattern" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SetPattern">
+            <Param Type="LPCWSTR" Name="pwszPattern" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetDesktopItemOptions">
+            <Param Type="LPCOMPONENTSOPT" Name="pco" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SetDesktopItemOptions">
+            <Param Type="LPCCOMPONENTSOPT" Name="pco" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="AddDesktopItem">
+            <Param Type="LPCCOMPONENT" Name="pcomp" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="AddDesktopItemWithUI">
+            <Param Type="HWND" Name="hwnd" />
+            <Param Type="LPCOMPONENT" Name="pcomp" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ModifyDesktopItem">
+            <Param Type="LPCCOMPONENT" Name="pcomp" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RemoveDesktopItem">
+            <Param Type="LPCCOMPONENT" Name="pcomp" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetDesktopItemCount">
+            <Param Type="LPINT" Name="lpiCount" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetDesktopItem">
+            <Param Type="int" Name="nComponent" />
+            <Param Type="LPCOMPONENT" Name="pcomp" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetDesktopItemByID">
+            <Param Type="ULONG_PTR" Name="dwID" />
+            <Param Type="LPCOMPONENT" Name="pcomp" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GenerateDesktopItemHtml">
+            <Param Type="LPCWSTR" Name="pwszFileName" />
+            <Param Type="LPCOMPONENT" Name="pcomp" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="AddUrl">
+            <Param Type="HWND" Name="hwnd" />
+            <Param Type="LPCWSTR" Name="pszSource" />
+            <Param Type="LPCOMPONENT" Name="pcomp" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetDesktopItemBySource">
+            <Param Type="LPCWSTR" Name="pwszSource" />
+            <Param Type="LPCOMPONENT" Name="pcomp" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+    </Interface>
+</ApiMonitor>

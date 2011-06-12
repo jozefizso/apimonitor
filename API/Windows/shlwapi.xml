@@ -7,61 +7,21 @@
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\registry.h.xml" />
     <Include Filename="Headers\shell.h.xml" />
-    
+
     <Module Name="shlwapi.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" ErrorIsReturnValue="True" OnlineHelp="MSDN">
+        
         <!-- Variables -->
-        <Variable Name="HUSKEY"     Type="Alias"    Base="HANDLE" />
-        <Variable Name="PHUSKEY"    Type="Pointer"  Base="HUSKEY" />
+        <Variable Name="HUSKEY"             Type="Alias"    Base="HANDLE" />
+        <Variable Name="PHUSKEY"            Type="Pointer"  Base="HUSKEY" />
+        <Variable Name="const LPCTSTR*"     Type="Pointer"  Base="LPCTSTR" />
+        
+        <!-- TODO: LSTATUS should be [SystemErrorCode] -->
+        <Variable Name="LSTATUS"            Type="Alias"    Base="LONG" />
 
-        <Variable Name="ASSOCF" Type="Alias" Base="DWORD">
-            <Enum>
-                <Set Name="ASSOCF_INIT_NOREMAPCLSID"        Value="0x00000001" />
-                <Set Name="ASSOCF_INIT_BYEXENAME"           Value="0x00000002" />
-                <Set Name="ASSOCF_INIT_DEFAULTTOSTAR"       Value="0x00000004" />
-                <Set Name="ASSOCF_INIT_DEFAULTTOFOLDER"     Value="0x00000008" />
-                <Set Name="ASSOCF_NOUSERSETTINGS"           Value="0x00000010" />
-                <Set Name="ASSOCF_NOTRUNCATE"               Value="0x00000020" />
-                <Set Name="ASSOCF_VERIFY"                   Value="0x00000040" />
-                <Set Name="ASSOCF_REMAPRUNDLL"              Value="0x00000080" />
-                <Set Name="ASSOCF_NOFIXUPS"                 Value="0x00000100" />
-                <Set Name="ASSOCF_IGNOREBASECLASS"          Value="0x00000200" />
-                <Set Name="ASSOCF_INIT_IGNOREUNKNOWN"       Value="0x00000400" />
-            </Enum>
-        </Variable>
+        <!-- TODO: Interfaces -->
+        <Variable Name="IConnectionPoint"   Type="Interface" />
 
-        <Variable Name="ASSOCKEY" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="ASSOCKEY_SHELLEXECCLASS" Value="1" />
-                <Set Name="ASSOCKEY_APP"            Value="2" />
-                <Set Name="ASSOCKEY_CLASS"          Value="3" />
-                <Set Name="ASSOCKEY_BASECLASS"      Value="4" />
-            </Enum>
-        </Variable>
-
-        <Variable Name="ASSOCSTR" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="ASSOCSTR_COMMAND"            Value="1" />
-                <Set Name="ASSOCSTR_EXECUTABLE"         Value="2" />
-                <Set Name="ASSOCSTR_FRIENDLYDOCNAME"    Value="3" />
-                <Set Name="ASSOCSTR_FRIENDLYAPPNAME"    Value="4" />
-                <Set Name="ASSOCSTR_NOOPEN"             Value="5" />
-                <Set Name="ASSOCSTR_SHELLNEWVALUE"      Value="6" />
-                <Set Name="ASSOCSTR_DDECOMMAND"         Value="7" />
-                <Set Name="ASSOCSTR_DDEIFEXEC"          Value="8" />
-                <Set Name="ASSOCSTR_DDEAPPLICATION"     Value="9" />
-                <Set Name="ASSOCSTR_DDETOPIC"           Value="10" />
-                <Set Name="ASSOCSTR_INFOTIP"            Value="11" />
-                <Set Name="ASSOCSTR_QUICKTIP"           Value="12" />
-                <Set Name="ASSOCSTR_TILEINFO"           Value="13" />
-                <Set Name="ASSOCSTR_CONTENTTYPE"        Value="14" />
-                <Set Name="ASSOCSTR_DEFAULTICON"        Value="15" />
-                <Set Name="ASSOCSTR_SHELLEXTENSION"     Value="16" />
-                <Set Name="ASSOCSTR_DROPTARGET"         Value="17" />
-                <Set Name="ASSOCSTR_DELEGATEEXECUTE"    Value="18" />
-                <Set Name="ASSOCSTR_MAX"                Value="19" />
-            </Enum>
-        </Variable>
-
+        <!-- SHREGENUM_FLAGS -->
         <Variable Name="SHREGENUM_FLAGS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="SHREGENUM_DEFAULT"   Value="0x00000000" />
@@ -71,6 +31,7 @@
             </Enum>
         </Variable>
 
+        <!-- SHREGDEL_FLAGS -->
         <Variable Name="SHREGDEL_FLAGS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="SHREGDEL_DEFAULT"    Value="0x00000000" />
@@ -80,20 +41,735 @@
             </Enum>
         </Variable>
 
+        <!-- [ShRegSetFlags] -->
         <Variable Name="[ShRegSetFlags]" Type="Alias" Base="UINT">
-                <Display Name="DWORD" />
+            <Display Name="DWORD" />
             <Flag>
                 <Set Name="SHREGSET_HKCU"           Value="0x00000001" />
                 <Set Name="SHREGSET_FORCE_HKCU"     Value="0x00000002" />
                 <Set Name="SHREGSET_HKLM"           Value="0x00000004" />
                 <Set Name="SHREGSET_FORCE_HKLM"     Value="0x00000008" />
-                <!-- SHREGSET_DEFAULT = (SHREGSET_FORCE_HKCU | SHREGSET_HKLM) -->
                 <Set Name="SHREGSET_DEFAULT"        Value="0x00000006" />
             </Flag>
         </Variable>
 
+        <!-- SHCT_FLAGS -->
+        <Variable Name="SHCT_FLAGS" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="CTF_INSIST"                  Value="0x00000001" />
+                <Set Name="CTF_THREAD_REF"              Value="0x00000002" />
+                <Set Name="CTF_PROCESS_REF"             Value="0x00000004" />
+                <Set Name="CTF_COINIT_STA"              Value="0x00000008" />
+                <Set Name="CTF_COINIT"                  Value="0x00000008" />
+                <Set Name="CTF_FREELIBANDEXIT"          Value="0x00000010" />
+                <Set Name="CTF_REF_COUNTED"             Value="0x00000020" />
+                <Set Name="CTF_WAIT_ALLOWCOM"           Value="0x00000040" />
+                <Set Name="CTF_UNUSED"                  Value="0x00000080" />
+                <Set Name="CTF_INHERITWOW64"            Value="0x00000100" />
+                <Set Name="CTF_WAIT_NO_REENTRANCY"      Value="0x00000200" />
+                <Set Name="CTF_KEYBOARD_LOCALE"         Value="0x00000400" />
+                <Set Name="CTF_OLEINITIALIZE"           Value="0x00000800" />
+                <Set Name="CTF_COINIT_MTA"              Value="0x00001000" />
+                <Set Name="CTF_NOADDREFLIB"             Value="0x00002000" />
+            </Flag>
+        </Variable>
+
+        <!-- STIF_FLAGS -->
+        <Variable Name="STIF_FLAGS" Type="Alias" Base="UINT">
+            <Display Name="int" />
+            <Flag>
+                <Set Name="STIF_DEFAULT"        Value="0x00000000" />
+                <Set Name="STIF_SUPPORT_HEX"    Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- SFBS_FLAGS -->
+        <Variable Name="SFBS_FLAGS" Type="Alias" Base="UINT">
+            <Display Name="int" />
+            <Flag>
+                <Set Name="SFBS_FLAGS_ROUND_TO_NEAREST_DISPLAYED_DIGIT"         Value="0x0001" />
+                <Set Name="SFBS_FLAGS_TRUNCATE_UNDISPLAYED_DECIMAL_DIGITS"      Value="0x0002" />
+            </Flag>
+        </Variable>
+        
+        <!-- SRRF -->
+        <Variable Name="SRRF" Type="Alias" Base="UINT">
+            <Display Name="int" />
+            <Flag>
+                <Set Name="SRRF_RT_REG_NONE"            Value="0x00000001" />
+                <Set Name="SRRF_RT_REG_SZ"              Value="0x00000002" />
+                <Set Name="SRRF_RT_REG_EXPAND_SZ"       Value="0x00000004" />
+                <Set Name="SRRF_RT_REG_BINARY"          Value="0x00000008" />
+                <Set Name="SRRF_RT_REG_DWORD"           Value="0x00000010" />
+                <Set Name="SRRF_RT_REG_MULTI_SZ"        Value="0x00000020" />
+                <Set Name="SRRF_RT_REG_QWORD"           Value="0x00000040" />
+                <Set Name="SRRF_RT_DWORD"               Value="0x00000018" />
+                <Set Name="SRRF_RT_QWORD"               Value="0x00000048" />
+                <Set Name="SRRF_RT_ANY"                 Value="0x0000ffff" />
+                <Set Name="SRRF_RM_ANY"                 Value="0x00000000" />
+                <Set Name="SRRF_RM_NORMAL"              Value="0x00010000" />
+                <Set Name="SRRF_RM_SAFE"                Value="0x00020000" />
+                <Set Name="SRRF_RM_SAFENETWORK"         Value="0x00040000" />
+                <Set Name="SRRF_NOEXPAND"               Value="0x10000000" />
+                <Set Name="SRRF_ZEROONFAILURE"          Value="0x20000000" />
+                <Set Name="SRRF_NOVIRT"                 Value="0x40000000" />
+            </Flag>
+        </Variable>
+
+        <!-- QITAB -->
+        <Variable Name="QITAB" Type="Struct">
+            <Field Type="const IID*"    Name="piid" />
+            <Field Type="int"           Name="dwOffset" />
+        </Variable>
+        <Variable Name="LPCQITAB" Type="Pointer" Base="QITAB" />
+
+        <!-- URLIS -->
+        <Variable Name="URLIS" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="URLIS_URL"           Value="0" />
+                <Set Name="URLIS_OPAQUE"        Value="1" />
+                <Set Name="URLIS_NOHISTORY"     Value="2" />
+                <Set Name="URLIS_FILEURL"       Value="3" />
+                <Set Name="URLIS_APPLIABLE"     Value="4" />
+                <Set Name="URLIS_DIRECTORY"     Value="5" />
+                <Set Name="URLIS_HASQUERY"      Value="6" />
+            </Enum>
+        </Variable>
+
+        <!-- URL_SCHEME -->
+        <Variable Name="URL_SCHEME" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Enum>
+                <Set Name="URL_SCHEME_INVALID"          Value="-1" />
+                <Set Name="URL_SCHEME_UNKNOWN"          Value="0" />
+                <Set Name="URL_SCHEME_FTP"              Value="1" />
+                <Set Name="URL_SCHEME_HTTP"             Value="2" />
+                <Set Name="URL_SCHEME_GOPHER"           Value="3" />
+                <Set Name="URL_SCHEME_MAILTO"           Value="4" />
+                <Set Name="URL_SCHEME_NEWS"             Value="5" />
+                <Set Name="URL_SCHEME_NNTP"             Value="6" />
+                <Set Name="URL_SCHEME_TELNET"           Value="7" />
+                <Set Name="URL_SCHEME_WAIS"             Value="8" />
+                <Set Name="URL_SCHEME_FILE"             Value="9" />
+                <Set Name="URL_SCHEME_MK"               Value="10" />
+                <Set Name="URL_SCHEME_HTTPS"            Value="11" />
+                <Set Name="URL_SCHEME_SHELL"            Value="12" />
+                <Set Name="URL_SCHEME_SNEWS"            Value="13" />
+                <Set Name="URL_SCHEME_LOCAL"            Value="14" />
+                <Set Name="URL_SCHEME_JAVASCRIPT"       Value="15" />
+                <Set Name="URL_SCHEME_VBSCRIPT"         Value="16" />
+                <Set Name="URL_SCHEME_ABOUT"            Value="17" />
+                <Set Name="URL_SCHEME_RES"              Value="18" />
+                <Set Name="URL_SCHEME_MSSHELLROOTED"    Value="19" />
+                <Set Name="URL_SCHEME_MSSHELLIDLIST"    Value="20" />
+                <Set Name="URL_SCHEME_MSHELP"           Value="21" />
+                <Set Name="URL_SCHEME_MSSHELLDEVICE"    Value="22" />
+                <Set Name="URL_SCHEME_WILDCARD"         Value="23" />
+                <Set Name="URL_SCHEME_SEARCH_MS"        Value="24" />
+                <Set Name="URL_SCHEME_SEARCH"           Value="25" />
+                <Set Name="URL_SCHEME_KNOWNFOLDER"      Value="26" />
+                <Set Name="URL_SCHEME_MAXVALUE"         Value="27" />
+            </Enum>
+        </Variable>
+
+        <!-- PARSEDURL -->
+        <Variable Name="PARSEDURL" Type="Struct">
+            <Field Type="DWORD"         Name="cbSize" />
+            <Field Type="LPCTSTR"       Name="pszProtocol" />
+            <Field Type="UINT"          Name="cchProtocol" />
+            <Field Type="LPCTSTR"       Name="pszSuffix" />
+            <Field Type="UINT"          Name="cchSuffix" />
+            <Field Type="URL_SCHEME"    Name="nScheme" />
+        </Variable>
+        <Variable Name="PARSEDURL*" Type="Pointer" Base="PARSEDURL" />
+
+        <!-- SHGLOBALCOUNTER -->
+        <Variable Name="SHGLOBALCOUNTER" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="GLOBALCOUNTER_SEARCHMANAGER"                         Value="0" />
+                <Set Name="GLOBALCOUNTER_SEARCHOPTIONS"                         Value="1" />
+                <Set Name="GLOBALCOUNTER_FOLDERSETTINGSCHANGE"                  Value="2" />
+                <Set Name="GLOBALCOUNTER_RATINGS"                               Value="3" />
+                <Set Name="GLOBALCOUNTER_APPROVEDSITES"                         Value="4" />
+                <Set Name="GLOBALCOUNTER_RESTRICTIONS"                          Value="5" />
+                <Set Name="GLOBALCOUNTER_SHELLSETTINGSCHANGED"                  Value="6" />
+                <Set Name="GLOBALCOUNTER_SYSTEMPIDLCHANGE"                      Value="7" />
+                <Set Name="GLOBALCOUNTER_OVERLAYMANAGER"                        Value="8" />
+                <Set Name="GLOBALCOUNTER_QUERYASSOCIATIONS"                     Value="9" />
+                <Set Name="GLOBALCOUNTER_IESESSIONS"                            Value="10" />
+                <Set Name="GLOBALCOUNTER_IEONLY_SESSIONS"                       Value="11" />
+                <Set Name="GLOBALCOUNTER_APPLICATION_DESTINATIONS"              Value="12" />
+                <Set Name="GLOBALCOUNTER_CSCSYNCINPROGRESS"                     Value="13" />
+                <Set Name="GLOBALCOUNTER_BITBUCKETNUMDELETERS"                  Value="14" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_SHARES"              Value="15" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_A"             Value="16" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_B"             Value="17" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_C"             Value="18" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_D"             Value="19" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_E"             Value="20" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_F"             Value="21" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_G"             Value="22" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_H"             Value="23" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_I"             Value="24" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_J"             Value="25" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_K"             Value="26" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_L"             Value="27" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_M"             Value="28" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_N"             Value="29" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_O"             Value="30" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_P"             Value="31" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_Q"             Value="32" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_R"             Value="33" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_S"             Value="34" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_T"             Value="35" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_U"             Value="36" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_V"             Value="37" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_W"             Value="38" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_X"             Value="39" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_Y"             Value="40" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_DRIVE_Z"             Value="41" />
+                <Set Name="GLOBALCOUNTER_RECYCLEDIRTYCOUNT_SERVERDRIVE"         Value="42" />
+                <Set Name="GLOBALCOUNTER_RECYCLEGLOBALDIRTYCOUNT"               Value="43" />
+                <Set Name="GLOBALCOUNTER_RECYCLEBINENUM"                        Value="44" />
+                <Set Name="GLOBALCOUNTER_RECYCLEBINCORRUPTED"                   Value="45" />
+                <Set Name="GLOBALCOUNTER_RATINGS_STATECOUNTER"                  Value="46" />
+                <Set Name="GLOBALCOUNTER_PRIVATE_PROFILE_CACHE"                 Value="47" />
+                <Set Name="GLOBALCOUNTER_INTERNETTOOLBAR_LAYOUT"                Value="48" />
+                <Set Name="GLOBALCOUNTER_FOLDERDEFINITION_CACHE"                Value="49" />
+                <Set Name="GLOBALCOUNTER_COMMONPLACES_LIST_CACHE"               Value="50" />
+                <Set Name="GLOBALCOUNTER_PRIVATE_PROFILE_CACHE_MACHINEWIDE"     Value="51" />
+                <Set Name="GLOBALCOUNTER_ASSOCCHANGED"                          Value="52" />
+                <Set Name="GLOBALCOUNTER_MAXIMUMVALUE"                          Value="53" />
+            </Enum>
+        </Variable>
+        <Variable Name="const SHGLOBALCOUNTER" Type="Alias" Base="SHGLOBALCOUNTER" />
+
+        <!-- Shell -->
+        <Category Name="Windows Environment Development/Windows Shell" />
+        <Api Name="SHAllocShared" Ordinal="7">
+            <Param Type="const void*" Name="pvData" />
+            <Param Type="DWORD" Name="dwSize" />
+            <Param Type="DWORD" Name="dwDestinationProcessId" />
+            <Return Type="HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ShellMessageBox" BothCharset="True" OrdinalW="388" VarArgs="True">
+            <Param Type="HINSTANCE" Name="hInst" />
+            <Param Type="HWND" Name="hWnd" />
+            <Param Type="LPCTSTR" Name="pszMsg" />
+            <Param Type="LPCTSTR" Name="pszTitle" />
+            <Param Type="[MessageBoxType]" Name="fuStyle" />
+            <Return Type="[MessageBoxResult]" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SHGetViewStatePropertyBag" Ordinal="515">
+            <Param Type="PCIDLIST_ABSOLUTE" Name="pidl" />
+            <Param Type="LPCWSTR" Name="pszBagName" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppv" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHLockShared" Ordinal="8">
+            <Param Type="HANDLE*" Name="hData" />
+            <Param Type="DWORD" Name="dwOtherProcId" />
+            <Return Type="LPVOID" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SHUnlockShared" Ordinal="9">
+            <Param Type="void*" Name="pvData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SHFreeShared" Ordinal="10">
+            <Param Type="HANDLE" Name="hData" />
+            <Param Type="DWORD" Name="dwSourceProcId" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="StrStrNW">
+            <Param Type="LPCWSTR" Name="lpFirst" />
+            <Param Type="LPCWSTR" Name="lpSrch" />
+            <Param Type="UINT" Name="cchMax" />
+            <Return Type="LPCWSTR" />
+        </Api>
+        <Api Name="StrStrNIW">
+            <Param Type="LPCWSTR" Name="lpFirst" />
+            <Param Type="LPCWSTR" Name="lpSrch" />
+            <Param Type="UINT" Name="cchMax" />
+            <Return Type="LPCWSTR" />
+        </Api>
+
+        <!-- Color Palette -->
+        <Category Name="Windows Environment Development/Windows Shell/Shell Lightweight Utility/Color Palette" />
+        <Api Name="ColorAdjustLuma">
+            <Param Type="COLORREF" Name="clrRGB" />
+            <Param Type="int" Name="n" />
+            <Param Type="BOOL" Name="fScale" />
+            <Return Type="COLORREF" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ColorHLSToRGB">
+            <Param Type="WORD" Name="wHue" />
+            <Param Type="WORD" Name="wLuminance" />
+            <Param Type="WORD" Name="wSaturation" />
+            <Return Type="COLORREF" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ColorRGBToHLS">
+            <Param Type="COLORREF" Name="clrRGB" />
+            <Param Type="WORD*" Name="pwHue" />
+            <Param Type="WORD*" Name="pwLuminance" />
+            <Param Type="WORD*" Name="pwSaturation" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="SHCreateShellPalette">
+            <Param Type="HDC" Name="hdc" />
+            <Return Type="HPALETTE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SHGetInverseCMAP">
+            <Param Type="BYTE*" Name="pbMap" />
+            <Param Type="ULONG" Name="cbMap" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+
+        <!-- Path -->
+        <Category Name="Windows Environment Development/Windows Shell/Shell Lightweight Utility/Path" />
+        <Api Name="PathAddBackslash" BothCharset="True">
+            <Param Type="LPTSTR" Name="lpszPath" />
+            <Return Type="LPTSTR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathAddExtension" BothCharset="True">
+            <Param Type="LPTSTR" Name="pszPath" />
+            <Param Type="LPCTSTR" Name="pszExtension" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathAppend" BothCharset="True">
+            <Param Type="LPTSTR" Name="pszPath" />
+            <Param Type="LPCTSTR" Name="pszMore" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathBuildRoot" BothCharset="True">
+            <Param Type="LPTSTR" Name="szRoot" OutputOnly="True" />
+            <Param Type="int" Name="iDrive" />
+            <Return Type="LPTSTR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathCanonicalize" BothCharset="True">
+            <Param Type="LPTSTR" Name="lpszDst" />
+            <Param Type="LPCTSTR" Name="lpszSrc" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathCombine" BothCharset="True">
+            <Param Type="LPTSTR" Name="lpszDest" />
+            <Param Type="LPCTSTR" Name="lpszDir" />
+            <Param Type="LPCTSTR" Name="lpszFile" />
+            <Return Type="LPTSTR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathCommonPrefix" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszFile1" />
+            <Param Type="LPCTSTR" Name="pszFile2" />
+            <Param Type="LPTSTR" Name="pszPath" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathCompactPath" BothCharset="True">
+            <Param Type="HDC" Name="hDC" />
+            <Param Type="LPTSTR" Name="lpszPath" />
+            <Param Type="UINT" Name="dx" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathCompactPathEx" BothCharset="True">
+            <Param Type="LPTSTR" Name="pszOut" OutputOnly="True" />
+            <Param Type="LPCTSTR" Name="pszSrc" />
+            <Param Type="UINT" Name="cchMax" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathCreateFromUrl" BothCharset="True">
+            <Param Type="PCTSTR" Name="pszUrl" />
+            <Param Type="PTSTR" Name="pszPath" />
+            <Param Type="DWORD*" Name="pcchPath" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PathCreateFromUrlAlloc">
+            <Param Type="PCWSTR" Name="pszIn" />
+            <Param Type="PWSTR*" Name="ppszOut" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PathFileExists" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszPath" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathFindExtension" BothCharset="True">
+            <Param Type="PTSTR" Name="pszPath" />
+            <Return Type="PTSTR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathFindFileName" BothCharset="True">
+            <Param Type="PTSTR" Name="pPath" />
+            <Return Type="PTSTR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathFindNextComponent" BothCharset="True">
+            <Param Type="PTSTR" Name="pszPath" />
+            <Return Type="PTSTR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathFindOnPath" BothCharset="True">
+            <Param Type="LPTSTR" Name="pszFile" />
+            <Param Type="LPCTSTR*" Name="ppszOtherDirs" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathFindSuffixArray" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszPath" />
+            <Param Type="const LPCTSTR*" Name="apszSuffix" />
+            <Param Type="int" Name="iArraySize" />
+            <Return Type="LPCTSTR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathGetArgs" BothCharset="True">
+            <Param Type="PTSTR" Name="pszPath" />
+            <Return Type="PTSTR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathGetCharType" BothCharset="True">
+            <Param Type="TCHAR" Name="ch" />
+            <Return Type="UINT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathGetDriveNumber" BothCharset="True">
+            <Param Type="LPCTSTR" Name="lpsz" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathIsContentType" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszPath" />
+            <Param Type="LPCTSTR" Name="pszContentType" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="PathIsDirectory" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszPath" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="PathIsDirectoryEmpty" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszPath" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="PathIsFileSpec" BothCharset="True">
+            <Param Type="LPCTSTR" Name="lpszPath" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="PathIsHTMLFile" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszFile" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="PathIsLFNFileSpec" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszName" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="PathIsNetworkPath" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszPath" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="PathIsPrefix" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszPrefix" />
+            <Param Type="LPCTSTR" Name="pszPath" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="PathIsRelative" BothCharset="True">
+            <Param Type="LPCTSTR" Name="lpszPath" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="PathIsRoot" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pPath" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="PathIsSameRoot" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszPath1" />
+            <Param Type="LPCTSTR" Name="pszPath2" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="PathIsSystemFolder" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszPath" />
+            <Param Type="DWORD" Name="dwAttrb" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="PathIsUNC" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszPath" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="PathIsUNCServer" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszPath" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="PathIsUNCServerShare" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszPath" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="PathIsURL" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszPath" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="PathMakePretty" BothCharset="True">
+            <Param Type="LPTSTR" Name="lpPath" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathMakeSystemFolder" BothCharset="True">
+            <Param Type="LPTSTR" Name="pszPath" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathMatchSpec" BothCharset="True">
+            <Param Type="LPCSTR" Name="pszFile" />
+            <Param Type="LPCSTR" Name="pszSpec" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathMatchSpecEx" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszFile" />
+            <Param Type="LPCTSTR" Name="pszSpec" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PathParseIconLocation" BothCharset="True">
+            <Param Type="LPTSTR" Name="pszIconFile" />
+            <Return Type="int" />
+        </Api>
+        <Api Name="PathQuoteSpaces" BothCharset="True">
+            <Param Type="LPTSTR" Name="lpsz" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathRelativePathTo" BothCharset="True">
+            <Param Type="LPTSTR" Name="pszPath" />
+            <Param Type="LPCTSTR" Name="pszFrom" />
+            <Param Type="DWORD" Name="dwAttrFrom" />
+            <Param Type="LPCTSTR" Name="pszTo" />
+            <Param Type="DWORD" Name="dwAttrTo" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathRemoveArgs" BothCharset="True">
+            <Param Type="LPTSTR" Name="pszPath" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="PathRemoveBackslash" BothCharset="True">
+            <Param Type="LPTSTR" Name="lpszPath" />
+            <Return Type="LPTSTR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathRemoveBlanks" BothCharset="True">
+            <Param Type="LPTSTR" Name="lpszString" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="PathRemoveExtension" BothCharset="True">
+            <Param Type="LPTSTR" Name="pszPath" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="PathRemoveFileSpec" BothCharset="True">
+            <Param Type="LPTSTR" Name="pszPath" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathRenameExtension" BothCharset="True">
+            <Param Type="LPTSTR" Name="pszPath" />
+            <Param Type="LPCTSTR" Name="pszExt" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathSearchAndQualify" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pcszPath" />
+            <Param Type="LPTSTR" Name="pszFullyQualifiedPath" />
+            <Param Type="UINT" Name="cchFullyQualifiedPath" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathSetDlgItemPath" BothCharset="True">
+            <Param Type="HWND" Name="hDlg" />
+            <Param Type="int" Name="id" />
+            <Param Type="LPCSTR" Name="pszPath" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="PathSkipRoot" BothCharset="True">
+            <Param Type="PTSTR" Name="pszPath" />
+            <Return Type="PTSTR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathStripPath" BothCharset="True">
+            <Param Type="LPTSTR" Name="pszPath" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="PathStripToRoot" BothCharset="True">
+            <Param Type="LPTSTR" Name="szRoot" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathUndecorate" BothCharset="True">
+            <Param Type="LPTSTR" Name="pszPath" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="PathUnExpandEnvStrings" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszPath" />
+            <Param Type="LPTSTR" Name="pszBuf" OutputOnly="True" />
+            <Param Type="UINT" Name="cchBuf" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathUnmakeSystemFolder" BothCharset="True">
+            <Param Type="LPTSTR" Name="pszPath" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathUnquoteSpaces" BothCharset="True">
+            <Param Type="LPTSTR" Name="lpsz" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="SHSkipJunction">
+            <Param Type="IBindCtx*" Name="pbc" />
+            <Param Type="const CLSID*" Name="pclsid" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="UrlApplyScheme" BothCharset="True">
+            <Param Type="PCTSTR" Name="pszIn" />
+            <Param Type="PTSTR" Name="pszOut" OutputOnly="True" />
+            <Param Type="DWORD*" Name="pcchOut" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="UrlCanonicalize" BothCharset="True">
+            <Param Type="PCTSTR" Name="pszUrl" />
+            <Param Type="PTSTR" Name="pszCanonicalized" />
+            <Param Type="DWORD*" Name="pcchCanonicalized" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="UrlCombine" BothCharset="True">
+            <Param Type="PCTSTR" Name="pszBase" />
+            <Param Type="PCTSTR" Name="pszRelative" />
+            <Param Type="PTSTR" Name="pszCombined" />
+            <Param Type="DWORD*" Name="pcchCombined" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="UrlCompare" BothCharset="True">
+            <Param Type="PCTSTR" Name="psz1" />
+            <Param Type="PCTSTR" Name="psz2" />
+            <Param Type="BOOL" Name="fIgnoreSlash" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="UrlCreateFromPath" BothCharset="True">
+            <Param Type="PCTSTR" Name="pszPath" />
+            <Param Type="PTSTR" Name="pszUrl" />
+            <Param Type="DWORD*" Name="pcchUrl" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="UrlEscape" BothCharset="True">
+            <Param Type="PCTSTR" Name="pszURL" />
+            <Param Type="PTSTR" Name="pszEscaped" />
+            <Param Type="DWORD*" Name="pcchEscaped" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="UrlEscapeSpaces">
+            <Param Type="LPCTSTR" Name="pszURL" />
+            <Param Type="LPTSTR" Name="pszEscaped" />
+            <Param Type="LPDWORD" Name="pcchEscaped" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="UrlFixupW" BothCharset="True" Ordinal="462">
+            <Param Type="PCWSTR" Name="pcszUrl" />
+            <Param Type="PWSTR" Name="pszTranslatedUrl" />
+            <Param Type="DWORD" Name="cchMax" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="UrlGetLocation" BothCharset="True">
+            <Param Type="PCTSTR" Name="pszURL" />
+            <Return Type="LPCTSTR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="UrlGetPart" BothCharset="True">
+            <Param Type="PCTSTR" Name="pszIn" />
+            <Param Type="PTSTR" Name="pszOut" OutputOnly="True" />
+            <Param Type="DWORD*" Name="pcchOut" />
+            <Param Type="DWORD" Name="dwPart" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="UrlHash" BothCharset="True">
+            <Param Type="PCTSTR" Name="pszURL" />
+            <Param Type="BYTE*" Name="pbHash" />
+            <Param Type="DWORD" Name="cbHash" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="UrlIs" BothCharset="True">
+            <Param Type="PCTSTR" Name="pszUrl" />
+            <Param Type="URLIS" Name="UrlIs" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="UrlIsFileUrl" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszUrl" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="UrlIsNoHistory" BothCharset="True">
+            <Param Type="PCTSTR" Name="pszURL" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="UrlIsOpaque" BothCharset="True">
+            <Param Type="PCTSTR" Name="pszURL" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="UrlUnescape" BothCharset="True">
+            <Param Type="PTSTR" Name="pszURL" />
+            <Param Type="PTSTR" Name="pszUnescaped" />
+            <Param Type="DWORD*" Name="pcchUnescaped" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="UrlUnescapeInPlace">
+            <Param Type="LPTSTR" Name="pszURL" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        
         <!-- Registry -->
-        <Category Name="System Services/Windows System Information/Registry" />
+        <Category Name="Windows Environment Development/Windows Shell/Shell Lightweight Utility/Registry" />
         <Api Name="AssocCreate">
             <Param Type="CLSID" Name="clsid" />
             <Param Type="REFIID" Name="riid" />
@@ -111,8 +787,7 @@
         </Api>
         <Api Name="AssocIsDangerous">
             <Param Type="PCWSTR" Name="pszAssoc" />
-            <Return Type="HRESULT" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="BOOL" />
         </Api>
         <Api Name="AssocQueryKey" BothCharset="True">
             <Param Type="ASSOCF" Name="flags" />
@@ -128,7 +803,7 @@
             <Param Type="ASSOCSTR" Name="str" />
             <Param Type="LPCTSTR" Name="pszAssoc" />
             <Param Type="LPCTSTR" Name="pszExtra" />
-            <Param Type="LPTSTR" Name="pszOut" />
+            <Param Type="LPTSTR" Name="pszOut" OutputOnly="True" />
             <Param Type="DWORD*" Name="pcchOut" />
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
@@ -138,14 +813,14 @@
             <Param Type="ASSOCSTR" Name="str" />
             <Param Type="HKEY" Name="hkAssoc" />
             <Param Type="LPCTSTR" Name="pszExtra" />
-            <Param Type="LPTSTR" Name="pszOut" />
+            <Param Type="LPTSTR" Name="pszOut" OutputOnly="True" />
             <Param Type="DWORD*" Name="pcchOut" />
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SHCopyKey" BothCharset="True">
             <Param Type="HKEY" Name="hkeySrc" />
-            <Param Type="LPCTSTR" Name="szSrcSubKey" />
+            <Param Type="LPCTSTR" Name="pszSrcSubKey" />
             <Param Type="HKEY" Name="hkeyDest" />
             <Param Type="DWORD" Name="fReserved" />
             <Return Type="LSTATUS" />
@@ -199,6 +874,22 @@
             <Return Type="LSTATUS" />
             <Success Return="Equal" Value="0" />
         </Api>
+        <Api Name="SHOpenRegStream" BothCharset="True">
+            <Param Type="HKEY" Name="hkey" />
+            <Param Type="LPCTSTR" Name="pszSubkey" />
+            <Param Type="LPCTSTR" Name="pszValue" />
+            <Param Type="[StgmFlags]" Name="grfMode" />
+            <Return Type="IStream*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SHOpenRegStream2" BothCharset="True">
+            <Param Type="HKEY" Name="hkey" />
+            <Param Type="LPCTSTR" Name="pszSubkey" />
+            <Param Type="LPCTSTR" Name="pszValue" />
+            <Param Type="[StgmFlags]" Name="grfMode" />
+            <Return Type="IStream*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
         <Api Name="SHQueryInfoKey" BothCharset="True">
             <Param Type="HKEY" Name="hkey" />
             <Param Type="LPDWORD" Name="pcSubKeys" />
@@ -249,6 +940,7 @@
         <Api Name="SHRegDuplicateHKey">
             <Param Type="HKEY" Name="hkey" />
             <Return Type="HKEY" />
+            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SHRegEnumUSKey" BothCharset="True">
             <Param Type="HUSKEY" Name="hUSKey" />
@@ -277,6 +969,7 @@
             <Param Type="BOOL" Name="fIgnoreHKCU" />
             <Param Type="BOOL" Name="fDefault" />
             <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SHRegGetIntW" Ordinal="280">
             <Param Type="HKEY" Name="hk" />
@@ -302,6 +995,17 @@
             <Param Type="BOOL" Name="fIgnoreHKCU" />
             <Param Type="void*" Name="pvDefaultData" />
             <Param Type="DWORD" Name="dwDefaultDataSize" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHRegGetValue" BothCharset="True">
+            <Param Type="HKEY" Name="hkey" />
+            <Param Type="LPCTSTR" Name="pszSubKey" />
+            <Param Type="LPCTSTR" Name="pszValue" />
+            <Param Type="SRRF" Name="srrfFlags" />
+            <Param Type="LPDWORD" Name="pdwType" />
+            <Param Type="LPVOID" Name="pvData" />
+            <Param Type="LPDWORD" Name="pcbData" />
             <Return Type="LSTATUS" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -355,6 +1059,17 @@
             <Return Type="LSTATUS" />
             <Success Return="Equal" Value="0" />
         </Api>
+        <Api Name="SHRegSetValue" BothCharset="True">
+            <Param Type="HKEY" Name="hkey" />
+            <Param Type="LPCWSTR" Name="pszSubKey" />
+            <Param Type="LPCWSTR" Name="pszValue" />
+            <Param Type="SRRF" Name="srrfFlags" />
+            <Param Type="DWORD" Name="dwType" />
+            <Param Type="LPCVOID" Name="pvData" />
+            <Param Type="DWORD" Name="cbData" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
         <Api Name="SHRegWriteUSValue" BothCharset="True">
             <Param Type="HUSKEY" Name="hUSKey" />
             <Param Type="LPCTSTR" Name="pszValue" />
@@ -375,56 +1090,711 @@
             <Return Type="LSTATUS" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <!-- Shell -->
-        <Category Name="Windows Environment Development/Windows Shell" />
-        <Api Name="SHAllocShared" Ordinal="7">
-            <Param Type="const void*" Name="pvData" />
-            <Param Type="DWORD" Name="dwSize" />
-            <Param Type="DWORD" Name="dwDestinationProcessId" />
-            <Return Type="HANDLE" />
-            <Success Return="NotEqual" Value="0" />
+        
+        <!-- String -->
+        <Category Name="Windows Environment Development/Windows Shell/Shell Lightweight Utility/String" />
+        <Api Name="CharLowerWrapW">
+            <Param Type="LPWSTR" Name="pch" />
+            <Return Type="LPWSTR" />
         </Api>
-        <Api Name="ShellMessageBox" BothCharset="True" OrdinalW="388" VarArgs="True">
-            <Param Type="HINSTANCE" Name="hInst" />
-            <Param Type="HWND" Name="hWnd" />
-            <Param Type="LPCTSTR" Name="pszMsg" />
-            <Param Type="LPCTSTR" Name="pszTitle" />
-            <Param Type="[MessageBoxType]" Name="fuStyle" />
-            <Return Type="[MessageBoxResult]" />
-            <Success Return="NotEqual" Value="0" />
+        <Api Name="CharUpperBuffWrapW">
+            <Param Type="LPWSTR" Name="pch" />
+            <Param Type="DWORD" Name="cchLength" />
+            <Return Type="DWORD" />
         </Api>
-        <Api Name="SHGetViewStatePropertyBag" Ordinal="515">
-            <Param Type="PCIDLIST_ABSOLUTE" Name="pidl" />
-            <Param Type="LPCWSTR" Name="pszBagName" />
+        <Api Name="ChrCmpI" BothCharset="True">
+            <Param Type="TCHAR" Name="w1" />
+            <Param Type="TCHAR" Name="w2" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CompareStringWrapW">
+            <Param Type="LCID" Name="Locale" />
+            <Param Type="DWORD" Name="dwCmpFlags" />
+            <Param Type="LPCWSTR" Name="lpString1" />
+            <Param Type="int" Name="cchCount1" />
+            <Param Type="LPCWSTR" Name="lpString2" />
+            <Param Type="int" Name="cchCount2" />
+            <Return Type="int" />
+        </Api>
+        <Api Name="GetAcceptLanguages" BothCharset="True" OrdinalA="14" OrdinalW="15">
+            <Param Type="LPTSTR" Name="pszLanguages" />
+            <Param Type="DWORD*" Name="pcchLanguages" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetDateFormatWrapW">
+            <Param Type="LCID" Name="Locale" />
             <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="const SYSTEMTIME*" Name="lpDate" />
+            <Param Type="LPCWSTR" Name="pwzFormat" />
+            <Param Type="LPWSTR" Name="pwzDateStr" />
+            <Param Type="int" Name="cchDate" />
+            <Return Type="int" />
+        </Api>
+        <Api Name="GetTimeFormatWrapW">
+            <Param Type="LCID" Name="Locale" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="const SYSTEMTIME*" Name="lpTime" />
+            <Param Type="LPCWSTR" Name="pwzFormat" />
+            <Param Type="LPWSTR" Name="pwzTimeStr" />
+            <Param Type="int" Name="cchTime" />
+            <Return Type="int" />
+        </Api>
+        <Api Name="IntlStrEqN" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszStr1" />
+            <Param Type="LPCTSTR" Name="pszStr2" />
+            <Param Type="int" Name="nChar" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="IntlStrEqNI" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszStr1" />
+            <Param Type="LPCTSTR" Name="pszStr2" />
+            <Param Type="int" Name="nChar" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="IntlStrEqWorker" BothCharset="True">
+            <Param Type="BOOL" Name="fCaseSens" />
+            <Param Type="LPCTSTR" Name="pszStr1" />
+            <Param Type="LPCTSTR" Name="pszStr2" />
+            <Param Type="int" Name="nChar" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="IsCharAlphaNumericWrapW">
+            <Param Type="WCHAR" Name="ch" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="IsCharSpace" BothCharset="True" OrdinalW="29">
+            <Param Type="TCHAR" Name="wch" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="OutputDebugStringWrapW">
+            <Param Type="LPCWSTR" Name="lpOutputString" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="SHLoadIndirectString" Ordinal="487">
+            <Param Type="PCWSTR" Name="pszSource" />
+            <Param Type="PWSTR" Name="pszOutBuf" OutputOnly="True" />
+            <Param Type="UINT" Name="cchOutBuf" />
+            <Param Type="void**" Name="ppvReserved" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHStrDup" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszSource" />
+            <Param Type="LPTSTR*" Name="ppwsz" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="StrCat" BothCharset="True">
+            <Param Type="PTSTR" Name="psz1" />
+            <Param Type="PCTSTR" Name="psz2" />
+            <Return Type="PTSTR" />
+        </Api>
+        <Api Name="StrCatBuff" BothCharset="True">
+            <Param Type="PTSTR" Name="pszDest" />
+            <Param Type="PCTSTR" Name="pszSrc" />
+            <Param Type="int" Name="cchDestBuffSize" />
+            <Return Type="PTSTR" />
+        </Api>
+        <Api Name="StrCatChainW" BothCharset="True">
+            <Param Type="PWSTR" Name="pszDst" />
+            <Param Type="DWORD" Name="cchDst" />
+            <Param Type="DWORD" Name="ichAt" />
+            <Param Type="PCWSTR" Name="pszSrc" />
+            <Return Type="DWORD" />
+        </Api>
+        <Api Name="StrChr" BothCharset="True">
+            <Param Type="PTSTR" Name="pszStart" />
+            <Param Type="TCHAR" Name="wMatch" />
+            <Return Type="PTSTR" />
+        </Api>
+        <Api Name="StrChrI" BothCharset="True">
+            <Param Type="PTSTR" Name="pszStart" />
+            <Param Type="TCHAR" Name="wMatch" />
+            <Return Type="PTSTR" />
+        </Api>
+        <Api Name="StrChrNIW">
+            <Param Type="PCWSTR" Name="pszStart" />
+            <Param Type="WCHAR" Name="wMatch" />
+            <Param Type="UINT" Name="cchMax" />
+            <Return Type="PWSTR" />
+        </Api>
+        <Api Name="StrChrNW">
+            <Param Type="PWSTR" Name="pszStart" />
+            <Param Type="WCHAR" Name="wMatch" />
+            <Param Type="UINT" Name="cchMax" />
+            <Return Type="PWSTR" />
+        </Api>
+        <Api Name="StrCmp" BothCharset="True">
+            <Param Type="PCTSTR" Name="psz1" />
+            <Param Type="PCTSTR" Name="psz2" />
+            <Return Type="int" />
+        </Api>
+        <Api Name="StrCmpC" BothCharset="True" OrdinalA="155" OrdinalW="156">
+            <Param Type="LPCTSTR" Name="lpStr1" />
+            <Param Type="LPCTSTR" Name="lpStr2" />
+            <Return Type="int" />
+        </Api>
+        <Api Name="StrCmpI" BothCharset="True">
+            <Param Type="PCTSTR" Name="psz1" />
+            <Param Type="PCTSTR" Name="psz2" />
+            <Return Type="int" />
+        </Api>
+        <Api Name="StrCmpIC" BothCharset="True" OrdinalA="157" OrdinalW="158">
+            <Param Type="LPCTSTR" Name="lpStr1" />
+            <Param Type="LPCTSTR" Name="lpStr2" />
+            <Return Type="int" />
+        </Api>
+        <Api Name="StrCmpLogicalW" BothCharset="True">
+            <Param Type="PCWSTR" Name="psz1" />
+            <Param Type="PCWSTR" Name="psz2" />
+            <Return Type="int" />
+        </Api>
+        <Api Name="StrCmpN" BothCharset="True">
+            <Param Type="PCTSTR" Name="psz1" />
+            <Param Type="PCTSTR" Name="psz2" />
+            <Param Type="int" Name="nChar" />
+            <Return Type="int" />
+        </Api>
+        <Api Name="StrCmpNC" BothCharset="True" OrdinalA="151" OrdinalW="152">
+            <Param Type="LPCTSTR" Name="pszStr1" />
+            <Param Type="LPCTSTR" Name="pszStr2" />
+            <Param Type="int" Name="nChar" />
+            <Return Type="int" />
+        </Api>
+        <Api Name="StrCmpNI" BothCharset="True">
+            <Param Type="PCTSTR" Name="psz1" />
+            <Param Type="PCTSTR" Name="psz2" />
+            <Param Type="int" Name="nChar" />
+            <Return Type="int" />
+        </Api>
+        <Api Name="StrCmpNIC" BothCharset="True" OrdinalA="153" OrdinalW="154">
+            <Param Type="LPCTSTR" Name="pszStr1" />
+            <Param Type="LPCTSTR" Name="pszStr2" />
+            <Param Type="int" Name="nChar" />
+            <Return Type="int" />
+        </Api>
+        <Api Name="StrCpy" BothCharset="True">
+            <Param Type="PTSTR" Name="psz1" />
+            <Param Type="PCTSTR" Name="psz2" />
+            <Return Type="PTSTR" />
+        </Api>
+        <Api Name="StrCpyN" BothCharset="True">
+            <Param Type="PTSTR" Name="pszDst" />
+            <Param Type="PCTSTR" Name="pszSrc" />
+            <Param Type="int" Name="cchMax" />
+            <Return Type="PTSTR" />
+        </Api>
+        <Api Name="StrCSpn" BothCharset="True">
+            <Param Type="PCTSTR" Name="pszStr" />
+            <Param Type="PCTSTR" Name="pszSet" />
+            <Return Type="int" />
+        </Api>
+        <Api Name="StrCSpnI" BothCharset="True">
+            <Param Type="PCTSTR" Name="pszStr" />
+            <Param Type="PCTSTR" Name="pszSet" />
+            <Return Type="int" />
+        </Api>
+        <Api Name="StrDup" BothCharset="True">
+            <Param Type="PCTSTR" Name="pszSrch" />
+            <Return Type="PTSTR" />
+        </Api>
+        <Api Name="StrFormatByteSize64" BothCharset="True">
+            <Param Type="LONGLONG" Name="qdw" />
+            <Param Type="PTSTR" Name="pszBuf" OutputOnly="True" />
+            <Param Type="UINT" Name="cchBuf" />
+            <Return Type="PTSTR" />
+        </Api>
+        <Api Name="StrFormatByteSizeA">
+            <Param Type="DWORD" Name="dw" />
+            <Param Type="PSTR" Name="pszBuf" OutputOnly="True" />
+            <Param Type="UINT" Name="cchBuf" />
+            <Return Type="PSTR" />
+        </Api>
+        <Api Name="StrFormatByteSizeW">
+            <Param Type="LONGLONG" Name="qdw" />
+            <Param Type="PWSTR" Name="pszBuf" OutputOnly="True" />
+            <Param Type="UINT" Name="cchBuf" />
+            <Return Type="PWSTR" />
+        </Api>
+        <Api Name="StrFormatByteSizeEx">
+            <Param Type="ULONGLONG" Name="ull" />
+            <Param Type="SFBS_FLAGS" Name="flags" />
+            <Param Type="LPWSTR" Name="pszBuf" OutputOnly="True" />
+            <Param Type="UINT" Name="cchBuf" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="StrFormatKBSize" BothCharset="True">
+            <Param Type="LONGLONG" Name="qdw" />
+            <Param Type="PTSTR" Name="pszBuf" OutputOnly="True" />
+            <Param Type="UINT" Name="cchBuf" />
+            <Return Type="PTSTR" />
+        </Api>
+        <Api Name="StrFromTimeInterval" BothCharset="True">
+            <Param Type="PTSTR" Name="pszOut" OutputOnly="True" />
+            <Param Type="UINT" Name="cchMax" />
+            <Param Type="DWORD" Name="dwTimeMS" />
+            <Param Type="int" Name="digits" />
+            <Return Type="int" />
+        </Api>
+        <Api Name="StrIsIntlEqual" BothCharset="True">
+            <Param Type="BOOL" Name="fCaseSens" />
+            <Param Type="PCTSTR" Name="pszString1" />
+            <Param Type="PCTSTR" Name="pszString2" />
+            <Param Type="int" Name="nChar" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="StrNCat" BothCharset="True">
+            <Param Type="PTSTR" Name="psz1" />
+            <Param Type="PCTSTR" Name="psz2" />
+            <Param Type="int" Name="cchMax" />
+            <Return Type="PTSTR" />
+        </Api>
+        <Api Name="StrPBrk" BothCharset="True">
+            <Param Type="PTSTR" Name="psz" />
+            <Param Type="PCTSTR" Name="pszSet" />
+            <Return Type="PTSTR" />
+        </Api>
+        <Api Name="StrRChr" BothCharset="True">
+            <Param Type="PTSTR" Name="pszStart" />
+            <Param Type="PCTSTR" Name="pszEnd" />
+            <Param Type="TCHAR" Name="wMatch" />
+            <Return Type="PTSTR" />
+        </Api>
+        <Api Name="StrRChrI" BothCharset="True">
+            <Param Type="PTSTR" Name="pszStart" />
+            <Param Type="PCTSTR" Name="pszEnd" />
+            <Param Type="TCHAR" Name="wMatch" />
+            <Return Type="PTSTR" />
+        </Api>
+        <Api Name="StrRetToBSTR">
+            <Param Type="STRRET*" Name="pstr" />
+            <Param Type="PCUITEMID_CHILD" Name="pidl" />
+            <Param Type="BSTR*" Name="pbstr" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="StrRetToBuf" BothCharset="True">
+            <Param Type="STRRET*" Name="pstr" />
+            <Param Type="PCUITEMID_CHILD" Name="pidl" />
+            <Param Type="LPTSTR" Name="pszBuf" OutputOnly="True" />
+            <Param Type="UINT" Name="cchBuf" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="StrRetToStr" BothCharset="True">
+            <Param Type="STRRET*" Name="pstr" />
+            <Param Type="PCUITEMID_CHILD" Name="pidl" />
+            <Param Type="LPTSTR*" Name="ppszName" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="StrRStrI" BothCharset="True">
+            <Param Type="PTSTR" Name="pszSource" />
+            <Param Type="PCTSTR" Name="pszLast" />
+            <Param Type="PCTSTR" Name="pszSrch" />
+            <Return Type="PTSTR" />
+        </Api>
+        <Api Name="StrSpn" BothCharset="True">
+            <Param Type="PCTSTR" Name="psz" />
+            <Param Type="PCTSTR" Name="pszSet" />
+            <Return Type="int" />
+        </Api>
+        <Api Name="StrStr" BothCharset="True">
+            <Param Type="PTSTR" Name="pszFirst" />
+            <Param Type="PCTSTR" Name="pszSrch" />
+            <Return Type="PTSTR" />
+        </Api>
+        <Api Name="StrStrI" BothCharset="True">
+            <Param Type="PTSTR" Name="pszFirst" />
+            <Param Type="PCTSTR" Name="pszSrch" />
+            <Return Type="PTSTR" />
+        </Api>
+        <Api Name="StrToInt" BothCharset="True">
+            <Param Type="PCTSTR" Name="pszSrc" />
+            <Return Type="int" />
+        </Api>
+        <Api Name="StrToInt64Ex" BothCharset="True">
+            <Param Type="PCTSTR" Name="pszString" />
+            <Param Type="STIF_FLAGS" Name="dwFlags" />
+            <Param Type="LONGLONG*" Name="pllRet" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="StrToIntEx" BothCharset="True">
+            <Param Type="PCTSTR" Name="pszString" />
+            <Param Type="STIF_FLAGS" Name="dwFlags" />
+            <Param Type="int*" Name="piRet" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="StrTrim" BothCharset="True">
+            <Param Type="PTSTR" Name="psz" />
+            <Param Type="PCTSTR" Name="pszTrimChars" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="wnsprintf" BothCharset="True" VarArgs="True">
+            <Param Type="PTSTR" Name="pszDest" />
+            <Param Type="int" Name="cchDest" />
+            <Param Type="PCTSTR" Name="pszFmt" />
+            <Return Type="int" />
+        </Api>
+        <Api Name="wvnsprintf" BothCharset="True">
+            <Param Type="PTSTR" Name="pszDest" />
+            <Param Type="int" Name="cchDest" />
+            <Param Type="PCTSTR" Name="pszFmt" />
+            <Param Type="va_list" Name="arglist" />
+            <Return Type="int" />
+        </Api>
+        
+        <!-- Miscellaneous -->
+        <Category Name="Windows Environment Development/Windows Shell/Shell Lightweight Utility/Miscellaneous" />
+        <Api Name="ConnectToConnectionPoint" Ordinal="168">
+            <Param Type="IUnknown*" Name="punk" />
+            <Param Type="REFIID" Name="riidEvent" />
+            <Param Type="BOOL" Name="fConnect" />
+            <Param Type="IUnknown*" Name="punkTarget" />
+            <Param Type="DWORD*" Name="pdwCookie" />
+            <Param Type="IConnectionPoint**" Name="ppcpOut" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="DllInstall">
+            <Param Type="BOOL" Name="bInstall" />
+            <Param Type="PCWSTR" Name="pszCmdLine" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="FindResourceWrapW" BothCharset="True">
+            <Param Type="HMODULE" Name="hModule" />
+            <Param Type="LPCWSTR" Name="lpName" />
+            <Param Type="LPCWSTR" Name="lpType" />
+            <Return Type="HRSRC" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetMenuPosFromID">
+            <Param Type="HMENU" Name="hmenu" />
+            <Param Type="UINT" Name="id" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="HashData">
+            <Param Type="BYTE*" Name="pbData" />
+            <Param Type="DWORD" Name="cbData" />
+            <Param Type="BYTE*" Name="pbHash" />
+            <Param Type="DWORD" Name="cbHash" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="IsInternetESCEnabled" Ordinal="553">
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="IsOS" Ordinal="437">
+            <Param Type="DWORD" Name="dwOS" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="IStream_Copy" Ordinal="568">
+            <Param Type="IStream*" Name="pstmFrom" />
+            <Param Type="IStream*" Name="pstmTo" />
+            <Param Type="DWORD" Name="cb" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="IStream_Read" Ordinal="184">
+            <Param Type="IStream*" Name="pstm" />
+            <Param Type="VOID*" Name="pv" />
+            <Param Type="ULONG" Name="cb" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="IStream_ReadPidl" Ordinal="512">
+            <Param Type="IStream*" Name="pstm" />
+            <Param Type="PIDLIST_RELATIVE*" Name="ppidlOut" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="IStream_ReadStr" Ordinal="596">
+            <Param Type="IStream*" Name="pstm" />
+            <Param Type="PWSTR*" Name="ppsz" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="IStream_Reset" Ordinal="213">
+            <Param Type="IStream*" Name="pstm" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="IStream_Size" Ordinal="214">
+            <Param Type="IStream*" Name="pstm" />
+            <Param Type="ULARGE_INTEGER*" Name="pui" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="IStream_Write" Ordinal="212">
+            <Param Type="IStream*" Name="pstm" />
+            <Param Type="const void*" Name="pv" />
+            <Param Type="ULONG" Name="cb" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="IStream_WritePidl" Ordinal="513">
+            <Param Type="IStream*" Name="pstm" />
+            <Param Type="PCUIDLIST_RELATIVE" Name="pidlWrite" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="IStream_WriteStr" Ordinal="597">
+            <Param Type="IStream*" Name="pstm" />
+            <Param Type="PCWSTR" Name="psz" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="IUnknown_AtomicRelease" Ordinal="169">
+            <Param Type="void**" Name="ppunk" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="IUnknown_GetSite" Ordinal="256">
+            <Param Type="IUnknown*" Name="punk" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="VOID**" Name="ppvSite" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="IUnknown_GetWindow" Ordinal="172">
+            <Param Type="IUnknown*" Name="punk" />
+            <Param Type="HWND*" Name="phwnd" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="IUnknown_QueryService" Ordinal="176">
+            <Param Type="IUnknown*" Name="punk" />
+            <Param Type="REFGUID" Name="guidService" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppvOut" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="IUnknown_Set" Ordinal="199">
+            <Param Type="IUnknown*" Name="ppunk" />
+            <Param Type="IUnknown*" Name="punk" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="IUnknown_SetSite" Ordinal="174">
+            <Param Type="IUnknown*" Name="punk" />
+            <Param Type="IUnknown*" Name="punkSite" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="MLFreeLibrary" Ordinal="418">
+            <Param Type="HMODULE" Name="hModule" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MLLoadLibrary" BothCharset="True" OrdinalA="377" OrdinalW="378">
+            <Param Type="LPCTSTR" Name="lpszLibFileName" />
+            <Param Type="HMODULE" Name="hModule" />
+            <Param Type="DWORD" Name="dwCrossCodePage" />
+            <Return Type="HINSTANCE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MLHtmlHelp" BothCharset="True">
+            <Param Type="HWND" Name="hwndCaller" />
+            <Param Type="LPCTSTR" Name="pszFile" />
+            <Param Type="UINT" Name="uCommand" />
+            <Param Type="DWORD_PTR" Name="dwData" />
+            <Param Type="DWORD" Name="dwCrossCodePage" />
+            <Return Type="HWND" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="MLWinHelp" BothCharset="True">
+            <Param Type="HWND" Name="hWndMain" />
+            <Param Type="LPCTSTR" Name="lpszHelp" />
+            <Param Type="UINT" Name="uCommand" />
+            <Param Type="DWORD_PTR" Name="dwData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ParseURL" BothCharset="True" OrdinalA="1" OrdinalW="2">
+            <Param Type="LPCTSTR" Name="pcszUrl" />
+            <Param Type="PARSEDURL*" Name="ppu" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="QISearch" Ordinal="219">
+            <Param Type="void*" Name="that" />
+            <Param Type="LPCQITAB" Name="pqit" />
             <Param Type="REFIID" Name="riid" />
             <Param Type="void**" Name="ppv" InterfaceId="riid" />
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="SHLockShared" Ordinal="8">
-            <Param Type="HANDLE*" Name="hData" />
-            <Param Type="DWORD" Name="dwOtherProcId" />
-            <Return Type="LPVOID" />
+        <Api Name="SHAnsiToAnsi" Ordinal="345">
+            <Param Type="LPCSTR" Name="pszSrc" />
+            <Param Type="LPWSTR" Name="pszDst" />
+            <Param Type="int" Name="cchBuf" />
+            <Return Type="int" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="SHFreeShared" Ordinal="10">
-            <Param Type="HANDLE" Name="hData" />
-            <Param Type="DWORD" Name="dwSourceProcId" />
+        <Api Name="SHAnsiToUnicode" Ordinal="215">
+            <Param Type="PCSTR" Name="pszSrc" />
+            <Param Type="PWSTR" Name="pwszDst" />
+            <Param Type="int" Name="cwchBuf" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SHAutoComplete">
+            <Param Type="HWND" Name="hwndEdit" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHCreateMemStream" Ordinal="12">
+            <Param Type="const BYTE*" Name="pInit" />
+            <Param Type="UINT" Name="cbInit" />
+            <Return Type="IStream*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SHCreateStreamOnFile" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszFile" />
+            <Param Type="[StgmFlags]" Name="grfMode" />
+            <Param Type="IStream**" Name="ppstm" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHCreateStreamOnFileEx">
+            <Param Type="LPCWSTR" Name="pszFile" />
+            <Param Type="[StgmFlags]" Name="grfMode" />
+            <Param Type="DWORD" Name="dwAttributes" />
+            <Param Type="BOOL" Name="fCreate" />
+            <Param Type="IStream*" Name="pstmTemplate" />
+            <Param Type="IStream**" Name="ppstm" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHCreateThread" Ordinal="16">
+            <Param Type="LPTHREAD_START_ROUTINE" Name="pfnThreadProc" />
+            <Param Type="void*" Name="pData" />
+            <Param Type="SHCT_FLAGS" Name="dwFlags" />
+            <Param Type="LPTHREAD_START_ROUTINE" Name="pfnCallback" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="StrStrNW">
-            <Param Type="LPCWSTR" Name="lpFirst" />
-            <Param Type="LPCWSTR" Name="lpSrch" />
-            <Param Type="UINT" Name="cchMax" />
-            <Return Type="LPCWSTR" />
+        <Api Name="SHCreateThreadRef">
+            <Param Type="LONG*" Name="pcRef" />
+            <Param Type="IUnknown**" Name="ppunk" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="StrStrNIW">
-            <Param Type="LPCWSTR" Name="lpFirst" />
-            <Param Type="LPCWSTR" Name="lpSrch" />
-            <Param Type="UINT" Name="cchMax" />
-            <Return Type="LPCWSTR" />
+        <Api Name="SHCreateThreadWithHandle" Ordinal="615">
+            <Param Type="LPTHREAD_START_ROUTINE" Name="pfnThreadProc" />
+            <Param Type="void*" Name="pData" />
+            <Param Type="SHCT_FLAGS" Name="flags" />
+            <Param Type="LPTHREAD_START_ROUTINE" Name="pfnCallback" />
+            <Param Type="HANDLE*" Name="pHandle" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
         </Api>
+        <Api Name="SHFormatDateTime" BothCharset="True" OrdinalA="353" OrdinalW="354">
+            <Param Type="const FILETIME*" Name="pft" />
+            <Param Type="DWORD*" Name="pdwFlags" />
+            <Param Type="LPTSTR" Name="pszBuf" OutputOnly="True" />
+            <Param Type="UINT" Name="cchBuf" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SHGetThreadRef">
+            <Param Type="IUnknown**" Name="ppunk" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHSetThreadRef">
+            <Param Type="IUnknown*" Name="punk" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHReleaseThreadRef">
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHGlobalCounterDecrement" Ordinal="634">
+            <Param Type="const SHGLOBALCOUNTER" Name="id" />
+            <Return Type="long" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SHGlobalCounterGetValue" Ordinal="632">
+            <Param Type="const SHGLOBALCOUNTER" Name="id" />
+            <Return Type="long" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SHGlobalCounterIncrement" Ordinal="633">
+            <Param Type="const SHGLOBALCOUNTER" Name="id" />
+            <Return Type="long" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SHIsChildOrSelf" Ordinal="204">
+            <Param Type="HWND" Name="hwndParent" />
+            <Param Type="HWND" Name="hwnd" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHIsLowMemoryMachine">
+            <Param Type="DWORD" Name="dwType" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="SHMessageBoxCheck" BothCharset="True" OrdinalA="185" OrdinalW="191">
+            <Param Type="HWND" Name="hwnd" />
+            <Param Type="LPCTSTR" Name="pszText" />
+            <Param Type="LPCTSTR" Name="pszCaption" />
+            <Param Type="UINT" Name="uType" />
+            <Param Type="int" Name="iDefault" />
+            <Param Type="LPCTSTR" Name="pszRegVal" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SHSendMessageBroadcast" BothCharset="True" OrdinalA="432" OrdinalW="433">
+            <Param Type="UINT" Name="uMsg" />
+            <Param Type="WPARAM" Name="wParam" />
+            <Param Type="LPARAM" Name="lParam" />
+            <Return Type="LRESULT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SHStripMneumonic" BothCharset="True" OrdinalA="203" OrdinalW="225">
+            <Param Type="LPTSTR*" Name="pszMenu" />
+            <Return Type="TCHAR" />
+        </Api>
+        <Api Name="SHUnicodeToAnsi" Ordinal="217">
+            <Param Type="PCWSTR" Name="pwszSrc" />
+            <Param Type="PSTR" Name="pszDst" />
+            <Param Type="int" Name="cchBuf" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SHUnicodeToUnicode" Ordinal="346">
+            <Param Type="PCWSTR" Name="pwzSrc" />
+            <Param Type="PWSTR" Name="pwzDst" />
+            <Param Type="int" Name="cwchBuf" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="StopWatchFlush">
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="StopWatchMode">
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WhichPlatform" Ordinal="276">
+            <Return Type="UINT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+
+        <!-- Windows Environment Development/Undocumented -->
+        <Category Name="Windows Environment Development/Windows Shell/Undocumented" />
+        <Api Name="SHRunIndirectRegClientCommand" Ordinal="467">
+            <Param Type="HWND" Name="hwnd" />
+            <Param Type="LPCWSTR" Name="pszClientType" />
+            <Return Type="HRESULT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+
     </Module>
 </ApiMonitor>

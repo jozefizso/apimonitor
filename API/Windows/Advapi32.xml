@@ -13,6 +13,7 @@
     <Include Filename="Headers\native.h.xml" />
     <Include Filename="Headers\network.h.xml" />
     <Include Filename="Headers\processes.h.xml" />
+    <Include Filename="Headers\shell.h.xml" />
     <Module Name="Advapi32.dll" CallingConvention="STDCALL" OnlineHelp="MSDN">
         
         <!-- Variables -->
@@ -464,21 +465,6 @@
         <Variable Name="PMANAGEDAPPLICATION" Type="Pointer" Base="MANAGEDAPPLICATION" />
         <Variable Name="PMANAGEDAPPLICATION*" Type="Pointer" Base="PMANAGEDAPPLICATION" />
 
-        <!-- APPCATEGORYINFO -->
-        <Variable Name="APPCATEGORYINFO" Type="Struct">
-            <Field Type="LCID"        	Name="Locale" />
-            <Field Type="LPWSTR"      	Name="pszDescription" />
-            <Field Type="GUID"        	Name="AppCategoryId" />
-        </Variable>
-        <Variable Name="APPCATEGORYINFO*" Type="Pointer" Base="APPCATEGORYINFO" />
-
-        <!-- APPCATEGORYINFOLIST -->
-        <Variable Name="APPCATEGORYINFOLIST" Type="Struct">
-            <Field Type="DWORD"               	Name="cCategory" />
-            <Field Type="APPCATEGORYINFO*"   	Name="pCategoryInfo" />
-        </Variable>
-        <Variable Name="APPCATEGORYINFOLIST*" Type="Pointer" Base="APPCATEGORYINFOLIST" />
-
         <!-- PERF_COUNTERSET_INSTANCE -->
         <Variable Name="PERF_COUNTERSET_INSTANCE" Type="Struct">
             <Field Type="GUID"   	Name="CounterSetGuid" />
@@ -637,6 +623,14 @@
                 <Set Name="TRACE_MESSAGE_SYSTEMINFO"                Value="32" />
                 <Set Name="TRACE_MESSAGE_POINTER32"                 Value="0x0040" />
                 <Set Name="TRACE_MESSAGE_POINTER64"                 Value="0x0080" />
+            </Flag>
+        </Variable>
+
+        <!-- [LSA_LOOKUP_FLAGS] -->
+        <Variable Name="[LSA_LOOKUP_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="LSA_LOOKUP_ISOLATED_AS_LOCAL" Value="0x80000000" />
             </Flag>
         </Variable>
 
@@ -1112,7 +1106,7 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <!-- Processes and Threads -->
-        <Category Name="System Services/DLLs, Processes, and Threads/Processes and Threads" />
+        <Category Name="System Services/Processes and Threads" />
         <ErrorDecode ErrorFunc="GetLastError"/>
         <Api Name="CreateProcessAsUser" BothCharset="True">
             <Param Type="HANDLE" Name="hToken" />
@@ -1431,7 +1425,7 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <!-- Services -->
-        <Category Name="System Services/DLLs, Processes, and Threads/Services" />
+        <Category Name="System Services/Services" />
         <ErrorDecode ErrorFunc="GetLastError"/>
         <Api Name="RegisterServiceCtrlHandler" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpServiceName" />
@@ -1994,7 +1988,7 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="EnumerateTraceGuids">
-            <Param Type="PTRACE_GUID_PROPERTIES*" Name="GuidPropertiesArray" />
+            <Param Type="PTRACE_GUID_PROPERTIES*" Name="GuidPropertiesArray" PostCount="GuidCount" />
             <Param Type="ULONG" Name="PropertyArrayCount" />
             <Param Type="PULONG" Name="GuidCount" />
             <Return Type="ULONG" />
@@ -2018,7 +2012,7 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="QueryAllTraces" BothCharset="True">
-            <Param Type="PEVENT_TRACE_PROPERTIES*" Name="PropertyArray" />
+            <Param Type="PEVENT_TRACE_PROPERTIES*" Name="PropertyArray" PostCount="SessionCount" />
             <Param Type="ULONG" Name="PropertyArrayCount" />
             <Param Type="PULONG" Name="SessionCount" />
             <Return Type="ULONG" />
@@ -2086,7 +2080,7 @@
             <Param Type="PVOID" Name="RequestContext" />
             <Param Type="LPCGUID" Name="ControlGuid" />
             <Param Type="ULONG" Name="GuidCount" />
-            <Param Type="PTRACE_GUID_REGISTRATION" Name="TraceGuidReg" />
+            <Param Type="PTRACE_GUID_REGISTRATION" Name="TraceGuidReg" Count="GuidCount" />
             <Param Type="LPCTSTR" Name="MofImagePath" />
             <Param Type="LPCTSTR" Name="MofResourceName" />
             <Param Type="PTRACEHANDLE" Name="RegistrationHandle" />
@@ -2141,7 +2135,7 @@
             <Param Type="LPCGUID" Name="ActivityId" />
             <Param Type="LPCGUID" Name="RelatedActivityId" />
             <Param Type="ULONG" Name="UserDataCount" />
-            <Param Type="PEVENT_DATA_DESCRIPTOR" Name="UserData" />
+            <Param Type="PEVENT_DATA_DESCRIPTOR" Name="UserData" Count="UserDataCount" />
             <Return Type="ULONG" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -2173,7 +2167,7 @@
             <Param Type="REGHANDLE" Name="RegHandle" />
             <Param Type="PCEVENT_DESCRIPTOR" Name="EventDescriptor" />
             <Param Type="ULONG" Name="UserDataCount" />
-            <Param Type="PEVENT_DATA_DESCRIPTOR" Name="UserData" />
+            <Param Type="PEVENT_DATA_DESCRIPTOR" Name="UserData" Count="UserDataCount" />
             <Return Type="ULONG" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -2196,7 +2190,7 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="ProcessTrace">
-            <Param Type="PTRACEHANDLE" Name="HandleArray" />
+            <Param Type="PTRACEHANDLE" Name="HandleArray" Count="HandleCount" />
             <Param Type="ULONG" Name="HandleCount" />
             <Param Type="LPFILETIME" Name="StartTime" />
             <Param Type="LPFILETIME" Name="EndTime" />
@@ -2656,7 +2650,7 @@
         </Api>
         <Api Name="SetEntriesInAcl" BothCharset="True">
             <Param Type="ULONG" Name="cCountOfExplicitEntries" />
-            <Param Type="PEXPLICIT_ACCESS" Name="pListOfExplicitEntries" />
+            <Param Type="PEXPLICIT_ACCESS" Name="pListOfExplicitEntries" Count="cCountOfExplicitEntries" />
             <Param Type="PACL" Name="OldAcl" />
             <Param Type="PACL*" Name="NewAcl" />
             <Return Type="DWORD" />
@@ -3646,7 +3640,7 @@
             <Param Type="PVOID*" Name="EnumerationBuffer" />
             <Param Type="PULONG" Name="CountReturned" />
             <Return Type="NTSTATUS" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LsaEnumerateTrustedDomainsEx">
             <Param Type="LSA_HANDLE" Name="PolicyHandle" />
@@ -3655,7 +3649,7 @@
             <Param Type="ULONG" Name="PreferredMaximumLength" />
             <Param Type="PULONG" Name="CountReturned" />
             <Return Type="NTSTATUS" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LsaLookupNames">
             <Param Type="LSA_HANDLE" Name="PolicyHandle" />
@@ -3664,24 +3658,24 @@
             <Param Type="PLSA_REFERENCED_DOMAIN_LIST*" Name="ReferencedDomains" />
             <Param Type="PLSA_TRANSLATED_SID*" Name="Sids" />
             <Return Type="NTSTATUS" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LsaLookupNames2">
             <Param Type="LSA_HANDLE" Name="PolicyHandle" />
-            <Param Type="ULONG" Name="Flags" />
+            <Param Type="[LSA_LOOKUP_FLAGS]" Name="Flags" />
             <Param Type="ULONG" Name="Count" />
-            <Param Type="PLSA_UNICODE_STRING" Name="Names" />
+            <Param Type="PLSA_UNICODE_STRING" Name="Names" Count="Count" />
             <Param Type="PLSA_REFERENCED_DOMAIN_LIST*" Name="ReferencedDomains" />
             <Param Type="PLSA_TRANSLATED_SID2*" Name="Sids" />
             <Return Type="NTSTATUS" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LsaLookupPrivilegeValue">
             <Param Type="LSA_HANDLE" Name="PolicyHandle" />
             <Param Type="PUNICODE_STRING" Name="Name" />
             <Param Type="PLUID" Name="Value" />
             <Return Type="NTSTATUS" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LsaLookupSids">
             <Param Type="LSA_HANDLE" Name="PolicyHandle" />
@@ -3690,7 +3684,7 @@
             <Param Type="PLSA_REFERENCED_DOMAIN_LIST*" Name="ReferencedDomains" />
             <Param Type="PLSA_TRANSLATED_NAME*" Name="Names" />
             <Return Type="NTSTATUS" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LsaAddAccountRights">
             <Param Type="LSA_HANDLE" Name="PolicyHandle" />
@@ -3698,7 +3692,7 @@
             <Param Type="PLSA_UNICODE_STRING" Name="UserRights" />
             <Param Type="ULONG" Name="CountOfRights" />
             <Return Type="NTSTATUS" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LsaEnumerateAccountRights">
             <Param Type="LSA_HANDLE" Name="PolicyHandle" />
@@ -3706,7 +3700,7 @@
             <Param Type="PLSA_UNICODE_STRING*" Name="UserRights" />
             <Param Type="PULONG" Name="CountOfRights" />
             <Return Type="NTSTATUS" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LsaRemoveAccountRights">
             <Param Type="LSA_HANDLE" Name="PolicyHandle" />
@@ -3715,7 +3709,7 @@
             <Param Type="PLSA_UNICODE_STRING" Name="UserRights" />
             <Param Type="ULONG" Name="CountOfRights" />
             <Return Type="NTSTATUS" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LsaCreateTrustedDomainEx">
             <Param Type="LSA_HANDLE" Name="PolicyHandle" />
@@ -3724,13 +3718,13 @@
             <Param Type="ACCESS_MASK" Name="DesiredAccess" />
             <Param Type="PLSA_HANDLE" Name="TrustedDomainHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LsaDeleteTrustedDomain">
             <Param Type="LSA_HANDLE" Name="PolicyHandle" />
             <Param Type="PSID" Name="TrustedDomainSid" />
             <Return Type="NTSTATUS" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LsaEnumerateTrustedDomains">
             <Param Type="LSA_HANDLE" Name="PolicyHandle" />
@@ -3739,7 +3733,7 @@
             <Param Type="ULONG" Name="PreferedMaximumLength" />
             <Param Type="PULONG" Name="CountReturned" />
             <Return Type="NTSTATUS" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LsaOpenTrustedDomainByName">
             <Param Type="LSA_HANDLE" Name="PolicyHandle" />
@@ -3747,7 +3741,7 @@
             <Param Type="ACCESS_MASK" Name="DesiredAccess" />
             <Param Type="PLSA_HANDLE" Name="TrustedDomainHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LsaQueryTrustedDomainInfo">
             <Param Type="LSA_HANDLE" Name="PolicyHandle" />
@@ -3755,7 +3749,7 @@
             <Param Type="TRUSTED_INFORMATION_CLASS" Name="InformationClass" />
             <Param Type="PVOID*" Name="Buffer" />
             <Return Type="NTSTATUS" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LsaQueryTrustedDomainInfoByName">
             <Param Type="LSA_HANDLE" Name="PolicyHandle" />
@@ -3763,7 +3757,7 @@
             <Param Type="TRUSTED_INFORMATION_CLASS" Name="InformationClass" />
             <Param Type="PVOID*" Name="Buffer" />
             <Return Type="NTSTATUS" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LsaSetTrustedDomainInfoByName">
             <Param Type="LSA_HANDLE" Name="PolicyHandle" />
@@ -3771,7 +3765,7 @@
             <Param Type="TRUSTED_INFORMATION_CLASS" Name="InformationClass" />
             <Param Type="PVOID" Name="Buffer" />
             <Return Type="NTSTATUS" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LsaSetTrustedDomainInformation">
             <Param Type="LSA_HANDLE" Name="PolicyHandle" />
@@ -3779,31 +3773,31 @@
             <Param Type="TRUSTED_INFORMATION_CLASS" Name="InformationClass" />
             <Param Type="PVOID" Name="Buffer" />
             <Return Type="NTSTATUS" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LsaRetrievePrivateData">
             <Param Type="LSA_HANDLE" Name="PolicyHandle" />
             <Param Type="PLSA_UNICODE_STRING" Name="KeyName" />
             <Param Type="PLSA_UNICODE_STRING*" Name="PrivateData" />
             <Return Type="NTSTATUS" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LsaStorePrivateData">
             <Param Type="LSA_HANDLE" Name="PolicyHandle" />
             <Param Type="PLSA_UNICODE_STRING" Name="KeyName" />
             <Param Type="PLSA_UNICODE_STRING" Name="PrivateData" />
             <Return Type="NTSTATUS" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LsaClose">
             <Param Type="LSA_HANDLE" Name="ObjectHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LsaFreeMemory">
             <Param Type="PVOID" Name="Buffer" />
             <Return Type="NTSTATUS" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LsaNtStatusToWinError" ErrorFunc="">
             <Param Type="NTSTATUS" Name="Status" />
@@ -3885,7 +3879,7 @@
             <Param Type="DWORD" Name="Flags" />
             <Param Type="DWORD" Name="ThreadId" />
             <Param Type="LPDWORD" Name="NodeCount" />
-            <Param Type="PWAITCHAIN_NODE_INFO" Name="NodeInfoArray" />
+            <Param Type="PWAITCHAIN_NODE_INFO" Name="NodeInfoArray" PostCount="NodeCount" />
             <Param Type="LPBOOL" Name="IsCycle" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />

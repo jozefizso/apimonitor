@@ -10,7 +10,11 @@
     <Module Name="dxva2.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
 
         <!-- Variables -->
-        <Variable Name="IDirect3DDevice9"                           Type="Interface" />
+        <Variable Name="IDirect3DDevice9"           Type="Interface" />
+        <Variable Name="IDirect3DDevice9Ex"         Type="Interface" />
+        <Variable Name="IDirect3DDeviceManager9"    Type="Interface" />
+        <Variable Name="IDXVAHD_Device"             Type="Interface" />
+
         <Variable Name="WCHAR [PHYSICAL_MONITOR_DESCRIPTION_SIZE]"  Type="Array" Base="WCHAR" Count="128"/>
 
         <!-- PHYSICAL_MONITOR -->
@@ -103,8 +107,8 @@
         </Variable>
         <Variable Name="LPMC_TIMING_REPORT" Type="Pointer" Base="MC_TIMING_REPORT" />
 
-        <!-- Api's -->
-        <Category Name="Monitor Configuration" />
+        <!-- Graphics and Multimedia/Monitor Configuration -->
+        <Category Name="Graphics and Multimedia/Monitor Configuration" />
         <Api Name="DegaussMonitor">
             <Param Type="HANDLE" Name="hMonitor" />
             <Return Type="BOOL" />
@@ -319,5 +323,31 @@
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
+
+        <!-- Graphics and Multimedia/Audio and Video/Microsoft Media Foundation -->
+        <Category Name="Graphics and Multimedia/Audio and Video/Microsoft Media Foundation" />
+        <Api Name="DXVA2CreateDirect3DDeviceManager9">
+            <Param Type="UINT*" Name="pResetToken" />
+            <Param Type="IDirect3DDeviceManager9**" Name="ppDXVAManager" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="DXVA2CreateVideoService">
+            <Param Type="IDirect3DDevice9*" Name="pDD" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppService" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="DXVAHD_CreateDevice">
+            <Param Type="IDirect3DDevice9Ex*" Name="pD3DDevice" />
+            <Param Type="const DXVAHD_CONTENT_DESC*" Name="pContentDesc" />
+            <Param Type="DXVAHD_DEVICE_USAGE" Name="Usage" />
+            <Param Type="PDXVAHDSW_Plugin" Name="pPlugin" />
+            <Param Type="IDXVAHD_Device**" Name="ppDevice" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+
     </Module>
 </ApiMonitor>
