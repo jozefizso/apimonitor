@@ -3023,6 +3023,35 @@
         </Variable>
         <Variable Name="LPPROCESS_HEAP_ENTRY" Type="Pointer" Base="PROCESS_HEAP_ENTRY"/>
 
+        <!-- HARDWARE_COUNTER_TYPE -->
+        <Variable Name="HARDWARE_COUNTER_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="PMCCounter" Value="0" />
+            </Enum>
+        </Variable>
+
+        <!-- HARDWARE_COUNTER_DATA -->
+        <Variable Name="HARDWARE_COUNTER_DATA" Type="Struct">
+            <Field Type="HARDWARE_COUNTER_TYPE"     Name="Type" />
+            <Field Type="DWORD"                     Name="Reserved" />
+            <Field Type="DWORD64"                   Name="Value" />
+        </Variable>
+        <Variable Name="HARDWARE_COUNTER_DATA [MAX_HW_COUNTERS]" Type="Array" Base="HARDWARE_COUNTER_DATA" Count="16"/>
+
+        <!-- PERFORMANCE_DATA -->
+        <Variable Name="PERFORMANCE_DATA" Type="Struct">
+            <Field Type="WORD"          Name="Size" />
+            <Field Type="BYTE"          Name="Version" />
+            <Field Type="BYTE"          Name="HwCountersCount" />
+            <Field Type="DWORD"         Name="ContextSwitchCount" />
+            <Field Type="DWORD64"       Name="WaitReasonBitMap" />
+            <Field Type="DWORD64"       Name="CycleTime" />
+            <Field Type="DWORD"         Name="RetryCount" />
+            <Field Type="DWORD"         Name="Reserved" />
+            <Field Type="HARDWARE_COUNTER_DATA [MAX_HW_COUNTERS]" Name="HwCounters" />
+        </Variable>
+        <Variable Name="PPERFORMANCE_DATA" Type="Pointer" Base="PERFORMANCE_DATA"/>
+
         <!-- Debugging -->
         <Category Name="Diagnostics/Debugging and Error Handling/Basic Debugging" />
         <Api Name="CheckRemoteDebuggerPresent">
@@ -4056,7 +4085,7 @@
             <Param Type="LPDWORD" Name="lpNumberOfBytes" />
             <Param Type="PULONG_PTR" Name="lpCompletionKey" />
             <Param Type="LPOVERLAPPED*" Name="lpOverlapped" />
-            <Param Type="DWORD" Name="dwMilliseconds" />
+            <Param Type="[WaitTimeout]" Name="dwMilliseconds" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -4065,7 +4094,7 @@
             <Param Type="LPOVERLAPPED_ENTRY" Name="lpCompletionPortEntries" />
             <Param Type="ULONG" Name="ulCount" />
             <Param Type="PULONG" Name="ulNumEntriesRemoved" />
-            <Param Type="DWORD" Name="dwMilliseconds" />
+            <Param Type="[WaitTimeout]" Name="dwMilliseconds" />
             <Param Type="BOOL" Name="fAlertable" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
@@ -5099,7 +5128,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="Sleep">
-            <Param Type="DWORD" Name="dwMilliseconds" />
+            <Param Type="[WaitTimeout]" Name="dwMilliseconds" />
             <Return Type="VOID" />
         </Api>
         <Api Name="SleepEx">
@@ -7462,14 +7491,14 @@
         <Api Name="SleepConditionVariableCS">
             <Param Type="PCONDITION_VARIABLE" Name="ConditionVariable" />
             <Param Type="PCRITICAL_SECTION" Name="CriticalSection" />
-            <Param Type="DWORD" Name="dwMilliseconds" />
+            <Param Type="[WaitTimeout]" Name="dwMilliseconds" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SleepConditionVariableSRW">
             <Param Type="PCONDITION_VARIABLE" Name="ConditionVariable" />
             <Param Type="PSRWLOCK" Name="SRWLock" />
-            <Param Type="DWORD" Name="dwMilliseconds" />
+            <Param Type="[WaitTimeout]" Name="dwMilliseconds" />
             <Param Type="ULONG" Name="Flags" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
@@ -8837,9 +8866,9 @@
         </Api>
         <Api Name="GetVolumeInformation" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpRootPathName" />
-            <Param Type="LPTSTR" Name="lpVolumeNameBuffer" />
+            <Param Type="LPTSTR" Name="lpVolumeNameBuffer" OutputOnly="True" />
             <Param Type="DWORD" Name="nVolumeNameSize" />
-            <Param Type="LPDWORD" Name="lpVolumeSerialNumber" />
+            <Param Type="LPDWORD" Name="lpVolumeSerialNumber" OutputOnly="True" />
             <Param Type="LPDWORD" Name="lpMaximumComponentLength" />
             <Param Type="[LPFILE_SYSTEM_FLAGS]" Name="lpFileSystemFlags" />
             <Param Type="LPTSTR" Name="lpFileSystemNameBuffer" OutputOnly="True" />
@@ -9036,6 +9065,35 @@
             <Param Type="LPCTSTR" Name="lpNamedPipeName" />
             <Param Type="[NMPWAIT]" Name="nTimeOut" />
             <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+
+        <!-- Diagnostics/Hardware Counter Profiling (HCP) -->
+        <Category Name="Diagnostics/Hardware Counter Profiling (HCP)" />
+        <Api Name="DisableThreadProfiling">
+            <Param Type="HANDLE" Name="PerformanceDataHandle" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="EnableThreadProfiling">
+            <Param Type="HANDLE" Name="ThreadHandle" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="DWORD64" Name="HardwareCounters" />
+            <Param Type="HANDLE" Name="PerformanceDataHandle" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="QueryThreadProfiling">
+            <Param Type="HANDLE" Name="ThreadHandle" />
+            <Param Type="PBOOLEAN" Name="Enabled" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ReadThreadProfilingData">
+            <Param Type="HANDLE" Name="PerformanceDataHandle" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="PPERFORMANCE_DATA" Name="PerformanceData" />
+            <Return Type="DWORD" />
             <Success Return="NotEqual" Value="0" />
         </Api>
 
