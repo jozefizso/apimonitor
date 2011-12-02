@@ -20,6 +20,8 @@
 
         <!-- TODO: Interfaces -->
         <Variable Name="IConnectionPoint"   Type="Interface" />
+        <Variable Name="IObjectWithSite"    Type="Interface" />
+        <Variable Name="IXMLDOMNode"        Type="Interface" />
 
         <!-- SHREGENUM_FLAGS -->
         <Variable Name="SHREGENUM_FLAGS" Type="Alias" Base="UINT">
@@ -1061,11 +1063,11 @@
         </Api>
         <Api Name="SHRegSetValue" BothCharset="True">
             <Param Type="HKEY" Name="hkey" />
-            <Param Type="LPCWSTR" Name="pszSubKey" />
-            <Param Type="LPCWSTR" Name="pszValue" />
+            <Param Type="LPCTSTR" Name="pszSubKey" />
+            <Param Type="LPCTSTR" Name="pszValue" />
             <Param Type="SRRF" Name="srrfFlags" />
             <Param Type="DWORD" Name="dwType" />
-            <Param Type="LPCVOID" Name="pvData" />
+            <Param Type="LPCVOID" Name="pvData" Length="cbData" />
             <Param Type="DWORD" Name="cbData" />
             <Return Type="LSTATUS" />
             <Success Return="Equal" Value="0" />
@@ -1484,7 +1486,14 @@
             <Return Type="HRESULT" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="IsInternetESCEnabled" Ordinal="553">
+        <Api Name="GUIDFromString" BothCharset="True" OrdinalA="269" OrdinalW="270">
+            <Param Type="LPCTSTR" Name="psz" />
+            <Param Type="LPGUID" Name="pguid" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <!-- IsInternetESCEnabled - Different ordinals for different OS's -->
+        <Api Name="IsInternetESCEnabled">
             <Return Type="BOOL" />
         </Api>
         <Api Name="IsOS" Ordinal="437">
@@ -1794,6 +1803,227 @@
             <Param Type="LPCWSTR" Name="pszClientType" />
             <Return Type="HRESULT" />
             <Success Return="NotEqual" Value="0" />
+        </Api>
+
+        <!-- Undocumented (UnDoc'd) -->
+        <!-- TODO: HRESULT ERROR's -->
+        <Category Name="Undocumented (UnDoc'd)" OnlineHelp="UnDoc'd-shlwapi" />
+        <Api Name="DupWideToAnsi" Ordinal="617">
+            <Param Type="LPCWSTR" Name="pwszString" />
+            <Param Type="LPSTR*" Name="ppszStr" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="IStream_ReadStrLong" Ordinal="644">
+            <Param Type="IStream*" Name="pStream" />
+            <Param Type="LPWSTR*" Name="ppwszString" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="IStream_WriteStrLong" Ordinal="645">
+            <Param Type="IStream*" Name="pStream" />
+            <Param Type="LPCWSTR" Name="pwszString" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="IUnknown_RemoveBackReferences" Ordinal="611">
+            <Param Type="IUnknown*" Name="pUnk" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="IUnknown_TranslateAcceleratorGlobal" Ordinal="638">
+            <Param Type="IUnknown*" Name="pUnk" />
+            <Param Type="MSG*" Name="pMsg" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="IUnknown_TranslateAcceleratorIO" Ordinal="478">
+            <Param Type="IUnknown*" Name="pUnk" />
+            <Param Type="MSG*" Name="pMsg" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="MapWin32ErrorToSTG" Ordinal="485">
+            <Param Type="HRESULT" Name="hrWin32" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="ModeToCreateFileFlags" Ordinal="486">
+            <Param Type="DWORD" Name="grfFlags" />
+            <Param Type="BOOL" Name="bCreate" />
+            <Param Type="DWORD*" Name="pDesiredAccess" />
+            <Param Type="DWORD*" Name="pShareMode" />
+            <Param Type="DWORD*" Name="pDisposition" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PathUnExpandEnvStringsForUserW" Ordinal="466">
+            <Param Type="HANDLE" Name="hUserToken" />
+            <Param Type="LPCWSTR" Name="pwszPath" />
+            <Param Type="LPWSTR" Name="pwszBuf" />
+            <Param Type="UINT" Name="cchBuf" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="PathUnExpandSystemEnvStringsW" Ordinal="643">
+            <Param Type="LPCWSTR" Name="pwszPath" />
+            <Param Type="LPWSTR" Name="pwszBuf" />
+            <Param Type="UINT" Name="cchBuf" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="QuerySourceCreateFromKey" Ordinal="544">
+            <Param Type="HKEY" Name="hKey" />
+            <Param Type="LPCWSTR" Name="pwszSubKey" />
+            <Param Type="BOOL" Name="shouldCreate" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="LPVOID*" Name="ppInterface" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="QuerySourceCreateFromKeyEx" Ordinal="576">
+            <Param Type="HKEY" Name="hKey" />
+            <Param Type="LPCWSTR" Name="pwszSubKey" />
+            <Param Type="BOOL" Name="shouldCreate" />
+            <Param Type="ACCESS_MASK" Name="amDesired" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="LPVOID*" Name="ppInterface" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHAnsiToUnicodeCPAlloc" Ordinal="600">
+            <Param Type="UINT" Name="codePage" />
+            <Param Type="LPCSTR" Name="pszString" />
+            <Param Type="LPWSTR*" Name="ppwszConverted" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHAreIconsEqual" Ordinal="548">
+            <Param Type="HICON" Name="hIcon1" />
+            <Param Type="HICON" Name="hIcon2" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SHBoolSystemParametersInfo" Ordinal="537">
+            <Param Type="[SystemParametersInfoEnum]" Name="uiAction" />
+            <Param Type="PVOID" Name="pData" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SHCreatePropertyBagOnMemory" Ordinal="477">
+            <Param Type="PVOID" Name="pUnused" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="PVOID*" Name="ppv" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHCreatePropertyStoreOnXML" Ordinal="621">
+            <Param Type="IXMLDOMNode*" Name="pXmlDomNode" />
+            <Param Type="[StgmFlags]" Name="grfMode" />
+            <Param Type="IPropertyBag*" Name="pPropBagInit" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="PVOID*" Name="ppv" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHCreateStreamOnDllResourceW" Ordinal="627">
+            <Param Type="LPCWSTR" Name="pwszModule" />
+            <Param Type="LPCWSTR" Name="pwszName" />
+            <Param Type="LPCWSTR" Name="pwszType" />
+            <Param Type="IStream**" Name="ppStream" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHCreateStreamOnModuleResourceW" Ordinal="628">
+            <Param Type="HMODULE" Name="hModule" />
+            <Param Type="LPCWSTR" Name="pwszName" />
+            <Param Type="LPCWSTR" Name="pwszType" />
+            <Param Type="IStream**" Name="ppStream" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHExpandEnvironmentStringsAlloc" Ordinal="572">
+            <Param Type="LPCWSTR" Name="pwszExpandableString" />
+            <Param Type="LPWSTR*" Name="ppwszExpanded" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHForwardContextMenuMsg" Ordinal="545">
+            <Param Type="IUnknown*" Name="pUnk" />
+            <Param Type="UINT" Name="uMsg" />
+            <Param Type="WPARAM" Name="wParam" />
+            <Param Type="LPARAM" Name="lParam" />
+            <Param Type="LRESULT*" Name="pResult" />
+            <Param Type="BOOL" Name="useIContextMenu2" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHGetSizeShared" Ordinal="641">
+            <Param Type="PVOID" Name="pData" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SHInvokeCommandOnContextMenu">
+            <Param Type="HWND" Name="hwnd" />
+            <Param Type="IObjectWithSite*" Name="pSite" />
+            <Param Type="IContextMenu*" Name="pCtxMenu" />
+            <Param Type="[CMIC_Mask]" Name="fMask" />
+            <Param Type="LPCSTR" Name="pszVerb" />
+            <Param Type="LPCWSTR" Name="pwszDirectory" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHInvokeCommandOnContextMenuEx" Ordinal="639">
+            <Param Type="HWND" Name="hwnd" />
+            <Param Type="IObjectWithSite*" Name="pSite" />
+            <Param Type="IContextMenu*" Name="pCtxMenu" />
+            <Param Type="[CMIC_Mask]" Name="fMask" />
+            <!-- TODO: Decode queryFlags - See online docs -->
+            <Param Type="UINT" Name="queryFlags" />
+            <Param Type="LPCSTR" Name="pszVerb" />
+            <Param Type="LPCWSTR" Name="pwszDirectory" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHInvokeCommandWithFlagsAndSite" Ordinal="571">
+            <Param Type="HWND" Name="hwnd" />
+            <Param Type="IObjectWithSite*" Name="pSite" />
+            <Param Type="IShellFolder*" Name="pShellFolder" />
+            <Param Type="LPITEMIDLIST" Name="pidl" />
+            <Param Type="[CMIC_Mask]" Name="fMask" />
+            <Param Type="LPCSTR" Name="pszVerb" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHInvokeCommandsOnContextMenuEx" Ordinal="640">
+            <Param Type="HWND" Name="hwnd" />
+            <Param Type="IObjectWithSite*" Name="pSite" />
+            <Param Type="IContextMenu*" Name="pCtxMenu" />
+            <Param Type="[CMIC_Mask]" Name="fMask" />
+            <!-- TODO: Decode queryFlags - See online docs -->
+            <Param Type="UINT" Name="queryFlags" />
+            <Param Type="LPCSTR*" Name="ppszVerbs" />
+            <Param Type="UINT" Name="numVerbs" />
+            <Param Type="LPCWSTR" Name="pwszDirectory" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHRegSetValue" Ordinal="631">
+            <Param Type="HKEY" Name="hKey" />
+            <Param Type="LPCWSTR" Name="pwszSubKey" />
+            <Param Type="LPCWSTR" Name="pwszValue" />
+            <Param Type="SRRF" Name="srrfFlags" />
+            <Param Type="DWORD" Name="dwType" />
+            <Param Type="LPCVOID" Name="pvData" Length="cbData" />
+            <Param Type="DWORD" Name="cbData" />
+            <Return Type="LSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SHUnicodeToAnsiCPAlloc" Ordinal="599">
+            <Param Type="UINT" Name="codePage" />
+            <Param Type="LPCWSTR" Name="pwszString" />
+            <Param Type="LPSTR*" Name="ppszConverted" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
         </Api>
 
     </Module>

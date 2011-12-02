@@ -385,9 +385,10 @@
         </Variable>
 
         <!-- [MIB_IF_TYPE] -->
+        <!--
         <Variable Name="[MIB_IF_TYPE]" Type="Alias" Base="UINT">
             <Display Name="UINT" />
-            <Flag>
+            <Enum>
                 <Set Name="MIB_IF_TYPE_OTHER"           Value="1" />
                 <Set Name="MIB_IF_TYPE_ETHERNET"        Value="6" />
                 <Set Name="MIB_IF_TYPE_TOKENRING"       Value="9" />
@@ -395,7 +396,12 @@
                 <Set Name="MIB_IF_TYPE_PPP"             Value="23" />
                 <Set Name="MIB_IF_TYPE_LOOPBACK"        Value="24" />
                 <Set Name="MIB_IF_TYPE_SLIP"            Value="28" />
-            </Flag>
+                <Set Name="IF_TYPE_IEEE80211"           Value="71" />
+            </Enum>
+        </Variable>
+        -->
+        <Variable Name="[MIB_IF_TYPE]" Type="Alias" Base="IFTYPE">
+            <Display Name="UINT" />
         </Variable>
 
         <!-- IP_ADAPTER_INFO -->
@@ -1322,7 +1328,7 @@
         <!-- MIB_TCP6TABLE -->
         <Variable Name="MIB_TCP6TABLE" Type="Struct">
             <Field Type="DWORD"                     Name="dwNumEntries" />
-            <Field Type="MIB_TCP6ROW [ANY_SIZE]"    Name="table" />
+            <Field Type="MIB_TCP6ROW [ANY_SIZE]"    Name="table" Count="dwNumEntries" />
         </Variable>
         <Variable Name="PMIB_TCP6TABLE" Type="Pointer" Base="MIB_TCP6TABLE" />
 
@@ -1363,7 +1369,7 @@
             <Field Type="DWORD"                     Name="dwNumEntries" />
             <Field Type="MIB_TCPROW [ANY_SIZE]"     Name="table" Count="dwNumEntries" />
         </Variable>
-        <Variable Name="PMIB_TCPTABLE" Type="Alias" Base="LPVOID" />
+        <Variable Name="PMIB_TCPTABLE" Type="Pointer" Base="MIB_TCPTABLE" />
 
         <!-- MIB_TCPROW2 -->
         <Variable Name="MIB_TCPROW2" Type="Struct">
@@ -1497,7 +1503,7 @@
         </Variable>
 
         <!-- IP Helper -->
-        <Category Name="Networking/Network Protocols/IP Helper" />
+        <Category Name="Networking/IP Helper" />
         <Api Name="GetAdapterIndex">
             <Param Type="LPWSTR" Name="AdapterName" />
             <Param Type="PULONG" Name="IfIndex" />
@@ -1514,7 +1520,7 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="GetAdaptersInfo">
-            <Param Type="PIP_ADAPTER_INFO" Name="pAdapterInfo" PostLength="pOutBufLen" />
+            <Param Type="PIP_ADAPTER_INFO" Name="pAdapterInfo" OutputOnly="True" />
             <Param Type="PULONG" Name="pOutBufLen" />
             <Return Type="DWORD" />
             <Success Return="Equal" Value="0" />
@@ -1562,7 +1568,7 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="GetIpNetTable">
-            <Param Type="PMIB_IPNETTABLE" Name="pIpNetTable" />
+            <Param Type="PMIB_IPNETTABLE" Name="pIpNetTable" OutputOnly="True" />
             <Param Type="PULONG" Name="pdwSize" />
             <Param Type="BOOL" Name="bOrder" />
             <Return Type="DWORD" />
@@ -1837,7 +1843,7 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="GetIpAddrTable">
-            <Param Type="PMIB_IPADDRTABLE" Name="pIpAddrTable" />
+            <Param Type="PMIB_IPADDRTABLE" Name="pIpAddrTable" OutputOnly="True" />
             <Param Type="PULONG" Name="pdwSize" />
             <Param Type="BOOL" Name="bOrder" />
             <Return Type="DWORD" />
@@ -2104,7 +2110,7 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="GetNetworkParams">
-            <Param Type="PFIXED_INFO" Name="pFixedInfo" PostLength="pOutBufLen" />
+            <Param Type="PFIXED_INFO" Name="pFixedInfo" OutputOnly="True" />
             <Param Type="PULONG" Name="pOutBufLen" />
             <Return Type="DWORD" />
             <Success Return="Equal" Value="0" />
@@ -2286,14 +2292,14 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="GetTcpTable">
-            <Param Type="PMIB_TCPTABLE" Name="pTcpTable" PostLength="pdwSize" />
+            <Param Type="PMIB_TCPTABLE" Name="pTcpTable" OutputOnly="True" />
             <Param Type="PDWORD" Name="pdwSize" />
             <Param Type="BOOL" Name="bOrder" />
             <Return Type="DWORD" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="GetTcpTable2">
-            <Param Type="PMIB_TCPTABLE2" Name="TcpTable" />
+            <Param Type="PMIB_TCPTABLE2" Name="TcpTable" OutputOnly="True" />
             <Param Type="PULONG" Name="SizePointer" />
             <Param Type="BOOL" Name="Order" />
             <Return Type="ULONG" />

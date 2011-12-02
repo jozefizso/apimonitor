@@ -7,6 +7,8 @@
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Wlanapi.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
 
+        <!-- TODO: Return type is [SystemErrorCode] instead of DWORD -->
+
         <!-- Variables -->
         <Variable Name="WLAN_NOTIFICATION_CALLBACK"             Type="Alias"    Base="LPVOID" />
         <Variable Name="WLAN_SIGNAL_QUALITY"                    Type="Alias"    Base="ULONG" />
@@ -61,7 +63,7 @@
         <!-- DOT11_SSID -->
         <Variable Name="DOT11_SSID" Type="Struct">
             <Field Type="ULONG"                             Name="uSSIDLength" />
-            <Field Type="UCHAR [DOT11_SSID_MAX_LENGTH]"     Name="ucSSID" />
+            <Field Type="UCHAR [DOT11_SSID_MAX_LENGTH]"     Name="ucSSID" Count="uSSIDLength" />
         </Variable>
         <Variable Name="PDOT11_SSID"        Type="Pointer" Base="DOT11_SSID" />
         <Variable Name="const PDOT11_SSID"  Type="Pointer" Base="DOT11_SSID" />
@@ -235,7 +237,7 @@
             <Field Type="BOOL"                                          Name="bNetworkConnectable" />
             <Field Type="WLAN_REASON_CODE"                              Name="wlanNotConnectableReason" />
             <Field Type="ULONG"                                         Name="uNumberOfPhyTypes" />
-            <Field Type="DOT11_PHY_TYPE [WLAN_MAX_PHY_TYPE_NUMBER]"     Name="dot11PhyTypes" />
+            <Field Type="DOT11_PHY_TYPE [WLAN_MAX_PHY_TYPE_NUMBER]"     Name="dot11PhyTypes" Count="uNumberOfPhyTypes" />
             <Field Type="BOOL"                                          Name="bMorePhyTypes" />
             <Field Type="WLAN_SIGNAL_QUALITY"                           Name="wlanSignalQuality" />
             <Field Type="BOOL"                                          Name="bSecurityEnabled" />
@@ -609,7 +611,7 @@
         </Variable>
 
         <!-- Native Wifi -->
-        <Category Name="Networking/Wireless Networking/Native Wifi" />
+        <Category Name="Wireless Networking/Native Wifi" />
         <Api Name="WlanAllocateMemory">
             <Param Type="DWORD" Name="dwMemorySize" />
             <Return Type="PVOID" />
@@ -647,7 +649,7 @@
         <Api Name="WlanEnumInterfaces">
             <Param Type="HANDLE" Name="hClientHandle" />
             <Param Type="PVOID" Name="pReserved" />
-            <Param Type="PWLAN_INTERFACE_INFO_LIST*" Name="ppInterfaceList" />
+            <Param Type="PWLAN_INTERFACE_INFO_LIST*" Name="ppInterfaceList" OutputOnly="True" />
             <Return Type="DWORD" />
             <Success Return="Equal" Value="0" />
         </Api>

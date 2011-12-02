@@ -5,15 +5,13 @@
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\sockets-32.h.xml" />
+    <Include Filename="Headers\sockets-64.h.xml" />
     <Headers>
 
         <!-- TODO: Structures (OS's version differences -->
         <Variable Name="const SOCKET_PEER_TARGET_NAME*"         Type="Alias"    Base="LPVOID" />
         <Variable Name="const SOCKET_SECURITY_QUERY_TEMPLATE*"  Type="Alias"    Base="LPVOID" />
-
-        <!-- TODO: Structures (32/64 differences) -->
-        <Variable Name="struct servent*"                        Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPWSADATA"                              Type="Alias"    Base="LPVOID" />
 
         <!-- Variables -->
         <Variable Name="LPWSAOVERLAPPED"                        Type="Alias"    Base="LPOVERLAPPED" />
@@ -105,6 +103,11 @@
                 <Set Name="AF_ICLFXBM"          Value="31" />
                 <Set Name="AF_BTH"              Value="32" />
             </Enum>
+        </Variable>
+
+        <!-- [ADDRESS_FAMILY_short] -->
+        <Variable Name="[ADDRESS_FAMILY_short]" Type="Alias" Base="ADDRESS_FAMILY">
+            <Display Name="short" />
         </Variable>
 
         <!-- [SocketType] -->
@@ -244,21 +247,14 @@
         <!-- fd_set -->
         <Variable Name="fd_set" Type="Struct">
             <Field Type="u_int"                 Name="fd_count" />
-            <Field Type="SOCKET [FD_SETSIZE]"   Name="fd_array" />
+            <Field Type="SOCKET [FD_SETSIZE]"   Name="fd_array" Count="fd_count" />
         </Variable>
         <Variable Name="fd_set*" Type="Pointer" Base="fd_set" />
 
         <!-- WSAPROTOCOLCHAIN -->
         <Variable Name="WSAPROTOCOLCHAIN" Type="Struct">
             <Field Type="int"                           Name="ChainLen" />
-            <Field Type="DWORD [MAX_PROTOCOL_CHAIN]"    Name="ChainEntries" />
-        </Variable>
-
-        <!--  -->
-        <Variable Name="" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
-            <Flag>
-            </Flag>
+            <Field Type="DWORD [MAX_PROTOCOL_CHAIN]"    Name="ChainEntries" Count="ChainLen" />
         </Variable>
 
         <!-- [WSA_PROVIDER_FLAGS] -->
@@ -364,13 +360,29 @@
         <Variable Name="IN6_ADDR*"          Type="Pointer" Base="IN6_ADDR" />
         <Variable Name="const IN6_ADDR*"    Type="Pointer" Base="IN6_ADDR" />
 
+        <!-- [FDEvents] -->
+        <Variable Name="[FDEvents]" Type="Alias" Base="ULONG">
+            <Display Name="long" />
+            <Flag>
+                <Set Name="FD_READ"                     Value="0x00000001" />
+                <Set Name="FD_WRITE"                    Value="0x00000002" />
+                <Set Name="FD_OOB"                      Value="0x00000004" />
+                <Set Name="FD_ACCEPT"                   Value="0x00000008" />
+                <Set Name="FD_CONNECT"                  Value="0x00000010" />
+                <Set Name="FD_CLOSE"                    Value="0x00000020" />
+                <Set Name="FD_QOS"                      Value="0x00000040" />
+                <Set Name="FD_GROUP_QOS"                Value="0x00000080" />
+                <Set Name="FD_ROUTING_INTERFACE_CHANGE" Value="0x00000100" />
+                <Set Name="FD_ADDRESS_LIST_CHANGE"      Value="0x00000200" />
+            </Flag>
+        </Variable>
+
         <!-- WSANETWORKEVENTS -->
         <Variable Name="WSANETWORKEVENTS" Type="Struct">
-            <Field Type="long"                  Name="lNetworkEvents" />
+            <Field Type="[FDEvents]"            Name="lNetworkEvents" />
             <Field Type="int [FD_MAX_EVENTS]"   Name="iErrorCode" />
         </Variable>
         <Variable Name="LPWSANETWORKEVENTS" Type="Pointer" Base="WSANETWORKEVENTS" />
-
 
         <!-- [IN_ADDR_u_s1] -->
         <Variable Name="[IN_ADDR_u_s1]" Type="Struct">
@@ -458,11 +470,11 @@
 
         <!-- struct hostent -->
         <Variable Name="struct hostent" Type="Struct">
-            <Field Type="char*"     Name="h_name" />
-            <Field Type="char**" 	Name="h_aliases" />
-            <Field Type="short"   	Name="h_addrtype" />
-            <Field Type="short"   	Name="h_length" />
-            <Field Type="char**"    Name="h_addr_list" />
+            <Field Type="char*"                     Name="h_name" />
+            <Field Type="char**" 	                Name="h_aliases" />
+            <Field Type="[ADDRESS_FAMILY_short]"   	Name="h_addrtype" />
+            <Field Type="short"   	                Name="h_length" />
+            <Field Type="char**"                    Name="h_addr_list" />
         </Variable>
         <Variable Name="struct hostent*" Type="Pointer" Base="struct hostent" />
 
@@ -594,7 +606,7 @@
         <!-- WSABUF -->
         <Variable Name="WSABUF" Type="Struct">
             <Field Type="u_long" Name="len" />
-            <Field Type="LPVOID" Name="buf" Display="char*" Length="len" />
+            <Field Type="[LPVOID_char*]" Name="buf" Length="len" />
         </Variable>
         <Variable Name="LPWSABUF" Type="Pointer" Base="WSABUF" />
 
@@ -843,6 +855,29 @@
                 <Set Name="SD_RECEIVE"      Value="0x00" />
                 <Set Name="SD_SEND"         Value="0x01" />
                 <Set Name="SD_BOTH"         Value="0x02" />
+            </Enum>
+        </Variable>
+
+        <!-- [INET_ADDR_OUTPUT] -->
+        <Variable Name="[INET_ADDR_OUTPUT]" Type="Alias" Base="unsigned long">
+            <Display Name="unsigned long" />
+            <Enum>
+                <Set Name="INADDR_NONE"         Value="0xffffffff" />
+            </Enum>
+        </Variable>
+
+        <!-- [Socket_IOCTL] -->
+        <Variable Name="[Socket_IOCTL]" Type="Alias" Base="long">
+            <Display Name="long" />
+            <Enum>
+                <Set Name="FIONREAD"        Value="0x4004667f" />
+                <Set Name="FIONBIO"         Value="0x8004667e" />
+                <Set Name="FIOASYNC"        Value="0x8004667d" />
+                <Set Name="SIOCSHIWAT"      Value="0x80047300" />
+                <Set Name="SIOCGHIWAT"      Value="0x40047301" />
+                <Set Name="SIOCSLOWAT"      Value="0x80047302" />
+                <Set Name="SIOCGLOWAT"      Value="0x40047303" />
+                <Set Name="SIOCATMARK"      Value="0x40047307" />
             </Enum>
         </Variable>
 

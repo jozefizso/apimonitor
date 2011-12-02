@@ -7,6 +7,8 @@
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\registry.h.xml" />
     <Module Name="Winspool.drv" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        
+        <!-- TODO: Most of the LPBYTE buffers are conditional unions based on a 'Level' parameter to the API -->
 
         <!-- Variables -->
         <Variable Name="IPrintAsyncNotifyCallback"          Type="Interface" />
@@ -300,7 +302,7 @@
             <Field Type="DWORD"                     Name="Reserved1" />
             <Field Type="DWORD"                     Name="Reserved2" />
             <Field Type="DWORD"                     Name="Count" />
-            <Field Type="PWORD"                     Name="pFields" />
+            <Field Type="PWORD"                     Name="pFields" Count="Count" />
         </Variable>
         <Variable Name="PPRINTER_NOTIFY_OPTIONS_TYPE" Type="Pointer" Base="PRINTER_NOTIFY_OPTIONS_TYPE" />
 
@@ -559,6 +561,8 @@
             <Param Type="[EnumPrintersFlags]" Name="Flags" />
             <Param Type="LPTSTR" Name="Name" />
             <Param Type="DWORD" Name="Level" />
+            <!-- TODO: pPrinterEnum should be a array of count 'pcReturned' of conditional union
+            of PRINTER_INFO_1, PRINTER_INFO_2, PRINTER_INFO_4 or PRINTER_INFO_5 structures -->
             <Param Type="LPBYTE" Name="pPrinterEnum" Disabled_PostLength="pcbNeeded" />
             <Param Type="DWORD" Name="cbBuf" />
             <Param Type="LPDWORD" Name="pcbNeeded" />
@@ -620,6 +624,7 @@
         <Api Name="GetPrinter" BothCharset="True">
             <Param Type="HANDLE" Name="hPrinter" />
             <Param Type="DWORD" Name="Level" />
+            <!-- TODO: pPrinter is a conditional union of PRINTER_INFO_1 , PRINTER_INFO_2, etc based on Level -->
             <Param Type="LPBYTE" Name="pPrinter" />
             <Param Type="DWORD" Name="cbBuf" />
             <Param Type="LPDWORD" Name="pcbNeeded" />

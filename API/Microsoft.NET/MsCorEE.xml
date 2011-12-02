@@ -1,0 +1,526 @@
+<!--
+    API Monitor Definitions
+    (c) 2011, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\Windows.h.xml" />
+
+    <Module Name="mscoree.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
+        
+        <!-- Variables -->
+        <Variable Name="FLockClrVersionCallback"                Type="Alias"    Base="LPVOID" />
+        <Variable Name="FLockClrVersionCallback*"               Type="Pointer"  Base="LPVOID" />
+        
+        <!-- CLSID_RESOLUTION_FLAGS -->
+        <Variable Name="CLSID_RESOLUTION_FLAGS" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="CLSID_RESOLUTION_DEFAULT"        Value="0" />
+                <Set Name="CLSID_RESOLUTION_REGISTERED"     Value="0x1" />
+            </Enum>
+        </Variable>
+
+        <!-- STARTUP_FLAGS -->
+        <Variable Name="STARTUP_FLAGS" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="STARTUP_CONCURRENT_GC"                           Value="0x1" />
+                <Set Name="STARTUP_LOADER_OPTIMIZATION_SINGLE_DOMAIN"       Value="0x2" />
+                <Set Name="STARTUP_LOADER_OPTIMIZATION_MULTI_DOMAIN"        Value="0x4" />
+                <Set Name="STARTUP_LOADER_OPTIMIZATION_MULTI_DOMAIN_HOST"   Value="0x6" />
+                <Set Name="STARTUP_LOADER_SAFEMODE"                         Value="0x10" />
+                <Set Name="STARTUP_LOADER_SETPREFERENCE"                    Value="0x100" />
+                <Set Name="STARTUP_SERVER_GC"                               Value="0x1000" />
+                <Set Name="STARTUP_HOARD_GC_VM"                             Value="0x2000" />
+                <Set Name="STARTUP_SINGLE_VERSION_HOSTING_INTERFACE"        Value="0x4000" />
+                <Set Name="STARTUP_LEGACY_IMPERSONATION"                    Value="0x10000" />
+                <Set Name="STARTUP_DISABLE_COMMITTHREADSTACK"               Value="0x20000" />
+                <Set Name="STARTUP_ALWAYSFLOW_IMPERSONATION"                Value="0x40000" />
+                <Set Name="STARTUP_TRIM_GC_COMMIT"                          Value="0x80000" />
+                <Set Name="STARTUP_ETW"                                     Value="0x100000" />
+                <Set Name="STARTUP_ARM"                                     Value="0x400000" />
+            </Flag>
+        </Variable>
+
+        <!-- RUNTIME_INFO_FLAGS -->
+        <Variable Name="RUNTIME_INFO_FLAGS" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="RUNTIME_INFO_UPGRADE_VERSION"            Value="0x1" />
+                <Set Name="RUNTIME_INFO_REQUEST_IA64"               Value="0x2" />
+                <Set Name="RUNTIME_INFO_REQUEST_AMD64"              Value="0x4" />
+                <Set Name="RUNTIME_INFO_REQUEST_X86"                Value="0x8" />
+                <Set Name="RUNTIME_INFO_DONT_RETURN_DIRECTORY"      Value="0x10" />
+                <Set Name="RUNTIME_INFO_DONT_RETURN_VERSION"        Value="0x20" />
+                <Set Name="RUNTIME_INFO_DONT_SHOW_ERROR_DIALOG"     Value="0x40" />
+            </Flag>
+        </Variable>
+
+        <!-- COINITIEE -->
+        <Variable Name="COINITIEE" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="COINITEE_DEFAULT"                            Value="0x0" />
+                <Set Name="COINITEE_DLL"                                Value="0x1" />
+                <Set Name="COINITEE_MAIN"                               Value="0x2" />
+            </Flag>
+        </Variable>
+
+        <!-- .NET Framework/Unmanaged API/Hosting -->
+        <Category Name="Microsoft .NET/Unmanaged API/Hosting" />
+
+        <Api Name="_CorDllMain">
+            <Param Type="HINSTANCE" Name="hInst" />
+            <Param Type="DWORD" Name="dwReason" />
+            <Param Type="LPVOID" Name="lpReserved" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="_CorExeMain">
+            <Return Type="__int32" />
+        </Api>
+        <Api Name="_CorExeMain2">
+            <Param Type="PBYTE" Name="pUnmappedPE" />
+            <Param Type="DWORD" Name="cUnmappedPE" />
+            <Param Type="LPWSTR" Name="pImageNameIn" />
+            <Param Type="LPWSTR" Name="pLoadersFileName" />
+            <Param Type="LPWSTR" Name="pCmdLine" />
+            <Return Type="__int32" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="_CorImageUnloading">
+            <Param Type="PVOID*" Name="ImageBase" />
+            <Return Type="STDAPI_(VOID)" />
+        </Api>
+        <Api Name="_CorValidateImage">
+            <Param Type="PVOID*" Name="ImageBase" />
+            <Param Type="LPCWSTR" Name="FileName" />
+            <Return Type="STDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CallFunctionShim">
+            <Param Type="LPCWSTR" Name="szDllName" />
+            <Param Type="LPCSTR" Name="szFunctionName" />
+            <Param Type="LPVOID" Name="lpvArgument1" />
+            <Param Type="LPVOID" Name="lpvArgument2" />
+            <Param Type="LPCWSTR" Name="szVersion" />
+            <Param Type="LPVOID" Name="pvReserved" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="ClrCreateManagedInstance">
+            <Param Type="LPCWSTR" Name="pTypeName" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppObject" InterfaceId="riid" />
+            <Return Type="STDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CoEEShutDownCOM">
+            <Return Type="void" />
+        </Api>
+        <Api Name="CoInitializeCor">
+            <Param Type="DWORD" Name="fFlags" />
+            <Return Type="STDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CoInitializeEE">
+            <Param Type="COINITIEE" Name="fFlags" />
+            <Return Type="HRESULT" />
+            <Success Return="Less" Value="2" />
+        </Api>
+        <Api Name="CorBindToCurrentRuntime">
+            <Param Type="LPCWSTR" Name="pwszFileName" />
+            <Param Type="REFCLSID" Name="rclsid" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="LPVOID*" Name="ppv" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CorBindToRuntime">
+            <Param Type="LPCWSTR" Name="pwszVersion" />
+            <Param Type="LPCWSTR" Name="pwszBuildFlavor" />
+            <Param Type="REFCLSID" Name="rclsid" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="LPVOID*" Name="ppv" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CorBindToRuntimeByCfg">
+            <Param Type="IStream*" Name="pCfgStream" />
+            <Param Type="DWORD" Name="reserved" />
+            <Param Type="STARTUP_FLAGS" Name="startupFlags" />
+            <Param Type="REFCLSID" Name="rclsid" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="LPVOID*" Name="ppv" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CorBindToRuntimeEx">
+            <Param Type="LPWSTR" Name="pwszVersion" />
+            <Param Type="LPWSTR" Name="pwszBuildFlavor" />
+            <Param Type="STARTUP_FLAGS" Name="startupFlags" />
+            <Param Type="REFCLSID" Name="rclsid" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="LPVOID*" Name="ppv" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CorBindToRuntimeHost">
+            <Param Type="LPCWSTR" Name="pwszVersion" />
+            <Param Type="LPCWSTR" Name="pwszBuildFlavor" />
+            <Param Type="LPCWSTR" Name="pwszHostConfigFile" />
+            <Param Type="VOID*" Name="pReserved" />
+            <Param Type="STARTUP_FLAGS" Name="startupFlags" />
+            <Param Type="REFCLSID" Name="rclsid" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="LPVOID*" Name="ppv" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CorExitProcess">
+            <Param Type="int" Name="exitCode" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="CorMarkThreadInThreadPool">
+            <Return Type="void" />
+        </Api>
+        <Api Name="CoUninitializeCor">
+            <Return Type="STDAPI_(VOID)" />
+        </Api>
+        <Api Name="CoUninitializeEE">
+            <Param Type="BOOL" Name="fFlags" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="CreateDebuggingInterfaceFromVersion">
+            <Param Type="int" Name="iDebuggerVersion" />
+            <Param Type="LPCWSTR" Name="szDebuggeeVersion" />
+            <Param Type="IUnknown**" Name="ppCordb" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetCORRequiredVersion">
+            <Param Type="LPWSTR" Name="pbuffer" OutputOnly="True" />
+            <Param Type="DWORD" Name="cchBuffer" />
+            <Param Type="DWORD*" Name="dwLength" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetCORSystemDirectory">
+            <Param Type="LPWSTR" Name="pbuffer" OutputOnly="True" />
+            <Param Type="DWORD" Name="cchBuffer" />
+            <Param Type="DWORD*" Name="dwlength" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetCORVersion">
+            <Param Type="LPWSTR" Name="pbuffer" OutputOnly="True" />
+            <Param Type="DWORD" Name="cchBuffer" />
+            <Param Type="DWORD*" Name="dwlength" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetFileVersion">
+            <Param Type="LPCWSTR" Name="szFilename" />
+            <Param Type="LPWSTR" Name="szBuffer" OutputOnly="True" />
+            <Param Type="DWORD" Name="cchBuffer" />
+            <Param Type="DWORD*" Name="dwLength" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetRealProcAddress">
+            <Param Type="LPCSTR" Name="pwszProcName" />
+            <Param Type="VOID**" Name="ppv" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetRequestedRuntimeInfo">
+            <Param Type="LPCWSTR" Name="pExe" />
+            <Param Type="LPCWSTR" Name="pwszVersion" />
+            <Param Type="LPCWSTR" Name="pConfigurationFile" />
+            <Param Type="STARTUP_FLAGS" Name="startupFlags" />
+            <Param Type="RUNTIME_INFO_FLAGS" Name="runtimeInfoFlags" />
+            <Param Type="LPWSTR" Name="pDirectory" OutputOnly="True" />
+            <Param Type="DWORD" Name="dwDirectory" />
+            <Param Type="DWORD*" Name="dwDirectoryLength" />
+            <Param Type="LPWSTR" Name="pVersion" OutputOnly="True" />
+            <Param Type="DWORD" Name="cchBuffer" />
+            <Param Type="DWORD*" Name="dwlength" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetRequestedRuntimeVersion">
+            <Param Type="LPWSTR" Name="pExe" />
+            <Param Type="LPWSTR" Name="pVersion" />
+            <Param Type="DWORD" Name="cchBuffer" />
+            <Param Type="DWORD*" Name="pdwLength" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetRequestedRuntimeVersionForCLSID">
+            <Param Type="REFCLSID" Name="rclsid" />
+            <Param Type="LPWSTR" Name="pVersion" />
+            <Param Type="DWORD" Name="cchBuffer" />
+            <Param Type="DWORD*" Name="dwLength" />
+            <Param Type="CLSID_RESOLUTION_FLAGS" Name="dwResolutionFlags" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetVersionFromProcess">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="LPWSTR" Name="pVersion" />
+            <Param Type="DWORD" Name="cchBuffer" />
+            <Param Type="DWORD*" Name="dwLength" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="LoadLibraryShim">
+            <Param Type="LPCWSTR" Name="szDllName" />
+            <Param Type="LPCWSTR" Name="szVersion" />
+            <Param Type="LPVOID" Name="pvReserved" />
+            <Param Type="HMODULE*" Name="phModDll" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="LoadStringRC">
+            <Param Type="UINT" Name="iResourceID" />
+            <Param Type="LPWSTR" Name="szBuffer" />
+            <Param Type="int" Name="iMax" />
+            <Param Type="int" Name="bQuiet" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="LoadStringRCEx">
+            <Param Type="LCID" Name="lcid" />
+            <Param Type="UINT" Name="iResouceID" />
+            <Param Type="LPWSTR" Name="szBuffer" />
+            <Param Type="int" Name="iMax" />
+            <Param Type="int" Name="bQuiet" />
+            <Param Type="int*" Name="pcwchUsed" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="LockClrVersion">
+            <Param Type="FLockClrVersionCallback" Name="hostCallback" />
+            <Param Type="FLockClrVersionCallback*" Name="pBeginHostSetup" />
+            <Param Type="FLockClrVersionCallback*" Name="pEndHostSetup" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RunDll32ShimW">
+            <Param Type="HWND" Name="hwnd" />
+            <Param Type="HINSTANCE" Name="hinst" />
+            <Param Type="LPCWSTR" Name="lpszCmdLine" />
+            <Param Type="int" Name="nCmdShow" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CLRCreateInstance">
+            <Param Type="REFCLSID" Name="clsid" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="LPVOID*" Name="ppInterface" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+
+        <!-- .NET Framework/Unmanaged API/Strong Naming -->
+        <Category Name="Microsoft .NET/Unmanaged API/Strong Naming" />
+        <Api Name="GetHashFromAssemblyFile" BothCharset="True" SuffixA="">
+            <Param Type="LPCTSTR" Name="szFilePath" />
+            <Param Type="unsigned int*" Name="piHashAlg" />
+            <Param Type="BYTE*" Name="pbHash" PostLength="pchHash" />
+            <Param Type="DWORD" Name="cchHash" />
+            <Param Type="DWORD*" Name="pchHash" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetHashFromBlob">
+            <Param Type="BYTE*" Name="pbBlob" />
+            <Param Type="DWORD" Name="cchBlob" />
+            <Param Type="unsigned int*" Name="piHashAlg" />
+            <Param Type="BYTE*" Name="pbHash" PostLength="pchHash" />
+            <Param Type="DWORD" Name="cchHash" />
+            <Param Type="DWORD*" Name="pchHash" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetHashFromFile" BothCharset="True" SuffixA="">
+            <Param Type="LPCTSTR" Name="szFilePath" />
+            <Param Type="unsigned int*" Name="piHashAlg" />
+            <Param Type="BYTE*" Name="pbHash" PostLength="pchHash" />
+            <Param Type="DWORD" Name="cchHash" />
+            <Param Type="DWORD*" Name="pchHash" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetHashFromHandle">
+            <Param Type="HANDLE" Name="hFile" />
+            <Param Type="unsigned int*" Name="piHashAlg" />
+            <Param Type="BYTE*" Name="pbHash" PostLength="pchHash" />
+            <Param Type="DWORD" Name="cchHash" />
+            <Param Type="DWORD*" Name="pchHash" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+
+        <!--
+        StrongName API's just return TRUE/FALSE. StrongNameErrorInfo is used to get error information 
+        Values are stored in MsCorRC.dll. For e.g. 0x8013141e = CORSEC_E_INVALID_PUBLICKEY (From CorError.h)
+        and 0x141e = 5150 = The public key for assembly '%1' was invalid." in the String Resource Table for MsCorRC.dll
+        
+        TODO: StrongNameErrorInfo should be used as an ErrorFunc - External Plugin Libarry?
+        -->
+        <Api Name="StrongNameErrorInfo">
+            <Return Type="HRESULT" />
+        </Api>
+        <!-- Turn of Error Decoding -->
+        <ErrorDecode ErrorFunc="" />
+        <Api Name="StrongNameCompareAssemblies">
+            <Param Type="LPCWSTR" Name="wszAssembly1" />
+            <Param Type="LPCWSTR" Name="wszAssembly2" />
+            <Param Type="DWORD*" Name="pdwResult" />
+            <Return Type="BOOLEAN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="StrongNameFreeBuffer">
+            <Param Type="BYTE*" Name="pbMemory" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="StrongNameGetBlob">
+            <Param Type="LPCWSTR" Name="wszFilePath" />
+            <Param Type="BYTE*" Name="pbBlob" PostLength="pcbBlob" />
+            <Param Type="DWORD*" Name="pcbBlob" />
+            <Return Type="BOOLEAN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="StrongNameGetBlobFromImage">
+            <Param Type="BYTE*" Name="pbBase" />
+            <Param Type="DWORD" Name="dwLength" />
+            <Param Type="BYTE*" Name="pbBlob" PostLength="pcbBlob" />
+            <Param Type="DWORD*" Name="pcbBlob" />
+            <Return Type="BOOLEAN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="StrongNameGetPublicKey">
+            <Param Type="LPCWSTR" Name="szKeyContainer" />
+            <Param Type="BYTE*" Name="pbKeyBlob" Length="cbKeyBlob" />
+            <Param Type="ULONG" Name="cbKeyBlob" />
+            <Param Type="BYTE**" Name="ppbPublicKeyBlob" PostLength="pcbPublicKeyBlob" />
+            <Param Type="ULONG*" Name="pcbPublicKeyBlob" />
+            <Return Type="BOOLEAN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="StrongNameHashSize">
+            <Param Type="ULONG" Name="ulHashAlg" />
+            <Param Type="DWORD*" Name="pcbSize" />
+            <Return Type="BOOLEAN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="StrongNameKeyDelete">
+            <Param Type="LPCWSTR" Name="wszKeyContainer" />
+            <Return Type="BOOLEAN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="StrongNameKeyGen">
+            <Param Type="LPCWSTR" Name="wszKeyContainer" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="BYTE**" Name="ppbKeyBlob" PostLength="pcbKeyBlob" />
+            <Param Type="ULONG*" Name="pcbKeyBlob" />
+            <Return Type="BOOLEAN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="StrongNameKeyGenEx">
+            <Param Type="LPCWSTR" Name="wszKeyContainer" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="DWORD" Name="dwKeySize" />
+            <Param Type="BYTE**" Name="ppbKeyBlob" PostLength="pcbKeyBlob" />
+            <Param Type="ULONG*" Name="pcbKeyBlob" />
+            <Return Type="BOOLEAN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="StrongNameKeyInstall">
+            <Param Type="LPCWSTR" Name="wszKeyContainer" />
+            <Param Type="BYTE*" Name="pbKeyBlob" Length="cbKeyBlob" />
+            <Param Type="ULONG" Name="cbKeyBlob" />
+            <Return Type="BOOLEAN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="StrongNameSignatureGeneration">
+            <Param Type="LPCWSTR" Name="wszFilePath" />
+            <Param Type="LPCWSTR" Name="wszKeyContainer" />
+            <Param Type="BYTE*" Name="pbKeyBlob" Length="cbKeyBlob" />
+            <Param Type="ULONG" Name="cbKeyBlob" />
+            <Param Type="BYTE**" Name="ppbSignatureBlob" PostLength="pcbSignatureBlob" />
+            <Param Type="ULONG*" Name="pcbSignatureBlob" />
+            <Return Type="BOOLEAN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="StrongNameSignatureGenerationEx">
+            <Param Type="LPCWSTR" Name="wszFilePath" />
+            <Param Type="LPCWSTR" Name="wszKeyContainer" />
+            <Param Type="BYTE*" Name="pbKeyBlob" Length="cbKeyBlob" />
+            <Param Type="ULONG" Name="cbKeyBlob" />
+            <Param Type="BYTE**" Name="ppbSignatureBlob" PostLength="pcbSignatureBlob" />
+            <Param Type="ULONG*" Name="pcbSignatureBlob" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="BOOLEAN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="StrongNameSignatureSize">
+            <Param Type="BYTE*" Name="pbPublicKeyBlob" Length="cbPublicKeyBlob" />
+            <Param Type="ULONG" Name="cbPublicKeyBlob" />
+            <Param Type="DWORD*" Name="pcbSize" />
+            <Return Type="BOOLEAN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="StrongNameSignatureVerification">
+            <Param Type="LPCWSTR" Name="wszFilePath" />
+            <Param Type="DWORD" Name="dwInFlags" />
+            <Param Type="DWORD*" Name="pdwOutFlags" />
+            <Return Type="BOOLEAN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="StrongNameSignatureVerificationEx">
+            <Param Type="LPCWSTR" Name="wszFilePath" />
+            <Param Type="BOOLEAN" Name="fForceVerification" />
+            <Param Type="BOOLEAN*" Name="pfWasVerified" />
+            <Return Type="BOOLEAN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="StrongNameSignatureVerificationFromImage">
+            <Param Type="BYTE*" Name="pbBase" />
+            <Param Type="DWORD" Name="dwLength" />
+            <Param Type="DWORD" Name="dwInFlags" />
+            <Param Type="DWORD*" Name="pdwOutFlags" />
+            <Return Type="BOOLEAN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="StrongNameTokenFromAssembly">
+            <Param Type="LPCWSTR" Name="wszFilePath" />
+            <Param Type="BYTE**" Name="ppbStrongNameToken" PostLength="pcbStrongNameToken" />
+            <Param Type="ULONG*" Name="pcbStrongNameToken" />
+            <Return Type="BOOLEAN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="StrongNameTokenFromAssemblyEx">
+            <Param Type="LPCWSTR" Name="wszFilePath" />
+            <Param Type="BYTE**" Name="ppbStrongNameToken" PostLength="pcbStrongNameToken" />
+            <Param Type="ULONG*" Name="pcbStrongNameToken" />
+            <Param Type="BYTE**" Name="ppbPublicKeyBlob" PostLength="pcbPublicKeyBlob" />
+            <Param Type="ULONG*" Name="pcbPublicKeyBlob" />
+            <Return Type="BOOLEAN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="StrongNameTokenFromPublicKey">
+            <Param Type="BYTE*" Name="pbPublicKeyBlob" Length="cbPublicKeyBlob" />
+            <Param Type="ULONG" Name="cbPublicKeyBlob" />
+            <Param Type="BYTE**" Name="ppbStrongNameToken" PostLength="pcbStrongNameToken" />
+            <Param Type="ULONG*" Name="pcbStrongNameToken" />
+            <Return Type="BOOLEAN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        
+        <!-- Restore Default Error Function -->
+        <ErrorDecode ErrorFunc="HRESULT" />
+
+    </Module>
+</ApiMonitor>

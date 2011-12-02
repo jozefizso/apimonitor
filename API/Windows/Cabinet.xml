@@ -1,0 +1,356 @@
+<!--
+    API Monitor Definitions
+    (c) 2011, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="Cabinet.dll" CallingConvention="CDECL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+
+        <!-- Variables -->
+        <Variable Name="HFCI"                       Type="Alias"    Base="void*" />
+        <Variable Name="PFNFCIGETNEXTCABINET"       Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFNFCISTATUS"               Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFNFCIGETOPENINFO"          Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFNFCIFILEPLACED"           Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFNFCIALLOC"                Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFNFCIFREE"                 Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFNFCIOPEN"                 Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFNFCIREAD"                 Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFNFCIWRITE"                Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFNFCICLOSE"                Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFNFCISEEK"                 Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFNFCIDELETE"               Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFNFCIGETTEMPFILE"          Type="Alias"    Base="LPVOID" />
+        <Variable Name="HFDI"                       Type="Alias"    Base="void*" />
+        <Variable Name="PFNFDINOTIFY"               Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFNFDIDECRYPT"              Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFNALLOC"                   Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFNFREE"                    Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFNOPEN"                    Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFNREAD"                    Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFNWRITE"                   Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFNCLOSE"                   Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFNSEEK"                    Type="Alias"    Base="LPVOID" />
+        <Variable Name="HFILELIST"                  Type="Alias"    Base="void*" />
+
+        <!-- Arrays -->
+        <Variable Name="char [CB_MAX_DISK_NAME]"    Type="Array"    Base="char" Count="256" />
+        <Variable Name="char [CB_MAX_CABINET_NAME]" Type="Array"    Base="char" Count="256" />
+        <Variable Name="char [CB_MAX_CAB_PATH]"     Type="Array"    Base="char" Count="256" />
+        <Variable Name="int [cMAX_CAB_FILE_OPEN]"   Type="Array"    Base="int"  Count="2" />
+        <Variable Name="char [cbMAX_LINE * 2]"      Type="Array"    Base="char" Count="512" />
+
+        <!-- TCOMP -->
+        <!-- TODO: Bitfield -->
+        <Variable Name="TCOMP" Type="Alias" Base="USHORT">
+            <Flag>
+                <Set Name="tcompTYPE_MSZIP"     Value="0x0001" />
+                <Set Name="tcompTYPE_QUANTUM"   Value="0x0002" />
+                <Set Name="tcompTYPE_LZX"       Value="0x0003" />
+            </Flag>
+        </Variable>
+
+        <!-- FCIERROR -->
+        <Variable Name="FCIERROR" Type="Alias" Base="int">
+            <Display Name="int" />
+            <Enum>
+                <Set Name="FCIERR_NONE"                 Value="0" />
+                <Set Name="FCIERR_OPEN_SRC"             Value="1" />
+                <Set Name="FCIERR_READ_SRC"             Value="2" />
+                <Set Name="FCIERR_ALLOC_FAIL"           Value="3" />
+                <Set Name="FCIERR_TEMP_FILE"            Value="4" />
+                <Set Name="FCIERR_BAD_COMPR_TYPE"       Value="5" />
+                <Set Name="FCIERR_CAB_FILE"             Value="6" />
+                <Set Name="FCIERR_USER_ABORT"           Value="7" />
+                <Set Name="FCIERR_MCI_FAIL"             Value="8" />
+                <Set Name="FCIERR_CAB_FORMAT_LIMIT"     Value="9" />
+            </Enum>
+        </Variable>
+
+        <!-- FDIERROR -->
+        <Variable Name="FDIERROR" Type="Alias" Base="int">
+            <Display Name="int" />
+            <Enum>
+                <Set Name="FDIERROR_NONE"                       Value="0" />
+                <Set Name="FDIERROR_CABINET_NOT_FOUND"          Value="1" />
+                <Set Name="FDIERROR_NOT_A_CABINET"              Value="2" />
+                <Set Name="FDIERROR_UNKNOWN_CABINET_VERSION"    Value="3" />
+                <Set Name="FDIERROR_CORRUPT_CABINET"            Value="4" />
+                <Set Name="FDIERROR_ALLOC_FAIL"                 Value="5" />
+                <Set Name="FDIERROR_BAD_COMPR_TYPE"             Value="6" />
+                <Set Name="FDIERROR_MDI_FAIL"                   Value="7" />
+                <Set Name="FDIERROR_TARGET_FILE"                Value="8" />
+                <Set Name="FDIERROR_RESERVE_MISMATCH"           Value="9" />
+                <Set Name="FDIERROR_WRONG_CABINET"              Value="10" />
+                <Set Name="FDIERROR_USER_ABORT"                 Value="11" />
+            </Enum>
+        </Variable>
+
+        <!-- [ERF_FCI] -->
+        <Variable Name="[ERF_FCI]" Type="Struct">
+            <Display Name="ERF" />
+            <Field Type="FCIERROR"  Name="erfOper" />
+            <Field Type="int"       Name="erfType" />
+            <Field Type="BOOL"      Name="fError" />
+        </Variable>
+        <Variable Name="[PERF_FCI]" Type="Pointer" Base="[ERF_FCI]">
+            <Display Name="PERF" />
+        </Variable>
+
+        <!-- [ERF_FDI] -->
+        <Variable Name="[ERF_FDI]" Type="Struct">
+            <Display Name="ERF" />
+            <Field Type="FDIERROR"  Name="erfOper" />
+            <Field Type="int"       Name="erfType" />
+            <Field Type="BOOL"      Name="fError" />
+        </Variable>
+        <Variable Name="[PERF_FDI]" Type="Pointer" Base="[ERF_FDI]">
+            <Display Name="PERF" />
+        </Variable>
+
+        <!-- CCAB -->
+        <Variable Name="CCAB" Type="Struct">
+            <Field Type="ULONG"                         Name="cb" />
+            <Field Type="ULONG"                         Name="cbFolderThresh" />
+            <Field Type="UINT"                          Name="cbReserveCFHeader" />
+            <Field Type="UINT"                          Name="cbReserveCFFolder" />
+            <Field Type="UINT"                          Name="cbReserveCFData" />
+            <Field Type="int"                           Name="iCab" />
+            <Field Type="int"                           Name="iDisk" />
+            <Field Type="int"                           Name="fFailOnIncompressible" />
+            <Field Type="USHORT"                        Name="setID" />
+            <Field Type="char [CB_MAX_DISK_NAME]"       Name="szDisk" />
+            <Field Type="char [CB_MAX_CABINET_NAME]"    Name="szCab" />
+            <Field Type="char [CB_MAX_CAB_PATH]"        Name="szCabPath" />
+        </Variable>
+        <Variable Name="PCCAB" Type="Pointer" Base="CCAB" />
+
+        <!-- FDICABINETINFO -->
+        <Variable Name="FDICABINETINFO" Type="Struct">
+            <Field Type="long"          Name="cbCabinet" />
+            <Field Type="USHORT"        Name="cFolders" />
+            <Field Type="USHORT"        Name="cFiles" />
+            <Field Type="USHORT"        Name="setID" />
+            <Field Type="USHORT"        Name="iCabinet" />
+            <Field Type="BOOL"          Name="fReserve" />
+            <Field Type="BOOL"          Name="hasprev" />
+            <Field Type="BOOL"          Name="hasnext" />
+        </Variable>
+        <Variable Name="PFDICABINETINFO" Type="Pointer" Base="FDICABINETINFO" />
+
+        <!-- ACTION -->
+        <!--
+        <Variable Name="ACTION" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="actBAD"          Value="0" />
+                <Set Name="actHELP"         Value="1" />
+                <Set Name="actDEFAULT"      Value="2" />
+                <Set Name="actDIRECTORY"    Value="3" />
+                <Set Name="actEXTRACT"      Value="4" />
+                <Set Name="actCOPY"         Value="5" />
+            </Enum>
+        </Variable>
+        -->
+
+        <!-- SPILLERR -->
+        <!--
+        <Variable Name="SPILLERR" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="seNONE"                  Value="0" />
+                <Set Name="seNOT_ENOUGH_MEMORY"     Value="1" />
+                <Set Name="seCANNOT_CREATE"         Value="2" />
+                <Set Name="seNOT_ENOUGH_SPACE"      Value="3" />
+            </Enum>
+        </Variable>
+        -->
+
+        <!-- CABINET -->
+        <!--
+        <Variable Name="CABINET" Type="Struct">
+            <Field Type="char [cbFILE_NAME_MAX]"    Name="achCabPath" />
+            <Field Type="char [cbFILE_NAME_MAX]"    Name="achCabFilename" />
+            <Field Type="char [cbFILE_NAME_MAX]"    Name="achDiskName" />
+            <Field Type="USHORT"                    Name="setID" />
+            <Field Type="USHORT"                    Name="iCabinet" />
+        </Variable>
+        <Variable Name="CABINET [2]" Type="Array" Base="CABINET" Count="2" />
+        -->
+
+        <!-- SESSION -->
+        <!-- TODO: Documentation in MSDN appears to be incorrect
+        For e.g. achLine should be an array, not a single character. Disabling
+        this structure and related variables/structures for now
+        -->
+        <!--
+        <Variable Name="SESSION" Type="Struct">
+            <Field Type="ACTION"                    Name="act" />
+            <Field Type="HFILELIST"                 Name="hflist" />
+            <Field Type="BOOL"                      Name="fAllCabinets" />
+            <Field Type="BOOL"                      Name="fOverwrite" />
+            <Field Type="BOOL"                      Name="fNoLineFeed" />
+            <Field Type="BOOL"                      Name="fSelfExtract" />
+            <Field Type="long"                      Name="cbSelfExtractSize" />
+            <Field Type="long"                      Name="cbSelfExtractSize" />
+            <Field Type="int [cMAX_CAB_FILE_OPEN]"  Name="ahfSelf" />
+            <Field Type="int"                       Name="cErrors" />
+            <Field Type="HFDI"                      Name="hfdi" />
+            <Field Type="[ERF_FDI]"                 Name="erf" />
+            <Field Type="long"                      Name="cFiles" />
+            <Field Type="long"                      Name="cbTotalBytes" />
+            <Field Type="PERROR"                    Name="perr" />
+            <Field Type="SPILLERR"                  Name="se" />
+            <Field Type="long"                      Name="cbSpill" />
+            <Field Type="char [cbFILE_NAME_MAX]"    Name="achSelf" />
+            <Field Type="char [cbMAX_LINE * 2]"     Name="achMsg" />
+            <Field Type="char"                      Name="achLine" />
+            <Field Type="char"                      Name="achLocation" />
+            <Field Type="char"                      Name="achFile" />
+            <Field Type="char"                      Name="achDest" />
+            <Field Type="char"                      Name="achCabPath" />
+            <Field Type="BOOL"                      Name="fContinuationCabinet" />
+            <Field Type="BOOL"                      Name="fShowReserveInfo" />
+            <Field Type="BOOL"                      Name="fNextCabCalled" />
+            <Field Type="CABINET [2]"               Name="acab" />
+            <Field Type="char [cbFILE_NAME_MAX]"    Name="achZap" />
+            <Field Type="char [cbFILE_NAME_MAX]"    Name="achCabinetFile" />
+            <Field Type="int"                       Name="cArgv" />
+            <Field Type="char**"                    Name="pArgv" />
+            <Field Type="int"                       Name="fDestructive" />
+            <Field Type="USHORT"                    Name="iCurrentFolder" />
+        </Variable>
+        <Variable Name="PSESSION" Type="Pointer" Base="SESSION" />
+        -->
+        <Variable Name="PSESSION" Type="Alias" Base="LPVOID" />
+
+        <!-- CABINETDLLVERSIONINFO -->
+        <Variable Name="CABINETDLLVERSIONINFO" Type="Struct">
+            <Field Type="DWORD"     Name="cbStruct" />
+            <Field Type="DWORD"     Name="dwReserved1" />
+            <Field Type="DWORD"     Name="dwReserved2" />
+            <Field Type="DWORD"     Name="dwFileVersionMS" />
+            <Field Type="DWORD"     Name="dwFileVersionLS" />
+        </Variable>
+        <Variable Name="PCABINETDLLVERSIONINFO" Type="Pointer" Base="CABINETDLLVERSIONINFO" />
+
+        <!-- File Compression Interface (FCI) -->
+        <Category Name="Additional Resources/Cabinet API/File Compression Interface (FCI)" />
+        <Api Name="FCIAddFile">
+            <Param Type="HFCI" Name="hfci" />
+            <Param Type="LPSTR" Name="pszSourceFile" />
+            <Param Type="LPSTR" Name="pszFileName" />
+            <Param Type="BOOL" Name="fExecute" />
+            <Param Type="PFNFCIGETNEXTCABINET" Name="GetNextCab" />
+            <Param Type="PFNFCISTATUS" Name="pfnProgress" />
+            <Param Type="PFNFCIGETOPENINFO" Name="pfnOpenInfo" />
+            <Param Type="TCOMP" Name="typeCompress" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="FCICreate">
+            <Param Type="[PERF_FCI]" Name="perf" />
+            <Param Type="PFNFCIFILEPLACED" Name="pfnfiledest" />
+            <Param Type="PFNFCIALLOC" Name="pfnalloc" />
+            <Param Type="PFNFCIFREE" Name="pfnfree" />
+            <Param Type="PFNFCIOPEN" Name="pfnopen" />
+            <Param Type="PFNFCIREAD" Name="pfnread" />
+            <Param Type="PFNFCIWRITE" Name="pfnwrite" />
+            <Param Type="PFNFCICLOSE" Name="pfnclose" />
+            <Param Type="PFNFCISEEK" Name="pfnseek" />
+            <Param Type="PFNFCIDELETE" Name="pfndelete" />
+            <Param Type="PFNFCIGETTEMPFILE" Name="pfnfcigtf" />
+            <Param Type="PCCAB" Name="pccab" />
+            <Param Type="void*" Name="pv" />
+            <Return Type="HFCI" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="FCIDestroy">
+            <Param Type="HFCI" Name="hfci" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="FCIFlushCabinet">
+            <Param Type="HFCI" Name="hfci" />
+            <Param Type="BOOL" Name="fGetNextCab" />
+            <Param Type="PFNFCIGETNEXTCABINET" Name="GetNextCab" />
+            <Param Type="PFNFCISTATUS" Name="pfnProgress" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="FCIFlushFolder">
+            <Param Type="HFCI" Name="hfci" />
+            <Param Type="PFNFCIGETNEXTCABINET" Name="GetNextCab" />
+            <Param Type="PFNFCISTATUS" Name="pfnProgress" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        
+        <!-- File Decompression Interface (FDI) -->
+        <Category Name="Additional Resources/Cabinet API/File Decompression Interface (FDI)" />
+        <Api Name="FDICopy">
+            <Param Type="HFDI" Name="hfdi" />
+            <Param Type="LPSTR" Name="pszCabinet" />
+            <Param Type="LPSTR" Name="pszCabPath" />
+            <Param Type="INT" Name="flags" />
+            <Param Type="PFNFDINOTIFY" Name="pfnfdin" />
+            <Param Type="PFNFDIDECRYPT" Name="pfnfdid" />
+            <Param Type="void*" Name="pvUser" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="FDICreate">
+            <Param Type="PFNALLOC" Name="pfnalloc" />
+            <Param Type="PFNFREE" Name="pfnfree" />
+            <Param Type="PFNOPEN" Name="pfnopen" />
+            <Param Type="PFNREAD" Name="pfnread" />
+            <Param Type="PFNWRITE" Name="pfnwrite" />
+            <Param Type="PFNCLOSE" Name="pfnclose" />
+            <Param Type="PFNSEEK" Name="pfnseek" />
+            <Param Type="int" Name="cpuType" />
+            <Param Type="[PERF_FDI]" Name="perf" />
+            <Return Type="HFDI" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="FDIDestroy">
+            <Param Type="BOOL" Name="hfdi" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="FDIIsCabinet">
+            <Param Type="HFDI" Name="hfdi" />
+            <Param Type="INT_PTR" Name="hf" />
+            <Param Type="PFDICABINETINFO" Name="pfdici" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="FDITruncateCabinet">
+            <Param Type="HFDI" Name="hfdi" />
+            <Param Type="LPSTR*" Name="pszCabinetName" />
+            <Param Type="USHORT" Name="iFolderToDelete" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+
+        <!-- Deprecated -->
+        <Category Name="Additional Resources/Cabinet API/Deprecated" />
+        <Api Name="DeleteExtractedFiles">
+            <Param Type="PSESSION" Name="ps" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="DllGetVersion">
+            <Param Type="PCABINETDLLVERSIONINFO" Name="pcdvi" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="Extract">
+            <Param Type="PSESSION" Name="ps" />
+            <Param Type="LPCSTR" Name="lpCabName" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetDllVersion">
+            <Return Type="LPCSTR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+
+    </Module>
+</ApiMonitor>

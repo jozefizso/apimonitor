@@ -4,8 +4,18 @@
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
-    <HelpUrl Name="Google" Url="http://www.google.com/search?q={$QUERY}" />
-    <HelpUrl Name="MSDN"   Url="http://www.google.com/search?hl=en&amp;btnI&amp;q=site%3Amsdn.microsoft.com+{$QUERY}" />
+    
+    <HelpUrl Name="Google"              Url="http://www.google.com/search?q={$QUERY}" />
+    <HelpUrl Name="MSDN"                Url="http://www.google.com/search?hl=en&amp;btnI&amp;q=site%3Amsdn.microsoft.com+{$QUERY}" />
+
+    <HelpUrl Name="UnDoc'd-kernel32"    Url="http://undoc.airesoft.co.uk/kernel32.dll/{$QUERY}.php"     Display="UnDoc'd" />
+    <HelpUrl Name="UnDoc'd-ntdll"       Url="http://undoc.airesoft.co.uk/ntdll.dll/{$QUERY}.php"        Display="UnDoc'd" />
+    <HelpUrl Name="UnDoc'd-shell32"     Url="http://undoc.airesoft.co.uk/shell32.dll/{$QUERY}.php"      Display="UnDoc'd" />
+    <HelpUrl Name="UnDoc'd-shlwapi"     Url="http://undoc.airesoft.co.uk/shlwapi.dll/{$QUERY}.php"      Display="UnDoc'd" />
+    <HelpUrl Name="UnDoc'd-user32"      Url="http://undoc.airesoft.co.uk/user32.dll/{$QUERY}.php"       Display="UnDoc'd" />
+
+    <Include Filename="Headers\common-32.h.xml" />
+    <Include Filename="Headers\common-64.h.xml" />
 
     <Headers>
         <!-- HMODULE -->
@@ -34,6 +44,10 @@
         <Variable Name="void**"                 Type="Pointer"  Base="void*" />
         <Variable Name="CONST void*"            Type="Alias"    Base="void*" />
 
+        <Variable Name="[LPVOID_char*]"         Type="Alias"    Base="LPVOID">
+            <Display Name="char*" />
+        </Variable>
+
         <!-- PVOID64 -->
         <Variable Name="PVOID64"                Type="Integer"  Size="8" Unsigned="True" DisplayHex="True" />
 
@@ -50,10 +64,12 @@
         <Variable Name="CONST PBYTE"            Type="Alias"    Base="PBYTE" />
         <Variable Name="PBYTE*"                 Type="Pointer"  Base="PBYTE" />
         <Variable Name="const BYTE*"            Type="Alias"    Base="BYTE*" />
+        <Variable Name="const BYTE**"           Type="Pointer"  Base="BYTE*" />
         <Variable Name="LPCBYTE"                Type="Alias"    Base="LPBYTE" />
         <Variable Name="const LPBYTE"           Type="Alias"    Base="LPBYTE" />
         <Variable Name="byte"                   Type="Alias"    Base="BYTE" />
         <Variable Name="byte*"                  Type="Pointer"  Base="byte" />
+        <Variable Name="const byte*"            Type="Pointer"  Base="byte" />
         <Variable Name="byte**"                 Type="Pointer"  Base="byte*" />
 
         <!-- 8-bit unsigned integer -->
@@ -95,7 +111,6 @@
         <Variable Name="short*"                 Type="Pointer"  Base="short" />
 
         <!-- 32/64 bit unsigned integer -->
-        <Variable Name="UINT_PTR"               Type="Integer"  Size="0" Unsigned="True" />
         <Variable Name="PUINT_PTR"              Type="Pointer"  Base="UINT_PTR" />
         <Variable Name="ULONG_PTR"              Type="Alias"    Base="UINT_PTR"/>
         <Variable Name="ULONG_PTR*"             Type="Pointer"  Base="ULONG_PTR"/>
@@ -106,7 +121,6 @@
         <Variable Name="PDWORD_PTR"             Type="Alias"    Base="DWORD_PTR*" />
 
         <!-- 32/64 bit signed integer -->
-        <Variable Name="INT_PTR"                Type="Integer"  Size="0" />
         <Variable Name="PINT_PTR"               Type="Pointer"  Base="INT_PTR" />
         <Variable Name="LONG_PTR"               Type="Alias"    Base="INT_PTR" />
         <Variable Name="LONG_PTR*"              Type="Pointer"  Base="LONG_PTR" />
@@ -121,6 +135,7 @@
         <Variable Name="PBOOL"                  Type="Pointer"  Base="BOOL" />
         <Variable Name="LPBOOL"                 Type="Alias"    Base="PBOOL" />
         <Variable Name="bool"                   Type="Alias"    Base="BOOL" />
+        <Variable Name="bool*"                  Type="Pointer"  Base="bool" />
         <Variable Name="Bool"                   Type="Alias"    Base="BOOL" />
         <Variable Name="BOOL*"                  Type="Pointer"  Base="BOOL"/>
         <Variable Name="const BOOL"             Type="Alias"    Base="BOOL"/>
@@ -181,6 +196,7 @@
         <Variable Name="LPINT"                  Type="Alias"    Base="PINT"/>
         <Variable Name="const LPINT"            Type="Alias"    Base="LPINT" />
         <Variable Name="signed int"             Type="Alias"    Base="int"/>
+        <Variable Name="__int32"                Type="Alias"    Base="INT32" />
 
         <!-- 64-bit integers -->
         <Variable Name="INT64"                  Type="Integer"  Size="8" />
@@ -206,6 +222,7 @@
         <Variable Name="DWORDLONG"              Type="Alias"    Base="ULONGLONG" />
         <Variable Name="DWORDLONG*"             Type="Pointer"  Base="DWORDLONG" />
         <Variable Name="unsigned __int64"       Type="Alias"    Base="UINT64" />
+        <Variable Name="unsigned __int64*"      Type="Pointer"  Base="unsigned __int64" />
 
         <!-- DWORD -->
         <Variable Name="DWORD"                  Type="Integer"  Size="4" Unsigned="True" />
@@ -243,6 +260,7 @@
         <Variable Name="PCWSTR"                 Type="Alias"    Base="PWSTR" />
         <Variable Name="LPCWSTR"                Type="Alias"    Base="PWSTR" />
         <Variable Name="LPCWSTR*"               Type="Pointer"  Base="LPCWSTR" />
+        <Variable Name="const LPCWSTR*"         Type="Pointer"  Base="LPCWSTR" />
         <Variable Name="const WCHAR*"           Type="Alias"    Base="PWSTR" />
         <Variable Name="CONST WCHAR*"           Type="Alias"    Base="PWSTR" />
         <Variable Name="WCHAR*"                 Type="Alias"    Base="PWSTR" />
@@ -283,7 +301,7 @@
         <Variable Name="LPCTCH"                 Type="Alias"    Base="LPTSTR" />
 
         <!-- size_t -->
-        <Variable Name="size_t"                 Type="Integer"  Size="0" />
+        <Variable Name="size_t"                 Type="Alias"    Base="INT_PTR" />
         <Variable Name="size_t*"                Type="Pointer"  Base="size_t" />
         <Variable Name="SIZE_T"                 Type="Alias"    Base="size_t" />
         <Variable Name="SIZE_T*"                Type="Pointer"  Base="SIZE_T" />
@@ -348,6 +366,7 @@
         <Variable Name="ULONG64 [2]"            Type="Array"    Base="ULONG64"  Count="2" />
         <Variable Name="ULONG64 [4]"            Type="Array"    Base="ULONG64"  Count="4" />
         <Variable Name="USHORT [8]"             Type="Array"    Base="USHORT"   Count="8" />
+        <Variable Name="WORD [256]"             Type="Array"    Base="WORD"     Count="256"/>
 
     </Headers>
 </ApiMonitor>

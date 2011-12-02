@@ -1,0 +1,1201 @@
+<!--
+    API Monitor Definitions
+    (c) 2011, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\odbc.h.xml" />	
+    <Module Name="ODBC32.DLL" CallingConvention="STDCALL" ErrorFunc="" OnlineHelp="MSDN">
+
+        <!-- Variables -->
+        <Variable Name="SQLSMALLINT"    Type="Alias"    Base="short" />
+        <Variable Name="SQLSMALLINT*"   Type="Pointer"  Base="SQLSMALLINT" />
+        <Variable Name="SQLUSMALLINT"   Type="Alias"    Base="unsigned short" />
+        <Variable Name="SQLUSMALLINT*"  Type="Pointer"  Base="SQLUSMALLINT" />
+        <Variable Name="SQLPOINTER"     Type="Alias"    Base="void*" />
+        <Variable Name="SQLPOINTER*"    Type="Pointer"  Base="SQLPOINTER" />
+        <Variable Name="SQLINTEGER"     Type="Alias"    Base="long" />
+        <Variable Name="SQLINTEGER*"    Type="Pointer"  Base="SQLINTEGER" />
+        <Variable Name="SQLLEN"         Type="Alias"    Base="INT_PTR" />
+        <Variable Name="SQLLEN*"        Type="Pointer"  Base="SQLLEN" />
+        <Variable Name="SQLULEN"        Type="Alias"    Base="UINT_PTR" />
+        <Variable Name="SQLULEN*"       Type="Pointer"  Base="SQLULEN" />
+        <Variable Name="SQLSETPOSIROW"  Type="Alias"    Base="UINT_PTR" />
+        <Variable Name="SQLHWND"        Type="Alias"    Base="HWND" />
+        <Variable Name="SQLHANDLE"      Type="Alias"    Base="void*" />
+        <Variable Name="SQLHANDLE*"     Type="Pointer"  Base="SQLHANDLE" />
+        <Variable Name="SQLHENV"        Type="Alias"    Base="SQLHANDLE" />
+        <Variable Name="SQLHENV*"       Type="Pointer"  Base="SQLHENV" />
+        <Variable Name="SQLHDBC"        Type="Alias"    Base="SQLHANDLE" />
+        <Variable Name="SQLHDBC*"       Type="Pointer"  Base="SQLHDBC" />
+        <Variable Name="SQLHSTMT"       Type="Alias"    Base="SQLHANDLE" />
+        <Variable Name="SQLHSTMT*"      Type="Pointer"  Base="SQLHSTMT" />
+        <Variable Name="SQLHDESC"       Type="Alias"    Base="SQLHANDLE" />
+        <Variable Name="SQLCHAR"        Type="Alias"    Base="unsigned char" />
+        <Variable Name="SQLCHAR*"       Type="Alias"    Base="LPSTR" />
+        <Variable Name="SQLTCHAR"       Type="Alias"    Base="TCHAR" />
+        <Variable Name="SQLTCHAR*"      Type="Pointer"  Base="LPTSTR" />
+
+        <!-- SQLRETURN -->
+        <Variable Name="SQLRETURN" Type="Alias" Base="SQLSMALLINT">
+            <Enum>
+                <Set Name="SQL_SUCCESS"                 Value="0" />
+                <Set Name="SQL_SUCCESS_WITH_INFO"       Value="1" />
+                <Set Name="SQL_NO_DATA"                 Value="100" />
+                <Set Name="SQL_PARAM_DATA_AVAILABLE"    Value="101"   />
+                <Set Name="SQL_ERROR"                   Value="-1" />
+                <Set Name="SQL_INVALID_HANDLE"          Value="-2" />
+                <Set Name="SQL_STILL_EXECUTING"         Value="2" />
+                <Set Name="SQL_NEED_DATA"               Value="99" />
+            </Enum>
+        </Variable>
+
+        <!-- [SQL_DRIVER_COMPLETION] -->
+        <Variable Name="[SQL_DRIVER_COMPLETION]" Type="Alias" Base="SQLUSMALLINT">
+            <Display Name="SQLUSMALLINT" />
+            <Enum>
+                <Set Name="SQL_DRIVER_NOPROMPT"             Value="0" />
+                <Set Name="SQL_DRIVER_COMPLETE"             Value="1" />
+                <Set Name="SQL_DRIVER_PROMPT"               Value="2" />
+                <Set Name="SQL_DRIVER_COMPLETE_REQUIRED"    Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- [SQL_ENDTRAN_OPTION] -->
+        <Variable Name="[SQL_ENDTRAN_OPTION]" Type="Alias" Base="SQLSMALLINT">
+            <Display Name="SQLSMALLINT" />
+            <Enum>
+                <Set Name="SQL_COMMIT"      Value="0" />
+                <Set Name="SQL_ROLLBACK"    Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- [SQL_FETCH_TYPE] -->
+        <Variable Name="[SQL_FETCH_TYPE]" Type="Alias" Base="SQLSMALLINT">
+            <Display Name="SQLSMALLINT" />
+            <Enum>
+                <Set Name="SQL_FETCH_NEXT"          Value="1" />
+                <Set Name="SQL_FETCH_FIRST"         Value="2" />
+                <Set Name="SQL_FETCH_LAST"          Value="3" />
+                <Set Name="SQL_FETCH_PRIOR"         Value="4" />
+                <Set Name="SQL_FETCH_ABSOLUTE"      Value="5" />
+                <Set Name="SQL_FETCH_RELATIVE"      Value="6" />
+            </Enum>
+        </Variable>
+
+        <!-- [SQL_HANDLE_TYPE] -->
+        <Variable Name="[SQL_HANDLE_TYPE]" Type="Alias" Base="SQLSMALLINT">
+            <Display Name="SQLSMALLINT" />
+            <Enum>
+                <Set Name="SQL_HANDLE_ENV"      Value="1" />
+                <Set Name="SQL_HANDLE_DBC"      Value="2" />
+                <Set Name="SQL_HANDLE_STMT"     Value="3" />
+                <Set Name="SQL_HANDLE_DESC"     Value="4" />
+            </Enum>
+        </Variable>
+
+        <!-- [SQL_FREESTMT_OPTION] -->
+        <Variable Name="[SQL_FREESTMT_OPTION]" Type="Alias" Base="SQLUSMALLINT">
+            <Display Name="SQLUSMALLINT" />
+            <Enum>
+                <Set Name="SQL_CLOSE"           Value="0" />
+                <Set Name="SQL_DROP"            Value="1" />
+                <Set Name="SQL_UNBIND"          Value="2" />
+                <Set Name="SQL_RESET_PARAMS"    Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- ODBC -->
+        <Category Name="Data Access and Storage/Windows Data Access Components/Microsoft Open Database Connectivity (ODBC)/ODBC" />
+        <Api Name="SQLAllocConnect" Ordinal="1">
+            <Param Type="SQLHENV" Name="EnvironmentHandle" />
+            <Param Type="SQLHDBC*" Name="ConnectionHandle" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLAllocEnv" Ordinal="2">
+            <Param Type="SQLHENV*" Name="EnvironmentHandle" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLAllocHandle" Ordinal="24">
+            <Param Type="[SQL_HANDLE_TYPE]" Name="HandleType" />
+            <Param Type="SQLHANDLE" Name="InputHandle" />
+            <Param Type="SQLHANDLE*" Name="OutputHandlePtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLAllocStmt" Ordinal="3">
+            <Param Type="SQLHDBC" Name="ConnectionHandle" />
+            <Param Type="SQLHSTMT*" Name="StatementHandle" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLBindCol" Ordinal="4">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLUSMALLINT" Name="ColumnNumber" />
+            <Param Type="SQLSMALLINT" Name="TargetType" />
+            <Param Type="SQLPOINTER" Name="TargetValuePtr" />
+            <Param Type="SQLLEN" Name="BufferLength" />
+            <Param Type="SQLLEN*" Name="StrLen_or_Ind" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLBindParam" Ordinal="25">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLUSMALLINT" Name="ParameterNumber" />
+            <Param Type="SQLSMALLINT" Name="ValueType" />
+            <Param Type="SQLSMALLINT" Name="ParameterType" />
+            <Param Type="SQLULEN" Name="LengthPrecision" />
+            <Param Type="SQLSMALLINT" Name="ParameterScale" />
+            <Param Type="SQLPOINTER" Name="ParameterValue" />
+            <Param Type="SQLLEN*" Name="StrLen_or_IndPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLBindParameter" Ordinal="72">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLUSMALLINT" Name="ParameterNumber" />
+            <Param Type="SQLSMALLINT" Name="InputOutputType" />
+            <Param Type="SQLSMALLINT" Name="ValueType" />
+            <Param Type="SQLSMALLINT" Name="ParameterType" />
+            <Param Type="SQLULEN" Name="ColumnSize" />
+            <Param Type="SQLSMALLINT" Name="DecimalDigits" />
+            <Param Type="SQLPOINTER" Name="ParameterValuePtr" />
+            <Param Type="SQLLEN" Name="BufferLength" />
+            <Param Type="SQLLEN*" Name="StrLen_or_IndPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLBrowseConnect" Ordinal="55">
+            <Param Type="SQLHDBC" Name="ConnectionHandle" />
+            <Param Type="SQLCHAR*" Name="InConnectionString" />
+            <Param Type="SQLSMALLINT" Name="StringLength1" />
+            <Param Type="SQLCHAR*" Name="OutConnectionString" OutputOnly="True" />
+            <Param Type="SQLSMALLINT" Name="BufferLength" />
+            <Param Type="SQLSMALLINT*" Name="StringLength2Ptr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLBrowseConnect" BothCharset="True" OrdinalA="255" OrdinalW="155">
+            <Param Type="SQLHDBC" Name="ConnectionHandle" />
+            <Param Type="SQLTCHAR*" Name="InConnectionString" />
+            <Param Type="SQLSMALLINT" Name="StringLength1" />
+            <Param Type="SQLTCHAR*" Name="OutConnectionString" OutputOnly="True" />
+            <Param Type="SQLSMALLINT" Name="BufferLength" />
+            <Param Type="SQLSMALLINT*" Name="StringLength2Ptr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLBulkOperations" Ordinal="78">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLUSMALLINT" Name="Operation" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLCancel" Ordinal="5">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLCancelHandle">
+            <Param Type="[SQL_HANDLE_TYPE]" Name="HandleType" />
+            <Param Type="SQLHANDLE" Name="Handle" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLCloseCursor" Ordinal="26">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLColAttribute" Ordinal="27">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLUSMALLINT" Name="ColumnNumber" />
+            <Param Type="SQLUSMALLINT" Name="FieldIdentifier" />
+            <Param Type="SQLPOINTER" Name="CharacterAttributePtr" />
+            <Param Type="SQLSMALLINT" Name="BufferLength" />
+            <Param Type="SQLSMALLINT*" Name="StringLengthPtr" />
+            <Param Type="SQLLEN*" Name="NumericAttributePtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLColAttribute" BothCharset="True" OrdinalA="227" OrdinalW="127">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLUSMALLINT" Name="ColumnNumber" />
+            <Param Type="SQLUSMALLINT" Name="FieldIdentifier" />
+            <Param Type="SQLPOINTER" Name="CharacterAttributePtr" />
+            <Param Type="SQLSMALLINT" Name="BufferLength" />
+            <Param Type="SQLSMALLINT*" Name="StringLengthPtr" />
+            <Param Type="SQLLEN*" Name="NumericAttributePtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLColAttributes" Ordinal="6">
+            <Param Type="SQLHSTMT" Name="hstmt" />
+            <Param Type="SQLUSMALLINT" Name="icol" />
+            <Param Type="SQLUSMALLINT" Name="fDescType" />
+            <Param Type="SQLPOINTER" Name="rgbDesc" />
+            <Param Type="SQLSMALLINT" Name="cbDescMax" />
+            <Param Type="SQLSMALLINT*" Name="pcbDesc" />
+            <Param Type="SQLLEN*" Name="pfDesc" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLColAttributes" BothCharset="True" OrdinalA="206" OrdinalW="106">
+            <Param Type="SQLHSTMT" Name="hstmt" />
+            <Param Type="SQLUSMALLINT" Name="icol" />
+            <Param Type="SQLUSMALLINT" Name="fDescType" />
+            <Param Type="SQLPOINTER" Name="rgbDesc" />
+            <Param Type="SQLSMALLINT" Name="cbDescMax" />
+            <Param Type="SQLSMALLINT*" Name="pcbDesc" />
+            <Param Type="SQLLEN*" Name="pfDesc" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLColumnPrivileges" Ordinal="56">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLCHAR*" Name="CatalogName" />
+            <Param Type="SQLSMALLINT" Name="NameLength1" />
+            <Param Type="SQLCHAR*" Name="SchemaName" />
+            <Param Type="SQLSMALLINT" Name="NameLength2" />
+            <Param Type="SQLCHAR*" Name="TableName" />
+            <Param Type="SQLSMALLINT" Name="NameLength3" />
+            <Param Type="SQLCHAR*" Name="ColumnName" />
+            <Param Type="SQLSMALLINT" Name="NameLength4" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLColumnPrivileges" BothCharset="True" OrdinalA="256" OrdinalW="156">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLTCHAR*" Name="CatalogName" />
+            <Param Type="SQLSMALLINT" Name="NameLength1" />
+            <Param Type="SQLTCHAR*" Name="SchemaName" />
+            <Param Type="SQLSMALLINT" Name="NameLength2" />
+            <Param Type="SQLTCHAR*" Name="TableName" />
+            <Param Type="SQLSMALLINT" Name="NameLength3" />
+            <Param Type="SQLTCHAR*" Name="ColumnName" />
+            <Param Type="SQLSMALLINT" Name="NameLength4" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLColumns" Ordinal="40">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLCHAR*" Name="CatalogName" />
+            <Param Type="SQLSMALLINT" Name="NameLength1" />
+            <Param Type="SQLCHAR*" Name="SchemaName" />
+            <Param Type="SQLSMALLINT" Name="NameLength2" />
+            <Param Type="SQLCHAR*" Name="TableName" />
+            <Param Type="SQLSMALLINT" Name="NameLength3" />
+            <Param Type="SQLCHAR*" Name="ColumnName" />
+            <Param Type="SQLSMALLINT" Name="NameLength4" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLColumns" BothCharset="True" OrdinalA="240" OrdinalW="140">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLTCHAR*" Name="CatalogName" />
+            <Param Type="SQLSMALLINT" Name="NameLength1" />
+            <Param Type="SQLTCHAR*" Name="SchemaName" />
+            <Param Type="SQLSMALLINT" Name="NameLength2" />
+            <Param Type="SQLTCHAR*" Name="TableName" />
+            <Param Type="SQLSMALLINT" Name="NameLength3" />
+            <Param Type="SQLTCHAR*" Name="ColumnName" />
+            <Param Type="SQLSMALLINT" Name="NameLength4" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <!-- TODO: SQLCompleteAsync is not present in DLL. Check MSDN. -->
+        <Api Name="SQLCompleteAsync">
+            <Param Type="SQLSMALLINT" Name="HandleType" />
+            <Param Type="SQLHANDLE" Name="Handle" />
+            <Param Type="RETCODE*" Name="AsyncRetCodePtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLConnect" Ordinal="7">
+            <Param Type="SQLHDBC" Name="ConnectionHandle" />
+            <Param Type="SQLCHAR*" Name="ServerName" />
+            <Param Type="SQLSMALLINT" Name="NameLength1" />
+            <Param Type="SQLCHAR*" Name="UserName" />
+            <Param Type="SQLSMALLINT" Name="NameLength2" />
+            <Param Type="SQLCHAR*" Name="Authentication" />
+            <Param Type="SQLSMALLINT" Name="NameLength3" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLConnect" BothCharset="True" OrdinalA="207" OrdinalW="107">
+            <Param Type="SQLHDBC" Name="ConnectionHandle" />
+            <Param Type="SQLTCHAR*" Name="ServerName" />
+            <Param Type="SQLSMALLINT" Name="NameLength1" />
+            <Param Type="SQLTCHAR*" Name="UserName" />
+            <Param Type="SQLSMALLINT" Name="NameLength2" />
+            <Param Type="SQLTCHAR*" Name="Authentication" />
+            <Param Type="SQLSMALLINT" Name="NameLength3" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLCopyDesc" Ordinal="28">
+            <Param Type="SQLHDESC" Name="SourceDescHandle" />
+            <Param Type="SQLHDESC" Name="TargetDescHandle" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLDataSources" Ordinal="57">
+            <Param Type="SQLHENV" Name="EnvironmentHandle" />
+            <Param Type="SQLUSMALLINT" Name="Direction" />
+            <Param Type="SQLCHAR*" Name="ServerName" />
+            <Param Type="SQLSMALLINT" Name="BufferLength1" />
+            <Param Type="SQLSMALLINT*" Name="NameLength1Ptr" />
+            <Param Type="SQLCHAR*" Name="Description" />
+            <Param Type="SQLSMALLINT" Name="BufferLength2" />
+            <Param Type="SQLSMALLINT*" Name="NameLength2Ptr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLDataSources" BothCharset="True" OrdinalA="257" OrdinalW="157">
+            <Param Type="SQLHENV" Name="EnvironmentHandle" />
+            <Param Type="SQLUSMALLINT" Name="Direction" />
+            <Param Type="SQLTCHAR*" Name="ServerName" />
+            <Param Type="SQLSMALLINT" Name="BufferLength1" />
+            <Param Type="SQLSMALLINT*" Name="NameLength1Ptr" />
+            <Param Type="SQLTCHAR*" Name="Description" />
+            <Param Type="SQLSMALLINT" Name="BufferLength2" />
+            <Param Type="SQLSMALLINT*" Name="NameLength2Ptr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLDescribeCol" Ordinal="8">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLUSMALLINT" Name="ColumnNumber" />
+            <Param Type="SQLCHAR*" Name="ColumnName" />
+            <Param Type="SQLSMALLINT" Name="BufferLength" />
+            <Param Type="SQLSMALLINT*" Name="NameLengthPtr" />
+            <Param Type="SQLSMALLINT*" Name="DataTypePtr" />
+            <Param Type="SQLULEN*" Name="ColumnSizePtr" />
+            <Param Type="SQLSMALLINT*" Name="DecimalDigitsPtr" />
+            <Param Type="SQLSMALLINT*" Name="NullablePtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLDescribeCol" BothCharset="True" OrdinalA="208" OrdinalW="108">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLUSMALLINT" Name="ColumnNumber" />
+            <Param Type="SQLTCHAR*" Name="ColumnName" />
+            <Param Type="SQLSMALLINT" Name="BufferLength" />
+            <Param Type="SQLSMALLINT*" Name="NameLengthPtr" />
+            <Param Type="SQLSMALLINT*" Name="DataTypePtr" />
+            <Param Type="SQLULEN*" Name="ColumnSizePtr" />
+            <Param Type="SQLSMALLINT*" Name="DecimalDigitsPtr" />
+            <Param Type="SQLSMALLINT*" Name="NullablePtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLDescribeParam" Ordinal="58">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLUSMALLINT" Name="ParameterNumber" />
+            <Param Type="SQLSMALLINT*" Name="DataTypePtr" />
+            <Param Type="SQLULEN*" Name="ParameterSizePtr" />
+            <Param Type="SQLSMALLINT*" Name="DecimalDigitsPtr" />
+            <Param Type="SQLSMALLINT*" Name="NullablePtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLDisconnect" Ordinal="9">
+            <Param Type="SQLHDBC" Name="ConnectionHandle" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLDriverConnect" Ordinal="41">
+            <Param Type="SQLHDBC" Name="ConnectionHandle" />
+            <Param Type="SQLHWND" Name="WindowHandle" />
+            <Param Type="SQLCHAR*" Name="InConnectionString" />
+            <Param Type="SQLSMALLINT" Name="StringLength1" />
+            <Param Type="SQLCHAR*" Name="OutConnectionString" OutputOnly="True" />
+            <Param Type="SQLSMALLINT" Name="BufferLength" />
+            <Param Type="SQLSMALLINT*" Name="StringLength2Ptr" />
+            <Param Type="[SQL_DRIVER_COMPLETION]" Name="DriverCompletion" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLDriverConnect" BothCharset="True" OrdinalA="241" OrdinalW="141">
+            <Param Type="SQLHDBC" Name="ConnectionHandle" />
+            <Param Type="SQLHWND" Name="WindowHandle" />
+            <Param Type="SQLTCHAR*" Name="InConnectionString" />
+            <Param Type="SQLSMALLINT" Name="StringLength1" />
+            <Param Type="SQLTCHAR*" Name="OutConnectionString" OutputOnly="True" />
+            <Param Type="SQLSMALLINT" Name="BufferLength" />
+            <Param Type="SQLSMALLINT*" Name="StringLength2Ptr" />
+            <Param Type="[SQL_DRIVER_COMPLETION]" Name="DriverCompletion" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLDrivers" Ordinal="71">
+            <Param Type="SQLHENV" Name="EnvironmentHandle" />
+            <Param Type="SQLUSMALLINT" Name="Direction" />
+            <Param Type="SQLCHAR*" Name="DriverDescription" />
+            <Param Type="SQLSMALLINT" Name="BufferLength1" />
+            <Param Type="SQLSMALLINT*" Name="DescriptionLengthPtr" />
+            <Param Type="SQLCHAR*" Name="DriverAttributes" />
+            <Param Type="SQLSMALLINT" Name="BufferLength2" />
+            <Param Type="SQLSMALLINT*" Name="AttributesLengthPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLDrivers" BothCharset="True" OrdinalA="271" OrdinalW="171">
+            <Param Type="SQLHENV" Name="EnvironmentHandle" />
+            <Param Type="SQLUSMALLINT" Name="Direction" />
+            <Param Type="SQLTCHAR*" Name="DriverDescription" />
+            <Param Type="SQLSMALLINT" Name="BufferLength1" />
+            <Param Type="SQLSMALLINT*" Name="DescriptionLengthPtr" />
+            <Param Type="SQLTCHAR*" Name="DriverAttributes" />
+            <Param Type="SQLSMALLINT" Name="BufferLength2" />
+            <Param Type="SQLSMALLINT*" Name="AttributesLengthPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLEndTran" Ordinal="29">
+            <Param Type="[SQL_HANDLE_TYPE]" Name="HandleType" />
+            <Param Type="SQLHANDLE" Name="Handle" />
+            <Param Type="[SQL_ENDTRAN_OPTION]" Name="CompletionType" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLError" Ordinal="10">
+            <Param Type="SQLHENV" Name="EnvironmentHandle" />
+            <Param Type="SQLHDBC" Name="ConnectionHandle" />
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLCHAR*" Name="SQLState" />
+            <Param Type="SQLINTEGER*" Name="NativeError" />
+            <Param Type="SQLCHAR*" Name="MessageText" />
+            <Param Type="SQLSMALLINT" Name="BufferLength" />
+            <Param Type="SQLSMALLINT*" Name="TextLength" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLError" BothCharset="True" OrdinalA="210" OrdinalW="110">
+            <Param Type="SQLHENV" Name="EnvironmentHandle" />
+            <Param Type="SQLHDBC" Name="ConnectionHandle" />
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLTCHAR*" Name="SQLState" />
+            <Param Type="SQLINTEGER*" Name="NativeError" />
+            <Param Type="SQLTCHAR*" Name="MessageText" />
+            <Param Type="SQLSMALLINT" Name="BufferLength" />
+            <Param Type="SQLSMALLINT*" Name="TextLength" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLExecDirect" Ordinal="11">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLCHAR*" Name="StatementText" />
+            <Param Type="SQLINTEGER" Name="TextLength" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLExecDirect" BothCharset="True" OrdinalA="211" OrdinalW="111">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLTCHAR*" Name="StatementText" />
+            <Param Type="SQLINTEGER" Name="TextLength" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLExecute" Ordinal="12">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLExtendedFetch" Ordinal="59">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLUSMALLINT" Name="FetchOrientation" />
+            <Param Type="SQLLEN" Name="FetchOffset" />
+            <Param Type="SQLULEN*" Name="RowCountPtr" />
+            <Param Type="SQLUSMALLINT*" Name="RowStatusArray" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLFetch" Ordinal="13">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLFetchScroll" Ordinal="30">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="[SQL_FETCH_TYPE]" Name="FetchOrientation" />
+            <Param Type="SQLLEN" Name="FetchOffset" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLForeignKeys" Ordinal="60">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLCHAR*" Name="PKCatalogName" />
+            <Param Type="SQLSMALLINT" Name="NameLength1" />
+            <Param Type="SQLCHAR*" Name="PKSchemaName" />
+            <Param Type="SQLSMALLINT" Name="NameLength2" />
+            <Param Type="SQLCHAR*" Name="PKTableName" />
+            <Param Type="SQLSMALLINT" Name="NameLength3" />
+            <Param Type="SQLCHAR*" Name="FKCatalogName" />
+            <Param Type="SQLSMALLINT" Name="NameLength4" />
+            <Param Type="SQLCHAR*" Name="FKSchemaName" />
+            <Param Type="SQLSMALLINT" Name="NameLength5" />
+            <Param Type="SQLCHAR*" Name="FKTableName" />
+            <Param Type="SQLSMALLINT" Name="NameLength6" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLForeignKeys" BothCharset="True" OrdinalA="260" OrdinalW="160">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLTCHAR*" Name="PKCatalogName" />
+            <Param Type="SQLSMALLINT" Name="NameLength1" />
+            <Param Type="SQLTCHAR*" Name="PKSchemaName" />
+            <Param Type="SQLSMALLINT" Name="NameLength2" />
+            <Param Type="SQLTCHAR*" Name="PKTableName" />
+            <Param Type="SQLSMALLINT" Name="NameLength3" />
+            <Param Type="SQLTCHAR*" Name="FKCatalogName" />
+            <Param Type="SQLSMALLINT" Name="NameLength4" />
+            <Param Type="SQLTCHAR*" Name="FKSchemaName" />
+            <Param Type="SQLSMALLINT" Name="NameLength5" />
+            <Param Type="SQLTCHAR*" Name="FKTableName" />
+            <Param Type="SQLSMALLINT" Name="NameLength6" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLFreeConnect" Ordinal="14">
+            <Param Type="SQLHDBC" Name="ConnectionHandle" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLFreeEnv" Ordinal="15">
+            <Param Type="SQLHENV" Name="EnvironmentHandle" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLFreeHandle" Ordinal="31">
+            <Param Type="[SQL_HANDLE_TYPE]" Name="HandleType" />
+            <Param Type="SQLHANDLE" Name="Handle" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLFreeStmt" Ordinal="16">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="[SQL_FREESTMT_OPTION]" Name="Option" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLGetConnectAttr" Ordinal="32">
+            <Param Type="SQLHDBC" Name="ConnectionHandle" />
+            <Param Type="SQLINTEGER" Name="Attribute" />
+            <Param Type="SQLPOINTER" Name="ValuePtr" />
+            <Param Type="SQLINTEGER" Name="BufferLength" />
+            <Param Type="SQLINTEGER*" Name="StringLengthPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLGetConnectAttr" BothCharset="True" OrdinalA="232" OrdinalW="132">
+            <Param Type="SQLHDBC" Name="ConnectionHandle" />
+            <Param Type="SQLINTEGER" Name="Attribute" />
+            <Param Type="SQLPOINTER" Name="ValuePtr" />
+            <Param Type="SQLINTEGER" Name="BufferLength" />
+            <Param Type="SQLINTEGER*" Name="StringLengthPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLGetConnectOption" Ordinal="42">
+            <Param Type="SQLHDBC" Name="ConnectionHandle" />
+            <Param Type="SQLUSMALLINT" Name="Option" />
+            <Param Type="SQLPOINTER" Name="Value" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLGetConnectOption" BothCharset="True" OrdinalA="242" OrdinalW="142">
+            <Param Type="SQLHDBC" Name="ConnectionHandle" />
+            <Param Type="SQLUSMALLINT" Name="Option" />
+            <Param Type="SQLPOINTER" Name="Value" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLGetCursorName" Ordinal="17">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLCHAR*" Name="CursorName" />
+            <Param Type="SQLSMALLINT" Name="BufferLength" />
+            <Param Type="SQLSMALLINT*" Name="NameLengthPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLGetCursorName" BothCharset="True" OrdinalA="217" OrdinalW="117">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLTCHAR*" Name="CursorName" />
+            <Param Type="SQLSMALLINT" Name="BufferLength" />
+            <Param Type="SQLSMALLINT*" Name="NameLengthPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLGetData" Ordinal="43">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLUSMALLINT" Name="Col_or_Param_Num" />
+            <Param Type="SQLSMALLINT" Name="TargetType" />
+            <Param Type="SQLPOINTER" Name="TargetValuePtr" />
+            <Param Type="SQLLEN" Name="BufferLength" />
+            <Param Type="SQLLEN*" Name="StrLen_or_IndPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLGetDescField" Ordinal="33">
+            <Param Type="SQLHDESC" Name="DescriptorHandle" />
+            <Param Type="SQLSMALLINT" Name="RecNumber" />
+            <Param Type="SQLSMALLINT" Name="FieldIdentifier" />
+            <Param Type="SQLPOINTER" Name="ValuePtr" />
+            <Param Type="SQLINTEGER" Name="BufferLength" />
+            <Param Type="SQLINTEGER*" Name="StringLengthPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLGetDescField" BothCharset="True" OrdinalA="233" OrdinalW="133">
+            <Param Type="SQLHDESC" Name="DescriptorHandle" />
+            <Param Type="SQLSMALLINT" Name="RecNumber" />
+            <Param Type="SQLSMALLINT" Name="FieldIdentifier" />
+            <Param Type="SQLPOINTER" Name="ValuePtr" />
+            <Param Type="SQLINTEGER" Name="BufferLength" />
+            <Param Type="SQLINTEGER*" Name="StringLengthPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLGetDescRec" Ordinal="34">
+            <Param Type="SQLHDESC" Name="DescriptorHandle" />
+            <Param Type="SQLSMALLINT" Name="RecNumber" />
+            <Param Type="SQLCHAR*" Name="Name" />
+            <Param Type="SQLSMALLINT" Name="BufferLength" />
+            <Param Type="SQLSMALLINT*" Name="StringLengthPtr" />
+            <Param Type="SQLSMALLINT*" Name="TypePtr" />
+            <Param Type="SQLSMALLINT*" Name="SubTypePtr" />
+            <Param Type="SQLLEN*" Name="LengthPtr" />
+            <Param Type="SQLSMALLINT*" Name="PrecisionPtr" />
+            <Param Type="SQLSMALLINT*" Name="ScalePtr" />
+            <Param Type="SQLSMALLINT*" Name="NullablePtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLGetDescRec" BothCharset="True" OrdinalA="234" OrdinalW="134">
+            <Param Type="SQLHDESC" Name="DescriptorHandle" />
+            <Param Type="SQLSMALLINT" Name="RecNumber" />
+            <Param Type="SQLTCHAR*" Name="Name" />
+            <Param Type="SQLSMALLINT" Name="BufferLength" />
+            <Param Type="SQLSMALLINT*" Name="StringLengthPtr" />
+            <Param Type="SQLSMALLINT*" Name="TypePtr" />
+            <Param Type="SQLSMALLINT*" Name="SubTypePtr" />
+            <Param Type="SQLLEN*" Name="LengthPtr" />
+            <Param Type="SQLSMALLINT*" Name="PrecisionPtr" />
+            <Param Type="SQLSMALLINT*" Name="ScalePtr" />
+            <Param Type="SQLSMALLINT*" Name="NullablePtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLGetDiagField" Ordinal="35">
+            <Param Type="[SQL_HANDLE_TYPE]" Name="HandleType" />
+            <Param Type="SQLHANDLE" Name="Handle" />
+            <Param Type="SQLSMALLINT" Name="RecNumber" />
+            <Param Type="SQLSMALLINT" Name="DiagIdentifier" />
+            <Param Type="SQLPOINTER" Name="DiagInfoPtr" />
+            <Param Type="SQLSMALLINT" Name="BufferLength" />
+            <Param Type="SQLSMALLINT*" Name="StringLengthPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLGetDiagField" BothCharset="True" OrdinalA="235" OrdinalW="135">
+            <Param Type="[SQL_HANDLE_TYPE]" Name="HandleType" />
+            <Param Type="SQLHANDLE" Name="Handle" />
+            <Param Type="SQLSMALLINT" Name="RecNumber" />
+            <Param Type="SQLSMALLINT" Name="DiagIdentifier" />
+            <Param Type="SQLPOINTER" Name="DiagInfoPtr" />
+            <Param Type="SQLSMALLINT" Name="BufferLength" />
+            <Param Type="SQLSMALLINT*" Name="StringLengthPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLGetDiagRec" Ordinal="36">
+            <Param Type="[SQL_HANDLE_TYPE]" Name="HandleType" />
+            <Param Type="SQLHANDLE" Name="Handle" />
+            <Param Type="SQLSMALLINT" Name="RecNumber" />
+            <Param Type="SQLCHAR*" Name="SQLState" OutputOnly="True" />
+            <Param Type="SQLINTEGER*" Name="NativeErrorPtr" />
+            <Param Type="SQLCHAR*" Name="MessageText" OutputOnly="True" />
+            <Param Type="SQLSMALLINT" Name="BufferLength" />
+            <Param Type="SQLSMALLINT*" Name="TextLengthPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLGetDiagRec" BothCharset="True" OrdinalA="236" OrdinalW="136">
+            <Param Type="[SQL_HANDLE_TYPE]" Name="HandleType" />
+            <Param Type="SQLHANDLE" Name="Handle" />
+            <Param Type="SQLSMALLINT" Name="RecNumber" />
+            <Param Type="SQLTCHAR*" Name="SQLState" />
+            <Param Type="SQLINTEGER*" Name="NativeErrorPtr" />
+            <Param Type="SQLTCHAR*" Name="MessageText" />
+            <Param Type="SQLSMALLINT" Name="BufferLength" />
+            <Param Type="SQLSMALLINT*" Name="TextLengthPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLGetEnvAttr" Ordinal="37">
+            <Param Type="SQLHENV" Name="EnvironmentHandle" />
+            <Param Type="SQLINTEGER" Name="Attribute" />
+            <Param Type="SQLPOINTER" Name="ValuePtr" />
+            <Param Type="SQLINTEGER" Name="BufferLength" />
+            <Param Type="SQLINTEGER*" Name="StringLengthPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLGetFunctions" Ordinal="44">
+            <Param Type="SQLHDBC" Name="ConnectionHandle" />
+            <Param Type="SQLUSMALLINT" Name="FunctionId" />
+            <Param Type="SQLUSMALLINT*" Name="SupportedPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLGetInfo" Ordinal="45">
+            <Param Type="SQLHDBC" Name="ConnectionHandle" />
+            <Param Type="SQLUSMALLINT" Name="InfoType" />
+            <Param Type="SQLPOINTER" Name="InfoValuePtr" />
+            <Param Type="SQLSMALLINT" Name="BufferLength" />
+            <Param Type="SQLSMALLINT*" Name="StringLengthPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLGetInfo" BothCharset="True" OrdinalA="245" OrdinalW="145">
+            <Param Type="SQLHDBC" Name="ConnectionHandle" />
+            <Param Type="SQLUSMALLINT" Name="InfoType" />
+            <Param Type="SQLPOINTER" Name="InfoValuePtr" />
+            <Param Type="SQLSMALLINT" Name="BufferLength" />
+            <Param Type="SQLSMALLINT*" Name="StringLengthPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLGetStmtAttr" Ordinal="38">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLINTEGER" Name="Attribute" />
+            <Param Type="SQLPOINTER" Name="ValuePtr" />
+            <Param Type="SQLINTEGER" Name="BufferLength" />
+            <Param Type="SQLINTEGER*" Name="StringLengthPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLGetStmtAttr" BothCharset="True" OrdinalA="238" OrdinalW="138">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLINTEGER" Name="Attribute" />
+            <Param Type="SQLPOINTER" Name="ValuePtr" />
+            <Param Type="SQLINTEGER" Name="BufferLength" />
+            <Param Type="SQLINTEGER*" Name="StringLengthPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLGetStmtOption" Ordinal="46">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLUSMALLINT" Name="Option" />
+            <Param Type="SQLPOINTER" Name="Value" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLGetTypeInfo" Ordinal="4">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLSMALLINT" Name="DataType" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLGetTypeInfo" BothCharset="True" OrdinalA="247" OrdinalW="147">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLSMALLINT" Name="DataType" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLMoreResults" Ordinal="61">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLNativeSql" Ordinal="62">
+            <Param Type="SQLHDBC" Name="ConnectionHandle" />
+            <Param Type="SQLCHAR*" Name="InStatementText" />
+            <Param Type="SQLINTEGER" Name="TextLength1" />
+            <Param Type="SQLCHAR*" Name="OutStatementText" OutputOnly="True" />
+            <Param Type="SQLINTEGER" Name="BufferLength" />
+            <Param Type="SQLINTEGER*" Name="TextLength2Ptr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLNativeSql" BothCharset="True" OrdinalA="262" OrdinalW="162">
+            <Param Type="SQLHDBC" Name="ConnectionHandle" />
+            <Param Type="SQLTCHAR*" Name="InStatementText" />
+            <Param Type="SQLINTEGER" Name="TextLength1" />
+            <Param Type="SQLTCHAR*" Name="OutStatementText" OutputOnly="True" />
+            <Param Type="SQLINTEGER" Name="BufferLength" />
+            <Param Type="SQLINTEGER*" Name="TextLength2Ptr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLNumParams" Ordinal="63">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLSMALLINT*" Name="ParameterCountPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLNumResultCols" Ordinal="18">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLSMALLINT*" Name="ColumnCountPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLParamData" Ordinal="48">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLPOINTER*" Name="ValuePtrPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLParamOptions" Ordinal="64">
+            <Param Type="SQLHSTMT" Name="hstmt" />
+            <Param Type="SQLULEN" Name="crow" />
+            <Param Type="SQLULEN*" Name="pirow" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLPrepare" Ordinal="19">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLCHAR*" Name="StatementText" />
+            <Param Type="SQLINTEGER" Name="TextLength" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLPrepare" BothCharset="True" OrdinalA="219" OrdinalW="119">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLTCHAR*" Name="StatementText" />
+            <Param Type="SQLINTEGER" Name="TextLength" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLPrimaryKeys" Ordinal="65">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLCHAR*" Name="CatalogName" />
+            <Param Type="SQLSMALLINT" Name="NameLength1" />
+            <Param Type="SQLCHAR*" Name="SchemaName" />
+            <Param Type="SQLSMALLINT" Name="NameLength2" />
+            <Param Type="SQLCHAR*" Name="TableName" />
+            <Param Type="SQLSMALLINT" Name="NameLength3" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLPrimaryKeys" BothCharset="True" OrdinalA="265" OrdinalW="165">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLTCHAR*" Name="CatalogName" />
+            <Param Type="SQLSMALLINT" Name="NameLength1" />
+            <Param Type="SQLTCHAR*" Name="SchemaName" />
+            <Param Type="SQLSMALLINT" Name="NameLength2" />
+            <Param Type="SQLTCHAR*" Name="TableName" />
+            <Param Type="SQLSMALLINT" Name="NameLength3" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLProcedureColumns" Ordinal="66">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLCHAR*" Name="CatalogName" />
+            <Param Type="SQLSMALLINT" Name="NameLength1" />
+            <Param Type="SQLCHAR*" Name="SchemaName" />
+            <Param Type="SQLSMALLINT" Name="NameLength2" />
+            <Param Type="SQLCHAR*" Name="ProcName" />
+            <Param Type="SQLSMALLINT" Name="NameLength3" />
+            <Param Type="SQLCHAR*" Name="ColumnName" />
+            <Param Type="SQLSMALLINT" Name="NameLength4" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLProcedureColumns" BothCharset="True" OrdinalA="266" OrdinalW="166">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLTCHAR*" Name="CatalogName" />
+            <Param Type="SQLSMALLINT" Name="NameLength1" />
+            <Param Type="SQLTCHAR*" Name="SchemaName" />
+            <Param Type="SQLSMALLINT" Name="NameLength2" />
+            <Param Type="SQLTCHAR*" Name="ProcName" />
+            <Param Type="SQLSMALLINT" Name="NameLength3" />
+            <Param Type="SQLTCHAR*" Name="ColumnName" />
+            <Param Type="SQLSMALLINT" Name="NameLength4" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLProcedures" Ordinal="67">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLCHAR*" Name="CatalogName" />
+            <Param Type="SQLSMALLINT" Name="NameLength1" />
+            <Param Type="SQLCHAR*" Name="SchemaName" />
+            <Param Type="SQLSMALLINT" Name="NameLength2" />
+            <Param Type="SQLCHAR*" Name="ProcName" />
+            <Param Type="SQLSMALLINT" Name="NameLength3" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLProcedures" BothCharset="True" OrdinalA="267" OrdinalW="167">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLTCHAR*" Name="CatalogName" />
+            <Param Type="SQLSMALLINT" Name="NameLength1" />
+            <Param Type="SQLTCHAR*" Name="SchemaName" />
+            <Param Type="SQLSMALLINT" Name="NameLength2" />
+            <Param Type="SQLTCHAR*" Name="ProcName" />
+            <Param Type="SQLSMALLINT" Name="NameLength3" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLPutData" Ordinal="49">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLPOINTER" Name="DataPtr" />
+            <Param Type="SQLLEN" Name="StrLen_or_Ind" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLRowCount" Ordinal="20">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLLEN*" Name="RowCountPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLSetConnectAttr" Ordinal="39">
+            <Param Type="SQLHDBC" Name="ConnectionHandle" />
+            <Param Type="SQLINTEGER" Name="Attribute" />
+            <Param Type="SQLPOINTER" Name="ValuePtr" />
+            <Param Type="SQLINTEGER" Name="StringLength" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLSetConnectAttr" BothCharset="True" OrdinalA="239" OrdinalW="139">
+            <Param Type="SQLHDBC" Name="ConnectionHandle" />
+            <Param Type="SQLINTEGER" Name="Attribute" />
+            <Param Type="SQLPOINTER" Name="ValuePtr" />
+            <Param Type="SQLINTEGER" Name="StringLength" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLSetConnectOption" Ordinal="50">
+            <Param Type="SQLHDBC" Name="ConnectionHandle" />
+            <Param Type="SQLUSMALLINT" Name="Option" />
+            <Param Type="SQLULEN" Name="Value" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLSetConnectOption" BothCharset="True" OrdinalA="250" OrdinalW="150">
+            <Param Type="SQLHDBC" Name="ConnectionHandle" />
+            <Param Type="SQLUSMALLINT" Name="Option" />
+            <Param Type="SQLULEN" Name="Value" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLSetCursorName" Ordinal="21">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLCHAR*" Name="CursorName" />
+            <Param Type="SQLSMALLINT" Name="NameLength" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLSetCursorName" BothCharset="True" OrdinalA="221" OrdinalW="121">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLTCHAR*" Name="CursorName" />
+            <Param Type="SQLSMALLINT" Name="NameLength" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLSetDescField" Ordinal="73">
+            <Param Type="SQLHDESC" Name="DescriptorHandle" />
+            <Param Type="SQLSMALLINT" Name="RecNumber" />
+            <Param Type="SQLSMALLINT" Name="FieldIdentifier" />
+            <Param Type="SQLPOINTER" Name="ValuePtr" />
+            <Param Type="SQLINTEGER" Name="BufferLength" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLSetDescField" BothCharset="True" OrdinalA="273" OrdinalW="173">
+            <Param Type="SQLHDESC" Name="DescriptorHandle" />
+            <Param Type="SQLSMALLINT" Name="RecNumber" />
+            <Param Type="SQLSMALLINT" Name="FieldIdentifier" />
+            <Param Type="SQLPOINTER" Name="ValuePtr" />
+            <Param Type="SQLINTEGER" Name="BufferLength" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLSetDescRec" Ordinal="74">
+            <Param Type="SQLHDESC" Name="DescriptorHandle" />
+            <Param Type="SQLSMALLINT" Name="RecNumber" />
+            <Param Type="SQLSMALLINT" Name="Type" />
+            <Param Type="SQLSMALLINT" Name="SubType" />
+            <Param Type="SQLLEN" Name="Length" />
+            <Param Type="SQLSMALLINT" Name="Precision" />
+            <Param Type="SQLSMALLINT" Name="Scale" />
+            <Param Type="SQLPOINTER" Name="DataPtr" />
+            <Param Type="SQLLEN*" Name="StringLengthPtr" />
+            <Param Type="SQLLEN*" Name="IndicatorPtr" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLSetEnvAttr" Ordinal="75">
+            <Param Type="SQLHENV" Name="EnvironmentHandle" />
+            <Param Type="SQLINTEGER" Name="Attribute" />
+            <Param Type="SQLPOINTER" Name="ValuePtr" />
+            <Param Type="SQLINTEGER" Name="StringLength" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLSetParam" Ordinal="22">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLUSMALLINT" Name="ParameterNumber" />
+            <Param Type="SQLSMALLINT" Name="ValueType" />
+            <Param Type="SQLSMALLINT" Name="ParameterType" />
+            <Param Type="SQLULEN" Name="LengthPrecision" />
+            <Param Type="SQLSMALLINT" Name="ParameterScale" />
+            <Param Type="SQLPOINTER" Name="ParameterValue" />
+            <Param Type="SQLLEN*" Name="StrLen_or_Ind" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLSetPos" Ordinal="68">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLSETPOSIROW" Name="RowNumber" />
+            <Param Type="SQLUSMALLINT" Name="Operation" />
+            <Param Type="SQLUSMALLINT" Name="LockType" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLSetScrollOptions" Ordinal="69">
+            <Param Type="SQLHSTMT" Name="hstmt" />
+            <Param Type="SQLUSMALLINT" Name="fConcurrency" />
+            <Param Type="SQLLEN" Name="crowKeyset" />
+            <Param Type="SQLUSMALLINT" Name="crowRowset" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLSetStmtAttr" Ordinal="76">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLINTEGER" Name="Attribute" />
+            <Param Type="SQLPOINTER" Name="ValuePtr" />
+            <Param Type="SQLINTEGER" Name="StringLength" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLSetStmtAttr" BothCharset="True" OrdinalA="276" OrdinalW="176">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLINTEGER" Name="Attribute" />
+            <Param Type="SQLPOINTER" Name="ValuePtr" />
+            <Param Type="SQLINTEGER" Name="StringLength" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLSetStmtOption" Ordinal="51">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLUSMALLINT" Name="Option" />
+            <Param Type="SQLULEN" Name="Value" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLSpecialColumns" Ordinal="52">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLSMALLINT" Name="IdentifierType" />
+            <Param Type="SQLCHAR*" Name="CatalogName" />
+            <Param Type="SQLSMALLINT" Name="NameLength1" />
+            <Param Type="SQLCHAR*" Name="SchemaName" />
+            <Param Type="SQLSMALLINT" Name="NameLength2" />
+            <Param Type="SQLCHAR*" Name="TableName" />
+            <Param Type="SQLSMALLINT" Name="NameLength3" />
+            <Param Type="SQLSMALLINT" Name="Scope" />
+            <Param Type="SQLSMALLINT" Name="Nullable" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLSpecialColumns" BothCharset="True" OrdinalA="252" OrdinalW="152">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLSMALLINT" Name="IdentifierType" />
+            <Param Type="SQLTCHAR*" Name="CatalogName" />
+            <Param Type="SQLSMALLINT" Name="NameLength1" />
+            <Param Type="SQLTCHAR*" Name="SchemaName" />
+            <Param Type="SQLSMALLINT" Name="NameLength2" />
+            <Param Type="SQLTCHAR*" Name="TableName" />
+            <Param Type="SQLSMALLINT" Name="NameLength3" />
+            <Param Type="SQLSMALLINT" Name="Scope" />
+            <Param Type="SQLSMALLINT" Name="Nullable" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLStatistics" Ordinal="53">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLCHAR*" Name="CatalogName" />
+            <Param Type="SQLSMALLINT" Name="NameLength1" />
+            <Param Type="SQLCHAR*" Name="SchemaName" />
+            <Param Type="SQLSMALLINT" Name="NameLength2" />
+            <Param Type="SQLCHAR*" Name="TableName" />
+            <Param Type="SQLSMALLINT" Name="NameLength3" />
+            <Param Type="SQLUSMALLINT" Name="Unique" />
+            <Param Type="SQLUSMALLINT" Name="Reserved" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLStatistics" BothCharset="True" OrdinalA="253" OrdinalW="153">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLTCHAR*" Name="CatalogName" />
+            <Param Type="SQLSMALLINT" Name="NameLength1" />
+            <Param Type="SQLTCHAR*" Name="SchemaName" />
+            <Param Type="SQLSMALLINT" Name="NameLength2" />
+            <Param Type="SQLTCHAR*" Name="TableName" />
+            <Param Type="SQLSMALLINT" Name="NameLength3" />
+            <Param Type="SQLUSMALLINT" Name="Unique" />
+            <Param Type="SQLUSMALLINT" Name="Reserved" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLTablePrivileges" Ordinal="70">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLCHAR*" Name="CatalogName" />
+            <Param Type="SQLSMALLINT" Name="NameLength1" />
+            <Param Type="SQLCHAR*" Name="SchemaName" />
+            <Param Type="SQLSMALLINT" Name="NameLength2" />
+            <Param Type="SQLCHAR*" Name="TableName" />
+            <Param Type="SQLSMALLINT" Name="NameLength3" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLTablePrivileges" BothCharset="True" OrdinalA="270" OrdinalW="170">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLTCHAR*" Name="CatalogName" />
+            <Param Type="SQLSMALLINT" Name="NameLength1" />
+            <Param Type="SQLTCHAR*" Name="SchemaName" />
+            <Param Type="SQLSMALLINT" Name="NameLength2" />
+            <Param Type="SQLTCHAR*" Name="TableName" />
+            <Param Type="SQLSMALLINT" Name="NameLength3" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLTables" Ordinal="54">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLCHAR*" Name="CatalogName" />
+            <Param Type="SQLSMALLINT" Name="NameLength1" />
+            <Param Type="SQLCHAR*" Name="SchemaName" />
+            <Param Type="SQLSMALLINT" Name="NameLength2" />
+            <Param Type="SQLCHAR*" Name="TableName" />
+            <Param Type="SQLSMALLINT" Name="NameLength3" />
+            <Param Type="SQLCHAR*" Name="TableType" />
+            <Param Type="SQLSMALLINT" Name="NameLength4" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLTables" BothCharset="True" OrdinalA="254" OrdinalW="154">
+            <Param Type="SQLHSTMT" Name="StatementHandle" />
+            <Param Type="SQLTCHAR*" Name="CatalogName" />
+            <Param Type="SQLSMALLINT" Name="NameLength1" />
+            <Param Type="SQLTCHAR*" Name="SchemaName" />
+            <Param Type="SQLSMALLINT" Name="NameLength2" />
+            <Param Type="SQLTCHAR*" Name="TableName" />
+            <Param Type="SQLSMALLINT" Name="NameLength3" />
+            <Param Type="SQLTCHAR*" Name="TableType" />
+            <Param Type="SQLSMALLINT" Name="NameLength4" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SQLTransact" Ordinal="23">
+            <Param Type="SQLHENV" Name="EnvironmentHandle" />
+            <Param Type="SQLHDBC" Name="ConnectionHandle" />
+            <Param Type="SQLUSMALLINT" Name="CompletionType" />
+            <Return Type="SQLRETURN" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

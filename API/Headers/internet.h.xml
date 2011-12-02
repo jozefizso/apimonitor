@@ -203,7 +203,7 @@
             </Enum>
         </Variable>
 
-        <!-- URL_COMPONENTS -->
+        <!-- URL_COMPONENTS - Used by InternetCrackUrl and InternetCreateUrl -->
         <Variable Name="URL_COMPONENTS" Type="Struct">
             <Field Type="DWORD"   	        Name="dwStructSize" />
             <Field Type="LPTSTR"  	        Name="lpszScheme" />
@@ -223,6 +223,38 @@
         </Variable>
         <Variable Name="LPURL_COMPONENTS" Type="Pointer" Base="URL_COMPONENTS" />
 
+        <!-- [InternetSchemeWinHttp] -->
+        <Variable Name="[InternetSchemeWinHttp]" Type="Alias" Base="int">
+            <Display Name="int" />
+            <Enum>
+                <Set Name="INTERNET_SCHEME_HTTP"			Value="1" />
+                <Set Name="INTERNET_SCHEME_HTTPS"			Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- URL_COMPONENTSW - Used By WinHttpCrackUrl and WinHttpCreateUrl -->
+        <Variable Name="URL_COMPONENTSW" Type="Struct">
+            <Display Name="URL_COMPONENTS" />
+            <Field Type="DWORD"   	                Name="dwStructSize" />
+            <Field Type="LPWSTR"  	                Name="lpszScheme" />
+            <Field Type="DWORD"   	                Name="dwSchemeLength" />
+            <Field Type="[InternetSchemeWinHttp]" 	Name="nScheme" />
+            <Field Type="LPWSTR"  	                Name="lpszHostName" />
+            <Field Type="DWORD"   	                Name="dwHostNameLength" />
+            <Field Type="INTERNET_PORT" 	        Name="nPort" />
+            <Field Type="LPWSTR"  	                Name="lpszUserName" />
+            <Field Type="DWORD"   	                Name="dwUserNameLength" />
+            <Field Type="LPWSTR"  	                Name="lpszPassword" />
+            <Field Type="DWORD"   	                Name="dwPasswordLength" />
+            <Field Type="LPWSTR"  	                Name="lpszUrlPath" />
+            <Field Type="DWORD"   	                Name="dwUrlPathLength" />
+            <Field Type="LPWSTR"  	                Name="lpszExtraInfo" />
+            <Field Type="DWORD"   	                Name="dwExtraInfoLength" />
+        </Variable>
+        <Variable Name="LPURL_COMPONENTSW" Type="Pointer" Base="URL_COMPONENTSW">
+            <Display Name="LPURL_COMPONENTS" />
+        </Variable>
+
         <!-- [InternetCanonicalizeUrlFlags] -->
         <Variable Name="[InternetCanonicalizeUrlFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
@@ -236,6 +268,16 @@
             </Flag>
         </Variable>
 
+        <!-- [InternetCrackUrlFlags] -->
+        <Variable Name="[InternetCrackUrlFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="ICU_DECODE"          Value="0x10000000" />
+                <Set Name="ICU_REJECT_USERPWD"  Value="0x00004000" />
+                <Set Name="ICU_ESCAPE"          Value="0x80000000" />
+            </Flag>
+        </Variable>
+
         <!-- INTERNET_BUFFERS -->
         <Variable Name="INTERNET_BUFFERS" Type="Struct">
             <Field Type="DWORD"                 Name="dwStructSize" />
@@ -244,7 +286,7 @@
             <Field Type="LPCTSTR"               Name="lpcszHeader" />
             <Field Type="DWORD"                 Name="dwHeadersLength" />
             <Field Type="DWORD"                 Name="dwHeadersTotal" />
-            <Field Type="LPVOID"                Name="lpvBuffer" />
+            <Field Type="LPVOID"                Name="lpvBuffer" Length="dwBufferLength" />
             <Field Type="DWORD"                 Name="dwBufferLength" />
             <Field Type="DWORD"                 Name="dwBufferTotal" />
             <Field Type="DWORD"                 Name="dwOffsetLow" />

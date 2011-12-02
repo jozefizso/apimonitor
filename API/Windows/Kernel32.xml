@@ -30,7 +30,6 @@
         <Variable Name="LPOVERLAPPED_COMPLETION_ROUTINE"            Type="Alias"    Base="LPVOID" />
         <Variable Name="PSECURE_MEMORY_CACHE_CALLBACK"              Type="Alias"    Base="LPVOID" />
         <Variable Name="LPTHREAD_START_ROUTINE"                     Type="Alias"    Base="LPVOID" />
-        <Variable Name="LPPROC_THREAD_ATTRIBUTE_LIST"               Type="Alias"    Base="LPVOID" />
         <Variable Name="PTP_CALLBACK_INSTANCE"                      Type="Alias"    Base="LPVOID" />
         <Variable Name="PTP_IO"                                     Type="Alias"    Base="LPVOID" />
         <Variable Name="PTP_POOL"                                   Type="Alias"    Base="LPVOID" />
@@ -1664,21 +1663,6 @@
             </Flag>
         </Variable>
 
-        <!-- [ProcThreadAttribute] -->
-        <Variable Name="[ProcThreadAttribute]" Type="Alias" Base="DWORD_PTR">
-            <Display Name="DWORD_PTR" />
-            <Enum>
-                <Set Name="PROC_THREAD_ATTRIBUTE_PARENT_PROCESS"    Value="0x00020000" />
-                <Set Name="PROC_THREAD_ATTRIBUTE_EXTENDED_FLAGS"    Value="0x00060001" />
-                <Set Name="PROC_THREAD_ATTRIBUTE_HANDLE_LIST"       Value="0x00020002" />
-                <Set Name="PROC_THREAD_ATTRIBUTE_IDEAL_PROCESSOR"   Value="0x00030005" />
-                <Set Name="PROC_THREAD_ATTRIBUTE_MITIGATION_POLICY" Value="0x00020007" />
-                <Set Name="PROC_THREAD_ATTRIBUTE_PREFERRED_NODE"    Value="0x00020004" />
-                <Set Name="PROC_THREAD_ATTRIBUTE_UMS_THREAD"        Value="0x00030006" />
-                <Set Name="PROC_THREAD_ATTRIBUTE_GROUP_AFFINITY"    Value="0x00030003" />
-            </Enum>
-        </Variable>
-
         <!-- [ContinueStatusFlag] -->
         <Variable Name="[ContinueStatusFlag]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
@@ -2106,17 +2090,6 @@
             <Field Type="LPTSTR"  	Name="lpCurrencySymbol" />
         </Variable>
         <Variable Name="const CURRENCYFMT*" Type="Pointer" Base="CURRENCYFMT" />
-
-        <!-- NUMBERFMT -->
-        <Variable Name="NUMBERFMT" Type="Struct">
-            <Field Type="UINT"    	Name="NumDigits" />
-            <Field Type="UINT"    	Name="LeadingZero" />
-            <Field Type="UINT"    	Name="Grouping" />
-            <Field Type="LPTSTR"   	Name="lpDecimalSep" />
-            <Field Type="LPTSTR"   	Name="lpThousandSep" />
-            <Field Type="UINT"    	Name="NegativeOrder" />
-        </Variable>
-        <Variable Name="const NUMBERFMT*" Type="Pointer" Base="NUMBERFMT" />
 
         <!-- SYSTEM_POWER_STATUS -->
         <Variable Name="SYSTEM_POWER_STATUS" Type="Struct">
@@ -3052,6 +3025,16 @@
         </Variable>
         <Variable Name="PPERFORMANCE_DATA" Type="Pointer" Base="PERFORMANCE_DATA"/>
 
+        <!-- [SEEK_TYPE] -->
+        <Variable Name="[SEEK_TYPE]" Type="Alias" Base="int">
+            <Display Name="int" />
+            <Enum>
+                <Set Name="SEEK_CUR"        Value="1" />
+                <Set Name="SEEK_END"        Value="2" />
+                <Set Name="SEEK_SET"        Value="0" />
+            </Enum>
+        </Variable>
+
         <!-- Debugging -->
         <Category Name="Diagnostics/Debugging and Error Handling/Basic Debugging" />
         <Api Name="CheckRemoteDebuggerPresent">
@@ -3317,7 +3300,7 @@
                 <Set Name="TH32CS_SNAPTHREAD"   Value="0x00000004" />
             </Flag>
         </Variable>
-        <Category Name="Diagnostics/Performance Monitoring/Tool Help Library" />
+        <Category Name="Diagnostics/Tool Help Library" />
         <Api Name="CreateToolhelp32Snapshot">
             <Param Type="[CreateToolhelp32SnapshotFlags]" Name="dwFlags" />
             <Param Type="DWORD" Name="th32ProcessID" />
@@ -3541,7 +3524,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <!-- File Management -->
-        <Category Name="System Services/File Services/Local File Systems/File Management" />
+        <Category Name="Data Access and Storage/Local File Systems/File Management" />
         <Api Name="_lopen">
             <Param Type="LPCSTR" Name="lpPathName" />
             <Param Type="int" Name="iReadWrite" />
@@ -3570,11 +3553,15 @@
         </Api>
         <Api Name="_hread">
             <Param Type="HFILE" Name="hFile" />
+            <Param Type="LPVOID" Name="lpBuffer" PostLength="[Retval]" />
+            <Param Type="LONG" Name="lBytes" />
             <Return Type="long" />
             <Success Return="NotEqual" Value="-1" />
         </Api>
         <Api Name="_hwrite">
             <Param Type="HFILE" Name="hFile" />
+            <Param Type="LPVOID" Name="lpBuffer" Length="lBytes" />
+            <Param Type="LONG" Name="lBytes" />
             <Return Type="long" />
             <Success Return="NotEqual" Value="-1" />
         </Api>
@@ -3586,7 +3573,7 @@
         <Api Name="_llseek">
             <Param Type="HFILE" Name="hFile" />
             <Param Type="LONG" Name="lOffset" />
-            <Param Type="int" Name="iOrigin" />
+            <Param Type="[SEEK_TYPE]" Name="iOrigin" />
             <Return Type="LONG" />
             <Success Return="NotEqual" Value="-1" />
         </Api>
@@ -4599,7 +4586,7 @@
         </Api>
         <Api Name="VirtualQuery">
             <Param Type="LPCVOID" Name="lpAddress" />
-            <Param Type="PMEMORY_BASIC_INFORMATION" Name="lpBuffer" Length="dwLength" />
+            <Param Type="PMEMORY_BASIC_INFORMATION" Name="lpBuffer" />
             <Param Type="SIZE_T" Name="dwLength" />
             <Return Type="SIZE_T" />
             <Success Return="NotEqual" Value="0" />
@@ -4780,7 +4767,7 @@
         </Api>
         <Api Name="GetEnvironmentVariable" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpName" />
-            <Param Type="LPTSTR" Name="lpBuffer" />
+            <Param Type="LPTSTR" Name="lpBuffer" OutputOnly="True" />
             <Param Type="DWORD" Name="nSize" />
             <Return Type="DWORD" />
             <Success Return="NotEqual" Value="0" />
@@ -5175,7 +5162,7 @@
             <Return Type="VOID" />
         </Api>
         <Api Name="InitializeProcThreadAttributeList">
-            <Param Type="LPPROC_THREAD_ATTRIBUTE_LIST" Name="lpAttributeList" PostCount="dwAttributeCount" />
+            <Param Type="LPPROC_THREAD_ATTRIBUTE_LIST" Name="lpAttributeList" OutputOnly="True" />
             <Param Type="DWORD" Name="dwAttributeCount" />
             <Param Type="DWORD" Name="dwFlags" />
             <Param Type="PSIZE_T" Name="lpSize" />
@@ -5712,7 +5699,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <!-- Side-by-Side Assemblies -->
-        <Category Name="Administration and Management/Application Installation and Servicing/Isolated Applications and Side-by-side Assemblies/Side-by-side Assemblies" />
+        <Category Name="Application Installation and Servicing/Isolated Applications and Side-by-side Assemblies/Side-by-side Assemblies" />
         <Api Name="ActivateActCtx">
             <Param Type="HANDLE" Name="hActCtx" />
             <Param Type="ULONG_PTR*" Name="lpCookie" />
@@ -5840,7 +5827,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <!-- Communications -->
-        <Category Name="System Services/Device Services/Communications Resources" />
+        <Category Name="Devices/Communications Resources" />
         <Api Name="BuildCommDCB" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpDef" />
             <Param Type="LPDCB" Name="lpDCB" />
@@ -6384,7 +6371,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <!-- Device Management -->
-        <Category Name="System Services/Device Services/Device Management" />
+        <Category Name="Devices/Device Management" />
         <Api Name="DeviceIoControl">
             <Param Type="HANDLE" Name="hDevice" />
             <Param Type="DWORD" Name="dwIoControlCode" />
@@ -8067,7 +8054,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <!-- Backup -->
-        <Category Name="System Services/File Services/Backup" />
+        <Category Name="Data Access and Storage/Backup/Backup" />
         <Api Name="BackupRead">
             <Param Type="HANDLE" Name="hFile" />
             <Param Type="LPBYTE" Name="lpBuffer" />
@@ -8443,7 +8430,7 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <!-- Directory Management -->
-        <Category Name="System Services/File Services/Local File Systems/Directory Management" />
+        <Category Name="Data Access and Storage/Local File Systems/Directory Management" />
         <Api Name="CreateDirectory" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpPathName" />
             <Param Type="LPSECURITY_ATTRIBUTES" Name="lpSecurityAttributes" />
@@ -8517,7 +8504,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <!-- Disk Management -->
-        <Category Name="System Services/File Services/Local File Systems/Disk Management" />
+        <Category Name="Data Access and Storage/Local File Systems/Disk Management" />
         <Api Name="GetDiskFreeSpace" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpRootPathName" />
             <Param Type="LPDWORD" Name="lpSectorsPerCluster" />
@@ -8806,7 +8793,7 @@
         </Variable>
 
         <!-- Volume Management -->
-        <Category Name="System Services/File Services/Local File Systems/Volume Management" />
+        <Category Name="Data Access and Storage/Local File Systems/Volume Management" />
         <Api Name="DefineDosDevice" BothCharset="True">
             <Param Type="[DDD_FLAGS]" Name="dwFlags" />
             <Param Type="LPCTSTR" Name="lpDeviceName" />
@@ -9097,5 +9084,54 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
 
+        <!-- Undocumented (UnDoc'd) -->
+        <Category Name="Undocumented (UnDoc'd)" OnlineHelp="UnDoc'd-kernel32" />
+        <Api Name="BaseFormatTimeOut">
+            <Param Type="LARGE_INTEGER*" Name="pLITimeout" />
+            <Param Type="DWORD" Name="dwMillis" />
+            <Return Type="LARGE_INTEGER*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="BaseGetNamedObjectDirectory" ErrorFunc="NTSTATUS">
+            <Param Type="HANDLE*" Name="phDir" />
+            <Return Type="NTSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="Basep8BitStringToDynamicUnicodeString">
+            <Param Type="PUNICODE_STRING" Name="pConvertedStr" />
+            <Param Type="LPCSTR" Name="pszAnsiStr" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CheckElevationEnabled">
+            <Param Type="BOOL*" Name="pResult" />
+            <Return Type="DWORD" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="SetConsoleCursor">
+            <Param Type="HANDLE" Name="hConsole" />
+            <Param Type="HCURSOR" Name="hCursor" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetConsoleMaximumWindowSize">
+            <Param Type="HANDLE" Name="hConsole" />
+            <Param Type="DWORD" Name="dwUnk" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetStdHandleEx">
+            <Param Type="[StdHandle]" Name="dwStdHandle" />
+            <Param Type="HANDLE" Name="hNewHandle" />
+            <Param Type="HANDLE*" Name="phOldHandle" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="ShowConsoleCursor">
+            <Param Type="HANDLE" Name="hConsoleOutput" />
+            <Param Type="BOOL" Name="bShow" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
     </Module>
 </ApiMonitor>

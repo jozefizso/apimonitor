@@ -20,6 +20,7 @@
         <Variable Name="LANGID"                         Type="Alias"    Base="WORD" />
         <Variable Name="LANGID*"                        Type="Pointer"  Base="LANGID" />
         <Variable Name="BSTR"                           Type="Alias"    Base="WCHAR*" />
+        <Variable Name="const BSTR"                     Type="Alias"    Base="BSTR" />
         <Variable Name="BSTR*"                          Type="Pointer"  Base="BSTR" />
         <Variable Name="LCID"                           Type="Alias"    Base="DWORD" />
         <Variable Name="LCID*"                          Type="Pointer"  Base="LCID" />
@@ -34,6 +35,7 @@
         <Variable Name="ATOM"                           Type="Alias"    Base="WORD" />
         <Variable Name="PSLIST_ENTRY"                   Type="Alias"    Base="LPVOID" />
         <Variable Name="KAFFINITY"                      Type="Alias"    Base="ULONG_PTR" />
+        <Variable Name="STDAPI_(VOID)"                  Type="Alias"    Base="VOID" />
 
         <!-- Arrays -->
         <Variable Name="WCHAR [32]"                                 Type="Array"    Base="WCHAR"        Count="32" />
@@ -497,7 +499,7 @@
         <Variable Name="PDEVMODE*"      Type="Pointer" Base="PDEVMODE" />
 
         <!-- Handle -->
-        <Variable Name="HANDLE" Type="Integer" Size="0" DisplayHex="True" Unsigned="True">
+        <Variable Name="HANDLE" Type="Alias" Base="UINT_PTR" DisplayHex="True">
             <Enum>
                 <Set Name="NULL" Value="0" />
                 <Set Name="INVALID_HANDLE_VALUE" Value="-1" />
@@ -1574,6 +1576,7 @@
                 <Set Name="FILE_ATTRIBUTE_NOT_CONTENT_INDEXED"  Value="0x00002000" />
                 <Set Name="FILE_ATTRIBUTE_ENCRYPTED"            Value="0x00004000" />
                 <Set Name="FILE_ATTRIBUTE_VIRTUAL"              Value="0x00010000" />
+                <Set Name="INVALID_FILE_ATTRIBUTES"             Value="-1" />
             </Flag>
         </Variable>
 
@@ -1973,7 +1976,6 @@
 
         <!-- SymTagEnum -->
         <Variable Name="SymTagEnum" Type="Alias" Base="ULONG">
-            <Display Name="ULONG" />
             <Enum>
                 <Set Name="SymTagNull"                  Value="0" />
                 <Set Name="SymTagExe"                   Value="1" />
@@ -2008,6 +2010,191 @@
                 <Set Name="SymTagDimension"             Value="30" />
             </Enum>
         </Variable>
+        <Variable Name="[SymTagEnum_ULONG]" Type="Alias" Base="SymTagEnum">
+            <Display Name="ULONG" />
+        </Variable>
+
+        <!-- IMAGE_DATA_DIRECTORY -->
+        <Variable Name="IMAGE_DATA_DIRECTORY" Type="Struct">
+            <Field Type="DWORD"     Name="VirtualAddress" />
+            <Field Type="DWORD"     Name="Size" />
+        </Variable>
+        <Variable Name="IMAGE_DATA_DIRECTORY [IMAGE_NUMBEROF_DIRECTORY_ENTRIES]" Type="Array" Base="IMAGE_DATA_DIRECTORY" Count="16" />
+
+        <!-- [IMAGE_OPTIONAL_MAGIC] -->
+        <Variable Name="[IMAGE_OPTIONAL_MAGIC]" Type="Alias" Base="WORD">
+            <Display Name="WORD" />
+            <Enum>
+                <Set Name="IMAGE_NT_OPTIONAL_HDR32_MAGIC"   Value="0x10b" />
+                <Set Name="IMAGE_NT_OPTIONAL_HDR64_MAGIC"   Value="0x20b" />
+                <Set Name="IMAGE_ROM_OPTIONAL_HDR_MAGIC"    Value="0x107" />
+            </Enum>
+        </Variable>
+
+        <!-- [IMAGE_SUBSYSTEM] -->
+        <Variable Name="[IMAGE_SUBSYSTEM]" Type="Alias" Base="WORD">
+            <Display Name="WORD" />
+            <Enum>
+                <Set Name="IMAGE_SUBSYSTEM_UNKNOWN"                         Value="0" />
+                <Set Name="IMAGE_SUBSYSTEM_NATIVE"                          Value="1" />
+                <Set Name="IMAGE_SUBSYSTEM_WINDOWS_GUI"                     Value="2" />
+                <Set Name="IMAGE_SUBSYSTEM_WINDOWS_CUI"                     Value="3" />
+                <Set Name="IMAGE_SUBSYSTEM_OS2_CUI"                         Value="5" />
+                <Set Name="IMAGE_SUBSYSTEM_POSIX_CUI"                       Value="7" />
+                <Set Name="IMAGE_SUBSYSTEM_NATIVE_WINDOWS"                  Value="8" />
+                <Set Name="IMAGE_SUBSYSTEM_WINDOWS_CE_GUI"                  Value="9" />
+                <Set Name="IMAGE_SUBSYSTEM_EFI_APPLICATION"                 Value="10" />
+                <Set Name="IMAGE_SUBSYSTEM_EFI_BOOT_SERVICE_DRIVER"         Value="11" />
+                <Set Name="IMAGE_SUBSYSTEM_EFI_RUNTIME_DRIVER"              Value="12" />
+                <Set Name="IMAGE_SUBSYSTEM_EFI_ROM"                         Value="13" />
+                <Set Name="IMAGE_SUBSYSTEM_XBOX"                            Value="14" />
+                <Set Name="IMAGE_SUBSYSTEM_WINDOWS_BOOT_APPLICATION"        Value="16" />
+            </Enum>
+        </Variable>
+
+        <!-- [IMAGE_DLLCHARACTERISTICS] -->
+        <Variable Name="[IMAGE_DLLCHARACTERISTICS]" Type="Alias" Base="WORD">
+            <Display Name="WORD" />
+            <Flag>
+                <Set Name="IMAGE_LIBRARY_PROCESS_INIT"                          Value="0x0001" />
+                <Set Name="IMAGE_LIBRARY_PROCESS_TERM"                          Value="0x0002" />
+                <Set Name="IMAGE_LIBRARY_THREAD_INIT"                           Value="0x0004" />
+                <Set Name="IMAGE_LIBRARY_THREAD_TERM"                           Value="0x0008" />
+                <Set Name="IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE"               Value="0x0040" />
+                <Set Name="IMAGE_DLLCHARACTERISTICS_FORCE_INTEGRITY"            Value="0x0080" />
+                <Set Name="IMAGE_DLLCHARACTERISTICS_NX_COMPAT"                  Value="0x0100" />
+                <Set Name="IMAGE_DLLCHARACTERISTICS_NO_ISOLATION"               Value="0x0200" />
+                <Set Name="IMAGE_DLLCHARACTERISTICS_NO_SEH"                     Value="0x0400" />
+                <Set Name="IMAGE_DLLCHARACTERISTICS_NO_BIND"                    Value="0x0800" />
+                <Set Name="IMAGE_DLLCHARACTERISTICS_WDM_DRIVER"                 Value="0x2000" />
+                <Set Name="IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE"      Value="0x8000" />
+            </Flag>
+        </Variable>
+
+        <!-- [IMAGE_FILE_MACHINE] -->
+        <Variable Name="[IMAGE_FILE_MACHINE]" Type="Alias" Base="WORD">
+            <Display Name="WORD" />
+            <Enum>
+                <Set Name="IMAGE_FILE_MACHINE_UNKNOWN"      Value="0" />
+                <Set Name="IMAGE_FILE_MACHINE_I386"         Value="0x014c" />
+                <Set Name="IMAGE_FILE_MACHINE_IA64"         Value="0x0200" />
+                <Set Name="IMAGE_FILE_MACHINE_AMD64"        Value="0x8664" />
+            </Enum>
+        </Variable>
+
+        <!-- [IMAGE_FILE_CHARACTERISTICS] -->
+        <Variable Name="[IMAGE_FILE_CHARACTERISTICS]" Type="Alias" Base="WORD">
+            <Display Name="WORD" />
+            <Flag>
+                <Set Name="IMAGE_FILE_RELOCS_STRIPPED"          Value="0x0001" />
+                <Set Name="IMAGE_FILE_EXECUTABLE_IMAGE"         Value="0x0002" />
+                <Set Name="IMAGE_FILE_LINE_NUMS_STRIPPED"       Value="0x0004" />
+                <Set Name="IMAGE_FILE_LOCAL_SYMS_STRIPPED"      Value="0x0008" />
+                <Set Name="IMAGE_FILE_AGGRESIVE_WS_TRIM"        Value="0x0010" />
+                <Set Name="IMAGE_FILE_LARGE_ADDRESS_AWARE"      Value="0x0020" />
+                <Set Name="IMAGE_FILE_BYTES_REVERSED_LO"        Value="0x0080" />
+                <Set Name="IMAGE_FILE_32BIT_MACHINE"            Value="0x0100" />
+                <Set Name="IMAGE_FILE_DEBUG_STRIPPED"           Value="0x0200" />
+                <Set Name="IMAGE_FILE_REMOVABLE_RUN_FROM_SWAP"  Value="0x0400" />
+                <Set Name="IMAGE_FILE_NET_RUN_FROM_SWAP"        Value="0x0800" />
+                <Set Name="IMAGE_FILE_SYSTEM"                   Value="0x1000" />
+                <Set Name="IMAGE_FILE_DLL"                      Value="0x2000" />
+                <Set Name="IMAGE_FILE_UP_SYSTEM_ONLY"           Value="0x4000" />
+                <Set Name="IMAGE_FILE_BYTES_REVERSED_HI"        Value="0x8000" />
+            </Flag>
+        </Variable>
+
+        <!-- IMAGE_FILE_HEADER -->
+        <Variable Name="IMAGE_FILE_HEADER" Type="Struct">
+            <Field Type="[IMAGE_FILE_MACHINE]"          Name="Machine" />
+            <Field Type="WORD"                          Name="NumberOfSections" />
+            <Field Type="DWORD"                         Name="TimeDateStamp" />
+            <Field Type="DWORD"                         Name="PointerToSymbolTable" />
+            <Field Type="DWORD"                         Name="NumberOfSymbols" />
+            <Field Type="WORD"                          Name="SizeOfOptionalHeader" />
+            <Field Type="[IMAGE_FILE_CHARACTERISTICS]"  Name="Characteristics" />
+        </Variable>
+
+        <!-- IMAGE_OPTIONAL_HEADER64 -->
+        <Variable Name="IMAGE_OPTIONAL_HEADER64" Type="Struct">
+            <Field Type="[IMAGE_OPTIONAL_MAGIC]"        Name="Magic" />
+            <Field Type="BYTE"                          Name="MajorLinkerVersion" />
+            <Field Type="BYTE"                          Name="MinorLinkerVersion" />
+            <Field Type="DWORD"                         Name="SizeOfCode" />
+            <Field Type="DWORD"                         Name="SizeOfInitializedData" />
+            <Field Type="DWORD"                         Name="SizeOfUninitializedData" />
+            <Field Type="DWORD"                         Name="AddressOfEntryPoint" />
+            <Field Type="DWORD"                         Name="BaseOfCode" />
+            <Field Type="ULONGLONG"                     Name="ImageBase" />
+            <Field Type="DWORD"                         Name="SectionAlignment" />
+            <Field Type="DWORD"                         Name="FileAlignment" />
+            <Field Type="WORD"                          Name="MajorOperatingSystemVersion" />
+            <Field Type="WORD"                          Name="MinorOperatingSystemVersion" />
+            <Field Type="WORD"                          Name="MajorImageVersion" />
+            <Field Type="WORD"                          Name="MinorImageVersion" />
+            <Field Type="WORD"                          Name="MajorSubsystemVersion" />
+            <Field Type="WORD"                          Name="MinorSubsystemVersion" />
+            <Field Type="DWORD"                         Name="Win32VersionValue" />
+            <Field Type="DWORD"                         Name="SizeOfImage" />
+            <Field Type="DWORD"                         Name="SizeOfHeaders" />
+            <Field Type="DWORD"                         Name="CheckSum" />
+            <Field Type="[IMAGE_SUBSYSTEM]"             Name="Subsystem" />
+            <Field Type="[IMAGE_DLLCHARACTERISTICS]"    Name="DllCharacteristics" />
+            <Field Type="ULONGLONG"                     Name="SizeOfStackReserve" />
+            <Field Type="ULONGLONG"                     Name="SizeOfStackCommit" />
+            <Field Type="ULONGLONG"                     Name="SizeOfHeapReserve" />
+            <Field Type="ULONGLONG"                     Name="SizeOfHeapCommit" />
+            <Field Type="DWORD"                         Name="LoaderFlags" />
+            <Field Type="DWORD"                         Name="NumberOfRvaAndSizes" />
+            <Field Type="IMAGE_DATA_DIRECTORY [IMAGE_NUMBEROF_DIRECTORY_ENTRIES]" Name="DataDirectory" />
+        </Variable>
+
+        <!-- NUMBERFMT -->
+        <Variable Name="NUMBERFMT" Type="Struct">
+            <Field Type="UINT"    	Name="NumDigits" />
+            <Field Type="UINT"    	Name="LeadingZero" />
+            <Field Type="UINT"    	Name="Grouping" />
+            <Field Type="LPTSTR"   	Name="lpDecimalSep" />
+            <Field Type="LPTSTR"   	Name="lpThousandSep" />
+            <Field Type="UINT"    	Name="NegativeOrder" />
+        </Variable>
+        <Variable Name="NUMBERFMT*"         Type="Pointer" Base="NUMBERFMT" />
+        <Variable Name="const NUMBERFMT*"   Type="Pointer" Base="NUMBERFMT" />
+
+        <Variable Name="[DwmWindowAttr]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="DWMWA_NCRENDERING_ENABLED"           Value="1" />
+                <Set Name="DWMWA_NCRENDERING_POLICY"            Value="2" />
+                <Set Name="DWMWA_TRANSITIONS_FORCEDISABLED"     Value="3" />
+                <Set Name="DWMWA_ALLOW_NCPAINT"                 Value="4" />
+                <Set Name="DWMWA_CAPTION_BUTTON_BOUNDS"         Value="5" />
+                <Set Name="DWMWA_NONCLIENT_RTL_LAYOUT"          Value="6" />
+                <Set Name="DWMWA_FORCE_ICONIC_REPRESENTATION"   Value="7" />
+                <Set Name="DWMWA_FLIP3D_POLICY"                 Value="8" />
+                <Set Name="DWMWA_EXTENDED_FRAME_BOUNDS"         Value="9" />
+                <Set Name="DWMWA_HAS_ICONIC_BITMAP"             Value="10" />
+                <Set Name="DWMWA_DISALLOW_PEEK"                 Value="11" />
+                <Set Name="DWMWA_EXCLUDED_FROM_PEEK"            Value="12" />
+            </Enum>
+        </Variable>
 
     </Headers>
+
+    <Include Filename="Headers\windows-32.h.xml" />
+    <Include Filename="Headers\windows-64.h.xml" />
+
+    <Headers>
+
+        <!-- IMAGE_NT_HEADERS -->
+        <Variable Name="IMAGE_NT_HEADERS" Type="Struct">
+            <Field Type="DWORD"                     Name="Signature" />
+            <Field Type="IMAGE_FILE_HEADER"         Name="FileHeader" />
+            <Field Type="IMAGE_OPTIONAL_HEADER"     Name="OptionalHeader" />
+        </Variable>
+        <Variable Name="PIMAGE_NT_HEADERS"  Type="Pointer" Base="IMAGE_NT_HEADERS" />
+        <Variable Name="PIMAGE_NT_HEADERS*" Type="Pointer" Base="PIMAGE_NT_HEADERS" />
+
+    </Headers>
+
 </ApiMonitor>

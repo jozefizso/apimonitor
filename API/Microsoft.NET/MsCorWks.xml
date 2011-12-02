@@ -1,0 +1,164 @@
+<!--
+    API Monitor Definitions
+    (c) 2011, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\Windows.h.xml" />
+    <Module Name="mscorwks.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
+
+        <!-- TODO: Variables - Undocumented -->
+        <Variable Name="AssemblyConfig*" Type="Alias" Base="IAssemblyName*" />
+
+        <!-- HOST_TYPE -->
+        <Variable Name="HOST_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="HOST_TYPE_DEFAULT"       Value="0" />
+                <Set Name="HOST_TYPE_APPLAUNCH"     Value="0x1" />
+                <Set Name="HOST_TYPE_CORFLAG"       Value="0x2" />
+            </Enum>
+        </Variable>
+
+        <!-- AssemblyComparisonResult -->
+        <Variable Name="AssemblyComparisonResult" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="ACR_Unknown"                         Value="0" />
+                <Set Name="ACR_EquivalentFullMatch"             Value="1" />
+                <Set Name="ACR_EquivalentWeakNamed"             Value="2" />
+                <Set Name="ACR_EquivalentFXUnified"             Value="3" />
+                <Set Name="ACR_EquivalentUnified"               Value="4" />
+                <Set Name="ACR_NonEquivalentVersion"            Value="5" />
+                <Set Name="ACR_NonEquivalent"                   Value="6" />
+                <Set Name="ACR_EquivalentPartialMatch"          Value="7" />
+                <Set Name="ACR_EquivalentPartialWeakNamed"      Value="8" />
+                <Set Name="ACR_EquivalentPartialUnified"        Value="9" />
+                <Set Name="ACR_EquivalentPartialFXUnified"      Value="10" />
+                <Set Name="ACR_NonEquivalentPartialVersion"     Value="11" />
+            </Enum>
+        </Variable>
+        <Variable Name="AssemblyComparisonResult*" Type="Pointer" Base="AssemblyComparisonResult" />
+
+        <!-- .NET Framework/Unmanaged API/Hosting -->
+        <Category Name="Microsoft .NET/Unmanaged API/Hosting" />
+
+        <Api Name="CorLaunchApplication">
+            <Param Type="HOST_TYPE" Name="dwClickOnceHost" />
+            <Param Type="LPCWSTR" Name="pwzAppFullName" />
+            <Param Type="DWORD" Name="dwManifestPaths" />
+            <Param Type="LPCWSTR*" Name="ppwzManifestPaths" />
+            <Param Type="DWORD" Name="dwActivationData" />
+            <Param Type="LPCWSTR*" Name="ppwzActivationData" />
+            <Param Type="LPPROCESS_INFORMATION" Name="lpProcessInformation" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetCLRIdentityManager">
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="IUnknown**" Name="ppManager" InterfaceId="riid" />
+            <Return Type="STDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+
+        <!-- .NET Framework/Unmanaged API/Fusion -->
+        <Category Name="Microsoft .NET/Unmanaged API/Fusion" />
+        <Api Name="CompareAssemblyIdentity">
+            <Param Type="LPCWSTR" Name="pwzAssemblyIdentity1" />
+            <Param Type="BOOL" Name="fUnified1" />
+            <Param Type="LPCWSTR" Name="pwzAssemblyIdentity2" />
+            <Param Type="BOOL" Name="fUnified2" />
+            <Param Type="BOOL*" Name="pfEquivalent" />
+            <Param Type="AssemblyComparisonResult*" Name="pResult" />
+            <Return Type="STDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CompareAssemblyIdentityWithConfig">
+            <Param Type="LPCWSTR" Name="pwzAssemblyIdentity1" />
+            <Param Type="BOOL" Name="fUnified1" />
+            <Param Type="LPCWSTR" Name="pwzAssemblyIdentity2" />
+            <Param Type="BOOL" Name="fUnified2" />
+            <Param Type="AssemblyConfig*" Name="pAssemblyConfig" />
+            <Param Type="BOOL*" Name="pfEquivalent" />
+            <Param Type="AssemblyComparisonResult*" Name="pResult" />
+            <Return Type="STDAPI" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CreateAssemblyCache">
+            <Param Type="IAssemblyCache**" Name="ppAsmCache" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CreateAssemblyEnum">
+            <Param Type="IAssemblyEnum**" Name="pEnum" />
+            <Param Type="IUnknown*" Name="pUnkReserved" />
+            <Param Type="IAssemblyName*" Name="pName" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="LPVOID" Name="pvReserved" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CreateAssemblyNameObject">
+            <Param Type="LPASSEMBLYNAME*" Name="ppAssemblyNameObj" />
+            <Param Type="LPCWSTR" Name="szAssemblyName" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="LPVOID" Name="pvReserved" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CreateHistoryReader">
+            <Param Type="LPCWSTR" Name="wzFilePath" />
+            <Param Type="IHistoryReader**" Name="ppHistoryReader" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="CreateInstallReferenceEnum">
+            <Param Type="IInstallReferenceEnum**" Name="ppRefEnum" />
+            <Param Type="IAssemblyName*" Name="pName" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="LPVOID" Name="pvReserved" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetAppIdAuthority">
+            <Param Type="IAppIdAuthority**" Name="ppIAppIdAuthority" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetCachePath">
+            <Param Type="ASM_CACHE_FLAGS" Name="dwCacheFlags" />
+            <Param Type="LPWSTR" Name="pwzCachePath" />
+            <Param Type="PDWORD" Name="pcchPath" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetHistoryFileDirectory">
+            <Param Type="LPWSTR" Name="wzDir" />
+            <Param Type="LPCWSTR*" Name="pdwsize" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetAssemblyIdentityFromFile">
+            <Param Type="LPCWSTR" Name="pwzFilePath" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="IUnknown**" Name="ppIdentity" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="GetIdentityAuthority">
+            <Param Type="IIdentityAuthority**" Name="ppIIdentityAuthority" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="PreBindAssemblyEx">
+            <Param Type="IApplicationContext*" Name="pAppCtx" />
+            <Param Type="IAssemblyName*" Name="pName" />
+            <Param Type="IAssembly*" Name="pAsmParent" />
+            <Param Type="LPCWSTR" Name="pwzRuntimeVersion" />
+            <Param Type="IAssemblyName**" Name="ppNamePostPolicy" />
+            <Param Type="LPVOID" Name="pvReserved" />
+            <Return Type="HRESULT" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+
+    </Module>
+</ApiMonitor>

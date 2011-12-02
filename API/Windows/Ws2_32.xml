@@ -9,7 +9,6 @@
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\sockets.h.xml" />
     <Module Name="Ws2_32.dll" CallingConvention="STDCALL" ErrorFunc="WSAGetLastError" OnlineHelp="MSDN">
-        <!-- Variables -->
         
         <!-- [LookupServiceFlags] -->
         <Variable Name="[LookupServiceFlags]" Type="Alias" Base="DWORD">
@@ -51,26 +50,37 @@
                 <Set Name="WSA_FLAG_ACCESS_SYSTEM_SECURITY" Value="0x40" />
             </Flag>
         </Variable>
-        
-        <!-- [FDEvents] -->
-        <Variable Name="[FDEvents]" Type="Alias" Base="ULONG">
-            <Display Name="long" />
+
+        <!-- [WsaIoctl]-->
+        <Variable Name="[WsaIoctl]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
             <Flag>
-                <Set Name="FD_READ"                     Value="0x00000001" />
-                <Set Name="FD_WRITE"                    Value="0x00000002" />
-                <Set Name="FD_OOB"                      Value="0x00000004" />
-                <Set Name="FD_ACCEPT"                   Value="0x00000008" />
-                <Set Name="FD_CONNECT"                  Value="0x00000010" />
-                <Set Name="FD_CLOSE"                    Value="0x00000020" />
-                <Set Name="FD_QOS"                      Value="0x00000040" />
-                <Set Name="FD_GROUP_QOS"                Value="0x00000080" />
-                <Set Name="FD_ROUTING_INTERFACE_CHANGE" Value="0x00000100" />
-                <Set Name="FD_ADDRESS_LIST_CHANGE"      Value="0x00000200" />
+                <Set Name="SIO_ASSOCIATE_HANDLE"                        Value="0x88000001" />
+                <Set Name="SIO_ENABLE_CIRCULAR_QUEUEING"                Value="0x28000002" />
+                <Set Name="SIO_FIND_ROUTE"                              Value="0x48000003" />
+                <Set Name="SIO_FLUSH"                                   Value="0x28000004" />
+                <Set Name="SIO_GET_BROADCAST_ADDRESS"                   Value="0x48000005" />
+                <Set Name="SIO_GET_EXTENSION_FUNCTION_POINTER"          Value="0xc8000006" />
+                <Set Name="SIO_GET_QOS"                                 Value="0xc8000007" />
+                <Set Name="SIO_GET_GROUP_QOS"                           Value="0xc8000008" />
+                <Set Name="SIO_MULTIPOINT_LOOPBACK"                     Value="0x88000009" />
+                <Set Name="SIO_MULTICAST_SCOPE"                         Value="0x8800000a" />
+                <Set Name="SIO_SET_QOS"                                 Value="0x8800000b" />
+                <Set Name="SIO_SET_GROUP_QOS"                           Value="0x8800000c" />
+                <Set Name="SIO_TRANSLATE_HANDLE"                        Value="0xc800000d" />
+                <Set Name="SIO_ROUTING_INTERFACE_QUERY"                 Value="0xc8000014" />
+                <Set Name="SIO_ROUTING_INTERFACE_CHANGE"                Value="0x88000015" />
+                <Set Name="SIO_ADDRESS_LIST_QUERY"                      Value="0x48000016" />
+                <Set Name="SIO_ADDRESS_LIST_CHANGE"                     Value="0x28000017" />
+                <Set Name="SIO_QUERY_TARGET_PNP_HANDLE"                 Value="0x48000018" />
+                <Set Name="SIO_ADDRESS_LIST_SORT"                       Value="0xc8000019" />
+                <Set Name="SIO_RESERVED_1"                              Value="0x8800001a" />
+                <Set Name="SIO_RESERVED_2"                              Value="0x88000021" />
             </Flag>
         </Variable>
-        
+
         <!-- Windows Sockets 2 -->
-        <Category Name="Networking/Network Protocols/Windows Sockets 2" />
+        <Category Name="Networking/Windows Sockets 2" />
         <Api Name="accept" Ordinal="1">
             <Param Type="SOCKET" Name="s" />
             <Param Type="struct sockaddr*" Name="addr" />
@@ -219,7 +229,7 @@
             <Param Type="SOCKET" Name="s" />
             <Param Type="[SocketLevel]" Name="level" />
             <Param Type="[SocketOption]" Name="optname" />
-            <Param Type="LPVOID" Display="char*" Name="optval" PostLength="optlen" />
+            <Param Type="[LPVOID_char*]" Name="optval" PostLength="optlen" />
             <Param Type="int*" Name="optlen" />
             <Return Type="[SocketCode-int]" />
             <Success Return="Equal" Value="0" />
@@ -234,7 +244,7 @@
         </Api>
         <Api Name="inet_addr" Ordinal="11" ErrorFunc="">
             <Param Type="const char*" Name="cp" />
-            <Return Type="unsigned long" />
+            <Return Type="[INET_ADDR_OUTPUT]" />
             <Success Return="NotEqual" Value="0xffffffff" />
         </Api>
         <Api Name="inet_ntoa" Ordinal="12">
@@ -274,7 +284,7 @@
         </Api>
         <Api Name="ioctlsocket" Ordinal="10">
             <Param Type="SOCKET" Name="s" />
-            <Param Type="long" Name="cmd" />
+            <Param Type="[Socket_IOCTL]" Name="cmd" />
             <Param Type="u_long*" Name="argp" />
             <Return Type="[SocketCode-int]" />
             <Success Return="Equal" Value="0" />
@@ -295,7 +305,7 @@
         </Api>
         <Api Name="recv" Ordinal="16">
             <Param Type="SOCKET" Name="s" />
-            <Param Type="LPVOID" Display="char*" Name="buf" Length="[Retval]" />
+            <Param Type="[LPVOID_char*]" Name="buf" Length="[Retval]" />
             <Param Type="int" Name="len" />
             <Param Type="[SendRecvFlags]" Display="int" Name="flags" />
             <Return Type="[SocketCode-int]" />
@@ -303,7 +313,7 @@
         </Api>
         <Api Name="recvfrom" Ordinal="17">
             <Param Type="SOCKET" Name="s" />
-            <Param Type="LPVOID" Display="char*" Name="buf" Length="[Retval]" />
+            <Param Type="[LPVOID_char*]" Name="buf" Length="[Retval]" />
             <Param Type="int" Name="len" />
             <Param Type="int" Name="flags" />
             <Param Type="struct sockaddr*" Name="from" />
@@ -456,7 +466,7 @@
             <Param Type="SOCKET" Name="s" />
             <Param Type="HWND" Name="hWnd" />
             <Param Type="unsigned int" Name="wMsg" />
-            <Param Type="long" Name="lEvent" />
+            <Param Type="[FDEvents]" Name="lEvent" />
             <Return Type="[SocketCode-int]" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -600,7 +610,7 @@
         </Api>
         <Api Name="WSAIoctl" Ordinal="74">
             <Param Type="SOCKET" Name="s" />
-            <Param Type="DWORD" Name="dwIoControlCode" />
+            <Param Type="[WsaIoctl]" Name="dwIoControlCode" />
             <Param Type="LPVOID" Name="lpvInBuffer" Length="cbInBuffer" />
             <Param Type="DWORD" Name="cbInBuffer" />
             <Param Type="LPVOID" Name="lpvOutBuffer" PostLength="lpcbBytesReturned" />
@@ -805,7 +815,7 @@
         </Api>
         
         <!-- Quality of Service (QOS) -->
-        <Category Name="Networking/Network Protocols/Quality of Service (QOS)" />
+        <Category Name="Networking/Quality of Service (QOS)" />
         <Api Name="WSAGetQOSByName">
             <Param Type="SOCKET" Name="s" />
             <Param Type="LPWSABUF" Name="lpQOSName" />

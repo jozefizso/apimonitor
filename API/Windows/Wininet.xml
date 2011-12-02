@@ -7,7 +7,8 @@
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\internet.h.xml" />
     <Module Name="Wininet.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        <!-- Flags -->
+
+        <!-- [InternetService] -->
         <Variable Name="[InternetService]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>
@@ -16,7 +17,8 @@
                 <Set Name="INTERNET_SERVICE_HTTP"           Value="3" />
             </Enum>
         </Variable>
-        
+
+        <!-- [CacheEntryType] -->
         <Variable Name="[CacheEntryType]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -30,7 +32,8 @@
                 <Set Name="URLHISTORY_CACHE_ENTRY"      Value="0x00200000" />
             </Flag>
         </Variable>
-        
+
+        <!-- [InternetOption] -->
         <Variable Name="[InternetOption]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>
@@ -124,7 +127,8 @@
                 <Set Name="INTERNET_OPTION_IDN"                                 Value="102" />
             </Enum>
         </Variable>
-        
+
+        <!-- [InternetGetConnectedStateFlags] -->
         <Variable Name="[InternetGetConnectedStateFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -137,11 +141,11 @@
                 <Set Name="INTERNET_CONNECTION_CONFIGURED"  Value="0x40" />
             </Flag>
         </Variable>
-        
         <Variable Name="[InternetGetConnectedStateFlags*]" Type="Pointer" Base="[InternetGetConnectedStateFlags]">
             <Display Name="LPDWORD" />
         </Variable>
-        
+
+        <!-- [InternetOpenType] -->
         <Variable Name="[InternetOpenType]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>
@@ -151,7 +155,8 @@
                 <Set Name="INTERNET_OPEN_TYPE_PRECONFIG_WITH_NO_AUTOPROXY"          Value="4" />
             </Enum>
         </Variable>
-        
+
+        <!-- [InternetOpenFlags] -->
         <Variable Name="[InternetOpenFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -159,7 +164,8 @@
                 <Set Name="INTERNET_FLAG_FROM_CACHE"    Value="0x01000000" />
             </Flag>
         </Variable>
-        
+
+        <!-- [InternetFlags] -->
         <Variable Name="[InternetFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -190,7 +196,8 @@
                 <Set Name="INTERNET_FLAG_RAW_DATA"                  Value="0x40000000" />
             </Flag>
         </Variable>
-        
+
+        <!-- [HttpQueryFlags] -->
         <Variable Name="[HttpQueryFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -280,22 +287,16 @@
                 <Set Name="HTTP_QUERY_FLAG_COALESCE"                Value="0x10000000" />
             </Flag>
         </Variable>
-        
-        <Variable Name="[InternetCrackUrlFlags]" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
-            <Flag>
-                <Set Name="ICU_DECODE"      Value="0x10000000" />
-                <Set Name="ICU_ESCAPE"      Value="0x80000000" />
-            </Flag>
-        </Variable>
-        
+
+        <!-- [InternetReadFileFlags] -->
         <Variable Name="[InternetReadFileFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
                 <Set Name="IRF_NO_WAIT"     Value="0x00000008" />
             </Flag>
         </Variable>
-        
+
+        <!-- [HttpAddReqFlag] -->
         <Variable Name="[HttpAddReqFlag]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -306,7 +307,8 @@
                 <Set Name="HTTP_ADDREQ_FLAG_REPLACE"                    Value="0x80000000" />
             </Flag>
         </Variable>
-        
+
+        <!-- [InternetCookieFlags] -->
         <Variable Name="[InternetCookieFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -324,7 +326,8 @@
                 <Set Name="INTERNET_COOKIE_HTTPONLY"        Value="0x00002000" />
             </Flag>
         </Variable>
-        
+
+        <!-- [InternetErrorDlgErrorCode] -->
         <Variable Name="[InternetErrorDlgErrorCode]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>
@@ -337,7 +340,8 @@
                 <Set Name="ERROR_INTERNET_SEC_CERT_DATE_INVALID"        Value="12037" />
             </Enum>
         </Variable>
-        
+
+        <!-- [InternetErrorDlgFlags] -->
         <Variable Name="[InternetErrorDlgFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -348,7 +352,8 @@
                 <Set Name="FLAGS_ERROR_UI_SERIALIZE_DIALOGS"        Value="0x10" />
             </Flag>
         </Variable>
-        
+
+        <!-- [CacheEntryFieldControl] -->
         <Variable Name="[CacheEntryFieldControl]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -364,7 +369,7 @@
         </Variable>
         
         <!-- Windows Internet -->
-        <Category Name="Networking/Network Protocols/Windows Internet (WinINet)" />
+        <Category Name="Internet/Windows Internet (WinINet)" />
         <Api Name="CommitUrlCacheEntry" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszUrlName" />
             <Param Type="LPCTSTR" Name="lpszLocalFileName" />
@@ -771,14 +776,14 @@
             <Param Type="LPCTSTR" Name="lpszUrl" />
             <Param Type="DWORD" Name="dwUrlLength" />
             <Param Type="[InternetCrackUrlFlags]" Name="dwFlags" />
-            <Param Type="LPURL_COMPONENTS" Name="lpUrlComponents" />
+            <Param Type="LPURL_COMPONENTS" Name="lpUrlComponents" OutputOnly="True" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetCreateUrl" BothCharset="True">
             <Param Type="LPURL_COMPONENTS" Name="lpUrlComponents" />
             <Param Type="[InternetCrackUrlFlags]" Name="dwFlags" />
-            <Param Type="LPTSTR" Name="lpszUrl" />
+            <Param Type="LPTSTR" Name="lpszUrl" OutputOnly="True" />
             <Param Type="LPDWORD" Name="lpdwUrlLength" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />

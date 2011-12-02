@@ -11,10 +11,6 @@
         <!-- Variables -->
         <Variable Name="BYTE [IMAGE_SIZEOF_SHORT_NAME]" Type="Array" Base="BYTE" Count="8" />
 
-        <!-- TODO: Structures (Different for 32/64) -->
-        <Variable Name="PIMAGE_NT_HEADERS"          Type="Alias"    Base="LPVOID" />
-        <Variable Name="PIMAGE_NT_HEADERS*"         Type="Pointer"  Base="PIMAGE_NT_HEADERS" />
-
         <!-- [IMAGE_SECTION_HEADER_u] -->
         <Variable Name="[IMAGE_SECTION_HEADER_u]" Type="Union">
             <Display Name="union" />
@@ -229,6 +225,61 @@
                 <Set Name="PAGE_WRITECOMBINE"       Value="0x400" />
             </Flag>
         </Variable>
+
+        <!-- [ProcThreadAttribute] -->
+        <Variable Name="[ProcThreadAttribute]" Type="Alias" Base="DWORD_PTR">
+            <Display Name="DWORD_PTR" />
+            <Enum>
+                <Set Name="PROC_THREAD_ATTRIBUTE_PARENT_PROCESS"    Value="0x00020000" />
+                <Set Name="PROC_THREAD_ATTRIBUTE_EXTENDED_FLAGS"    Value="0x00060001" />
+                <Set Name="PROC_THREAD_ATTRIBUTE_HANDLE_LIST"       Value="0x00020002" />
+                <Set Name="PROC_THREAD_ATTRIBUTE_IDEAL_PROCESSOR"   Value="0x00030005" />
+                <Set Name="PROC_THREAD_ATTRIBUTE_MITIGATION_POLICY" Value="0x00020007" />
+                <Set Name="PROC_THREAD_ATTRIBUTE_PREFERRED_NODE"    Value="0x00020004" />
+                <Set Name="PROC_THREAD_ATTRIBUTE_UMS_THREAD"        Value="0x00030006" />
+                <Set Name="PROC_THREAD_ATTRIBUTE_GROUP_AFFINITY"    Value="0x00030003" />
+            </Enum>
+        </Variable>
+
+        <!-- [ProcThreadAttributeFlags] -->
+        <Variable Name="[ProcThreadAttributeFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="PARENT_PROCESS"      Value="0x1" />
+                <Set Name="EXTENDED_FLAGS"      Value="0x2" />
+                <Set Name="HANDLE_LIST"         Value="0x4" />
+                <Set Name="GROUP_AFFINITY"      Value="0x8" />
+                <Set Name="PREFERRED_NODE"      Value="0x10" />
+                <Set Name="IDEAL_PROCESSOR"     Value="0x20" />
+                <Set Name="UMS_THREAD"          Value="0x40" />
+                <Set Name="MITIGATION_POLICY"   Value="0x80" />
+            </Flag>
+        </Variable>
+
+        <!-- Rohitab Batra: PROC_THREAD_ATTRIBUTE_ENTRY & PROC_THREAD_ATTRIBUTE_LIST were reverse engineered since
+        no documentation was available. Definitions that are available on the internet are incorrect. The ones below
+        have been tested for 32-bit and 64-bit applications running on Windows 7 x64. The 'Unknown' field in 
+        PROC_THREAD_ATTRIBUTE_LIST is only used when adding PROC_THREAD_ATTRIBUTE_EXTENDED_FLAGS. It always points
+        to a constant value of 0x00060001-->
+        
+        <!-- PROC_THREAD_ATTRIBUTE_ENTRY -->
+        <Variable Name="PROC_THREAD_ATTRIBUTE_ENTRY" Type="Struct">
+            <Field Type="[ProcThreadAttribute]"     Name="Attribute" />
+            <Field Type="SIZE_T"                    Name="cbSize" />
+            <Field Type="PVOID"                     Name="lpValue" Length="cbSize" />
+        </Variable>
+        <Variable Name="PROC_THREAD_ATTRIBUTE_ENTRY [1]" Type="Array" Base="PROC_THREAD_ATTRIBUTE_ENTRY" Count="1" />
+
+        <!-- PROC_THREAD_ATTRIBUTE_LIST -->
+        <Variable Name="PROC_THREAD_ATTRIBUTE_LIST" Type="Struct">
+            <Field Type="[ProcThreadAttributeFlags]"        Name="dwFlags" />
+            <Field Type="ULONG"                             Name="Size" />
+            <Field Type="ULONG"                             Name="Count" />
+            <Field Type="ULONG"                             Name="Reserved" />
+            <Field Type="PULONG"                            Name="Unknown" />
+            <Field Type="PROC_THREAD_ATTRIBUTE_ENTRY [1]"   Name="Entries" Count="Count" />
+        </Variable>
+        <Variable Name="LPPROC_THREAD_ATTRIBUTE_LIST" Type="Pointer" Base="PROC_THREAD_ATTRIBUTE_LIST" />
 
     </Headers>
 </ApiMonitor>
