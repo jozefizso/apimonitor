@@ -1,6 +1,6 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
@@ -22,9 +22,6 @@
         <Variable Name="BSTR"                           Type="Alias"    Base="WCHAR*" />
         <Variable Name="const BSTR"                     Type="Alias"    Base="BSTR" />
         <Variable Name="BSTR*"                          Type="Pointer"  Base="BSTR" />
-        <Variable Name="LCID"                           Type="Alias"    Base="DWORD" />
-        <Variable Name="LCID*"                          Type="Pointer"  Base="LCID" />
-        <Variable Name="PLCID"                          Type="Pointer"  Base="LCID" />
         <Variable Name="HDEVINFO"                       Type="Alias"    Base="PVOID" />
         <Variable Name="PIO_APC_ROUTINE"                Type="Alias"    Base="LPVOID" />
         <Variable Name="FARPROC"                        Type="Alias"    Base="LPVOID" />
@@ -68,6 +65,21 @@
         <Variable Name="LPUNKNOWN"                      Type="Alias"    Base="IUnknown*" />
         <Variable Name="LPUNKNOWN*"                     Type="Pointer"  Base="LPUNKNOWN" />
         <Variable Name="const IUnknown*"                Type="Alias"    Base="IUnknown*" />
+
+        <!-- LCID -->
+        <Variable Name="LCID" Type="Alias" Base="DWORD">
+            <Enum>
+                <Set Name="LOCALE_SYSTEM_DEFAULT"           Value="0x0800" />
+                <Set Name="LOCALE_USER_DEFAULT"             Value="0x0400" />
+                <Set Name="LOCALE_CUSTOM_DEFAULT"           Value="0x0c00" />
+                <Set Name="LOCALE_CUSTOM_UNSPECIFIED"       Value="0x1000" />
+                <Set Name="LOCALE_CUSTOM_UI_DEFAULT"        Value="0x1400" />
+                <Set Name="LOCALE_NEUTRAL"                  Value="0x0000" />
+                <Set Name="LOCALE_INVARIANT"                Value="0x007f" />
+            </Enum>
+        </Variable>
+        <Variable Name="LCID*" Type="Pointer" Base="LCID" />
+        <Variable Name="PLCID" Type="Pointer" Base="LCID" />
 
         <!-- LIST_ENTRY -->
         <Variable Name="LIST_ENTRY" Type="Struct">
@@ -2178,6 +2190,90 @@
                 <Set Name="DWMWA_EXCLUDED_FROM_PEEK"            Value="12" />
             </Enum>
         </Variable>
+
+        <!-- [FILE_NOTIFY_CHANGE_FLAGS] -->
+        <Variable Name="[FILE_NOTIFY_CHANGE_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="FILE_NOTIFY_CHANGE_FILE_NAME"        Value="0x00000001" />
+                <Set Name="FILE_NOTIFY_CHANGE_DIR_NAME"         Value="0x00000002" />
+                <Set Name="FILE_NOTIFY_CHANGE_ATTRIBUTES"       Value="0x00000004" />
+                <Set Name="FILE_NOTIFY_CHANGE_SIZE"             Value="0x00000008" />
+                <Set Name="FILE_NOTIFY_CHANGE_LAST_WRITE"       Value="0x00000010" />
+                <Set Name="FILE_NOTIFY_CHANGE_LAST_ACCESS"      Value="0x00000020" />
+                <Set Name="FILE_NOTIFY_CHANGE_CREATION"         Value="0x00000040" />
+                <Set Name="FILE_NOTIFY_CHANGE_EA"               Value="0x00000080" />
+                <Set Name="FILE_NOTIFY_CHANGE_SECURITY"         Value="0x00000100" />
+                <Set Name="FILE_NOTIFY_CHANGE_STREAM_NAME"      Value="0x00000200" />
+                <Set Name="FILE_NOTIFY_CHANGE_STREAM_SIZE"      Value="0x00000400" />
+                <Set Name="FILE_NOTIFY_CHANGE_STREAM_WRITE"     Value="0x00000800" />
+            </Flag>
+        </Variable>
+
+        <!-- [SEEK_TYPE] -->
+        <Variable Name="[SEEK_TYPE]" Type="Alias" Base="int">
+            <Display Name="int" />
+            <Enum>
+                <Set Name="SEEK_CUR"        Value="1" />
+                <Set Name="SEEK_END"        Value="2" />
+                <Set Name="SEEK_SET"        Value="0" />
+            </Enum>
+        </Variable>
+
+        <!-- [LocaleMappingFlags] -->
+        <Variable Name="[LocaleMappingFlags]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="LCMAP_LOWERCASE"             Value="0x00000100" />
+                <Set Name="LCMAP_UPPERCASE"             Value="0x00000200" />
+                <Set Name="LCMAP_SORTKEY"               Value="0x00000400" />
+                <Set Name="LCMAP_BYTEREV"               Value="0x00000800" />
+                <Set Name="LCMAP_HIRAGANA"              Value="0x00100000" />
+                <Set Name="LCMAP_KATAKANA"              Value="0x00200000" />
+                <Set Name="LCMAP_HALFWIDTH"             Value="0x00400000" />
+                <Set Name="LCMAP_FULLWIDTH"             Value="0x00800000" />
+                <Set Name="LCMAP_LINGUISTIC_CASING"     Value="0x01000000" />
+                <Set Name="LCMAP_SIMPLIFIED_CHINESE"    Value="0x02000000" />
+                <Set Name="LCMAP_TRADITIONAL_CHINESE"   Value="0x04000000" />
+                <Set Name="NORM_IGNORECASE"             Value="0x00000001" />
+                <Set Name="NORM_IGNORENONSPACE"         Value="0x00000002" />
+                <Set Name="NORM_IGNORESYMBOLS"          Value="0x00000004" />
+                <Set Name="NORM_IGNOREKANATYPE"         Value="0x00010000" />
+                <Set Name="NORM_IGNOREWIDTH"            Value="0x00020000" />
+                <Set Name="NORM_LINGUISTIC_CASING"      Value="0x08000000" />
+                <Set Name="SORT_STRINGSORT"             Value="0x00001000" />
+            </Flag>
+        </Variable>
+
+        <!-- [ACTCTX_FLAG] -->
+        <Variable Name="[ACTCTX_FLAG]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="ACTCTX_FLAG_PROCESSOR_ARCHITECTURE_VALID"    Value="0x00000001" />
+                <Set Name="ACTCTX_FLAG_LANGID_VALID"                    Value="0x00000002" />
+                <Set Name="ACTCTX_FLAG_ASSEMBLY_DIRECTORY_VALID"        Value="0x00000004" />
+                <Set Name="ACTCTX_FLAG_RESOURCE_NAME_VALID"             Value="0x00000008" />
+                <Set Name="ACTCTX_FLAG_SET_PROCESS_DEFAULT"             Value="0x00000010" />
+                <Set Name="ACTCTX_FLAG_APPLICATION_NAME_VALID"          Value="0x00000020" />
+                <Set Name="ACTCTX_FLAG_SOURCE_IS_ASSEMBLYREF"           Value="0x00000040" />
+                <Set Name="ACTCTX_FLAG_HMODULE_VALID"                   Value="0x00000080" />
+            </Flag>
+        </Variable>
+
+        <!-- ACTCTX -->
+        <Variable Name="ACTCTX" Type="Struct">
+            <Field Type="ULONG"       	            Name="cbSize" />
+            <Field Type="[ACTCTX_FLAG]"             Name="dwFlags" />
+            <Field Type="LPCTSTR"      	            Name="lpSource" />
+            <Field Type="[PROCESSOR_ARCHITECTURE]"  Name="wProcessorArchitecture" Display="USHORT" />
+            <Field Type="LANGID"      	            Name="wLangId" />
+            <Field Type="LPCTSTR"      	            Name="lpAssemblyDirectory" />
+            <Field Type="LPCTSTR"      	            Name="lpResourceName" />
+            <Field Type="LPCTSTR"      	            Name="lpApplicationName" />
+            <Field Type="HMODULE"     	            Name="hModule" />
+        </Variable>
+        <Variable Name="PACTCTX"  Type="Pointer" Base="ACTCTX" />
+        <Variable Name="PACTCTX*" Type="Pointer" Base="PACTCTX" />
 
     </Headers>
 

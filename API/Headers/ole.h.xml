@@ -1,6 +1,6 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
@@ -145,6 +145,11 @@
         <Variable Name="IClassFactory"					Type="Interface" />
         <Variable Name="IRecordInfo"					Type="Interface" />
 
+        <!-- Forward declaration for IDispatch -->
+        <Variable Name="IDispatch"                      Type="Interface" />
+        <Variable Name="LPDISPATCH"                     Type="Alias"    Base="IDispatch*" />
+        <Variable Name="LPDISPATCH*"                    Type="Pointer"  Base="LPDISPATCH" />
+
         <!-- Variables -->
         <Variable Name="WINOLEAPI"                      Type="Alias"    Base="STDAPI" />
         <Variable Name="HPROPSHEETPAGE"                 Type="Alias"    Base="LPVOID" />
@@ -152,6 +157,7 @@
         <Variable Name="LPCOLESTR"                      Type="Alias"    Base="LPCWSTR" />
         <Variable Name="LPOLESTR"                       Type="Alias"    Base="LPCWSTR" />
         <Variable Name="LPOLESTR*"                      Type="Pointer"  Base="LPOLESTR" />
+        <Variable Name="LPOLESTR**"                     Type="Pointer"  Base="LPOLESTR*" />
         <Variable Name="const LPOLESTR"                 Type="Alias"    Base="LPOLESTR" />
         <Variable Name="OLECHAR"                        Type="Alias"    Base="WCHAR" />
         <Variable Name="OLECHAR*"                       Type="Pointer"  Base="OLECHAR" />
@@ -381,6 +387,13 @@
         <Variable Name="VARIANT*"       Type="Pointer" Base="VARIANT" />
         <Variable Name="VARIANT**"      Type="Pointer" Base="VARIANT*" />
         <Variable Name="const VARIANT*" Type="Pointer" Base="VARIANT" />
+        <Variable Name="LPVARIANT"      Type="Pointer" Base="VARIANT" />
+
+        <!-- VARIANTARG -->
+        <Variable Name="VARIANTARG"         Type="Alias"    Base="VARIANT" />
+        <Variable Name="VARIANTARG*"        Type="Pointer"  Base="VARIANTARG" />
+        <Variable Name="VARIANTARG**"       Type="Pointer"  Base="VARIANTARG*" />
+        <Variable Name="const VARIANTARG*"  Type="Pointer"  Base="VARIANTARG" />
 
         <!-- PROPVARIANT -->
         <Variable Name="PROPVARIANT"                    Type="Alias"    Base="VARIANT" />
@@ -928,6 +941,88 @@
                 <Set Name="COINIT_DISABLE_OLE1DDE" Value="0x4" />
                 <Set Name="COINIT_SPEED_OVER_MEMORY" Value="0x8" />
             </Flag>
+        </Variable>
+
+        <!-- [FADF_FLAGS] -->
+        <Variable Name="[FADF_FLAGS]" Type="Alias" Base="USHORT">
+            <Display Name="USHORT" />
+            <Flag>
+                <Set Name="FADF_AUTO"           Value="0x1"  />
+                <Set Name="FADF_STATIC"         Value="0x2"  />
+                <Set Name="FADF_EMBEDDED"       Value="0x4"  />
+                <Set Name="FADF_FIXEDSIZE"      Value="0x10"  />
+                <Set Name="FADF_RECORD"         Value="0x20"  />
+                <Set Name="FADF_HAVEIID"        Value="0x40"  />
+                <Set Name="FADF_HAVEVARTYPE"    Value="0x80"  />
+                <Set Name="FADF_BSTR"           Value="0x100"  />
+                <Set Name="FADF_UNKNOWN"        Value="0x200"  />
+                <Set Name="FADF_DISPATCH"       Value="0x400"  />
+                <Set Name="FADF_VARIANT"        Value="0x800"  />
+                <Set Name="FADF_RESERVED"       Value="0xf008"  />
+            </Flag>
+        </Variable>
+
+        <!-- SAFEARRAYBOUND -->
+        <Variable Name="SAFEARRAYBOUND" Type="Struct">
+            <Field Type="ULONG"     Name="cElements" />
+            <Field Type="LONG"      Name="lLbound" />
+        </Variable>
+        <Variable Name="SAFEARRAYBOUND*"    Type="Pointer" Base="SAFEARRAYBOUND" />
+        <Variable Name="SAFEARRAYBOUND [1]" Type="Array"   Base="SAFEARRAYBOUND" Count="1" />
+
+        <!-- SAFEARRAY -->
+        <Variable Name="SAFEARRAY" Type="Struct">
+            <Field Type="USHORT"                Name="cDims" />
+            <Field Type="[FADF_FLAGS]"          Name="fFeatures" />
+            <Field Type="ULONG"                 Name="cbElements" />
+            <Field Type="ULONG"                 Name="cLocks" />
+            <Field Type="PVOID"                 Name="pvData" />
+            <Field Type="SAFEARRAYBOUND [1]"    Name="rgsabound" Count="cDims"  />
+        </Variable>
+        <Variable Name="SAFEARRAY*"     Type="Pointer" Base="SAFEARRAY" />
+        <Variable Name="SAFEARRAY**"    Type="Pointer" Base="SAFEARRAY*" />
+        <Variable Name="LPSAFEARRAY"    Type="Pointer" Base="SAFEARRAY" />
+        <Variable Name="LPSAFEARRAY*"   Type="Pointer" Base="LPSAFEARRAY" />
+
+        <!-- CUSTDATAITEM -->
+        <Variable Name="CUSTDATAITEM" Type="Struct">
+            <Field Type="GUID"          Name="guid" />
+            <Field Type="VARIANTARG"     Name="varValue" />
+        </Variable>
+        <Variable Name="LPCUSTDATAITEM" Type="Pointer" Base="CUSTDATAITEM" />
+
+        <!-- CUSTDATA -->
+        <Variable Name="CUSTDATA" Type="Struct">
+            <Field Type="DWORD"             Name="cCustData" />
+            <Field Type="LPCUSTDATAITEM"    Name="prgCustData" />
+        </Variable>
+        <Variable Name="CUSTDATA*"  Type="Pointer" Base="CUSTDATA" />
+        <Variable Name="LPCUSTDATA" Type="Pointer" Base="CUSTDATA" />
+
+        <!-- [InvokeFlags] -->
+        <Variable Name="[InvokeFlags]" Type="Alias" Base="WORD">
+            <Display Name="WORD" />
+            <Flag>
+                <Set Name="DISPATCH_METHOD"             Value="0x1" />
+                <Set Name="DISPATCH_PROPERTYGET"        Value="0x2" />
+                <Set Name="DISPATCH_PROPERTYPUT"        Value="0x4" />
+                <Set Name="DISPATCH_PROPERTYPUTREF"     Value="0x8" />
+            </Flag>
+        </Variable>
+
+        <!-- CALLCONV -->
+        <Variable Name="CALLCONV" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="CC_FASTCALL"         Value="0" />
+                <Set Name="CC_CDECL"            Value="1" />
+                <Set Name="CC_PASCAL"           Value="2" />
+                <Set Name="CC_MACPASCAL"        Value="3" />
+                <Set Name="CC_STDCALL"          Value="4" />
+                <Set Name="CC_FPFASTCALL"       Value="5" />
+                <Set Name="CC_SYSCALL"          Value="6" />
+                <Set Name="CC_MPWCDECL"         Value="7" />
+                <Set Name="CC_MPWPASCAL"        Value="8" />
+            </Enum>
         </Variable>
 
     </Headers>

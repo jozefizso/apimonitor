@@ -1,6 +1,6 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
@@ -15,11 +15,39 @@
     <Include Filename="Headers\processes.h.xml" />
     <Include Filename="Headers\shell.h.xml" />
     <Module Name="Advapi32.dll" CallingConvention="STDCALL" OnlineHelp="MSDN">
-        
+
+        <!-- Aliases - Windows 7 and Windows 8 -->
+        <ModuleAlias Name="API-MS-Win-Core-LocalRegistry-L1-1-0.dll" />
+        <ModuleAlias Name="API-MS-Win-Security-Base-L1-1-0.dll" />
+        <ModuleAlias Name="API-MS-Win-Security-SDDL-L1-1-0.dll" />
+        <ModuleAlias Name="API-MS-WIN-Service-Core-L1-1-0.dll" />
+        <ModuleAlias Name="API-MS-WIN-Service-Management-L1-1-0.dll" />
+        <ModuleAlias Name="API-MS-WIN-Service-Management-L2-1-0.dll" />
+        <ModuleAlias Name="API-MS-WIN-Service-winsvc-L1-1-0.dll" />
+
+        <!-- Aliases - Windows 8 -->
+        <ModuleAlias Name="api-ms-win-core-processsecurity-l1-1-0.dll" />
+        <ModuleAlias Name="api-ms-win-core-registry-l1-1-0.dll" />
+        <ModuleAlias Name="api-ms-win-eventing-classicprovider-l1-1-0.dll" />
+        <ModuleAlias Name="api-ms-win-eventing-classicprovideransi-l1-1-0.dll" />
+        <ModuleAlias Name="api-ms-win-eventing-consumer-l1-1-0.dll" />
+        <ModuleAlias Name="api-ms-win-eventing-controller-l1-1-0.dll" />
+        <ModuleAlias Name="api-ms-win-eventing-provider-l1-1-0.dll" />
+        <ModuleAlias Name="api-ms-win-legacy-advapi32-l1-1-0.dll" />
+        <ModuleAlias Name="api-ms-win-security-audit-l1-1-0.dll" />
+        <ModuleAlias Name="api-ms-win-security-credentials-l1-1-0.dll" />
+        <ModuleAlias Name="api-ms-win-security-lsapolicy-l1-1-0.dll" />
+        <ModuleAlias Name="api-ms-win-service-core-l1-1-1.dll" />
+
         <!-- Variables -->
         <Variable Name="TCHAR [HW_PROFILE_GUIDLEN]" Type="Array" Base="TCHAR" Count="39" />
         <Variable Name="TCHAR [MAX_PROFILE_LEN]"    Type="Array" Base="TCHAR" Count="80" />
         <Variable Name="WCHAR [WCT_OBJNAME_LENGTH]" Type="Array" Base="WCHAR" Count="128" />
+
+        <!-- [REG_ERROR] -->
+        <Variable Name="[REG_ERROR]" Type="Alias" Base="[ERROR_CODE]">
+            <Display Name="LONG" />
+        </Variable>
 
         <!-- HW_PROFILE_INFO -->
         <Variable Name="HW_PROFILE_INFO" Type="Struct">
@@ -658,26 +686,97 @@
         <Variable Name="PREGHANDLE"                                 Type="Pointer"      Base="REGHANDLE"/>
         <Variable Name="PLSA_OBJECT_ATTRIBUTES"                     Type="Pointer"      Base="OBJECT_ATTRIBUTES"/>
 
+        <!-- [SHUTDOWN_FLAGS] -->
+        <Variable Name="[SHUTDOWN_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="SHUTDOWN_FORCE_OTHERS"           Value="0x00000001" />
+                <Set Name="SHUTDOWN_FORCE_SELF"             Value="0x00000002" />
+                <Set Name="SHUTDOWN_RESTART"                Value="0x00000004" />
+                <Set Name="SHUTDOWN_POWEROFF"               Value="0x00000008" />
+                <Set Name="SHUTDOWN_NOREBOOT"               Value="0x00000010" />
+                <Set Name="SHUTDOWN_GRACE_OVERRIDE"         Value="0x00000020" />
+                <Set Name="SHUTDOWN_INSTALL_UPDATES"        Value="0x00000040" />
+                <Set Name="SHUTDOWN_RESTARTAPPS"            Value="0x00000080" />
+                <Set Name="SHUTDOWN_SKIP_SVC_PRESHUTDOWN"   Value="0x00000100" />
+            </Flag>
+        </Variable>
+
+        <!-- [SHTDN_REASON] -->
+        <Variable Name="[SHTDN_REASON]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="SHTDN_REASON_FLAG_COMMENT_REQUIRED"              Value="0x01000000" />
+                <Set Name="SHTDN_REASON_FLAG_DIRTY_PROBLEM_ID_REQUIRED"     Value="0x02000000" />
+                <Set Name="SHTDN_REASON_FLAG_CLEAN_UI"                      Value="0x04000000" />
+                <Set Name="SHTDN_REASON_FLAG_DIRTY_UI"                      Value="0x08000000" />
+
+                <Set Name="SHTDN_REASON_FLAG_USER_DEFINED"                  Value="0x40000000" />
+                <Set Name="SHTDN_REASON_FLAG_PLANNED"                       Value="0x80000000" />
+
+                <Set Name="SHTDN_REASON_MAJOR_HARDWARE"                     Value="0x00010000" />
+                <Set Name="SHTDN_REASON_MAJOR_OPERATINGSYSTEM"              Value="0x00020000" />
+                <Set Name="SHTDN_REASON_MAJOR_SOFTWARE"                     Value="0x00030000" />
+                <Set Name="SHTDN_REASON_MAJOR_APPLICATION"                  Value="0x00040000" />
+                <Set Name="SHTDN_REASON_MAJOR_SYSTEM"                       Value="0x00050000" />
+                <Set Name="SHTDN_REASON_MAJOR_POWER"                        Value="0x00060000" />
+                <Set Name="SHTDN_REASON_MAJOR_LEGACY_API"                   Value="0x00070000" />
+
+                <Set Name="SHTDN_REASON_MINOR_NONE"                         Value="0x000000ff" />
+                <Set Name="SHTDN_REASON_MINOR_MAINTENANCE"                  Value="0x00000001" />
+                <Set Name="SHTDN_REASON_MINOR_INSTALLATION"                 Value="0x00000002" />
+                <Set Name="SHTDN_REASON_MINOR_UPGRADE"                      Value="0x00000003" />
+                <Set Name="SHTDN_REASON_MINOR_RECONFIG"                     Value="0x00000004" />
+                <Set Name="SHTDN_REASON_MINOR_HUNG"                         Value="0x00000005" />
+                <Set Name="SHTDN_REASON_MINOR_UNSTABLE"                     Value="0x00000006" />
+                <Set Name="SHTDN_REASON_MINOR_DISK"                         Value="0x00000007" />
+                <Set Name="SHTDN_REASON_MINOR_PROCESSOR"                    Value="0x00000008" />
+                <Set Name="SHTDN_REASON_MINOR_NETWORKCARD"                  Value="0x00000009" />
+                <Set Name="SHTDN_REASON_MINOR_POWER_SUPPLY"                 Value="0x0000000a" />
+                <Set Name="SHTDN_REASON_MINOR_CORDUNPLUGGED"                Value="0x0000000b" />
+                <Set Name="SHTDN_REASON_MINOR_ENVIRONMENT"                  Value="0x0000000c" />
+                <Set Name="SHTDN_REASON_MINOR_HARDWARE_DRIVER"              Value="0x0000000d" />
+                <Set Name="SHTDN_REASON_MINOR_OTHERDRIVER"                  Value="0x0000000e" />
+                <Set Name="SHTDN_REASON_MINOR_BLUESCREEN"                   Value="0x0000000F" />
+                <Set Name="SHTDN_REASON_MINOR_SERVICEPACK"                  Value="0x00000010" />
+                <Set Name="SHTDN_REASON_MINOR_HOTFIX"                       Value="0x00000011" />
+                <Set Name="SHTDN_REASON_MINOR_SECURITYFIX"                  Value="0x00000012" />
+                <Set Name="SHTDN_REASON_MINOR_SECURITY"                     Value="0x00000013" />
+                <Set Name="SHTDN_REASON_MINOR_NETWORK_CONNECTIVITY"         Value="0x00000014" />
+                <Set Name="SHTDN_REASON_MINOR_WMI"                          Value="0x00000015" />
+                <Set Name="SHTDN_REASON_MINOR_SERVICEPACK_UNINSTALL"        Value="0x00000016" />
+                <Set Name="SHTDN_REASON_MINOR_HOTFIX_UNINSTALL"             Value="0x00000017" />
+                <Set Name="SHTDN_REASON_MINOR_SECURITYFIX_UNINSTALL"        Value="0x00000018" />
+                <Set Name="SHTDN_REASON_MINOR_MMC"                          Value="0x00000019" />
+                <Set Name="SHTDN_REASON_MINOR_SYSTEMRESTORE"                Value="0x0000001a" />
+                <Set Name="SHTDN_REASON_MINOR_TERMSRV"                      Value="0x00000020" />
+                <Set Name="SHTDN_REASON_MINOR_DC_PROMOTION"                 Value="0x00000021" />
+                <Set Name="SHTDN_REASON_MINOR_DC_DEMOTION"                  Value="0x00000022" />
+
+                <Set Name="SHTDN_REASON_LEGACY_API"                         Value="0x80070000" />
+            </Flag>
+        </Variable>
+
         <!-- Registry -->
         <Category Name="System Services/Windows System Information/Registry" />
         <ErrorDecode ErrorFunc="GetLastError" ErrorIsReturnValue="True" />
         <Api Name="RegCloseKey">
             <Param Type="HKEY" Name="hKey" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegConnectRegistry" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpMachineName" />
             <Param Type="HKEY" Name="hKey" />
             <Param Type="PHKEY" Name="phkResult" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegCopyTree" BothCharset="True">
             <Param Type="HKEY" Name="hKeySrc" />
             <Param Type="LPCTSTR" Name="lpSubKey" />
             <Param Type="HKEY" Name="hKeyDest" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegCreateKeyEx" BothCharset="True">
@@ -690,7 +789,7 @@
             <Param Type="LPSECURITY_ATTRIBUTES" Name="lpSecurityAttributes" />
             <Param Type="PHKEY" Name="phkResult" />
             <Param Type="[RegDisposition*]" Name="lpdwDisposition" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegCreateKeyTransacted" BothCharset="True">
@@ -705,13 +804,13 @@
             <Param Type="[RegDisposition*]" Name="lpdwDisposition" />
             <Param Type="HANDLE" Name="hTransaction" />
             <Param Type="PVOID" Name="pExtendedParemeter" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegDeleteKey" BothCharset="True">
             <Param Type="HKEY" Name="hKey" />
             <Param Type="LPCTSTR" Name="lpSubKey" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegDeleteKeyEx" BothCharset="True">
@@ -719,7 +818,7 @@
             <Param Type="LPCTSTR" Name="lpSubKey" />
             <Param Type="REGSAM" Name="samDesired" />
             <Param Type="DWORD" Name="Reserved" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegDeleteKeyTransacted" BothCharset="True">
@@ -729,44 +828,44 @@
             <Param Type="DWORD" Name="Reserved" />
             <Param Type="HANDLE" Name="hTransaction" />
             <Param Type="PVOID" Name="pExtendedParameter" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegDeleteKeyValue" BothCharset="True">
             <Param Type="HKEY" Name="hKey" />
             <Param Type="LPCTSTR" Name="lpSubKey" />
             <Param Type="LPCTSTR" Name="lpValueName" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegDeleteTree" BothCharset="True">
             <Param Type="HKEY" Name="hKey" />
             <Param Type="LPCTSTR" Name="lpSubKey" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegDeleteValue" BothCharset="True">
             <Param Type="HKEY" Name="hKey" />
             <Param Type="LPCTSTR" Name="lpValueName" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegDisablePredefinedCache">
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegDisablePredefinedCacheEx">
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegDisableReflectionKey">
             <Param Type="HKEY" Name="hBase" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegEnableReflectionKey">
             <Param Type="HKEY" Name="hBase" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegEnumKeyEx" BothCharset="True">
@@ -778,7 +877,7 @@
             <Param Type="LPTSTR" Name="lpClass" />
             <Param Type="LPDWORD" Name="lpcClass" />
             <Param Type="PFILETIME" Name="lpftLastWriteTime" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegEnumValue" BothCharset="True">
@@ -790,12 +889,12 @@
             <Param Type="[RegType*]" Name="lpType" />
             <Param Type="LPBYTE" Name="lpData" PostLength="lpcbData" />
             <Param Type="LPDWORD" Name="lpcbData" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegFlushKey">
             <Param Type="HKEY" Name="hKey" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegGetValue" BothCharset="True">
@@ -806,14 +905,14 @@
             <Param Type="[RegType*]" Name="pdwType" />
             <Param Type="PVOID" Name="pvData" />
             <Param Type="LPDWORD" Name="pcbData" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegLoadKey" BothCharset="True">
             <Param Type="HKEY" Name="hKey" />
             <Param Type="LPCTSTR" Name="lpSubKey" />
             <Param Type="LPCTSTR" Name="lpFile" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegLoadMUIString" BothCharset="True">
@@ -824,7 +923,7 @@
             <Param Type="LPDWORD" Name="pcbData" />
             <Param Type="[RegMuiFlags]" Name="Flags" />
             <Param Type="LPCTSTR" Name="pszDirectory" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegNotifyChangeKeyValue">
@@ -833,13 +932,13 @@
             <Param Type="[RegNotifyFlags]" Name="dwNotifyFilter" />
             <Param Type="HANDLE" Name="hEvent" />
             <Param Type="BOOL" Name="fAsynchronous" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegOpenCurrentUser">
             <Param Type="REGSAM" Name="samDesired" />
             <Param Type="PHKEY" Name="phkResult" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegOpenKeyEx" BothCharset="True">
@@ -848,7 +947,7 @@
             <Param Type="DWORD" Name="ulOptions" />
             <Param Type="REGSAM" Name="samDesired" />
             <Param Type="PHKEY" Name="phkResult" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegOpenKeyTransacted" BothCharset="True">
@@ -859,7 +958,7 @@
             <Param Type="PHKEY" Name="phkResult" />
             <Param Type="HANDLE" Name="hTransaction" />
             <Param Type="PVOID" Name="pExtendedParameter" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegOpenUserClassesRoot">
@@ -867,13 +966,13 @@
             <Param Type="DWORD" Name="dwOptions" />
             <Param Type="REGSAM" Name="samDesired" />
             <Param Type="PHKEY" Name="phkResult" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegOverridePredefKey">
             <Param Type="HKEY" Name="hKey" />
             <Param Type="HKEY" Name="hNewHKey" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegQueryInfoKey" BothCharset="True">
@@ -889,7 +988,7 @@
             <Param Type="LPDWORD" Name="lpcMaxValueLen" />
             <Param Type="LPDWORD" Name="lpcbSecurityDescriptor" />
             <Param Type="PFILETIME" Name="lpftLastWriteTime" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegQueryMultipleValues" BothCharset="True">
@@ -898,13 +997,13 @@
             <Param Type="DWORD" Name="num_vals" />
             <Param Type="LPVOID" Display="LPTSTR" Name="lpValueBuf" PostLength="ldwTotsize" />
             <Param Type="LPDWORD" Name="ldwTotsize" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegQueryReflectionKey">
             <Param Type="HKEY" Name="hBase" />
             <Param Type="BOOL*" Name="bIsReflectionDisabled" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegQueryValueEx" BothCharset="True">
@@ -914,7 +1013,7 @@
             <Param Type="[RegType*]" Name="lpType" />
             <Param Type="LPBYTE" Name="lpData" PostLength="lpcbData" />
             <Param Type="LPDWORD" Name="lpcbData" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegReplaceKey" BothCharset="True">
@@ -922,21 +1021,21 @@
             <Param Type="LPCTSTR" Name="lpSubKey" />
             <Param Type="LPCTSTR" Name="lpNewFile" />
             <Param Type="LPCTSTR" Name="lpOldFile" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegRestoreKey" BothCharset="True">
             <Param Type="HKEY" Name="hKey" />
             <Param Type="LPCTSTR" Name="lpFile" />
             <Param Type="DWORD" Name="dwFlags" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegSaveKey" BothCharset="True">
             <Param Type="HKEY" Name="hKey" />
             <Param Type="LPCTSTR" Name="lpFile" />
             <Param Type="LPSECURITY_ATTRIBUTES" Name="lpSecurityAttributes" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegSaveKeyEx" BothCharset="True">
@@ -944,7 +1043,7 @@
             <Param Type="LPCTSTR" Name="lpFile" />
             <Param Type="LPSECURITY_ATTRIBUTES" Name="lpSecurityAttributes" />
             <Param Type="DWORD" Name="Flags" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegSetKeyValue" BothCharset="True">
@@ -954,7 +1053,7 @@
             <Param Type="[RegType]" Name="dwType" />
             <Param Type="LPCVOID" Name="lpData" />
             <Param Type="DWORD" Name="cbData" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegSetValueEx" BothCharset="True">
@@ -964,21 +1063,23 @@
             <Param Type="[RegType]" Name="dwType" />
             <Param Type="const BYTE*" Name="lpData" Length="cbData" />
             <Param Type="DWORD" Name="cbData" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegUnLoadKey" BothCharset="True">
             <Param Type="HKEY" Name="hKey" />
             <Param Type="LPCTSTR" Name="lpSubKey" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
+        
+        <!-- Obsolete -->
         <Category Name="System Services/Windows System Information/Registry/Obsolete" />
         <Api Name="RegCreateKey" BothCharset="True">
             <Param Type="HKEY" Name="hKey" />
             <Param Type="LPCTSTR" Name="lpSubKey" />
             <Param Type="PHKEY" Name="phkResult" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegEnumKey" BothCharset="True">
@@ -986,14 +1087,14 @@
             <Param Type="DWORD" Name="dwIndex" />
             <Param Type="LPTSTR" Name="lpName" OutputOnly="True" />
             <Param Type="DWORD" Name="cchName" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegOpenKey" BothCharset="True">
             <Param Type="HKEY" Name="hKey" />
             <Param Type="LPCTSTR" Name="lpSubKey" />
             <Param Type="PHKEY" Name="phkResult" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegQueryValue" BothCharset="True">
@@ -1001,7 +1102,7 @@
             <Param Type="LPCTSTR" Name="lpSubKey" />
             <Param Type="LPTSTR" Name="lpValue" OutputOnly="True" />
             <Param Type="PLONG" Name="lpcbValue" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RegSetValue" BothCharset="True">
@@ -1010,15 +1111,16 @@
             <Param Type="[RegType]" Name="dwType" />
             <Param Type="LPCTSTR" Name="lpData" />
             <Param Type="DWORD" Name="cbData" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="Equal" Value="0" />
         </Api>
+        
         <!-- File Management -->
         <Category Name="Data Access and Storage/Local File Systems/File Management" />
         <Api Name="AddUsersToEncryptedFile">
             <Param Type="LPCWSTR" Name="lpFileName" />
             <Param Type="PENCRYPTION_CERTIFICATE_LIST" Name="pUsers" />
-            <Return Type="DWORD" />
+            <Return Type="[ERROR_CODE]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="CloseEncryptedFileRaw">
@@ -1037,7 +1139,7 @@
             <Param Type="DWORD" Name="dwCreationDistribution" />
             <Param Type="DWORD" Name="dwAttributes" />
             <Param Type="const LPSECURITY_ATTRIBUTES" Name="lpSecurityAttributes" />
-            <Return Type="DWORD" />
+            <Return Type="[ERROR_CODE]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="EncryptFile" BothCharset="True" ErrorIsReturnValue="False">
@@ -1065,46 +1167,47 @@
             <Param Type="LPCTSTR" Name="lpFileName" />
             <Param Type="ULONG" Name="ulFlags" />
             <Param Type="PVOID*" Name="pvContext" />
-            <Return Type="DWORD" />
+            <Return Type="[ERROR_CODE]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="QueryRecoveryAgentsOnEncryptedFile">
             <Param Type="LPCWSTR" Name="lpFileName" />
             <Param Type="PENCRYPTION_CERTIFICATE_HASH_LIST*" Name="pRecoveryAgents" />
-            <Return Type="DWORD" />
+            <Return Type="[ERROR_CODE]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="QueryUsersOnEncryptedFile">
             <Param Type="LPCWSTR" Name="lpFileName" />
             <Param Type="PENCRYPTION_CERTIFICATE_HASH_LIST*" Name="pUsers" />
-            <Return Type="DWORD" />
+            <Return Type="[ERROR_CODE]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="ReadEncryptedFileRaw">
             <Param Type="PFE_EXPORT_FUNC" Name="pfExportCallback" />
             <Param Type="PVOID" Name="pvCallbackContext" />
             <Param Type="PVOID" Name="pvContext" />
-            <Return Type="DWORD" />
+            <Return Type="[ERROR_CODE]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RemoveUsersFromEncryptedFile">
             <Param Type="LPCWSTR" Name="lpFileName" />
             <Param Type="PENCRYPTION_CERTIFICATE_HASH_LIST" Name="pHashes" />
-            <Return Type="DWORD" />
+            <Return Type="[ERROR_CODE]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SetUserFileEncryptionKey">
             <Param Type="PENCRYPTION_CERTIFICATE" Name="pEncryptionCertificate" />
-            <Return Type="DWORD" />
+            <Return Type="[ERROR_CODE]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="WriteEncryptedFileRaw">
             <Param Type="PFE_IMPORT_FUNC" Name="pfImportCallback" />
             <Param Type="PVOID" Name="pvCallbackContext" />
             <Param Type="PVOID" Name="pvContext" />
-            <Return Type="DWORD" />
+            <Return Type="[ERROR_CODE]" />
             <Success Return="Equal" Value="0" />
         </Api>
+        
         <!-- Processes and Threads -->
         <Category Name="System Services/Processes and Threads" />
         <ErrorDecode ErrorFunc="GetLastError"/>
@@ -1151,6 +1254,7 @@
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
+        
         <!-- Group Policy -->
         <Category Name="System Administration/Group Policy" />
         <ErrorDecode ErrorFunc="GetLastError" ErrorIsReturnValue="True" />
@@ -1158,8 +1262,8 @@
             <Param Type="BOOL" Name="bUserApps" />
             <Param Type="LPDWORD" Name="pdwApps" />
             <Param Type="PLOCALMANAGEDAPPLICATION*" Name="prgLocalApps" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="GetManagedApplications">
             <Param Type="GUID*" Name="pCategory" />
@@ -1167,26 +1271,27 @@
             <Param Type="DWORD" Name="dwInfoLevel" />
             <Param Type="LPDWORD" Name="pdwApps" />
             <Param Type="PMANAGEDAPPLICATION*" Name="prgManagedApps" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="GetManagedApplicationCategories">
             <Param Type="DWORD" Name="dwReserved" />
             <Param Type="APPCATEGORYINFOLIST*" Name="pAppCategory" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="InstallApplication">
             <Param Type="PINSTALLDATA*" Name="pInstallInfo" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="UninstallApplication">
             <Param Type="WCHAR*" Name="ProductCode" />
             <Param Type="DWORD" Name="dwStatus" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+            <Success Return="Equal" Value="0" />
         </Api>
+        
         <!-- System Shutdown -->
         <Category Name="System Services/Windows System Information/System Shutdown" />
         <ErrorDecode ErrorFunc="GetLastError"/>
@@ -1199,10 +1304,10 @@
             <Param Type="LPTSTR" Name="lpMachineName" />
             <Param Type="LPTSTR" Name="lpMessage" />
             <Param Type="DWORD" Name="dwGracePeriod" />
-            <Param Type="DWORD" Name="dwShutdownFlags" />
-            <Param Type="DWORD" Name="dwReason" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Param Type="[SHUTDOWN_FLAGS]" Name="dwShutdownFlags" />
+            <Param Type="[SHTDN_REASON]" Name="dwReason" />
+            <Return Type="[ERROR_CODE]" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="InitiateSystemShutdown" BothCharset="True">
             <Param Type="LPTSTR" Name="lpMachineName" />
@@ -1219,10 +1324,11 @@
             <Param Type="DWORD" Name="dwTimeout" />
             <Param Type="BOOL" Name="bForceAppsClosed" />
             <Param Type="BOOL" Name="bRebootAfterShutdown" />
-            <Param Type="DWORD" Name="dwReason" />
+            <Param Type="[SHTDN_REASON]" Name="dwReason" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
+        
         <!-- Event Logging -->
         <Category Name="Diagnostics/Windows Events/Event Logging" />
         <ErrorDecode ErrorFunc="GetLastError"/>
@@ -1317,6 +1423,7 @@
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
+        
         <!-- Performance Counters -->
         <Category Name="Diagnostics/Performance Counters" />
         <ErrorDecode ErrorFunc="HRESULT"/>
@@ -1424,6 +1531,7 @@
             <Return Type="ULONG" />
             <Success Return="Equal" Value="0" />
         </Api>
+        
         <!-- Services -->
         <Category Name="System Services/Services" />
         <ErrorDecode ErrorFunc="GetLastError"/>
@@ -1572,7 +1680,7 @@
             <Param Type="SC_HANDLE" Name="hService" />
             <Param Type="[ServiceNotifyMask]" Name="dwNotifyMask" />
             <Param Type="PSERVICE_NOTIFY" Name="pNotifyBuffer" />
-            <Return Type="DWORD" />
+            <Return Type="[ERROR_CODE]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="OpenSCManager" BothCharset="True">
@@ -1658,6 +1766,7 @@
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
+        
         <!-- System Information -->
         <Category Name="System Services/Windows System Information/System Information" />
         <Api Name="GetCurrentHwProfile" BothCharset="True">
@@ -1671,7 +1780,8 @@
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <!-- Unicode and Character Set -->
+        
+        <!-- Unicode and Character Sets -->
         <Category Name="Windows Application UI Development/Internationalization for Windows Applications/Unicode and Character Sets" />
         <Api Name="IsTextUnicode">
             <Param Type="const VOID*" Name="lpv" Length="iSize" />
@@ -1679,6 +1789,7 @@
             <Param Type="[IsTextUnicodeFlags*]" Display="LPINT" Name="lpiResult" />
             <Return Type="BOOL" />
         </Api>
+        
         <!-- Cryptography -->
         <Category Name="Security and Identity/Cryptography/Service Provider" />
         <Api Name="CryptAcquireContext" BothCharset="True">
@@ -1763,6 +1874,8 @@
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
+        
+        <!-- Key Generation and Exchange -->
         <Category Name="Security and Identity/Cryptography/Key Generation and Exchange" />
         <Api Name="CryptDeriveKey">
             <Param Type="HCRYPTPROV" Name="hProv" />
@@ -1845,13 +1958,15 @@
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
+        
+        <!-- Data Encryption and Decryption -->
         <Category Name="Security and Identity/Cryptography/Data Encryption and Decryption" />
         <Api Name="CryptDecrypt">
             <Param Type="HCRYPTKEY" Name="hKey" />
             <Param Type="HCRYPTHASH" Name="hHash" />
             <Param Type="BOOL" Name="Final" />
             <Param Type="DWORD" Name="dwFlags" />
-            <Param Type="BYTE*" Name="pbData" />
+            <Param Type="BYTE*" Name="pbData" Length="pdwDataLen" />
             <Param Type="DWORD*" Name="pdwDataLen" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
@@ -1867,6 +1982,8 @@
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
+        
+        <!-- Hash and Digital Signature -->
         <Category Name="Security and Identity/Cryptography/Hash and Digital Signature" />
         <Api Name="CryptCreateHash">
             <Param Type="HCRYPTPROV" Name="hProv" />
@@ -1942,6 +2059,7 @@
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
+        
         <!-- Event Tracing -->
         <Category Name="Diagnostics/Windows Events/Event Tracing" />
         <ErrorDecode ErrorFunc="GetLastError" ErrorIsReturnValue="True" />
@@ -2229,6 +2347,7 @@
             <Return Type="ULONG" />
             <Success Return="Equal" Value="0" />
         </Api>
+        
         <!-- Authorization -->
         <Category Name="Security and Identity/Authorization/Basic Access Control" />
         <ErrorDecode ErrorFunc="GetLastError" />
@@ -2457,27 +2576,26 @@
             <Param Type="PTRUSTEE" Name="pTrustee" />
             <Param Type="PACCESS_MASK" Name="pSuccessfulAuditedRights" />
             <Param Type="PACCESS_MASK" Name="pFailedAuditRights" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="GetEffectiveRightsFromAcl" BothCharset="True" ErrorIsReturnValue="True">
             <Param Type="PACL" Name="pacl" />
             <Param Type="PTRUSTEE" Name="pTrustee" />
             <Param Type="PACCESS_MASK" Name="pAccessRights" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="GetExplicitEntriesFromAcl" BothCharset="True" ErrorIsReturnValue="True">
             <Param Type="PACL" Name="pacl" />
             <Param Type="PULONG" Name="pcCountOfExplicitEntries" />
             <Param Type="PEXPLICIT_ACCESS*" Name="pListOfExplicitEntries" />
-            <Return Type="DWORD" />
+            <Return Type="[ERROR_CODE]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="GetLengthSid">
             <Param Type="PSID" Name="pSid" />
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetNamedSecurityInfo" BothCharset="True" ErrorIsReturnValue="True">
             <Param Type="LPTSTR" Name="pObjectName" />
@@ -2488,7 +2606,7 @@
             <Param Type="PACL*" Name="ppDacl" />
             <Param Type="PACL*" Name="ppSacl" />
             <Param Type="PSECURITY_DESCRIPTOR_RELATIVE*" Name="ppSecurityDescriptor" />
-            <Return Type="DWORD" />
+            <Return Type="[ERROR_CODE]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="GetSecurityDescriptorControl">
@@ -2507,7 +2625,7 @@
             <Param Type="PACL*" Name="ppDacl" />
             <Param Type="PACL*" Name="ppSacl" />
             <Param Type="PSECURITY_DESCRIPTOR*" Name="ppSecurityDescriptor" />
-            <Return Type="DWORD" />
+            <Return Type="[ERROR_CODE]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="GetSidIdentifierAuthority">
@@ -2518,13 +2636,11 @@
         <Api Name="GetSidLengthRequired">
             <Param Type="UCHAR" Name="nSubAuthorityCount" />
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetSidSubAuthority">
             <Param Type="PSID" Name="pSid" />
             <Param Type="DWORD" Name="nSubAuthority" />
             <Return Type="PDWORD" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetSidSubAuthorityCount">
             <Param Type="PSID" Name="pSid" />
@@ -2653,7 +2769,7 @@
             <Param Type="PEXPLICIT_ACCESS" Name="pListOfExplicitEntries" Count="cCountOfExplicitEntries" />
             <Param Type="PACL" Name="OldAcl" />
             <Param Type="PACL*" Name="NewAcl" />
-            <Return Type="DWORD" />
+            <Return Type="[ERROR_CODE]" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SetNamedSecurityInfo" BothCharset="True">
@@ -2664,8 +2780,8 @@
             <Param Type="PSID" Name="psidGroup" />
             <Param Type="PACL" Name="pDacl" />
             <Param Type="PACL" Name="pSacl" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SetSecurityAccessMask">
             <Param Type="SECURITY_INFORMATION" Name="SecurityInformation" />
@@ -2687,8 +2803,8 @@
             <Param Type="PSID" Name="psidGroup" />
             <Param Type="PACL" Name="pDacl" />
             <Param Type="PACL" Name="pSacl" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SetThreadToken">
             <Param Type="PHANDLE" Name="Thread" />
@@ -2716,8 +2832,8 @@
             <Param Type="FN_PROGRESS" Name="fnProgress" />
             <Param Type="PROG_INVOKE_SETTING" Name="ProgressInvokeSetting" />
             <Param Type="PVOID" Name="Args" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="TreeSetNamedSecurityInfo" BothCharset="True">
             <Param Type="LPTSTR" Name="pObjectName" />
@@ -2731,9 +2847,11 @@
             <Param Type="FN_PROGRESS" Name="fnProgress" />
             <Param Type="PROG_INVOKE_SETTING" Name="ProgressInvokeSetting" />
             <Param Type="PVOID" Name="Args" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+            <Success Return="Equal" Value="0" />
         </Api>
+        
+        <!-- Client-Server Access Control -->
         <Category Name="Security and Identity/Authorization/Client-Server Access Control" />
         <Api Name="AreAllAccessesGranted">
             <Param Type="DWORD" Name="GrantedAccess" />
@@ -2757,8 +2875,8 @@
             <Param Type="PSECURITY_DESCRIPTOR" Name="pOldSD" />
             <Param Type="PULONG" Name="pSizeNewSD" />
             <Param Type="PSECURITY_DESCRIPTOR*" Name="pNewSD" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="ConvertToAutoInheritPrivateObjectSecurity">
             <Param Type="PSECURITY_DESCRIPTOR" Name="ParentDescriptor" />
@@ -2847,8 +2965,8 @@
             <Param Type="PULONG" Name="cCountOfAuditEntries" />
             <Param Type="PEXPLICIT_ACCESS*" Name="pListOfAuditEntries" />
             <Param Type="PSECURITY_DESCRIPTOR" Name="pSD" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MapGenericMask">
             <Param Type="PDWORD" Name="AccessMask" />
@@ -2937,9 +3055,11 @@
         <Api Name="SetSecurityDescriptorRMControl">
             <Param Type="PSECURITY_DESCRIPTOR" Name="SecurityDescriptor" />
             <Param Type="PUCHAR" Name="RMControl" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+            <Success Return="Equal" Value="0" />
         </Api>
+        
+        <!-- Low-level Access Control -->
         <Category Name="Security and Identity/Authorization/Low-level Access Control" />
         <Api Name="AccessCheckAndAuditAlarm" BothCharset="True">
             <Param Type="LPCTSTR" Name="SubsystemName" />
@@ -3141,8 +3261,8 @@
             <Param Type="PINHERITED_FROM" Name="pInheritArray" />
             <Param Type="USHORT" Name="AceCnt" />
             <Param Type="PFN_OBJECT_MGR_FUNCTS" Name="pfnArray" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="GetAce">
             <Param Type="PACL" Name="pAcl" />
@@ -3179,8 +3299,8 @@
             <Param Type="PFN_OBJECT_MGR_FUNCTS" Name="pfnArray" />
             <Param Type="PGENERIC_MAPPING" Name="pGenericMapping" />
             <Param Type="PINHERITED_FROM" Name="pInheritArray" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="GetKernelObjectSecurity">
             <Param Type="HANDLE" Name="Handle" />
@@ -3209,7 +3329,6 @@
         <Api Name="GetSecurityDescriptorLength">
             <Param Type="PSECURITY_DESCRIPTOR" Name="pSecurityDescriptor" />
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetSecurityDescriptorOwner">
             <Param Type="PSECURITY_DESCRIPTOR" Name="pSecurityDescriptor" />
@@ -3283,14 +3402,14 @@
             <Param Type="SECURITY_INFORMATION" Name="SecurityInformation" />
             <Param Type="PSECURITY_DESCRIPTOR" Name="pSecurityDescriptor" />
             <Param Type="LPDWORD" Name="lpcbSecurityDescriptor" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="RegSetKeySecurity">
             <Param Type="HKEY" Name="hKey" />
             <Param Type="SECURITY_INFORMATION" Name="SecurityInformation" />
             <Param Type="PSECURITY_DESCRIPTOR" Name="pSecurityDescriptor" />
-            <Return Type="LONG" />
+            <Return Type="[REG_ERROR]" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SetAclInformation">
@@ -3352,6 +3471,8 @@
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
+        
+        <!-- Audit Policy -->
         <Category Name="Security and Identity/Authorization/Audit Policy" />
         <Api Name="AuditComputeEffectivePolicyBySid">
             <Param Type="const PSID" Name="pSid" />
@@ -3444,6 +3565,8 @@
             <Return Type="BOOLEAN" />
             <Success Return="NotEqual" Value="0" />
         </Api>
+        
+        <!-- Authorization -->
         <Category Name="Security and Identity/Authorization" />
         <Api Name="AuditQuerySecurity">
             <Param Type="SECURITY_INFORMATION" Name="SecurityInformation" />
@@ -3469,6 +3592,7 @@
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
+        
         <!-- Authentication -->
         <Category Name="Security and Identity/Authentication/Logon User" />
         <Api Name="LogonUser" BothCharset="True">
@@ -3510,6 +3634,8 @@
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
+        
+        <!-- Low-level Credentials Management -->
         <Category Name="Security and Identity/Authentication/Low-level Credentials Management" />
         <Api Name="CredDelete" BothCharset="True">
             <Param Type="LPCTSTR" Name="TargetName" />
@@ -3631,6 +3757,7 @@
             <Param Type="LPTSTR" Name="MarshaledCredential" />
             <Return Type="BOOL" />
         </Api>
+        
         <!-- Security Management -->
         <ErrorDecode ErrorFunc="NTSTATUS" />
         <Category Name="Security and Identity/Security Management" />
@@ -3867,6 +3994,7 @@
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
+        
         <!-- Wait Chain Traversal -->
         <Category Name="Diagnostics/Debugging and Error Handling/Wait Chain Traversal" />
         <Api Name="CloseThreadWaitChainSession">
@@ -3895,6 +4023,7 @@
             <Param Type="PCOGETACTIVATIONSTATE" Name="ActivationStateCallback" />
             <Return Type="VOID" />
         </Api>
+        
         <!-- Local Security Authority (LSA) -->
         <Category Name="Security and Identity/Authentication" />
         <ErrorDecode ErrorFunc="NTSTATUS" />
@@ -3920,6 +4049,8 @@
             <Return Type="NTSTATUS" />
             <Success Return="Equal" Value="0" />
         </Api>
+        
+        <!-- Local Security Authority (LSA) Logon -->
         <Category Name="Security and Identity/Authentication/Local Security Authority (LSA) Logon" />
         <Api Name="LsaQueryDomainInformationPolicy">
             <Param Type="LSA_HANDLE" Name="PolicyHandle" />

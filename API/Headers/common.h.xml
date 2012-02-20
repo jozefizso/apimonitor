@@ -1,6 +1,6 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
@@ -206,7 +206,9 @@
         <Variable Name="LONGLONG volatile*"     Type="Alias"    Base="LONGLONG*" />
         <Variable Name="PLONGLONG"              Type="Pointer"  Base="LONGLONG" />
         <Variable Name="LONG64"                 Type="Alias"    Base="INT64" />
+        <Variable Name="LONG64*"                Type="Pointer"  Base="LONG64" />
         <Variable Name="PLONG64"                Type="Pointer"  Base="LONG64" />
+        <Variable Name="__int64"                Type="Alias"    Base="INT64" />
 
         <!-- 64-bit unsigned integers -->
         <Variable Name="UINT64"                 Type="Integer"  Size="8" Unsigned="True" />
@@ -216,6 +218,7 @@
         <Variable Name="ULONGLONG*"             Type="Pointer"  Base="ULONGLONG" />
         <Variable Name="PULONGLONG"             Type="Pointer"  Base="ULONGLONG" />
         <Variable Name="ULONG64"                Type="Alias"    Base="UINT64" />
+        <Variable Name="ULONG64*"               Type="Pointer"  Base="ULONG64" />
         <Variable Name="PULONG64"               Type="Pointer"  Base="ULONG64" />
         <Variable Name="DWORD64"                Type="Alias"    Base="UINT64" />
         <Variable Name="PDWORD64"               Type="Pointer"  Base="DWORD64" />
@@ -251,6 +254,7 @@
         <Variable Name="char**"                 Type="Pointer"  Base="char*" />
         <Variable Name="CHAR**"                 Type="Pointer"  Base="CHAR*" />
         <Variable Name="const char*"            Type="Alias"    Base="char*" />
+        <Variable Name="const char**"           Type="Pointer"  Base="const char*" />
         <Variable Name="const PCHAR"            Type="Alias"    Base="PCHAR" />
 
         <!-- LPWSTR -->
@@ -277,6 +281,9 @@
         <Variable Name="WCHAR const*"           Type="Alias"    Base="WCHAR*" />
         <Variable Name="wchar_t"                Type="Alias"    Base="WCHAR" />
         <Variable Name="wchar_t*"               Type="Pointer"  Base="wchar_t" />
+        <Variable Name="wchar_t**"              Type="Pointer"  Base="wchar_t*" />
+        <Variable Name="const wchar_t*"         Type="Pointer"  Base="wchar_t" />
+        <Variable Name="const wchar_t**"        Type="Pointer"  Base="const wchar_t*" />
 
         <!-- LPTSTR -->
         <Variable Name="TCHAR"                  Type="TCharacter" />
@@ -309,6 +316,8 @@
 
         <!-- time_t -->
         <Variable Name="time_t"                 Type="Alias"    Base="INT64" />
+        <Variable Name="time_t*"                Type="Pointer"  Base="time_t" />
+        <Variable Name="const time_t*"          Type="Pointer"  Base="time_t" />
 
         <!-- float -->
         <Variable Name="float"                  Type="Floating" Size="4" />
@@ -342,6 +351,7 @@
         <Variable Name="TCHAR [ANYSIZE_ARRAY]"  Type="Array"    Base="TCHAR"    Count="1" />
         <Variable Name="TCHAR [14]"             Type="Array"    Base="TCHAR"    Count="14" />
         <Variable Name="TCHAR [32]"             Type="Array"    Base="TCHAR"    Count="32" />
+        <Variable Name="TCHAR [64]"             Type="Array"    Base="TCHAR"    Count="64" />
         <Variable Name="TCHAR [128]"            Type="Array"    Base="TCHAR"    Count="128" />
         <Variable Name="TCHAR [256]"            Type="Array"    Base="TCHAR"    Count="256" />
         <Variable Name="TCHAR [MAX_PATH]"       Type="Array"    Base="TCHAR"    Count="260" />
@@ -367,6 +377,40 @@
         <Variable Name="ULONG64 [4]"            Type="Array"    Base="ULONG64"  Count="4" />
         <Variable Name="USHORT [8]"             Type="Array"    Base="USHORT"   Count="8" />
         <Variable Name="WORD [256]"             Type="Array"    Base="WORD"     Count="256"/>
+        <Variable Name="char [260]"             Type="Array"    Base="char"  Count="260" />
+        
+        <!-- Stack Variable
+        Used for API's from External DLL's and for API's with unknown parameters. DO NOT REMOVE.
+        If this is not available, support for External DLL's will be disabled.
+        -->
+        <!--
+        <Variable Name="Stack" Type="Union">
+            <Field Type="UINT32"    Name="ui32Value" />
+            <Field Type="UINT64" 	Name="ui64Value" />
+            <Field Type="INT32" 	Name="i32Value" />
+            <Field Type="INT64" 	Name="i64Value" />
+            <Field Type="BOOL" 	    Name="bValue" />
+            <Field Type="LPSTR" 	Name="lpszValue" />
+            <Field Type="LPWSTR" 	Name="lpwszValue" />
+            <Field Type="FLOAT" 	Name="flValue" />
+            <Field Type="DOUBLE"    Name="dblValue" />
+            
+            <Field Type="LPSTR*" 	Name="ppszValue" />
+            <Field Type="LPWSTR*"   Name="ppwszValue" />
+            <Field Type="PUINT32"   Name="pui32Value" />
+            <Field Type="PUINT64" 	Name="pui64Value" />
+            <Field Type="PBOOL" 	Name="pbValue" />
+            <Field Type="FLOAT*" 	Name="pflValue" />
+            <Field Type="DOUBLE*"   Name="pdblValue" />
+        </Variable>
+        -->
+        <Variable Name="Stack" Type="Union">
+            <Field Type="UINT_PTR"  Name="uintp" />
+            <Field Type="INT_PTR"   Name="intp" />
+            <Field Type="LPSTR" 	Name="psz" />
+            <Field Type="LPWSTR" 	Name="pwsz" />
+            <Field Type="LPVOID*" 	Name="ppv" />
+        </Variable>
 
     </Headers>
 </ApiMonitor>

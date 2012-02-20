@@ -1,6 +1,6 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
     
     Some API information is from ReactOS. See http://www.reactos.org/
@@ -14,6 +14,7 @@
     <Include Filename="Headers\registry.h.xml" />
     <Include Filename="Headers\native.h.xml" />
     <Include Filename="Headers\sockets.h.xml" />
+    <Include Filename="Headers\ioctl.h.xml" />
 
     <Module Name="Ntdll.dll" CallingConvention="STDCALL" ErrorFunc="NTSTATUS" OnlineHelp="MSDN">
 
@@ -58,6 +59,8 @@
         <Variable Name="PEXCEPTION_ROUTINE"                 Type="Alias"    Base="LPVOID" />
         <Variable Name="HANDLE []"                          Type="Pointer"  Base="HANDLE" />
         <Variable Name="PRTL_TRACE_HASH_FUNCTION"           Type="Alias"    Base="LPVOID" />
+        <Variable Name="PLDR_DLL_NOTIFICATION_FUNCTION"     Type="Alias"    Base="LPVOID" />
+        <Variable Name="PWCH"                               Type="Alias"    Base="PWCHAR" />
 
         <!-- Arrays -->
         <Variable Name="SIZE_T [2]"                         Type="Array"    Base="SIZE_T"       Count="2" />
@@ -88,6 +91,20 @@
         <Variable Name="ULONG_PTR [1]"                      Type="Array"    Base="ULONG_PTR"    Count="1" />
         <Variable Name="BYTE [4]"                           Type="Array"    Base="BYTE"         Count="4" />
         <Variable Name="BYTE [40]"                          Type="Array"    Base="BYTE"         Count="40" />
+
+        <!-- [RTL_DEBUG_QUERY_FLAGS] -->
+        <Variable Name="[RTL_DEBUG_QUERY_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="RTL_DEBUG_QUERY_MODULES"         Value="0x01" />
+                <Set Name="RTL_DEBUG_QUERY_BACKTRACES"      Value="0x02" />
+                <Set Name="RTL_DEBUG_QUERY_HEAPS"           Value="0x04" />
+                <Set Name="RTL_DEBUG_QUERY_HEAP_TAGS"       Value="0x08" />
+                <Set Name="RTL_DEBUG_QUERY_HEAP_BLOCKS"     Value="0x10" />
+                <Set Name="RTL_DEBUG_QUERY_LOCKS"           Value="0x20" />
+                <Set Name="RTL_DEBUG_QUERY_MODULES32"       Value="0x40" />
+            </Flag>
+        </Variable>
 
         <!-- CURDIR -->
         <Variable Name="CURDIR" Type="Struct">
@@ -476,7 +493,7 @@
             <Field Type="PVOID"                         Name="EventPairTarget" />
             <Field Type="HANDLE"                        Name="TargetProcessId" />
             <Field Type="HANDLE"                        Name="TargetThreadHandle" />
-            <Field Type="ULONG"                         Name="Flags" />
+            <Field Type="[RTL_DEBUG_QUERY_FLAGS]"       Name="Flags" />
             <Field Type="ULONG"                         Name="OffsetFree" />
             <Field Type="ULONG"                         Name="CommitSize" />
             <Field Type="ULONG"                         Name="ViewSize" />
@@ -941,6 +958,7 @@
         <Variable Name="PIMAGE_RESOURCE_DIRECTORY"  Type="Pointer" Base="IMAGE_RESOURCE_DIRECTORY" />
         <Variable Name="PIMAGE_RESOURCE_DIRECTORY*" Type="Pointer"      Base="PIMAGE_RESOURCE_DIRECTORY" />
 
+        <!-- KEY_INFORMATION_CLASS -->
         <Variable Name="KEY_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="KeyBasicInformation"     Value="0" />
@@ -952,6 +970,7 @@
             </Enum>
         </Variable>
 
+        <!-- KEY_VALUE_INFORMATION_CLASS -->
         <Variable Name="KEY_VALUE_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="KeyValueBasicInformation"            Value="0" />
@@ -962,6 +981,7 @@
             </Enum>
         </Variable>
 
+        <!-- PLUGPLAY_CONTROL_CLASS -->
         <Variable Name="PLUGPLAY_CONTROL_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="PlugPlayControlUserResponse"     Value="0x07" />
@@ -973,6 +993,7 @@
             </Enum>
         </Variable>
 
+        <!-- KEY_SET_INFORMATION_CLASS -->
         <Variable Name="KEY_SET_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="KeyWriteTimeInformation" Value="0" />
@@ -980,6 +1001,7 @@
             </Enum>
         </Variable>
 
+        <!-- DEBUGOBJECTINFOCLASS -->
         <Variable Name="DEBUGOBJECTINFOCLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="DebugObjectUnusedInformation"                Value="0" />
@@ -987,6 +1009,7 @@
             </Enum>
         </Variable>
 
+        <!-- TIMER_TYPE -->
         <Variable Name="TIMER_TYPE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="NotificationTimer"       Value="0" />
@@ -994,12 +1017,14 @@
             </Enum>
         </Variable>
 
+        <!-- EVENT_INFORMATION_CLASS -->
         <Variable Name="EVENT_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="EventBasicInformation" Value="0" />
             </Enum>
         </Variable>
 
+        <!-- ATOM_INFORMATION_CLASS -->
         <Variable Name="ATOM_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="AtomBasicInformation"    Value="0" />
@@ -1007,6 +1032,7 @@
             </Enum>
         </Variable>
 
+        <!-- MUTANT_INFORMATION_CLASS -->
         <Variable Name="MUTANT_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="MutantBasicInformation"  Value="0" />
@@ -1014,18 +1040,21 @@
             </Enum>
         </Variable>
 
+        <!-- SEMAPHORE_INFORMATION_CLASS -->
         <Variable Name="SEMAPHORE_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="SemaphoreBasicInformation" Value="0" />
             </Enum>
         </Variable>
 
+        <!-- TIMER_INFORMATION_CLASS -->
         <Variable Name="TIMER_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="TimerBasicInformation" Value="0" />
             </Enum>
         </Variable>
 
+        <!-- SHUTDOWN_ACTION -->
         <Variable Name="SHUTDOWN_ACTION" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="ShutdownNoReboot"    Value="0" />
@@ -1034,6 +1063,7 @@
             </Enum>
         </Variable>
 
+        <!-- FILE_INFORMATION_CLASS -->
         <Variable Name="FILE_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="FileDirectoryInformation"                Value="1" />
@@ -1088,12 +1118,14 @@
             </Enum>
         </Variable>
 
+        <!-- IO_COMPLETION_INFORMATION_CLASS -->
         <Variable Name="IO_COMPLETION_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="IoCompletionBasicInformation" Value="0" />
             </Enum>
         </Variable>
 
+        <!-- FS_INFORMATION_CLASS -->
         <Variable Name="FS_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="FileFsVolumeInformation"         Value="1" />
@@ -1108,6 +1140,7 @@
             </Enum>
         </Variable>
 
+        <!-- SYSDBG_COMMAND -->
         <Variable Name="SYSDBG_COMMAND" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="SysDbgQueryModuleInformation"    Value="1" />
@@ -1119,12 +1152,14 @@
             </Enum>
         </Variable>
 
+        <!-- PORT_INFORMATION_CLASS -->
         <Variable Name="PORT_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="PortNoInformation" Value="0" />
             </Enum>
         </Variable>
 
+        <!-- SECTION_INHERIT -->
         <Variable Name="SECTION_INHERIT" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="ViewShare" Value="1" />
@@ -1132,6 +1167,7 @@
             </Enum>
         </Variable>
 
+        <!-- SECTION_INFORMATION_CLASS -->
         <Variable Name="SECTION_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="SectionBasicInformation"     Value="0" />
@@ -1139,6 +1175,7 @@
             </Enum>
         </Variable>
 
+        <!-- MEMORY_INFORMATION_CLASS -->
         <Variable Name="MEMORY_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="MemoryBasicInformation"      Value="0" />
@@ -1148,6 +1185,7 @@
             </Enum>
         </Variable>
 
+        <!-- OBJECT_INFORMATION_CLASS -->
         <Variable Name="OBJECT_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="ObjectBasicInformation"      Value="0" />
@@ -1158,6 +1196,7 @@
             </Enum>
         </Variable>
 
+        <!-- WAIT_TYPE -->
         <Variable Name="WAIT_TYPE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="WaitAll"     Value="0" />
@@ -1165,33 +1204,7 @@
             </Enum>
         </Variable>
 
-        <!-- POWER_ACTION -->
-        <Variable Name="POWER_ACTION" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="PowerActionNone"             Value="0" />
-                <Set Name="PowerActionReserved"         Value="1" />
-                <Set Name="PowerActionSleep"            Value="2" />
-                <Set Name="PowerActionHibernate"        Value="3" />
-                <Set Name="PowerActionShutdown"         Value="4" />
-                <Set Name="PowerActionShutdownReset"    Value="5" />
-                <Set Name="PowerActionShutdownOff"      Value="6" />
-                <Set Name="PowerActionWarmEject"        Value="7" />
-            </Enum>
-        </Variable>
-
-        <!-- SYSTEM_POWER_STATE -->
-        <Variable Name="SYSTEM_POWER_STATE" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="PowerSystemUnspecified"      Value="0" />
-                <Set Name="PowerSystemWorking"          Value="1" />
-                <Set Name="PowerSystemSleeping1"        Value="2" />
-                <Set Name="PowerSystemSleeping2"        Value="3" />
-                <Set Name="PowerSystemSleeping3"        Value="4" />
-                <Set Name="PowerSystemHibernate"        Value="5" />
-                <Set Name="PowerSystemShutdown"         Value="6" />
-            </Enum>
-        </Variable>
-
+        <!-- APPHELPCACHESERVICECLASS -->
         <Variable Name="APPHELPCACHESERVICECLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="ApphelpCacheServiceLookup"   Value="0" />
@@ -1202,6 +1215,7 @@
             </Enum>
         </Variable>
 
+        <!-- SYSTEM_INFORMATION_CLASS -->
         <Variable Name="SYSTEM_INFORMATION_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="SystemBasicInformation"                          Value="0" />
@@ -1268,7 +1282,7 @@
                 <Set Name="SystemProcessorPowerInformation"                 Value="61" />
                 <Set Name="SystemEmulationBasicInformation"                 Value="62" />
                 <Set Name="SystemEmulationProcessorInformation"             Value="63" />
-                <Set Name="SystemExtendedHanfleInformation"                 Value="64" />
+                <Set Name="SystemExtendedHandleInformation"                 Value="64" />
                 <Set Name="SystemLostDelayedWriteInformation"               Value="65" />
                 <Set Name="SystemBigPoolInformation"                        Value="66" />
                 <Set Name="SystemSessionPoolTagInformation"                 Value="67" />
@@ -1305,6 +1319,7 @@
             </Enum>
         </Variable>
 
+        <!-- [NtCreateDisposition] -->
         <Variable Name="[NtCreateDisposition]" Type="Alias" Base="ULONG">
             <Display Name="ULONG" />
             <Enum>
@@ -1317,6 +1332,7 @@
             </Enum>
         </Variable>
 
+        <!-- [NtCreateOptions] -->
         <Variable Name="[NtCreateOptions]" Type="Alias" Base="ULONG">
             <Display Name="ULONG" />
             <Flag>
@@ -1594,6 +1610,38 @@
         </Variable>
         <Variable Name="PTHREADEX_DATA" Type="Pointer" Base="THREADEX_DATA" />
 
+        <!-- [REG_NOTIFY_CHANGE_FLAGS] -->
+        <Variable Name="[REG_NOTIFY_CHANGE_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="REG_NOTIFY_CHANGE_NAME"          Value="0x00000001" />
+                <Set Name="REG_NOTIFY_CHANGE_ATTRIBUTES"    Value="0x00000002" />
+                <Set Name="REG_NOTIFY_CHANGE_LAST_SET"      Value="0x00000004" />
+                <Set Name="REG_NOTIFY_CHANGE_SECURITY"      Value="0x00000008" />
+            </Flag>
+        </Variable>
+
+        <!-- RTL_UNLOAD_EVENT_TRACE -->
+        <Variable Name="RTL_UNLOAD_EVENT_TRACE" Type="Struct">
+            <Field Type="PVOID"         Name="BaseAddress" />
+            <Field Type="SIZE_T"        Name="SizeOfImage" />
+            <Field Type="ULONG"         Name="Sequence" />
+            <Field Type="ULONG"         Name="TimeDateStamp" />
+            <Field Type="ULONG"         Name="CheckSum" />
+            <Field Type="WCHAR [32]"    Name="ImageName" />
+        </Variable>
+        <Variable Name="RTL_UNLOAD_EVENT_TRACE [RTL_UNLOAD_EVENT_TRACE_NUMBER]" Type="Array" Base="RTL_UNLOAD_EVENT_TRACE" Count="64">
+            <Display Name="PRTL_UNLOAD_EVENT_TRACE" />
+        </Variable>
+
+        <!-- [HMODULE-PVOID] -->
+        <Variable Name="[HMODULE-PVOID]" Type="Alias" Base="HMODULE">
+            <Display Name="PVOID" />
+        </Variable>
+        <Variable Name="[HMODULE-PVOID*]" Type="Pointer" Base="[HMODULE-PVOID]">
+            <Display Name="PVOID*" />
+        </Variable>
+
         <!-- NT Native -->
         <Category Name="NT Native" />
         <!-- IP Helper -->
@@ -1606,7 +1654,8 @@
         <Success Return="Equal" Value="0" />
     </Api>
     -->
-        <!-- Currrent disabled due to (possible) crash on x64
+        <!-- Currrently disabled due to (possible) crash on x64
+        Doesn't crash anymore after we implemented support for stack unwinding; still needs testing
         <Api Name="NtRaiseException">
             <Param Type="PEXCEPTION_RECORD" Name="ExceptionRecord" />
             <Param Type="PCONTEXT" Name="ThreadContext" />
@@ -1986,7 +2035,7 @@
             <Param Type="PIO_APC_ROUTINE" Name="ApcRoutine" />
             <Param Type="PVOID" Name="ApcContext" />
             <Param Type="PIO_STATUS_BLOCK" Name="IoStatusBlock" />
-            <Param Type="ULONG" Name="CompletionFilter" />
+            <Param Type="[REG_NOTIFY_CHANGE_FLAGS]" Name="CompletionFilter" />
             <Param Type="BOOLEAN" Name="Asynchroneous" />
             <Param Type="PVOID" Name="ChangeBuffer" />
             <Param Type="ULONG" Name="Length" />
@@ -1997,12 +2046,12 @@
         <Api Name="NtNotifyChangeMultipleKeys">
             <Param Type="HANDLE" Name="MasterKeyHandle" />
             <Param Type="ULONG" Name="Count" />
-            <Param Type="POBJECT_ATTRIBUTES" Name="SlaveObjects" />
+            <Param Type="POBJECT_ATTRIBUTES" Name="SubordinateObjects" />
             <Param Type="HANDLE" Name="Event" />
             <Param Type="PIO_APC_ROUTINE" Name="ApcRoutine" />
             <Param Type="PVOID" Name="ApcContext" />
             <Param Type="PIO_STATUS_BLOCK" Name="IoStatusBlock" />
-            <Param Type="ULONG" Name="CompletionFilter" />
+            <Param Type="[REG_NOTIFY_CHANGE_FLAGS]" Name="CompletionFilter" />
             <Param Type="BOOLEAN" Name="WatchTree" />
             <Param Type="PVOID" Name="Buffer" />
             <Param Type="ULONG" Name="Length" />
@@ -2362,7 +2411,7 @@
         <!-- Loader (LDR) -->
         <Category Name="NT Native/Loader (LDR)" />
         <Api Name="LdrAccessResource">
-            <Param Type="PVOID" Name="BaseAddress" />
+            <Param Type="[HMODULE-PVOID]" Name="BaseAddress" />
             <Param Type="PIMAGE_RESOURCE_DATA_ENTRY" Name="ResourceDataEntry" />
             <Param Type="PVOID*" Name="Resource" />
             <Param Type="PULONG" Name="Size" />
@@ -2370,7 +2419,7 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LdrFindResource_U">
-            <Param Type="PVOID" Name="BaseAddress" />
+            <Param Type="[HMODULE-PVOID]" Name="BaseAddress" />
             <Param Type="PLDR_RESOURCE_INFO" Name="ResourceInfo" />
             <Param Type="ULONG" Name="Level" />
             <Param Type="PIMAGE_RESOURCE_DATA_ENTRY*" Name="ResourceDataEntry" />
@@ -2378,7 +2427,7 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LdrFindResourceDirectory_U">
-            <Param Type="PVOID" Name="BaseAddress" />
+            <Param Type="[HMODULE-PVOID]" Name="BaseAddress" />
             <Param Type="PLDR_RESOURCE_INFO" Name="ResourceInfo" />
             <Param Type="ULONG" Name="Level" />
             <Param Type="PIMAGE_RESOURCE_DIRECTORY*" Name="ResourceDirectory" />
@@ -2386,7 +2435,7 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LdrUnloadAlternateResourceModule">
-            <Param Type="PVOID" Name="BaseAddress" />
+            <Param Type="[HMODULE-PVOID]" Name="BaseAddress" />
             <Return Type="BOOLEAN" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -2413,7 +2462,7 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LdrVerifyMappedImageMatchesChecksum">
-            <Param Type="PVOID" Name="BaseAddress" />
+            <Param Type="[HMODULE-PVOID]" Name="BaseAddress" />
             <Param Type="ULONG" Name="NumberOfBytes" />
             <Param Type="ULONG" Name="FileLength" />
             <Return Type="BOOLEAN" />
@@ -2421,12 +2470,12 @@
         </Api>
         <Api Name="LdrAddRefDll">
             <Param Type="ULONG" Name="Flags" />
-            <Param Type="PVOID" Name="BaseAddress" />
+            <Param Type="[HMODULE-PVOID]" Name="BaseAddress" />
             <Return Type="NTSTATUS" />
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LdrDisableThreadCalloutsForDll">
-            <Param Type="PVOID" Name="BaseAddress" />
+            <Param Type="[HMODULE-PVOID]" Name="BaseAddress" />
             <Return Type="NTSTATUS" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -2463,7 +2512,7 @@
             <Param Type="PWSTR" Name="SearchPath" />
             <Param Type="PULONG" Name="LoadFlags" />
             <Param Type="PUNICODE_STRING" Name="Name" />
-            <Param Type="PVOID*" Name="BaseAddress" />
+            <Param Type="[HMODULE-PVOID*]" Name="BaseAddress" />
             <Return Type="NTSTATUS" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -2501,7 +2550,7 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LdrUnloadDll">
-            <Param Type="PVOID" Name="BaseAddress" />
+            <Param Type="[HMODULE-PVOID]" Name="BaseAddress" />
             <Return Type="NTSTATUS" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -2522,6 +2571,17 @@
             <Param Type="ULONG" Name="Invalid" />
             <Return Type="ULONG" />
             <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="LdrResFindResourceDirectory">
+            <Param Type="[HMODULE-PVOID]" Name="BaseAddress" />
+            <Param Type="PVOID" Name="Unknown1" />
+            <Param Type="PVOID" Name="Unknown2" />
+            <Param Type="PVOID*" Name="ResourceDirectory" />
+            <Param Type="PVOID" Name="Unknown3" />
+            <Param Type="PVOID" Name="Unknown4" />
+            <Param Type="PVOID" Name="Unknown5" />
+            <Return Type="NTSTATUS" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <!-- Runtime Library Routines -->
         <Category Name="NT Native/Runtime Library Routines (RTL)" />
@@ -3744,7 +3804,7 @@
         </Api>
         <Api Name="RtlQueryProcessDebugInformation">
             <Param Type="ULONG" Name="ProcessId" />
-            <Param Type="ULONG" Name="DebugInfoClassMask" />
+            <Param Type="[RTL_DEBUG_QUERY_FLAGS]" Name="DebugInfoClassMask" />
             <Param Type="PRTL_DEBUG_INFORMATION" Name="DebugBuffer" />
             <Return Type="NTSTATUS" />
             <Success Return="Equal" Value="0" />
@@ -3964,13 +4024,13 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="RtlImageNtHeader">
-            <Param Type="PVOID" Name="BaseAddress" />
+            <Param Type="[HMODULE-PVOID]" Name="BaseAddress" />
             <Return Type="PIMAGE_NT_HEADERS" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="RtlImageNtHeaderEx">
             <Param Type="ULONG" Name="Flags" />
-            <Param Type="PVOID" Name="BaseAddress" />
+            <Param Type="[HMODULE-PVOID]" Name="BaseAddress" />
             <Param Type="ULONGLONG" Name="Size" />
             <Param Type="PIMAGE_NT_HEADERS*" Name="NtHeader" />
             <Return Type="NTSTATUS" />
@@ -3994,7 +4054,7 @@
             <Param Type="PVOID" Name="Context" />
             <Return Type="VOID" />
         </Api>
-        <!-- Crashes - DO NOT USE
+        <!-- Crashes - DO NOT USE (Unknown calling convention??)
     <Api Name="RtlActivateActivationContextUnsafeFast">
         <Param Type="PRTL_CALLER_ALLOCATED_ACTIVATION_CONTEXT_STACK_FRAME_EXTENDED" Name="Frame" />
         <Param Type="PVOID" Name="Context" />
@@ -4007,14 +4067,27 @@
             <Return Type="NTSTATUS" />
             <Success Return="Equal" Value="0" />
         </Api>
-        <!-- TODO: Stack Check Fails
-    <Api Name="RtlCreateActivationContext">
-        <Param Type="PHANDLE" Name="Handle" />
-        <Param Type="PVOID" Name="ReturnedData" />
-        <Return Type="NTSTATUS" />
-        <Success Return="Equal" Value="0" />
-    </Api>
-     -->
+        <!--
+        RtlCreateActivationContext is defined as follows on most websites,
+        however the API has 6 parameters (calculated based on stack checks).
+        The definition that we will use is the one below this
+        <Api Name="RtlCreateActivationContext">
+            <Param Type="PHANDLE" Name="Handle" />
+            <Param Type="PVOID" Name="ReturnedData" />
+            <Return Type="NTSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        -->
+        <Api Name="RtlCreateActivationContext">
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="PVOID" Name="ActivationContextData" />
+            <Param Type="ULONG" Name="ExtraBytes" />
+            <Param Type="PVOID" Name="NotificationRoutine" />
+            <Param Type="PVOID" Name="NotificationContext" />
+            <Param Type="PHANDLE" Name="ActCtx" />
+            <Return Type="NTSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
         <Api Name="RtlGetActiveActivationContext">
             <Param Type="PVOID*" Name="Context" />
             <Return Type="NTSTATUS" />
@@ -4031,6 +4104,7 @@
             <Success Return="Equal" Value="0" />
         </Api>
         <!-- Crashes - DO NOT USE
+        Unknown calling convention??
     <Api Name="RtlDeactivateActivationContextUnsafeFast">
         <Param Type="PRTL_CALLER_ALLOCATED_ACTIVATION_CONTEXT_STACK_FRAME_EXTENDED" Name="Frame" />
         <Return Type="NTSTATUS" />
@@ -4149,7 +4223,6 @@
         <Api Name="RtlUniform">
             <Param Type="PULONG" Name="Seed" />
             <Return Type="ULONG" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="RtlRandom">
             <Param Type="PULONG" Name="Seed" />
@@ -4460,7 +4533,8 @@
             <Param Type="NTSTATUS" Name="Status" />
             <Return Type="VOID" />
         </Api>
-        <!-- Currrent disabled due to crash on x64
+        <!-- Currrently disabled due to crash on x64
+        Might not crash anymore since we implemented support for stack unwinding; still needs testing
         <Api Name="RtlRaiseException">
             <Param Type="PEXCEPTION_RECORD" Name="ExceptionRecord" />
             <Return Type="VOID" />
@@ -4476,6 +4550,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <!-- Crashes - DO NOT USE        
+        Might not crash anymore since we implemented support for stack unwinding; still needs testing
         <Api Name="RtlUnwind">
             <Param Type="PVOID" Name="TargetFrame" />
             <Param Type="PVOID" Name="TargetIp" />
@@ -4762,6 +4837,16 @@
             <Param Type="PUSHORT" Name="Port" />
             <Return Type="NTSTATUS" Display="LONG" />
             <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="RtlGetLastNtStatus">
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="RtlGetLastWin32Error">
+            <Return Type="DWORD" />
+        </Api>
+        <Api Name="RtlSetLastWin32Error">
+            <Param Type="DWORD" Name="err" />
+            <Return Type="void" />
         </Api>
 
         <!-- Authorization -->
@@ -5396,8 +5481,8 @@
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
             <Param Type="PVOID*" Name="BaseAddress" />
             <Param Type="SIZE_T*" Name="NumberOfBytesToProtect" />
-            <Param Type="ULONG" Name="NewAccessProtection" />
-            <Param Type="PULONG" Name="OldAccessProtection" />
+            <Param Type="[NtProtectionFlags]" Name="NewAccessProtection" />
+            <Param Type="[NtProtectionFlags*]" Name="OldAccessProtection" />
             <Return Type="NTSTATUS" />
             <Success Return="Equal" Value="0" />
         </Api>
@@ -5788,7 +5873,7 @@
             <Param Type="PIO_STATUS_BLOCK" Name="IoStatusBlock" />
             <Param Type="PVOID" Name="Buffer" />
             <Param Type="ULONG" Name="BufferSize" />
-            <Param Type="ULONG" Name="CompletionFilter" />
+            <Param Type="[FILE_NOTIFY_CHANGE_FLAGS]" Name="CompletionFilter" Display="ULONG" />
             <Param Type="BOOLEAN" Name="WatchTree" />
             <Return Type="NTSTATUS" />
             <Success Return="Equal" Value="0" />
@@ -6419,7 +6504,7 @@
             <Param Type="PIO_APC_ROUTINE" Name="UserApcRoutine" />
             <Param Type="PVOID" Name="UserApcContext" />
             <Param Type="PIO_STATUS_BLOCK" Name="IoStatusBlock" />
-            <Param Type="ULONG" Name="IoControlCode" />
+            <Param Type="[IOCTL]" Display="ULONG" Name="IoControlCode" />
             <Param Type="PVOID" Name="InputBuffer" Length="InputBufferSize" />
             <Param Type="ULONG" Name="InputBufferSize" />
             <Param Type="PVOID" Name="OutputBuffer" PostLength="OutputBufferSize" />
@@ -6469,6 +6554,8 @@
             <Return Type="NTSTATUS" />
             <Success Return="Equal" Value="0" />
         </Api>
+        <!-- TODO: Make SystemInformation a conditional union which include structures
+        such as SYSTEM_PROCESS_INFORMATION -->
         <Api Name="NtQuerySystemInformation">
             <Param Type="SYSTEM_INFORMATION_CLASS" Name="SystemInformationClass" />
             <Param Type="PVOID" Name="SystemInformation" PostLength="Length" />
@@ -6652,6 +6739,233 @@
             <Return Type="NTSTATUS" />
             <Success Return="Equal" Value="0" />
         </Api>
+
+        <!-- Additional Resources/System/DLL Load Notification -->
+        <Category Name="Additional Resources/System/DLL Load Notification" />
+        <Api Name="LdrRegisterDllNotification">
+            <Param Type="ULONG" Name="Flags" />
+            <Param Type="PLDR_DLL_NOTIFICATION_FUNCTION" Name="NotificationFunction" />
+            <Param Type="PVOID" Name="Context" />
+            <Param Type="PVOID*" Name="Cookie" />
+            <Return Type="NTSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="LdrUnregisterDllNotification">
+            <Param Type="PVOID" Name="Cookie" />
+            <Return Type="NTSTATUS" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+
+        <!-- Additional Resources/System/Run-time Library -->
+        <Category Name="Additional Resources/System/Run-time Library" />
+        <Api Name="RtlExtendedIntegerMultiply">
+            <Param Type="LARGE_INTEGER" Name="Multiplicand" />
+            <Param Type="LONG" Name="Multiplier" />
+            <Return Type="LARGE_INTEGER" />
+        </Api>
+        <Api Name="RtlExtendedLargeIntegerDivide">
+            <Param Type="LARGE_INTEGER" Name="Dividend" />
+            <Param Type="ULONG" Name="Divisor" />
+            <Param Type="PULONG" Name="Remainder" />
+            <Return Type="LARGE_INTEGER" />
+        </Api>
+
+        <!-- Additional Resources/System/Winternl -->
+        <Category Name="Additional Resources/System/Winternl" />
+        <Api Name="RtlGetFunctionTableListHead">
+            <Return Type="PLIST_ENTRY" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RtlGetUnloadEventTrace">
+            <Return Type="RTL_UNLOAD_EVENT_TRACE [RTL_UNLOAD_EVENT_TRACE_NUMBER]" />
+        </Api>
+        <Api Name="RtlGetUnloadEventTraceEx">
+            <Param Type="PULONG*" Name="ElementSize" />
+            <Param Type="PULONG*" Name="ElementCount" />
+            <!-- TODO: EventTrace is an array of RTL_UNLOAD_EVENT_TRACE -->
+            <Param Type="PVOID*" Name="EventTrace" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="RtlIsNameInExpression">
+            <Param Type="PUNICODE_STRING" Name="Expression" />
+            <Param Type="PUNICODE_STRING" Name="Name" />
+            <Param Type="BOOLEAN" Name="IgnoreCase" />
+            <Param Type="PWCH" Name="UpcaseTable" />
+            <Return Type="BOOLEAN" />
+        </Api>
+
+        <!-- API's from Visual C++ Run-Time Library (MSVCRT.DLL) -->
+        <SourceModule Name="msvcrt.dll" Include="Windows\msvcrxx.xml">
+            <Api Name="__isascii" />
+            <Api Name="__iscsym" />
+            <Api Name="__iscsymf" />
+            <Api Name="__toascii" />
+            <Api Name="_atoi64" />
+            <Api Name="_i64toa" />
+            <Api Name="_i64toa_s" />
+            <Api Name="_i64tow" />
+            <Api Name="_i64tow_s" />
+            <Api Name="_itoa" />
+            <Api Name="_itoa_s" />
+            <Api Name="_itow" />
+            <Api Name="_itow_s" />
+            <Api Name="_lfind" />
+            <!--
+            <Api Name="_local_unwind" />
+            -->
+            <Api Name="_ltoa" />
+            <Api Name="_ltoa_s" />
+            <Api Name="_ltow" />
+            <Api Name="_ltow_s" />
+            <Api Name="_makepath_s" />
+            <Api Name="_memccpy" />
+            <Api Name="_memicmp" />
+            <!--
+            <Api Name="_setjmp" />
+            <Api Name="_setjmpex" />
+            -->
+            <Api Name="_snprintf" />
+            <Api Name="_snprintf_s" />
+            <Api Name="_snscanf_s" />
+            <Api Name="_snwprintf" />
+            <Api Name="_snwprintf_s" />
+            <Api Name="_snwscanf_s" />
+            <Api Name="_splitpath" />
+            <Api Name="_splitpath_s" />
+            <Api Name="_strcmpi" />
+            <Api Name="_stricmp" />
+            <Api Name="_strlwr" />
+            <Api Name="_strnicmp" />
+            <Api Name="_strnset_s" />
+            <Api Name="_strset_s" />
+            <Api Name="_strupr" />
+            <Api Name="_swprintf" />
+            <Api Name="_ui64toa" />
+            <Api Name="_ui64toa_s" />
+            <Api Name="_ui64tow" />
+            <Api Name="_ui64tow_s" />
+            <Api Name="_ultoa" />
+            <Api Name="_ultoa_s" />
+            <Api Name="_ultow" />
+            <Api Name="_ultow_s" />
+            <Api Name="_vscwprintf" />
+            <Api Name="_vsnprintf" />
+            <Api Name="_vsnprintf_s" />
+            <Api Name="_vsnwprintf" />
+            <Api Name="_vsnwprintf_s" />
+            <Api Name="_vswprintf" />
+            <Api Name="_wcsicmp" />
+            <Api Name="_wcslwr" />
+            <Api Name="_wcsnicmp" />
+            <Api Name="_wcsnset_s" />
+            <Api Name="_wcsset_s" />
+            <Api Name="_wcstoui64" />
+            <Api Name="_wcsupr" />
+            <Api Name="_wmakepath_s" />
+            <Api Name="_wsplitpath_s" />
+            <Api Name="_wtoi" />
+            <Api Name="_wtoi64" />
+            <Api Name="_wtol" />
+            <Api Name="abs" />
+            <Api Name="atan" />
+            <Api Name="atoi" />
+            <Api Name="atol" />
+            <Api Name="bsearch" />
+            <Api Name="ceil" />
+            <Api Name="cos" />
+            <Api Name="fabs" />
+            <Api Name="floor" />
+            <Api Name="isalnum" />
+            <Api Name="isalpha" />
+            <Api Name="iscntrl" />
+            <Api Name="isdigit" />
+            <Api Name="isgraph" />
+            <Api Name="islower" />
+            <Api Name="isprint" />
+            <Api Name="ispunct" />
+            <Api Name="isspace" />
+            <Api Name="isupper" />
+            <Api Name="iswalpha" />
+            <Api Name="iswctype" />
+            <Api Name="iswdigit" />
+            <Api Name="iswlower" />
+            <Api Name="iswspace" />
+            <Api Name="iswxdigit" />
+            <Api Name="isxdigit" />
+            <Api Name="labs" />
+            <Api Name="log" />
+            <!--
+            <Api Name="longjmp" />
+            -->
+            <Api Name="mbstowcs" />
+            <Api Name="memchr" />
+            <Api Name="memcmp" />
+            <Api Name="memcpy" />
+            <Api Name="memcpy_s" />
+            <Api Name="memmove" />
+            <Api Name="memmove_s" />
+            <Api Name="memset" />
+            <Api Name="pow" />
+            <Api Name="qsort" />
+            <Api Name="sin" />
+            <Api Name="sprintf" />
+            <Api Name="sprintf_s" />
+            <Api Name="sqrt" />
+            <Api Name="sscanf" />
+            <Api Name="sscanf_s" />
+            <Api Name="strcat" />
+            <Api Name="strcat_s" />
+            <Api Name="strchr" />
+            <Api Name="strcmp" />
+            <Api Name="strcpy" />
+            <Api Name="strcpy_s" />
+            <Api Name="strcspn" />
+            <Api Name="strlen" />
+            <Api Name="strncat" />
+            <Api Name="strncat_s" />
+            <Api Name="strncmp" />
+            <Api Name="strncpy" />
+            <Api Name="strncpy_s" />
+            <Api Name="strnlen" />
+            <Api Name="strpbrk" />
+            <Api Name="strrchr" />
+            <Api Name="strspn" />
+            <Api Name="strstr" />
+            <Api Name="strtok_s" />
+            <Api Name="strtol" />
+            <Api Name="strtoul" />
+            <Api Name="swprintf" />
+            <Api Name="swprintf_s" />
+            <Api Name="swscanf_s" />
+            <Api Name="tan" />
+            <Api Name="tolower" />
+            <Api Name="toupper" />
+            <Api Name="towlower" />
+            <Api Name="vsprintf" />
+            <Api Name="vsprintf_s" />
+            <Api Name="vswprintf_s" />
+            <Api Name="wcscat" />
+            <Api Name="wcscat_s" />
+            <Api Name="wcschr" />
+            <Api Name="wcscmp" />
+            <Api Name="wcscpy" />
+            <Api Name="wcscpy_s" />
+            <Api Name="wcscspn" />
+            <Api Name="wcslen" />
+            <Api Name="wcsncat" />
+            <Api Name="wcsncat_s" />
+            <Api Name="wcsncmp" />
+            <Api Name="wcsncpy" />
+            <Api Name="wcsncpy_s" />
+            <Api Name="wcsnlen" />
+            <Api Name="wcspbrk" />
+            <Api Name="wcsrchr" />
+            <Api Name="wcsspn" />
+            <Api Name="wcsstr" />
+            <Api Name="wcstol" />
+            <Api Name="wcstombs" />
+            <Api Name="wcstoul" />
+        </SourceModule>
 
     </Module>
 </ApiMonitor>

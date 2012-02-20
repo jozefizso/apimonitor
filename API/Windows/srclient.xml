@@ -1,6 +1,6 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
@@ -42,7 +42,7 @@
                 <Set Name="CRITICAL_UPDATE"             Value="18" />
             </Enum>
         </Variable>
-
+        
         <!-- RESTOREPOINTINFOA -->
         <Variable Name="RESTOREPOINTINFOA" Type="Struct">
             <Field Type="[RESTOREPOINT_EVENT]"  Name="dwEventType" />
@@ -62,17 +62,8 @@
         <Variable Name="PRESTOREPOINTINFOW" Type="Pointer" Base="RESTOREPOINTINFOW" />
 
         <!-- [StateMgrStatus] -->
-        <Variable Name="[StateMgrStatus]" Type="Alias" Base="DWORD">
+        <Variable Name="[StateMgrStatus]" Type="Alias" Base="[ERROR_CODE]">
             <Display Name="DWORD" />
-            <Enum>
-                <Set Name="ERROR_SUCCESS"           Value="0" />
-                <Set Name="ERROR_BAD_ENVIRONMENT"   Value="10" />
-                <Set Name="ERROR_DISK_FULL"         Value="112" />
-                <Set Name="ERROR_INTERNAL_ERROR"    Value="1359" />
-                <Set Name="ERROR_INVALID_DATA"      Value="13" />
-                <Set Name="ERROR_SERVICE_DISABLED"  Value="1058" />
-                <Set Name="ERROR_TIMEOUT"           Value="1460" />
-            </Enum>
         </Variable>
 
         <!-- STATEMGRSTATUS -->
@@ -80,7 +71,7 @@
             <Field Type="[StateMgrStatus]"  Name="nStatus" />
             <Field Type="INT64"             Name="llSequenceNumber" />
         </Variable>
-        <Variable Name="PSTATEMGRSTATUS" Type="Pointer" Base="LPVOID" />
+        <Variable Name="PSTATEMGRSTATUS" Type="Pointer" Base="STATEMGRSTATUS" />
 
         <!-- System Restore -->
         <Category Name="System Administration/System Restore" />
@@ -98,6 +89,13 @@
         <Api Name="SRSetRestorePointW">
             <Param Type="PRESTOREPOINTINFOW" Name="pRestorePtSpec" />
             <Param Type="PSTATEMGRSTATUS" Name="pSMgrStatus" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SRSetRestorePointInternal">
+            <Param Type="PRESTOREPOINTINFOW" Name="pRestorePtSpec" />
+            <Param Type="PSTATEMGRSTATUS" Name="pSMgrStatus" />
+            <Param Type="BOOL" Name="fForceSurrogate" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
