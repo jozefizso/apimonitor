@@ -8,6 +8,9 @@
 
     <Module Name="*" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
 
+        <!-- TODO: External Interfaces -->
+        <Variable Name="IOrpcDebugNotify" Type="Interface" />
+
         <!-- [DLLMAIN_REASON] -->
         <Variable Name="[DLLMAIN_REASON]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
@@ -19,6 +22,51 @@
             </Enum>
         </Variable>
 
+        <!-- ORPC_INIT_ARGS -->
+        <Variable Name="ORPC_INIT_ARGS" Type="Struct">
+            <Field Type="IOrpcDebugNotify*"     Name="lpIntfOrpcDebug" />
+            <Field Type="void*"                 Name="pvPSN" />
+            <Field Type="DWORD*"                Name="dwReserved1" />
+            <Field Type="DWORD*"                Name="dwReserved2" />
+        </Variable>
+        <Variable Name="LPORPC_INIT_ARGS" Type="Pointer" Base="ORPC_INIT_ARGS" />
+
+        <!-- [DLLVER_PLATFORM] -->
+        <Variable Name="[DLLVER_PLATFORM]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="DLLVER_PLATFORM_WINDOWS"     Value="0x00000001" />
+                <Set Name="DLLVER_PLATFORM_NT"          Value="0x00000002" />
+            </Enum>
+        </Variable>
+
+        <!-- DLLVERSIONINFO -->
+        <Variable Name="DLLVERSIONINFO" Type="Struct">
+            <Field Type="DWORD" 	        Name="cbSize" />
+            <Field Type="DWORD" 	        Name="dwMajorVersion" />
+            <Field Type="DWORD" 	        Name="dwMinorVersion" />
+            <Field Type="DWORD" 	        Name="dwBuildNumber" />
+            <Field Type="[DLLVER_PLATFORM]" Name="dwPlatformID" />
+        </Variable>
+        <Variable Name="DLLVERSIONINFO*" Type="Pointer" Base="DLLVERSIONINFO" />
+
+        <!-- [CPL_MSG] -->
+        <Variable Name="[CPL_MSG]" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="CPL_INIT"                Value="1" />
+                <Set Name="CPL_GETCOUNT"            Value="2" />
+                <Set Name="CPL_INQUIRE"             Value="3" />
+                <Set Name="CPL_SELECT"              Value="4" />
+                <Set Name="CPL_DBLCLK"              Value="5" />
+                <Set Name="CPL_STOP"                Value="6" />
+                <Set Name="CPL_EXIT"                Value="7" />
+                <Set Name="CPL_NEWINQUIRE"          Value="8" />
+                <Set Name="CPL_STARTWPARMSA"        Value="9" />
+                <Set Name="CPL_STARTWPARMSW"        Value="10" />
+                <Set Name="CPL_SETUP"               Value="200" />
+            </Enum>
+        </Variable>
+
         <!-- Dynamic-Link Library -->
         <Category Name="System Services/Dynamic-Link Libraries" />
         <Api Name="DllMain">
@@ -27,6 +75,52 @@
             <Param Type="LPVOID" Name="lpvReserved" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
+        </Api>
+
+        <!-- Component Object Model (COM) -->
+        <Category Name="Component Object Model (COM)/COM Fundamentals" />
+        <Api Name="DllGetClassObject">
+            <Param Type="REFCLSID" Name="rclsid" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="LPVOID*" Name="ppv" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="DllCanUnloadNow">
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="DllRegisterServer">
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="DllUnregisterServer">
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="DllDebugObjectRPCHook">
+            <Param Type="BOOL" Name="fTrace" />
+            <Param Type="LPORPC_INIT_ARGS" Name="lpOrpcInitArgs" />
+            <Return Type="BOOL" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+
+        <!-- Shell -->
+        <Category Name="Windows Environment Development/Windows Shell" />
+        <Api Name="CPlApplet">
+            <Param Type="HWND" Name="hwndCPl" />
+            <Param Type="[CPL_MSG]" Name="uMsg" />
+            <Param Type="LPARAM" Name="lParam1" />
+            <Param Type="LPARAM" Name="lParam2" />
+            <Return Type="LONG" />
+        </Api>
+        <Api Name="DllGetVersion">
+            <Param Type="DLLVERSIONINFO*" Name="pdvi" />
+            <Return Type="HRESULT" />
+        </Api>
+
+        <!-- Miscellaneous -->
+        <Category Name="Windows Environment Development/Windows Shell/Shell Lightweight Utility/Miscellaneous" />
+        <Api Name="DllInstall">
+            <Param Type="BOOL" Name="bInstall" />
+            <Param Type="PCWSTR" Name="pszCmdLine" />
+            <Return Type="HRESULT" />
         </Api>
 
     </Module>

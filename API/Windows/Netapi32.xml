@@ -6,7 +6,7 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\network.h.xml" />
-    <Module Name="Netapi32.dll" CallingConvention="STDCALL" OnlineHelp="MSDN">
+    <Module Name="Netapi32.dll" CallingConvention="STDCALL" OnlineHelp="MSDN" ErrorFunc="GetLastError" ErrorIsReturnValue="True">
         
         <!-- Variables -->
         <Variable Name="PZPWSTR*"   Type="Pointer"  Base="PWSTR" />
@@ -495,6 +495,8 @@
                 <Set Name="DS_RETURN_FLAT_NAME"                 Value="0x80000000" />
             </Flag>
         </Variable>
+
+        <!-- TODO: DWORD return should be [ERROR_CODE]
         
         <!-- Active Directory Domain Services -->
         <Category Name="Security and Identity/Directory, Identity, and Access Services/Directory Services/Directories/Active Directory Domain Services/Directory Service" />
@@ -699,7 +701,7 @@
             <Param Type="LPWSTR" Name="ServerName" />
             <Param Type="DWORD" Name="ServiceBitsOfInterest" />
             <Param Type="DWORD" Name="ServiceBits" />
-            <Return Type="NTSTATUS" />
+            <Return Type="NET_API_STATUS" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="NetProvisionComputerAccount">
@@ -1331,7 +1333,6 @@
             <Param Type="LPWSTR" Name="Reserved" />
             <Param Type="DWORD" Name="Flags" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NetEnumerateServiceAccounts">
             <Param Type="LPWSTR" Name="ServerName" />
@@ -1339,21 +1340,18 @@
             <Param Type="DWORD*" Name="AccountsCount" />
             <Param Type="PZPWSTR*" Name="Accounts" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NetIsServiceAccount">
             <Param Type="LPWSTR" Name="ServerName" />
             <Param Type="LPWSTR" Name="AccountName" />
             <Param Type="BOOL*" Name="IsService" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NetRemoveServiceAccount">
             <Param Type="LPWSTR" Name="ServerName" />
             <Param Type="LPWSTR" Name="AccountName" />
             <Param Type="DWORD" Name="Flags" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <!-- WebDAV -->
         <Category Name="Internet/WebDAV" />

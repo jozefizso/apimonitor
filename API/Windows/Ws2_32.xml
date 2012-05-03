@@ -1,6 +1,6 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
     
     TODO: Check return values since most API's fail when return is -1. We are currently checking for 0
@@ -9,7 +9,12 @@
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\sockets.h.xml" />
     <Module Name="Ws2_32.dll" CallingConvention="STDCALL" ErrorFunc="WSAGetLastError" OnlineHelp="MSDN">
-        
+
+        <!-- [WSA_ERROR] -->
+        <Variable Name="[WSA_ERROR]" Type="Alias" Base="[ERROR_CODE]">
+            <Display Name="int" />
+        </Variable>
+
         <!-- [LookupServiceFlags] -->
         <Variable Name="[LookupServiceFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
@@ -111,19 +116,18 @@
             <Param Type="struct addrinfo*" Name="ai" />
             <Return Type="void" />
         </Api>
-        <Api Name="getaddrinfo" Ordinal="163" ErrorIsReturnValue="True">
+        <Api Name="getaddrinfo" Ordinal="163">
             <Param Type="const char*" Name="nodename" />
             <Param Type="const char*" Name="servname" />
             <Param Type="const struct addrinfo*" Name="hints" />
             <Param Type="struct addrinfo**" Name="res" />
-            <Return Type="int" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[WSA_ERROR]" />
         </Api>
         <Api Name="FreeAddrInfoEx" BothCharset="True" OrdinalA="25" OrdinalW="26" SuffixA="">
             <Param Type="PADDRINFOEX" Name="pAddrInfo" />
             <Return Type="void" />
         </Api>
-        <Api Name="GetAddrInfoEx" BothCharset="True" OrdinalA="28" OrdinalW="29" ErrorIsReturnValue="True">
+        <Api Name="GetAddrInfoEx" BothCharset="True" OrdinalA="28" OrdinalW="29">
             <Param Type="PCTSTR" Name="pName" />
             <Param Type="PCTSTR" Name="pServiceName" />
             <Param Type="[NameSpaceFlags]" Name="dwNameSpace" />
@@ -134,20 +138,18 @@
             <Param Type="LPOVERLAPPED" Name="lpOverlapped" />
             <Param Type="LPLOOKUPSERVICE_COMPLETION_ROUTINE" Name="lpCompletionRoutine" />
             <Param Type="LPHANDLE" Name="lpNameHandle" />
-            <Return Type="int" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[WSA_ERROR]" />
         </Api>
         <Api Name="FreeAddrInfoW" Ordinal="27">
             <Param Type="PADDRINFOW" Name="pAddrInfo" />
             <Return Type="void" />
         </Api>
-        <Api Name="GetAddrInfoW" Ordinal="30" ErrorIsReturnValue="True">
+        <Api Name="GetAddrInfoW" Ordinal="30">
             <Param Type="PCWSTR" Name="pNodeName" />
             <Param Type="PCWSTR" Name="pServiceName" />
             <Param Type="const ADDRINFOW*" Name="pHints" />
             <Param Type="PADDRINFOW*" Name="ppResult" />
-            <Return Type="int" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[WSA_ERROR]" />
         </Api>
         <Api Name="gethostbyaddr" Ordinal="51">
             <Param Type="const char*" Name="addr" />
@@ -175,8 +177,7 @@
             <Param Type="char*" Name="serv" OutputOnly="True" />
             <Param Type="DWORD" Name="servlen" />
             <Param Type="[NI_Flags]" Name="flags" />
-            <Return Type="int" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[WSA_ERROR]" />
         </Api>
         <Api Name="GetNameInfoW" Ordinal="31">
             <Param Type="const SOCKADDR*" Name="pSockaddr" />
@@ -186,8 +187,7 @@
             <Param Type="PWCHAR" Name="pServiceBuffer" />
             <Param Type="DWORD" Name="ServiceBufferSize" />
             <Param Type="[NI_Flags]" Display="INT" Name="Flags" />
-            <Return Type="int" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[WSA_ERROR]" />
         </Api>
         <Api Name="getpeername" Ordinal="5">
             <Param Type="SOCKET" Name="s" />
@@ -348,7 +348,7 @@
             <Return Type="[SocketCode-int]" />
             <Success Return="NotEqual" Value="-1" />
         </Api>
-        <Api Name="SetAddrInfoEx" BothCharset="True" OrdinalA="34" OrdinalW="35" ErrorIsReturnValue="True">
+        <Api Name="SetAddrInfoEx" BothCharset="True" OrdinalA="34" OrdinalW="35">
             <Param Type="PCTSTR" Name="pName" />
             <Param Type="PCTSTR" Name="pServiceName" />
             <Param Type="SOCKET_ADDRESS*" Name="pAddresses" Count="dwAddressCount" />
@@ -361,8 +361,7 @@
             <Param Type="LPOVERLAPPED" Name="lpOverlapped" />
             <Param Type="LPLOOKUPSERVICE_COMPLETION_ROUTINE" Name="lpCompletionRoutine" />
             <Param Type="LPHANDLE" Name="lpNameHandle" />
-            <Return Type="int" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[WSA_ERROR]" />
         </Api>
         <Api Name="setsockopt" Ordinal="21">
             <Param Type="SOCKET" Name="s" />
@@ -565,7 +564,8 @@
             <Success Return="NotEqual" Value="-1" />
         </Api>
         <Api Name="WSAGetLastError" Ordinal="111">
-            <Return Type="int" />
+            <Return Type="[WSA_ERROR]" />
+            <Success />
         </Api>
         <Api Name="WSAGetOverlappedResult" Ordinal="64">
             <Param Type="SOCKET" Name="s" />
@@ -595,13 +595,13 @@
             <Param Type="SOCKET" Name="s" />
             <Param Type="u_long" Name="hostlong" />
             <Param Type="u_long*" Name="lpnetlong" />
-            <Return Type="int" />
+            <Return Type="[SocketCode-int]" />
         </Api>
         <Api Name="WSAHtons" Ordinal="71">
             <Param Type="SOCKET" Name="s" />
             <Param Type="u_short" Name="hostshort" />
             <Param Type="u_short*" Name="lpnetshort" />
-            <Return Type="int" />
+            <Return Type="[SocketCode-int]" />
         </Api>
         <Api Name="WSAInstallServiceClass" BothCharset="True" OrdinalA="72" OrdinalW="73">
             <Param Type="LPWSASERVICECLASSINFO" Name="lpServiceClassInfo" />
@@ -657,13 +657,13 @@
             <Param Type="SOCKET" Name="s" />
             <Param Type="u_long" Name="netlong" />
             <Param Type="u_long*" Name="lphostlong" />
-            <Return Type="int" />
+            <Return Type="[SocketCode-int]" />
         </Api>
         <Api Name="WSANtohs" Ordinal="83">
             <Param Type="SOCKET" Name="s" />
             <Param Type="u_short" Name="netshort" />
             <Param Type="u_short*" Name="lphostshort" />
-            <Return Type="int" />
+            <Return Type="[SocketCode-int]" />
         </Api>
         <Api Name="WSAPoll" Ordinal="84">
             <Param Type="ULONG" Name="nfds" />
@@ -765,7 +765,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WSASetLastError" Ordinal="112">
-            <Param Type="int" Name="iError" />
+            <Param Type="[WSA_ERROR]" Name="iError" />
             <Return Type="void" />
         </Api>
         <Api Name="WSASetService" BothCharset="True" OrdinalA="97" OrdinalW="98">
@@ -785,11 +785,10 @@
             <Return Type="SOCKET" />
             <Success Return="NotEqual" Value="-1" />
         </Api>
-        <Api Name="WSAStartup" Ordinal="115" ErrorIsReturnValue="True">
+        <Api Name="WSAStartup" Ordinal="115">
             <Param Type="WORD" Name="wVersionRequested" />
             <Param Type="LPWSADATA" Name="lpWSAData" />
-            <Return Type="int" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[WSA_ERROR]" />
         </Api>
         <Api Name="WSAStringToAddress" BothCharset="True" OrdinalA="117" OrdinalW="118">
             <Param Type="LPTSTR" Name="AddressString" />

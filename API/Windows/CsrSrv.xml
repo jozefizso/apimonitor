@@ -1,0 +1,215 @@
+<!--
+    API Monitor Definitions
+    (c) 2012, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\native.h.xml" />
+
+    <Module Name="CsrSrv.dll" CallingConvention="STDCALL" ErrorFunc="NTSTATUS" OnlineHelp="MSDN">
+
+        <!-- Variables -->
+        <Variable Name="PCSR_THREAD"            Type="Alias"        Base="LPVOID" />
+        <Variable Name="PCSR_THREAD*"           Type="Pointer"      Base="PCSR_THREAD" />
+        <Variable Name="PCSR_API_MESSAGE"       Type="Alias"        Base="LPVOID" />
+        <Variable Name="PCSR_NT_SESSION"        Type="Alias"        Base="LPVOID" />
+        <Variable Name="PCSR_PROCESS"           Type="Alias"        Base="LPVOID" />
+        <Variable Name="PCSR_PROCESS*"          Type="Pointer"      Base="PCSR_PROCESS" />
+        <Variable Name="CSR_WAIT_FUNCTION"      Type="Alias"        Base="LPVOID" />
+        
+        <!-- TODO: Definitions Unavailable
+        CsrDeferredCreateProcess
+        CsrRegisterClientThreadSetup
+        CsrReplyToMessage
+        -->
+
+        <!-- Client-Server (CSR) -->
+        <Category Name="NT Native/Client-Server (CSR)" />
+        
+        <Api Name="CsrAddStaticServerThread">
+            <Param Type="HANDLE" Name="hThread" />
+            <Param Type="PCLIENT_ID" Name="ClientId" />
+            <Param Type="ULONG" Name="ThreadFlags" />
+            <Return Type="PCSR_THREAD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CsrCallServerFromServer">
+            <Param Type="PCSR_API_MESSAGE" Name="ReceiveMsg" />
+            <Param Type="PCSR_API_MESSAGE" Name="ReplyMsg" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="CsrConnectToUser">
+            <Return Type="PCSR_THREAD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CsrCreateProcess">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="HANDLE" Name="hThread" />
+            <Param Type="PCLIENT_ID" Name="ClientId" />
+            <Param Type="PCSR_NT_SESSION" Name="NtSession" />
+            <Param Type="ULONG" Name="Flags" />
+            <Param Type="PCLIENT_ID" Name="DebugCid" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="CsrCreateRemoteThread">
+            <Param Type="HANDLE" Name="hThread" />
+            <Param Type="PCLIENT_ID" Name="ClientId" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <!-- Signature varies by OS - Windows 2000 has 3 parameters, Win7 and XP have 4. This will
+        be enabled once we have support for OS specific definition files
+        <Api Name="CsrCreateThread">
+            <Param Type="PCSR_PROCESS" Name="CsrProcess" />
+            <Param Type="HANDLE" Name="hThread" />
+            <Param Type="PCLIENT_ID" Name="ClientId" />
+            <Param Type="BOOLEAN" Name="HaveClient" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        -->
+        <Api Name="CsrCreateWait">
+            <Param Type="PLIST_ENTRY" Name="WaitList" />
+            <Param Type="CSR_WAIT_FUNCTION" Name="WaitFunction" />
+            <Param Type="PCSR_THREAD" Name="CsrWaitThread" />
+            <Param Type="PCSR_API_MESSAGE" Name="WaitApiMessage" />
+            <Param Type="PVOID" Name="WaitContext" />
+            <Param Type="PLIST_ENTRY" Name="UserWaitList" />
+            <Return Type="BOOLEAN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CsrDebugProcess">
+            <Param Type="PCSR_PROCESS" Name="CsrProcess" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="CsrDebugProcessStop">
+            <Param Type="PCSR_PROCESS" Name="CsrProcess" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="CsrDereferenceProcess">
+            <Param Type="PCSR_PROCESS" Name="CsrProcess" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="CsrDereferenceThread">
+            <Param Type="PCSR_THREAD" Name="CsrThread" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="CsrDereferenceWait">
+            <Param Type="PLIST_ENTRY" Name="WaitList" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="CsrDestroyProcess">
+            <Param Type="PCLIENT_ID" Name="Cid" />
+            <Param Type="NTSTATUS" Name="ExitStatus" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="CsrDestroyThread">
+            <Param Type="PCLIENT_ID" Name="Cid" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="CsrExecServerThread">
+            <Param Type="PVOID" Name="ThreadHandler" />
+            <Param Type="ULONG" Name="Flags" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="CsrGetProcessLuid">
+            <Param Type="HANDLE" Name="hProcess" />
+            <Param Type="PLUID" Name="Luid" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="CsrImpersonateClient">
+            <Param Type="PCSR_THREAD" Name="CsrThread" />
+            <Return Type="BOOLEAN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CsrLockProcessByClientId">
+            <Param Type="HANDLE" Name="Pid" />
+            <Param Type="PCSR_PROCESS*" Name="CsrProcess" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="CsrLockThreadByClientId">
+            <Param Type="HANDLE" Name="Tid" />
+            <Param Type="PCSR_THREAD*" Name="CsrThread" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="CsrMoveSatisfiedWait">
+            <Param Type="PLIST_ENTRY" Name="NewEntry" />
+            <Param Type="PLIST_ENTRY" Name="WaitList" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="CsrNotifyWait">
+            <Param Type="PLIST_ENTRY" Name="WaitList" />
+            <Param Type="ULONG" Name="WaitType" />
+            <Param Type="PVOID" Name="WaitArgument1" />
+            <Param Type="PVOID" Name="WaitArgument2" />
+            <Return Type="BOOLEAN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CsrPopulateDosDevices">
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="CsrLockedReferenceProcess">
+            <Param Type="PCSR_PROCESS" Name="CsrProcess" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="CsrQueryApiPort">
+            <Return Type="HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CsrReferenceThread">
+            <Param Type="PCSR_THREAD" Name="CsrThread" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="CsrRevertToSelf">
+            <Return Type="BOOLEAN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CsrServerInitialization">
+            <Param Type="ULONG" Name="ArgumentCount" />
+            <Param Type="LPVOID" Name="Arguments" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="CsrSetBackgroundPriority">
+            <Param Type="PCSR_PROCESS" Name="CsrProcess" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="CsrSetCallingSpooler">
+            <Param Type="ULONG" Name="Reserved" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="CsrSetForegroundPriority">
+            <Param Type="PCSR_PROCESS" Name="CsrProcess" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="CsrShutdownProcesses">
+            <Param Type="PLUID" Name="CallerLuid" />
+            <Param Type="ULONG" Name="Flags" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="CsrUnhandledExceptionFilter">
+            <Param Type="PEXCEPTION_POINTERS" Name="ExceptionInfo" />
+            <Return Type="LONG" />
+        </Api>
+        <Api Name="CsrUnlockProcess">
+            <Param Type="PCSR_PROCESS" Name="CsrProcess" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="CsrUnlockThread">
+            <Param Type="PCSR_THREAD" Name="CsrThread" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="CsrValidateMessageBuffer">
+            <Param Type="PCSR_API_MESSAGE" Name="ApiMessage" />
+            <Param Type="PVOID*" Name="Buffer" Length="ArgumentSize" />
+            <Param Type="ULONG" Name="ArgumentSize" />
+            <Param Type="ULONG" Name="ArgumentCount" />
+            <Return Type="BOOLEAN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CsrValidateMessageString">
+            <Param Type="PCSR_API_MESSAGE" Name="ApiMessage" />
+            <Param Type="LPWSTR*" Name="MessageString" />
+            <Return Type="BOOLEAN" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+    </Module>
+</ApiMonitor>

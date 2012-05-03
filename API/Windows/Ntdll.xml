@@ -16,7 +16,7 @@
     <Include Filename="Headers\sockets.h.xml" />
     <Include Filename="Headers\ioctl.h.xml" />
 
-    <Module Name="Ntdll.dll" CallingConvention="STDCALL" ErrorFunc="NTSTATUS" OnlineHelp="MSDN">
+    <Module Name="Ntdll.dll" CallingConvention="STDCALL" OnlineHelp="MSDN">
 
         <!-- TODO: Unions (Very Complex) -->
         <Variable Name="CSR_API_MESSAGE*"                   Type="Alias"    Base="LPVOID" />
@@ -112,16 +112,6 @@
             <Field Type="HANDLE"            Name="Handle" />
         </Variable>
         <Variable Name="CURDIR*" Type="Pointer" Base="CURDIR" />
-
-        <!-- CLIENT_ID -->
-        <Variable Name="[HANDLE_NO_HEX]" Type="Alias" Base="UINT_PTR">
-            <Display Name="HANDLE" />
-        </Variable>
-        <Variable Name="CLIENT_ID" Type="Struct">
-            <Field Type="[HANDLE_NO_HEX]"   Name="UniqueProcess" />
-            <Field Type="[HANDLE_NO_HEX]"   Name="UniqueThread" />
-        </Variable>
-        <Variable Name="PCLIENT_ID" Type="Pointer" Base="CLIENT_ID" />
 
         <!-- CSR_CAPTURE_BUFFER -->
         <Variable Name="CSR_CAPTURE_BUFFER" Type="Struct">
@@ -307,17 +297,17 @@
 
         <!-- SECTION_IMAGE_INFORMATION -->
         <Variable Name="SECTION_IMAGE_INFORMATION" Type="Struct">
-            <Field Type="PVOID"         Name="EntryPoint" />
-            <Field Type="ULONG"         Name="StackZeroBits" />
-            <Field Type="ULONG"         Name="StackReserved" />
-            <Field Type="ULONG"         Name="StackCommit" />
-            <Field Type="ULONG"         Name="ImageSubsystem" />
-            <Field Type="WORD"          Name="SubsystemVersionLow" />
-            <Field Type="WORD"          Name="SubsystemVersionHigh" />
-            <Field Type="ULONG"         Name="Unknown1" />
-            <Field Type="ULONG"         Name="ImageCharacteristics" />
-            <Field Type="ULONG"         Name="ImageMachineType" />
-            <Field Type="ULONG [3]"     Name="Unknown2" />
+            <Field Type="PVOID"                                 Name="EntryPoint" />
+            <Field Type="ULONG"                                 Name="StackZeroBits" />
+            <Field Type="ULONG"                                 Name="StackReserved" />
+            <Field Type="ULONG"                                 Name="StackCommit" />
+            <Field Type="ULONG"                                 Name="ImageSubsystem" />
+            <Field Type="WORD"                                  Name="SubsystemVersionLow" />
+            <Field Type="WORD"                                  Name="SubsystemVersionHigh" />
+            <Field Type="ULONG"                                 Name="Unknown1" />
+            <Field Type="[IMAGE_FILE_CHARACTERISTICS_ULONG]"    Name="ImageCharacteristics" />
+            <Field Type="ULONG"                                 Name="ImageMachineType" />
+            <Field Type="ULONG [3]"                             Name="Unknown2" />
         </Variable>
 
         <!-- RTL_USER_PROCESS_INFORMATION -->
@@ -494,9 +484,9 @@
             <Field Type="HANDLE"                        Name="TargetProcessId" />
             <Field Type="HANDLE"                        Name="TargetThreadHandle" />
             <Field Type="[RTL_DEBUG_QUERY_FLAGS]"       Name="Flags" />
-            <Field Type="ULONG"                         Name="OffsetFree" />
-            <Field Type="ULONG"                         Name="CommitSize" />
-            <Field Type="ULONG"                         Name="ViewSize" />
+            <Field Type="ULONG_PTR"                     Name="OffsetFree" />
+            <Field Type="ULONG_PTR"                     Name="CommitSize" />
+            <Field Type="ULONG_PTR"                     Name="ViewSize" />
             <Field Type="[RTL_DEBUG_INFORMATION_u]"     Name="" />
             <Field Type="PRTL_PROCESS_BACKTRACES"       Name="BackTraces" />
             <Field Type="PRTL_PROCESS_HEAPS"            Name="Heaps" />
@@ -1115,6 +1105,12 @@
                 <Set Name="FileProcessIdsUsingFileInformation"      Value="47" />
                 <Set Name="FileNormalizedNameInformation"           Value="48" />
                 <Set Name="FileNetworkPhysicalNameInformation"      Value="49" />
+                <Set Name="FileIdGlobalTxDirectoryInformation"      Value="50" />
+                <Set Name="FileIsRemoteDeviceInformation"           Value="51" />
+                <Set Name="FileAttributeCacheInformation"           Value="52" />
+                <Set Name="FileNumaNodeInformation"                 Value="53" />
+                <Set Name="FileStandardLinkInformation"             Value="54" />
+                <Set Name="FileRemoteProtocolInformation"           Value="55" />
             </Enum>
         </Variable>
 
@@ -1136,7 +1132,8 @@
                 <Set Name="FileFsControlInformation"        Value="6" />
                 <Set Name="FileFsFullSizeInformation"       Value="7" />
                 <Set Name="FileFsObjectIdInformation"       Value="8" />
-                <Set Name="FileFsMaximumInformation"        Value="9" />
+                <Set Name="FileFsDriverPathInformation"     Value="9" />
+                <Set Name="FileFsVolumeFlagsInformation"    Value="10" />
             </Enum>
         </Variable>
 
@@ -1642,6 +1639,67 @@
             <Display Name="PVOID*" />
         </Variable>
 
+        <!-- [LDR_LOCK_LOADER_LOCK_FLAG] -->
+        <Variable Name="[LDR_LOCK_LOADER_LOCK_FLAG]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="LDR_LOCK_LOADER_LOCK_FLAG_RAISE_ON_ERRORS"   Value="0x00000001" />
+                <Set Name="LDR_LOCK_LOADER_LOCK_FLAG_TRY_ONLY"          Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <!-- [LDR_UNLOCK_LOADER_LOCK_FLAG] -->
+        <Variable Name="[LDR_UNLOCK_LOADER_LOCK_FLAG]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="LDR_UNLOCK_LOADER_LOCK_FLAG_RAISE_ON_ERRORS" Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- [LDR_LOCK_LOADER_LOCK_DISPOSITION] -->
+        <Variable Name="[LDR_LOCK_LOADER_LOCK_DISPOSITION]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="LDR_LOCK_LOADER_LOCK_DISPOSITION_INVALID"                            Value="0" />
+                <Set Name="LDR_LOCK_LOADER_LOCK_DISPOSITION_LOCK_ACQUIRED"                      Value="1" />
+                <Set Name="LDR_LOCK_LOADER_LOCK_DISPOSITION_LOCK_NOT_ACQUIRED"                  Value="2" />
+            </Enum>
+        </Variable>
+        <Variable Name="[LDR_LOCK_LOADER_LOCK_DISPOSITION*]" Type="Pointer" Base="[LDR_LOCK_LOADER_LOCK_DISPOSITION]">
+            <Display Name="PULONG" />
+        </Variable>
+
+        <!-- [LDR_DLL_CHARACTERISTICS] -->
+        <Variable Name="[LDR_DLL_CHARACTERISTICS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="LDR_IGNORE_CODE_AUTHZ_LEVEL" Value="0x00001000" />
+            </Flag>
+        </Variable>
+
+        <!-- [LDR_ADDREF_DLL_FLAGS] -->
+        <Variable Name="[LDR_ADDREF_DLL_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="LDR_ADDREF_DLL_PIN" Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- [LDR_GET_DLL_HANDLE_EX_FLAGS] -->
+        <Variable Name="[LDR_GET_DLL_HANDLE_EX_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="LDR_GET_DLL_HANDLE_EX_UNCHANGED_REFCOUNT"    Value="0x00000001" />
+                <Set Name="LDR_GET_DLL_HANDLE_EX_PIN"                   Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <!-- [NT_WAIT_RESULT] -->
+        <Variable Name="[NT_WAIT_RESULT]" Type="Alias" Base="NTSTATUS">
+            <Display Name="NTSTATUS" />
+            <Success Return="NotEqual" Value="0xFFFFFFFF" />
+        </Variable>
+
         <!-- NT Native -->
         <Category Name="NT Native" />
         <!-- IP Helper -->
@@ -1651,7 +1709,6 @@
         <Param Type="ULONG" Name="ResultLength" />
         <Param Type="NTSTATUS" Name="Status" />
         <Return Type="NTSTATUS" />
-        <Success Return="Equal" Value="0" />
     </Api>
     -->
         <!-- Currrently disabled due to (possible) crash on x64
@@ -1661,7 +1718,6 @@
             <Param Type="PCONTEXT" Name="ThreadContext" />
             <Param Type="BOOLEAN" Name="HandleException" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         -->
 
@@ -1670,7 +1726,6 @@
         <Api Name="NtClearEvent">
             <Param Type="HANDLE" Name="EventHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCreateEvent">
             <Param Type="PHANDLE" Name="EventHandle" />
@@ -1679,14 +1734,12 @@
             <Param Type="EVENT_TYPE" Name="EventType" />
             <Param Type="BOOLEAN" Name="InitialState" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCreateEventPair">
             <Param Type="PHANDLE" Name="EventPairHandle" />
             <Param Type="ACCESS_MASK" Name="DesiredAccess" />
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCreateKeyedEvent">
             <Param Type="PHANDLE" Name="KeyedEventHandle" />
@@ -1694,7 +1747,6 @@
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Param Type="ULONG" Name="Flags" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCreateMutant">
             <Param Type="PHANDLE" Name="MutantHandle" />
@@ -1702,7 +1754,6 @@
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Param Type="BOOLEAN" Name="InitialOwner" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCreateSemaphore">
             <Param Type="PHANDLE" Name="SemaphoreHandle" />
@@ -1711,7 +1762,6 @@
             <Param Type="LONG" Name="InitialCount" />
             <Param Type="LONG" Name="MaximumCount" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCreateTimer">
             <Param Type="PHANDLE" Name="TimerHandle" />
@@ -1719,55 +1769,47 @@
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Param Type="TIMER_TYPE" Name="TimerType" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtOpenEvent">
             <Param Type="PHANDLE" Name="EventHandle" />
             <Param Type="ACCESS_MASK" Name="DesiredAccess" />
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtOpenKeyedEvent">
             <Param Type="PHANDLE" Name="EventHandle" />
             <Param Type="ACCESS_MASK" Name="DesiredAccess" />
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtOpenEventPair">
             <Param Type="PHANDLE" Name="EventPairHandle" />
             <Param Type="ACCESS_MASK" Name="DesiredAccess" />
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtOpenMutant">
             <Param Type="PHANDLE" Name="MutantHandle" />
             <Param Type="ACCESS_MASK" Name="DesiredAccess" />
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtOpenSemaphore">
             <Param Type="PHANDLE" Name="SemaphoreHandle" />
             <Param Type="ACCESS_MASK" Name="DesiredAcces" />
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtOpenTimer">
             <Param Type="PHANDLE" Name="TimerHandle" />
             <Param Type="ACCESS_MASK" Name="DesiredAccess" />
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtPulseEvent">
             <Param Type="HANDLE" Name="EventHandle" />
             <Param Type="PLONG" Name="PulseCount" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryEvent">
             <Param Type="HANDLE" Name="EventHandle" />
@@ -1776,7 +1818,6 @@
             <Param Type="ULONG" Name="EventInformationLength" />
             <Param Type="PULONG" Name="ReturnLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryMutant">
             <Param Type="HANDLE" Name="MutantHandle" />
@@ -1785,7 +1826,6 @@
             <Param Type="ULONG" Name="Length" />
             <Param Type="PULONG" Name="ResultLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQuerySemaphore">
             <Param Type="HANDLE" Name="SemaphoreHandle" />
@@ -1794,7 +1834,6 @@
             <Param Type="ULONG" Name="Length" />
             <Param Type="PULONG" Name="ReturnLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryTimer">
             <Param Type="HANDLE" Name="TimerHandle" />
@@ -1803,13 +1842,11 @@
             <Param Type="ULONG" Name="Length" />
             <Param Type="PULONG" Name="ResultLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtReleaseMutant">
             <Param Type="HANDLE" Name="MutantHandle" />
             <Param Type="PLONG" Name="ReleaseCount" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtReleaseKeyedEvent">
             <Param Type="HANDLE" Name="EventHandle" />
@@ -1817,51 +1854,42 @@
             <Param Type="BOOLEAN" Name="Alertable" />
             <Param Type="PLARGE_INTEGER" Name="Timeout" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtReleaseSemaphore">
             <Param Type="HANDLE" Name="SemaphoreHandle" />
             <Param Type="LONG" Name="ReleaseCount" />
             <Param Type="PLONG" Name="PreviousCount" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtResetEvent">
             <Param Type="HANDLE" Name="EventHandle" />
             <Param Type="PLONG" Name="NumberOfWaitingThreads" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetEvent">
             <Param Type="HANDLE" Name="EventHandle" />
             <Param Type="PLONG" Name="PreviousState" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetEventBoostPriority">
             <Param Type="HANDLE" Name="EventHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetHighEventPair">
             <Param Type="HANDLE" Name="EventPairHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetHighWaitLowEventPair">
             <Param Type="HANDLE" Name="EventPairHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetLowEventPair">
             <Param Type="HANDLE" Name="EventPair" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetLowWaitHighEventPair">
             <Param Type="HANDLE" Name="EventPair" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetTimer">
             <Param Type="HANDLE" Name="TimerHandle" />
@@ -1872,13 +1900,11 @@
             <Param Type="LONG" Name="Period" />
             <Param Type="PBOOLEAN" Name="PreviousState" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCancelTimer">
             <Param Type="HANDLE" Name="TimerHandle" />
             <Param Type="PBOOLEAN" Name="CurrentState" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtWaitForKeyedEvent">
             <Param Type="HANDLE" Name="EventHandle" />
@@ -1886,17 +1912,14 @@
             <Param Type="BOOLEAN" Name="Alertable" />
             <Param Type="PLARGE_INTEGER" Name="Timeout" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtWaitHighEventPair">
             <Param Type="HANDLE" Name="EventPairHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtWaitLowEventPair">
             <Param Type="HANDLE" Name="EventPairHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtTraceEvent">
             <Param Type="ULONG" Name="TraceHandle" />
@@ -1904,15 +1927,13 @@
             <Param Type="ULONG" Name="TraceHeaderLength" />
             <Param Type="PEVENT_TRACE_HEADER" Name="TraceHeader" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSignalAndWaitForSingleObject">
             <Param Type="HANDLE" Name="SignalObject" />
             <Param Type="HANDLE" Name="WaitObject" />
             <Param Type="BOOLEAN" Name="Alertable" />
             <Param Type="PLARGE_INTEGER" Name="Time" />
-            <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[NT_WAIT_RESULT]" />
         </Api>
         <Api Name="NtWaitForMultipleObjects">
             <Param Type="ULONG" Name="Count" />
@@ -1920,12 +1941,7 @@
             <Param Type="WAIT_TYPE" Name="WaitType" />
             <Param Type="BOOLEAN" Name="Alertable" />
             <Param Type="PLARGE_INTEGER" Name="Time" />
-            <Return Type="NTSTATUS" />
-            <!-- TODO: Is this correct? -->
-            <Success Return="Less" Value="0x00000040" />
-            <!--
-            <Success Return="Equal" Value="0" />
-            -->
+            <Return Type="[NT_WAIT_RESULT]" />
         </Api>
         <Api Name="NtWaitForMultipleObjects32">
             <Param Type="ULONG" Name="ObjectCount" />
@@ -1933,15 +1949,13 @@
             <Param Type="WAIT_TYPE" Name="WaitType" />
             <Param Type="BOOLEAN" Name="Alertable" />
             <Param Type="PLARGE_INTEGER" Name="TimeOut" />
-            <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[NT_WAIT_RESULT]" />
         </Api>
         <Api Name="NtWaitForSingleObject">
             <Param Type="HANDLE" Name="Object" />
             <Param Type="BOOLEAN" Name="Alertable" />
             <Param Type="PLARGE_INTEGER" Name="Time" />
-            <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[NT_WAIT_RESULT]" />
         </Api>
 
         <!-- Registry -->
@@ -1949,7 +1963,6 @@
         <Api Name="NtCompressKey">
             <Param Type="HANDLE" Name="Key" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCreateKey">
             <Param Type="PHANDLE" Name="KeyHandle" />
@@ -1960,18 +1973,15 @@
             <Param Type="ULONG" Name="CreateOptions" />
             <Param Type="[RegDisposition-PULONG]" Name="Disposition" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtDeleteKey">
             <Param Type="HANDLE" Name="KeyHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtDeleteValueKey">
             <Param Type="HANDLE" Name="KeyHandle" />
             <Param Type="PUNICODE_STRING" Name="ValueName" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtEnumerateKey">
             <Param Type="HANDLE" Name="KeyHandle" />
@@ -1981,7 +1991,6 @@
             <Param Type="ULONG" Name="Length" />
             <Param Type="PULONG" Name="ResultLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtEnumerateValueKey">
             <Param Type="HANDLE" Name="KeyHandle" />
@@ -1991,30 +2000,25 @@
             <Param Type="ULONG" Name="Length" />
             <Param Type="PULONG" Name="ResultLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtFlushKey">
             <Param Type="HANDLE" Name="KeyHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtInitializeRegistry">
             <Param Type="USHORT" Name="Flag" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtLoadKey">
             <Param Type="POBJECT_ATTRIBUTES" Name="KeyObjectAttributes" />
             <Param Type="POBJECT_ATTRIBUTES" Name="FileObjectAttributes" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtLoadKey2">
             <Param Type="POBJECT_ATTRIBUTES" Name="KeyObjectAttributes" />
             <Param Type="POBJECT_ATTRIBUTES" Name="FileObjectAttributes" />
             <Param Type="ULONG" Name="Flags" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtLoadKeyEx">
             <Param Type="POBJECT_ATTRIBUTES" Name="TargetKey" />
@@ -2022,12 +2026,10 @@
             <Param Type="ULONG" Name="Flags" />
             <Param Type="HANDLE" Name="TrustClassKey" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtLockRegistryKey">
             <Param Type="HANDLE" Name="KeyHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtNotifyChangeKey">
             <Param Type="HANDLE" Name="KeyHandle" />
@@ -2041,7 +2043,6 @@
             <Param Type="ULONG" Name="Length" />
             <Param Type="BOOLEAN" Name="WatchSubtree" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtNotifyChangeMultipleKeys">
             <Param Type="HANDLE" Name="MasterKeyHandle" />
@@ -2057,14 +2058,12 @@
             <Param Type="ULONG" Name="Length" />
             <Param Type="BOOLEAN" Name="Asynchronous" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtOpenKey">
             <Param Type="PHANDLE" Name="KeyHandle" />
             <Param Type="REGSAM" Display="ACCESS_MASK" Name="DesiredAccess" />
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryKey">
             <Param Type="HANDLE" Name="KeyHandle" />
@@ -2073,7 +2072,6 @@
             <Param Type="ULONG" Name="Length" />
             <Param Type="PULONG" Name="ResultLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryMultipleValueKey">
             <Param Type="HANDLE" Name="KeyHandle" />
@@ -2083,13 +2081,11 @@
             <Param Type="PULONG" Name="Length" />
             <Param Type="PULONG" Name="ReturnLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryOpenSubKeys">
             <Param Type="POBJECT_ATTRIBUTES" Name="TargetKey" />
             <Param Type="PULONG" Name="HandleCount" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryOpenSubKeysEx">
             <Param Type="POBJECT_ATTRIBUTES" Name="TargetKey" />
@@ -2097,7 +2093,6 @@
             <Param Type="PVOID" Name="Buffer" PostLength="BufferLength" />
             <Param Type="PULONG" Name="RequiredSize" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryValueKey">
             <Param Type="HANDLE" Name="KeyHandle" />
@@ -2107,47 +2102,40 @@
             <Param Type="ULONG" Name="Length" />
             <Param Type="PULONG" Name="ResultLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtRenameKey">
             <Param Type="HANDLE" Name="KeyHandle" />
             <Param Type="PUNICODE_STRING" Name="ReplacementName" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtReplaceKey">
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Param Type="HANDLE" Name="Key" />
             <Param Type="POBJECT_ATTRIBUTES" Name="ReplacedObjectAttributes" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtRestoreKey">
             <Param Type="HANDLE" Name="KeyHandle" />
             <Param Type="HANDLE" Name="FileHandle" />
             <Param Type="ULONG" Name="RestoreFlags" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSaveKey">
             <Param Type="HANDLE" Name="KeyHandle" />
             <Param Type="HANDLE" Name="FileHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSaveKeyEx">
             <Param Type="HANDLE" Name="KeyHandle" />
             <Param Type="HANDLE" Name="FileHandle" />
             <Param Type="ULONG" Name="Flags" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSaveMergedKeys">
             <Param Type="HANDLE" Name="HighPrecedenceKeyHandle" />
             <Param Type="HANDLE" Name="LowPrecedenceKeyHandle" />
             <Param Type="HANDLE" Name="FileHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetInformationKey">
             <Param Type="HANDLE" Name="KeyHandle" />
@@ -2155,7 +2143,6 @@
             <Param Type="PVOID" Name="KeyInformation" Length="KeyInformationLength" />
             <Param Type="ULONG" Name="KeyInformationLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetValueKey">
             <Param Type="HANDLE" Name="KeyHandle" />
@@ -2165,30 +2152,25 @@
             <Param Type="PVOID" Name="Data" />
             <Param Type="ULONG" Name="DataSize" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtUnloadKey">
             <Param Type="POBJECT_ATTRIBUTES" Name="KeyObjectAttributes" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtUnloadKey2">
             <Param Type="POBJECT_ATTRIBUTES" Name="TargetKey" />
             <Param Type="ULONG" Name="Flags" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtUnloadKeyEx">
             <Param Type="POBJECT_ATTRIBUTES" Name="TargetKey" />
             <Param Type="HANDLE" Name="Event" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCompactKeys">
             <Param Type="ULONG" Name="NrOfKeys" />
             <Param Type="HANDLE" Name="KeysArray" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
 
         <!-- Atoms -->
@@ -2198,19 +2180,16 @@
             <Param Type="ULONG" Name="AtomNameLength" />
             <Param Type="PRTL_ATOM" Name="Atom" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtDeleteAtom">
             <Param Type="RTL_ATOM" Name="Atom" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtFindAtom">
             <Param Type="PWSTR" Name="AtomName" />
             <Param Type="ULONG" Name="AtomNameLength" />
             <Param Type="PRTL_ATOM" Name="Atom" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryInformationAtom">
             <Param Type="RTL_ATOM" Name="Atom" />
@@ -2219,7 +2198,6 @@
             <Param Type="ULONG" Name="AtomInformationLength" />
             <Param Type="PULONG" Name="ReturnLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <!-- Locale -->
         <Category Name="NT Native/Locale" />
@@ -2227,28 +2205,23 @@
             <Param Type="BOOLEAN" Name="UserProfile" />
             <Param Type="PLCID" Name="DefaultLocaleId" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryDefaultUILanguage">
             <Param Type="LANGID*" Name="LanguageId" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryInstallUILanguage">
             <Param Type="LANGID*" Name="LanguageId" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetDefaultLocale">
             <Param Type="BOOLEAN" Name="UserProfile" />
             <Param Type="LCID" Name="DefaultLocaleId" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetDefaultUILanguage">
             <Param Type="LANGID" Name="LanguageId" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <!-- Client-Server (CSR) -->
         <Category Name="NT Native/Client-Server (CSR)" />
@@ -2279,7 +2252,6 @@
             <Param Type="PULONG" Name="ConnectionInfoSize" />
             <Param Type="PBOOLEAN" Name="ServerToServerCall" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="CsrClientCallServer">
             <Param Type="CSR_API_MESSAGE*" Name="Request" />
@@ -2287,11 +2259,9 @@
             <Param Type="ULONG" Name="ApiNumber" />
             <Param Type="ULONG" Name="RequestLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="CsrIdentifyAlertableThread">
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="CsrFreeCaptureBuffer">
             <Param Type="CSR_CAPTURE_BUFFER*" Name="CaptureBuffer" />
@@ -2303,13 +2273,11 @@
         </Api>
         <Api Name="CsrNewThread">
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="CsrSetPriorityClass">
             <Param Type="HANDLE" Name="Process" />
             <Param Type="PULONG" Name="PriorityClass" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="CsrProbeForRead">
             <Param Type="PVOID" Name="Address" />
@@ -2352,7 +2320,6 @@
             <Param Type="PVOID" Name="Base" />
             <Param Type="ULONG_PTR" Name="ProcessId" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="DbgUnLoadImageSymbols">
             <Param Type="PANSI_STRING" Name="Name" />
@@ -2366,35 +2333,29 @@
         </Api>
         <Api Name="DbgUiConnectToDbg">
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="DbgUiContinue">
             <Param Type="PCLIENT_ID" Name="ClientId" />
             <Param Type="NTSTATUS" Name="ContinueStatus" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="DbgUiDebugActiveProcess">
             <Param Type="HANDLE" Name="Process" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="DbgUiStopDebugging">
             <Param Type="HANDLE" Name="Process" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="DbgUiWaitStateChange">
             <Param Type="PDBGUI_WAIT_STATE_CHANGE" Name="DbgUiWaitStateCange" />
             <Param Type="PLARGE_INTEGER" Name="TimeOut" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="DbgUiConvertStateChangeStructure">
             <Param Type="PDBGUI_WAIT_STATE_CHANGE" Name="WaitStateChange" />
             <Param Type="PVOID" Name="DebugEvent" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="DbgUiRemoteBreakin">
             <Return Type="VOID" />
@@ -2402,7 +2363,6 @@
         <Api Name="DbgUiIssueRemoteBreakin">
             <Param Type="HANDLE" Name="Process" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="DbgUiGetThreadDebugObject">
             <Return Type="HANDLE" />
@@ -2416,7 +2376,6 @@
             <Param Type="PVOID*" Name="Resource" />
             <Param Type="PULONG" Name="Size" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LdrFindResource_U">
             <Param Type="[HMODULE-PVOID]" Name="BaseAddress" />
@@ -2424,7 +2383,6 @@
             <Param Type="ULONG" Name="Level" />
             <Param Type="PIMAGE_RESOURCE_DATA_ENTRY*" Name="ResourceDataEntry" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LdrFindResourceDirectory_U">
             <Param Type="[HMODULE-PVOID]" Name="BaseAddress" />
@@ -2432,7 +2390,6 @@
             <Param Type="ULONG" Name="Level" />
             <Param Type="PIMAGE_RESOURCE_DIRECTORY*" Name="ResourceDirectory" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LdrUnloadAlternateResourceModule">
             <Param Type="[HMODULE-PVOID]" Name="BaseAddress" />
@@ -2449,17 +2406,15 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="LdrLockLoaderLock">
-            <Param Type="ULONG" Name="Flags" />
-            <Param Type="PULONG" Name="Disposition" />
+            <Param Type="[LDR_LOCK_LOADER_LOCK_FLAG]" Name="Flags" />
+            <Param Type="[LDR_LOCK_LOADER_LOCK_DISPOSITION*]" Name="Disposition" />
             <Param Type="PULONG" Name="Cookie" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LdrUnlockLoaderLock">
-            <Param Type="ULONG" Name="Flags" />
+            <Param Type="[LDR_UNLOCK_LOADER_LOCK_FLAG]" Name="Flags" />
             <Param Type="ULONG" Name="Cookie" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LdrVerifyMappedImageMatchesChecksum">
             <Param Type="[HMODULE-PVOID]" Name="BaseAddress" />
@@ -2469,15 +2424,13 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="LdrAddRefDll">
-            <Param Type="ULONG" Name="Flags" />
+            <Param Type="[LDR_ADDREF_DLL_FLAGS]" Name="Flags" />
             <Param Type="[HMODULE-PVOID]" Name="BaseAddress" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LdrDisableThreadCalloutsForDll">
             <Param Type="[HMODULE-PVOID]" Name="BaseAddress" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LdrGetDllHandle">
             <Param Type="PWSTR" Name="DllPath" />
@@ -2485,13 +2438,19 @@
             <Param Type="PUNICODE_STRING" Name="DllName" />
             <Param Type="HMODULE*" Name="DllHandle" OutputOnly="True" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="LdrGetDllHandleEx">
+            <Param Type="[LDR_GET_DLL_HANDLE_EX_FLAGS]" Name="Flags" />
+            <Param Type="PWSTR" Name="DllPath" />
+            <Param Type="PULONG" Name="DllCharacteristics" />
+            <Param Type="PUNICODE_STRING" Name="DllName" />
+            <Param Type="HMODULE*" Name="DllHandle" OutputOnly="True" />
+            <Return Type="NTSTATUS" />
         </Api>
         <Api Name="LdrFindEntryForAddress">
             <Param Type="PVOID" Name="Address" />
             <Param Type="PLDR_DATA_TABLE_ENTRY*" Name="Module" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LdrGetProcedureAddress">
             <Param Type="HMODULE" Name="BaseAddress" />
@@ -2499,7 +2458,6 @@
             <Param Type="ULONG" Name="Ordinal" />
             <Param Type="PVOID*" Name="ProcedureAddress" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LdrInitializeThunk">
             <Param Type="ULONG" Name="Unknown1" />
@@ -2510,11 +2468,10 @@
         </Api>
         <Api Name="LdrLoadDll">
             <Param Type="PWSTR" Name="SearchPath" />
-            <Param Type="PULONG" Name="LoadFlags" />
+            <Param Type="[IMAGE_FILE_CHARACTERISTICS_ULONG*]" Name="DllCharacteristics" />
             <Param Type="PUNICODE_STRING" Name="Name" />
             <Param Type="[HMODULE-PVOID*]" Name="BaseAddress" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LdrProcessRelocationBlock">
             <Param Type="ULONG_PTR" Name="Address" />
@@ -2532,27 +2489,22 @@
             <Param Type="ULONG" Name="BufferSize" />
             <Param Type="PULONG" Name="RetunedLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LdrQueryProcessModuleInformation">
             <Param Type="PRTL_PROCESS_MODULES" Name="ModuleInformation" />
             <Param Type="ULONG" Name="Size" />
             <Param Type="PULONG" Name="ReturnedSize" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LdrShutdownProcess">
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LdrShutdownThread">
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LdrUnloadDll">
             <Param Type="[HMODULE-PVOID]" Name="BaseAddress" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LdrVerifyImageMatchesChecksum">
             <Param Type="HANDLE" Name="FileHandle" />
@@ -2560,7 +2512,6 @@
             <Param Type="ULONG" Name="Unknown2" />
             <Param Type="ULONG" Name="Unknown3" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LdrRelocateImageWithBias">
             <Param Type="PVOID" Name="NewAddress" />
@@ -2581,7 +2532,6 @@
             <Param Type="PVOID" Name="Unknown4" />
             <Param Type="PVOID" Name="Unknown5" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <!-- Runtime Library Routines -->
         <Category Name="NT Native/Runtime Library Routines (RTL)" />
@@ -2590,7 +2540,6 @@
             <Param Type="PSECURITY_DESCRIPTOR_RELATIVE" Name="SelfRelativeSecurityDescriptor" />
             <Param Type="PULONG" Name="BufferLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlAddAccessAllowedAce">
             <Param Type="PACL" Name="Acl" />
@@ -2598,7 +2547,6 @@
             <Param Type="ACCESS_MASK" Name="AccessMask" />
             <Param Type="PSID" Name="Sid" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlAddAccessAllowedAceEx">
             <Param Type="PACL" Name="pAcl" />
@@ -2607,7 +2555,6 @@
             <Param Type="ACCESS_MASK" Name="AccessMask" />
             <Param Type="PSID" Name="Sid" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlAddAccessAllowedObjectAce">
             <Param Type="PACL" Name="pAcl" />
@@ -2618,7 +2565,6 @@
             <Param Type="GUID*" Name="InheritedObjectTypeGuid" />
             <Param Type="PSID" Name="pSid" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlAddAccessDeniedAce">
             <Param Type="PACL" Name="Acl" />
@@ -2626,7 +2572,6 @@
             <Param Type="ACCESS_MASK" Name="AccessMask" />
             <Param Type="PSID" Name="Sid" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlAddAccessDeniedAceEx">
             <Param Type="PACL" Name="Acl" />
@@ -2635,7 +2580,6 @@
             <Param Type="ACCESS_MASK" Name="AccessMask" />
             <Param Type="PSID" Name="Sid" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlAddAccessDeniedObjectAce">
             <Param Type="PACL" Name="pAcl" />
@@ -2646,7 +2590,6 @@
             <Param Type="GUID*" Name="InheritedObjectTypeGuid" />
             <Param Type="PSID" Name="pSid" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlAddAce">
             <Param Type="PACL" Name="Acl" />
@@ -2655,7 +2598,6 @@
             <Param Type="PVOID" Name="AceList" />
             <Param Type="ULONG" Name="AceListLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlAddAuditAccessAce">
             <Param Type="PACL" Name="Acl" />
@@ -2665,7 +2607,6 @@
             <Param Type="BOOLEAN" Name="Success" />
             <Param Type="BOOLEAN" Name="Failure" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlAcquirePrivilege">
             <Param Type="PULONG" Name="Privilege" />
@@ -2673,7 +2614,6 @@
             <Param Type="ULONG" Name="Flags" />
             <Param Type="PVOID*" Name="ReturnedState" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlAddAuditAccessAceEx">
             <Param Type="PACL" Name="Acl" />
@@ -2684,7 +2624,6 @@
             <Param Type="BOOLEAN" Name="Success" />
             <Param Type="BOOLEAN" Name="Failure" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlAddAuditAccessObjectAce">
             <Param Type="PACL" Name="Acl" />
@@ -2697,7 +2636,6 @@
             <Param Type="BOOLEAN" Name="Success" />
             <Param Type="BOOLEAN" Name="Failure" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlAddMandatoryAce">
             <Param Type="PACL" Name="Acl" />
@@ -2707,7 +2645,6 @@
             <Param Type="ULONG" Name="AceType" />
             <Param Type="PSID" Name="LabelSid" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlAdjustPrivilege">
             <Param Type="ULONG" Name="Privilege" />
@@ -2715,7 +2652,6 @@
             <Param Type="BOOLEAN" Name="ForThread" />
             <Param Type="PBOOLEAN" Name="OldValue" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlAllocateAndInitializeSid">
             <Param Type="PSID_IDENTIFIER_AUTHORITY" Name="IdentifierAuthority" />
@@ -2730,7 +2666,6 @@
             <Param Type="ULONG" Name="SubAuthority7" />
             <Param Type="PSID*" Name="Sid" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlAreAllAccessesGranted">
             <Param Type="ACCESS_MASK" Name="GrantedAccess" />
@@ -2764,52 +2699,44 @@
             <Param Type="PVOID*" Name="RemainingSidArea" />
             <Param Type="PULONG" Name="RemainingSidAreaSize" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlConvertSidToUnicodeString">
             <Param Type="PUNICODE_STRING" Name="DestinationString" />
             <Param Type="PSID" Name="Sid" />
             <Param Type="BOOLEAN" Name="AllocateDestinationString" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlCopySid">
             <Param Type="ULONG" Name="Length" />
             <Param Type="PSID" Name="Destination" />
             <Param Type="PSID" Name="Source" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlCreateAcl">
             <Param Type="PACL" Name="Acl" />
             <Param Type="ULONG" Name="AclSize" />
             <Param Type="[AclRevision]" Display="ULONG" Name="AclRevision" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlCreateSecurityDescriptor">
             <Param Type="PSECURITY_DESCRIPTOR" Name="SecurityDescriptor" />
             <Param Type="ULONG" Name="Revision" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlCreateSecurityDescriptorRelative">
             <Param Type="PISECURITY_DESCRIPTOR_RELATIVE" Name="SecurityDescriptor" />
             <Param Type="ULONG" Name="Revision" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlCopySecurityDescriptor">
             <Param Type="PSECURITY_DESCRIPTOR" Name="pSourceSecurityDescriptor" />
             <Param Type="PSECURITY_DESCRIPTOR" Name="pDestinationSecurityDescriptor" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlDeleteAce">
             <Param Type="PACL" Name="Acl" />
             <Param Type="ULONG" Name="AceIndex" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlEqualPrefixSid">
             <Param Type="PSID" Name="Sid1" />
@@ -2837,14 +2764,12 @@
             <Param Type="ULONG" Name="AceIndex" />
             <Param Type="PACE*" Name="Ace" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlGetControlSecurityDescriptor">
             <Param Type="PSECURITY_DESCRIPTOR" Name="SecurityDescriptor" />
             <Param Type="PSECURITY_DESCRIPTOR_CONTROL" Name="Control" />
             <Param Type="PULONG" Name="Revision" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlGetDaclSecurityDescriptor">
             <Param Type="PSECURITY_DESCRIPTOR" Name="SecurityDescriptor" />
@@ -2852,7 +2777,6 @@
             <Param Type="PACL*" Name="Dacl" />
             <Param Type="PBOOLEAN" Name="DaclDefaulted" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlGetSaclSecurityDescriptor">
             <Param Type="PSECURITY_DESCRIPTOR" Name="SecurityDescriptor" />
@@ -2860,21 +2784,18 @@
             <Param Type="PACL*" Name="Sacl" />
             <Param Type="PBOOLEAN" Name="SaclDefaulted" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlGetGroupSecurityDescriptor">
             <Param Type="PSECURITY_DESCRIPTOR" Name="SecurityDescriptor" />
             <Param Type="PSID*" Name="Group" />
             <Param Type="PBOOLEAN" Name="GroupDefaulted" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlGetOwnerSecurityDescriptor">
             <Param Type="PSECURITY_DESCRIPTOR" Name="SecurityDescriptor" />
             <Param Type="PSID*" Name="Owner" />
             <Param Type="PBOOLEAN" Name="OwnerDefaulted" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlGetSecurityDescriptorRMControl">
             <Param Type="PSECURITY_DESCRIPTOR" Name="SecurityDescriptor" />
@@ -2890,14 +2811,12 @@
         <Api Name="RtlImpersonateSelf">
             <Param Type="SECURITY_IMPERSONATION_LEVEL" Name="ImpersonationLevel" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlInitializeSid">
             <Param Type="PSID" Name="Sid" />
             <Param Type="PSID_IDENTIFIER_AUTHORITY" Name="IdentifierAuthority" />
             <Param Type="UCHAR" Name="SubAuthorityCount" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlLengthRequiredSid">
             <Param Type="ULONG" Name="SubAuthorityCount" />
@@ -2914,7 +2833,6 @@
             <Param Type="PSECURITY_DESCRIPTOR_RELATIVE" Name="SelfRelativeSD" />
             <Param Type="PULONG" Name="BufferLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlMapGenericMask">
             <Param Type="PACCESS_MASK" Name="AccessMask" />
@@ -2927,7 +2845,6 @@
             <Param Type="ULONG" Name="InformationLength" />
             <Param Type="ACL_INFORMATION_CLASS" Name="InformationClass" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlReleasePrivilege">
             <Param Type="PVOID" Name="ReturnedState" />
@@ -2946,27 +2863,23 @@
             <Param Type="PSID" Name="PrimaryGroup" />
             <Param Type="PULONG" Name="PrimaryGroupSize" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlSelfRelativeToAbsoluteSD2">
             <Param Type="PSECURITY_DESCRIPTOR_RELATIVE" Name="SelfRelativeSD" />
             <Param Type="PULONG" Name="BufferSize" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlSetAttributesSecurityDescriptor">
             <Param Type="PSECURITY_DESCRIPTOR" Name="SecurityDescriptor" />
             <Param Type="SECURITY_DESCRIPTOR_CONTROL" Name="Control" />
             <Param Type="PULONG" Name="Revision" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlSetControlSecurityDescriptor">
             <Param Type="PSECURITY_DESCRIPTOR" Name="SecurityDescriptor" />
             <Param Type="SECURITY_DESCRIPTOR_CONTROL" Name="ControlBitsOfInterest" />
             <Param Type="SECURITY_DESCRIPTOR_CONTROL" Name="ControlBitsToSet" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlSetDaclSecurityDescriptor">
             <Param Type="PSECURITY_DESCRIPTOR" Name="SecurityDescriptor" />
@@ -2974,14 +2887,12 @@
             <Param Type="PACL" Name="Dacl" />
             <Param Type="BOOLEAN" Name="DaclDefaulted" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlSetGroupSecurityDescriptor">
             <Param Type="PSECURITY_DESCRIPTOR" Name="SecurityDescriptor" />
             <Param Type="PSID" Name="Group" />
             <Param Type="BOOLEAN" Name="GroupDefaulted" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlSetInformationAcl">
             <Param Type="PACL" Name="Acl" />
@@ -2989,14 +2900,12 @@
             <Param Type="ULONG" Name="InformationLength" />
             <Param Type="ACL_INFORMATION_CLASS" Name="InformationClass" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlSetOwnerSecurityDescriptor">
             <Param Type="PSECURITY_DESCRIPTOR" Name="SecurityDescriptor" />
             <Param Type="PSID" Name="Owner" />
             <Param Type="BOOLEAN" Name="OwnerDefaulted" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlSetSaclSecurityDescriptor">
             <Param Type="PSECURITY_DESCRIPTOR" Name="SecurityDescriptor" />
@@ -3004,7 +2913,6 @@
             <Param Type="PACL" Name="Sacl" />
             <Param Type="BOOLEAN" Name="SaclDefaulted" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlSetSecurityDescriptorRMControl">
             <Param Type="PSECURITY_DESCRIPTOR" Name="SecurityDescriptor" />
@@ -3047,7 +2955,6 @@
         <Api Name="RtlDeleteSecurityObject">
             <Param Type="PSECURITY_DESCRIPTOR*" Name="ObjectDescriptor" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlNewSecurityObject">
             <Param Type="PSECURITY_DESCRIPTOR" Name="ParentDescriptor" />
@@ -3057,7 +2964,6 @@
             <Param Type="HANDLE" Name="Token" />
             <Param Type="PGENERIC_MAPPING" Name="GenericMapping" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlQuerySecurityObject">
             <Param Type="PSECURITY_DESCRIPTOR" Name="ObjectDescriptor" />
@@ -3066,7 +2972,6 @@
             <Param Type="ULONG" Name="DescriptorLength" PostLength="ReturnLength" />
             <Param Type="PULONG" Name="ReturnLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlSetSecurityObject">
             <Param Type="SECURITY_INFORMATION" Name="SecurityInformation" />
@@ -3075,7 +2980,6 @@
             <Param Type="PGENERIC_MAPPING" Name="GenericMapping" />
             <Param Type="HANDLE" Name="Token" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlLargeIntegerToChar">
             <Param Type="PLARGE_INTEGER" Name="Value" />
@@ -3083,7 +2987,6 @@
             <Param Type="ULONG" Name="Length" />
             <Param Type="PCHAR" Name="String" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlUpperChar">
             <Param Type="CHAR" Name="Source" />
@@ -3103,7 +3006,6 @@
             <Param Type="ULONG" Name="Length" />
             <Param Type="PCHAR" Name="String" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlIntegerToUnicode">
             <Param Type="ULONG" Name="Value" />
@@ -3111,21 +3013,18 @@
             <Param Type="ULONG" Name="Length" />
             <Param Type="LPWSTR" Name="String" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlIntegerToUnicodeString">
             <Param Type="ULONG" Name="Value" />
             <Param Type="ULONG" Name="Base" />
             <Param Type="PUNICODE_STRING" Name="String" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlCharToInteger">
             <Param Type="PCSZ" Name="String" />
             <Param Type="ULONG" Name="Base" />
             <Param Type="PULONG" Name="Value" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlxUnicodeStringToAnsiSize">
             <Param Type="PCUNICODE_STRING" Name="UnicodeString" />
@@ -3137,28 +3036,24 @@
             <Param Type="PCUNICODE_STRING" Name="SourceString" />
             <Param Type="BOOLEAN" Name="AllocateDestinationString" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlUpcaseUnicodeStringToOemString">
             <Param Type="POEM_STRING" Name="DestinationString" />
             <Param Type="PCUNICODE_STRING" Name="SourceString" />
             <Param Type="BOOLEAN" Name="AllocateDestinationString" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlUpcaseUnicodeStringToCountedOemString">
             <Param Type="POEM_STRING" Name="DestinationString" />
             <Param Type="PCUNICODE_STRING" Name="SourceString" />
             <Param Type="BOOLEAN" Name="AllocateDestinationString" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlUnicodeStringToOemString">
             <Param Type="POEM_STRING" Name="DestinationString" />
             <Param Type="PCUNICODE_STRING" Name="SourceString" />
             <Param Type="BOOLEAN" Name="AllocateDestinationString" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlUpcaseUnicodeToOemN">
             <Param Type="PCHAR" Name="OemString" />
@@ -3167,7 +3062,6 @@
             <Param Type="PWCHAR" Name="UnicodeString" />
             <Param Type="ULONG" Name="UnicodeSize" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlxUnicodeStringToOemSize">
             <Param Type="PCUNICODE_STRING" Name="UnicodeString" />
@@ -3181,7 +3075,6 @@
             <Param Type="PWCHAR" Name="UnicodeString" />
             <Param Type="ULONG" Name="UnicodeSize" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlUnicodeToMultiByteN">
             <Param Type="PCHAR" Name="MbString" OutputOnly="True" />
@@ -3190,7 +3083,6 @@
             <Param Type="PWCHAR" Name="UnicodeString" />
             <Param Type="ULONG" Name="UnicodeSize" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlUpcaseUnicodeToMultiByteN">
             <Param Type="PCHAR" Name="MbString" OutputOnly="True" />
@@ -3199,14 +3091,12 @@
             <Param Type="PWCHAR" Name="UnicodeString" />
             <Param Type="ULONG" Name="UnicodeSize" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlUnicodeToMultiByteSize">
             <Param Type="PULONG" Name="MbSize" />
             <Param Type="PWCHAR" Name="UnicodeString" />
             <Param Type="ULONG" Name="UnicodeSize" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlxOemStringToUnicodeSize">
             <Param Type="PCOEM_STRING" Name="OemString" />
@@ -3218,7 +3108,6 @@
             <Param Type="PCOEM_STRING" Name="SourceString" />
             <Param Type="BOOLEAN" Name="AllocateDestinationString" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlOemToUnicodeN">
             <Param Type="PWSTR" Name="UnicodeString" />
@@ -3227,7 +3116,6 @@
             <Param Type="PCHAR" Name="OemString" />
             <Param Type="ULONG" Name="BytesInOemString" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlxAnsiStringToUnicodeSize">
             <Param Type="PCANSI_STRING" Name="AnsiString" />
@@ -3239,7 +3127,6 @@
             <Param Type="PCANSI_STRING" Name="SourceString" />
             <Param Type="BOOLEAN" Name="AllocateDestinationString" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlCreateUnicodeStringFromAsciiz">
             <Param Type="PUNICODE_STRING" Name="Destination" />
@@ -3251,20 +3138,17 @@
             <Param Type="PUNICODE_STRING" Name="Destination" />
             <Param Type="PCWSTR" Name="Source" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlAppendUnicodeStringToString">
             <Param Type="PUNICODE_STRING" Name="Destination" />
             <Param Type="PCUNICODE_STRING" Name="Source" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlCompareUnicodeString">
             <Param Type="PCUNICODE_STRING" Name="String1" />
             <Param Type="PCUNICODE_STRING" Name="String2" />
             <Param Type="BOOLEAN" Name="CaseInsensitive" />
             <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="RtlCopyUnicodeString">
             <Param Type="PUNICODE_STRING" Name="DestinationString" />
@@ -3282,21 +3166,19 @@
             <Param Type="PCUNICODE_STRING" Name="UniSource" />
             <Param Type="BOOLEAN" Name="AllocateDestinationString" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlDuplicateUnicodeString">
             <Param Type="ULONG" Name="Flags" />
             <Param Type="PCUNICODE_STRING" Name="SourceString" />
             <Param Type="PUNICODE_STRING" Name="DestinationString" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
-        <Api Name="RtlEqualUnicodeString" ErrorFunc="">
+        <Api Name="RtlEqualUnicodeString">
             <Param Type="PCUNICODE_STRING" Name="String1" />
             <Param Type="PCUNICODE_STRING" Name="String2" />
             <Param Type="BOOLEAN" Name="CaseInsensitive" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
+            <Success />
         </Api>
         <Api Name="RtlFindCharInUnicodeString">
             <Param Type="ULONG" Name="Flags" />
@@ -3304,7 +3186,6 @@
             <Param Type="PCUNICODE_STRING" Name="MatchString" />
             <Param Type="PUSHORT" Name="Position" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlFreeUnicodeString">
             <Param Type="PUNICODE_STRING" Name="UnicodeString" />
@@ -3316,7 +3197,6 @@
             <Param Type="ULONG" Name="HashAlgorithm" />
             <Param Type="PULONG" Name="HashValue" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlInitUnicodeString">
             <Param Type="PUNICODE_STRING" Name="DestinationString" />
@@ -3327,7 +3207,6 @@
             <Param Type="PUNICODE_STRING" Name="DestinationString" />
             <Param Type="PCWSTR" Name="SourceString" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlIsTextUnicode">
             <Param Type="PVOID" Name="Buffer" Length="Length" />
@@ -3352,20 +3231,17 @@
             <Param Type="PCUNICODE_STRING" Name="SourceString" />
             <Param Type="BOOLEAN" Name="AllocateDestinationString" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlUnicodeStringToInteger">
             <Param Type="PCUNICODE_STRING" Name="String" />
             <Param Type="ULONG" Name="Base" />
             <Param Type="PULONG" Name="Value" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlValidateUnicodeString">
             <Param Type="ULONG" Name="Flags" />
             <Param Type="PCUNICODE_STRING" Name="String" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlFreeAnsiString">
             <Param Type="PANSI_STRING" Name="AnsiString" />
@@ -3380,7 +3256,6 @@
             <Param Type="PANSI_STRING" Name="DestinationString" />
             <Param Type="PCSZ" Name="SourceString" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlFreeOemString">
             <Param Type="POEM_STRING" Name="OemString" />
@@ -3393,38 +3268,32 @@
             <Param Type="PCSTR" Name="MbString" />
             <Param Type="ULONG" Name="MbSize" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlMultiByteToUnicodeSize">
             <Param Type="PULONG" Name="UnicodeSize" />
             <Param Type="PCSTR" Name="MbString" />
             <Param Type="ULONG" Name="MbSize" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlAddAtomToAtomTable">
             <Param Type="PRTL_ATOM_TABLE" Name="AtomTable" />
             <Param Type="PWSTR" Name="AtomName" />
             <Param Type="PRTL_ATOM" Name="Atom" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlCreateAtomTable">
             <Param Type="ULONG" Name="TableSize" />
             <Param Type="PRTL_ATOM_TABLE*" Name="AtomTable" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlDeleteAtomFromAtomTable">
             <Param Type="PRTL_ATOM_TABLE" Name="AtomTable" />
             <Param Type="RTL_ATOM" Name="Atom" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlDestroyAtomTable">
             <Param Type="PRTL_ATOM_TABLE" Name="AtomTable" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlQueryAtomInAtomTable">
             <Param Type="PRTL_ATOM_TABLE" Name="AtomTable" />
@@ -3434,20 +3303,17 @@
             <Param Type="PWSTR" Name="AtomName" OutputOnly="True" />
             <Param Type="PULONG" Name="NameLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlPinAtomInAtomTable">
             <Param Type="PRTL_ATOM_TABLE" Name="AtomTable" />
             <Param Type="RTL_ATOM" Name="Atom" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlLookupAtomInAtomTable">
             <Param Type="PRTL_ATOM_TABLE" Name="AtomTable" />
             <Param Type="PWSTR" Name="AtomName" />
             <Param Type="PRTL_ATOM" Name="Atom" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlFillMemoryUlong">
             <Param Type="PVOID" Name="Destination" />
@@ -3474,7 +3340,6 @@
             <Param Type="PUNICODE_STRING" Name="ShellInfo" />
             <Param Type="PUNICODE_STRING" Name="RuntimeInfo" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlCreateUserProcess">
             <Param Type="PUNICODE_STRING" Name="ImageFileName" />
@@ -3488,7 +3353,6 @@
             <Param Type="HANDLE" Name="ExceptionPort" />
             <Param Type="PRTL_USER_PROCESS_INFORMATION" Name="ProcessInfo" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlCreateUserThread">
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
@@ -3502,7 +3366,6 @@
             <Param Type="PHANDLE" Name="ThreadHandle" />
             <Param Type="PCLIENT_ID" Name="ClientId" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlDeNormalizeProcessParams">
             <Param Type="PRTL_USER_PROCESS_PARAMETERS" Name="ProcessParameters" />
@@ -3512,7 +3375,6 @@
         <Api Name="RtlDestroyProcessParameters">
             <Param Type="PRTL_USER_PROCESS_PARAMETERS" Name="ProcessParameters" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlExitUserThread">
             <Param Type="NTSTATUS" Name="Status" />
@@ -3543,7 +3405,6 @@
             <Param Type="BOOLEAN" Name="PassContext" />
             <Param Type="BOOLEAN" Name="AlreadySuspended" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlSetProcessIsCritical">
             <Param Type="BOOLEAN" Name="NewValue" />
@@ -3559,26 +3420,22 @@
             <Param Type="HANDLE" Name="hWaitHandle" />
             <Param Type="HANDLE" Name="hCompletionEvent" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlDeregisterWait">
             <Param Type="HANDLE" Name="hWaitHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlQueueWorkItem">
             <Param Type="WORKERCALLBACKFUNC" Name="Function" />
             <Param Type="PVOID" Name="Context" />
             <Param Type="ULONG" Name="Flags" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlSetIoCompletionCallback">
             <Param Type="HANDLE" Name="FileHandle" />
             <Param Type="PIO_APC_ROUTINE" Name="Callback" />
             <Param Type="ULONG" Name="Flags" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlRegisterWait">
             <Param Type="PHANDLE" Name="phNewWaitObject" />
@@ -3588,20 +3445,17 @@
             <Param Type="ULONG" Name="ulMilliseconds" />
             <Param Type="ULONG" Name="ulFlags" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlCreateEnvironment">
             <Param Type="BOOLEAN" Name="Inherit" />
             <Param Type="PWSTR*" Name="Environment" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlComputePrivatizedDllName_U">
             <Param Type="PUNICODE_STRING" Name="DllName" />
             <Param Type="PUNICODE_STRING" Name="RealName" />
             <Param Type="PUNICODE_STRING" Name="LocalName" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlDestroyEnvironment">
             <Param Type="PWSTR" Name="Environment" />
@@ -3652,7 +3506,6 @@
             <Param Type="PUNICODE_STRING" Name="Destination" />
             <Param Type="PULONG" Name="Length" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlGetCurrentDirectory_U">
             <Param Type="ULONG" Name="MaximumLength" />
@@ -3693,52 +3546,43 @@
             <Param Type="POEM_STRING" Name="OemName" />
             <Param Type="PBOOLEAN" Name="NameContainsSpaces" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="RtlQueryEnvironmentVariable_U">
             <Param Type="PWSTR" Name="Environment" />
             <Param Type="PUNICODE_STRING" Name="Name" />
             <Param Type="PUNICODE_STRING" Name="Value" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlSetCurrentDirectory_U">
             <Param Type="PUNICODE_STRING" Name="name" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlSetEnvironmentVariable">
             <Param Type="PWSTR*" Name="Environment" />
             <Param Type="PUNICODE_STRING" Name="Name" />
             <Param Type="PUNICODE_STRING" Name="Value" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlDeleteCriticalSection">
             <Param Type="PRTL_CRITICAL_SECTION" Name="CriticalSection" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlEnterCriticalSection">
             <Param Type="PRTL_CRITICAL_SECTION" Name="CriticalSection" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlInitializeCriticalSection">
             <Param Type="PRTL_CRITICAL_SECTION" Name="CriticalSection" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlInitializeCriticalSectionAndSpinCount">
             <Param Type="PRTL_CRITICAL_SECTION" Name="CriticalSection" />
             <Param Type="ULONG" Name="SpinCount" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlLeaveCriticalSection">
             <Param Type="PRTL_CRITICAL_SECTION" Name="CriticalSection" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlTryEnterCriticalSection">
             <Param Type="PRTL_CRITICAL_SECTION" Name="CriticalSection" />
@@ -3752,7 +3596,6 @@
         <Api Name="RtlpWaitForCriticalSection">
             <Param Type="PRTL_CRITICAL_SECTION" Name="CriticalSection" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlConvertExclusiveToShared">
             <Param Type="PRTL_RESOURCE" Name="Resource" />
@@ -3772,7 +3615,6 @@
             <Param Type="PULONG" Name="FinalCompressedSize" />
             <Param Type="PVOID" Name="WorkSpace" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlDecompressBuffer">
             <Param Type="USHORT" Name="CompressionFormat" />
@@ -3782,14 +3624,12 @@
             <Param Type="ULONG" Name="CompressedBufferSize" />
             <Param Type="PULONG" Name="FinalUncompressedSize" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlGetCompressionWorkSpaceSize">
             <Param Type="USHORT" Name="CompressionFormatAndEngine" />
             <Param Type="PULONG" Name="CompressBufferWorkSpaceSize" />
             <Param Type="PULONG" Name="CompressFragmentWorkSpaceSize" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlCreateQueryDebugBuffer">
             <Param Type="ULONG" Name="Size" />
@@ -3800,14 +3640,12 @@
         <Api Name="RtlDestroyQueryDebugBuffer">
             <Param Type="PRTL_DEBUG_INFORMATION" Name="DebugBuffer" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlQueryProcessDebugInformation">
             <Param Type="ULONG" Name="ProcessId" />
             <Param Type="[RTL_DEBUG_QUERY_FLAGS]" Name="DebugInfoClassMask" />
             <Param Type="PRTL_DEBUG_INFORMATION" Name="DebugBuffer" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlAreBitsClear">
             <Param Type="PRTL_BITMAP" Name="BitMapHeader" />
@@ -3891,19 +3729,16 @@
             <Param Type="ULONG" Name="Period" />
             <Param Type="ULONG" Name="Flags" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlCreateTimerQueue">
             <Param Type="PHANDLE" Name="TimerQueue" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlDeleteTimer">
             <Param Type="HANDLE" Name="TimerQueue" />
             <Param Type="HANDLE" Name="Timer" />
             <Param Type="HANDLE" Name="CompletionEvent" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlUpdateTimer">
             <Param Type="HANDLE" Name="TimerQueue" />
@@ -3911,18 +3746,15 @@
             <Param Type="ULONG" Name="DueTime" />
             <Param Type="ULONG" Name="Period" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlDeleteTimerQueueEx">
             <Param Type="HANDLE" Name="TimerQueue" />
             <Param Type="HANDLE" Name="CompletionEvent" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlDeleteTimerQueue">
             <Param Type="HANDLE" Name="TimerQueue" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlFreeRangeList">
             <Param Type="PRTL_RANGE_LIST" Name="RangeList" />
@@ -3949,7 +3781,6 @@
         <Api Name="RtlIsGenericTableEmpty">
             <Param Type="PRTL_GENERIC_TABLE" Name="Table" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="RtlLookupElementGenericTableFull">
             <Param Type="PRTL_GENERIC_TABLE" Name="Table" />
@@ -3985,14 +3816,12 @@
             <Param Type="PRTL_HANDLE_TABLE" Name="HandleTable" />
             <Param Type="PRTL_HANDLE_TABLE_ENTRY" Name="Handle" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="RtlIsValidIndexHandle">
             <Param Type="PRTL_HANDLE_TABLE" Name="HandleTable" />
             <Param Type="ULONG" Name="Index" />
             <Param Type="PRTL_HANDLE_TABLE_ENTRY*" Name="Handle" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="RtlFindMessage">
             <Param Type="PVOID" Name="BaseAddress" />
@@ -4001,7 +3830,6 @@
             <Param Type="ULONG" Name="MessageId" />
             <Param Type="PRTL_MESSAGE_RESOURCE_ENTRY*" Name="MessageResourceEntry" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlGetNtGlobalFlags">
             <Return Type="ULONG" />
@@ -4034,7 +3862,6 @@
             <Param Type="ULONGLONG" Name="Size" />
             <Param Type="PIMAGE_NT_HEADERS*" Name="NtHeader" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlImageRvaToSection">
             <Param Type="PIMAGE_NT_HEADERS" Name="NtHeader" />
@@ -4048,7 +3875,6 @@
             <Param Type="HANDLE" Name="Handle" />
             <Param Type="PULONG_PTR" Name="Cookie" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlAddRefActivationContext">
             <Param Type="PVOID" Name="Context" />
@@ -4059,13 +3885,11 @@
         <Param Type="PRTL_CALLER_ALLOCATED_ACTIVATION_CONTEXT_STACK_FRAME_EXTENDED" Name="Frame" />
         <Param Type="PVOID" Name="Context" />
         <Return Type="NTSTATUS" />
-        <Success Return="Equal" Value="0" />
     </Api>
     -->
         <Api Name="RtlAllocateActivationContextStack">
             <Param Type="PVOID*" Name="Context" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <!--
         RtlCreateActivationContext is defined as follows on most websites,
@@ -4075,7 +3899,6 @@
             <Param Type="PHANDLE" Name="Handle" />
             <Param Type="PVOID" Name="ReturnedData" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         -->
         <Api Name="RtlCreateActivationContext">
@@ -4086,29 +3909,26 @@
             <Param Type="PVOID" Name="NotificationContext" />
             <Param Type="PHANDLE" Name="ActCtx" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlGetActiveActivationContext">
             <Param Type="PVOID*" Name="Context" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlReleaseActivationContext">
             <Param Type="PVOID*" Name="Context" />
             <Return Type="VOID" />
         </Api>
+        <!-- RtlDeactivateActivationContext does NOT return NTSTATUS -->
         <Api Name="RtlDeactivateActivationContext">
             <Param Type="DWORD" Name="dwFlags" />
             <Param Type="ULONG_PTR" Name="ulCookie" />
-            <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="LONG" />
         </Api>
         <!-- Crashes - DO NOT USE
         Unknown calling convention??
     <Api Name="RtlDeactivateActivationContextUnsafeFast">
         <Param Type="PRTL_CALLER_ALLOCATED_ACTIVATION_CONTEXT_STACK_FRAME_EXTENDED" Name="Frame" />
         <Return Type="NTSTATUS" />
-        <Success Return="Equal" Value="0" />
     </Api>
     -->
         <Api Name="RtlDosApplyFileIsolationRedirection_Ustr">
@@ -4122,16 +3942,14 @@
             <Param Type="PVOID" Name="Unknown2" />
             <Param Type="PVOID" Name="Unknown3" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlFindActivationContextSectionString">
-            <Param Type="ULONG" Name="dwFlags" />
+            <Param Type="[FIND_ACTCTX_SECTION_FLAGS]" Display="ULONG" Name="dwFlags" />
             <Param Type="const GUID*" Name="ExtensionGuid" />
-            <Param Type="ULONG" Name="SectionType" />
+            <Param Type="[ACTIVATION_CONTEXT_SECTION]" Name="SectionType" />
             <Param Type="PUNICODE_STRING" Name="SectionName" />
             <Param Type="PVOID" Name="ReturnedData" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlQueryInformationActivationContext">
             <Param Type="DWORD" Name="dwFlags" />
@@ -4142,29 +3960,24 @@
             <Param Type="SIZE_T" Name="cbBuffer" />
             <Param Type="SIZE_T*" Name="pcbWrittenOrRequired" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlZombifyActivationContext">
             <Param Type="PVOID" Name="Context" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlCheckRegistryKey">
             <Param Type="ULONG" Name="RelativeTo" />
             <Param Type="PWSTR" Name="Path" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlCreateRegistryKey">
             <Param Type="ULONG" Name="RelativeTo" />
             <Param Type="PWSTR" Name="Path" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlFormatCurrentUserKeyPath">
             <Param Type="PUNICODE_STRING" Name="KeyPath" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlpNtOpenKey">
             <Param Type="HANDLE" Name="KeyHandle" />
@@ -4172,13 +3985,11 @@
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Param Type="ULONG" Name="Unused" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlOpenCurrentUser">
             <Param Type="ACCESS_MASK" Name="DesiredAccess" />
             <Param Type="PHANDLE" Name="KeyHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlQueryRegistryValues">
             <Param Type="ULONG" Name="RelativeTo" />
@@ -4187,7 +3998,6 @@
             <Param Type="PVOID" Name="Context" />
             <Param Type="PVOID" Name="Environment" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlWriteRegistryValue">
             <Param Type="ULONG" Name="RelativeTo" />
@@ -4197,7 +4007,6 @@
             <Param Type="PVOID" Name="ValueData" />
             <Param Type="ULONG" Name="ValueLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlGetDefaultCodePage">
             <Param Type="PUSHORT" Name="AnsiCodePage" />
@@ -4239,7 +4048,6 @@
         <Api Name="RtlQueryTimeZoneInformation">
             <Param Type="PRTL_TIME_ZONE_INFORMATION" Name="TimeZoneInformation" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlSecondsSince1970ToTime">
             <Param Type="ULONG" Name="SecondsSince1970" />
@@ -4249,7 +4057,6 @@
         <Api Name="RtlSetTimeZoneInformation">
             <Param Type="PRTL_TIME_ZONE_INFORMATION" Name="TimeZoneInformation" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlTimeFieldsToTime">
             <Param Type="PTIME_FIELDS" Name="TimeFields" />
@@ -4272,19 +4079,16 @@
             <Param Type="PLARGE_INTEGER" Name="SystemTime" />
             <Param Type="PLARGE_INTEGER" Name="LocalTime" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlVerifyVersionInfo">
             <Param Type="PRTL_OSVERSIONINFOEXW" Name="VersionInfo" />
             <Param Type="[NtVerType]" Display="ULONG" Name="TypeMask" />
             <Param Type="ULONGLONG" Name="ConditionMask" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlGetVersion">
             <Param Type="PRTL_OSVERSIONINFOW" Name="lpVersionInformation" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlGetNtProductType">
             <Param Type="PNT_PRODUCT_TYPE" Name="ProductType" />
@@ -4294,7 +4098,6 @@
         <Api Name="RtlRegisterSecureMemoryCacheCallback">
             <Param Type="PRTL_SECURE_MEMORY_CACHE_CALLBACK" Name="Callback" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlFlushSecureMemoryCache">
             <Param Type="PVOID" Name="MemoryCache" />
@@ -4340,7 +4143,6 @@
             <Param Type="PSTRING" Name="Destination" />
             <Param Type="const STRING*" Name="Source" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlCaptureStackBackTrace">
             <Param Type="ULONG" Name="FramesToSkip" />
@@ -4365,7 +4167,6 @@
             <Param Type="ULONG" Name="CompressedDataInfoLength" />
             <Param Type="PVOID" Name="WorkSpace" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlDecompressChunks">
             <Param Type="PUCHAR" Name="UncompressedBuffer" />
@@ -4376,7 +4177,6 @@
             <Param Type="ULONG" Name="CompressedTailSize" />
             <Param Type="PCOMPRESSED_DATA_INFO" Name="CompressedDataInfo" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlDecompressFragment">
             <Param Type="USHORT" Name="CompressionFormat" />
@@ -4388,7 +4188,6 @@
             <Param Type="PULONG" Name="FinalUncompressedSize" />
             <Param Type="PVOID" Name="WorkSpace" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlDescribeChunk">
             <Param Type="USHORT" Name="CompressionFormat" />
@@ -4397,7 +4196,6 @@
             <Param Type="PUCHAR*" Name="ChunkBuffer" />
             <Param Type="PULONG" Name="ChunkSize" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlGenerate8dot3Name">
             <Param Type="PUNICODE_STRING" Name="Name" />
@@ -4411,14 +4209,12 @@
             <Param Type="PCOEM_STRING" Name="SourceString" />
             <Param Type="BOOLEAN" Name="AllocateDestinationString" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlUnicodeStringToCountedOemString">
             <Param Type="POEM_STRING" Name="DestinationString" />
             <Param Type="PCUNICODE_STRING" Name="SourceString" />
             <Param Type="BOOLEAN" Name="AllocateDestinationString" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlReserveChunk">
             <Param Type="USHORT" Name="CompressionFormat" />
@@ -4427,7 +4223,6 @@
             <Param Type="PUCHAR*" Name="ChunkBuffer" />
             <Param Type="ULONG" Name="ChunkSize" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlTimeToSecondsSince1980">
             <Param Type="PLARGE_INTEGER" Name="Time" />
@@ -4523,11 +4318,13 @@
         </Api>
         <Api Name="RtlNtStatusToDosError">
             <Param Type="NTSTATUS" Name="Status" />
-            <Return Type="ULONG" />
+            <Return Type="[ERROR_CODE_ULONG]" />
+            <Success />
         </Api>
         <Api Name="RtlNtStatusToDosErrorNoTeb">
             <Param Type="NTSTATUS" Name="Status" />
-            <Return Type="ULONG" />
+            <Return Type="[ERROR_CODE_ULONG]" />
+            <Success />
         </Api>
         <Api Name="RtlSetLastWin32ErrorAndNtStatusFromNtStatus">
             <Param Type="NTSTATUS" Name="Status" />
@@ -4572,13 +4369,13 @@
         </Api>
         <Api Name="RtlAllocateHeap">
             <Param Type="HANDLE" Name="HeapHandle" />
-            <Param Type="ULONG" Name="Flags" />
+            <Param Type="[HEAP_FLAGS_ULONG]" Name="Flags" />
             <Param Type="SIZE_T" Name="Size" />
             <Return Type="PVOID" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="RtlCreateHeap">
-            <Param Type="ULONG" Name="Flags" />
+            <Param Type="[HEAP_FLAGS_ULONG]" Name="Flags" />
             <Param Type="PVOID" Name="BaseAddress" />
             <Param Type="SIZE_T" Name="SizeToReserve" />
             <Param Type="SIZE_T" Name="SizeToCommit" />
@@ -4597,12 +4394,12 @@
         </Api>
         <Api Name="RtlCompactHeap">
             <Param Type="HANDLE" Name="Heap" />
-            <Param Type="ULONG" Name="Flags" />
+            <Param Type="[HEAP_FLAGS_ULONG]" Name="Flags" />
             <Return Type="ULONG" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="RtlDebugCreateHeap">
-            <Param Type="ULONG" Name="Flags" />
+            <Param Type="[HEAP_FLAGS_ULONG]" Name="Flags" />
             <Param Type="PVOID" Name="BaseAddress" />
             <Param Type="SIZE_T" Name="SizeToReserve" />
             <Param Type="SIZE_T" Name="SizeToCommit" />
@@ -4614,11 +4411,12 @@
         <Api Name="RtlDestroyHeap">
             <Param Type="HANDLE" Name="Heap" />
             <Return Type="HANDLE" />
-            <Success Return="NotEqual" Value="0" />
+            <!-- Success is NULL value -->
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlExtendHeap">
             <Param Type="HANDLE" Name="Heap" />
-            <Param Type="ULONG" Name="Flags" />
+            <Param Type="[HEAP_FLAGS_ULONG]" Name="Flags" />
             <Param Type="PVOID" Name="P" />
             <Param Type="SIZE_T" Name="Size" />
             <Return Type="ULONG" />
@@ -4626,7 +4424,7 @@
         </Api>
         <Api Name="RtlFreeHeap">
             <Param Type="HANDLE" Name="HeapHandle" />
-            <Param Type="ULONG" Name="Flags" />
+            <Param Type="[HEAP_FLAGS_ULONG]" Name="Flags" />
             <Param Type="PVOID" Name="HeapBase" />
             <Return Type="BOOLEAN" />
             <Success Return="NotEqual" Value="0" />
@@ -4663,7 +4461,7 @@
         </Api>
         <Api Name="RtlReAllocateHeap">
             <Param Type="HANDLE" Name="Heap" />
-            <Param Type="ULONG" Name="Flags" />
+            <Param Type="[HEAP_FLAGS_ULONG]" Name="Flags" />
             <Param Type="PVOID" Name="Ptr" />
             <Param Type="SIZE_T" Name="Size" />
             <Return Type="PVOID" />
@@ -4676,10 +4474,9 @@
         </Api>
         <Api Name="RtlUsageHeap">
             <Param Type="HANDLE" Name="Heap" />
-            <Param Type="ULONG" Name="Flags" />
+            <Param Type="[HEAP_FLAGS_ULONG]" Name="Flags" />
             <Param Type="PRTL_HEAP_USAGE" Name="Usage" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlUnlockHeap">
             <Param Type="HANDLE" Name="Heap" />
@@ -4704,14 +4501,14 @@
         </Api>
         <Api Name="RtlSizeHeap">
             <Param Type="PVOID" Name="HeapHandle" />
-            <Param Type="ULONG" Name="Flags" />
+            <Param Type="[HEAP_FLAGS_ULONG]" Name="Flags" />
             <Param Type="PVOID" Name="MemoryPointer" />
             <Return Type="SIZE_T" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="RtlValidateHeap">
             <Param Type="HANDLE" Name="Heap" />
-            <Param Type="ULONG" Name="Flags" />
+            <Param Type="[HEAP_FLAGS_ULONG]" Name="Flags" />
             <Param Type="PVOID" Name="P" />
             <Return Type="BOOLEAN" />
             <Success Return="NotEqual" Value="0" />
@@ -4720,7 +4517,6 @@
             <Param Type="HANDLE" Name="HeapHandle" />
             <Param Type="PVOID" Name="HeapEntry" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlFirstEntrySList">
             <Param Type="PSLIST_HEADER" Name="ListHead" />
@@ -4755,7 +4551,6 @@
             <Param Type="PHEAP_ENUMERATION_ROUTINE" Name="HeapEnumerationRoutine" />
             <Param Type="PVOID" Name="Param" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlGetCallersAddress">
             <Param Type="PVOID*" Name="CallersAddress" />
@@ -4776,7 +4571,6 @@
             <Param Type="PLARGE_INTEGER" Name="LocalTime" />
             <Param Type="PLARGE_INTEGER" Name="SystemTime" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlIpv4AddressToString" BothCharset="True">
             <Param Type="const IN_ADDR*" Name="Addr" />
@@ -4840,12 +4634,14 @@
         </Api>
         <Api Name="RtlGetLastNtStatus">
             <Return Type="NTSTATUS" />
+            <Success />
         </Api>
         <Api Name="RtlGetLastWin32Error">
-            <Return Type="DWORD" />
+            <Return Type="[ERROR_CODE]" />
+            <Success />
         </Api>
         <Api Name="RtlSetLastWin32Error">
-            <Param Type="DWORD" Name="err" />
+            <Param Type="[ERROR_CODE]" Name="err" />
             <Return Type="void" />
         </Api>
 
@@ -4861,7 +4657,6 @@
             <Param Type="PACCESS_MASK" Name="GrantedAccess" />
             <Param Type="PNTSTATUS" Name="AccessStatus" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtAccessCheckByType">
             <Param Type="PSECURITY_DESCRIPTOR" Name="SecurityDescriptor" />
@@ -4876,7 +4671,6 @@
             <Param Type="PACCESS_MASK" Name="GrantedAccess" />
             <Param Type="PNTSTATUS" Name="AccessStatus" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtAccessCheckByTypeResultList">
             <Param Type="PSECURITY_DESCRIPTOR" Name="SecurityDescriptor" />
@@ -4891,7 +4685,6 @@
             <Param Type="PACCESS_MASK" Name="GrantedAccess" />
             <Param Type="PNTSTATUS" Name="AccessStatus" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtAccessCheckAndAuditAlarm">
             <Param Type="PUNICODE_STRING" Name="SubsystemName" />
@@ -4906,7 +4699,6 @@
             <Param Type="PNTSTATUS" Name="AccessStatus" />
             <Param Type="PBOOLEAN" Name="GenerateOnClose" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtOpenThreadToken">
             <Param Type="[ThreadHandle]" Name="ThreadHandle" />
@@ -4914,7 +4706,6 @@
             <Param Type="BOOLEAN" Name="OpenAsSelf" />
             <Param Type="PHANDLE" Name="TokenHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtOpenThreadTokenEx">
             <Param Type="[ThreadHandle]" Name="ThreadHandle" />
@@ -4923,7 +4714,6 @@
             <Param Type="ULONG" Name="HandleAttributes" />
             <Param Type="PHANDLE" Name="TokenHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtAdjustGroupsToken">
             <Param Type="HANDLE" Name="TokenHandle" />
@@ -4933,7 +4723,6 @@
             <Param Type="PTOKEN_GROUPS" Name="PreviousState" />
             <Param Type="PULONG" Name="ReturnLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtAdjustPrivilegesToken">
             <Param Type="HANDLE" Name="TokenHandle" />
@@ -4943,14 +4732,12 @@
             <Param Type="PTOKEN_PRIVILEGES" Name="PreviousState" />
             <Param Type="PULONG" Name="ReturnLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCompareTokens">
             <Param Type="HANDLE" Name="FirstTokenHandle" />
             <Param Type="HANDLE" Name="SecondTokenHandle" />
             <Param Type="PBOOLEAN" Name="Equal" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCreateToken">
             <Param Type="PHANDLE" Name="TokenHandle" />
@@ -4967,7 +4754,6 @@
             <Param Type="PTOKEN_DEFAULT_DACL" Name="TokenDefaultDacl" />
             <Param Type="PTOKEN_SOURCE" Name="TokenSource" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtDuplicateToken">
             <Param Type="HANDLE" Name="ExistingTokenHandle" />
@@ -4977,12 +4763,10 @@
             <Param Type="TOKEN_TYPE" Name="TokenType" />
             <Param Type="PHANDLE" Name="NewTokenHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtImpersonateAnonymousToken">
             <Param Type="HANDLE" Name="Thread" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtOpenObjectAuditAlarm">
             <Param Type="PUNICODE_STRING" Name="SubsystemName" />
@@ -4998,28 +4782,24 @@
             <Param Type="BOOLEAN" Name="AccessGranted" />
             <Param Type="PBOOLEAN" Name="GenerateOnClose" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCloseObjectAuditAlarm">
             <Param Type="PUNICODE_STRING" Name="SubsystemName" />
             <Param Type="PVOID" Name="HandleId" />
             <Param Type="BOOLEAN" Name="GenerateOnClose" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtDeleteObjectAuditAlarm">
             <Param Type="PUNICODE_STRING" Name="SubsystemName" />
             <Param Type="PVOID" Name="HandleId" />
             <Param Type="BOOLEAN" Name="GenerateOnClose" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtOpenProcessToken">
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
             <Param Type="[TokenAccess]" Display="ACCESS_MASK" Name="DesiredAccess" />
             <Param Type="PHANDLE" Name="TokenHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtOpenProcessTokenEx">
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
@@ -5027,14 +4807,12 @@
             <Param Type="ULONG" Name="HandleAttributes" />
             <Param Type="PHANDLE" Name="TokenHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtPrivilegeCheck">
             <Param Type="HANDLE" Name="ClientToken" />
             <Param Type="PPRIVILEGE_SET" Name="RequiredPrivileges" />
             <Param Type="PBOOLEAN" Name="Result" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtPrivilegedServiceAuditAlarm">
             <Param Type="PUNICODE_STRING" Name="SubsystemName" />
@@ -5043,7 +4821,6 @@
             <Param Type="PPRIVILEGE_SET" Name="Privileges" />
             <Param Type="BOOLEAN" Name="AccessGranted" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtPrivilegeObjectAuditAlarm">
             <Param Type="PUNICODE_STRING" Name="SubsystemName" />
@@ -5053,7 +4830,6 @@
             <Param Type="PPRIVILEGE_SET" Name="Privileges" />
             <Param Type="BOOLEAN" Name="AccessGranted" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryInformationToken">
             <Param Type="HANDLE" Name="TokenHandle" />
@@ -5062,7 +4838,6 @@
             <Param Type="ULONG" Name="TokenInformationLength" />
             <Param Type="PULONG" Name="ReturnLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtAccessCheckByTypeAndAuditAlarm">
             <Param Type="PUNICODE_STRING" Name="SubsystemName" />
@@ -5082,7 +4857,6 @@
             <Param Type="PNTSTATUS" Name="AccessStatus" />
             <Param Type="PBOOLEAN" Name="GenerateOnClose" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtAccessCheckByTypeResultListAndAuditAlarm">
             <Param Type="PUNICODE_STRING" Name="SubsystemName" />
@@ -5102,7 +4876,6 @@
             <Param Type="PNTSTATUS" Name="AccessStatus" />
             <Param Type="PBOOLEAN" Name="GenerateOnClose" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtAccessCheckByTypeResultListAndAuditAlarmByHandle">
             <Param Type="PUNICODE_STRING" Name="SubsystemName" />
@@ -5123,7 +4896,6 @@
             <Param Type="PNTSTATUS" Name="AccessStatus" />
             <Param Type="PBOOLEAN" Name="GenerateOnClose" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetInformationToken">
             <Param Type="HANDLE" Name="TokenHandle" />
@@ -5131,14 +4903,12 @@
             <Param Type="PVOID" Name="TokenInformation" Length="TokenInformationLength" />
             <Param Type="ULONG" Name="TokenInformationLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtImpersonateThread">
             <Param Type="[ThreadHandle]" Name="ThreadHandle" />
             <Param Type="HANDLE" Name="ThreadToImpersonate" />
             <Param Type="PSECURITY_QUALITY_OF_SERVICE" Name="SecurityQualityOfService" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
 
         <!-- Processes and Threads -->
@@ -5153,7 +4923,6 @@
             <Param Type="HANDLE" Name="DebugPort" />
             <Param Type="HANDLE" Name="ExceptionPort" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCreateProcessEx">
             <Param Type="PHANDLE" Name="ProcessHandle" />
@@ -5166,7 +4935,6 @@
             <Param Type="HANDLE" Name="ExceptionPort" />
             <Param Type="BOOLEAN" Name="InJob" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCreateThread">
             <Param Type="PHANDLE" Name="ThreadHandle" />
@@ -5178,7 +4946,6 @@
             <Param Type="PINITIAL_TEB" Name="UserStack" />
             <Param Type="BOOLEAN" Name="CreateSuspended" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCreateThreadEx">
             <Param Type="PHANDLE" Name="ThreadHandle" />
@@ -5193,34 +4960,29 @@
             <Param Type="SIZE_T" Name="StackReserve" />
             <Param Type="PTHREADEX_DATA" Name="pThreadExData" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtOpenJobObject">
             <Param Type="PHANDLE" Name="JobHandle" />
             <Param Type="ACCESS_MASK" Name="DesiredAccess" />
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtAssignProcessToJobObject">
             <Param Type="HANDLE" Name="JobHandle" />
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCreateJobObject">
             <Param Type="PHANDLE" Name="JobHandle" />
             <Param Type="ACCESS_MASK" Name="DesiredAccess" />
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCreateJobSet">
             <Param Type="ULONG" Name="NumJob" />
             <Param Type="PJOB_SET_ARRAY" Name="UserJobSet" />
             <Param Type="ULONG" Name="Flags" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryInformationJobObject">
             <Param Type="HANDLE" Name="JobHandle" />
@@ -5229,7 +4991,6 @@
             <Param Type="ULONG" Name="JobInformationLength" />
             <Param Type="PULONG" Name="ReturnLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryInformationProcess">
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
@@ -5238,7 +4999,6 @@
             <Param Type="ULONG" Name="ProcessInformationLength" />
             <Param Type="PULONG" Name="ReturnLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryInformationThread">
             <Param Type="[ThreadHandle]" Name="ThreadHandle" />
@@ -5247,7 +5007,6 @@
             <Param Type="ULONG" Name="ThreadInformationLength" />
             <Param Type="PULONG" Name="ReturnLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetInformationJobObject">
             <Param Type="HANDLE" Name="JobHandle" />
@@ -5255,7 +5014,6 @@
             <Param Type="PVOID" Name="JobInformation" Length="JobInformationLength" />
             <Param Type="ULONG" Name="JobInformationLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetInformationProcess">
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
@@ -5263,7 +5021,6 @@
             <Param Type="PVOID" Name="ProcessInformation" Length="ProcessInformationLength" />
             <Param Type="ULONG" Name="ProcessInformationLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetInformationThread">
             <Param Type="[ThreadHandle]" Name="ThreadHandle" />
@@ -5271,42 +5028,35 @@
             <Param Type="PVOID" Name="ThreadInformation" Length="ThreadInformationLength" />
             <Param Type="ULONG" Name="ThreadInformationLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSuspendProcess">
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSuspendThread">
             <Param Type="[ThreadHandle]" Name="ThreadHandle" />
             <Param Type="PULONG" Name="PreviousSuspendCount" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtTerminateProcess">
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
             <Param Type="NTSTATUS" Name="ExitStatus" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtTerminateThread">
             <Param Type="[ThreadHandle]" Name="ThreadHandle" />
             <Param Type="NTSTATUS" Name="ExitStatus" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtTerminateJobObject">
             <Param Type="HANDLE" Name="JobHandle" />
             <Param Type="NTSTATUS" Name="ExitStatus" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtIsProcessInJob">
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
             <Param Type="HANDLE" Name="JobHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtOpenProcess">
             <Param Type="PHANDLE" Name="ProcessHandle" />
@@ -5314,7 +5064,6 @@
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Param Type="PCLIENT_ID" Name="ClientId" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtOpenThread">
             <Param Type="PHANDLE" Name="ThreadHandle" />
@@ -5322,39 +5071,32 @@
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Param Type="PCLIENT_ID" Name="ClientId" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtResumeThread">
             <Param Type="[ThreadHandle]" Name="ThreadHandle" />
             <Param Type="PULONG" Name="SuspendCount" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtResumeProcess">
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtDelayExecution">
             <Param Type="BOOLEAN" Name="Alertable" />
             <Param Type="PLARGE_INTEGER" Name="DelayInterval" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtYieldExecution">
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtAlertResumeThread">
             <Param Type="[ThreadHandle]" Name="ThreadHandle" />
             <Param Type="PULONG" Name="SuspendCount" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtAlertThread">
             <Param Type="[ThreadHandle]" Name="ThreadHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueueApcThread">
             <Param Type="[ThreadHandle]" Name="ThreadHandle" />
@@ -5363,7 +5105,6 @@
             <Param Type="PIO_STATUS_BLOCK" Name="ApcStatusBlock" />
             <Param Type="ULONG" Name="ApcReserved" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCurrentTeb">
             <Return Type="PTEB" />
@@ -5371,11 +5112,9 @@
         </Api>
         <Api Name="NtSetHighWaitLowThread">
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetLowWaitHighThread">
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtGetCurrentProcessorNumber">
             <Return Type="ULONG" />
@@ -5383,7 +5122,6 @@
         </Api>
         <Api Name="NtTestAlert">
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <!-- TODO: Verify NtCreateUserProcess -->
         <Api Name="NtCreateUserProcess">
@@ -5399,7 +5137,6 @@
             <Param Type="PVOID" Name="Unknown" />
             <Param Type="PVOID" Name="AttributeList" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
 
         <!-- Environment -->
@@ -5409,7 +5146,6 @@
             <Param Type="PVOID" Name="Buffer" />
             <Param Type="ULONG" Name="BufferLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQuerySystemEnvironmentValue">
             <Param Type="PUNICODE_STRING" Name="Name" />
@@ -5417,7 +5153,6 @@
             <Param Type="ULONG" Name="Length" />
             <Param Type="PULONG" Name="ReturnLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQuerySystemEnvironmentValueEx">
             <Param Type="PUNICODE_STRING" Name="VariableName" />
@@ -5426,19 +5161,16 @@
             <Param Type="PULONG" Name="ReturnLength" />
             <Param Type="PULONG" Name="Attributes" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetSystemEnvironmentValue">
             <Param Type="PUNICODE_STRING" Name="VariableName" />
             <Param Type="PUNICODE_STRING" Name="Value" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetSystemEnvironmentValueEx">
             <Param Type="PUNICODE_STRING" Name="VariableName" />
             <Param Type="LPGUID" Name="VendorGuid" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
 
         <!-- Memory -->
@@ -5451,7 +5183,6 @@
             <Param Type="[MemoryAllocationFlags]" Display="ULONG" Name="AllocationType" />
             <Param Type="[NtProtectionFlags]" Name="Protect" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtFlushVirtualMemory">
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
@@ -5459,7 +5190,6 @@
             <Param Type="PSIZE_T" Name="RegionSize" />
             <Param Type="PIO_STATUS_BLOCK" Name="IoStatus" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtFreeVirtualMemory">
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
@@ -5467,7 +5197,6 @@
             <Param Type="PSIZE_T" Name="RegionSize" />
             <Param Type="[MemoryAllocationFlags]" Display="ULONG" Name="FreeType" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtLockVirtualMemory">
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
@@ -5475,7 +5204,6 @@
             <Param Type="SIZE_T" Name="NumberOfBytesToLock" />
             <Param Type="PSIZE_T" Name="NumberOfBytesLocked" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtProtectVirtualMemory">
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
@@ -5484,7 +5212,6 @@
             <Param Type="[NtProtectionFlags]" Name="NewAccessProtection" />
             <Param Type="[NtProtectionFlags*]" Name="OldAccessProtection" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryVirtualMemory">
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
@@ -5494,7 +5221,6 @@
             <Param Type="SIZE_T" Name="Length" />
             <Param Type="PSIZE_T" Name="ResultLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtReadVirtualMemory">
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
@@ -5503,7 +5229,6 @@
             <Param Type="SIZE_T" Name="NumberOfBytesToRead" />
             <Param Type="PSIZE_T" Name="NumberOfBytesRead" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtUnlockVirtualMemory">
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
@@ -5511,7 +5236,6 @@
             <Param Type="SIZE_T" Name="NumberOfBytesToUnlock" />
             <Param Type="PSIZE_T" Name="NumberOfBytesUnlocked" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtWriteVirtualMemory">
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
@@ -5520,35 +5244,30 @@
             <Param Type="SIZE_T" Name="NumberOfBytesToWrite" />
             <Param Type="PSIZE_T" Name="NumberOfBytesWritten" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtAllocateUserPhysicalPages">
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
             <Param Type="PULONG_PTR" Name="NumberOfPages" />
             <Param Type="PULONG_PTR" Name="UserPfnArray" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtFreeUserPhysicalPages">
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
             <Param Type="PULONG_PTR" Name="NumberOfPages" />
             <Param Type="PULONG_PTR" Name="UserPfnArray" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtMapUserPhysicalPages">
             <Param Type="PVOID" Name="VirtualAddresses" />
             <Param Type="ULONG_PTR" Name="NumberOfPages" />
             <Param Type="PULONG_PTR" Name="UserPfnArray" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtMapUserPhysicalPagesScatter">
             <Param Type="PVOID*" Name="VirtualAddresses" />
             <Param Type="ULONG_PTR" Name="NumberOfPages" />
             <Param Type="PULONG_PTR" Name="UserPfnArray" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtGetWriteWatch">
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
@@ -5559,14 +5278,12 @@
             <Param Type="PULONG_PTR" Name="EntriesInUserAddressArray" />
             <Param Type="PULONG" Name="Granularity" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtResetWriteWatch">
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
             <Param Type="PVOID" Name="BaseAddress" />
             <Param Type="SIZE_T" Name="RegionSize" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
 
         <!-- File Management -->
@@ -5575,7 +5292,6 @@
             <Param Type="HANDLE" Name="FileHandle" />
             <Param Type="PIO_STATUS_BLOCK" Name="IoStatusBlock" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCreateFile">
             <Param Type="PHANDLE" Name="FileHandle" />
@@ -5590,7 +5306,6 @@
             <Param Type="PVOID" Name="EaBuffer" Length="EaLength" />
             <Param Type="ULONG" Name="EaLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCreateIoCompletion">
             <Param Type="PHANDLE" Name="IoCompletionHandle" />
@@ -5598,7 +5313,6 @@
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Param Type="ULONG" Name="NumberOfConcurrentThreads" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtOpenFile">
             <Param Type="PHANDLE" Name="FileHandle" />
@@ -5608,14 +5322,12 @@
             <Param Type="[FileShareMode]" Display="ULONG" Name="ShareAccess" />
             <Param Type="ULONG" Name="OpenOptions" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtOpenIoCompletion">
             <Param Type="PHANDLE" Name="CompetionPort" />
             <Param Type="ACCESS_MASK" Name="DesiredAccess" />
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryIoCompletion">
             <Param Type="HANDLE" Name="IoCompletionHandle" />
@@ -5624,7 +5336,6 @@
             <Param Type="ULONG" Name="IoCompletionInformationLength" />
             <Param Type="PULONG" Name="ResultLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtRemoveIoCompletion">
             <Param Type="HANDLE" Name="IoCompletionHandle" />
@@ -5633,7 +5344,6 @@
             <Param Type="PIO_STATUS_BLOCK" Name="IoStatusBlock" />
             <Param Type="PLARGE_INTEGER" Name="Timeout" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetIoCompletion">
             <Param Type="HANDLE" Name="IoCompletionPortHandle" />
@@ -5642,7 +5352,6 @@
             <Param Type="NTSTATUS" Name="CompletionStatus" />
             <Param Type="ULONG" Name="CompletionInformation" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCreateSymbolicLinkObject">
             <Param Type="PHANDLE" Name="SymbolicLinkHandle" />
@@ -5650,32 +5359,27 @@
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Param Type="PUNICODE_STRING" Name="Name" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtOpenSymbolicLinkObject">
             <Param Type="PHANDLE" Name="SymbolicLinkHandle" />
             <Param Type="ACCESS_MASK" Name="DesiredAccess" />
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQuerySymbolicLinkObject">
             <Param Type="HANDLE" Name="SymLinkObjHandle" />
             <Param Type="PUNICODE_STRING" Name="LinkTarget" />
             <Param Type="PULONG" Name="DataWritten" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtDeleteFile">
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryFullAttributesFile">
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Param Type="PFILE_NETWORK_OPEN_INFORMATION" Name="FileInformation" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryInformationFile">
             <Param Type="HANDLE" Name="FileHandle" />
@@ -5684,7 +5388,6 @@
             <Param Type="ULONG" Name="Length" />
             <Param Type="FILE_INFORMATION_CLASS" Name="FileInformationClass" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtLockFile">
             <Param Type="HANDLE" Name="FileHandle" />
@@ -5698,7 +5401,6 @@
             <Param Type="BOOLEAN" Name="FailImmediatedly" />
             <Param Type="BOOLEAN" Name="ExclusiveLock" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtUnlockFile">
             <Param Type="HANDLE" Name="FileHandle" />
@@ -5707,7 +5409,6 @@
             <Param Type="PLARGE_INTEGER" Name="Lenght" />
             <Param Type="ULONG" Name="Key" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtWriteFile">
             <Param Type="HANDLE" Name="FileHandle" />
@@ -5720,7 +5421,6 @@
             <Param Type="PLARGE_INTEGER" Name="ByteOffset" />
             <Param Type="PULONG" Name="Key" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtWriteFileGather">
             <Param Type="HANDLE" Name="FileHandle" />
@@ -5733,7 +5433,6 @@
             <Param Type="PLARGE_INTEGER" Name="ByteOffset" />
             <Param Type="PULONG" Name="Key" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtReadFile">
             <Param Type="HANDLE" Name="FileHandle" />
@@ -5746,7 +5445,6 @@
             <Param Type="PLARGE_INTEGER" Name="ByteOffset" />
             <Param Type="PULONG" Name="Key" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtReadFileScatter">
             <Param Type="HANDLE" Name="FileHandle" />
@@ -5759,13 +5457,11 @@
             <Param Type="PLARGE_INTEGER" Name="ByteOffset" />
             <Param Type="PULONG" Name="Key" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtFlushBuffersFile">
             <Param Type="HANDLE" Name="FileHandle" />
             <Param Type="PIO_STATUS_BLOCK" Name="IoStatusBlock" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetInformationFile">
             <Param Type="HANDLE" Name="FileHandle" />
@@ -5774,13 +5470,11 @@
             <Param Type="ULONG" Name="Length" />
             <Param Type="FILE_INFORMATION_CLASS" Name="FileInformationClass" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryAttributesFile">
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Param Type="PFILE_BASIC_INFORMATION" Name="FileInformation" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryEaFile">
             <Param Type="HANDLE" Name="FileHandle" />
@@ -5793,7 +5487,6 @@
             <Param Type="PULONG" Name="EaIndex" />
             <Param Type="BOOLEAN" Name="RestartScan" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetEaFile">
             <Param Type="HANDLE" Name="FileHandle" />
@@ -5801,7 +5494,6 @@
             <Param Type="PVOID" Name="EaBuffer" />
             <Param Type="ULONG" Name="EaBufferSize" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryQuotaInformationFile">
             <Param Type="HANDLE" Name="FileHandle" />
@@ -5814,7 +5506,6 @@
             <Param Type="PSID" Name="StartSid" />
             <Param Type="BOOLEAN" Name="RestartScan" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetQuotaInformationFile">
             <Param Type="HANDLE" Name="FileHandle" />
@@ -5822,7 +5513,6 @@
             <Param Type="PVOID" Name="Buffer" />
             <Param Type="ULONG" Name="BufferLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCreatePagingFile">
             <Param Type="PUNICODE_STRING" Name="FileName" />
@@ -5830,7 +5520,6 @@
             <Param Type="PLARGE_INTEGER" Name="MaxiumSize" />
             <Param Type="ULONG" Name="Reserved" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtTranslateFilePath">
             <Param Type="PFILE_PATH" Name="InputFilePath" />
@@ -5838,21 +5527,18 @@
             <Param Type="PFILE_PATH" Name="OutputFilePath" />
             <Param Type="ULONG" Name="OutputFilePathLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCreateDirectoryObject">
             <Param Type="PHANDLE" Name="DirectoryHandle" />
             <Param Type="ACCESS_MASK" Name="DesiredAccess" />
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtOpenDirectoryObject">
             <Param Type="PHANDLE" Name="FileHandle" />
             <Param Type="ACCESS_MASK" Name="DesiredAccess" />
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryDirectoryObject">
             <Param Type="HANDLE" Name="DirectoryHandle" />
@@ -5863,7 +5549,6 @@
             <Param Type="PULONG" Name="Context" />
             <Param Type="PULONG" Name="ReturnLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtNotifyChangeDirectoryFile">
             <Param Type="HANDLE" Name="FileHandle" />
@@ -5876,7 +5561,6 @@
             <Param Type="[FILE_NOTIFY_CHANGE_FLAGS]" Name="CompletionFilter" Display="ULONG" />
             <Param Type="BOOLEAN" Name="WatchTree" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryDirectoryFile">
             <Param Type="HANDLE" Name="FileHandle" />
@@ -5891,7 +5575,6 @@
             <Param Type="PUNICODE_STRING" Name="FileName" />
             <Param Type="BOOLEAN" Name="RestartScan" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryOleDirectoryFile">
             <Param Type="HANDLE" Name="FileHandle" />
@@ -5906,7 +5589,6 @@
             <Param Type="PUNICODE_STRING" Name="FileMask" />
             <Param Type="BOOLEAN" Name="RestartScan" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryVolumeInformationFile">
             <Param Type="HANDLE" Name="FileHandle" />
@@ -5915,7 +5597,6 @@
             <Param Type="ULONG" Name="Length" />
             <Param Type="FS_INFORMATION_CLASS" Name="FsInformationClass" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetVolumeInformationFile">
             <Param Type="HANDLE" Name="FileHandle" />
@@ -5924,7 +5605,6 @@
             <Param Type="ULONG" Name="Length" />
             <Param Type="FS_INFORMATION_CLASS" Name="FsInformationClass" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
 
         <!-- Sections -->
@@ -5938,13 +5618,11 @@
             <Param Type="ULONG" Name="AllocationAttributes" />
             <Param Type="HANDLE" Name="FileHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtExtendSection">
             <Param Type="HANDLE" Name="SectionHandle" />
             <Param Type="PLARGE_INTEGER" Name="NewMaximumSize" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtMapViewOfSection">
             <Param Type="HANDLE" Name="SectionHandle" />
@@ -5958,14 +5636,12 @@
             <Param Type="[MemoryAllocationFlags]" Display="ULONG" Name="AllocationType" />
             <Param Type="ULONG" Name="AccessProtection" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtOpenSection">
             <Param Type="PHANDLE" Name="SectionHandle" />
             <Param Type="ACCESS_MASK" Name="DesiredAccess" />
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQuerySection">
             <Param Type="HANDLE" Name="SectionHandle" />
@@ -5974,13 +5650,11 @@
             <Param Type="SIZE_T" Name="Length" />
             <Param Type="PSIZE_T" Name="ResultLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtUnmapViewOfSection">
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
             <Param Type="PVOID" Name="BaseAddress" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
 
         <!-- Local Inter-Process Communication (LPC) -->
@@ -5993,12 +5667,10 @@
             <Param Type="PPORT_VIEW" Name="ServerView" />
             <Param Type="PREMOTE_PORT_VIEW" Name="ClientView" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCompleteConnectPort">
             <Param Type="HANDLE" Name="PortHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtConnectPort">
             <Param Type="PHANDLE" Name="PortHandle" />
@@ -6010,7 +5682,6 @@
             <Param Type="PVOID" Name="ConnectionInformation" Length="ConnectionInformationLength" />
             <Param Type="PULONG" Name="ConnectionInformationLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCreatePort">
             <Param Type="PHANDLE" Name="PortHandle" />
@@ -6019,7 +5690,6 @@
             <Param Type="ULONG" Name="MaxMessageLength" />
             <Param Type="ULONG" Name="MaxPoolUsage" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCreateWaitablePort">
             <Param Type="PHANDLE" Name="PortHandle" />
@@ -6028,19 +5698,16 @@
             <Param Type="ULONG" Name="MaxDataLength" />
             <Param Type="ULONG" Name="NPMessageQueueSize" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtImpersonateClientOfPort">
             <Param Type="HANDLE" Name="PortHandle" />
             <Param Type="PPORT_MESSAGE" Name="ClientMessage" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtListenPort">
             <Param Type="HANDLE" Name="PortHandle" />
             <Param Type="PPORT_MESSAGE" Name="ConnectionRequest" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryInformationPort">
             <Param Type="HANDLE" Name="PortHandle" />
@@ -6049,11 +5716,9 @@
             <Param Type="ULONG" Name="PortInformationLength" />
             <Param Type="PULONG" Name="ReturnLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryPortInformationProcess">
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtReadRequestData">
             <Param Type="HANDLE" Name="PortHandle" />
@@ -6063,13 +5728,11 @@
             <Param Type="ULONG" Name="BufferLength" />
             <Param Type="PULONG" Name="ReturnLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtReplyPort">
             <Param Type="HANDLE" Name="PortHandle" />
             <Param Type="PPORT_MESSAGE" Name="LpcReply" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtReplyWaitReceivePort">
             <Param Type="HANDLE" Name="PortHandle" />
@@ -6077,7 +5740,6 @@
             <Param Type="PPORT_MESSAGE" Name="ReplyMessage" />
             <Param Type="PPORT_MESSAGE" Name="ReceiveMessage" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtReplyWaitReceivePortEx">
             <Param Type="HANDLE" Name="PortHandle" />
@@ -6086,26 +5748,22 @@
             <Param Type="PPORT_MESSAGE" Name="ReceiveMessage" />
             <Param Type="PLARGE_INTEGER" Name="Timeout" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtReplyWaitReplyPort">
             <Param Type="HANDLE" Name="PortHandle" />
             <Param Type="PPORT_MESSAGE" Name="ReplyMessage" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtRequestPort">
             <Param Type="HANDLE" Name="PortHandle" />
             <Param Type="PPORT_MESSAGE" Name="LpcMessage" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtRequestWaitReplyPort">
             <Param Type="HANDLE" Name="PortHandle" />
             <Param Type="PPORT_MESSAGE" Name="LpcReply" />
             <Param Type="PPORT_MESSAGE" Name="LpcRequest" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSecureConnectPort">
             <Param Type="PHANDLE" Name="PortHandle" />
@@ -6118,7 +5776,6 @@
             <Param Type="PVOID" Name="ConnectionInformation" />
             <Param Type="PULONG" Name="ConnectionInformationLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtWriteRequestData">
             <Param Type="HANDLE" Name="PortHandle" />
@@ -6128,17 +5785,14 @@
             <Param Type="ULONG" Name="BufferLength" />
             <Param Type="PULONG" Name="ReturnLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetDefaultHardErrorPort">
             <Param Type="HANDLE" Name="PortHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtRegisterThreadTerminatePort">
             <Param Type="HANDLE" Name="TerminationPort" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
 
         <!-- Drivers -->
@@ -6147,91 +5801,75 @@
             <Param Type="PBOOT_ENTRY" Name="BootEntry" />
             <Param Type="ULONG" Name="Id" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtAddDriverEntry">
             <Param Type="PEFI_DRIVER_ENTRY" Name="BootEntry" />
             <Param Type="ULONG" Name="Id" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtDeleteDriverEntry">
             <Param Type="ULONG" Name="Id" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtDeleteBootEntry">
             <Param Type="ULONG" Name="Id" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtEnumerateBootEntries">
             <Param Type="PVOID" Name="Buffer" />
             <Param Type="PULONG" Name="BufferLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtEnumerateDriverEntries">
             <Param Type="PVOID" Name="Buffer" />
             <Param Type="PULONG" Name="BufferLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtLoadDriver">
             <Param Type="PUNICODE_STRING" Name="DriverServiceName" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtModifyBootEntry">
             <Param Type="PBOOT_ENTRY" Name="BootEntry" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtModifyDriverEntry">
             <Param Type="PEFI_DRIVER_ENTRY" Name="DriverEntry" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryDriverEntryOrder">
             <Param Type="PULONG" Name="Ids" />
             <Param Type="PULONG" Name="Count" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryBootEntryOrder">
             <Param Type="PULONG" Name="Ids" />
             <Param Type="PULONG" Name="Count" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryBootOptions">
             <Param Type="PBOOT_OPTIONS" Name="BootOptions" />
             <Param Type="PULONG" Name="BootOptionsLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetBootEntryOrder">
             <Param Type="PULONG" Name="Ids" />
             <Param Type="PULONG" Name="Count" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetBootOptions">
             <Param Type="PBOOT_OPTIONS" Name="BootOptions" />
             <Param Type="ULONG" Name="FieldsToChange" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetDriverEntryOrder">
             <Param Type="PULONG" Name="Ids" />
             <Param Type="PULONG" Name="Count" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtUnloadDriver">
             <Param Type="PUNICODE_STRING" Name="DriverServiceName" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
 
         <!-- Profiling -->
@@ -6247,29 +5885,24 @@
             <Param Type="KPROFILE_SOURCE" Name="ProfileSource" />
             <Param Type="KAFFINITY" Name="Affinity" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryIntervalProfile">
             <Param Type="KPROFILE_SOURCE" Name="ProfileSource" />
             <Param Type="PULONG" Name="Interval" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetIntervalProfile">
             <Param Type="ULONG" Name="Interval" />
             <Param Type="KPROFILE_SOURCE" Name="Source" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtStartProfile">
             <Param Type="HANDLE" Name="ProfileHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtStopProfile">
             <Param Type="HANDLE" Name="ProfileHandle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
 
         <!-- Basic Debugging -->
@@ -6278,14 +5911,12 @@
             <Param Type="HANDLE" Name="Process" />
             <Param Type="HANDLE" Name="DebugObject" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtDebugContinue">
             <Param Type="HANDLE" Name="DebugObject" />
             <Param Type="PCLIENT_ID" Name="AppClientId" />
             <Param Type="NTSTATUS" Name="ContinueStatus" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtWaitForDebugEvent">
             <Param Type="HANDLE" Name="DebugObject" />
@@ -6293,13 +5924,11 @@
             <Param Type="PLARGE_INTEGER" Name="Timeout" />
             <Param Type="PDBGUI_WAIT_STATE_CHANGE" Name="StateChange" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtRemoveProcessDebug">
             <Param Type="HANDLE" Name="Process" />
             <Param Type="HANDLE" Name="DebugObject" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetInformationDebugObject">
             <Param Type="HANDLE" Name="DebugObject" />
@@ -6308,7 +5937,6 @@
             <Param Type="ULONG" Name="InformationLength" />
             <Param Type="PULONG" Name="ReturnLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCreateDebugObject">
             <Param Type="PHANDLE" Name="DebugHandle" />
@@ -6316,36 +5944,30 @@
             <Param Type="POBJECT_ATTRIBUTES" Name="ObjectAttributes" />
             <Param Type="BOOLEAN" Name="KillProcessOnExit" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtGetContextThread">
             <Param Type="[ThreadHandle]" Name="ThreadHandle" />
             <Param Type="PCONTEXT" Name="pContext" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetContextThread">
             <Param Type="[ThreadHandle]" Name="ThreadHandle" />
             <Param Type="PCONTEXT" Name="Context" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtContinue">
             <Param Type="PCONTEXT" Name="ThreadContext" />
             <Param Type="BOOLEAN" Name="RaiseAlert" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtFlushInstructionCache">
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
             <Param Type="PVOID" Name="BaseAddress" />
             <Param Type="ULONG" Name="NumberOfBytesToFlush" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtFlushWriteBuffer">
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSystemDebugControl">
             <Param Type="SYSDBG_COMMAND" Name="ControlCode" />
@@ -6355,7 +5977,6 @@
             <Param Type="ULONG" Name="OutputBufferLength" />
             <Param Type="PULONG" Name="ReturnLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
 
         <!-- Time -->
@@ -6363,13 +5984,11 @@
         <Api Name="NtQuerySystemTime">
             <Param Type="PLARGE_INTEGER" Name="SystemTime" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetSystemTime">
             <Param Type="PLARGE_INTEGER" Name="SystemTime" />
             <Param Type="PLARGE_INTEGER" Name="PreviousTime" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtGetTickCount">
             <Return Type="ULONG" />
@@ -6381,7 +6000,6 @@
         <Api Name="NtAllocateLocallyUniqueId">
             <Param Type="LUID*" Name="LocallyUniqueId" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtAllocateUuids">
             <Param Type="PULARGE_INTEGER" Name="Time" />
@@ -6389,42 +6007,35 @@
             <Param Type="PULONG" Name="Sequence" />
             <Param Type="PUCHAR" Name="Seed" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetUuidSeed">
             <Param Type="PUCHAR" Name="UuidSeed" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryDebugFilterState">
             <Param Type="ULONG" Name="ComponentId" />
             <Param Type="ULONG" Name="Level" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetDebugFilterState">
             <Param Type="ULONG" Name="ComponentId" />
             <Param Type="ULONG" Name="Level" />
             <Param Type="BOOLEAN" Name="State" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtApphelpCacheControl">
             <Param Type="APPHELPCACHESERVICECLASS" Name="Service" />
             <Param Type="PVOID" Name="ServiceData" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtAreMappedFilesTheSame">
             <Param Type="PVOID" Name="File1MappedAsAnImage" />
             <Param Type="PVOID" Name="File2MappedAsFile" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtShutdownSystem">
             <Param Type="SHUTDOWN_ACTION" Name="Action" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtPowerInformation">
             <Param Type="POWER_INFORMATION_LEVEL" Name="PowerInformationLevel" />
@@ -6433,19 +6044,16 @@
             <Param Type="PVOID" Name="OutputBuffer" />
             <Param Type="ULONG" Name="OutputBufferLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetSystemPowerState">
             <Param Type="POWER_ACTION" Name="SystemAction" />
             <Param Type="SYSTEM_POWER_STATE" Name="MinSystemState" />
             <Param Type="ULONG" Name="Flags" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtDisplayString">
             <Param Type="PUNICODE_STRING" Name="DisplayString" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtInitiatePowerAction">
             <Param Type="POWER_ACTION" Name="SystemAction" />
@@ -6453,20 +6061,17 @@
             <Param Type="ULONG" Name="Flags" />
             <Param Type="BOOLEAN" Name="Asynchronous" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryPerformanceCounter">
             <Param Type="PLARGE_INTEGER" Name="PerformanceCounter" />
             <Param Type="PLARGE_INTEGER" Name="PerformanceFrequency" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryTimerResolution">
             <Param Type="PULONG" Name="MinimumResolution" />
             <Param Type="PULONG" Name="MaximumResolution" />
             <Param Type="PULONG" Name="CurrentResolution" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCreateMailslotFile">
             <Param Type="PHANDLE" Name="MailSlotFileHandle" />
@@ -6478,7 +6083,6 @@
             <Param Type="ULONG" Name="MaxMessageSize" />
             <Param Type="PLARGE_INTEGER" Name="TimeOut" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtCreateNamedPipeFile">
             <Param Type="PHANDLE" Name="NamedPipeFileHandle" />
@@ -6496,7 +6100,6 @@
             <Param Type="ULONG" Name="OutBufferSize" />
             <Param Type="PLARGE_INTEGER" Name="DefaultTimeOut" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtDeviceIoControlFile">
             <Param Type="HANDLE" Name="DeviceHandle" />
@@ -6510,7 +6113,6 @@
             <Param Type="PVOID" Name="OutputBuffer" PostLength="OutputBufferSize" />
             <Param Type="ULONG" Name="OutputBufferSize" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtFsControlFile">
             <Param Type="HANDLE" Name="DeviceHandle" />
@@ -6524,14 +6126,12 @@
             <Param Type="PVOID" Name="OutputBuffer" />
             <Param Type="ULONG" Name="OutputBufferSize" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtPlugPlayControl">
             <Param Type="PLUGPLAY_CONTROL_CLASS" Name="PlugPlayControlClass" />
             <Param Type="PVOID" Name="Buffer" />
             <Param Type="ULONG" Name="BufferSize" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtGetPlugPlayEvent">
             <Param Type="ULONG" Name="Reserved1" />
@@ -6539,20 +6139,17 @@
             <Param Type="PPLUGPLAY_EVENT_BLOCK" Name="Buffer" />
             <Param Type="ULONG" Name="BufferSize" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtLockProductActivationKeys">
             <Param Type="PULONG" Name="pPrivateVer" />
             <Param Type="PULONG" Name="pSafeMode" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetTimerResolution">
             <Param Type="ULONG" Name="DesiredResolution" />
             <Param Type="BOOLEAN" Name="SetResolution" />
             <Param Type="PULONG" Name="CurrentResolution" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <!-- TODO: Make SystemInformation a conditional union which include structures
         such as SYSTEM_PROCESS_INFORMATION -->
@@ -6562,14 +6159,12 @@
             <Param Type="ULONG" Name="Length" />
             <Param Type="PULONG" Name="ResultLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetSystemInformation">
             <Param Type="SYSTEM_INFORMATION_CLASS" Name="SystemInformationClass" />
             <Param Type="PVOID" Name="SystemInformation" />
             <Param Type="ULONG" Name="SystemInformationLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtRaiseHardError">
             <Param Type="NTSTATUS" Name="ErrorStatus" />
@@ -6579,7 +6174,6 @@
             <Param Type="ULONG" Name="ValidResponseOptions" />
             <Param Type="PULONG" Name="Response" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
 
         <!-- Objects -->
@@ -6587,7 +6181,6 @@
         <Api Name="NtClose">
             <Param Type="HANDLE" Name="Handle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtDuplicateObject">
             <Param Type="[ProcessHandle]" Name="SourceProcessHandle" />
@@ -6598,17 +6191,14 @@
             <Param Type="ULONG" Name="HandleAttributes" />
             <Param Type="ULONG" Name="Options" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtMakePermanentObject">
             <Param Type="HANDLE" Name="Object" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtMakeTemporaryObject">
             <Param Type="HANDLE" Name="Handle" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQueryObject">
             <Param Type="HANDLE" Name="ObjectHandle" />
@@ -6617,7 +6207,6 @@
             <Param Type="ULONG" Name="Length" />
             <Param Type="PULONG" Name="ResultLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtQuerySecurityObject">
             <Param Type="HANDLE" Name="Handle" />
@@ -6626,7 +6215,6 @@
             <Param Type="ULONG" Name="Length" />
             <Param Type="PULONG" Name="ResultLength" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetInformationObject">
             <Param Type="HANDLE" Name="ObjectHandle" />
@@ -6634,14 +6222,12 @@
             <Param Type="PVOID" Name="ObjectInformation" Length="Length" />
             <Param Type="ULONG" Name="Length" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NtSetSecurityObject">
             <Param Type="HANDLE" Name="Handle" />
             <Param Type="SECURITY_INFORMATION" Name="SecurityInformation" />
             <Param Type="PSECURITY_DESCRIPTOR" Name="SecurityDescriptor" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
 
         <!-- Undocumented (UnDoc'd) -->
@@ -6672,12 +6258,10 @@
         </Api>
         <Api Name="RtlLockCurrentThread">
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlQueryElevationFlags">
             <Param Type="[ElevationFlags*]" Name="pFlags" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RtlReleaseResource">
             <Param Type="PRTL_RESOURCE" Name="pResource" />
@@ -6737,7 +6321,6 @@
         </Api>
         <Api Name="RtlUnlockCurrentThread">
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
 
         <!-- Additional Resources/System/DLL Load Notification -->
@@ -6748,12 +6331,10 @@
             <Param Type="PVOID" Name="Context" />
             <Param Type="PVOID*" Name="Cookie" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LdrUnregisterDllNotification">
             <Param Type="PVOID" Name="Cookie" />
             <Return Type="NTSTATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
 
         <!-- Additional Resources/System/Run-time Library -->

@@ -1561,6 +1561,7 @@
                 <Set Name="DESKTOP_ENUMERATE"           Value="0x0040" />
                 <Set Name="DESKTOP_WRITEOBJECTS"        Value="0x0080" />
                 <Set Name="DESKTOP_SWITCHDESKTOP"       Value="0x0100" />
+                <Set Name="MAXIMUM_ALLOWED"             Value="0x02000000" />
             </Flag>
         </Variable>
 
@@ -1586,6 +1587,7 @@
                 <Set Name="WINSTA_ENUMERATE"            Value="0x0100" />
                 <Set Name="WINSTA_READSCREEN"           Value="0x0200" />
                 <Set Name="WINSTA_ALL_ACCESS"           Value="0x37F" />
+                <Set Name="MAXIMUM_ALLOWED"             Value="0x02000000" />
             </Flag>
         </Variable>
 
@@ -3607,7 +3609,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SetLastErrorEx">
-            <Param Type="DWORD" Name="dwErrCode" />
+            <Param Type="[ERROR_CODE]" Name="dwErrCode" />
             <Param Type="[SET_LAST_ERROR_EX_TYPE]" Name="dwType" />
             <Return Type="void" />
         </Api>
@@ -4375,7 +4377,6 @@
         <Api Name="SetCapture">
             <Param Type="HWND" Name="hWnd" />
             <Return Type="HWND" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SetDoubleClickTime">
             <Param Type="UINT" Name="uInterval" />
@@ -4880,7 +4881,6 @@
             <Param Type="LPCSCROLLINFO" Name="lpsi" />
             <Param Type="BOOL" Name="fRedraw" />
             <Return Type="int" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SetScrollPos">
             <Param Type="HWND" Name="hWnd" />
@@ -5020,8 +5020,7 @@
             <Param Type="BOOL" Name="bWaitAll" />
             <Param Type="[WaitTimeout]" Name="dwMilliseconds" />
             <Param Type="[QueueStatusFlag]" Name="dwWakeMask" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[WAIT_RESULT]" />
         </Api>
         <Api Name="MsgWaitForMultipleObjectsEx">
             <Param Type="DWORD" Name="nCount" />
@@ -5029,8 +5028,7 @@
             <Param Type="[WaitTimeout]" Name="dwMilliseconds" />
             <Param Type="[QueueStatusFlag]" Name="dwWakeMask" />
             <Param Type="[MsgWaitForMultipleObjectsFlags]" Name="dwFlags" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[WAIT_RESULT]" />
         </Api>
         <!-- System Information -->
         <Api Name="GetKeyboardType">
@@ -5233,7 +5231,10 @@
             <Param Type="HANDLE" Name="hObj" />
             <Param Type="[UserObjectInformationEnum]" Name="nIndex" />
             <Param Type="PVOID" Name="pvInfo" PostLength="lpnLengthNeeded" />
-            <!-- TODO: PostLength="nLength" -->
+            <!-- TODO: PostLength="nLength" - Note that if we use nLength,
+            too much data is captured. However, some applications do not use
+            lpnLengthNeeded, in which case data is not displayed.
+            We will leave it up to the end user to enable this. -->
             <Param Type="DWORD" Name="nLength" />
             <Param Type="LPDWORD" Name="lpnLengthNeeded" />
             <Return Type="BOOL" />
