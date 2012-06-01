@@ -478,9 +478,10 @@
         <!-- TP_CALLBACK_PRIORITY -->
         <Variable Name="TP_CALLBACK_PRIORITY" Type="Alias" Base="UINT">
             <Enum>
-                <Set Name="TP_CALLBACK_PRIORITY_HIGH"   Value="0" />
-                <Set Name="TP_CALLBACK_PRIORITY_LOW"    Value="1" />
-                <Set Name="TP_CALLBACK_PRIORITY_NORMAL" Value="2" />
+                <Set Name="TP_CALLBACK_PRIORITY_HIGH"       Value="0" />
+                <Set Name="TP_CALLBACK_PRIORITY_LOW"        Value="1" />
+                <Set Name="TP_CALLBACK_PRIORITY_NORMAL"     Value="2" />
+                <Set Name="TP_CALLBACK_PRIORITY_INVALID"    Value="3" />
             </Enum>
         </Variable>
 
@@ -494,7 +495,6 @@
                 <Set Name="UmsThreadTeb"                Value="4" />
                 <Set Name="UmsThreadIsSuspended"        Value="5" />
                 <Set Name="UmsThreadIsTerminated"       Value="6" />
-                <Set Name="UmsThreadMaxInfoClass"       Value="7" />
             </Enum>
         </Variable>
 
@@ -522,7 +522,11 @@
                 <Set Name="FileIdBothDirectoryInfo"         Value="10" />
                 <Set Name="FileIdBothDirectoryRestartInfo"  Value="11" />
                 <Set Name="FileIoPriorityHintInfo"          Value="12" />
-                <Set Name="MaximumFileInfoByHandleClass"    Value="13" />
+                <Set Name="FileRemoteProtocolInfo"          Value="13" />
+                <Set Name="FileFullDirectoryInfo"           Value="14" />
+                <Set Name="FileFullDirectoryRestartInfo"    Value="15" />
+                <Set Name="FileStorageInfo"                 Value="16" />
+                <Set Name="FileAlignmentInfo"               Value="17" />
             </Enum>
         </Variable>
 
@@ -531,6 +535,7 @@
             <Enum>
                 <Set Name="LowMemoryResourceNotification"   Value="0" />
                 <Set Name="HighMemoryResourceNotification"  Value="1" />
+                <Set Name="PendingBadMemoryNotification"    Value="2" />
             </Enum>
         </Variable>
 
@@ -539,6 +544,7 @@
             <Enum>
                 <Set Name="HeapCompatibilityInformation"        Value="0" />
                 <Set Name="HeapEnableTerminationOnCorruption"   Value="1" />
+                <Set Name="HeapExtendedInformation"             Value="2" />
             </Enum>
         </Variable>
 
@@ -691,6 +697,8 @@
                 <Set Name="GEO_OFFICIALNAME"        Value="0x0009" />
                 <Set Name="GEO_TIMEZONES"           Value="0x000A" />
                 <Set Name="GEO_OFFICIALLANGUAGES"   Value="0x000B" />
+                <Set Name="GEO_ISO_UN_NUMBER"       Value="0x000C" />
+                <Set Name="GEO_PARENT"              Value="0x000D" />
             </Enum>
         </Variable>
 
@@ -857,28 +865,6 @@
                 <Set Name="WerRegFileTypeUserDocument"  Value="1" />
                 <Set Name="WerRegFileTypeOther"         Value="2" />
             </Enum>
-        </Variable>
-
-        <!-- [FileAccess] -->
-        <Variable Name="[FileAccess]" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
-            <Flag>
-                <Set Name="FILE_WRITE_DATA/FILE_ADD_FILE"       Value="0x0002" />
-                <Set Name="FILE_APPEND_DATA/FILE_ADD_SUBDIRECTORY/FILE_CREATE_PIPE_INSTANCE"  Value="0x0004" />
-                <Set Name="FILE_ALL_ACCESS"                     Value="0x001f01ff" />
-                <Set Name="FILE_DELETE_CHILD"                   Value="0x0040" />
-                <Set Name="FILE_EXECUTE/FILE_TRAVERSE"          Value="0x0020" />
-                <Set Name="FILE_READ_DATA/FILE_LIST_DIRECTORY"  Value="0x0001" />
-                <Set Name="FILE_READ_ATTRIBUTES"                Value="0x0080" />
-                <Set Name="FILE_READ_EA"                        Value="0x0008" />
-                <Set Name="FILE_WRITE_ATTRIBUTES"               Value="0x0100" />
-                <Set Name="FILE_WRITE_EA"                       Value="0x0010" />
-                <Set Name="STANDARD_RIGHTS_READ/STANDARD_RIGHTS_WRITE" Value="0x00020000" />
-                <Set Name="SYNCHRONIZE"                         Value="0x00100000" />
-                <Set Name="GENERIC_EXECUTE"                     Value="0x20000000" />
-                <Set Name="GENERIC_READ"                        Value="0x80000000" />
-                <Set Name="GENERIC_WRITE"                       Value="0x40000000" />
-            </Flag>
         </Variable>
 
         <!-- [CreationDisposition] -->
@@ -1160,33 +1146,6 @@
             </Flag>
         </Variable>
 
-        <!-- [ProcessAccessRights] -->
-        <Variable Name="[ProcessAccessRights]" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
-            <Flag>
-                <Set Name="DELETE"                              Value="0x00010000" />
-                <Set Name="READ_CONTROL"                        Value="0x00020000" />
-                <Set Name="SYNCHRONIZE"                         Value="0x00100000" />
-                <Set Name="WRITE_DAC"                           Value="0x00040000" />
-                <Set Name="WRITE_OWNER"                         Value="0x00080000" />
-                <Set Name="PROCESS_TERMINATE"                   Value="0x0001" />
-                <Set Name="PROCESS_CREATE_THREAD"               Value="0x0002" />
-                <Set Name="PROCESS_SET_SESSIONID"               Value="0x0004" />
-                <Set Name="PROCESS_VM_OPERATION"                Value="0x0008" />
-                <Set Name="PROCESS_VM_READ"                     Value="0x0010" />
-                <Set Name="PROCESS_VM_WRITE"                    Value="0x0020" />
-                <Set Name="PROCESS_DUP_HANDLE"                  Value="0x0040" />
-                <Set Name="PROCESS_CREATE_PROCESS"              Value="0x0080" />
-                <Set Name="PROCESS_SET_QUOTA"                   Value="0x0100" />
-                <Set Name="PROCESS_SET_INFORMATION"             Value="0x0200" />
-                <Set Name="PROCESS_QUERY_INFORMATION"           Value="0x0400" />
-                <Set Name="PROCESS_SUSPEND_RESUME"              Value="0x0800" />
-                <Set Name="PROCESS_QUERY_LIMITED_INFORMATION"   Value="0x1000" />
-                <Set Name="PROCESS_ALL_ACCESS"                  Value="0x1fffff" />
-                <Set Name="MAXIMUM_ALLOWED"                     Value="0x02000000" />
-            </Flag>
-        </Variable>
-
         <!-- [DuplicateHandleFlags] -->
         <Variable Name="[DuplicateHandleFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
@@ -1300,7 +1259,8 @@
                 <Set Name="AssemblyDetailedInformationInActivationContext"          Value="3" />
                 <Set Name="FileInformationInAssemblyOfAssemblyInActivationContext"  Value="4" />
                 <Set Name="RunlevelInformationInActivationContext"                  Value="5" />
-                <Set Name="MaxActivationContextInfoClass"                           Value="6" />
+                <Set Name="CompatibilityInformationInActivationContext"             Value="6" />
+                <Set Name="ActivationContextManifestResourceName"                   Value="7" />
             </Enum>
         </Variable>
 
@@ -1423,33 +1383,6 @@
         </Variable>
         <Variable Name="[ConsoleModeFlags*]" Type="Pointer" Base="[ConsoleModeFlags]">
             <Display Name="LPDWORD" />
-        </Variable>
-
-        <!-- [ThreadAccessRights] -->
-        <Variable Name="[ThreadAccessRights]" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
-            <Flag>
-                <Set Name="DELETE"                              Value="0x00010000" />
-                <Set Name="READ_CONTROL"                        Value="0x00020000" />
-                <Set Name="SYNCHRONIZE"                         Value="0x00100000" />
-                <Set Name="WRITE_DAC"                           Value="0x00040000" />
-                <Set Name="WRITE_OWNER"                         Value="0x00080000" />
-                <Set Name="STANDARD_RIGHTS_ALL"                 Value="0x001F0000" />
-                <Set Name="STANDARD_RIGHTS_REQUIRED"            Value="0x000F0000" />
-                <Set Name="THREAD_TERMINATE"                    Value="0x0001" />
-                <Set Name="THREAD_SUSPEND_RESUME"               Value="0x0002" />
-                <Set Name="THREAD_GET_CONTEXT"                  Value="0x0008" />
-                <Set Name="THREAD_SET_CONTEXT"                  Value="0x0010" />
-                <Set Name="THREAD_QUERY_INFORMATION"            Value="0x0040" />
-                <Set Name="THREAD_SET_INFORMATION"              Value="0x0020" />
-                <Set Name="THREAD_SET_THREAD_TOKEN"             Value="0x0080" />
-                <Set Name="THREAD_IMPERSONATE"                  Value="0x0100" />
-                <Set Name="THREAD_DIRECT_IMPERSONATION"         Value="0x0200" />
-                <Set Name="THREAD_SET_LIMITED_INFORMATION"      Value="0x0400" />
-                <Set Name="THREAD_QUERY_LIMITED_INFORMATION"    Value="0x0800" />
-                <Set Name="THREAD_ALL_ACCESS"                   Value="0x1FFFFF" />
-                <Set Name="MAXIMUM_ALLOWED"                     Value="0x02000000" />
-            </Flag>
         </Variable>
 
         <!-- [HandleFlags] -->
@@ -1599,7 +1532,7 @@
         <Variable Name="[QueryFullProcessImageNameFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
-                <Set Name="PROCESS_NAME_NATIVE"    Value="0x00000001" />
+                <Set Name="PROCESS_NAME_NATIVE" Value="0x00000001" />
             </Flag>
         </Variable>
 
@@ -1713,6 +1646,7 @@
                 <Set Name="PowerRequestDisplayRequired"     Value="0" />
                 <Set Name="PowerRequestSystemRequired"      Value="1" />
                 <Set Name="PowerRequestAwayModeRequired"    Value="2" />
+                <Set Name="PowerRequestExecutionRequired"   Value="3" />
             </Enum>
         </Variable>
 
@@ -1898,14 +1832,6 @@
             <Field Type="DWORD64" Name="CycleTime" />
         </Variable>
         <Variable Name="PSYSTEM_PROCESSOR_CYCLE_TIME_INFORMATION" Type="Pointer" Base="SYSTEM_PROCESSOR_CYCLE_TIME_INFORMATION" />
-
-        <!-- PROCESSOR_NUMBER -->
-        <Variable Name="PROCESSOR_NUMBER" Type="Struct">
-            <Field Type="WORD"   	Name="Group" />
-            <Field Type="BYTE"  	Name="Number" />
-            <Field Type="BYTE"  	Name="Reserved" />
-        </Variable>
-        <Variable Name="PPROCESSOR_NUMBER" Type="Pointer" Base="PROCESSOR_NUMBER" />
 
         <!-- TP_POOL_STACK_INFORMATION -->
         <Variable Name="TP_POOL_STACK_INFORMATION" Type="Struct">
@@ -2500,7 +2426,7 @@
             <Field Type="WORD"              Name="XoffLim" />
             <Field Type="BYTE"              Name="ByteSize" />
             <Field Type="[DCB_PARITY]"      Name="Parity" />
-            <Field Type="BYTE"              Name="StopBits" />
+            <Field Type="[DCB_STOPBITS]"    Name="StopBits" />
             <Field Type="char"              Name="XonChar" />
             <Field Type="char"              Name="XoffChar" />
             <Field Type="char"              Name="ErrorChar" />
@@ -2923,7 +2849,7 @@
             <Field Type="TP_CALLBACK_PRIORITY"                  Name="CallbackPriority" />
             <Field Type="DWORD"                                 Name="Size" />
         </Variable>
-        <Variable Name="PTP_CALLBACK_ENVIRON" Type="Alias" Base="LPVOID" />
+        <Variable Name="PTP_CALLBACK_ENVIRON" Type="Pointer" Base="TP_CALLBACK_ENVIRON_V3" />
 
         <!-- [PROCESS_HEAP_ENTRY_u_s1] -->
         <Variable Name="[PROCESS_HEAP_ENTRY_u_s1]" Type="Struct">
@@ -3172,6 +3098,14 @@
                 <Set Name="LOAD_LIBRARY_SEARCH_SYSTEM32"            Value="0x00000800" />
                 <Set Name="LOAD_LIBRARY_SEARCH_USER_DIRS"           Value="0x00000400" />
             </Flag>
+        </Variable>
+
+        <!-- [PROCESS_THREAD_HANDLE] -->
+        <Variable Name="[PROCESS_THREAD_HANDLE]" Type="Alias" Base="[ProcessHandle]">
+            <Display Name="HANDLE" />
+            <Enum>
+                <Set Name="GetCurrentThread()" Value="-2" />
+            </Enum>
         </Variable>
 
         <!-- Debugging -->
@@ -3429,8 +3363,7 @@
         <Api Name="CreateToolhelp32Snapshot">
             <Param Type="[CreateToolhelp32SnapshotFlags]" Name="dwFlags" />
             <Param Type="DWORD" Name="th32ProcessID" />
-            <Return Type="HANDLE" />
-            <Success Return="NotEqual" Value="-1" />
+            <Return Type="[FILE_HANDLE]" />
         </Api>
         <Api Name="Heap32First">
             <Param Type="LPHEAPENTRY32" Name="lphe" />
@@ -3741,18 +3674,17 @@
         </Api>
         <Api Name="CreateFile" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpFileName" />
-            <Param Type="[FileAccess]" Name="dwDesiredAccess" />
+            <Param Type="[FILE_ACCESS_MASK]" Name="dwDesiredAccess" />
             <Param Type="[FileShareMode]" Name="dwShareMode" />
             <Param Type="LPSECURITY_ATTRIBUTES" Name="lpSecurityAttributes" />
             <Param Type="[CreationDisposition]" Name="dwCreationDisposition" />
             <Param Type="[FlagsAndAttributes]" Name="dwFlagsAndAttributes" />
             <Param Type="HANDLE" Name="hTemplateFile" />
-            <Return Type="HANDLE" />
-            <Success Return="NotEqual" Value="-1" />
+            <Return Type="[FILE_HANDLE]" />
         </Api>
         <Api Name="CreateFileTransacted" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpFileName" />
-            <Param Type="[FileAccess]" Name="dwDesiredAccess" />
+            <Param Type="[FILE_ACCESS_MASK]" Name="dwDesiredAccess" />
             <Param Type="[FileShareMode]" Name="dwShareMode" />
             <Param Type="LPSECURITY_ATTRIBUTES" Name="lpSecurityAttributes" />
             <Param Type="[CreationDisposition]" Name="dwCreationDisposition" />
@@ -3761,8 +3693,7 @@
             <Param Type="HANDLE" Name="hTransaction" />
             <Param Type="PUSHORT" Name="pusMiniVersion" />
             <Param Type="PVOID" Name="pExtendedParameter" />
-            <Return Type="HANDLE" />
-            <Success Return="NotEqual" Value="-1" />
+            <Return Type="[FILE_HANDLE]" />
         </Api>
         <Api Name="CreateHardLink" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpFileName" />
@@ -3813,8 +3744,7 @@
         <Api Name="FindFirstFile" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpFileName" />
             <Param Type="LPWIN32_FIND_DATA" Name="lpFindFileData" />
-            <Return Type="HANDLE" />
-            <Success Return="NotEqual" Value="-1" />
+            <Return Type="[FILE_HANDLE]" />
         </Api>
         <Api Name="FindFirstFileEx" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpFileName" />
@@ -3823,8 +3753,7 @@
             <Param Type="FINDEX_SEARCH_OPS" Name="fSearchOp" />
             <Param Type="LPVOID" Name="lpSearchFilter" />
             <Param Type="[FindFirstFileExFlags]" Name="dwAdditionalFlags" />
-            <Return Type="HANDLE" />
-            <Success Return="NotEqual" Value="-1" />
+            <Return Type="[FILE_HANDLE]" />
         </Api>
         <Api Name="FindFirstFileNameTransactedW">
             <Param Type="LPCWSTR" Name="lpFileName" />
@@ -3832,16 +3761,14 @@
             <Param Type="LPDWORD" Name="StringLength" />
             <Param Type="PWCHAR" Name="LinkName" />
             <Param Type="HANDLE" Name="hTransaction" />
-            <Return Type="HANDLE" />
-            <Success Return="NotEqual" Value="-1" />
+            <Return Type="[FILE_HANDLE]" />
         </Api>
         <Api Name="FindFirstFileNameW">
             <Param Type="LPCWSTR" Name="lpFileName" />
             <Param Type="DWORD" Name="dwFlags" />
             <Param Type="LPDWORD" Name="StringLength" />
             <Param Type="PWCHAR" Name="LinkName" />
-            <Return Type="HANDLE" />
-            <Success Return="NotEqual" Value="-1" />
+            <Return Type="[FILE_HANDLE]" />
         </Api>
         <Api Name="FindFirstFileTransacted" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpFileName" />
@@ -3851,8 +3778,7 @@
             <Param Type="LPVOID" Name="lpSearchFilter" />
             <Param Type="[FindFirstFileExFlags]" Name="dwAdditionalFlags" />
             <Param Type="HANDLE" Name="hTransaction" />
-            <Return Type="HANDLE" />
-            <Success Return="NotEqual" Value="-1" />
+            <Return Type="[FILE_HANDLE]" />
         </Api>
         <Api Name="FindFirstStreamTransactedW">
             <Param Type="LPCWSTR" Name="lpFileName" />
@@ -3860,16 +3786,14 @@
             <Param Type="LPVOID" Name="lpFindStreamData" />
             <Param Type="DWORD" Name="dwFlags" />
             <Param Type="HANDLE" Name="hTransaction" />
-            <Return Type="HANDLE" />
-            <Success Return="NotEqual" Value="-1" />
+            <Return Type="[FILE_HANDLE]" />
         </Api>
         <Api Name="FindFirstStreamW">
             <Param Type="LPCWSTR" Name="lpFileName" />
             <Param Type="STREAM_INFO_LEVELS" Name="InfoLevel" />
             <Param Type="LPVOID" Name="lpFindStreamData" />
             <Param Type="DWORD" Name="dwFlags" />
-            <Return Type="HANDLE" />
-            <Success Return="NotEqual" Value="-1" />
+            <Return Type="[FILE_HANDLE]" />
         </Api>
         <Api Name="FindNextFile" BothCharset="True">
             <Param Type="HANDLE" Name="hFindFile" />
@@ -4070,20 +3994,18 @@
         <Api Name="OpenFileById">
             <Param Type="HANDLE" Name="hFile" />
             <Param Type="LPFILE_ID_DESCRIPTOR" Name="lpFileID" />
-            <Param Type="[FileAccess]" Name="dwDesiredAccess" />
+            <Param Type="[FILE_ACCESS_MASK]" Name="dwDesiredAccess" />
             <Param Type="[FileShareMode]" Name="dwShareMode" />
             <Param Type="LPSECURITY_ATTRIBUTES" Name="lpSecurityAttributes" />
             <Param Type="[FlagsAndAttributes]" Name="dwFlags" />
-            <Return Type="HANDLE" />
-            <Success Return="NotEqual" Value="-1" />
+            <Return Type="[FILE_HANDLE]" />
         </Api>
         <Api Name="ReOpenFile">
             <Param Type="HANDLE" Name="hOriginalFile" />
-            <Param Type="[FileAccess]" Name="dwDesiredAccess" />
+            <Param Type="[FILE_ACCESS_MASK]" Name="dwDesiredAccess" />
             <Param Type="[FileShareMode]" Name="dwShareMode" />
             <Param Type="[FlagsAndAttributes]" Name="dwFlags" />
-            <Return Type="HANDLE" />
-            <Success Return="NotEqual" Value="-1" />
+            <Return Type="[FILE_HANDLE]" />
         </Api>
         <Api Name="ReplaceFile" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpReplacedFileName" />
@@ -4181,7 +4103,7 @@
             <Param Type="ULONG_PTR" Name="CompletionKey" />
             <Param Type="DWORD" Name="NumberOfConcurrentThreads" />
             <Return Type="HANDLE" />
-            <Success Return="NotEqual" Value="-1" />
+            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="FlushFileBuffers">
             <Param Type="HANDLE" Name="hFile" />
@@ -4444,7 +4366,7 @@
         <!-- File Mapping -->
         <Category Name="System Services/Memory Management/File Mapping" />
         <Api Name="CreateFileMapping" BothCharset="True">
-            <Param Type="HANDLE" Name="hFile" />
+            <Param Type="[FILE_HANDLE]" Name="hFile" />
             <Param Type="LPSECURITY_ATTRIBUTES" Name="lpAttributes" />
             <Param Type="[MemoryProtection]" Name="flProtect" />
             <Param Type="DWORD" Name="dwMaximumSizeHigh" />
@@ -4454,7 +4376,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="CreateFileMappingNuma" BothCharset="True">
-            <Param Type="HANDLE" Name="hFile" />
+            <Param Type="[FILE_HANDLE]" Name="hFile" />
             <Param Type="LPSECURITY_ATTRIBUTES" Name="lpFileMappingAttributes" />
             <Param Type="[MemoryProtection]" Name="flProtect" />
             <Param Type="DWORD" Name="dwMaximumSizeHigh" />
@@ -4570,7 +4492,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="HeapCreate">
-            <Param Type="DWORD" Name="flOptions" />
+            <Param Type="[HEAP_FLAGS]" Name="flOptions" />
             <Param Type="SIZE_T" Name="dwInitialSize" />
             <Param Type="SIZE_T" Name="dwMaximumSize" />
             <Return Type="HANDLE" />
@@ -5007,7 +4929,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="OpenProcess">
-            <Param Type="[ProcessAccessRights]" Name="dwDesiredAccess" />
+            <Param Type="[PROCESS_ACCESS_MASK]" Display="DWORD" Name="dwDesiredAccess" />
             <Param Type="BOOL" Name="bInheritHandle" />
             <Param Type="DWORD" Name="dwProcessId" />
             <Return Type="HANDLE" />
@@ -5185,7 +5107,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="OpenThread">
-            <Param Type="[ThreadAccessRights]" Name="dwDesiredAccess" />
+            <Param Type="[THREAD_ACCESS_MASK]" Display="DWORD" Name="dwDesiredAccess" />
             <Param Type="BOOL" Name="bInheritHandle" />
             <Param Type="DWORD" Name="dwThreadId" />
             <Return Type="HANDLE" />
@@ -5200,7 +5122,7 @@
         <Api Name="ResumeThread">
             <Param Type="[ThreadHandle]" Name="hThread" />
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="NotEqual" Value="-1" />
         </Api>
         <Api Name="SetThreadAffinityMask">
             <Param Type="[ThreadHandle]" Name="hThread" />
@@ -5256,7 +5178,7 @@
         <Api Name="SuspendThread">
             <Param Type="[ThreadHandle]" Name="hThread" />
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="NotEqual" Value="-1" />
         </Api>
         <Api Name="SwitchToThread">
             <Return Type="BOOL" />
@@ -6301,8 +6223,7 @@
         </Api>
         <Api Name="GetStdHandle">
             <Param Type="[StdHandle]" Name="nStdHandle" />
-            <Return Type="HANDLE" />
-            <Success Return="NotEqual" Value="-1" />
+            <Return Type="[FILE_HANDLE]" />
         </Api>
         <Api Name="PeekConsoleInput" BothCharset="True">
             <Param Type="HANDLE" Name="hConsoleInput" />
@@ -6636,7 +6557,7 @@
         </Api>
         <Api Name="DuplicateHandle">
             <Param Type="[ProcessHandle]" Name="hSourceProcessHandle" />
-            <Param Type="HANDLE" Name="hSourceHandle" />
+            <Param Type="[PROCESS_THREAD_HANDLE]" Name="hSourceHandle" />
             <Param Type="[ProcessHandle]" Name="hTargetProcessHandle" />
             <Param Type="LPHANDLE" Name="lpTargetHandle" />
             <Param Type="[StandardAccessRights]" Name="dwDesiredAccess" />

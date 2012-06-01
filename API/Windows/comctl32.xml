@@ -1,6 +1,6 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
@@ -8,9 +8,6 @@
     <Include Filename="Headers\gdi.h.xml" />
     <Include Filename="Headers\registry.h.xml" />
     <Module Name="comctl32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-
-        <!-- TODO: Structures (32/64 differences) -->
-        <Variable Name="LPCTBBUTTON"                    Type="Alias"    Base="LPVOID" />
 
         <!-- Variables -->
         <Variable Name="HDPA"                           Type="Alias"    Base="LPVOID" />
@@ -29,6 +26,34 @@
         <Variable Name="PFTASKDIALOGCALLBACK"           Type="Alias"    Base="LPVOID" />
         <Variable Name="PFNREADERSCROLL"                Type="Alias"    Base="LPVOID" />
         <Variable Name="PFNREADERTRANSLATEDISPATCH"     Type="Alias"    Base="LPVOID" />
+
+        <!-- TBBUTTON (32-bit) -->
+        <!-- TODO: fsState and fsStyle are enumerated types -->
+        <Condition Architecture="32">
+            <Variable Name="TBBUTTON" Type="Struct">
+                <Field Type="int"           Name="iBitmap" />
+                <Field Type="int"           Name="idCommand" />
+                <Field Type="BYTE"          Name="fsState" />
+                <Field Type="BYTE"          Name="fsStyle" />
+                <Field Type="BYTE [2]"      Name="bReserved" />
+                <Field Type="DWORD_PTR"     Name="dwData" />
+                <Field Type="INT_PTR"       Name="iString" />
+            </Variable>
+        </Condition>
+
+        <!-- TBBUTTON (64-bit) -->
+        <Condition Architecture="64">
+            <Variable Name="TBBUTTON" Type="Struct">
+                <Field Type="int"           Name="iBitmap" />
+                <Field Type="int"           Name="idCommand" />
+                <Field Type="BYTE"          Name="fsState" />
+                <Field Type="BYTE"          Name="fsStyle" />
+                <Field Type="BYTE [6]"      Name="bReserved" />
+                <Field Type="DWORD_PTR"     Name="dwData" />
+                <Field Type="INT_PTR"       Name="iString" />
+            </Variable>
+        </Condition>
+        <Variable Name="LPCTBBUTTON" Type="Pointer" Base="TBBUTTON" />
 
         <!-- [ReaderModeFlag] -->
         <Variable Name="[ReaderModeFlag]" Type="Alias" Base="DWORD">

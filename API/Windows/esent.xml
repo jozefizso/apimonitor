@@ -1,6 +1,6 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
@@ -8,7 +8,6 @@
     <Module Name="esent.dll" CallingConvention="STDCALL" OnlineHelp="MSDN">
 
         <!-- Variables -->
-        <Variable Name="JET_INDEXID*"                       Type="Pointer"  Base="JET_INDEXID" />
         <Variable Name="JET_GRBIT"                          Type="Alias"    Base="unsigned long" />
         <Variable Name="const JET_GRBIT"                    Type="Alias"    Base="JET_GRBIT" />
         <Variable Name="JET_PCSTR"                          Type="Alias"    Base="LPCTSTR" />
@@ -41,6 +40,29 @@
         <Variable Name="JET_COLTYP"                         Type="Alias"    Base="unsigned long" />
         <Variable Name="const TCHAR*"                       Type="Alias"    Base="TCHAR*" />
         <Variable Name="TCHAR [JET_BASE_NAME_LENGTH + 1]"   Type="Array"    Base="TCHAR" Count="4" />
+
+        <!-- JET_INDEXID (32-bit) -->
+        <Condition Architecture="32">
+            <Variable Name="unsigned char [12]" Type="Array" Base="unsigned char" Count="12" />
+            
+            <Variable Name="JET_INDEXID" Type="Struct">
+                <Field Type="unsigned long"         Name="cbStruct" />
+                <Field Type="unsigned char [12]"    Name="rgbIndexId" />
+            </Variable>
+        </Condition>
+
+        <!-- JET_INDEXID (64-bit) -->
+        <Condition Architecture="64">
+            <Variable Name="unsigned char [16]" Type="Array" Base="unsigned char" Count="16" />
+
+            <!-- JET_INDEXID -->
+            <Variable Name="JET_INDEXID" Type="Struct">
+                <Field Type="unsigned long"         Name="cbStruct" />
+                <Field Type="unsigned char [16]"    Name="rgbIndexId" />
+            </Variable>
+        </Condition>
+
+        <Variable Name="JET_INDEXID*" Type="Pointer" Base="JET_INDEXID" />
 
         <!-- JET_ERR -->
         <Variable Name="JET_ERR" Type="Alias" Base="long">

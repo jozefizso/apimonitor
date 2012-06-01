@@ -133,22 +133,21 @@
         <!-- TRACE_INFO_CLASS -->
         <Variable Name="TRACE_INFO_CLASS" Type="Alias" Base="UINT">
             <Enum>
-                <Set Name="TraceGuidQueryList"      Value="0" />
-                <Set Name="TraceGuidQueryInfo"      Value="1" />
-                <Set Name="TraceGuidQueryProcess"   Value="2" />
-                <Set Name="TraceStackTracingInfo"   Value="3" />
+                <Set Name="TraceGuidQueryList"                  Value="0" />
+                <Set Name="TraceGuidQueryInfo"                  Value="1" />
+                <Set Name="TraceGuidQueryProcess"               Value="2" />
+                <Set Name="TraceStackTracingInfo"               Value="3" />
+                <Set Name="TraceSystemTraceEnableFlagsInfo"     Value="4" />
+                <Set Name="TraceSampledProfileIntervalInfo"     Value="5" />
+                <Set Name="TraceProfileSourceConfigInfo"        Value="6" />
+                <Set Name="TraceProfileSourceListInfo"          Value="7" />
+                <Set Name="TracePmcEventListInfo"               Value="8" />
+                <Set Name="TracePmcCounterListInfo"             Value="9" />
             </Enum>
         </Variable>
 
         <!-- TRACE_QUERY_INFO_CLASS -->
-        <Variable Name="TRACE_QUERY_INFO_CLASS" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="TraceGuidQueryList"      Value="0" />
-                <Set Name="TraceGuidQueryInfo"      Value="1" />
-                <Set Name="TraceGuidQueryProcess"   Value="2" />
-                <Set Name="TraceStackTracingInfo"   Value="3" />
-            </Enum>
-        </Variable>
+        <Variable Name="TRACE_QUERY_INFO_CLASS" Type="Alias" Base="TRACE_INFO_CLASS" />
 
         <!-- PROG_INVOKE_SETTING -->
         <Variable Name="PROG_INVOKE_SETTING" Type="Alias" Base="UINT">
@@ -338,7 +337,6 @@
                 <Set Name="PolicyDnsDomainInformation" 		        Value="12" />
                 <Set Name="PolicyDnsDomainInformationInt" 		    Value="13" />
                 <Set Name="PolicyLocalAccountDomainInformation" 	Value="14" />
-                <Set Name="PolicyLastEntry" 		                Value="15" />
             </Enum>
         </Variable>
 
@@ -755,6 +753,11 @@
 
                 <Set Name="SHTDN_REASON_LEGACY_API"                         Value="0x80070000" />
             </Flag>
+        </Variable>
+
+        <!-- [TOKEN_ACCESS_MASK_DWORD] -->
+        <Variable Name="[TOKEN_ACCESS_MASK_DWORD]" Type="Alias" Base="[TOKEN_ACCESS_MASK]">
+            <Display Name="DWORD" />
         </Variable>
 
         <!-- Registry -->
@@ -2426,7 +2429,7 @@
         </Api>
         <Api Name="DuplicateTokenEx">
             <Param Type="HANDLE" Name="hExistingToken" />
-            <Param Type="[TokenAccess]" Name="dwDesiredAccess" />
+            <Param Type="[TOKEN_ACCESS_MASK_DWORD]" Name="dwDesiredAccess" />
             <Param Type="LPSECURITY_ATTRIBUTES" Name="lpTokenAttributes" />
             <Param Type="SECURITY_IMPERSONATION_LEVEL" Name="ImpersonationLevel" />
             <Param Type="TOKEN_TYPE" Name="TokenType" />
@@ -2626,14 +2629,14 @@
         </Api>
         <Api Name="OpenProcessToken">
             <Param Type="[ProcessHandle]" Name="ProcessHandle" />
-            <Param Type="[TokenAccess]" Name="DesiredAccess" />
+            <Param Type="[TOKEN_ACCESS_MASK_DWORD]" Name="DesiredAccess" />
             <Param Type="PHANDLE" Name="TokenHandle" />
             <Return Type="BOOL" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="OpenThreadToken">
             <Param Type="[ThreadHandle]" Name="ThreadHandle" />
-            <Param Type="[TokenAccess]" Name="DesiredAccess" />
+            <Param Type="[TOKEN_ACCESS_MASK_DWORD]" Name="DesiredAccess" />
             <Param Type="BOOL" Name="OpenAsSelf" />
             <Param Type="PHANDLE" Name="TokenHandle" />
             <Return Type="BOOL" />

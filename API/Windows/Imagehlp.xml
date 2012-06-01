@@ -1,6 +1,6 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
@@ -8,13 +8,63 @@
     <Include Filename="Headers\native.h.xml" />
     <Module Name="ImageHlp.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
 
-        <!-- TODO: Structures (32/64 Differences) -->
-        <Variable Name="PIMAGE_LOAD_CONFIG_DIRECTORY"    Type="Alias"        Base="LPVOID" />
-
         <!-- Variables -->
         <Variable Name="DIGEST_FUNCTION"                 Type="Alias"        Base="LPVOID" />
         <Variable Name="DIGEST_HANDLE"                   Type="Alias"        Base="PVOID" />
         <Variable Name="PIMAGEHLP_STATUS_ROUTINE"        Type="Alias"        Base="LPVOID" />
+
+        <!-- IMAGE_LOAD_CONFIG_DIRECTORY (32-bit) -->
+        <Condition Architecture="32">
+            <Variable Name="IMAGE_LOAD_CONFIG_DIRECTORY" Type="Struct">
+                <Field Type="DWORD"         Name="Size" />
+                <Field Type="DWORD"         Name="TimeDateStamp" />
+                <Field Type="WORD"          Name="MajorVersion" />
+                <Field Type="WORD"          Name="MinorVersion" />
+                <Field Type="DWORD"         Name="GlobalFlagsClear" />
+                <Field Type="DWORD"         Name="GlobalFlagsSet" />
+                <Field Type="DWORD"         Name="CriticalSectionDefaultTimeout" />
+                <Field Type="DWORD"         Name="DeCommitFreeBlockThreshold" />
+                <Field Type="DWORD"         Name="DeCommitTotalFreeThreshold" />
+                <Field Type="DWORD"         Name="LockPrefixTable" />
+                <Field Type="DWORD"         Name="MaximumAllocationSize" />
+                <Field Type="DWORD"         Name="VirtualMemoryThreshold" />
+                <Field Type="[HEAP_FLAGS]"  Name="ProcessHeapFlags" />
+                <Field Type="DWORD"         Name="ProcessAffinityMask" />
+                <Field Type="WORD"          Name="CSDVersion" />
+                <Field Type="WORD"          Name="Reserved1" />
+                <Field Type="DWORD"         Name="EditList" />
+                <Field Type="DWORD"         Name="SecurityCookie" />
+                <Field Type="DWORD"         Name="SEHandlerTable" />
+                <Field Type="DWORD"         Name="SEHandlerCount" />
+            </Variable>
+        </Condition>
+
+        <!-- IMAGE_LOAD_CONFIG_DIRECTORY (64-bit) -->
+        <Condition Architecture="64">
+            <Variable Name="IMAGE_LOAD_CONFIG_DIRECTORY" Type="Struct">
+                <Field Type="DWORD"         Name="Size" />
+                <Field Type="DWORD"         Name="TimeDateStamp" />
+                <Field Type="WORD"          Name="MajorVersion" />
+                <Field Type="WORD"          Name="MinorVersion" />
+                <Field Type="DWORD"         Name="GlobalFlagsClear" />
+                <Field Type="DWORD"         Name="GlobalFlagsSet" />
+                <Field Type="DWORD"         Name="CriticalSectionDefaultTimeout" />
+                <Field Type="ULONGLONG"     Name="DeCommitFreeBlockThreshold" />
+                <Field Type="ULONGLONG"     Name="DeCommitTotalFreeThreshold" />
+                <Field Type="ULONGLONG"     Name="LockPrefixTable" />
+                <Field Type="ULONGLONG"     Name="MaximumAllocationSize" />
+                <Field Type="ULONGLONG"     Name="VirtualMemoryThreshold" />
+                <Field Type="ULONGLONG"     Name="ProcessAffinityMask" />
+                <Field Type="[HEAP_FLAGS]"  Name="ProcessHeapFlags" />
+                <Field Type="WORD"          Name="CSDVersion" />
+                <Field Type="WORD"          Name="Reserved1" />
+                <Field Type="ULONGLONG"     Name="EditList" />
+                <Field Type="ULONGLONG"     Name="SecurityCookie" />
+                <Field Type="ULONGLONG"     Name="SEHandlerTable" />
+                <Field Type="ULONGLONG"     Name="SEHandlerCount" />
+            </Variable>
+        </Condition>
+        <Variable Name="PIMAGE_LOAD_CONFIG_DIRECTORY" Type="Pointer" Base="IMAGE_LOAD_CONFIG_DIRECTORY" />
 
         <!-- [WIN_CERT_TYPE] -->
         <Variable Name="[WIN_CERT_TYPE]" Type="Alias" Base="WORD">

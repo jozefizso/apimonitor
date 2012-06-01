@@ -510,17 +510,25 @@
         <Variable Name="PDEVMODE"       Type="Pointer" Base="DEVMODE" />
         <Variable Name="PDEVMODE*"      Type="Pointer" Base="PDEVMODE" />
 
-        <!-- Handle -->
+        <!-- HANDLE -->
         <Variable Name="HANDLE" Type="Alias" Base="UINT_PTR" DisplayHex="True">
             <Enum>
                 <Set Name="NULL" Value="0" />
-                <Set Name="INVALID_HANDLE_VALUE" Value="-1" />
             </Enum>
         </Variable>
         <Variable Name="PHANDLE"        Type="Pointer"  Base="HANDLE" />
         <Variable Name="LPHANDLE"       Type="Pointer"  Base="HANDLE" />
         <Variable Name="HANDLE*"        Type="Pointer"  Base="HANDLE" />
         <Variable Name="const HANDLE*"  Type="Pointer"  Base="HANDLE" />
+
+        <!-- [FILE_HANDLE] -->
+        <Variable Name="[FILE_HANDLE]" Type="Alias" Base="HANDLE">
+            <Display Name="HANDLE" />
+            <Flag>
+                <Set Name="INVALID_HANDLE_VALUE" Value="-1" />
+            </Flag>
+            <Success Return="NotEqual" Value="-1" />
+        </Variable>
 
         <Variable Name="HACCEL"         Type="Alias"    Base="HANDLE" />
         <Variable Name="HRSRC"          Type="Alias"    Base="HANDLE" />
@@ -540,7 +548,6 @@
         <Variable Name="[ProcessHandle]" Type="Alias" Base="HANDLE">
             <Display Name="HANDLE" />
             <Enum>
-                <Set Name="NULL" Value="0" />
                 <Set Name="GetCurrentProcess()" Value="-1" />
             </Enum>
         </Variable>
@@ -549,7 +556,6 @@
         <Variable Name="[ThreadHandle]" Type="Alias" Base="HANDLE">
             <Display Name="HANDLE" />
             <Enum>
-                <Set Name="NULL" Value="0" />
                 <Set Name="GetCurrentThread()" Value="-2" />
             </Enum>
         </Variable>
@@ -573,24 +579,42 @@
             </Enum>
             <Success Return="Equal" Value="0" ErrorFunc="HRESULT" />
         </Variable>
-        <Variable Name="HRESULT*"   Type="Pointer" Base="HRESULT" />
-        <Variable Name="PHRESULT"   Type="Pointer" Base="HRESULT" />
+        <Variable Name="HRESULT*" Type="Pointer" Base="HRESULT" />
 
         <Variable Name="STDAPI"     Type="Alias"    Base="HRESULT" />
         <Variable Name="SCODE"      Type="Alias"    Base="HRESULT" />
         <Variable Name="SCODE*"     Type="Pointer"  Base="SCODE" />
 
+        <!-- [LARGE_INTEGER_s] -->
+        <Variable Name="[LARGE_INTEGER_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="DWORD"     Name="LowPart" />
+            <Field Type="LONG"      Name="HighPart" />
+        </Variable>
+
         <!-- LARGE_INTEGER -->
-        <!-- TODO: LARGE_INTEGER is a union - same with ULARGE_INTEGER below -->
-        <Variable Name="LARGE_INTEGER"          Type="Alias"    Base="INT64" />
+        <Variable Name="LARGE_INTEGER" Type="Union">
+            <Field Type="[LARGE_INTEGER_s]"     Name="u" />
+            <Field Type="LONGLONG"              Name="QuadPart" />
+        </Variable>
         <Variable Name="PLARGE_INTEGER"         Type="Pointer"  Base="LARGE_INTEGER" />
         <Variable Name="LARGE_INTEGER*"         Type="Alias"    Base="PLARGE_INTEGER" />
         <Variable Name="const LARGE_INTEGER*"   Type="Alias"    Base="LARGE_INTEGER*" />
 
+        <!-- [ULARGE_INTEGER_s] -->
+        <Variable Name="[ULARGE_INTEGER_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="DWORD"     Name="LowPart" />
+            <Field Type="LONG"      Name="HighPart" />
+        </Variable>
+
         <!-- ULARGE_INTEGER -->
-        <Variable Name="ULARGE_INTEGER"          Type="Alias"    Base="UINT64" />
-        <Variable Name="PULARGE_INTEGER"         Type="Pointer"  Base="ULARGE_INTEGER" />
-        <Variable Name="ULARGE_INTEGER*"         Type="Pointer"  Base="ULARGE_INTEGER" />
+        <Variable Name="ULARGE_INTEGER" Type="Union">
+            <Field Type="[ULARGE_INTEGER_s]"    Name="u" />
+            <Field Type="ULONGLONG"             Name="QuadPart" />
+        </Variable>
+        <Variable Name="PULARGE_INTEGER" Type="Pointer" Base="ULARGE_INTEGER" />
+        <Variable Name="ULARGE_INTEGER*" Type="Pointer" Base="ULARGE_INTEGER" />
 
         <!-- FILETIME -->
         <Variable Name="FILETIME" Type="Struct">
@@ -661,14 +685,75 @@
                 <Set Name="MAXIMUM_ALLOWED"             Value="0x02000000" />
                 <Set Name="ACCESS_SYSTEM_SECURITY"      Value="0x01000000" />
                 <Set Name="SYNCHRONIZE"                 Value="0x00100000" />
+                <Set Name="STANDARD_RIGHTS_REQUIRED"    Value="0x000F0000" />
+                <Set Name="STANDARD_RIGHTS_ALL"         Value="0x001F0000" />
                 <Set Name="WRITE_OWNER"                 Value="0x00080000" />
                 <Set Name="WRITE_DAC"                   Value="0x00040000" />
                 <Set Name="READ_CONTROL"                Value="0x00020000" />
                 <Set Name="DELETE"                      Value="0x00010000" />
-                <Set Name="MAXIMUM_ALLOWED"             Value="0x02000000" />
             </Flag>
         </Variable>
         <Variable Name="PACCESS_MASK" Type="Pointer" Base="ACCESS_MASK" />
+
+        <!-- [THREAD_ACCESS_MASK] -->
+        <Variable Name="[THREAD_ACCESS_MASK]" Type="Alias" Base="ACCESS_MASK">
+            <Display Name="ACCESS_MASK" />
+            <Flag>
+                <Set Name="THREAD_TERMINATE"                    Value="0x0001" />
+                <Set Name="THREAD_SUSPEND_RESUME"               Value="0x0002" />
+                <Set Name="THREAD_GET_CONTEXT"                  Value="0x0008" />
+                <Set Name="THREAD_SET_CONTEXT"                  Value="0x0010" />
+                <Set Name="THREAD_QUERY_INFORMATION"            Value="0x0040" />
+                <Set Name="THREAD_SET_INFORMATION"              Value="0x0020" />
+                <Set Name="THREAD_SET_THREAD_TOKEN"             Value="0x0080" />
+                <Set Name="THREAD_IMPERSONATE"                  Value="0x0100" />
+                <Set Name="THREAD_DIRECT_IMPERSONATION"         Value="0x0200" />
+                <Set Name="THREAD_SET_LIMITED_INFORMATION"      Value="0x0400" />
+                <Set Name="THREAD_QUERY_LIMITED_INFORMATION"    Value="0x0800" />
+                <Set Name="THREAD_ALL_ACCESS"                   Value="0x1FFFFF" />
+            </Flag>
+        </Variable>
+
+        <!-- [PROCESS_ACCESS_MASK] -->
+        <Variable Name="[PROCESS_ACCESS_MASK]" Type="Alias" Base="ACCESS_MASK">
+            <Display Name="ACCESS_MASK" />
+            <Flag>
+                <Set Name="PROCESS_TERMINATE"                   Value="0x0001" />
+                <Set Name="PROCESS_CREATE_THREAD"               Value="0x0002" />
+                <Set Name="PROCESS_SET_SESSIONID"               Value="0x0004" />
+                <Set Name="PROCESS_VM_OPERATION"                Value="0x0008" />
+                <Set Name="PROCESS_VM_READ"                     Value="0x0010" />
+                <Set Name="PROCESS_VM_WRITE"                    Value="0x0020" />
+                <Set Name="PROCESS_DUP_HANDLE"                  Value="0x0040" />
+                <Set Name="PROCESS_CREATE_PROCESS"              Value="0x0080" />
+                <Set Name="PROCESS_SET_QUOTA"                   Value="0x0100" />
+                <Set Name="PROCESS_SET_INFORMATION"             Value="0x0200" />
+                <Set Name="PROCESS_QUERY_INFORMATION"           Value="0x0400" />
+                <Set Name="PROCESS_SUSPEND_RESUME"              Value="0x0800" />
+                <Set Name="PROCESS_QUERY_LIMITED_INFORMATION"   Value="0x1000" />
+                <Set Name="PROCESS_ALL_ACCESS"                  Value="0x1fffff" />
+            </Flag>
+        </Variable>
+
+        <!-- [FILE_ACCESS_MASK] -->
+        <Variable Name="[FILE_ACCESS_MASK]" Type="Alias" Base="ACCESS_MASK">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="FILE_WRITE_DATA/FILE_ADD_FILE"       Value="0x0002" />
+                <Set Name="FILE_APPEND_DATA/FILE_ADD_SUBDIRECTORY/FILE_CREATE_PIPE_INSTANCE"  Value="0x0004" />
+                <Set Name="FILE_ALL_ACCESS"                     Value="0x001f01ff" />
+                <Set Name="FILE_DELETE_CHILD"                   Value="0x0040" />
+                <Set Name="FILE_EXECUTE/FILE_TRAVERSE"          Value="0x0020" />
+                <Set Name="FILE_READ_DATA/FILE_LIST_DIRECTORY"  Value="0x0001" />
+                <Set Name="FILE_READ_ATTRIBUTES"                Value="0x0080" />
+                <Set Name="FILE_READ_EA"                        Value="0x0008" />
+                <Set Name="FILE_WRITE_ATTRIBUTES"               Value="0x0100" />
+                <Set Name="FILE_WRITE_EA"                       Value="0x0010" />
+                <Set Name="FILE_GENERIC_READ"                   Value="0x00120089" />
+                <Set Name="FILE_GENERIC_WRITE"                  Value="0x00120116" />
+                <Set Name="FILE_GENERIC_EXECUTE"                Value="0x001200A0" />
+            </Flag>
+        </Variable>
 
         <!-- SECURITY_INFORMATION -->
         <Variable Name="SECURITY_INFORMATION" Type="Alias" Base="UINT">
@@ -718,63 +803,89 @@
                 <Set Name="JobObjectExtendedLimitInformation"           Value="9" />
                 <Set Name="JobObjectJobSetInformation"                  Value="10" />
                 <Set Name="JobObjectGroupInformation"                   Value="11" />
+                <Set Name="JobObjectNotificationLimitInformation"       Value="12" />
+                <Set Name="JobObjectLimitViolationInformation"          Value="13" />
+                <Set Name="JobObjectGroupInformationEx"                 Value="14" />
+                <Set Name="JobObjectCpuRateControlInformation"          Value="15" />
+                <Set Name="JobObjectCompletionFilter"                   Value="16" />
+                <Set Name="JobObjectCompletionCounter"                  Value="17" />
+                <Set Name="JobObjectFreezeInformation"                  Value="18" />
+                <Set Name="JobObjectExtendedAccountingInformation"      Value="19" />
+                <Set Name="JobObjectWakeInformation"                    Value="20" />
+                <Set Name="JobObjectIdleAwareInformation"               Value="21" />
+                <Set Name="JobObjectSchedulingRankBiasInformation"      Value="22" />
+                <Set Name="JobObjectTimerVirtualizationInformation"     Value="23" />
+                <Set Name="JobObjectCycleTimeNotification"              Value="24" />
+                <Set Name="JobObjectReserved1Information"               Value="18" />
+                <Set Name="JobObjectReserved2Information"               Value="19" />
+                <Set Name="JobObjectReserved3Information"               Value="20" />
+                <Set Name="JobObjectReserved4Information"               Value="21" />
+                <Set Name="JobObjectReserved5Information"               Value="22" />
+                <Set Name="JobObjectReserved6Information"               Value="23" />
+                <Set Name="JobObjectReserved7Information"               Value="24" />
             </Enum>
         </Variable>
 
         <!-- PROCESSINFOCLASS -->
         <Variable Name="PROCESSINFOCLASS" Type="Alias" Base="UINT">
             <Enum>
-                <Set Name="ProcessBasicInformation"             Value="0" />
-                <Set Name="ProcessQuotaLimits"                  Value="1" />
-                <Set Name="ProcessIoCounters"                   Value="2" />
-                <Set Name="ProcessVmCounters"                   Value="3" />
-                <Set Name="ProcessTimes"                        Value="4" />
-                <Set Name="ProcessBasePriority"                 Value="5" />
-                <Set Name="ProcessRaisePriority"                Value="6" />
-                <Set Name="ProcessDebugPort"                    Value="7" />
-                <Set Name="ProcessExceptionPort"                Value="8" />
-                <Set Name="ProcessAccessToken"                  Value="9" />
-                <Set Name="ProcessLdtInformation"               Value="10" />
-                <Set Name="ProcessLdtSize"                      Value="11" />
-                <Set Name="ProcessDefaultHardErrorMode"         Value="12" />
-                <Set Name="ProcessIoPortHandlers"               Value="13" />
-                <Set Name="ProcessPooledUsageAndLimits"         Value="14" />
-                <Set Name="ProcessWorkingSetWatch"              Value="15" />
-                <Set Name="ProcessUserModeIOPL"                 Value="16" />
-                <Set Name="ProcessEnableAlignmentFaultFixup"    Value="17" />
-                <Set Name="ProcessPriorityClass"                Value="18" />
-                <Set Name="ProcessWx86Information"              Value="19" />
-                <Set Name="ProcessHandleCount"                  Value="20" />
-                <Set Name="ProcessAffinityMask"                 Value="21" />
-                <Set Name="ProcessPriorityBoost"                Value="22" />
-                <Set Name="ProcessDeviceMap"                    Value="23" />
-                <Set Name="ProcessSessionInformation"           Value="24" />
-                <Set Name="ProcessForegroundInformation"        Value="25" />
-                <Set Name="ProcessWow64Information"             Value="26" />
-                <Set Name="ProcessImageFileName"                Value="27" />
-                <Set Name="ProcessLUIDDeviceMapsEnabled"        Value="28" />
-                <Set Name="ProcessBreakOnTermination"           Value="29" />
-                <Set Name="ProcessDebugObjectHandle"            Value="30" />
-                <Set Name="ProcessDebugFlags"                   Value="31" />
-                <Set Name="ProcessHandleTracing"                Value="32" />
-                <Set Name="ProcessIoPriority"                   Value="33" />
-                <Set Name="ProcessExecuteFlags"                 Value="34" />
-                <Set Name="ProcessTlsInformation"               Value="35" />
-                <Set Name="ProcessCookie"                       Value="36" />
-                <Set Name="ProcessImageInformation"             Value="37" />
-                <Set Name="ProcessCycleTime"                    Value="38" />
-                <Set Name="ProcessPagePriority"                 Value="39" />
-                <Set Name="ProcessInstrumentationCallback"      Value="40" />
-                <Set Name="ProcessThreadStackAllocation"        Value="41" />
-                <Set Name="ProcessWorkingSetWatchEx"            Value="42" />
-                <Set Name="ProcessImageFileNameWin32"           Value="43" />
-                <Set Name="ProcessImageFileMapping"             Value="44" />
-                <Set Name="ProcessAffinityUpdateMode"           Value="45" />
-                <Set Name="ProcessMemoryAllocationMode"         Value="46" />
-                <Set Name="ProcessGroupInformation"             Value="47" />
-                <Set Name="ProcessTokenVirtualizationEnabled"   Value="48" />
-                <Set Name="ProcessConsoleHostProcess"           Value="49" />
-                <Set Name="ProcessWindowInformation"            Value="50" />
+                <Set Name="ProcessBasicInformation"                 Value="0" />
+                <Set Name="ProcessQuotaLimits"                      Value="1" />
+                <Set Name="ProcessIoCounters"                       Value="2" />
+                <Set Name="ProcessVmCounters"                       Value="3" />
+                <Set Name="ProcessTimes"                            Value="4" />
+                <Set Name="ProcessBasePriority"                     Value="5" />
+                <Set Name="ProcessRaisePriority"                    Value="6" />
+                <Set Name="ProcessDebugPort"                        Value="7" />
+                <Set Name="ProcessExceptionPort"                    Value="8" />
+                <Set Name="ProcessAccessToken"                      Value="9" />
+                <Set Name="ProcessLdtInformation"                   Value="10" />
+                <Set Name="ProcessLdtSize"                          Value="11" />
+                <Set Name="ProcessDefaultHardErrorMode"             Value="12" />
+                <Set Name="ProcessIoPortHandlers"                   Value="13" />
+                <Set Name="ProcessPooledUsageAndLimits"             Value="14" />
+                <Set Name="ProcessWorkingSetWatch"                  Value="15" />
+                <Set Name="ProcessUserModeIOPL"                     Value="16" />
+                <Set Name="ProcessEnableAlignmentFaultFixup"        Value="17" />
+                <Set Name="ProcessPriorityClass"                    Value="18" />
+                <Set Name="ProcessWx86Information"                  Value="19" />
+                <Set Name="ProcessHandleCount"                      Value="20" />
+                <Set Name="ProcessAffinityMask"                     Value="21" />
+                <Set Name="ProcessPriorityBoost"                    Value="22" />
+                <Set Name="ProcessDeviceMap"                        Value="23" />
+                <Set Name="ProcessSessionInformation"               Value="24" />
+                <Set Name="ProcessForegroundInformation"            Value="25" />
+                <Set Name="ProcessWow64Information"                 Value="26" />
+                <Set Name="ProcessImageFileName"                    Value="27" />
+                <Set Name="ProcessLUIDDeviceMapsEnabled"            Value="28" />
+                <Set Name="ProcessBreakOnTermination"               Value="29" />
+                <Set Name="ProcessDebugObjectHandle"                Value="30" />
+                <Set Name="ProcessDebugFlags"                       Value="31" />
+                <Set Name="ProcessHandleTracing"                    Value="32" />
+                <Set Name="ProcessIoPriority"                       Value="33" />
+                <Set Name="ProcessExecuteFlags"                     Value="34" />
+                <Set Name="ProcessTlsInformation"                   Value="35" />
+                <Set Name="ProcessCookie"                           Value="36" />
+                <Set Name="ProcessImageInformation"                 Value="37" />
+                <Set Name="ProcessCycleTime"                        Value="38" />
+                <Set Name="ProcessPagePriority"                     Value="39" />
+                <Set Name="ProcessInstrumentationCallback"          Value="40" />
+                <Set Name="ProcessThreadStackAllocation"            Value="41" />
+                <Set Name="ProcessWorkingSetWatchEx"                Value="42" />
+                <Set Name="ProcessImageFileNameWin32"               Value="43" />
+                <Set Name="ProcessImageFileMapping"                 Value="44" />
+                <Set Name="ProcessAffinityUpdateMode"               Value="45" />
+                <Set Name="ProcessMemoryAllocationMode"             Value="46" />
+                <Set Name="ProcessGroupInformation"                 Value="47" />
+                <Set Name="ProcessTokenVirtualizationEnabled"       Value="48" />
+                <Set Name="ProcessConsoleHostProcess"               Value="49" />
+                <Set Name="ProcessWindowInformation"                Value="50" />
+                <Set Name="ProcessHandleInformation"                Value="51" />
+                <Set Name="ProcessMitigationPolicy"                 Value="52" />
+                <Set Name="ProcessDynamicFunctionTableInformation"  Value="53" />
+                <Set Name="ProcessHandleCheckingMode"               Value="54" />
+                <Set Name="ProcessKeepAliveCount"                   Value="55" />
+                <Set Name="ProcessRevokeFileHandles"                Value="56" />
             </Enum>
         </Variable>
         
@@ -815,6 +926,8 @@
                 <Set Name="ThreadUmsInformation"                Value="31" />
                 <Set Name="ThreadCounterProfiling"              Value="32" />
                 <Set Name="ThreadIdealProcessorEx"              Value="33" />
+                <Set Name="ThreadCpuAccountingInformation"      Value="34" />
+                <Set Name="ThreadSwitchStackCheck"              Value="35" />
             </Enum>
         </Variable>
 
@@ -2139,6 +2252,43 @@
             <Field Type="[IMAGE_FILE_CHARACTERISTICS]"  Name="Characteristics" />
         </Variable>
 
+        <!-- IMAGE_OPTIONAL_HEADER (32-bit) -->
+        <Condition Architecture="32">
+            <Variable Name="IMAGE_OPTIONAL_HEADER" Type="Struct">
+                <Field Type="[IMAGE_OPTIONAL_MAGIC]"            Name="Magic" />
+                <Field Type="BYTE"                              Name="MajorLinkerVersion" />
+                <Field Type="BYTE"                              Name="MinorLinkerVersion" />
+                <Field Type="DWORD"                             Name="SizeOfCode" />
+                <Field Type="DWORD"                             Name="SizeOfInitializedData" />
+                <Field Type="DWORD"                             Name="SizeOfUninitializedData" />
+                <Field Type="DWORD"                             Name="AddressOfEntryPoint" />
+                <Field Type="DWORD"                             Name="BaseOfCode" />
+                <Field Type="DWORD"                             Name="BaseOfData" />
+                <Field Type="DWORD"                             Name="ImageBase" />
+                <Field Type="DWORD"                             Name="SectionAlignment" />
+                <Field Type="DWORD"                             Name="FileAlignment" />
+                <Field Type="WORD"                              Name="MajorOperatingSystemVersion" />
+                <Field Type="WORD"                              Name="MinorOperatingSystemVersion" />
+                <Field Type="WORD"                              Name="MajorImageVersion" />
+                <Field Type="WORD"                              Name="MinorImageVersion" />
+                <Field Type="WORD"                              Name="MajorSubsystemVersion" />
+                <Field Type="WORD"                              Name="MinorSubsystemVersion" />
+                <Field Type="DWORD"                             Name="Win32VersionValue" />
+                <Field Type="DWORD"                             Name="SizeOfImage" />
+                <Field Type="DWORD"                             Name="SizeOfHeaders" />
+                <Field Type="DWORD"                             Name="CheckSum" />
+                <Field Type="[IMAGE_SUBSYSTEM]"                 Name="Subsystem" />
+                <Field Type="[IMAGE_DLLCHARACTERISTICS]"        Name="DllCharacteristics" />
+                <Field Type="DWORD"                             Name="SizeOfStackReserve" />
+                <Field Type="DWORD"                             Name="SizeOfStackCommit" />
+                <Field Type="DWORD"                             Name="SizeOfHeapReserve" />
+                <Field Type="DWORD"                             Name="SizeOfHeapCommit" />
+                <Field Type="DWORD"                             Name="LoaderFlags" />
+                <Field Type="DWORD"                             Name="NumberOfRvaAndSizes" />
+                <Field Type="IMAGE_DATA_DIRECTORY [IMAGE_NUMBEROF_DIRECTORY_ENTRIES]" Name="DataDirectory" />
+            </Variable>
+        </Condition>
+
         <!-- IMAGE_OPTIONAL_HEADER64 -->
         <Variable Name="IMAGE_OPTIONAL_HEADER64" Type="Struct">
             <Field Type="[IMAGE_OPTIONAL_MAGIC]"        Name="Magic" />
@@ -2172,6 +2322,20 @@
             <Field Type="DWORD"                         Name="NumberOfRvaAndSizes" />
             <Field Type="IMAGE_DATA_DIRECTORY [IMAGE_NUMBEROF_DIRECTORY_ENTRIES]" Name="DataDirectory" />
         </Variable>
+
+        <!-- IMAGE_OPTIONAL_HEADER (64-bit) -->
+        <Condition Architecture="64">
+            <Variable Name="IMAGE_OPTIONAL_HEADER" Type="Alias" Base="IMAGE_OPTIONAL_HEADER64" />
+        </Condition>
+
+        <!-- IMAGE_NT_HEADERS -->
+        <Variable Name="IMAGE_NT_HEADERS" Type="Struct">
+            <Field Type="DWORD"                     Name="Signature" />
+            <Field Type="IMAGE_FILE_HEADER"         Name="FileHeader" />
+            <Field Type="IMAGE_OPTIONAL_HEADER"     Name="OptionalHeader" />
+        </Variable>
+        <Variable Name="PIMAGE_NT_HEADERS"  Type="Pointer" Base="IMAGE_NT_HEADERS" />
+        <Variable Name="PIMAGE_NT_HEADERS*" Type="Pointer" Base="PIMAGE_NT_HEADERS" />
 
         <!-- NUMBERFMT -->
         <Variable Name="NUMBERFMT" Type="Struct">
@@ -2285,8 +2449,7 @@
             <Field Type="LPCTSTR"      	            Name="lpApplicationName" />
             <Field Type="HMODULE"     	            Name="hModule" />
         </Variable>
-        <Variable Name="PACTCTX"  Type="Pointer" Base="ACTCTX" />
-        <Variable Name="PACTCTX*" Type="Pointer" Base="PACTCTX" />
+        <Variable Name="PACTCTX" Type="Pointer" Base="ACTCTX" />
 
         <!-- [HEAP_FLAGS] -->
         <Variable Name="[HEAP_FLAGS]" Type="Alias" Base="DWORD">
@@ -2386,21 +2549,13 @@
             <Success Return="NotEqual" Value="0xFFFFFFFF" />
         </Variable>
 
-    </Headers>
-
-    <Include Filename="Headers\windows-32.h.xml" />
-    <Include Filename="Headers\windows-64.h.xml" />
-
-    <Headers>
-
-        <!-- IMAGE_NT_HEADERS -->
-        <Variable Name="IMAGE_NT_HEADERS" Type="Struct">
-            <Field Type="DWORD"                     Name="Signature" />
-            <Field Type="IMAGE_FILE_HEADER"         Name="FileHeader" />
-            <Field Type="IMAGE_OPTIONAL_HEADER"     Name="OptionalHeader" />
+        <!-- PROCESSOR_NUMBER -->
+        <Variable Name="PROCESSOR_NUMBER" Type="Struct">
+            <Field Type="WORD"   	Name="Group" />
+            <Field Type="BYTE"  	Name="Number" />
+            <Field Type="BYTE"  	Name="Reserved" />
         </Variable>
-        <Variable Name="PIMAGE_NT_HEADERS"  Type="Pointer" Base="IMAGE_NT_HEADERS" />
-        <Variable Name="PIMAGE_NT_HEADERS*" Type="Pointer" Base="PIMAGE_NT_HEADERS" />
+        <Variable Name="PPROCESSOR_NUMBER" Type="Pointer" Base="PROCESSOR_NUMBER" />
 
     </Headers>
 

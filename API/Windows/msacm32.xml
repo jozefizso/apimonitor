@@ -1,16 +1,12 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\multimedia.h.xml" />
     <Module Name="msacm32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-
-        <!-- TODO: Size is 15 for 64-bit and 10 for 32-bit
-        <Variable Name="DWORD [_DRVRESERVED]"       Type="DWORD"    Base="DWORD" Count="" />
-        -->
 
         <!-- Variables -->
         <Variable Name="HACMSTREAM"                 Type="Alias"    Base="HANDLE" />
@@ -28,6 +24,7 @@
         <Variable Name="ACMFORMATCHOOSEHOOKPROC"    Type="Alias"    Base="LPVOID" />
         <Variable Name="ACMFILTERCHOOSEHOOKPROC"    Type="Alias"    Base="LPVOID" />
 
+        <!-- Arrays -->
         <Variable Name="DWORD [5]"                                      Type="Array"    Base="DWORD" Count="5" />
         <Variable Name="TCHAR [ACMFORMATTAGDETAILS_FORMATTAG_CHARS]"    Type="Array"    Base="TCHAR" Count="48" />
         <Variable Name="TCHAR [ACMFILTERTAGDETAILS_FILTERTAG_CHARS]"    Type="Array"    Base="TCHAR" Count="48" />
@@ -233,8 +230,15 @@
             </Flag>
         </Variable>
 
+        <!-- DWORD [_DRVRESERVED] -->
+        <Condition Architecture="32">
+            <Variable Name="DWORD [_DRVRESERVED]" Type="Array" Base="DWORD" Count="10" />
+        </Condition>
+        <Condition Architecture="64">
+            <Variable Name="DWORD [_DRVRESERVED]" Type="Array" Base="DWORD" Count="15" />
+        </Condition>
+
         <!-- ACMSTREAMHEADER -->
-        <!-- TODO: Can't define until we have definition for DWORD [_DRVRESERVED]
         <Variable Name="ACMSTREAMHEADER" Type="Struct" Pack="1">
             <Field Type="DWORD"                         Name="cbStruct" />
             <Field Type="[ACMSTREAMHEADER_STATUSF]"     Name="fdwStatus" />
@@ -250,8 +254,6 @@
             <Field Type="DWORD [_DRVRESERVED]"          Name="dwReservedDriver" />
         </Variable>
         <Variable Name="LPACMSTREAMHEADER" Type="Pointer" Base="ACMSTREAMHEADER" />
-        -->
-        <Variable Name="LPACMSTREAMHEADER" Type="Alias" Base="LPVOID" />
 
         <!-- Multimedia -->
         <Category Name="Audio and Video/Legacy Audio and Video/Windows Multimedia" />
