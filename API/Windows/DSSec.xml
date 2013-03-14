@@ -6,23 +6,73 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\ole.h.xml" />
+    <Include Filename="Headers\security.h.xml" />
 
     <Module Name="DSSec.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+
         <!-- Variables -->
         <Variable Name="PFNREADOBJECTSECURITY"     Type="Alias" Base="LPVOID" />
         <Variable Name="PFNWRITEOBJECTSECURITY"    Type="Alias" Base="LPVOID" />
+
+        <!-- [DSSI_FLAGS] -->
+        <Variable Name="[DSSI_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="DSSI_READ_ONLY"              				Value="0x00000001" />
+                <Set Name="DSSI_NO_ACCESS_CHECK"        				Value="0x00000002" />
+                <Set Name="DSSI_NO_EDIT_SACL"           				Value="0x00000004" />
+                <Set Name="DSSI_NO_EDIT_OWNER"          				Value="0x00000008" />
+                <Set Name="DSSI_IS_ROOT"                				Value="0x00000010" />
+                <Set Name="DSSI_NO_FILTER"              				Value="0x00000020" />
+                <Set Name="DSSI_NO_READONLY_MESSAGE"              		Value="0x00000040" />
+            </Flag>
+        </Variable>
 
         <!-- Authorization -->
         <Category Name="Security and Identity/Authorization/Access Control Editor" />
         <Api Name="DSCreateSecurityPage">
             <Param Type="LPCWSTR" Name="pwszObjectPath" />
             <Param Type="LPCWSTR" Name="pwszObjectClass" />
-            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="[DSSI_FLAGS]" Name="dwFlags" />
             <Param Type="HPROPSHEETPAGE*" Name="phPage" />
             <Param Type="PFNREADOBJECTSECURITY" Name="pfnReadSD" />
             <Param Type="PFNWRITEOBJECTSECURITY" Name="pfnWriteSD" />
             <Param Type="LPARAM" Name="lpContext" />
-            <Return Type="HRESULT" />
+            <Return Type="STDAPI" />
         </Api>
+        <Api Name="DSCreateISecurityInfoObject">
+            <Param Type="LPCWSTR" Name="pwszObjectClass" />
+            <Param Type="[DSSI_FLAGS]" Name="dwFlags" />
+            <Param Type="LPSECURITYINFO*" Name="ppSI" />
+            <Param Type="PFNREADOBJECTSECURITY" Name="pfnReadSD" />
+            <Param Type="PFNWRITEOBJECTSECURITY" Name="pfnWriteSD" />
+            <Param Type="LPARAM" Name="lpContext" />
+            <Return Type="STDAPI" />
+        </Api>
+        <Api Name="DSCreateISecurityInfoObjectEx">
+            <Param Type="LPCWSTR" Name="pwszObjectPath" />
+            <Param Type="LPCWSTR" Name="pwszObjectClass" />
+            <Param Type="LPCWSTR" Name="pwszServer" />
+            <Param Type="LPCWSTR" Name="pwszUserName" />
+            <Param Type="LPCWSTR" Name="pwszPassword" />
+            <Param Type="[DSSI_FLAGS]" Name="dwFlags" />
+            <Param Type="LPSECURITYINFO*" Name="ppSI" />
+            <Param Type="PFNREADOBJECTSECURITY" Name="pfnReadSD" />
+            <Param Type="PFNWRITEOBJECTSECURITY" Name="pfnWriteSD" />
+            <Param Type="LPARAM" Name="lpContext" />
+            <Return Type="STDAPI" />
+        </Api>
+        <Api Name="DSEditSecurity">
+            <Param Type="HWND" Name="hwndOwner" />
+            <Param Type="LPCWSTR" Name="pwszObjectPath" />
+            <Param Type="LPCWSTR" Name="pwszObjectClass" />
+            <Param Type="[DSSI_FLAGS]" Name="dwFlags" />
+            <Param Type="LPCWSTR" Name="pwszCaption" />
+            <Param Type="PFNREADOBJECTSECURITY" Name="pfnReadSD" />
+            <Param Type="PFNWRITEOBJECTSECURITY" Name="pfnWriteSD" />
+            <Param Type="LPARAM" Name="lpContext" />
+            <Return Type="STDAPI" />
+        </Api>
+
     </Module>
 </ApiMonitor>

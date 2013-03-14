@@ -1,0 +1,181 @@
+<!--
+    API Monitor Definitions
+    (c) 2012, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+
+    <Module Name="Sechost.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+
+        <!-- Variables -->
+        <Variable Name="LSA_LOOKUP_HANDLE"  Type="Alias"    Base="PVOID" />
+        <Variable Name="PLSA_LOOKUP_HANDLE" Type="Pointer"  Base="LSA_LOOKUP_HANDLE" />
+
+        <!-- LSA_LOOKUP_DOMAIN_INFO_CLASS -->
+        <Variable Name="LSA_LOOKUP_DOMAIN_INFO_CLASS" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="AccountDomainInformation"    Value="5" />
+                <Set Name="DnsDomainInformation"        Value="12" />
+            </Enum>
+        </Variable>
+
+        <!-- Basic Access Control -->
+        <Category Name="Security and Identity/Authorization/Basic Access Control" />
+        <Api Name="LookupAccountNameLocal" BothCharset="True">
+            <Param Type="LPCTSTR" Name="lpAccountName" />
+            <Param Type="PSID" Name="Sid" PostLength="cbSid" />
+            <Param Type="LPDWORD" Name="cbSid" />
+            <Param Type="LPTSTR" Name="ReferencedDomainName" OutputOnly="True" />
+            <Param Type="LPDWORD" Name="cchReferencedDomainName" />
+            <Param Type="PSID_NAME_USE" Name="peUse" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="LookupAccountSidLocal" BothCharset="True">
+            <Param Type="PSID" Name="lpSid" />
+            <Param Type="LPTSTR" Name="lpName" OutputOnly="True" />
+            <Param Type="LPDWORD" Name="cchName" />
+            <Param Type="LPTSTR" Name="lpReferencedDomainName" OutputOnly="True" />
+            <Param Type="LPDWORD" Name="cchReferencedDomainName" />
+            <Param Type="PSID_NAME_USE" Name="peUse" />
+            <Return Type="BOOL" />
+        </Api>
+
+        <!-- Local Security Authority (LSA) - TODO: Determine Correct Category -->
+        <Category Name="Security and Identity/Authentication/Local Security Authority (LSA)" />
+        <Api Name="LsaLookupClose">
+            <Param Type="LSA_LOOKUP_HANDLE" Name="ObjectHandle" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="LsaLookupFreeMemory">
+            <Param Type="PVOID" Name="Buffer" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="LsaLookupGetDomainInfo">
+            <Param Type="LSA_LOOKUP_HANDLE" Name="PolicyHandle" />
+            <Param Type="LSA_LOOKUP_DOMAIN_INFO_CLASS" Name="DomainInfoClass" />
+            <Param Type="PVOID*" Name="DomainInfo" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="LsaLookupOpenLocalPolicy">
+            <Param Type="PLSA_OBJECT_ATTRIBUTES" Name="ObjectAttributes" />
+            <Param Type="ACCESS_MASK" Name="AccessMask" />
+            <Param Type="PLSA_LOOKUP_HANDLE" Name="PolicyHandle" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="LsaLookupTranslateNames">
+            <Param Type="LSA_LOOKUP_HANDLE" Name="PolicyHandle" />
+            <Param Type="ULONG" Name="Flags" />
+            <Param Type="ULONG" Name="Count" />
+            <Param Type="PLSA_UNICODE_STRING" Name="Names" Count="Count" />
+            <Param Type="PLSA_REFERENCED_DOMAIN_LIST*" Name="ReferencedDomains" />
+            <Param Type="PLSA_TRANSLATED_SID2*" Name="Sids"  DerefPostCount="Count" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="LsaLookupTranslateSids">
+            <Param Type="LSA_LOOKUP_HANDLE" Name="PolicyHandle" />
+            <Param Type="ULONG" Name="Count" />
+            <Param Type="PSID*" Name="Sids" Count="Count" />
+            <Param Type="PLSA_REFERENCED_DOMAIN_LIST*" Name="ReferencedDomains" />
+            <Param Type="PLSA_TRANSLATED_NAME*" Name="Names" DerefPostCount="Count" />
+            <Return Type="NTSTATUS" />
+        </Api>
+
+        <!-- Advapi32.dll -->
+        <SourceModule Name="Advapi32.dll" Include="Windows\Advapi32.xml">
+            <Api Name="AuditComputeEffectivePolicyBySid" />
+            <Api Name="AuditFree" />
+            <Api Name="AuditQuerySystemPolicy" />
+            <Api Name="AuditSetSystemPolicy" />
+            <Api Name="ChangeServiceConfig2A" />
+            <Api Name="ChangeServiceConfig2W" />
+            <Api Name="ChangeServiceConfigA" />
+            <Api Name="ChangeServiceConfigW" />
+            <Api Name="CloseServiceHandle" />
+            <Api Name="ControlService" />
+            <Api Name="ControlServiceExA" />
+            <Api Name="ControlServiceExW" />
+            <Api Name="ConvertSecurityDescriptorToStringSecurityDescriptorW" />
+            <Api Name="ConvertSidToStringSidW" />
+            <Api Name="ConvertStringSecurityDescriptorToSecurityDescriptorW" />
+            <Api Name="ConvertStringSidToSidW" />
+            <Api Name="CreateServiceA" />
+            <Api Name="CreateServiceW" />
+            <Api Name="CredDeleteA" />
+            <Api Name="CredDeleteW" />
+            <Api Name="CredEnumerateA" />
+            <Api Name="CredEnumerateW" />
+            <Api Name="CredFindBestCredentialA" />
+            <Api Name="CredFindBestCredentialW" />
+            <Api Name="CredFree" />
+            <Api Name="CredGetSessionTypes" />
+            <Api Name="CredGetTargetInfoA" />
+            <Api Name="CredGetTargetInfoW" />
+            <Api Name="CredIsMarshaledCredentialW" />
+            <Api Name="CredIsProtectedA" />
+            <Api Name="CredIsProtectedW" />
+            <Api Name="CredMarshalCredentialA" />
+            <Api Name="CredMarshalCredentialW" />
+            <Api Name="CredProtectA" />
+            <Api Name="CredProtectW" />
+            <Api Name="CredReadA" />
+            <Api Name="CredReadDomainCredentialsA" />
+            <Api Name="CredReadDomainCredentialsW" />
+            <Api Name="CredReadW" />
+            <Api Name="CredUnmarshalCredentialA" />
+            <Api Name="CredUnmarshalCredentialW" />
+            <Api Name="CredUnprotectA" />
+            <Api Name="CredUnprotectW" />
+            <Api Name="CredWriteA" />
+            <Api Name="CredWriteDomainCredentialsA" />
+            <Api Name="CredWriteDomainCredentialsW" />
+            <Api Name="CredWriteW" />
+            <Api Name="DeleteService" />
+            <Api Name="EnumDependentServicesW" />
+            <Api Name="EnumServicesStatusExW" />
+            <Api Name="LsaAddAccountRights" />
+            <Api Name="LsaClose" />
+            <Api Name="LsaEnumerateAccountRights" />
+            <Api Name="LsaEnumerateAccountsWithUserRight" />
+            <Api Name="LsaFreeMemory" />
+            <Api Name="LsaLookupNames2" />
+            <Api Name="LsaLookupSids" />
+            <Api Name="LsaLookupSids2" />
+            <Api Name="LsaOpenPolicy" />
+            <Api Name="LsaOpenSecret" />
+            <Api Name="LsaQueryInformationPolicy" />
+            <Api Name="LsaQuerySecret" />
+            <Api Name="LsaRemoveAccountRights" />
+            <Api Name="LsaRetrievePrivateData" />
+            <Api Name="LsaSetInformationPolicy" />
+            <Api Name="LsaSetSecret" />
+            <Api Name="LsaStorePrivateData" />
+            <Api Name="NotifyServiceStatusChange" />
+            <Api Name="NotifyServiceStatusChangeA" />
+            <Api Name="NotifyServiceStatusChangeW" />
+            <Api Name="OpenSCManagerA" />
+            <Api Name="OpenSCManagerW" />
+            <Api Name="OpenServiceA" />
+            <Api Name="OpenServiceW" />
+            <Api Name="QueryServiceConfig2A" />
+            <Api Name="QueryServiceConfig2W" />
+            <Api Name="QueryServiceConfigA" />
+            <Api Name="QueryServiceConfigW" />
+            <Api Name="QueryServiceDynamicInformation" />
+            <Api Name="QueryServiceObjectSecurity" />
+            <Api Name="QueryServiceStatus" />
+            <Api Name="QueryServiceStatusEx" />
+            <Api Name="RegisterServiceCtrlHandlerA" />
+            <Api Name="RegisterServiceCtrlHandlerExA" />
+            <Api Name="RegisterServiceCtrlHandlerExW" />
+            <Api Name="RegisterServiceCtrlHandlerW" />
+            <Api Name="SetServiceObjectSecurity" />
+            <Api Name="SetServiceStatus" />
+            <Api Name="StartServiceA" />
+            <Api Name="StartServiceCtrlDispatcherA" />
+            <Api Name="StartServiceCtrlDispatcherW" />
+            <Api Name="StartServiceW" />
+        </SourceModule>
+
+    </Module>
+</ApiMonitor>

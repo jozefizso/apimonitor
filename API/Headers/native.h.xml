@@ -42,8 +42,8 @@
             </Enum>
         </Variable>
 
-        <!-- [FileShareMode] -->
-        <Variable Name="[FileShareMode]" Type="Alias" Base="DWORD">
+        <!-- [FILE_SHARE_MODE] -->
+        <Variable Name="[FILE_SHARE_MODE]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
                 <Set Name="FILE_SHARE_READ"     Value="0x00000001" />
@@ -108,15 +108,6 @@
         </Variable>
         <Variable Name="[MemoryProtection*]" Type="Pointer" Base="[MemoryProtection]">
             <Display Name="PDWORD" />
-        </Variable>
-
-        <!-- [AclRevision] -->
-        <Variable Name="[AclRevision]" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
-            <Enum>
-                <Set Name="ACL_REVISION"        Value="2" />
-                <Set Name="ACL_REVISION_DS"     Value="4" />
-            </Enum>
         </Variable>
 
         <!-- [NtVerType] -->
@@ -192,20 +183,27 @@
             <Field Type="PSECURITY_DESCRIPTOR"          Name="SecurityDescriptor" />
             <Field Type="PSECURITY_QUALITY_OF_SERVICE" 	Name="SecurityQualityOfService" />
         </Variable>
-        <Variable Name="POBJECT_ATTRIBUTES" Type="Pointer" Base="OBJECT_ATTRIBUTES" />
+        <Variable Name="POBJECT_ATTRIBUTES"     Type="Pointer" Base="OBJECT_ATTRIBUTES" />
+        <Variable Name="OBJECT_ATTRIBUTES []"   Type="Pointer" Base="OBJECT_ATTRIBUTES" />
 
         <!-- RTL_CRITICAL_SECTION_DEBUG -->
         <Variable Name="RTL_CRITICAL_SECTION_DEBUG" Type="Struct">
-            <Field Type="USHORT"        Name="Type" />
-            <Field Type="USHORT"        Name="CreatorBackTraceIndex" />
+            <Field Type="WORD"          Name="Type" />
+            <Field Type="WORD"          Name="CreatorBackTraceIndex" />
             <!-- TODO: Parent-Reference - CriticalSection is really RTL_CRITICAL_SECTION*-->
             <Field Type="LPVOID"        Name="CriticalSection" Display="RTL_CRITICAL_SECTION*" />
             <Field Type="LIST_ENTRY"    Name="ProcessLocksList" />
-            <Field Type="ULONG"         Name="EntryCount" />
-            <Field Type="ULONG"         Name="ContentionCount" />
-            <Field Type="ULONG [2]"     Name="Spare" />
+            <Field Type="DWORD"         Name="EntryCount" />
+            <Field Type="DWORD"         Name="ContentionCount" />
+            <Field Type="DWORD"         Name="Flags" />
+            <Field Type="WORD"          Name="CreatorBackTraceIndexHigh" />
+            <Field Type="WORD"          Name="SpareWORD" />
         </Variable>
         <Variable Name="PRTL_CRITICAL_SECTION_DEBUG" Type="Pointer" Base="RTL_CRITICAL_SECTION_DEBUG" />
+        
+        <!-- RTL_RESOURCE_DEBUG -->
+        <Variable Name="RTL_RESOURCE_DEBUG"  Type="Alias" Base="RTL_CRITICAL_SECTION_DEBUG" />
+        <Variable Name="PRTL_RESOURCE_DEBUG" Type="Pointer" Base="RTL_RESOURCE_DEBUG" />
 
         <!-- RTL_CRITICAL_SECTION -->
         <Variable Name="RTL_CRITICAL_SECTION" Type="Struct" Pack="8">
@@ -303,6 +301,47 @@
             <Field Type="[HANDLE_NO_HEX]"   Name="UniqueThread" />
         </Variable>
         <Variable Name="PCLIENT_ID" Type="Pointer" Base="CLIENT_ID" />
+
+        <!-- NOTIFICATION_MASK -->
+        <Variable Name="NOTIFICATION_MASK" Type="Alias" Base="ULONG">
+            <Flag>
+                <Set Name="TRANSACTION_NOTIFY_PREPREPARE"               Value="0x00000001" />
+                <Set Name="TRANSACTION_NOTIFY_PREPARE"                  Value="0x00000002" />
+                <Set Name="TRANSACTION_NOTIFY_COMMIT"                   Value="0x00000004" />
+                <Set Name="TRANSACTION_NOTIFY_ROLLBACK"                 Value="0x00000008" />
+                <Set Name="TRANSACTION_NOTIFY_PREPREPARE_COMPLETE"      Value="0x00000010" />
+                <Set Name="TRANSACTION_NOTIFY_PREPARE_COMPLETE"         Value="0x00000020" />
+                <Set Name="TRANSACTION_NOTIFY_COMMIT_COMPLETE"          Value="0x00000040" />
+                <Set Name="TRANSACTION_NOTIFY_ROLLBACK_COMPLETE"        Value="0x00000080" />
+                <Set Name="TRANSACTION_NOTIFY_RECOVER"                  Value="0x00000100" />
+                <Set Name="TRANSACTION_NOTIFY_SINGLE_PHASE_COMMIT"      Value="0x00000200" />
+                <Set Name="TRANSACTION_NOTIFY_DELEGATE_COMMIT"          Value="0x00000400" />
+                <Set Name="TRANSACTION_NOTIFY_RECOVER_QUERY"            Value="0x00000800" />
+                <Set Name="TRANSACTION_NOTIFY_ENLIST_PREPREPARE"        Value="0x00001000" />
+                <Set Name="TRANSACTION_NOTIFY_LAST_RECOVER"             Value="0x00002000" />
+                <Set Name="TRANSACTION_NOTIFY_INDOUBT"                  Value="0x00004000" />
+                <Set Name="TRANSACTION_NOTIFY_PROPAGATE_PULL"           Value="0x00008000" />
+                <Set Name="TRANSACTION_NOTIFY_PROPAGATE_PUSH"           Value="0x00010000" />
+                <Set Name="TRANSACTION_NOTIFY_MARSHAL"                  Value="0x00020000" />
+                <Set Name="TRANSACTION_NOTIFY_ENLIST_MASK"              Value="0x00040000" />
+                <Set Name="TRANSACTION_NOTIFY_RM_DISCONNECTED"          Value="0x01000000" />
+                <Set Name="TRANSACTION_NOTIFY_TM_ONLINE"                Value="0x02000000" />
+                <Set Name="TRANSACTION_NOTIFY_COMMIT_REQUEST"           Value="0x04000000" />
+                <Set Name="TRANSACTION_NOTIFY_PROMOTE"                  Value="0x08000000" />
+                <Set Name="TRANSACTION_NOTIFY_PROMOTE_NEW"              Value="0x10000000" />
+                <Set Name="TRANSACTION_NOTIFY_REQUEST_OUTCOME"          Value="0x20000000" />
+                <Set Name="TRANSACTION_NOTIFY_COMMIT_FINALIZE"          Value="0x40000000" />
+            </Flag>
+        </Variable>
+
+        <!-- TRANSACTION_NOTIFICATION -->
+        <Variable Name="TRANSACTION_NOTIFICATION" Type="Struct">
+            <Field Type="PVOID"                 Name="TransactionKey" />
+            <Field Type="NOTIFICATION_MASK"     Name="TransactionNotification" Display="ULONG" />
+            <Field Type="LARGE_INTEGER"         Name="TmVirtualClock" />
+            <Field Type="ULONG"                 Name="ArgumentLength" />
+        </Variable>
+        <Variable Name="PTRANSACTION_NOTIFICATION" Type="Pointer" Base="TRANSACTION_NOTIFICATION" />
 
     </Headers>
 </ApiMonitor>

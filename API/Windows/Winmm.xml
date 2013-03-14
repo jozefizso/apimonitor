@@ -1,12 +1,15 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2013, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\multimedia.h.xml" />
-    <Module Name="Winmm.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+    <Module Name="Winmm.dll" CallingConvention="STDCALL" OnlineHelp="MSDN">
+
+        <!-- Windows 8 -->
+        <ModuleAlias Name="winmmbase.dll" />
 
         <!-- Variables -->
         <Variable Name="MCIDEVICEID"                        Type="Alias"    Base="UINT" />
@@ -30,6 +33,11 @@
         <Variable Name="LPHWAVEOUT"                         Type="Pointer"  Base="HWAVEOUT" />
         <Variable Name="LPTIMECALLBACK"                     Type="Alias"    Base="LPVOID" />
         <Variable Name="MMVERSION"                          Type="Alias"    Base="UINT" />
+        <Variable Name="HDRVR"                              Type="Alias"    Base="HANDLE" />
+        <Variable Name="DRIVERMSGPROC"                      Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPTASKCALLBACK"                     Type="Alias"    Base="LPVOID" />
+        
+        <!-- Arrays -->
         <Variable Name="DWORD [6]"                          Type="Array"    Base="DWORD"        Count="6" />
         <Variable Name="DWORD_PTR [8]"                      Type="Array"    Base="DWORD_PTR"    Count="8" />
         <Variable Name="TCHAR [MAXPNAMELEN]"                Type="Array"    Base="TCHAR"        Count="32" />
@@ -436,22 +444,22 @@
 
         <!-- MMIOINFO -->
         <Variable Name="MMIOINFO" Type="Struct" Pack="1">
-            <Field Type="[MMIOINFO_FLAGS]"      Name="dwFlags" />
-            <Field Type="FOURCC"                Name="fccIOProc" />
-            <Field Type="LPMMIOPROC"            Name="pIOProc" />
-            <Field Type="UINT"                  Name="wErrorRet" />
-            <Field Type="HTASK"                 Name="htask" />
-            <Field Type="LONG"                  Name="cchBuffer" />
-            <Field Type="HPSTR"                 Name="pchBuffer" />
-            <Field Type="HPSTR"                 Name="pchNext" />
-            <Field Type="HPSTR"                 Name="pchEndRead" />
-            <Field Type="HPSTR"                 Name="pchEndWrite" />
-            <Field Type="LONG"                  Name="lBufOffset" />
-            <Field Type="LONG"                  Name="lDiskOffset" />
-            <Field Type="DWORD [3]"             Name="adwInfo" />
-            <Field Type="DWORD"                 Name="dwReserved1" />
-            <Field Type="DWORD"                 Name="dwReserved2" />
-            <Field Type="HMMIO"                 Name="hmmio" />
+            <Field Type="[MMIOINFO_FLAGS]"          Name="dwFlags" />
+            <Field Type="FOURCC"                    Name="fccIOProc" />
+            <Field Type="LPMMIOPROC"                Name="pIOProc" />
+            <Field Type="MMRESULT" Display="UINT"   Name="wErrorRet" />
+            <Field Type="HTASK"                     Name="htask" />
+            <Field Type="LONG"                      Name="cchBuffer" />
+            <Field Type="HPSTR"                     Name="pchBuffer" />
+            <Field Type="HPSTR"                     Name="pchNext" />
+            <Field Type="HPSTR"                     Name="pchEndRead" />
+            <Field Type="HPSTR"                     Name="pchEndWrite" />
+            <Field Type="LONG"                      Name="lBufOffset" />
+            <Field Type="LONG"                      Name="lDiskOffset" />
+            <Field Type="DWORD [3]"                 Name="adwInfo" />
+            <Field Type="DWORD"                     Name="dwReserved1" />
+            <Field Type="DWORD"                     Name="dwReserved2" />
+            <Field Type="HMMIO"                     Name="hmmio" />
         </Variable>
         <Variable Name="LPMMIOINFO"         Type="Pointer" Base="MMIOINFO" />
         <Variable Name="const LPMMIOINFO"   Type="Pointer" Base="MMIOINFO" />
@@ -669,82 +677,83 @@
         <!-- MCIERROR -->
         <Variable Name="MCIERROR" Type="Alias" Base="DWORD">
             <Enum>
-                <Set Name="MCIERR_INVALID_DEVICE_ID"            Value="257"/>
-                <Set Name="MCIERR_UNRECOGNIZED_KEYWORD"         Value="259"/>
-                <Set Name="MCIERR_UNRECOGNIZED_COMMAND"         Value="261"/>
-                <Set Name="MCIERR_HARDWARE"                     Value="262"/>
-                <Set Name="MCIERR_INVALID_DEVICE_NAME"          Value="263"/>
-                <Set Name="MCIERR_OUT_OF_MEMORY"                Value="264"/>
-                <Set Name="MCIERR_DEVICE_OPEN"                  Value="265"/>
-                <Set Name="MCIERR_CANNOT_LOAD_DRIVER"           Value="266"/>
-                <Set Name="MCIERR_MISSING_COMMAND_STRING"       Value="267"/>
-                <Set Name="MCIERR_PARAM_OVERFLOW"               Value="268"/>
-                <Set Name="MCIERR_MISSING_STRING_ARGUMENT"      Value="269"/>
-                <Set Name="MCIERR_BAD_INTEGER"                  Value="270"/>
-                <Set Name="MCIERR_PARSER_INTERNAL"              Value="271"/>
-                <Set Name="MCIERR_DRIVER_INTERNAL"              Value="272"/>
-                <Set Name="MCIERR_MISSING_PARAMETER"            Value="273"/>
-                <Set Name="MCIERR_UNSUPPORTED_FUNCTION"         Value="274"/>
-                <Set Name="MCIERR_FILE_NOT_FOUND"               Value="275"/>
-                <Set Name="MCIERR_DEVICE_NOT_READY"             Value="276"/>
-                <Set Name="MCIERR_INTERNAL"                     Value="277"/>
-                <Set Name="MCIERR_DRIVER"                       Value="278"/>
-                <Set Name="MCIERR_CANNOT_USE_ALL"               Value="279"/>
-                <Set Name="MCIERR_MULTIPLE"                     Value="280"/>
-                <Set Name="MCIERR_EXTENSION_NOT_FOUND"          Value="281"/>
-                <Set Name="MCIERR_OUTOFRANGE"                   Value="282"/>
-                <Set Name="MCIERR_FLAGS_NOT_COMPATIBLE"         Value="284"/>
-                <Set Name="MCIERR_FILE_NOT_SAVED"               Value="286"/>
-                <Set Name="MCIERR_DEVICE_TYPE_REQUIRED"         Value="287"/>
-                <Set Name="MCIERR_DEVICE_LOCKED"                Value="288"/>
-                <Set Name="MCIERR_DUPLICATE_ALIAS"              Value="289"/>
-                <Set Name="MCIERR_BAD_CONSTANT"                 Value="290"/>
-                <Set Name="MCIERR_MUST_USE_SHAREABLE"           Value="291"/>
-                <Set Name="MCIERR_MISSING_DEVICE_NAME"          Value="292"/>
-                <Set Name="MCIERR_BAD_TIME_FORMAT"              Value="293"/>
-                <Set Name="MCIERR_NO_CLOSING_QUOTE"             Value="294"/>
-                <Set Name="MCIERR_DUPLICATE_FLAGS"              Value="295"/>
-                <Set Name="MCIERR_INVALID_FILE"                 Value="296"/>
-                <Set Name="MCIERR_NULL_PARAMETER_BLOCK"         Value="297"/>
-                <Set Name="MCIERR_UNNAMED_RESOURCE"             Value="298"/>
-                <Set Name="MCIERR_NEW_REQUIRES_ALIAS"           Value="299"/>
-                <Set Name="MCIERR_NOTIFY_ON_AUTO_OPEN"          Value="300"/>
-                <Set Name="MCIERR_NO_ELEMENT_ALLOWED"           Value="301"/>
-                <Set Name="MCIERR_NONAPPLICABLE_FUNCTION"       Value="302"/>
-                <Set Name="MCIERR_ILLEGAL_FOR_AUTO_OPEN"        Value="303"/>
-                <Set Name="MCIERR_FILENAME_REQUIRED"            Value="304"/>
-                <Set Name="MCIERR_EXTRA_CHARACTERS"             Value="305"/>
-                <Set Name="MCIERR_DEVICE_NOT_INSTALLED"         Value="306"/>
-                <Set Name="MCIERR_GET_CD"                       Value="307"/>
-                <Set Name="MCIERR_SET_CD"                       Value="308"/>
-                <Set Name="MCIERR_SET_DRIVE"                    Value="309"/>
-                <Set Name="MCIERR_DEVICE_LENGTH"                Value="310"/>
-                <Set Name="MCIERR_DEVICE_ORD_LENGTH"            Value="311"/>
-                <Set Name="MCIERR_NO_INTEGER"                   Value="312"/>
-                <Set Name="MCIERR_WAVE_OUTPUTSINUSE"            Value="320"/>
-                <Set Name="MCIERR_WAVE_SETOUTPUTINUSE"          Value="321"/>
-                <Set Name="MCIERR_WAVE_INPUTSINUSE"             Value="322"/>
-                <Set Name="MCIERR_WAVE_SETINPUTINUSE"           Value="323"/>
-                <Set Name="MCIERR_WAVE_OUTPUTUNSPECIFIED"       Value="324"/>
-                <Set Name="MCIERR_WAVE_INPUTUNSPECIFIED"        Value="325"/>
-                <Set Name="MCIERR_WAVE_OUTPUTSUNSUITABLE"       Value="326"/>
-                <Set Name="MCIERR_WAVE_SETOUTPUTUNSUITABLE"     Value="327"/>
-                <Set Name="MCIERR_WAVE_INPUTSUNSUITABLE"        Value="328"/>
-                <Set Name="MCIERR_WAVE_SETINPUTUNSUITABLE"      Value="329"/>
-                <Set Name="MCIERR_SEQ_DIV_INCOMPATIBLE"         Value="336"/>
-                <Set Name="MCIERR_SEQ_PORT_INUSE"               Value="337"/>
-                <Set Name="MCIERR_SEQ_PORT_NONEXISTENT"         Value="338"/>
-                <Set Name="MCIERR_SEQ_PORT_MAPNODEVICE"         Value="339"/>
-                <Set Name="MCIERR_SEQ_PORT_MISCERROR"           Value="340"/>
-                <Set Name="MCIERR_SEQ_TIMER"                    Value="341"/>
-                <Set Name="MCIERR_SEQ_PORTUNSPECIFIED"          Value="342"/>
-                <Set Name="MCIERR_SEQ_NOMIDIPRESENT"            Value="343"/>
-                <Set Name="MCIERR_NO_WINDOW"                    Value="346"/>
-                <Set Name="MCIERR_CREATEWINDOW"                 Value="347"/>
-                <Set Name="MCIERR_FILE_READ"                    Value="348"/>
-                <Set Name="MCIERR_FILE_WRITE"                   Value="349"/>
-                <Set Name="MCIERR_NO_IDENTITY"                  Value="350"/>
+                <Set Name="MCIERR_INVALID_DEVICE_ID"            Value="257" />
+                <Set Name="MCIERR_UNRECOGNIZED_KEYWORD"         Value="259" />
+                <Set Name="MCIERR_UNRECOGNIZED_COMMAND"         Value="261" />
+                <Set Name="MCIERR_HARDWARE"                     Value="262" />
+                <Set Name="MCIERR_INVALID_DEVICE_NAME"          Value="263" />
+                <Set Name="MCIERR_OUT_OF_MEMORY"                Value="264" />
+                <Set Name="MCIERR_DEVICE_OPEN"                  Value="265" />
+                <Set Name="MCIERR_CANNOT_LOAD_DRIVER"           Value="266" />
+                <Set Name="MCIERR_MISSING_COMMAND_STRING"       Value="267" />
+                <Set Name="MCIERR_PARAM_OVERFLOW"               Value="268" />
+                <Set Name="MCIERR_MISSING_STRING_ARGUMENT"      Value="269" />
+                <Set Name="MCIERR_BAD_INTEGER"                  Value="270" />
+                <Set Name="MCIERR_PARSER_INTERNAL"              Value="271" />
+                <Set Name="MCIERR_DRIVER_INTERNAL"              Value="272" />
+                <Set Name="MCIERR_MISSING_PARAMETER"            Value="273" />
+                <Set Name="MCIERR_UNSUPPORTED_FUNCTION"         Value="274" />
+                <Set Name="MCIERR_FILE_NOT_FOUND"               Value="275" />
+                <Set Name="MCIERR_DEVICE_NOT_READY"             Value="276" />
+                <Set Name="MCIERR_INTERNAL"                     Value="277" />
+                <Set Name="MCIERR_DRIVER"                       Value="278" />
+                <Set Name="MCIERR_CANNOT_USE_ALL"               Value="279" />
+                <Set Name="MCIERR_MULTIPLE"                     Value="280" />
+                <Set Name="MCIERR_EXTENSION_NOT_FOUND"          Value="281" />
+                <Set Name="MCIERR_OUTOFRANGE"                   Value="282" />
+                <Set Name="MCIERR_FLAGS_NOT_COMPATIBLE"         Value="284" />
+                <Set Name="MCIERR_FILE_NOT_SAVED"               Value="286" />
+                <Set Name="MCIERR_DEVICE_TYPE_REQUIRED"         Value="287" />
+                <Set Name="MCIERR_DEVICE_LOCKED"                Value="288" />
+                <Set Name="MCIERR_DUPLICATE_ALIAS"              Value="289" />
+                <Set Name="MCIERR_BAD_CONSTANT"                 Value="290" />
+                <Set Name="MCIERR_MUST_USE_SHAREABLE"           Value="291" />
+                <Set Name="MCIERR_MISSING_DEVICE_NAME"          Value="292" />
+                <Set Name="MCIERR_BAD_TIME_FORMAT"              Value="293" />
+                <Set Name="MCIERR_NO_CLOSING_QUOTE"             Value="294" />
+                <Set Name="MCIERR_DUPLICATE_FLAGS"              Value="295" />
+                <Set Name="MCIERR_INVALID_FILE"                 Value="296" />
+                <Set Name="MCIERR_NULL_PARAMETER_BLOCK"         Value="297" />
+                <Set Name="MCIERR_UNNAMED_RESOURCE"             Value="298" />
+                <Set Name="MCIERR_NEW_REQUIRES_ALIAS"           Value="299" />
+                <Set Name="MCIERR_NOTIFY_ON_AUTO_OPEN"          Value="300" />
+                <Set Name="MCIERR_NO_ELEMENT_ALLOWED"           Value="301" />
+                <Set Name="MCIERR_NONAPPLICABLE_FUNCTION"       Value="302" />
+                <Set Name="MCIERR_ILLEGAL_FOR_AUTO_OPEN"        Value="303" />
+                <Set Name="MCIERR_FILENAME_REQUIRED"            Value="304" />
+                <Set Name="MCIERR_EXTRA_CHARACTERS"             Value="305" />
+                <Set Name="MCIERR_DEVICE_NOT_INSTALLED"         Value="306" />
+                <Set Name="MCIERR_GET_CD"                       Value="307" />
+                <Set Name="MCIERR_SET_CD"                       Value="308" />
+                <Set Name="MCIERR_SET_DRIVE"                    Value="309" />
+                <Set Name="MCIERR_DEVICE_LENGTH"                Value="310" />
+                <Set Name="MCIERR_DEVICE_ORD_LENGTH"            Value="311" />
+                <Set Name="MCIERR_NO_INTEGER"                   Value="312" />
+                <Set Name="MCIERR_WAVE_OUTPUTSINUSE"            Value="320" />
+                <Set Name="MCIERR_WAVE_SETOUTPUTINUSE"          Value="321" />
+                <Set Name="MCIERR_WAVE_INPUTSINUSE"             Value="322" />
+                <Set Name="MCIERR_WAVE_SETINPUTINUSE"           Value="323" />
+                <Set Name="MCIERR_WAVE_OUTPUTUNSPECIFIED"       Value="324" />
+                <Set Name="MCIERR_WAVE_INPUTUNSPECIFIED"        Value="325" />
+                <Set Name="MCIERR_WAVE_OUTPUTSUNSUITABLE"       Value="326" />
+                <Set Name="MCIERR_WAVE_SETOUTPUTUNSUITABLE"     Value="327" />
+                <Set Name="MCIERR_WAVE_INPUTSUNSUITABLE"        Value="328" />
+                <Set Name="MCIERR_WAVE_SETINPUTUNSUITABLE"      Value="329" />
+                <Set Name="MCIERR_SEQ_DIV_INCOMPATIBLE"         Value="336" />
+                <Set Name="MCIERR_SEQ_PORT_INUSE"               Value="337" />
+                <Set Name="MCIERR_SEQ_PORT_NONEXISTENT"         Value="338" />
+                <Set Name="MCIERR_SEQ_PORT_MAPNODEVICE"         Value="339" />
+                <Set Name="MCIERR_SEQ_PORT_MISCERROR"           Value="340" />
+                <Set Name="MCIERR_SEQ_TIMER"                    Value="341" />
+                <Set Name="MCIERR_SEQ_PORTUNSPECIFIED"          Value="342" />
+                <Set Name="MCIERR_SEQ_NOMIDIPRESENT"            Value="343" />
+                <Set Name="MCIERR_NO_WINDOW"                    Value="346" />
+                <Set Name="MCIERR_CREATEWINDOW"                 Value="347" />
+                <Set Name="MCIERR_FILE_READ"                    Value="348" />
+                <Set Name="MCIERR_FILE_WRITE"                   Value="349" />
+                <Set Name="MCIERR_NO_IDENTITY"                  Value="350" />
             </Enum>
+            <Success Return="Equal" Value="0" />
         </Variable>
 
         <!-- [waveInOutOpenFlags] -->
@@ -894,14 +903,49 @@
         </Variable>
         <Variable Name="LPMMTIME" Type="Pointer" Base="MMTIME" />
 
-        <!-- Multimedia -->
-        <Category Name="Audio and Video/Legacy Audio and Video/Windows Multimedia" />
+        <!-- [SND_FLAGS] -->
+        <Variable Name="[SND_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="SND_SYNC"            Value="0x0000" />
+                <Set Name="SND_ASYNC"           Value="0x0001" />
+                <Set Name="SND_NODEFAULT"       Value="0x0002" />
+                <Set Name="SND_MEMORY"          Value="0x0004" />
+                <Set Name="SND_LOOP"            Value="0x0008" />
+                <Set Name="SND_NOSTOP"          Value="0x0010" />
+                <Set Name="SND_NOWAIT"          Value="0x00002000" />
+                <Set Name="SND_ALIAS"           Value="0x00010000" />
+                <Set Name="SND_ALIAS_ID"        Value="0x00110000" />
+                <Set Name="SND_FILENAME"        Value="0x00020000" />
+                <Set Name="SND_RESOURCE"        Value="0x00040004" />
+                <Set Name="SND_PURGE"           Value="0x0040" />
+                <Set Name="SND_APPLICATION"     Value="0x0080" />
+                <Set Name="SND_SENTRY"          Value="0x00080000" />
+                <Set Name="SND_RING"            Value="0x00100000" />
+                <Set Name="SND_SYSTEM"          Value="0x00200000" />
+            </Enum>
+        </Variable>
+
+        <!-- [DCB_FLAGS] -->
+        <Variable Name="[DCB_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="DCB_NULL"        Value="0x0000" />
+                <Set Name="DCB_WINDOW"      Value="0x0001" />
+                <Set Name="DCB_TASK"        Value="0x0002" />
+                <Set Name="DCB_FUNCTION"    Value="0x0003" />
+                <Set Name="DCB_EVENT"       Value="0x0005" />
+                <Set Name="DCB_NOSWITCH"    Value="0x0008" />
+            </Flag>
+        </Variable>
+
+        <!-- Auxiliary Devices -->
+        <Category Name="Audio and Video/Legacy Audio and Video/Windows Multimedia/Multimedia Audio/Waveform Audio/Auxiliary Devices" />
         <Api Name="auxGetDevCaps" BothCharset="True">
             <Param Type="UINT_PTR" Name="uDeviceID" />
             <Param Type="LPAUXCAPS" Name="lpCaps" />
             <Param Type="UINT" Name="cbCaps" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="auxGetNumDevs">
             <Return Type="UINT" />
@@ -911,7 +955,6 @@
             <Param Type="UINT" Name="uDeviceID" />
             <Param Type="LPDWORD" Name="lpdwVolume" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="auxOutMessage">
             <Param Type="UINT" Name="uDeviceID" />
@@ -924,19 +967,19 @@
             <Param Type="UINT" Name="uDeviceID" />
             <Param Type="DWORD" Name="dwVolume" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
+
+        <!-- Joysticks -->
+        <Category Name="Audio and Video/Legacy Audio and Video/Windows Multimedia/Multimedia Input/Joysticks" />
         <Api Name="joyConfigChanged">
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="joyGetDevCaps" BothCharset="True">
             <Param Type="UINT_PTR" Name="uJoyID" />
             <Param Type="LPJOYCAPS" Name="pjc" />
             <Param Type="UINT" Name="cbjc" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="joyGetNumDevs">
             <Return Type="UINT" />
@@ -946,24 +989,20 @@
             <Param Type="UINT" Name="uJoyID" />
             <Param Type="LPJOYINFO" Name="pji" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="joyGetPosEx">
             <Param Type="UINT" Name="uJoyID" />
             <Param Type="LPJOYINFOEX" Name="pji" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="joyGetThreshold">
             <Param Type="UINT" Name="uJoyID" />
             <Param Type="LPUINT" Name="puThreshold" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="joyReleaseCapture">
             <Param Type="UINT" Name="uJoyID" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="joySetCapture">
             <Param Type="HWND" Name="hwnd" />
@@ -971,18 +1010,18 @@
             <Param Type="UINT" Name="uPeriod" />
             <Param Type="BOOL" Name="fChanged" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="joySetThreshold">
             <Param Type="UINT" Name="uJoyID" />
             <Param Type="UINT" Name="uThreshold" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
+
+        <!-- MCI -->
+        <Category Name="Audio and Video/Legacy Audio and Video/Windows Multimedia/MCI" />
         <Api Name="mciExecute">
             <Param Type="LPCSTR" Name="pszCommand" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="mciGetCreatorTask">
             <Param Type="MCIDEVICEID" Name="IDDevice" />
@@ -1005,7 +1044,6 @@
             <Param Type="LPTSTR" Name="lpszErrorText" />
             <Param Type="UINT" Name="cchErrorText" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="mciGetYieldProc">
             <Param Type="MCIDEVICEID" Name="IDDevice" />
@@ -1019,7 +1057,6 @@
             <Param Type="DWORD" Name="fdwCommand" />
             <Param Type="DWORD_PTR" Name="dwParam" />
             <Return Type="MCIERROR" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="mciSendString" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszCommand" />
@@ -1027,7 +1064,6 @@
             <Param Type="UINT" Name="cchReturn" />
             <Param Type="HANDLE" Name="hwndCallback" />
             <Return Type="MCIERROR" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="mciSetYieldProc">
             <Param Type="MCIDEVICEID" Name="IDDevice" />
@@ -1036,51 +1072,47 @@
             <Return Type="UINT" />
             <Success Return="NotEqual" Value="0" />
         </Api>
+
+        <!-- Musical Instrument Digital Interface (MIDI) -->
+        <Category Name="Audio and Video/Legacy Audio and Video/Windows Multimedia/Multimedia Audio/Musical Instrument Digital Interface (MIDI)" />
         <Api Name="midiConnect">
             <Param Type="HMIDI" Name="hMidi" />
             <Param Type="HMIDIOUT" Name="hmo" />
             <Param Type="LPVOID" Name="pReserved" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiDisconnect">
             <Param Type="HMIDI" Name="hMidi" />
             <Param Type="HMIDIOUT" Name="hmo" />
             <Param Type="LPVOID" Name="pReserved" />
             <Return Type="MMRESULT" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="midiInAddBuffer">
             <Param Type="HMIDIIN" Name="hMidiIn" />
             <Param Type="LPMIDIHDR" Name="lpMidiInHdr" />
             <Param Type="UINT" Name="cbMidiInHdr" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiInClose">
             <Param Type="HMIDIIN" Name="hMidiIn" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiInGetDevCaps" BothCharset="True">
             <Param Type="UINT_PTR" Name="uDeviceID" />
             <Param Type="LPMIDIINCAPS" Name="lpMidiInCaps" />
             <Param Type="UINT" Name="cbMidiInCaps" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiInGetErrorText" BothCharset="True">
             <Param Type="MMRESULT" Name="wError" />
             <Param Type="LPTSTR" Name="lpText" />
             <Param Type="UINT" Name="cchText" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiInGetID">
             <Param Type="HMIDIIN" Name="hmi" />
             <Param Type="LPUINT" Name="puDeviceID" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiInGetNumDevs">
             <Return Type="UINT" />
@@ -1100,36 +1132,30 @@
             <Param Type="DWORD_PTR" Name="dwCallbackInstance" />
             <Param Type="[midiInOutOpenFlags]" Name="dwFlags" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiInPrepareHeader">
             <Param Type="HMIDIIN" Name="hMidiIn" />
             <Param Type="LPMIDIHDR" Name="lpMidiInHdr" />
             <Param Type="UINT" Name="cbMidiInHdr" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiInReset">
             <Param Type="HMIDIIN" Name="hMidiIn" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiInStart">
             <Param Type="HMIDIIN" Name="hMidiIn" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiInStop">
             <Param Type="HMIDIIN" Name="hMidiIn" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiInUnprepareHeader">
             <Param Type="HMIDIIN" Name="hMidiIn" />
             <Param Type="LPMIDIHDR" Name="lpMidiInHdr" />
             <Param Type="UINT" Name="cbMidiInHdr" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiOutCacheDrumPatches">
             <Param Type="HMIDIOUT" Name="hmo" />
@@ -1137,7 +1163,6 @@
             <Param Type="WORD*" Name="lpKeyArray" />
             <Param Type="UINT" Name="wFlags" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiOutCachePatches">
             <Param Type="HMIDIOUT" Name="hmo" />
@@ -1145,19 +1170,16 @@
             <Param Type="WORD*" Name="lpPatchArray" />
             <Param Type="UINT" Name="wFlags" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiOutClose">
             <Param Type="HMIDIOUT" Name="hmo" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiOutGetDevCaps" BothCharset="True">
             <Param Type="UINT_PTR" Name="uDeviceID" />
             <Param Type="LPMIDIOUTCAPS" Name="lpMidiOutCaps" />
             <Param Type="UINT" Name="cbMidiOutCaps" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiOutGetErrorText" BothCharset="True">
             <Param Type="MMRESULT" Name="mmrError" />
@@ -1170,7 +1192,6 @@
             <Param Type="HMIDIOUT" Name="hmo" />
             <Param Type="LPUINT" Name="puDeviceID" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiOutGetNumDevs">
             <Return Type="UINT" />
@@ -1180,14 +1201,12 @@
             <Param Type="HMIDIOUT" Name="hmo" />
             <Param Type="LPDWORD" Name="lpdwVolume" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiOutLongMsg">
             <Param Type="HMIDIOUT" Name="hmo" />
             <Param Type="LPMIDIHDR" Name="lpMidiOutHdr" />
             <Param Type="UINT" Name="cbMidiOutHdr" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiOutMessage">
             <Param Type="HMIDIOUT" Name="deviceID" />
@@ -1203,43 +1222,36 @@
             <Param Type="DWORD_PTR" Name="dwCallbackInstance" />
             <Param Type="[midiInOutOpenFlags]" Name="dwFlags" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiOutPrepareHeader">
             <Param Type="HMIDIOUT" Name="hmo" />
             <Param Type="LPMIDIHDR" Name="lpMidiOutHdr" />
             <Param Type="UINT" Name="cbMidiOutHdr" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiOutReset">
             <Param Type="HMIDIOUT" Name="hmo" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiOutSetVolume">
             <Param Type="HMIDIOUT" Name="hmo" />
             <Param Type="DWORD" Name="dwVolume" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiOutShortMsg">
             <Param Type="HMIDIOUT" Name="hmo" />
             <Param Type="DWORD" Name="dwMsg" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiOutUnprepareHeader">
             <Param Type="HMIDIOUT" Name="hmo" />
             <Param Type="LPMIDIHDR" Name="lpMidiOutHdr" />
             <Param Type="UINT" Name="cbMidiOutHdr" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiStreamClose">
             <Param Type="HMIDISTRM" Name="hStream" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiStreamOpen">
             <Param Type="LPHMIDISTRM" Name="lphStream" />
@@ -1249,83 +1261,73 @@
             <Param Type="DWORD_PTR" Name="dwInstance" />
             <Param Type="DWORD" Name="fdwOpen" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiStreamOut">
             <Param Type="HMIDISTRM" Name="hMidiStream" />
             <Param Type="LPMIDIHDR" Name="lpMidiHdr" />
             <Param Type="UINT" Name="cbMidiHdr" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiStreamPause">
             <Param Type="HMIDISTRM" Name="hms" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiStreamPosition">
             <Param Type="HMIDISTRM" Name="hms" />
             <Param Type="LPMMTIME" Name="pmmt" />
             <Param Type="UINT" Name="cbmmt" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiStreamProperty">
             <Param Type="HMIDISTRM" Name="hm" />
             <Param Type="LPBYTE" Name="lppropdata" />
             <Param Type="DWORD" Name="dwProperty" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiStreamRestart">
             <Param Type="HMIDISTRM" Name="hms" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="midiStreamStop">
             <Param Type="HMIDISTRM" Name="hms" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
+
+        <!-- Audio Mixers -->
+        <Category Name="Audio and Video/Legacy Audio and Video/Windows Multimedia/Multimedia Audio/Audio Mixers" />
         <Api Name="mixerClose">
             <Param Type="HMIXER" Name="hmx" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="mixerGetControlDetails" BothCharset="True">
             <Param Type="HMIXEROBJ" Name="hmxobj" />
             <Param Type="LPMIXERCONTROLDETAILS" Name="pmxcd" />
             <Param Type="DWORD" Name="fdwDetails" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="mixerGetDevCaps" BothCharset="True">
             <Param Type="UINT_PTR" Name="uMxId" />
             <Param Type="LPMIXERCAPS" Name="pmxcaps" />
             <Param Type="UINT" Name="cbmxcaps" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="mixerGetID">
             <Param Type="HMIXEROBJ" Name="hmxobj" />
             <Param Type="UINT*" Name="puMxId" />
             <Param Type="DWORD" Name="fdwId" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="mixerGetLineControls" BothCharset="True">
             <Param Type="HMIXEROBJ" Name="hmxobj" />
             <Param Type="LPMIXERLINECONTROLS" Name="pmxlc" />
             <Param Type="DWORD" Name="fdwControls" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="mixerGetLineInfo" BothCharset="True">
             <Param Type="HMIXEROBJ" Name="hmxobj" />
             <Param Type="LPMIXERLINE" Name="pmxl" />
             <Param Type="DWORD" Name="fdwInfo" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="mixerGetNumDevs">
             <Return Type="UINT" />
@@ -1345,41 +1347,38 @@
             <Param Type="DWORD_PTR" Name="dwInstance" />
             <Param Type="DWORD" Name="fdwOpen" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="mixerSetControlDetails">
             <Param Type="HMIXEROBJ" Name="hmxobj" />
             <Param Type="LPMIXERCONTROLDETAILS" Name="pmxcd" />
             <Param Type="DWORD" Name="fdwDetails" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
+
+        <!-- Multimedia File I/O -->
+        <Category Name="Audio and Video/Legacy Audio and Video/Windows Multimedia/Multimedia Input/Multimedia File IO" />
         <Api Name="mmioAdvance">
             <Param Type="HMMIO" Name="hmmio" />
             <Param Type="LPMMIOINFO" Name="lpmmioinfo" />
             <Param Type="UINT" Name="wFlags" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="mmioAscend">
             <Param Type="HMMIO" Name="hmmio" />
             <Param Type="LPMMCKINFO" Name="lpck" />
             <Param Type="UINT" Name="wFlags" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="mmioClose">
             <Param Type="HMMIO" Name="hmmio" />
             <Param Type="[mmioCloseFlags]" Name="wFlags" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="mmioCreateChunk">
             <Param Type="HMMIO" Name="hmmio" />
             <Param Type="LPMMCKINFO" Name="lpck" />
             <Param Type="[mmioCreateChunkFlags]" Name="wFlags" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="mmioDescend">
             <Param Type="HMMIO" Name="hmmio" />
@@ -1387,20 +1386,17 @@
             <Param Type="LPMMCKINFO" Name="lpckParent" />
             <Param Type="[mmioDescendFlags]" Name="wFlags" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="mmioFlush">
             <Param Type="HMMIO" Name="hmmio" />
             <Param Type="[mmioFlushFlags]" Name="fuFlush" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="mmioGetInfo">
             <Param Type="HMMIO" Name="hmmio" />
             <Param Type="LPMMIOINFO" Name="lpmmioinfo" />
             <Param Type="UINT" Name="wFlags" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="mmioInstallIOProc" BothCharset="True">
             <Param Type="FOURCC" Name="fccIOProc" />
@@ -1418,10 +1414,10 @@
         </Api>
         <Api Name="mmioRead">
             <Param Type="HMMIO" Name="hmmio" />
-            <Param Type="HPSTR" Name="pch" />
+            <Param Type="HPSTR" Name="pch" PostLength="Return" />
             <Param Type="LONG" Name="cch" />
             <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="NotEqual" Value="-1" />
         </Api>
         <Api Name="mmioRename" BothCharset="True">
             <Param Type="LPCTSTR" Name="szFilename" />
@@ -1429,7 +1425,6 @@
             <Param Type="const LPMMIOINFO" Name="lpmmioinfo" />
             <Param Type="DWORD" Name="dwRenameFlags" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="mmioSeek">
             <Param Type="HMMIO" Name="hmmio" />
@@ -1452,71 +1447,52 @@
             <Param Type="LONG" Name="cchBuffer" />
             <Param Type="UINT" Name="wFlags" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="mmioSetInfo">
             <Param Type="HMMIO" Name="hmmio" />
             <Param Type="LPMMIOINFO" Name="lpmmioinfo" />
             <Param Type="UINT" Name="wFlags" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="mmioStringToFOURCC" BothCharset="True">
             <Param Type="LPCTSTR" Name="sz" />
             <Param Type="[mmioStringToFOURCCFlags]" Name="wFlags" />
             <Return Type="FOURCC" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="mmioWrite">
             <Param Type="HMMIO" Name="hmmio" />
-            <Param Type="[LPVOID_char*]" Name="pch" />
+            <Param Type="[LPVOID|char*]" Name="pch" Length="cch" />
             <Param Type="LONG" Name="cch" />
             <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="NotEqual" Value="-1" />
         </Api>
-        <Api Name="PlaySound" BothCharset="True">
-            <Param Type="LPCTSTR" Name="pszSound" />
-            <Param Type="HMODULE" Name="hmod" />
-            <Param Type="DWORD" Name="fdwSound" />
-            <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
-        </Api>
-        <Api Name="sndPlaySound" BothCharset="True">
-            <Param Type="LPCTSTR" Name="lpszSound" />
-            <Param Type="UINT" Name="fuSound" />
-            <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
-        </Api>
+
+        <!-- Multimedia Timers -->
+        <Category Name="Audio and Video/Legacy Audio and Video/Windows Multimedia/Multimedia Input/Multimedia Timers" />
         <Api Name="timeBeginPeriod">
             <Param Type="UINT" Name="uPeriod" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="timeEndPeriod">
             <Param Type="UINT" Name="uPeriod" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="timeGetDevCaps">
             <Param Type="LPTIMECAPS" Name="ptc" />
             <Param Type="UINT" Name="cbtc" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="timeGetSystemTime">
             <Param Type="LPMMTIME" Name="pmmt" />
             <Param Type="UINT" Name="cbmmt" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="timeGetTime">
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="timeKillEvent">
             <Param Type="UINT" Name="uTimerID" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="timeSetEvent">
             <Param Type="UINT" Name="uDelay" />
@@ -1527,37 +1503,35 @@
             <Return Type="MMRESULT" />
             <Success Return="NotEqual" Value="0" />
         </Api>
+
+        <!-- Recording -->
+        <Category Name="Audio and Video/Legacy Audio and Video/Windows Multimedia/Multimedia Audio/Waveform Audio/Recording" />
         <Api Name="waveInAddBuffer">
             <Param Type="HWAVEIN" Name="hwi" />
             <Param Type="LPWAVEHDR" Name="pwh" />
             <Param Type="UINT" Name="cbwh" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveInClose">
             <Param Type="HWAVEIN" Name="hwi" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveInGetDevCaps" BothCharset="True">
             <Param Type="UINT_PTR" Name="uDeviceID" />
             <Param Type="LPWAVEINCAPS" Name="pwic" />
             <Param Type="UINT" Name="cbwic" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveInGetErrorText" BothCharset="True">
             <Param Type="MMRESULT" Name="mmrError" />
             <Param Type="LPTSTR" Name="pszText" />
             <Param Type="UINT" Name="cchText" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveInGetID">
             <Param Type="HWAVEIN" Name="hwi" />
             <Param Type="LPUINT" Name="puDeviceID" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveInGetNumDevs">
             <Return Type="UINT" />
@@ -1568,7 +1542,6 @@
             <Param Type="LPMMTIME" Name="pmmt" />
             <Param Type="UINT" Name="cbmmt" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveInMessage">
             <Param Type="HWAVEIN" Name="deviceID" />
@@ -1585,66 +1558,58 @@
             <Param Type="DWORD_PTR" Name="dwCallbackInstance" />
             <Param Type="[waveInOutOpenFlags]" Name="fdwOpen" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveInPrepareHeader">
             <Param Type="HWAVEIN" Name="hwi" />
             <Param Type="LPWAVEHDR" Name="pwh" />
             <Param Type="UINT" Name="cbwh" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveInReset">
             <Param Type="HWAVEIN" Name="hwi" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveInStart">
             <Param Type="HWAVEIN" Name="hwi" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveInStop">
             <Param Type="HWAVEIN" Name="hwi" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveInUnprepareHeader">
             <Param Type="HWAVEIN" Name="hwi" />
             <Param Type="LPWAVEHDR" Name="pwh" />
             <Param Type="UINT" Name="cbwh" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
+
+        <!-- Playing -->
+        <Category Name="Audio and Video/Legacy Audio and Video/Windows Multimedia/Multimedia Audio/Waveform Audio/Playing" />
         <Api Name="waveOutBreakLoop">
             <Param Type="HWAVEOUT" Name="hwo" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveOutClose">
             <Param Type="HWAVEOUT" Name="hwo" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveOutGetDevCaps" BothCharset="True">
             <Param Type="UINT_PTR" Name="uDeviceID" />
             <Param Type="LPWAVEOUTCAPS" Name="pwoc" />
             <Param Type="UINT" Name="cbwoc" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveOutGetErrorText" BothCharset="True">
             <Param Type="MMRESULT" Name="mmrError" />
             <Param Type="LPTSTR" Name="pszText" />
             <Param Type="UINT" Name="cchText" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveOutGetID">
             <Param Type="HWAVEOUT" Name="hwo" />
             <Param Type="LPUINT" Name="puDeviceID" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveOutGetNumDevs">
             <Return Type="UINT" />
@@ -1654,26 +1619,22 @@
             <Param Type="HWAVEOUT" Name="hwo" />
             <Param Type="LPDWORD" Name="pdwPitch" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveOutGetPlaybackRate">
             <Param Type="HWAVEOUT" Name="hwo" />
             <Param Type="LPDWORD" Name="pdwRate" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveOutGetPosition">
             <Param Type="HWAVEOUT" Name="hwo" />
             <Param Type="LPMMTIME" Name="pmmt" />
             <Param Type="UINT" Name="cbmmt" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveOutGetVolume">
             <Param Type="HWAVEOUT" Name="hwo" />
             <Param Type="LPDWORD" Name="pdwVolume" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveOutMessage">
             <Param Type="HWAVEOUT" Name="deviceID" />
@@ -1690,61 +1651,153 @@
             <Param Type="DWORD_PTR" Name="dwCallbackInstance" />
             <Param Type="[waveInOutOpenFlags]" Name="fdwOpen" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveOutPause">
             <Param Type="HWAVEOUT" Name="hwo" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveOutPrepareHeader">
             <Param Type="HWAVEOUT" Name="hwo" />
             <Param Type="LPWAVEHDR" Name="pwh" />
             <Param Type="UINT" Name="cbwh" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveOutReset">
             <Param Type="HWAVEOUT" Name="hwo" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveOutRestart">
             <Param Type="HWAVEOUT" Name="hwo" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveOutSetPitch">
             <Param Type="HWAVEOUT" Name="hwo" />
             <Param Type="DWORD" Name="dwPitch" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveOutSetPlaybackRate">
             <Param Type="HWAVEOUT" Name="hwo" />
             <Param Type="DWORD" Name="dwRate" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveOutSetVolume">
             <Param Type="HWAVEOUT" Name="hwo" />
             <Param Type="DWORD" Name="dwVolume" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveOutUnprepareHeader">
             <Param Type="HWAVEOUT" Name="hwo" />
             <Param Type="LPWAVEHDR" Name="pwh" />
             <Param Type="UINT" Name="cbwh" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="waveOutWrite">
             <Param Type="HWAVEOUT" Name="hwo" />
             <Param Type="LPWAVEHDR" Name="pwh" />
             <Param Type="UINT" Name="cbwh" />
             <Return Type="MMRESULT" />
-            <Success Return="Equal" Value="0" />
         </Api>
+
+        <!-- Easy Playback -->
+        <Category Name="Audio and Video/Legacy Audio and Video/Windows Multimedia/Multimedia Audio/Waveform Audio/Easy Playback" />
+        <Api Name="PlaySound" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszSound" />
+            <Param Type="HMODULE" Name="hmod" />
+            <Param Type="[SND_FLAGS]" Name="fdwSound" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="sndPlaySound" BothCharset="True">
+            <Param Type="LPCTSTR" Name="lpszSound" />
+            <Param Type="[SND_FLAGS]" Display="UINT" Name="fuSound" />
+            <Return Type="BOOL" />
+        </Api>
+
+        <!-- Installable Drivers -->
+        <Category Name="Audio and Video/Legacy Audio and Video/Windows Multimedia/Installable Drivers" />
+        <Api Name="CloseDriver">
+            <Param Type="HDRVR" Name="hDriver" />
+            <Param Type="LPARAM" Name="lParam1" />
+            <Param Type="LPARAM" Name="lParam2" />
+            <Return Type="LRESULT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DefDriverProc">
+            <Param Type="DWORD_PTR" Name="dwDriverIdentifier" />
+            <Param Type="HDRVR" Name="hdrvr" />
+            <Param Type="UINT" Name="uMsg" />
+            <Param Type="LPARAM" Name="lParam1" />
+            <Param Type="LPARAM" Name="lParam2" />
+            <Return Type="LRESULT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DriverCallback">
+            <Param Type="DWORD_PTR" Name="dwCallback" />
+            <Param Type="[DCB_FLAGS]" Name="dwFlags" />
+            <Param Type="HDRVR" Name="hDevice" />
+            <Param Type="DWORD" Name="dwMsg" />
+            <Param Type="DWORD_PTR" Name="dwUser" />
+            <Param Type="DWORD_PTR" Name="dwParam1" />
+            <Param Type="DWORD_PTR" Name="dwParam2" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="DrvGetModuleHandle">
+            <Param Type="HDRVR" Name="hDriver" />
+            <Return Type="HMODULE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetDriverModuleHandle">
+            <Param Type="HDRVR" Name="hDriver" />
+            <Return Type="HMODULE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="OpenDriver">
+            <Param Type="LPCWSTR" Name="szDriverName" />
+            <Param Type="LPCWSTR" Name="szSectionName" />
+            <Param Type="LPARAM" Name="lParam2" />
+            <Return Type="HDRVR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SendDriverMessage">
+            <Param Type="HDRVR" Name="hDriver" />
+            <Param Type="UINT" Name="message" />
+            <Param Type="LPARAM" Name="lParam1" />
+            <Param Type="LPARAM" Name="lParam2" />
+            <Return Type="LRESULT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+
+        <!-- Installable Drivers -->
+        <Category Name="Audio and Video/Legacy Audio and Video/Windows Multimedia/Deprecated" />
+        <Api Name="mmDrvInstall">
+            <Param Type="HDRVR" Name="hDriver" />
+            <Param Type="LPCWSTR" Name="wszDrvEntry" />
+            <Param Type="DRIVERMSGPROC" Name="drvMessage" />
+            <Param Type="UINT" Name="wFlags" />
+            <Return Type="UINT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="mmGetCurrentTask">
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="mmTaskBlock">
+            <Param Type="DWORD" Name="h" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="mmTaskCreate">
+            <Param Type="LPTASKCALLBACK" Name="lpfn" />
+            <Param Type="HANDLE*" Name="lph" />
+            <Param Type="DWORD_PTR" Name="dwInst" />
+            <Return Type="UINT" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="mmTaskSignal">
+            <Param Type="DWORD" Name="h" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="mmTaskYield">
+            <Return Type="VOID" />
+        </Api>
+
     </Module>
 </ApiMonitor>

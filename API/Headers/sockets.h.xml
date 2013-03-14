@@ -28,8 +28,9 @@
         <Variable Name="DWORD [MAX_PROTOCOL_CHAIN]"             Type="Array"    Base="DWORD"    Count="7" />
         <Variable Name="char [WSADESCRIPTION_LEN + 1]"          Type="Array"    Base="char"     Count="257" />
         <Variable Name="char [WSASYS_STATUS_LEN + 1]"           Type="Array"    Base="char"     Count="129" />
+        <Variable Name="char [14]"                              Type="Array"    Base="char"     Count="14" />
 
-        <!-- Variables (32-bit)  -->
+        <!-- Variables (32-bit) -->
         <Condition Architecture="32">
 
             <!-- WSADATA -->
@@ -40,7 +41,7 @@
                 <Field Type="char [WSASYS_STATUS_LEN + 1]"      Name="szSystemStatus" />
                 <Field Type="unsigned short"                    Name="iMaxSockets" />
                 <Field Type="unsigned short"                    Name="iMaxUdpDg" />
-                <Field Type="[LPVOID_char*]"                    Name="lpVendorInfo" />
+                <Field Type="[LPVOID|char*]"                    Name="lpVendorInfo" />
             </Variable>
             <Variable Name="LPWSADATA" Type="Pointer" Base="WSADATA" />
 
@@ -55,7 +56,7 @@
 
         </Condition>
 
-        <!-- Variables (64-bit)  -->
+        <!-- Variables (64-bit) -->
         <Condition Architecture="64">
 
             <!-- WSADATA -->
@@ -64,7 +65,7 @@
                 <Field Type="WORD"                              Name="wHighVersion" />
                 <Field Type="unsigned short"                    Name="iMaxSockets" />
                 <Field Type="unsigned short"                    Name="iMaxUdpDg" />
-                <Field Type="[LPVOID_char*]"                    Name="lpVendorInfo" />
+                <Field Type="[LPVOID|char*]"                    Name="lpVendorInfo" />
                 <Field Type="char [WSADESCRIPTION_LEN + 1]"     Name="szDescription" />
                 <Field Type="char [WSASYS_STATUS_LEN + 1]"      Name="szSystemStatus" />
             </Variable>
@@ -158,6 +159,11 @@
             </Enum>
         </Variable>
 
+        <!-- [ADDRESS_FAMILY_ushort] -->
+        <Variable Name="[ADDRESS_FAMILY_ushort]" Type="Alias" Base="ADDRESS_FAMILY">
+            <Display Name="u_short" />
+        </Variable>
+
         <!-- [ADDRESS_FAMILY_short] -->
         <Variable Name="[ADDRESS_FAMILY_short]" Type="Alias" Base="ADDRESS_FAMILY">
             <Display Name="short" />
@@ -211,9 +217,9 @@
         </Variable>
 
         <!-- struct sockaddr -->
-        <Variable Name="struct sockaddr" Type="Struct">
-            <Field Type="ADDRESS_FAMILY"    Name="sa_family" />
-            <Field Type="CHAR [14]"         Name="sa_data" />
+        <Variable Name="struct sockaddr"            Type="Struct">
+            <Field Type="[ADDRESS_FAMILY_ushort]"   Name="sa_family" />
+            <Field Type="char [14]"                 Name="sa_data" />
         </Variable>
         <Variable Name="struct sockaddr*"       Type="Pointer"  Base="struct sockaddr" />
         <Variable Name="const sockaddr*"        Type="Pointer"  Base="struct sockaddr" />
@@ -568,8 +574,8 @@
 
         <!-- BLOB -->
         <Variable Name="BLOB" Type="Struct">
-            <Field Type="ULONG" 	Name="cbSize"  />
-            <Field Type="BYTE*" 	Name="pBlobData" Length="cbSize"  />
+            <Field Type="ULONG" 	Name="cbSize" />
+            <Field Type="BYTE*" 	Name="pBlobData" Length="cbSize" />
         </Variable>
         <Variable Name="LPBLOB" Type="Pointer" Base="BLOB" />
 
@@ -629,10 +635,10 @@
         <!-- CSADDR_INFO -->
         <!-- TODO: Decode SocketType etc -->
         <Variable Name="CSADDR_INFO" Type="Struct">
-            <Field Type="SOCKET_ADDRESS" 	Name="LocalAddr"  />
-            <Field Type="SOCKET_ADDRESS" 	Name="RemoteAddr"  />
-            <Field Type="INT" 	            Name="iSocketType"  />
-            <Field Type="INT" 	            Name="iProtocol"  />
+            <Field Type="SOCKET_ADDRESS" 	Name="LocalAddr" />
+            <Field Type="SOCKET_ADDRESS" 	Name="RemoteAddr" />
+            <Field Type="INT" 	            Name="iSocketType" />
+            <Field Type="INT" 	            Name="iProtocol" />
         </Variable>
         <Variable Name="LPCSADDR_INFO" Type="Pointer" Base="CSADDR_INFO" />
 
@@ -659,9 +665,19 @@
         <!-- WSABUF -->
         <Variable Name="WSABUF" Type="Struct">
             <Field Type="u_long" Name="len" />
-            <Field Type="[LPVOID_char*]" Name="buf" Length="len" />
+            <Field Type="[LPVOID|char*]" Name="buf" Length="len" />
         </Variable>
         <Variable Name="LPWSABUF" Type="Pointer" Base="WSABUF" />
+
+        <!-- [WSABUF_IN] -->
+        <Variable Name="[WSABUF_IN]" Type="Struct">
+            <Display Name="WSABUF" />
+            <Field Type="u_long" Name="len" />
+            <Field Type="[LPVOID|char*]" Name="buf" PostLength="len" />
+        </Variable>
+        <Variable Name="[LPWSABUF_IN]" Type="Pointer" Base="[WSABUF_IN]">
+            <Display Name="LPWSABUF" />
+        </Variable>
 
         <!-- WSAMSG -->
         <Variable Name="WSAMSG" Type="Struct">

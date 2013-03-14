@@ -33,6 +33,12 @@
         <Variable Name="PFNCLOSE"                   Type="Alias"    Base="LPVOID" />
         <Variable Name="PFNSEEK"                    Type="Alias"    Base="LPVOID" />
         <Variable Name="HFILELIST"                  Type="Alias"    Base="void*" />
+        <Variable Name="COMPRESSOR_HANDLE"          Type="Alias"    Base="HANDLE" />
+        <Variable Name="PCOMPRESSOR_HANDLE"         Type="Pointer"  Base="COMPRESSOR_HANDLE" />
+        <Variable Name="DECOMPRESSOR_HANDLE"        Type="Alias"    Base="COMPRESSOR_HANDLE" />
+        <Variable Name="PDECOMPRESSOR_HANDLE"       Type="Pointer"  Base="DECOMPRESSOR_HANDLE" />
+        <Variable Name="PFN_COMPRESS_ALLOCATE"      Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFN_COMPRESS_FREE"          Type="Alias"    Base="LPVOID" />
 
         <!-- Arrays -->
         <Variable Name="char [CB_MAX_DISK_NAME]"    Type="Array"    Base="char" Count="256" />
@@ -233,8 +239,39 @@
         </Variable>
         <Variable Name="PCABINETDLLVERSIONINFO" Type="Pointer" Base="CABINETDLLVERSIONINFO" />
 
+        <!-- [COMPRESS_ALGORITHM] -->
+        <Variable Name="[COMPRESS_ALGORITHM]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="COMPRESS_ALGORITHM_INVALID"          Value="0" />
+                <Set Name="COMPRESS_ALGORITHM_NULL"             Value="1" />
+                <Set Name="COMPRESS_ALGORITHM_MSZIP"            Value="2" />
+                <Set Name="COMPRESS_ALGORITHM_XPRESS"           Value="3" />
+                <Set Name="COMPRESS_ALGORITHM_XPRESS_HUFF"      Value="4" />
+                <Set Name="COMPRESS_ALGORITHM_LZMS"             Value="5" />
+                <Set Name="COMPRESS_RAW"                        Value="0x20000000" />
+            </Flag>
+        </Variable>
+
+        <!-- COMPRESS_INFORMATION_CLASS -->
+        <Variable Name="COMPRESS_INFORMATION_CLASS" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="COMPRESS_INFORMATION_CLASS_INVALID"    	Value="0" />
+                <Set Name="COMPRESS_INFORMATION_CLASS_BLOCK_SIZE"   Value="1" />
+                <Set Name="COMPRESS_INFORMATION_CLASS_LEVEL"        Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- COMPRESS_ALLOCATION_ROUTINES -->
+        <Variable Name="COMPRESS_ALLOCATION_ROUTINES" Type="Struct">
+            <Field Type="PFN_COMPRESS_ALLOCATE"     Name="Allocate" />
+            <Field Type="PFN_COMPRESS_FREE"         Name="Free" />
+            <Field Type="PVOID"                     Name="UserContext" />
+        </Variable>
+        <Variable Name="PCOMPRESS_ALLOCATION_ROUTINES" Type="Pointer" Base="COMPRESS_ALLOCATION_ROUTINES" />
+
         <!-- File Compression Interface (FCI) -->
-        <Category Name="Additional Resources/Cabinet API/File Compression Interface (FCI)" />
+        <Category Name="Additional Resources/Cabinet/File Compression Interface (FCI)" />
         <Api Name="FCIAddFile">
             <Param Type="HFCI" Name="hfci" />
             <Param Type="LPSTR" Name="pszSourceFile" />
@@ -245,7 +282,6 @@
             <Param Type="PFNFCIGETOPENINFO" Name="pfnOpenInfo" />
             <Param Type="TCOMP" Name="typeCompress" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="FCICreate">
             <Param Type="[PERF_FCI]" Name="perf" />
@@ -267,7 +303,6 @@
         <Api Name="FCIDestroy">
             <Param Type="HFCI" Name="hfci" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="FCIFlushCabinet">
             <Param Type="HFCI" Name="hfci" />
@@ -275,18 +310,16 @@
             <Param Type="PFNFCIGETNEXTCABINET" Name="GetNextCab" />
             <Param Type="PFNFCISTATUS" Name="pfnProgress" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="FCIFlushFolder">
             <Param Type="HFCI" Name="hfci" />
             <Param Type="PFNFCIGETNEXTCABINET" Name="GetNextCab" />
             <Param Type="PFNFCISTATUS" Name="pfnProgress" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         
         <!-- File Decompression Interface (FDI) -->
-        <Category Name="Additional Resources/Cabinet API/File Decompression Interface (FDI)" />
+        <Category Name="Additional Resources/Cabinet/File Decompression Interface (FDI)" />
         <Api Name="FDICopy">
             <Param Type="HFDI" Name="hfdi" />
             <Param Type="LPSTR" Name="pszCabinet" />
@@ -296,7 +329,6 @@
             <Param Type="PFNFDIDECRYPT" Name="pfnfdid" />
             <Param Type="void*" Name="pvUser" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="FDICreate">
             <Param Type="PFNALLOC" Name="pfnalloc" />
@@ -314,25 +346,22 @@
         <Api Name="FDIDestroy">
             <Param Type="BOOL" Name="hfdi" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="FDIIsCabinet">
             <Param Type="HFDI" Name="hfdi" />
             <Param Type="INT_PTR" Name="hf" />
             <Param Type="PFDICABINETINFO" Name="pfdici" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="FDITruncateCabinet">
             <Param Type="HFDI" Name="hfdi" />
             <Param Type="LPSTR*" Name="pszCabinetName" />
             <Param Type="USHORT" Name="iFolderToDelete" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
 
         <!-- Deprecated -->
-        <Category Name="Additional Resources/Cabinet API/Deprecated" />
+        <Category Name="Additional Resources/Cabinet/Deprecated" />
         <Api Name="DeleteExtractedFiles">
             <Param Type="PSESSION" Name="ps" />
             <Return Type="VOID" />
@@ -349,6 +378,83 @@
         <Api Name="GetDllVersion">
             <Return Type="LPCSTR" />
             <Success Return="NotEqual" Value="0" />
+        </Api>
+
+        <!-- Compression -->
+        <Category Name="System Services/Compression" />
+        <Api Name="CloseCompressor">
+            <Param Type="COMPRESSOR_HANDLE" Name="CompressorHandle" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CloseDecompressor">
+            <Param Type="DECOMPRESSOR_HANDLE" Name="DecompressorHandle" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="Compress">
+            <Param Type="COMPRESSOR_HANDLE" Name="CompressorHandle" />
+            <Param Type="PVOID" Name="UncompressedData" Length="UncompressedDataSize" />
+            <Param Type="SIZE_T" Name="UncompressedDataSize" />
+            <Param Type="PVOID" Name="CompressedBuffer" PostLength="CompressedDataSize" />
+            <Param Type="SIZE_T" Name="CompressedBufferSize" />
+            <Param Type="PSIZE_T" Name="CompressedDataSize" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CreateCompressor">
+            <Param Type="[COMPRESS_ALGORITHM]" Name="Algorithm" />
+            <Param Type="PCOMPRESS_ALLOCATION_ROUTINES" Name="AllocationRoutines" />
+            <Param Type="PCOMPRESSOR_HANDLE" Name="CompressorHandle" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CreateDecompressor">
+            <Param Type="[COMPRESS_ALGORITHM]" Name="Algorithm" />
+            <Param Type="PCOMPRESS_ALLOCATION_ROUTINES" Name="AllocationRoutines" />
+            <Param Type="PDECOMPRESSOR_HANDLE" Name="DecompressorHandle" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="Decompress">
+            <Param Type="DECOMPRESSOR_HANDLE" Name="DecompressorHandle" />
+            <Param Type="PVOID" Name="CompressedData" Length="CompressedDataSize" />
+            <Param Type="SIZE_T" Name="CompressedDataSize" />
+            <Param Type="PVOID" Name="UncompressedBuffer" PostLength="UncompressedDataSize" />
+            <Param Type="SIZE_T" Name="UncompressedBufferSize" />
+            <Param Type="PSIZE_T" Name="UncompressedDataSize" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="QueryCompressorInformation">
+            <Param Type="COMPRESSOR_HANDLE" Name="CompressorHandle" />
+            <Param Type="COMPRESS_INFORMATION_CLASS" Name="CompressInformationClass" />
+            <Param Type="PVOID" Name="CompressInformation" PostLength="CompressInformationSize" />
+            <Param Type="SIZE_T" Name="CompressInformationSize" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="QueryDecompressorInformation">
+            <Param Type="DECOMPRESSOR_HANDLE" Name="DecompressorHandle" />
+            <Param Type="COMPRESS_INFORMATION_CLASS" Name="CompressInformationClass" />
+            <Param Type="PVOID" Name="CompressInformation" PostLength="CompressInformationSize" />
+            <Param Type="SIZE_T" Name="CompressInformationSize" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="ResetCompressor">
+            <Param Type="COMPRESSOR_HANDLE" Name="CompressorHandle" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="ResetDecompressor">
+            <Param Type="DECOMPRESSOR_HANDLE" Name="DecompressorHandle" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="SetCompressorInformation">
+            <Param Type="COMPRESSOR_HANDLE" Name="CompressorHandle" />
+            <Param Type="COMPRESS_INFORMATION_CLASS" Name="CompressInformationClass" />
+            <Param Type="PVOID" Name="CompressInformation" Length="CompressInformationSize" />
+            <Param Type="SIZE_T" Name="CompressInformationSize" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="SetDecompressorInformation">
+            <Param Type="DECOMPRESSOR_HANDLE" Name="DeompressorHandle" />
+            <Param Type="COMPRESS_INFORMATION_CLASS" Name="CompressInformationClass" />
+            <Param Type="PVOID" Name="CompressInformation" Length="CompressInformationSize" />
+            <Param Type="SIZE_T" Name="CompressInformationSize" />
+            <Return Type="BOOL" />
         </Api>
 
     </Module>

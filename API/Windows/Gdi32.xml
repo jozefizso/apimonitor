@@ -7,7 +7,7 @@
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\gdi.h.xml" />
     <Module Name="Gdi32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        
+
         <!-- Variables -->
         <Variable Name="HGDIOBJ"                    Type="Alias"    Base="HANDLE" />
         <Variable Name="GOBJENUMPROC"               Type="Alias"    Base="LPVOID" />
@@ -16,11 +16,17 @@
         <Variable Name="ENHMFENUMPROC"              Type="Alias"    Base="LPVOID" />
         <Variable Name="MFENUMPROC"                 Type="Alias"    Base="LPVOID" />
         <Variable Name="ABORTPROC"                  Type="Alias"    Base="LPVOID" />
+        <Variable Name="HCOLORSPACE"                Type="Alias"    Base="HANDLE" />
+        <Variable Name="HTRANSFORM"                 Type="Alias"    Base="HANDLE" />
+        <Variable Name="ICMENUMPROC"                Type="Alias"    Base="LPVOID" />
+        
+        <!-- Arrays -->
         <Variable Name="WORD [1]"                   Type="Array"    Base="WORD"         Count="1" />
         <Variable Name="HGDIOBJ [1]"                Type="Array"    Base="HGDIOBJ"      Count="1" />
         <Variable Name="LONG [MM_MAX_NUMAXES]"      Type="Array"    Base="LONG"         Count="16" />
         <Variable Name="TCHAR [LF_FULLFACESIZE]"    Type="Array"    Base="TCHAR"        Count="64" />
 
+        <!-- [FontCharset-int] -->
         <Variable Name="[FontCharset-int]" Type="Alias" Base="[FontCharset]">
             <Display Name="int" />
         </Variable>
@@ -477,7 +483,7 @@
             <Field Type="FONTSIGNATURE"     Name="fs" />
         </Variable>
         <Variable Name="LPCHARSETINFO" Type="Pointer" Base="CHARSETINFO" />
-        
+
         <!-- BITMAP -->
         <Variable Name="BITMAP" Type="Struct">
             <Field Type="LONG"        	Name="bmType" />
@@ -540,9 +546,9 @@
         <Variable Name="GCP_RESULTS" Type="Struct">
             <Field Type="DWORD"   	Name="lStructSize" />
             <Field Type="LPTSTR"    Name="lpOutString" />
-            <Field Type="UINT*" 	Name="lpOrder"  />
-            <Field Type="int*" 	    Name="lpDx"   />
-            <Field Type="int*" 	    Name="lpCaretPos"   />
+            <Field Type="UINT*" 	Name="lpOrder" />
+            <Field Type="int*" 	    Name="lpDx" />
+            <Field Type="int*" 	    Name="lpCaretPos" />
             <Field Type="LPSTR"   	Name="lpClass" />
             <Field Type="LPWSTR"  	Name="lpGlyphs" />
             <Field Type="UINT"    	Name="nGlyphs" />
@@ -773,7 +779,7 @@
             <Display Name="UINT" />
             <Enum>
                 <Set Name="DIB_RGB_COLORS"      Value="0" />
-                <Set Name="DIB_PAL_COLORS"      Value="0" />
+                <Set Name="DIB_PAL_COLORS"      Value="1" />
             </Enum>
         </Variable>
 
@@ -1006,7 +1012,6 @@
                 <Set Name="SELECTPAPERSOURCE"               Value="18" />
                 <Set Name="DEVICEDATA"                      Value="19" />
                 <Set Name="PASSTHROUGH"                     Value="19" />
-                <Set Name="GETTECHNOLGY"                    Value="20" />
                 <Set Name="GETTECHNOLOGY"                   Value="20" />
                 <Set Name="SETLINECAP"                      Value="21" />
                 <Set Name="SETLINEJOIN"                     Value="22" />
@@ -1143,8 +1148,65 @@
             </Flag>
         </Variable>
 
+        <!-- WCS_PROFILE_MANAGEMENT_SCOPE -->
+        <Variable Name="WCS_PROFILE_MANAGEMENT_SCOPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="WCS_PROFILE_MANAGEMENT_SCOPE_SYSTEM_WIDE"    Value="0" />
+                <Set Name="WCS_PROFILE_MANAGEMENT_SCOPE_CURRENT_USER"   Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- [CS_ACTION] -->
+        <Variable Name="[CS_ACTION]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="CS_ENABLE"           Value="0x00000001" />
+                <Set Name="CS_DISABLE"          Value="0x00000002" />
+                <Set Name="CS_DELETE_TRANSFORM" Value="0x00000003" />
+            </Enum>
+        </Variable>
+
+        <!-- [ICM_MODE] -->
+        <Variable Name="[ICM_MODE]" Type="Alias" Base="int">
+            <Display Name="int" />
+            <Enum>
+                <Set Name="ICM_OFF"             Value="1" />
+                <Set Name="ICM_ON"              Value="2" />
+                <Set Name="ICM_QUERY"           Value="3" />
+                <Set Name="ICM_DONE_OUTSIDEDC"  Value="4" />
+            </Enum>
+        </Variable>
+
+        <!-- [ICM_COMMAND] -->
+        <Variable Name="[ICM_COMMAND]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Enum>
+                <Set Name="ICM_ADDPROFILE"              Value="1" />
+                <Set Name="ICM_DELETEPROFILE"           Value="2" />
+                <Set Name="ICM_QUERYPROFILE"            Value="3" />
+                <Set Name="ICM_SETDEFAULTPROFILE"       Value="4" />
+                <Set Name="ICM_REGISTERICMATCHER"       Value="5" />
+                <Set Name="ICM_UNREGISTERICMATCHER"     Value="6" />
+                <Set Name="ICM_QUERYMATCH"              Value="7" />
+            </Enum>
+        </Variable>
+
+        <!-- [POINT_TYPE] -->
+        <Variable Name="[POINT_TYPE]" Type="Alias" Base="BYTE">
+            <Display Name="BYTE" />
+            <Enum>
+                <Set Name="PT_CLOSEFIGURE"  Value="0x01" />
+                <Set Name="PT_LINETO"       Value="0x02" />
+                <Set Name="PT_BEZIERTO"     Value="0x04" />
+                <Set Name="PT_MOVETO"       Value="0x06" />
+            </Enum>
+        </Variable>
+        <Variable Name="[POINT_TYPE*]" Type="Pointer" Base="[POINT_TYPE]">
+            <Display Name="LPBYTE" />
+        </Variable>
+
         <!-- Bitmaps -->
-        <Category Name="Graphics/Legacy Graphics/Windows GDI/Bitmaps" />
+        <Category Name="Graphics and Gaming/Legacy Graphics/Windows GDI/Bitmaps" />
         <Api Name="BitBlt">
             <Param Type="HDC" Name="hdcDest" />
             <Param Type="int" Name="nXDest" />
@@ -1156,7 +1218,6 @@
             <Param Type="int" Name="nYSrc" />
             <Param Type="[RasterOperationEnum]" Name="dwRop" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="CreateBitmap">
             <Param Type="int" Name="nWidth" />
@@ -1206,19 +1267,17 @@
             <Param Type="COLORREF" Name="crColor" />
             <Param Type="UINT" Name="fuFillType" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetBitmapDimensionEx">
             <Param Type="HBITMAP" Name="hBitmap" />
             <Param Type="LPSIZE" Name="lpDimension" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetDIBColorTable">
             <Param Type="HDC" Name="hdc" />
             <Param Type="UINT" Name="uStartIndex" />
             <Param Type="UINT" Name="cEntries" />
-            <Param Type="RGBQUAD*" Name="pColors" />
+            <Param Type="RGBQUAD*" Name="pColors" PostCount="Return" />
             <Return Type="UINT" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -1259,7 +1318,6 @@
             <Param Type="int" Name="yMask" />
             <Param Type="[RasterOperationEnum]" Name="dwRop" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="PlgBlt">
             <Param Type="HDC" Name="hdcDest" />
@@ -1273,7 +1331,6 @@
             <Param Type="int" Name="xMask" />
             <Param Type="int" Name="yMask" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SetBitmapDimensionEx">
             <Param Type="HBITMAP" Name="hBitmap" />
@@ -1281,13 +1338,12 @@
             <Param Type="int" Name="nHeight" />
             <Param Type="LPSIZE" Name="lpSize" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SetDIBColorTable">
             <Param Type="HDC" Name="hdc" />
             <Param Type="UINT" Name="uStartIndex" />
             <Param Type="UINT" Name="cEntries" />
-            <Param Type="const RGBQUAD*" Name="pColors" />
+            <Param Type="const RGBQUAD*" Name="pColors" Count="cEntries" />
             <Return Type="UINT" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -1332,7 +1388,6 @@
             <Param Type="int" Name="Y" />
             <Param Type="COLORREF" Name="crColor" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SetStretchBltMode">
             <Param Type="HDC" Name="hdc" />
@@ -1353,7 +1408,6 @@
             <Param Type="int" Name="nHeightSrc" />
             <Param Type="[RasterOperationEnum]" Name="dwRop" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="StretchDIBits">
             <Param Type="HDC" Name="hdc" />
@@ -1385,7 +1439,6 @@
             <Param Type="int" Name="nYStart" />
             <Param Type="COLORREF" Name="crFill" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetBitmapBits">
             <Param Type="HBITMAP" Name="hbmp" />
@@ -1404,7 +1457,7 @@
         <!--
     Brushes
     -->
-        <Category Name="Graphics/Legacy Graphics/Windows GDI/Brushes" />
+        <Category Name="Graphics and Gaming/Legacy Graphics/Windows GDI/Brushes" />
         <Api Name="CreateBrushIndirect">
             <Param Type="const LOGBRUSH*" Name="lplb" />
             <Return Type="HBRUSH" />
@@ -1436,7 +1489,6 @@
             <Param Type="HDC" Name="hdc" />
             <Param Type="LPPOINT" Name="lppt" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="PatBlt">
             <Param Type="HDC" Name="hdc" />
@@ -1446,7 +1498,6 @@
             <Param Type="int" Name="nHeight" />
             <Param Type="[RasterOperationEnum]" Name="dwRop" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SetBrushOrgEx">
             <Param Type="HDC" Name="hdc" />
@@ -1454,7 +1505,6 @@
             <Param Type="int" Name="nYOrg" />
             <Param Type="LPPOINT" Name="lppt" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="CreateDIBPatternBrush">
             <Param Type="HGLOBAL" Name="hglbDIBPacked" />
@@ -1463,7 +1513,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <!-- Clipping -->
-        <Category Name="Graphics/Legacy Graphics/Windows GDI/Clipping" />
+        <Category Name="Graphics and Gaming/Legacy Graphics/Windows GDI/Clipping" />
         <Api Name="ExcludeClipRect">
             <Param Type="HDC" Name="hdc" />
             <Param Type="int" Name="nLeftRect" />
@@ -1525,20 +1575,19 @@
             <Param Type="HDC" Name="hdc" />
             <Param Type="int" Name="X" />
             <Param Type="int" Name="Y" />
-            <Return Type="BOOL" />
+            <Return Type="[BOOL_NUMBER]" />
             <Success Return="NotEqual" Value="-1" />
         </Api>
         <Api Name="RectVisible">
             <Param Type="HDC" Name="hdc" />
             <Param Type="const RECT*" Name="lprc" />
-            <Return Type="BOOL" />
+            <Return Type="[BOOL_NUMBER]" />
             <Success Return="Less" Value="3" />
         </Api>
         <Api Name="SelectClipPath">
             <Param Type="HDC" Name="hdc" />
             <Param Type="int" Name="iMode" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SelectClipRgn">
             <Param Type="HDC" Name="hdc" />
@@ -1552,14 +1601,13 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <!-- Colors -->
-        <Category Name="Graphics/Legacy Graphics/Windows GDI/Colors" />
+        <Category Name="Graphics and Gaming/Legacy Graphics/Windows GDI/Colors" />
         <Api Name="AnimatePalette">
             <Param Type="HPALETTE" Name="hpal" />
             <Param Type="UINT" Name="iStartIndex" />
             <Param Type="UINT" Name="cEntries" />
-            <Param Type="const PALETTEENTRY*" Name="ppe" />
+            <Param Type="const PALETTEENTRY*" Name="ppe" Count="cEntries" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="CreateHalftonePalette">
             <Param Type="HDC" Name="hdc" />
@@ -1575,7 +1623,6 @@
             <Param Type="HDC" Name="hdc" />
             <Param Type="LPCOLORADJUSTMENT" Name="lpca" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetNearestColor">
             <Param Type="HDC" Name="hdc" />
@@ -1593,7 +1640,7 @@
             <Param Type="HPALETTE" Name="hpal" />
             <Param Type="UINT" Name="iStartIndex" />
             <Param Type="UINT" Name="nEntries" />
-            <Param Type="LPPALETTEENTRY" Name="lppe" />
+            <Param Type="LPPALETTEENTRY" Name="lppe" PostCount="nEntries" />
             <Return Type="UINT" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -1601,7 +1648,7 @@
             <Param Type="HDC" Name="hdc" />
             <Param Type="UINT" Name="iStartIndex" />
             <Param Type="UINT" Name="nEntries" />
-            <Param Type="LPPALETTEENTRY" Name="lppe" />
+            <Param Type="LPPALETTEENTRY" Name="lppe" PostCount="nEntries" />
             <Return Type="UINT" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -1619,7 +1666,6 @@
             <Param Type="HPALETTE" Name="hpal" />
             <Param Type="UINT" Name="nEntries" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SelectPalette">
             <Param Type="HDC" Name="hdc" />
@@ -1632,13 +1678,12 @@
             <Param Type="HDC" Name="hdc" />
             <Param Type="const COLORADJUSTMENT*" Name="lpca" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SetPaletteEntries">
             <Param Type="HPALETTE" Name="hpal" />
             <Param Type="UINT" Name="iStart" />
             <Param Type="UINT" Name="cEntries" />
-            <Param Type="const PALETTEENTRY*" Name="lppe" />
+            <Param Type="const PALETTEENTRY*" Name="lppe" Count="cEntries" />
             <Return Type="UINT" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -1651,34 +1696,29 @@
         <Api Name="UnrealizeObject">
             <Param Type="HGDIOBJ" Name="hgdiobj" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="UpdateColors">
             <Param Type="HDC" Name="hdc" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <!-- Coordinate Space and Transformation -->
-        <Category Name="Graphics/Legacy Graphics/Windows GDI/Coordinate Spaces and Transformations" />
+        <Category Name="Graphics and Gaming/Legacy Graphics/Windows GDI/Coordinate Spaces and Transformations" />
         <Api Name="CombineTransform">
             <Param Type="LPXFORM" Name="lpxformResult" />
             <Param Type="const XFORM*" Name="lpxform1" />
             <Param Type="const XFORM*" Name="lpxform2" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="DPtoLP">
             <Param Type="HDC" Name="hdc" />
             <Param Type="LPPOINT" Name="lpPoints" />
             <Param Type="int" Name="nCount" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetCurrentPositionEx">
             <Param Type="HDC" Name="hdc" />
             <Param Type="LPPOINT" Name="lpPoint" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetGraphicsMode">
             <Param Type="HDC" Name="hdc" />
@@ -1694,45 +1734,38 @@
             <Param Type="HDC" Name="hdc" />
             <Param Type="LPSIZE" Name="lpSize" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetViewportOrgEx">
             <Param Type="HDC" Name="hdc" />
             <Param Type="LPPOINT" Name="lpPoint" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetWindowExtEx">
             <Param Type="HDC" Name="hdc" />
             <Param Type="LPSIZE" Name="lpSize" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetWindowOrgEx">
             <Param Type="HDC" Name="hdc" />
             <Param Type="LPPOINT" Name="lpPoint" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetWorldTransform">
             <Param Type="HDC" Name="hdc" />
             <Param Type="LPXFORM" Name="lpXform" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="LPtoDP">
             <Param Type="HDC" Name="hdc" />
             <Param Type="LPPOINT" Name="lpPoints" Count="nCount" />
             <Param Type="int" Name="nCount" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="ModifyWorldTransform">
             <Param Type="HDC" Name="hdc" />
             <Param Type="const XFORM*" Name="lpXform" />
             <Param Type="[ModifyWorldTransformMode]" Name="iMode" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="OffsetViewportOrgEx">
             <Param Type="HDC" Name="hdc" />
@@ -1740,7 +1773,6 @@
             <Param Type="int" Name="nYOffset" />
             <Param Type="LPPOINT" Name="lpPoint" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="OffsetWindowOrgEx">
             <Param Type="HDC" Name="hdc" />
@@ -1748,7 +1780,6 @@
             <Param Type="int" Name="nYOffset" />
             <Param Type="LPPOINT" Name="lpPoint" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="ScaleViewportExtEx">
             <Param Type="HDC" Name="hdc" />
@@ -1758,7 +1789,6 @@
             <Param Type="int" Name="Ydenom" />
             <Param Type="LPSIZE" Name="lpSize" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="ScaleWindowExtEx">
             <Param Type="HDC" Name="hdc" />
@@ -1768,11 +1798,10 @@
             <Param Type="int" Name="Ydenom" />
             <Param Type="LPSIZE" Name="lpSize" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SetGraphicsMode">
             <Param Type="HDC" Name="hdc" />
-            <Param Type="[GraphicsModes]" Name="iMode"/>
+            <Param Type="[GraphicsModes]" Name="iMode" />
             <Return Type="int" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -1788,7 +1817,6 @@
             <Param Type="int" Name="nYExtent" />
             <Param Type="LPSIZE" Name="lpSize" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SetViewportOrgEx">
             <Param Type="HDC" Name="hdc" />
@@ -1796,7 +1824,6 @@
             <Param Type="int" Name="Y" />
             <Param Type="LPPOINT" Name="lpPoint" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SetWindowExtEx">
             <Param Type="HDC" Name="hdc" />
@@ -1804,7 +1831,6 @@
             <Param Type="int" Name="nYExtent" />
             <Param Type="LPSIZE" Name="lpSize" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SetWindowOrgEx">
             <Param Type="HDC" Name="hdc" />
@@ -1812,20 +1838,17 @@
             <Param Type="int" Name="Y" />
             <Param Type="LPPOINT" Name="lpPoint" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SetWorldTransform">
             <Param Type="HDC" Name="hdc" />
             <Param Type="const XFORM*" Name="lpXform" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <!-- Device Context -->
-        <Category Name="Graphics/Legacy Graphics/Windows GDI/Device Contexts" />
+        <Category Name="Graphics and Gaming/Legacy Graphics/Windows GDI/Device Contexts" />
         <Api Name="CancelDC">
             <Param Type="HDC" Name="hdc" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="CreateCompatibleDC">
             <Param Type="HDC" Name="hdc" />
@@ -1851,12 +1874,10 @@
         <Api Name="DeleteDC">
             <Param Type="HDC" Name="hdc" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="DeleteObject">
             <Param Type="HGDIOBJ" Name="hObject" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="DrawEscape">
             <Param Type="HDC" Name="hdc" />
@@ -1889,7 +1910,6 @@
             <Param Type="HDC" Name="hdc" />
             <Param Type="LPPOINT" Name="lpPoint" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetDCPenColor">
             <Param Type="HDC" Name="hdc" />
@@ -1933,7 +1953,6 @@
             <Param Type="HDC" Name="hdc" />
             <Param Type="int" Name="nSavedDC" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SaveDC">
             <Param Type="HDC" Name="hdc" />
@@ -1965,7 +1984,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <!-- Filled Shapes -->
-        <Category Name="Graphics/Legacy Graphics/Windows GDI/Filled Shapes" />
+        <Category Name="Graphics and Gaming/Legacy Graphics/Windows GDI/Filled Shapes" />
         <Api Name="Chord">
             <Param Type="HDC" Name="hdc" />
             <Param Type="int" Name="nLeftRect" />
@@ -1977,7 +1996,6 @@
             <Param Type="int" Name="nXRadial2" />
             <Param Type="int" Name="nYRadial2" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="Ellipse">
             <Param Type="HDC" Name="hdc" />
@@ -1986,7 +2004,6 @@
             <Param Type="int" Name="nRightRect" />
             <Param Type="int" Name="nBottomRect" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="Pie">
             <Param Type="HDC" Name="hdc" />
@@ -1999,14 +2016,12 @@
             <Param Type="int" Name="nXRadial2" />
             <Param Type="int" Name="nYRadial2" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="Polygon">
             <Param Type="HDC" Name="hdc" />
             <Param Type="const POINT*" Name="lpPoints" Count="nCount" />
             <Param Type="int" Name="nCount" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="PolyPolygon">
             <Param Type="HDC" Name="hdc" />
@@ -2014,7 +2029,6 @@
             <Param Type="const INT*" Name="lpPolyCounts" />
             <Param Type="int" Name="nCount" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="Rectangle">
             <Param Type="HDC" Name="hdc" />
@@ -2023,7 +2037,6 @@
             <Param Type="int" Name="nRightRect" />
             <Param Type="int" Name="nBottomRect" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="RoundRect">
             <Param Type="HDC" Name="hdc" />
@@ -2034,10 +2047,9 @@
             <Param Type="int" Name="nWidth" />
             <Param Type="int" Name="nHeight" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <!-- Font and Text -->
-        <Category Name="Graphics/Legacy Graphics/Windows GDI/Fonts and Text" />
+        <Category Name="Graphics and Gaming/Legacy Graphics/Windows GDI/Fonts and Text" />
         <Api Name="AddFontMemResourceEx">
             <Param Type="PVOID" Name="pbFont" Length="cbFont" />
             <Param Type="DWORD" Name="cbFont" />
@@ -2092,7 +2104,6 @@
             <Param Type="LPCTSTR" Name="lpszFontFile" />
             <Param Type="LPCTSTR" Name="lpszCurrentPath" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="EnumFontFamiliesEx" BothCharset="True">
             <Param Type="HDC" Name="hdc" />
@@ -2112,13 +2123,11 @@
             <Param Type="UINT" Name="cbCount" />
             <Param Type="const INT*" Name="lpDx" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetAspectRatioFilterEx">
             <Param Type="HDC" Name="hdc" />
             <Param Type="LPSIZE" Name="lpAspectRatio" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetCharABCWidths" BothCharset="True">
             <Param Type="HDC" Name="hdc" />
@@ -2126,7 +2135,6 @@
             <Param Type="UINT" Name="uLastChar" />
             <Param Type="LPABC" Name="lpabc" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetCharABCWidthsFloat" BothCharset="True">
             <Param Type="HDC" Name="hdc" />
@@ -2134,7 +2142,6 @@
             <Param Type="UINT" Name="iLastChar" />
             <Param Type="LPABCFLOAT" Name="lpABCF" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetCharABCWidthsI">
             <Param Type="HDC" Name="hdc" />
@@ -2143,7 +2150,6 @@
             <Param Type="LPWORD" Name="pgi" />
             <Param Type="LPABC" Name="lpabc" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetCharacterPlacement" BothCharset="True">
             <Param Type="HDC" Name="hdc" />
@@ -2161,7 +2167,6 @@
             <Param Type="UINT" Name="iLastChar" />
             <Param Type="LPINT" Name="lpBuffer" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetCharWidthFloat" BothCharset="True">
             <Param Type="HDC" Name="hdc" />
@@ -2169,7 +2174,6 @@
             <Param Type="UINT" Name="iLastChar" />
             <Param Type="PFLOAT" Name="pxBuffer" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetCharWidthI">
             <Param Type="HDC" Name="hdc" />
@@ -2178,7 +2182,6 @@
             <Param Type="LPWORD" Name="pgi" />
             <Param Type="LPINT" Name="lpBuffer" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetFontData">
             <Param Type="HDC" Name="hdc" />
@@ -2238,7 +2241,6 @@
             <Param Type="LPRASTERIZER_STATUS" Name="lprs" />
             <Param Type="UINT" Name="cb" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetTextAlign">
             <Param Type="HDC" Name="hdc" />
@@ -2264,7 +2266,6 @@
             <Param Type="LPINT" Name="alpDx" />
             <Param Type="LPSIZE" Name="lpSize" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetTextExtentExPointI">
             <Param Type="HDC" Name="hdc" />
@@ -2275,7 +2276,6 @@
             <Param Type="LPINT" Name="alpDx" />
             <Param Type="LPSIZE" Name="lpSize" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetTextExtentPoint32" BothCharset="True">
             <Param Type="HDC" Name="hdc" />
@@ -2283,7 +2283,6 @@
             <Param Type="int" Name="c" />
             <Param Type="LPSIZE" Name="lpSize" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetTextExtentPointI">
             <Param Type="HDC" Name="hdc" />
@@ -2291,7 +2290,6 @@
             <Param Type="int" Name="cgi" />
             <Param Type="LPSIZE" Name="lpSize" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetTextFace" BothCharset="True">
             <Param Type="HDC" Name="hdc" />
@@ -2304,31 +2302,26 @@
             <Param Type="HDC" Name="hdc" />
             <Param Type="LPTEXTMETRIC" Name="lptm" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="PolyTextOut" BothCharset="True">
             <Param Type="HDC" Name="hdc" />
-            <Param Type="const POLYTEXT*" Name="pptxt" />
+            <Param Type="const POLYTEXT*" Name="pptxt" Count="cStrings" />
             <Param Type="int" Name="cStrings" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="RemoveFontMemResourceEx">
             <Param Type="HANDLE" Name="fh" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="RemoveFontResource" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpFileName" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="RemoveFontResourceEx" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpFileName" />
             <Param Type="DWORD" Name="fl" />
             <Param Type="PVOID" Name="pdv" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SetMapperFlags">
             <Param Type="HDC" Name="hdc" />
@@ -2359,7 +2352,6 @@
             <Param Type="int" Name="nBreakExtra" />
             <Param Type="int" Name="nBreakCount" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="TextOut" BothCharset="True">
             <Param Type="HDC" Name="hdc" />
@@ -2368,7 +2360,6 @@
             <Param Type="LPCTSTR" Name="lpString" />
             <Param Type="int" Name="cbString" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="EnumFontFamilies" BothCharset="True">
             <Param Type="HDC" Name="hdc" />
@@ -2390,7 +2381,6 @@
             <Param Type="UINT" Name="iLastChar" />
             <Param Type="LPINT" Name="lpBuffer" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetTextExtentPoint" BothCharset="True">
             <Param Type="HDC" Name="hdc" />
@@ -2398,10 +2388,9 @@
             <Param Type="int" Name="cbString" />
             <Param Type="LPSIZE" Name="lpSize" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <!-- Lines and Curves -->
-        <Category Name="Graphics/Legacy Graphics/Windows GDI/Lines and Curves" />
+        <Category Name="Graphics and Gaming/Legacy Graphics/Windows GDI/Lines and Curves" />
         <Api Name="AngleArc">
             <Param Type="HDC" Name="hdc" />
             <Param Type="int" Name="X" />
@@ -2410,7 +2399,6 @@
             <Param Type="FLOAT" Name="eStartAngle" />
             <Param Type="FLOAT" Name="eSweepAngle" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="Arc">
             <Param Type="HDC" Name="hdc" />
@@ -2423,7 +2411,6 @@
             <Param Type="int" Name="nXEndArc" />
             <Param Type="int" Name="nYEndArc" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="ArcTo">
             <Param Type="HDC" Name="hdc" />
@@ -2436,7 +2423,6 @@
             <Param Type="int" Name="nXRadial2" />
             <Param Type="int" Name="nYRadial2" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetArcDirection">
             <Param Type="HDC" Name="hdc" />
@@ -2451,14 +2437,12 @@
             <Param Type="LINEDDAPROC" Name="lpLineFunc" />
             <Param Type="LPARAM" Name="lpData" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="LineTo">
             <Param Type="HDC" Name="hdc" />
             <Param Type="int" Name="nXEnd" />
             <Param Type="int" Name="nYEnd" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="MoveToEx">
             <Param Type="HDC" Name="hdc" />
@@ -2466,43 +2450,37 @@
             <Param Type="int" Name="Y" />
             <Param Type="LPPOINT" Name="lpPoint" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="PolyBezier">
             <Param Type="HDC" Name="hdc" />
             <Param Type="const POINT*" Name="lppt" />
             <Param Type="DWORD" Name="cPoints" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="PolyBezierTo">
             <Param Type="HDC" Name="hdc" />
             <Param Type="const POINT*" Name="lppt" />
             <Param Type="DWORD" Name="cCount" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="PolyDraw">
             <Param Type="HDC" Name="hdc" />
-            <Param Type="const POINT*" Name="lppt" />
-            <Param Type="const BYTE*" Name="lpbTypes" />
+            <Param Type="const POINT*" Name="lppt" Count="cCount" />
+            <Param Type="[POINT_TYPE*]" Display="const BYTE*" Name="lpbTypes" Count="cCount" />
             <Param Type="int" Name="cCount" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="Polyline">
             <Param Type="HDC" Name="hdc" />
             <Param Type="const POINT*" Name="lppt" />
             <Param Type="int" Name="cPoints" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="PolylineTo">
             <Param Type="HDC" Name="hdc" />
             <Param Type="const POINT*" Name="lppt" />
             <Param Type="DWORD" Name="cCount" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="PolyPolyline">
             <Param Type="HDC" Name="hdc" />
@@ -2510,7 +2488,6 @@
             <Param Type="const DWORD*" Name="lpdwPolyPoints" />
             <Param Type="DWORD" Name="cCount" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SetArcDirection">
             <Param Type="HDC" Name="hdc" />
@@ -2519,7 +2496,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <!-- Metafiles -->
-        <Category Name="Graphics/Legacy Graphics/Windows GDI/Metafiles" />
+        <Category Name="Graphics and Gaming/Legacy Graphics/Windows GDI/Metafiles" />
         <Api Name="CloseEnhMetaFile">
             <Param Type="HDC" Name="hdc" />
             <Return Type="HENHMETAFILE" />
@@ -2542,7 +2519,6 @@
         <Api Name="DeleteEnhMetaFile">
             <Param Type="HENHMETAFILE" Name="hemf" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="EnumEnhMetaFile">
             <Param Type="HDC" Name="hdc" />
@@ -2551,14 +2527,12 @@
             <Param Type="LPVOID" Name="lpData" />
             <Param Type="const RECT*" Name="lpRect" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GdiComment">
             <Param Type="HDC" Name="hdc" />
             <Param Type="UINT" Name="cbSize" />
             <Param Type="const BYTE*" Name="lpData" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetEnhMetaFile" BothCharset="True" ErrorFunc="">
             <Param Type="LPCTSTR" Name="lpszMetaFile" />
@@ -2589,7 +2563,7 @@
         <Api Name="GetEnhMetaFilePaletteEntries">
             <Param Type="HENHMETAFILE" Name="hemf" />
             <Param Type="UINT" Name="cEntries" />
-            <Param Type="LPPALETTEENTRY" Name="lppe" />
+            <Param Type="LPPALETTEENTRY" Name="lppe" PostCount="cEntries" />
             <Return Type="UINT" />
             <Success Return="NotEqual" Value="0" />
         </Api>
@@ -2607,7 +2581,6 @@
             <Param Type="HENHMETAFILE" Name="hemf" />
             <Param Type="const RECT*" Name="lpRect" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="PlayEnhMetaFileRecord">
             <Param Type="HDC" Name="hdc" />
@@ -2615,7 +2588,6 @@
             <Param Type="const ENHMETARECORD*" Name="lpEnhMetaRecord" />
             <Param Type="UINT" Name="nHandles" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SetEnhMetaFileBits">
             <Param Type="UINT" Name="cbBuffer" />
@@ -2650,7 +2622,6 @@
         <Api Name="DeleteMetaFile">
             <Param Type="HMETAFILE" Name="hmf" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="EnumMetaFile">
             <Param Type="HDC" Name="hdc" />
@@ -2658,7 +2629,6 @@
             <Param Type="MFENUMPROC" Name="lpMetaFunc" />
             <Param Type="LPARAM" Name="lParam" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetMetaFileBitsEx">
             <Param Type="HMETAFILE" Name="hmf" />
@@ -2671,7 +2641,6 @@
             <Param Type="HDC" Name="hdc" />
             <Param Type="HMETAFILE" Name="hmf" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="PlayMetaFileRecord">
             <Param Type="HDC" Name="hdc" />
@@ -2679,7 +2648,6 @@
             <Param Type="LPMETARECORD" Name="lpMetaRecord" />
             <Param Type="UINT" Name="nHandles" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SetMetaFileBitsEx">
             <Param Type="UINT" Name="nSize" />
@@ -2688,10 +2656,9 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <!-- Painting and Drawing -->
-        <Category Name="Graphics/Legacy Graphics/Windows GDI/Painting and Drawing" />
+        <Category Name="Graphics and Gaming/Legacy Graphics/Windows GDI/Painting and Drawing" />
         <Api Name="GdiFlush">
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GdiGetBatchLimit">
             <Return Type="DWORD" />
@@ -2750,50 +2717,43 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <!-- Paths -->
-        <Category Name="Graphics/Legacy Graphics/Windows GDI/Paths" />
+        <Category Name="Graphics and Gaming/Legacy Graphics/Windows GDI/Paths" />
         <Api Name="AbortPath">
             <Param Type="HDC" Name="hdc" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="BeginPath">
             <Param Type="HDC" Name="hdc" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="CloseFigure">
             <Param Type="HDC" Name="hdc" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="EndPath">
             <Param Type="HDC" Name="hdc" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="FillPath">
             <Param Type="HDC" Name="hdc" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="FlattenPath">
             <Param Type="HDC" Name="hdc" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetMiterLimit">
             <Param Type="HDC" Name="hdc" />
             <Param Type="PFLOAT" Name="peLimit" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetPath">
             <Param Type="HDC" Name="hdc" />
-            <Param Type="LPPOINT" Name="lpPoints" />
-            <Param Type="LPBYTE" Name="lpTypes" />
+            <Param Type="LPPOINT" Name="lpPoints" PostCount="Return" />
+            <Param Type="[POINT_TYPE*]" Name="lpTypes" PostCount="Return" />
             <Param Type="int" Name="nSize" />
             <Return Type="int" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="NotEqual" Value="-1" />
         </Api>
         <Api Name="PathToRegion">
             <Param Type="HDC" Name="hdc" />
@@ -2805,25 +2765,21 @@
             <Param Type="FLOAT" Name="eNewLimit" />
             <Param Type="PFLOAT" Name="peOldLimit" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="StrokeAndFillPath">
             <Param Type="HDC" Name="hdc" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="StrokePath">
             <Param Type="HDC" Name="hdc" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WidenPath">
             <Param Type="HDC" Name="hdc" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <!-- Printing and Print Spooler -->
-        <Category Name="Documents and Printing/Printing/GDI Print API" />
+        <Category Name="Documents and Printing/Printing/GDI Print" />
         <Api Name="AbortDoc">
             <Param Type="HDC" Name="hdc" />
             <Return Type="int" />
@@ -2876,7 +2832,7 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <!-- Regions -->
-        <Category Name="Graphics/Legacy Graphics/Windows GDI/Regions" />
+        <Category Name="Graphics and Gaming/Legacy Graphics/Windows GDI/Regions" />
         <Api Name="CombineRgn">
             <Param Type="HRGN" Name="hrgnDest" />
             <Param Type="HRGN" Name="hrgnSrc1" />
@@ -2940,7 +2896,6 @@
             <Param Type="HRGN" Name="hSrcRgn1" />
             <Param Type="HRGN" Name="hSrcRgn2" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="ExtCreateRegion">
             <Param Type="const XFORM*" Name="lpXform" />
@@ -2954,7 +2909,6 @@
             <Param Type="HRGN" Name="hrgn" />
             <Param Type="HBRUSH" Name="hbr" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="FrameRgn">
             <Param Type="HDC" Name="hdc" />
@@ -2963,7 +2917,6 @@
             <Param Type="int" Name="nWidth" />
             <Param Type="int" Name="nHeight" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetPolyFillMode">
             <Param Type="HDC" Name="hdc" />
@@ -2987,7 +2940,6 @@
             <Param Type="HDC" Name="hdc" />
             <Param Type="HRGN" Name="hrgn" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="OffsetRgn">
             <Param Type="HRGN" Name="hrgn" />
@@ -3000,19 +2952,18 @@
             <Param Type="HDC" Name="hdc" />
             <Param Type="HRGN" Name="hrgn" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="PtInRegion">
             <Param Type="HRGN" Name="hrgn" />
             <Param Type="int" Name="X" />
             <Param Type="int" Name="Y" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="RectInRegion">
             <Param Type="HRGN" Name="hrgn" />
             <Param Type="const RECT*" Name="lprc" />
             <Return Type="BOOL" />
+            <Success />
         </Api>
         <Api Name="SetPolyFillMode">
             <Param Type="HDC" Name="hdc" />
@@ -3027,7 +2978,6 @@
             <Param Type="int" Name="nRightRect" />
             <Param Type="int" Name="nBottomRect" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <!-- Unicode and Character Set -->
         <Category Name="Windows Application UI Development/Internationalization for Windows Applications/Unicode and Character Sets" />
@@ -3048,10 +2998,9 @@
             <Param Type="LPCHARSETINFO" Name="lpCs" />
             <Param Type="[TranslateCharsetInfoFlag]" Name="dwFlags" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <!-- OpenGL -->
-        <Category Name="Graphics/Legacy Graphics/OpenGL/Windows Extensions to OpenGL (WGL)" />
+        <Category Name="Graphics and Gaming/Legacy Graphics/OpenGL/Windows Extensions to OpenGL (WGL)" />
         <Api Name="ChoosePixelFormat">
             <Param Type="HDC" Name="hdc" />
             <Param Type="const PIXELFORMATDESCRIPTOR*" Name="ppfd" />
@@ -3076,7 +3025,6 @@
             <Param Type="int" Name="iPixelFormat" />
             <Param Type="const PIXELFORMATDESCRIPTOR*" Name="ppfd" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetEnhMetaFilePixelFormat">
             <Param Type="HENHMETAFILE" Name="hemf" />
@@ -3088,7 +3036,100 @@
         <Api Name="SwapBuffers">
             <Param Type="HDC" Name="hdc" />
             <Return Type="BOOL" />
+        </Api>
+        <!-- Windows Color System/Basic -->
+        <Category Name="Graphics and Gaming/Legacy Graphics/Windows Color System/Basic" />
+        <Api Name="CheckColorsInGamut">
+            <Param Type="HDC" Name="hDC" />
+            <Param Type="LPVOID" Name="lpRGBTriples" Count="nCount" />
+            <Param Type="LPVOID" Name="lpBuffer" />
+            <Param Type="UINT" Name="nCount" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="ColorCorrectPalette">
+            <Param Type="HDC" Name="hDC" />
+            <Param Type="HPALETTE" Name="hPalette" />
+            <Param Type="DWORD" Name="dwFirstEntry" />
+            <Param Type="DWORD" Name="dwNumOfEntries" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="ColorMatchToTarget">
+            <Param Type="HDC" Name="hDC" />
+            <Param Type="HDC" Name="hdcTarget" />
+            <Param Type="[CS_ACTION]" Name="uiAction" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CreateColorSpace" BothCharset="True">
+            <Param Type="LPLOGCOLORSPACE" Name="lpLogColorSpace" />
+            <Return Type="HCOLORSPACE" />
             <Success Return="NotEqual" Value="0" />
         </Api>
+        <Api Name="DeleteColorSpace">
+            <Param Type="HCOLORSPACE" Name="hColorSpace" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="EnumICMProfiles" BothCharset="True">
+            <Param Type="HDC" Name="hDC" />
+            <Param Type="ICMENUMPROC" Name="lpEnumICMProfilesFunc" />
+            <Param Type="LPARAM" Name="lParam" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="-1" />
+        </Api>
+        <Api Name="GetColorSpace">
+            <Param Type="HDC" Name="hDC" />
+            <Return Type="HCOLORSPACE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetICMProfile" BothCharset="True">
+            <Param Type="HDC" Name="hDC" />
+            <Param Type="LPDWORD" Name="lpcbName" />
+            <Param Type="LPTSTR" Name="lpszFilename" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="GetLogColorSpace" BothCharset="True">
+            <Param Type="HCOLORSPACE" Name="hColorSpace" />
+            <Param Type="LPLOGCOLORSPACE" Name="lpBuffer" />
+            <Param Type="DWORD" Name="nSize" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="SetColorSpace">
+            <Param Type="HDC" Name="hDC" />
+            <Param Type="HCOLORSPACE" Name="hColorSpace" />
+            <Return Type="HCOLORSPACE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetICMMode">
+            <Param Type="HDC" Name="hDC" />
+            <Param Type="[ICM_MODE]" Name="iEnableICM" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetICMProfile" BothCharset="True">
+            <Param Type="HDC" Name="hDC" />
+            <Param Type="LPTSTR" Name="lpFileName" />
+            <Return Type="BOOL" />
+        </Api>
+        <!-- Profile Management -->
+        <Category Name="Graphics and Gaming/Legacy Graphics/Windows Color System/Profile Management" />
+        <Api Name="GetDeviceGammaRamp">
+            <Param Type="HDC" Name="hDC" />
+            <Param Type="LPVOID" Name="lpRamp" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="SetDeviceGammaRamp">
+            <Param Type="HDC" Name="hDC" />
+            <Param Type="LPVOID" Name="lpRamp" />
+            <Return Type="BOOL" />
+        </Api>
+        <!-- Windows Color System/Obsolete -->
+        <Category Name="Graphics and Gaming/Legacy Graphics/Windows Color System/Obsolete" />
+        <Api Name="UpdateICMRegKey" BothCharset="True">
+            <Param Type="DWORD" Name="dwReserved" />
+            <Param Type="LPTSTR" Name="lpszCMID" />
+            <Param Type="LPTSTR" Name="lpszFileName" />
+            <Param Type="[ICM_COMMAND]" Name="nCommand" />
+            <Return Type="BOOL" />
+        </Api>
+
     </Module>
 </ApiMonitor>

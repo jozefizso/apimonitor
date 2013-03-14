@@ -1,6 +1,6 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
@@ -20,7 +20,14 @@
         <Variable Name="NCryptBufferDesc"                   Type="Alias"    Base="BCryptBufferDesc" />
         <Variable Name="NCryptBufferDesc*"                  Type="Pointer"  Base="NCryptBufferDesc" />
         <Variable Name="PNCryptBufferDesc"                  Type="Pointer"  Base="NCryptBufferDesc" />
-        
+        <Variable Name="NCRYPT_DESCRIPTOR_HANDLE"           Type="Alias"    Base="HANDLE" />
+        <Variable Name="NCRYPT_DESCRIPTOR_HANDLE*"          Type="Pointer"  Base="NCRYPT_DESCRIPTOR_HANDLE" />
+        <Variable Name="PFN_NCRYPT_ALLOC"                   Type="Alias"    Base="LPVOID" />
+        <Variable Name="PFN_NCRYPT_FREE"                    Type="Alias"    Base="LPVOID" />
+        <Variable Name="NCRYPT_STREAM_HANDLE"               Type="Alias"    Base="HANDLE" />
+        <Variable Name="NCRYPT_STREAM_HANDLE*"              Type="Pointer"  Base="NCRYPT_STREAM_HANDLE" />
+        <Variable Name="PFNCryptStreamOutputCallback"       Type="Alias"    Base="LPVOID" />
+
         <!-- TODO: Structures (No Definitions in current SDK) -->
         <Variable Name="WCHAR[NCRYPT_SSL_MAX_NAME_SIZE]"    Type="Alias"    Base="WCHAR*" />
         <Variable Name="NCRYPT_SSL_CIPHER_SUITE*"           Type="Alias"    Base="LPVOID" />
@@ -55,6 +62,7 @@
         <Variable Name="NCryptProviderName*"  Type="Pointer"  Base="NCryptProviderName" />
         <Variable Name="NCryptProviderName**" Type="Pointer"  Base="NCryptProviderName*" />
 
+        <!-- [SslContentType] -->
         <Variable Name="[SslContentType]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>
@@ -65,7 +73,22 @@
             </Enum>
         </Variable>
 
-        <!-- API -->
+        <!-- NCRYPT_ALLOC_PARA -->
+        <Variable Name="NCRYPT_ALLOC_PARA" Type="Struct">
+            <Field Type="DWORD"                 Name="cbSize" />
+            <Field Type="PFN_NCRYPT_ALLOC"      Name="pfnAlloc" />
+            <Field Type="PFN_NCRYPT_FREE"       Name="pfnFree" />
+        </Variable>
+        <Variable Name="const NCRYPT_ALLOC_PARA*" Type="Pointer" Base="NCRYPT_ALLOC_PARA" />
+
+        <!-- NCRYPT_PROTECT_STREAM_INFO -->
+        <Variable Name="NCRYPT_PROTECT_STREAM_INFO" Type="Struct">
+            <Field Type="PFNCryptStreamOutputCallback"      Name="pfnStreamOutput" />
+            <Field Type="void*"                             Name="pvCallbackCtxt" />
+        </Variable>
+        <Variable Name="NCRYPT_PROTECT_STREAM_INFO*" Type="Pointer" Base="NCRYPT_PROTECT_STREAM_INFO" />
+
+        <!-- Key Storage -->
         <Category Name="Security and Identity/Cryptography API: Next Generation (CNG)/Key Storage" />
         <Api Name="NCryptCreatePersistedKey">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hProvider" />
@@ -75,7 +98,6 @@
             <Param Type="DWORD" Name="dwLegacyKeySpec" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NCryptDecrypt">
             <Param Type="NCRYPT_KEY_HANDLE" Name="hKey" />
@@ -87,13 +109,11 @@
             <Param Type="DWORD*" Name="pcbResult" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NCryptDeleteKey">
             <Param Type="NCRYPT_KEY_HANDLE" Name="hKey" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NCryptDeriveKey">
             <Param Type="NCRYPT_SECRET_HANDLE" Name="hSharedSecret" />
@@ -104,7 +124,6 @@
             <Param Type="DWORD*" Name="pcbResult" />
             <Param Type="ULONG" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NCryptEncrypt">
             <Param Type="NCRYPT_KEY_HANDLE" Name="hKey" />
@@ -116,7 +135,6 @@
             <Param Type="DWORD*" Name="pcbResult" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NCryptEnumAlgorithms">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hProvider" />
@@ -125,7 +143,6 @@
             <Param Type="NCryptAlgorithmName**" Name="ppAlgList" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NCryptEnumKeys">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hProvider" />
@@ -134,14 +151,12 @@
             <Param Type="PVOID*" Name="ppEnumState" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NCryptEnumStorageProviders">
             <Param Type="DWORD*" Name="pdwProviderCount" />
             <Param Type="NCryptProviderName**" Name="ppProviderList" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NCryptExportKey">
             <Param Type="NCRYPT_KEY_HANDLE" Name="hKey" />
@@ -153,23 +168,19 @@
             <Param Type="DWORD*" Name="pcbResult" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NCryptFinalizeKey">
             <Param Type="NCRYPT_KEY_HANDLE" Name="hKey" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NCryptFreeBuffer">
             <Param Type="PVOID" Name="pvInput" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NCryptFreeObject">
             <Param Type="NCRYPT_HANDLE" Name="hObject" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NCryptGetProperty">
             <Param Type="NCRYPT_HANDLE" Name="hObject" />
@@ -179,7 +190,6 @@
             <Param Type="DWORD*" Name="pcbResult" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NCryptImportKey">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hProvider" />
@@ -191,26 +201,31 @@
             <Param Type="DWORD" Name="cbData" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NCryptIsAlgSupported">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hProvider" />
             <Param Type="LPCWSTR" Name="pszAlgId" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NCryptIsKeyHandle">
             <Param Type="NCRYPT_KEY_HANDLE" Name="hKey" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="NCryptKeyDerivation">
+            <Param Type="NCRYPT_KEY_HANDLE" Name="hKey" />
+            <Param Type="NCryptBufferDesc*" Name="pParameterList" />
+            <Param Type="PUCHAR" Name="pbDerivedKey" />
+            <Param Type="DWORD" Name="cbDerivedKey" />
+            <Param Type="DWORD*" Name="pcbResult" />
+            <Param Type="ULONG" Name="dwFlags" />
+            <Return Type="SECURITY_STATUS" />
         </Api>
         <Api Name="NCryptNotifyChangeKey">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hProvider" />
             <Param Type="HANDLE*" Name="phEvent" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NCryptOpenKey">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hProvider" />
@@ -219,14 +234,12 @@
             <Param Type="DWORD" Name="dwLegacyKeySpec" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NCryptOpenStorageProvider">
             <Param Type="NCRYPT_PROV_HANDLE*" Name="phProvider" />
             <Param Type="LPCWSTR" Name="pszProviderName" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NCryptSecretAgreement">
             <Param Type="NCRYPT_KEY_HANDLE" Name="hPrivKey" />
@@ -234,7 +247,6 @@
             <Param Type="NCRYPT_SECRET_HANDLE*" Name="phSecret" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NCryptSetProperty">
             <Param Type="NCRYPT_HANDLE" Name="hObject" />
@@ -243,7 +255,6 @@
             <Param Type="DWORD" Name="cbInput" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NCryptSignHash">
             <Param Type="NCRYPT_KEY_HANDLE" Name="hKey" />
@@ -255,7 +266,6 @@
             <Param Type="DWORD*" Name="pcbResult" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NCryptTranslateHandle">
             <Param Type="NCRYPT_PROV_HANDLE*" Name="phProvider" />
@@ -265,7 +275,6 @@
             <Param Type="DWORD" Name="dwLegacyKeySpec" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="NCryptVerifySignature">
             <Param Type="NCRYPT_KEY_HANDLE" Name="hKey" />
@@ -276,15 +285,14 @@
             <Param Type="DWORD" Name="cbSignature" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
 
+        <!-- SSL Provider -->
         <Category Name="Security and Identity/Cryptography API: Next Generation (CNG)/SSL Provider" />
         <Api Name="SslChangeNotify">
             <Param Type="HANDLE" Name="hEvent" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslComputeClientAuthHash">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hSslProvider" />
@@ -296,7 +304,6 @@
             <Param Type="DWORD*" Name="pcbResult" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslComputeEapKeyBlock">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hSslProvider" />
@@ -308,7 +315,6 @@
             <Param Type="DWORD*" Name="pcbResult" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslComputeFinishedHash">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hSslProvider" />
@@ -318,7 +324,6 @@
             <Param Type="DWORD" Name="cbOutput" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslCreateClientAuthHash">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hSslProvider" />
@@ -328,7 +333,6 @@
             <Param Type="LPCWSTR" Name="pszHashAlgId" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslCreateEphemeralKey">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hSslProvider" />
@@ -341,7 +345,6 @@
             <Param Type="DWORD" Name="cbParams" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslCreateHandshakeHash">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hSslProvider" />
@@ -350,12 +353,10 @@
             <Param Type="DWORD" Name="dwCipherSuite" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslDecrementProviderReferenceCount">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hSslProvider" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslDecryptPacket">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hSslProvider" />
@@ -368,7 +369,6 @@
             <Param Type="ULONGLONG" Name="SequenceNumber" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslEncryptPacket">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hSslProvider" />
@@ -382,7 +382,6 @@
             <Param Type="[SslContentType]" Name="dwContentType" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslEnumCipherSuites">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hSslProvider" />
@@ -391,14 +390,12 @@
             <Param Type="PVOID*" Name="ppEnumState" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslEnumProtocolProviders">
             <Param Type="DWORD*" Name="pdwProviderCount" />
             <Param Type="NCryptProviderName**" Name="ppProviderList" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslExportKey">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hSslProvider" />
@@ -409,18 +406,15 @@
             <Param Type="DWORD*" Name="pcbResult" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslFreeBuffer">
             <Param Type="PVOID" Name="pvInput" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslFreeObject">
             <Param Type="NCRYPT_HANDLE" Name="hObject" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslGenerateMasterKey">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hSslProvider" />
@@ -435,7 +429,6 @@
             <Param Type="DWORD*" Name="pcbResult" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslGenerateSessionKeys">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hSslProvider" />
@@ -445,7 +438,6 @@
             <Param Type="PNCryptBufferDesc" Name="pParameterList" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslGetCipherSuitePRFHashAlgorithm">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hSslProvider" />
@@ -455,7 +447,6 @@
             <Param Type="WCHAR[NCRYPT_SSL_MAX_NAME_SIZE]" Name="szPRFHash" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslGetKeyProperty">
             <Param Type="NCRYPT_KEY_HANDLE" Name="hKey" />
@@ -464,7 +455,6 @@
             <Param Type="DWORD*" Name="pcbOutput" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslGetProviderProperty">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hSslProvider" />
@@ -474,7 +464,6 @@
             <Param Type="PVOID*" Name="ppEnumState" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslHashHandshake">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hSslProvider" />
@@ -483,7 +472,6 @@
             <Param Type="DWORD" Name="cbInput" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslImportKey">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hSslProvider" />
@@ -493,7 +481,6 @@
             <Param Type="DWORD" Name="cbKeyBlob" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslImportMasterKey">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hSslProvider" />
@@ -506,12 +493,10 @@
             <Param Type="DWORD" Name="cbEncryptedKey" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslIncrementProviderReferenceCount">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hSslProvider" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslLookupCipherLengths">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hSslProvider" />
@@ -522,7 +507,6 @@
             <Param Type="DWORD" Name="cbCipherLengths" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslLookupCipherSuiteInfo">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hSslProvider" />
@@ -532,7 +516,6 @@
             <Param Type="NCRYPT_SSL_CIPHER_SUITE*" Name="pCipherSuite" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslOpenPrivateKey">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hSslProvider" />
@@ -540,14 +523,12 @@
             <Param Type="PCCERT_CONTEXT" Name="pCertContext" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslOpenProvider">
             <Param Type="NCRYPT_PROV_HANDLE*" Name="phSslProvider" />
             <Param Type="LPCWSTR" Name="pszProviderName" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslSignHash">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hSslProvider" />
@@ -559,7 +540,6 @@
             <Param Type="DWORD*" Name="pcbResult" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SslVerifySignature">
             <Param Type="NCRYPT_PROV_HANDLE" Name="hSslProvider" />
@@ -570,7 +550,89 @@
             <Param Type="DWORD" Name="cbSignature" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="SECURITY_STATUS" />
-            <Success Return="Equal" Value="0" />
+        </Api>
+
+        <!-- CNG Data Protection API (DPAPI) -->
+        <Category Name="Security and Identity/Cryptography API: Next Generation (CNG)/CNG Data Protection API (DPAPI)" />
+        <Api Name="NCryptCreateProtectionDescriptor">
+            <Param Type="LPCWSTR" Name="pwszDescriptorString" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="NCRYPT_DESCRIPTOR_HANDLE*" Name="phDescriptor" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="NCryptCloseProtectionDescriptor">
+            <Param Type="NCRYPT_DESCRIPTOR_HANDLE" Name="hDescriptor" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="NCryptGetProtectionDescriptorInfo">
+            <Param Type="NCRYPT_DESCRIPTOR_HANDLE" Name="hDescriptor" />
+            <Param Type="const NCRYPT_ALLOC_PARA*" Name="pMemPara" />
+            <Param Type="DWORD" Name="dwInfoType" />
+            <Param Type="void*" Name="ppvInfo" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="NCryptProtectSecret">
+            <Param Type="NCRYPT_DESCRIPTOR_HANDLE" Name="hDescriptor" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="const BYTE*" Name="pbData" Length="cbData" />
+            <Param Type="ULONG" Name="cbData" />
+            <Param Type="const NCRYPT_ALLOC_PARA*" Name="pMemPara" />
+            <Param Type="HWND" Name="hWnd" />
+            <Param Type="BYTE**" Name="ppbProtectedBlob" />
+            <!-- TODO: pcbProtectedBlob -->
+            <Param Type="ULONG*" Name="pcbProtectedBlob" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="NCryptQueryProtectionDescriptorName">
+            <Param Type="LPCWSTR" Name="pwszName" />
+            <Param Type="LPWSTR" Name="pwszDescriptorString" />
+            <Param Type="SIZE_T*" Name="pcDescriptorString" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="NCryptRegisterProtectionDescriptorName">
+            <Param Type="LPCWSTR" Name="pwszName" />
+            <Param Type="LPCWSTR" Name="pwszDescriptorString" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="NCryptStreamClose">
+            <Param Type="NCRYPT_STREAM_HANDLE" Name="hStream" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="NCryptStreamOpenToProtect">
+            <Param Type="NCRYPT_DESCRIPTOR_HANDLE" Name="hDescriptor" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="HWND" Name="hWnd" />
+            <Param Type="NCRYPT_PROTECT_STREAM_INFO*" Name="pStreamInfo" />
+            <Param Type="NCRYPT_STREAM_HANDLE*" Name="phStream" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="NCryptStreamOpenToUnprotect">
+            <Param Type="NCRYPT_PROTECT_STREAM_INFO*" Name="pStreamInfo" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="HWND" Name="hWnd" />
+            <Param Type="NCRYPT_STREAM_HANDLE*" Name="phStream" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="NCryptStreamUpdate">
+            <Param Type="NCRYPT_STREAM_HANDLE" Name="hStream" />
+            <Param Type="const BYTE*" Name="pbData" Length="cbData" />
+            <Param Type="SIZE_T" Name="cbData" />
+            <Param Type="BOOL" Name="fFinal" />
+            <Return Type="NTSTATUS" />
+        </Api>
+        <Api Name="NCryptUnprotectSecret">
+            <Param Type="NCRYPT_DESCRIPTOR_HANDLE*" Name="phDescriptor" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="const BYTE*" Name="pbProtectedBlob" Length="cbProtectedBlob" />
+            <Param Type="ULONG" Name="cbProtectedBlob" />
+            <Param Type="const NCRYPT_ALLOC_PARA*" Name="pMemPara" />
+            <Param Type="HWND" Name="hWnd" />
+            <Param Type="BYTE**" Name="ppbData" />
+            <!-- TODO: pcbData -->
+            <Param Type="ULONG*" Name="pcbData" />
+            <Return Type="NTSTATUS" />
         </Api>
 
     </Module>

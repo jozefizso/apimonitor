@@ -7,6 +7,10 @@
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Tdh.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         
+        <!-- Variables -->
+        <Variable Name="TDH_HANDLE"     Type="Alias"        Base="HANDLE" />
+        <Variable Name="PTDH_HANDLE"    Type="Pointer"      Base="TDH_HANDLE" />
+        
         <!-- TODO: Structures (Bitflags) -->
         <Variable Name="PEVENT_HEADER_EXTENDED_DATA_ITEM" Type="Alias" Base="LPVOID" />
 
@@ -121,7 +125,7 @@
                 <Set Name="TDH_OUTTYPE_NTSTATUS"                        Value="31" />
                 <Set Name="TDH_OUTTYPE_HRESULT"                         Value="32" />
                 <Set Name="TDH_OUTTYPE_CULTURE_INSENSITIVE_DATETIME"    Value="33" />
-                <Set Name="TDH_OUTTYPE_REDUCEDSTRING"                   Value="300"  />
+                <Set Name="TDH_OUTTYPE_REDUCEDSTRING"                   Value="300" />
                 <Set Name="TDH_OUTTYPE_NOPRINT"                         Value="301" />
             </Enum>
         </Variable>
@@ -395,13 +399,16 @@
 
         <!-- Event Tracing -->
         <Category Name="Diagnostics/Windows Events/Event Tracing" />
+        <Api Name="TdhCloseDecodingHandle">
+            <Param Type="TDH_HANDLE" Name="Handle" />
+            <Return Type="[ERROR_CODE_ULONG]" />
+        </Api>
         <Api Name="TdhEnumerateProviderFieldInformation">
             <Param Type="LPGUID" Name="pGuid" />
             <Param Type="EVENT_FIELD_TYPE" Name="EventFieldType" />
             <Param Type="PPROVIDER_FIELD_INFOARRAY" Name="pBuffer" PostLength="pBufferSize" />
             <Param Type="ULONG*" Name="pBufferSize" />
-            <Return Type="ULONG" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE_ULONG]" />
         </Api>
         <Api Name="TdhEnumerateProviderFilters">
             <Param Type="LPGUID" Name="pGuid" />
@@ -410,14 +417,12 @@
             <Param Type="ULONG*" Name="FilterCount" />
             <Param Type="PPROVIDER_FILTER_INFO*" Name="pBuffer" PostCount="FilterCount" />
             <Param Type="ULONG*" Name="pBufferSize" />
-            <Return Type="ULONG" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE_ULONG]" />
         </Api>
         <Api Name="TdhEnumerateProviders">
             <Param Type="PPROVIDER_ENUMERATION_INFO" Name="pBuffer" PostLength="pBufferSize" />
             <Param Type="ULONG*" Name="pBufferSize" />
-            <Return Type="ULONG" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE_ULONG]" />
         </Api>
         <Api Name="TdhFormatProperty">
             <Param Type="PTRACE_EVENT_INFO" Name="EventInfo" />
@@ -431,8 +436,12 @@
             <Param Type="PULONG" Name="BufferSize" />
             <Param Type="PWCHAR" Name="Buffer" />
             <Param Type="PUSHORT" Name="UserDataConsumed" />
-            <Return Type="ULONG" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE_ULONG]" />
+        </Api>
+        <Api Name="TdhGetDecodingParameter">
+            <Param Type="TDH_HANDLE" Name="Handle" />
+            <Param Type="PTDH_CONTEXT" Name="TdhContext" />
+            <Return Type="[ERROR_CODE_ULONG]" />
         </Api>
         <Api Name="TdhGetEventInformation">
             <Param Type="PEVENT_RECORD" Name="pEvent" />
@@ -440,16 +449,14 @@
             <Param Type="PTDH_CONTEXT" Name="pTdhContext" Count="TdhContextCount" />
             <Param Type="PTRACE_EVENT_INFO" Name="pBuffer" PostLength="pBufferSize" />
             <Param Type="ULONG*" Name="pBufferSize" />
-            <Return Type="ULONG" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE_ULONG]" />
         </Api>
         <Api Name="TdhGetEventMapInformation">
             <Param Type="PEVENT_RECORD" Name="pEvent" />
             <Param Type="LPWSTR" Name="pMapName" />
             <Param Type="PEVENT_MAP_INFO" Name="pBuffer" PostLength="pBufferSize" />
             <Param Type="ULONG*" Name="pBufferSize" />
-            <Return Type="ULONG" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE_ULONG]" />
         </Api>
         <Api Name="TdhGetPropertySize">
             <Param Type="PEVENT_RECORD" Name="pEvent" />
@@ -458,8 +465,7 @@
             <Param Type="ULONG" Name="PropertyDataCount" />
             <Param Type="PPROPERTY_DATA_DESCRIPTOR" Name="pPropertyData" Count="PropertyDataCount" />
             <Param Type="ULONG*" Name="pPropertySize" />
-            <Return Type="ULONG" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE_ULONG]" />
         </Api>
         <Api Name="TdhGetProperty">
             <Param Type="PEVENT_RECORD" Name="pEvent" />
@@ -469,13 +475,34 @@
             <Param Type="PPROPERTY_DATA_DESCRIPTOR" Name="pPropertyData" Count="PropertyDataCount" />
             <Param Type="ULONG" Name="BufferSize" />
             <Param Type="PBYTE" Name="pBuffer" />
-            <Return Type="ULONG" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE_ULONG]" />
+        </Api>
+        <Api Name="TdhGetWppMessage">
+            <Param Type="TDH_HANDLE" Name="Handle" />
+            <Param Type="PEVENT_RECORD" Name="EventRecord" />
+            <Param Type="PULONG" Name="BufferSize" />
+            <Param Type="PBYTE" Name="Buffer" />
+            <Return Type="[ERROR_CODE_ULONG]" />
+        </Api>
+        <Api Name="TdhGetWppProperty">
+            <Param Type="TDH_HANDLE" Name="Handle" />
+            <Param Type="PEVENT_RECORD" Name="EventRecord" />
+            <Param Type="PWSTR" Name="PropertyName" />
+            <Param Type="PULONG" Name="BufferSize" />
+            <Param Type="PBYTE" Name="Buffer" />
+            <Return Type="[ERROR_CODE_ULONG]" />
         </Api>
         <Api Name="TdhLoadManifest">
             <Param Type="PWSTR" Name="Manifest" />
-            <Return Type="ULONG" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE_ULONG]" />
+        </Api>
+        <Api Name="TdhLoadManifestFromBinary">
+            <Param Type="PWSTR" Name="BinaryPath" />
+            <Return Type="[ERROR_CODE_ULONG]" />
+        </Api>
+        <Api Name="TdhOpenDecodingHandle">
+            <Param Type="PTDH_HANDLE" Name="Handle" />
+            <Return Type="[ERROR_CODE_ULONG]" />
         </Api>
         <Api Name="TdhQueryProviderFieldInformation">
             <Param Type="LPGUID" Name="pGuid" />
@@ -483,13 +510,16 @@
             <Param Type="EVENT_FIELD_TYPE" Name="EventFieldType" />
             <Param Type="PPROVIDER_FIELD_INFOARRAY" Name="pBuffer" PostLength="pBufferSize" />
             <Param Type="ULONG*" Name="pBufferSize" />
-            <Return Type="ULONG" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE_ULONG]" />
+        </Api>
+        <Api Name="TdhSetDecodingParameter">
+            <Param Type="TDH_HANDLE" Name="Handle" />
+            <Param Type="PTDH_CONTEXT" Name="TdhContext" />
+            <Return Type="[ERROR_CODE_ULONG]" />
         </Api>
         <Api Name="TdhUnloadManifest">
             <Param Type="PWSTR" Name="Manifest" />
-            <Return Type="ULONG" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE_ULONG]" />
         </Api>
     </Module>
 </ApiMonitor>

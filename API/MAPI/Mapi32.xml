@@ -34,9 +34,21 @@
         <Variable Name="lpMapiRecipDesc"  Type="Pointer" Base="MapiRecipDesc" />
         <Variable Name="lpMapiRecipDesc*" Type="Pointer" Base="lpMapiRecipDesc" />
 
+        <!-- MapiRecipDescW -->
+        <Variable Name="MapiRecipDescW" Type="Struct">
+            <Field Type="ULONG"             Name="ulReserved" />
+            <Field Type="[MapiRecipClass]"  Name="ulRecipClass" />
+            <Field Type="PWSTR"             Name="lpszName" />
+            <Field Type="PWSTR"             Name="lpszAddress" />
+            <Field Type="ULONG"             Name="ulEIDSize" />
+            <Field Type="LPVOID"            Name="lpEntryID" Length="ulEIDSize" />
+        </Variable>
+        <Variable Name="lpMapiRecipDescW"  Type="Pointer" Base="MapiRecipDescW" />
+        <Variable Name="lpMapiRecipDescW*" Type="Pointer" Base="lpMapiRecipDescW" />
+
         <!-- [MapiFileDescFlags] -->
-        <Variable Name="[MapiFileDescFlags]" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
+        <Variable Name="[MapiFileDescFlags]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
             <Flag>
                 <Set Name="MAPI_OLE"            Value="0x00000001" />
                 <Set Name="MAPI_OLE_STATIC"     Value="0x00000002" />
@@ -54,8 +66,19 @@
         </Variable>
         <Variable Name="lpMapiFileDesc" Type="Pointer" Base="MapiFileDesc" />
 
-        <!-- [MapiMessageFlags] -->
-        <Variable Name="[MapiMessageFlags]" Type="Alias" Base="unsigned long">
+        <!-- MapiFileDescW -->
+        <Variable Name="MapiFileDescW" Type="Struct">
+            <Field Type="ULONG"                 Name="ulReserved" />
+            <Field Type="[MapiFileDescFlags]"   Name="flFlags" />
+            <Field Type="ULONG"                 Name="nPosition" />
+            <Field Type="PWSTR"                 Name="lpszPathName" />
+            <Field Type="PWSTR"                 Name="lpszFileName" />
+            <Field Type="LPVOID"                Name="lpFileType" />
+        </Variable>
+        <Variable Name="lpMapiFileDescW" Type="Pointer" Base="MapiFileDescW" />
+        
+        <!-- [MapiMessage_FLAGS] -->
+        <Variable Name="[MapiMessage_FLAGS]" Type="Alias" Base="FLAGS">
             <Display Name="FLAGS" />
             <Flag>
                 <Set Name="MAPI_UNREAD"             Value="0x00000001" />
@@ -72,18 +95,36 @@
             <Field Type="LPSTR"                 Name="lpszMessageType" />
             <Field Type="LPSTR"                 Name="lpszDateReceived" />
             <Field Type="LPSTR"                 Name="lpszConversationID" />
-            <Field Type="[MapiMessageFlags]"    Name="flFlags" />
+            <Field Type="[MapiMessage_FLAGS]"   Name="flFlags" />
             <Field Type="lpMapiRecipDesc"       Name="lpOriginator" />
             <Field Type="ULONG"                 Name="nRecipCount" />
-            <Field Type="lpMapiRecipDesc"       Name="lpRecips" />
+            <Field Type="lpMapiRecipDesc"       Name="lpRecips" Count="nRecipCount" />
             <Field Type="ULONG"                 Name="nFileCount" />
-            <Field Type="lpMapiFileDesc"        Name="lpFiles" />
+            <Field Type="lpMapiFileDesc"        Name="lpFiles" Count="nFileCount" />
         </Variable>
         <Variable Name="lpMapiMessage"  Type="Pointer" Base="MapiMessage" />
         <Variable Name="lpMapiMessage*" Type="Pointer" Base="lpMapiMessage" />
 
-        <!-- [MapiErrorCode] -->
-        <Variable Name="[MapiErrorCode]" Type="Alias" Base="ULONG">
+        <!-- MapiMessageW -->
+        <Variable Name="MapiMessageW" Type="Struct">
+            <Field Type="ULONG"                 Name="ulReserved" />
+            <Field Type="PWSTR"                 Name="lpszSubject" />
+            <Field Type="PWSTR"                 Name="lpszNoteText" />
+            <Field Type="PWSTR"                 Name="lpszMessageType" />
+            <Field Type="PWSTR"                 Name="lpszDateReceived" />
+            <Field Type="PWSTR"                 Name="lpszConversationID" />
+            <Field Type="[MapiMessage_FLAGS]"   Name="flFlags" />
+            <Field Type="lpMapiRecipDescW"      Name="lpOriginator" />
+            <Field Type="ULONG"                 Name="nRecipCount" />
+            <Field Type="lpMapiRecipDescW"      Name="lpRecips" Count="nRecipCount" />
+            <Field Type="ULONG"                 Name="nFileCount" />
+            <Field Type="lpMapiFileDescW"       Name="lpFiles" Count="nFileCount" />
+        </Variable>
+        <Variable Name="lpMapiMessageW"  Type="Pointer" Base="MapiMessageW" />
+        <Variable Name="lpMapiMessageW*" Type="Pointer" Base="lpMapiMessageW" />
+
+        <!-- [MAPI_ERROR] -->
+        <Variable Name="[MAPI_ERROR]" Type="Alias" Base="ULONG">
             <Display Name="ULONG" />
             <Enum>
                 <Set Name="SUCCESS_SUCCESS"                 	Value="0" />
@@ -112,11 +153,127 @@
                 <Set Name="MAPI_E_INVALID_EDITFIELDS"       	Value="24" />
                 <Set Name="MAPI_E_INVALID_RECIPS"           	Value="25" />
                 <Set Name="MAPI_E_NOT_SUPPORTED"            	Value="26" />
+                <Set Name="MAPI_E_UNICODE_NOT_SUPPORTED"        Value="27" />
             </Enum>
+            <Success Return="Equal" Value="0" />
         </Variable>
 
-        <!-- Messaging and Collaboration/Windows Messaging (MAPI)/Simple MAPI -->
-        <Category Name="Messaging and Collaboration/Windows Messaging (MAPI)/Simple MAPI" />
+        <!-- [MAPIAddress_FLAGS] -->
+        <Variable Name="[MAPIAddress_FLAGS]" Type="Alias" Base="FLAGS">
+            <Display Name="FLAGS" />
+            <Flag>
+                <Set Name="MAPI_LOGON_UI"       Value="0x00000001" />
+                <Set Name="MAPI_NEW_SESSION"    Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <!-- [MAPIDetails_FLAGS] -->
+        <Variable Name="[MAPIDetails_FLAGS]" Type="Alias" Base="FLAGS">
+            <Display Name="FLAGS" />
+            <Flag>
+                <Set Name="MAPI_LOGON_UI"       Value="0x00000001" />
+                <Set Name="MAPI_NEW_SESSION"    Value="0x00000002" />
+                <Set Name="MAPI_AB_NOMODIFY"    Value="0x00000400" />
+            </Flag>
+        </Variable>
+
+        <!-- [MAPIFindNext_FLAGS] -->
+        <Variable Name="[MAPIFindNext_FLAGS]" Type="Alias" Base="FLAGS">
+            <Display Name="FLAGS" />
+            <Flag>
+                <Set Name="MAPI_UNREAD_ONLY"        Value="0x00000020" />
+                <Set Name="MAPI_GUARANTEE_FIFO"     Value="0x00000100" />
+                <Set Name="MAPI_LONG_MSGID"         Value="0x00004000" />
+            </Flag>
+        </Variable>
+
+        <!-- [MAPILogoff_FLAGS] -->
+        <Variable Name="[MAPILogoff_FLAGS]" Type="Alias" Base="FLAGS">
+            <Display Name="FLAGS" />
+            <Flag>
+                <Set Name="MAPI_LOGON_UI"           Value="0x00000001" />
+                <Set Name="MAPI_PASSWORD_UI"        Value="0x00020000" />
+                <Set Name="MAPI_NEW_SESSION"        Value="0x00000002" />
+                <Set Name="MAPI_FORCE_DOWNLOAD"     Value="0x00001000" />
+                <Set Name="MAPI_EXTENDED"           Value="0x00000020" />
+            </Flag>
+        </Variable>
+
+        <!-- [MAPILogon_FLAGS] -->
+        <Variable Name="[MAPILogon_FLAGS]" Type="Alias" Base="FLAGS">
+            <Display Name="FLAGS" />
+            <Flag>
+                <Set Name="MAPI_LOGON_UI"               Value="0x00000001" />
+                <Set Name="MAPI_NEW_SESSION"            Value="0x00000002" />
+                <Set Name="MAPI_ALLOW_OTHERS"       	Value="0x00000008" />
+                <Set Name="MAPI_EXPLICIT_PROFILE"   	Value="0x00000010" />
+                <Set Name="MAPI_EXTENDED"           	Value="0x00000020" />
+                <Set Name="MAPI_FORCE_DOWNLOAD"     	Value="0x00001000" />
+                <Set Name="MAPI_SERVICE_UI_ALWAYS"      Value="0x00002000" />
+                <Set Name="MAPI_NO_MAIL"            	Value="0x00008000" />
+                <Set Name="MAPI_NT_SERVICE"            	Value="0x00010000" />
+                <Set Name="MAPI_PASSWORD_UI"            Value="0x00020000" />
+                <Set Name="MAPI_TIMEOUT_SHORT"        	Value="0x00100000" />
+                <Set Name="MAPI_SIMPLE_DEFAULT"        	Value="0x00001009" />
+                <Set Name="MAPI_SIMPLE_EXPLICIT"        Value="0x00001012" />
+            </Flag>
+        </Variable>
+
+        <!-- [MAPIReadMail_FLAGS] -->
+        <Variable Name="[MAPIReadMail_FLAGS]" Type="Alias" Base="FLAGS">
+            <Display Name="FLAGS" />
+            <Flag>
+                <Set Name="MAPI_PEEK"               Value="0x00000080" />
+                <Set Name="MAPI_SUPPRESS_ATTACH"    Value="0x00000800" />
+                <Set Name="MAPI_ENVELOPE_ONLY"      Value="0x00000040" />
+                <Set Name="MAPI_BODY_AS_FILE"       Value="0x00000200" />
+            </Flag>
+        </Variable>
+
+        <!-- [MAPIResolveName_FLAGS] -->
+        <Variable Name="[MAPIResolveName_FLAGS]" Type="Alias" Base="FLAGS">
+            <Display Name="FLAGS" />
+            <Flag>
+                <Set Name="MAPI_LOGON_UI"       Value="0x00000001" />
+                <Set Name="MAPI_NEW_SESSION"    Value="0x00000002" />
+                <Set Name="MAPI_DIALOG"         Value="0x00000008" />
+                <Set Name="MAPI_AB_NOMODIFY"    Value="0x00000400" />
+            </Flag>
+        </Variable>
+
+        <!-- [MAPISaveMail_FLAGS] -->
+        <Variable Name="[MAPISaveMail_FLAGS]" Type="Alias" Base="FLAGS">
+            <Display Name="FLAGS" />
+            <Flag>
+                <Set Name="MAPI_LOGON_UI"       Value="0x00000001" />
+                <Set Name="MAPI_LONG_MSGID"     Value="0x00004000" />
+                <Set Name="MAPI_NEW_SESSION"    Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <!-- [MAPISendMail_FLAGS] -->
+        <Variable Name="[MAPISendMail_FLAGS]" Type="Alias" Base="FLAGS">
+            <Display Name="FLAGS" />
+            <Flag>
+                <Set Name="MAPI_DIALOG_MODELESS"    Value="0x0000000C" />
+                <Set Name="MAPI_FORCE_UNICODE"      Value="0x00040000" />
+            </Flag>
+        </Variable>
+
+        <!-- [MAPISendMailHelper_FLAGS] -->
+        <Variable Name="[MAPISendMailHelper_FLAGS]" Type="Alias" Base="FLAGS">
+            <Display Name="FLAGS" />
+            <Flag>
+                <Set Name="MAPI_DIALOG"             Value="0x00000008" />
+                <Set Name="MAPI_DIALOG_MODELESS"    Value="0x0000000C" />
+                <Set Name="MAPI_LOGON_UI"           Value="0x00000001" />
+                <Set Name="MAPI_NEW_SESSION"        Value="0x00000002" />
+                <Set Name="MAPI_FORCE_UNICODE"      Value="0x00040000" />
+            </Flag>
+        </Variable>
+
+        <!-- Simple MAPI -->
+        <Category Name="System Services/Windows Messaging (MAPI)/Simple MAPI" />
         <Api Name="MAPIAddress">
             <Param Type="LHANDLE" Name="lhSession" />
             <Param Type="ULONG_PTR" Name="ulUIParam" />
@@ -125,12 +282,11 @@
             <Param Type="LPSTR" Name="lpszLabels" />
             <Param Type="ULONG" Name="nRecips" />
             <Param Type="lpMapiRecipDesc" Name="lpRecips" />
-            <Param Type="FLAGS" Name="flFlags" />
+            <Param Type="[MAPIAddress_FLAGS]" Name="flFlags" />
             <Param Type="ULONG" Name="ulReserved" />
             <Param Type="LPULONG" Name="lpnNewRecips" />
             <Param Type="lpMapiRecipDesc*" Name="lppNewRecips" />
-            <Return Type="[MapiErrorCode]" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[MAPI_ERROR]" />
         </Api>
         <Api Name="MAPIDeleteMail">
             <Param Type="LHANDLE" Name="lhSession" />
@@ -138,81 +294,72 @@
             <Param Type="LPSTR" Name="lpszMessageID" />
             <Param Type="FLAGS" Name="flFlags" />
             <Param Type="ULONG" Name="ulReserved" />
-            <Return Type="[MapiErrorCode]" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[MAPI_ERROR]" />
         </Api>
         <Api Name="MAPIDetails">
             <Param Type="LHANDLE" Name="lhSession" />
             <Param Type="ULONG_PTR" Name="ulUIParam" />
             <Param Type="lpMapiRecipDesc" Name="lpRecip" />
-            <Param Type="FLAGS" Name="flFlags" />
+            <Param Type="[MAPIDetails_FLAGS]" Name="flFlags" />
             <Param Type="ULONG" Name="ulReserved" />
-            <Return Type="[MapiErrorCode]" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[MAPI_ERROR]" />
         </Api>
         <Api Name="MAPIFindNext">
             <Param Type="LHANDLE" Name="lhSession" />
             <Param Type="ULONG_PTR" Name="ulUIParam" />
             <Param Type="LPSTR" Name="lpszMessageType" />
             <Param Type="LPSTR" Name="lpszSeedMessageID" />
-            <Param Type="FLAGS" Name="flFlags" />
+            <Param Type="[MAPIFindNext_FLAGS]" Name="flFlags" />
             <Param Type="ULONG" Name="ulReserved" />
             <Param Type="LPSTR" Name="lpszMessageID" />
-            <Return Type="[MapiErrorCode]" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[MAPI_ERROR]" />
         </Api>
         <Api Name="MAPIFreeBuffer">
             <Param Type="LPVOID" Name="pv" />
-            <Return Type="[MapiErrorCode]" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[MAPI_ERROR]" />
         </Api>
         <Api Name="MAPILogoff">
             <Param Type="LHANDLE" Name="lhSession" />
             <Param Type="ULONG_PTR" Name="ulUIParam" />
-            <Param Type="FLAGS" Name="flFlags" />
+            <Param Type="[MAPILogoff_FLAGS]" Name="flFlags" />
             <Param Type="ULONG" Name="ulReserved" />
-            <Return Type="[MapiErrorCode]" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[MAPI_ERROR]" />
         </Api>
         <Api Name="MAPILogon">
             <Param Type="ULONG_PTR" Name="ulUIParam" />
             <Param Type="LPSTR" Name="lpszProfileName" />
             <Param Type="LPSTR" Name="lpszPassword" />
-            <Param Type="FLAGS" Name="flFlags" />
+            <Param Type="[MAPILogon_FLAGS]" Name="flFlags" />
             <Param Type="ULONG" Name="ulReserved" />
             <Param Type="LPLHANDLE" Name="lplhSession" />
-            <Return Type="[MapiErrorCode]" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[MAPI_ERROR]" />
         </Api>
         <Api Name="MAPIReadMail">
             <Param Type="LHANDLE" Name="lhSession" />
             <Param Type="ULONG_PTR" Name="ulUIParam" />
             <Param Type="LPSTR" Name="lpszMessageID" />
-            <Param Type="FLAGS" Name="flFlags" />
+            <Param Type="[MAPIReadMail_FLAGS]" Name="flFlags" />
             <Param Type="ULONG" Name="ulReserved" />
             <Param Type="lpMapiMessage*" Name="lppMessage" />
-            <Return Type="[MapiErrorCode]" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[MAPI_ERROR]" />
         </Api>
         <Api Name="MAPIResolveName">
             <Param Type="LHANDLE" Name="lhSession" />
             <Param Type="ULONG_PTR" Name="ulUIParam" />
             <Param Type="LPSTR" Name="lpszName" />
-            <Param Type="FLAGS" Name="flFlags" />
+            <Param Type="[MAPIResolveName_FLAGS]" Name="flFlags" />
             <Param Type="ULONG" Name="ulReserved" />
             <Param Type="lpMapiRecipDesc*" Name="lppRecip" />
-            <Return Type="[MapiErrorCode]" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[MAPI_ERROR]" />
         </Api>
         <Api Name="MAPISaveMail">
             <Param Type="LHANDLE" Name="lhSession" />
             <Param Type="ULONG_PTR" Name="ulUIParam" />
             <Param Type="lpMapiMessage" Name="lpMessage" />
-            <Param Type="FLAGS" Name="flFlags" />
+            <Param Type="[MAPISaveMail_FLAGS]" Name="flFlags" />
             <Param Type="ULONG" Name="ulReserved" />
             <Param Type="LPSTR" Name="lpszMessageID" />
-            <Return Type="[MapiErrorCode]" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[MAPI_ERROR]" />
         </Api>
         <Api Name="MAPISendDocuments">
             <Param Type="ULONG_PTR" Name="ulUIParam" />
@@ -220,17 +367,31 @@
             <Param Type="LPSTR" Name="lpszFilePaths" />
             <Param Type="LPSTR" Name="lpszFileNames" />
             <Param Type="ULONG" Name="ulReserved" />
-            <Return Type="[MapiErrorCode]" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[MAPI_ERROR]" />
         </Api>
         <Api Name="MAPISendMail">
             <Param Type="LHANDLE" Name="lhSession" />
             <Param Type="ULONG_PTR" Name="ulUIParam" />
             <Param Type="lpMapiMessage" Name="lpMessage" />
-            <Param Type="FLAGS" Name="flFlags" />
+            <Param Type="[MAPISendMail_FLAGS]" Name="flFlags" />
             <Param Type="ULONG" Name="ulReserved" />
-            <Return Type="[MapiErrorCode]" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[MAPI_ERROR]" />
+        </Api>
+        <Api Name="MAPISendMailHelper">
+            <Param Type="LHANDLE" Name="lhSession" />
+            <Param Type="ULONG_PTR" Name="ulUIParam" />
+            <Param Type="lpMapiMessageW" Name="lpMessage" />
+            <Param Type="[MAPISendMailHelper_FLAGS]" Name="flFlags" />
+            <Param Type="ULONG" Name="ulReserved" />
+            <Return Type="[MAPI_ERROR]" />
+        </Api>
+        <Api Name="MAPISendMailW">
+            <Param Type="LHANDLE" Name="lhSession" />
+            <Param Type="ULONG_PTR" Name="ulUIParam" />
+            <Param Type="lpMapiMessageW" Name="lpMessage" />
+            <Param Type="[MAPISendMail_FLAGS]" Name="flFlags" />
+            <Param Type="ULONG" Name="ulReserved" />
+            <Return Type="[MAPI_ERROR]" />
         </Api>
     </Module>
 </ApiMonitor>

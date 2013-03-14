@@ -39,7 +39,7 @@
         <!-- CRYPT_CONTEXT_FUNCTION_PROVIDERS -->
         <Variable Name="CRYPT_CONTEXT_FUNCTION_PROVIDERS" Type="Struct">
             <Field Type="ULONG"	    Name="cProviders" />
-            <Field Type="PWSTR*"    Name="rgpszProviders" />
+            <Field Type="PWSTR*"    Name="rgpszProviders" Count="cProviders" />
         </Variable>
         <Variable Name="PCRYPT_CONTEXT_FUNCTION_PROVIDERS"  Type="Pointer" Base="CRYPT_CONTEXT_FUNCTION_PROVIDERS" />
         <Variable Name="PCRYPT_CONTEXT_FUNCTION_PROVIDERS*" Type="Pointer" Base="PCRYPT_CONTEXT_FUNCTION_PROVIDERS" />
@@ -47,7 +47,7 @@
         <!-- CRYPT_CONTEXT_FUNCTIONS -->
         <Variable Name="CRYPT_CONTEXT_FUNCTIONS" Type="Struct">
             <Field Type="ULONG"	    Name="cFunctions" />
-            <Field Type="PWSTR*"    Name="rgpszFunctions" />
+            <Field Type="PWSTR*"    Name="rgpszFunctions" Count="cFunctions" />
         </Variable>
         <Variable Name="PCRYPT_CONTEXT_FUNCTIONS"   Type="Pointer"  Base="CRYPT_CONTEXT_FUNCTIONS" />
         <Variable Name="PCRYPT_CONTEXT_FUNCTIONS*"  Type="Pointer"  Base="PCRYPT_CONTEXT_FUNCTIONS" />
@@ -55,7 +55,7 @@
         <!-- CRYPT_CONTEXTS -->
         <Variable Name="CRYPT_CONTEXTS" Type="Struct">
             <Field Type="ULONG"     Name="cContexts" />
-            <Field Type="PWSTR*"    Name="rgpszContexts" />
+            <Field Type="PWSTR*"    Name="rgpszContexts" Count="cContexts" />
         </Variable>
         <Variable Name="PCRYPT_CONTEXTS"    Type="Pointer" Base="CRYPT_CONTEXTS" />
         <Variable Name="PCRYPT_CONTEXTS*"   Type="Pointer" Base="PCRYPT_CONTEXTS" />
@@ -77,7 +77,7 @@
             <Field Type="ULONG" 	Name="dwInterface" />
             <Field Type="ULONG" 	Name="dwFlags" />
             <Field Type="ULONG" 	Name="cFunctions" />
-            <Field Type="PWSTR*"	Name="rgpszFunctions" />
+            <Field Type="PWSTR*"	Name="rgpszFunctions" Count="cFunctions" />
         </Variable>
         <Variable Name="PCRYPT_INTERFACE_REG"   Type="Pointer"  Base="CRYPT_INTERFACE_REG" />
         <Variable Name="PCRYPT_INTERFACE_REG*"  Type="Pointer"  Base="PCRYPT_INTERFACE_REG" />
@@ -86,14 +86,14 @@
         <Variable Name="CRYPT_IMAGE_REG" Type="Struct">
             <Field Type="PWSTR" 	                Name="pszImage" />
             <Field Type="ULONG"                     Name="cInterfaces" />
-            <Field Type="PCRYPT_INTERFACE_REG*" 	Name="rgpInterfaces" />
+            <Field Type="PCRYPT_INTERFACE_REG*" 	Name="rgpInterfaces" Count="cInterfaces" />
         </Variable>
         <Variable Name="PCRYPT_IMAGE_REG" Type="Pointer" Base="CRYPT_IMAGE_REG" />
 
         <!-- CRYPT_PROVIDER_REG -->
         <Variable Name="CRYPT_PROVIDER_REG" Type="Struct">
             <Field Type="ULONG" 	        Name="cAliases" />
-            <Field Type="PWSTR*"	        Name="rgpszAliases" />
+            <Field Type="PWSTR*"	        Name="rgpszAliases" Count="cAliases" />
             <Field Type="PCRYPT_IMAGE_REG" 	Name="pUM" />
             <Field Type="PCRYPT_IMAGE_REG" 	Name="pKM" />
         </Variable>
@@ -122,7 +122,7 @@
             <Field Type="PWSTR" 	            Name="pszFunction" />
             <Field Type="PWSTR" 	            Name="pszProvider" />
             <Field Type="ULONG" 	            Name="cProperties" />
-            <Field Type="PCRYPT_PROPERTY_REF*"	Name="rgpProperties" />
+            <Field Type="PCRYPT_PROPERTY_REF*"	Name="rgpProperties" Count="cProperties" />
             <Field Type="PCRYPT_IMAGE_REF" 	    Name="pUM" />
             <Field Type="PCRYPT_IMAGE_REF" 	    Name="pKM" />
         </Variable>
@@ -132,7 +132,7 @@
         <!-- CRYPT_PROVIDER_REFS -->
         <Variable Name="CRYPT_PROVIDER_REFS" Type="Struct">
             <Field Type="ULONG"                 Name="cProviders" />
-            <Field Type="PCRYPT_PROVIDER_REF*"	Name="rgpProviders" />
+            <Field Type="PCRYPT_PROVIDER_REF*"	Name="rgpProviders" Count="cProviders" />
         </Variable>
         <Variable Name="PCRYPT_PROVIDER_REFS"   Type="Pointer" Base="CRYPT_PROVIDER_REFS" />
         <Variable Name="PCRYPT_PROVIDER_REFS*"  Type="Pointer" Base="PCRYPT_PROVIDER_REFS" />
@@ -213,7 +213,7 @@
             </Flag>
         </Variable>
 
-        <!-- API -->
+        <!-- Cryptographic Configuration -->
         <Category Name="Security and Identity/Cryptography API: Next Generation (CNG)/Cryptographic Configuration" />
         <Api Name="BCryptAddContextFunction">
             <Param Type="[CryptConfigTable]" Name="dwTable" />
@@ -365,6 +365,7 @@
             <Return Type="NTSTATUS" />
         </Api>
 
+        <!-- Cryptographic Primitive -->
         <Category Name="Security and Identity/Cryptography API: Next Generation (CNG)/Cryptographic Primitive" />
         <Api Name="BCryptCloseAlgorithmProvider">
             <Param Type="BCRYPT_ALG_HANDLE" Name="hAlgorithm" />
@@ -533,6 +534,15 @@
             <Param Type="ULONG" Name="dwFlags" />
             <Return Type="NTSTATUS" />
         </Api>
+        <Api Name="BCryptKeyDerivation">
+            <Param Type="BCRYPT_KEY_HANDLE" Name="hKey" />
+            <Param Type="BCryptBufferDesc*" Name="pParameterList" />
+            <Param Type="PUCHAR" Name="pbDerivedKey" />
+            <Param Type="ULONG" Name="cbDerivedKey" />
+            <Param Type="ULONG*" Name="pcbResult" />
+            <Param Type="ULONG" Name="dwFlags" />
+            <Return Type="NTSTATUS" />
+        </Api>
         <Api Name="BCryptOpenAlgorithmProvider">
             <Param Type="BCRYPT_ALG_HANDLE*" Name="phAlgorithm" />
             <Param Type="LPCWSTR" Name="pszAlgId" />
@@ -577,6 +587,7 @@
             <Return Type="NTSTATUS" />
         </Api>
 
+        <!-- Helper -->
         <Category Name="Security and Identity/Cryptography API: Next Generation (CNG)/Helper" />
         <Api Name="BCryptDeriveKeyCapi">
             <Param Type="BCRYPT_HASH_HANDLE" Name="hHash" />

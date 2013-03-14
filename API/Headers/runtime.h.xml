@@ -1,0 +1,56 @@
+<!--
+    API Monitor Definitions
+    (c) 2012, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Headers>
+        
+        <!-- I'm not sure what the internal format of HSTRING is, but after some analysis, the following format
+        appears to work correctly; at least for displaying the length and contents of the HSTRING. Not sure what
+        the other fields are yet. Will analyze another day.
+        
+        Also, HSTRING_HEADER is defined as a union with a size of 24 bytes on 64-bit and 20 bytes on 32-bit.
+        Our format below also has the same size, so there is a good chance that it is correct.
+        
+        I also tested the API WindowsCreateStringReference and the value returned in the third parameter, which
+        is HSTRING_HEADER was decoded correctly from this structure. When WindowsCreateStringReference returns,
+        "HSTRING* string" is a pointer to a pointer to "HSTRING_HEADER* hstringHeader", which means that HSTRING
+        is a pointer to HSTRING_HEADER, which is what we have defined it to.
+        
+        Unknown1 appears to be a flag with one or more of the following values
+            0x00000000
+            0x00000001 - this might be used to indicate if the buffer is allocated internally, or if it's a caller buffer
+            0x00000010
+            
+        The values in Unknown2 and Unknown3 don't appear to be valid. For example, WindowsCreateStringReference sets their
+        values to 0xcccccccc.
+        -->
+
+        <!-- HSTRING_HEADER -->
+        <Variable Name="HSTRING_HEADER" Type="Struct">
+            <Field Type="UINT"      Name="Unknown1" />
+            <Field Type="UINT"      Name="Length" />
+            <Field Type="UINT"      Name="Unknown2" />
+            <Field Type="UINT"      Name="Unknown3" />
+            <Field Type="LPWSTR"    Name="String" />
+        </Variable>
+        <Variable Name="HSTRING_HEADER*" Type="Pointer" Base="HSTRING_HEADER" />
+
+        <!-- Variables -->
+        <Variable Name="HSTRING"            Type="Pointer"      Base="HSTRING_HEADER" />
+        <Variable Name="HSTRING*"           Type="Pointer"      Base="HSTRING" />
+        <Variable Name="HSTRING**"          Type="Pointer"      Base="HSTRING*" />
+        <Variable Name="const HSTRING"      Type="Alias"        Base="HSTRING" />
+        <Variable Name="const HSTRING*"     Type="Pointer"      Base="HSTRING" />
+        <Variable Name="HSTRING_BUFFER"     Type="Pointer"      Base="HSTRING_HEADER" />
+        <Variable Name="HSTRING_BUFFER*"    Type="Pointer"      Base="HSTRING_BUFFER" />
+
+        <!-- Variables -->
+        <Variable Name="mdToken"            Type="Alias"        Base="ULONG32" />
+        <Variable Name="mdTypeDef"          Type="Alias"        Base="mdToken" />
+        <Variable Name="mdTypeDef*"         Type="Pointer"      Base="mdTypeDef" />
+
+    </Headers>
+</ApiMonitor>

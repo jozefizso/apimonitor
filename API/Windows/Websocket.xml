@@ -1,0 +1,218 @@
+<!--
+    API Monitor Definitions
+    (c) 2012, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="Websocket" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
+        
+        <!-- Variables -->
+        <Variable Name="WEB_SOCKET_HANDLE"          Type="Alias"        Base="HANDLE" />
+        <Variable Name="WEB_SOCKET_HANDLE*"         Type="Pointer"      Base="WEB_SOCKET_HANDLE" />
+
+        <!-- WEB_SOCKET_ACTION -->
+        <Variable Name="WEB_SOCKET_ACTION" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="WEB_SOCKET_NO_ACTION"                            Value="0" />
+                <Set Name="WEB_SOCKET_SEND_TO_NETWORK_ACTION"               Value="1" />
+                <Set Name="WEB_SOCKET_INDICATE_SEND_COMPLETE_ACTION"        Value="2" />
+                <Set Name="WEB_SOCKET_RECEIVE_FROM_NETWORK_ACTION"          Value="3" />
+                <Set Name="WEB_SOCKET_INDICATE_RECEIVE_COMPLETE_ACTION"     Value="4" />
+            </Enum>
+        </Variable>
+        <Variable Name="WEB_SOCKET_ACTION*" Type="Pointer" Base="WEB_SOCKET_ACTION" />
+
+        <!-- WEB_SOCKET_ACTION_QUEUE -->
+        <Variable Name="WEB_SOCKET_ACTION_QUEUE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="WEB_SOCKET_SEND_ACTION_QUEUE"        Value="0x1" />
+                <Set Name="WEB_SOCKET_RECEIVE_ACTION_QUEUE"     Value="0x2" />
+                <Set Name="WEB_SOCKET_ALL_ACTION_QUEUE"         Value="0x3" />
+            </Enum>
+        </Variable>
+
+        <!-- WEB_SOCKET_BUFFER_TYPE -->
+        <Variable Name="WEB_SOCKET_BUFFER_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="WEB_SOCKET_UTF8_MESSAGE_BUFFER_TYPE"             Value="0x80000000" />
+                <Set Name="WEB_SOCKET_UTF8_FRAGMENT_BUFFER_TYPE"            Value="0x80000001" />
+                <Set Name="WEB_SOCKET_BINARY_MESSAGE_BUFFER_TYPE"           Value="0x80000002" />
+                <Set Name="WEB_SOCKET_BINARY_FRAGMENT_BUFFER_TYPE"          Value="0x80000003" />
+                <Set Name="WEB_SOCKET_CLOSE_BUFFER_TYPE"                    Value="0x80000004" />
+                <Set Name="WEB_SOCKET_PING_PONG_BUFFER_TYPE"                Value="0x80000005" />
+                <Set Name="WEB_SOCKET_UNSOLICITED_PONG_BUFFER_TYPE"         Value="0x80000006" />
+            </Enum>
+        </Variable>
+        <Variable Name="WEB_SOCKET_BUFFER_TYPE*" Type="Pointer" Base="WEB_SOCKET_BUFFER_TYPE" />
+
+        <!-- WEB_SOCKET_CLOSE_STATUS -->
+        <Variable Name="WEB_SOCKET_CLOSE_STATUS" Type="Alias" Base="USHORT">
+            <Display Name="USHORT" />
+            <Enum>
+                <Set Name="WEB_SOCKET_SUCCESS_CLOSE_STATUS"                     Value="1000" />
+                <Set Name="WEB_SOCKET_ENDPOINT_UNAVAILABLE_CLOSE_STATUS"        Value="1001" />
+                <Set Name="WEB_SOCKET_PROTOCOL_ERROR_CLOSE_STATUS"              Value="1002" />
+                <Set Name="WEB_SOCKET_INVALID_DATA_TYPE_CLOSE_STATUS"           Value="1003" />
+                <Set Name="WEB_SOCKET_EMPTY_CLOSE_STATUS"                       Value="1005" />
+                <Set Name="WEB_SOCKET_ABORTED_CLOSE_STATUS"                     Value="1006" />
+                <Set Name="WEB_SOCKET_INVALID_PAYLOAD_CLOSE_STATUS"             Value="1007" />
+                <Set Name="WEB_SOCKET_POLICY_VIOLATION_CLOSE_STATUS"            Value="1008" />
+                <Set Name="WEB_SOCKET_MESSAGE_TOO_BIG_CLOSE_STATUS"             Value="1009" />
+                <Set Name="WEB_SOCKET_UNSUPPORTED_EXTENSIONS_CLOSE_STATUS"      Value="1010" />
+                <Set Name="WEB_SOCKET_SERVER_ERROR_CLOSE_STATUS"                Value="1011" />
+                <Set Name="WEB_SOCKET_SECURE_HANDSHAKE_ERROR_CLOSE_STATUS"      Value="1015" />
+            </Enum>
+        </Variable>
+
+        <!-- WEB_SOCKET_PROPERTY_TYPE -->
+        <Variable Name="WEB_SOCKET_PROPERTY_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="WEB_SOCKET_RECEIVE_BUFFER_SIZE_PROPERTY_TYPE"            Value="0" />
+                <Set Name="WEB_SOCKET_SEND_BUFFER_SIZE_PROPERTY_TYPE"               Value="1" />
+                <Set Name="WEB_SOCKET_DISABLE_MASKING_PROPERTY_TYPE"                Value="2" />
+                <Set Name="WEB_SOCKET_ALLOCATED_BUFFER_PROPERTY_TYPE"               Value="3" />
+                <Set Name="WEB_SOCKET_DISABLE_UTF8_VERIFICATION_PROPERTY_TYPE"      Value="4" />
+                <Set Name="WEB_SOCKET_KEEPALIVE_INTERVAL_PROPERTY_TYPE"             Value="5" />
+                <Set Name="WEB_SOCKET_SUPPORTED_VERSIONS_PROPERTY_TYPE"             Value="6" />
+            </Enum>
+        </Variable>
+
+        <!-- [WEB_SOCKET_BUFFER_s1] -->
+        <Variable Name="[WEB_SOCKET_BUFFER_s1]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="PBYTE"     Name="pbBuffer" Length="ulBufferLength" />
+            <Field Type="ULONG"     Name="ulBufferLength" />
+        </Variable>
+
+        <!-- [WEB_SOCKET_BUFFER_s2] -->
+        <Variable Name="[WEB_SOCKET_BUFFER_s2]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="PBYTE"                     Name="pbReason" Length="ulReasonLength" />
+            <Field Type="ULONG"                     Name="ulReasonLength" />
+            <Field Type="WEB_SOCKET_CLOSE_STATUS"   Name="usStatus" />
+        </Variable>
+
+        <!-- WEB_SOCKET_BUFFER -->
+        <Variable Name="WEB_SOCKET_BUFFER" Type="Union">
+            <Field Type="[WEB_SOCKET_BUFFER_s1]"    Name="Data" />
+            <Field Type="[WEB_SOCKET_BUFFER_s2]"    Name="CloseStatus" />
+        </Variable>
+        <Variable Name="WEB_SOCKET_BUFFER*" Type="Pointer" Base="WEB_SOCKET_BUFFER" />
+
+        <!-- WEB_SOCKET_HTTP_HEADER -->
+        <Variable Name="WEB_SOCKET_HTTP_HEADER" Type="Struct">
+            <Field Type="PCHAR"     Name="pcName" />
+            <Field Type="ULONG"     Name="ulNameLength" />
+            <Field Type="PCHAR"     Name="pcValue" />
+            <Field Type="ULONG"     Name="ulValueLength" />
+        </Variable>
+        <Variable Name="PWEB_SOCKET_HTTP_HEADER"        Type="Pointer" Base="WEB_SOCKET_HTTP_HEADER" />
+        <Variable Name="PWEB_SOCKET_HTTP_HEADER*"       Type="Pointer" Base="PWEB_SOCKET_HTTP_HEADER" />
+        <Variable Name="const PWEB_SOCKET_HTTP_HEADER"  Type="Pointer" Base="WEB_SOCKET_HTTP_HEADER" />
+
+        <!-- WEB_SOCKET_PROPERTY -->
+        <Variable Name="WEB_SOCKET_PROPERTY" Type="Struct">
+            <Field Type="WEB_SOCKET_PROPERTY_TYPE"      Name="Type" />
+            <Field Type="PVOID"                         Name="pvValue" Length="ulValueSize" />
+            <Field Type="ULONG"                         Name="ulValueSize" />
+        </Variable>
+        <Variable Name="const PWEB_SOCKET_PROPERTY" Type="Pointer" Base="WEB_SOCKET_PROPERTY" />
+
+        <!-- WebSocket Protocol Component -->
+        <Category Name="Networking/WebSocket Protocol Component" />
+        <Api Name="WebSocketAbortHandle">
+            <Param Type="WEB_SOCKET_HANDLE" Name="hWebSocket" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="WebSocketBeginClientHandshake">
+            <Param Type="WEB_SOCKET_HANDLE" Name="hWebSocket" />
+            <Param Type="PCSTR*" Name="pszSubprotocols" Count="ulSubprotocolCount" />
+            <Param Type="ULONG" Name="ulSubprotocolCount" />
+            <Param Type="PCSTR*" Name="pszExtensions" Count="ulExtensionCount" />
+            <Param Type="ULONG" Name="ulExtensionCount" />
+            <Param Type="const PWEB_SOCKET_HTTP_HEADER" Name="pInitialHeaders" Count="ulInitialHeaderCount" />
+            <Param Type="ULONG" Name="ulInitialHeaderCount" />
+            <Param Type="PWEB_SOCKET_HTTP_HEADER*" Name="pAdditionalHeaders" DerefPostCount="pulAdditionalHeaderCount" />
+            <Param Type="ULONG*" Name="pulAdditionalHeaderCount" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WebSocketBeginServerHandshake">
+            <Param Type="WEB_SOCKET_HANDLE" Name="hWebSocket" />
+            <Param Type="PCSTR" Name="pszSubprotocolSelected" />
+            <Param Type="PCSTR*" Name="pszExtensionSelected" Count="ulExtensionSelectedCount" />
+            <Param Type="ULONG" Name="ulExtensionSelectedCount" />
+            <Param Type="const PWEB_SOCKET_HTTP_HEADER" Name="pRequestHeaders" Count="ulRequestHeaderCount" />
+            <Param Type="ULONG" Name="ulRequestHeaderCount" />
+            <Param Type="PWEB_SOCKET_HTTP_HEADER*" Name="pResponseHeaders" DerefPostCount="pulResponseHeaderCount" />
+            <Param Type="ULONG*" Name="pulResponseHeaderCount" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WebSocketCompleteAction">
+            <Param Type="WEB_SOCKET_HANDLE" Name="hWebSocket" />
+            <Param Type="PVOID" Name="pvActionContext" />
+            <Param Type="ULONG" Name="ulBytesTransferred" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="WebSocketCreateClientHandle">
+            <Param Type="const PWEB_SOCKET_PROPERTY" Name="pProperties" Count="ulPropertyCount" />
+            <Param Type="ULONG" Name="ulPropertyCount" />
+            <Param Type="WEB_SOCKET_HANDLE*" Name="phWebSocket" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WebSocketCreateServerHandle">
+            <Param Type="const PWEB_SOCKET_PROPERTY" Name="pProperties" Count="ulPropertyCount" />
+            <Param Type="ULONG" Name="ulPropertyCount" />
+            <Param Type="WEB_SOCKET_HANDLE*" Name="phWebSocket" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WebSocketDeleteHandle">
+            <Param Type="WEB_SOCKET_HANDLE" Name="hWebSocket" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="WebSocketEndClientHandshake">
+            <Param Type="WEB_SOCKET_HANDLE" Name="hWebSocket" />
+            <Param Type="const PWEB_SOCKET_HTTP_HEADER" Name="pResponseHeaders" Count="ulReponseHeaderCount" />
+            <Param Type="ULONG" Name="ulReponseHeaderCount" />
+            <Param Type="ULONG*" Name="pulSelectedExtensions" PostCount="pulSelectedExtensionCount" />
+            <Param Type="ULONG*" Name="pulSelectedExtensionCount" />
+            <Param Type="ULONG*" Name="pulSelectedSubprotocol" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WebSocketEndServerHandshake">
+            <Param Type="WEB_SOCKET_HANDLE" Name="hWebSocket" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WebSocketGetAction">
+            <Param Type="WEB_SOCKET_HANDLE" Name="hWebSocket" />
+            <Param Type="WEB_SOCKET_ACTION_QUEUE" Name="eActionQueue" />
+            <Param Type="WEB_SOCKET_BUFFER*" Name="pDataBuffers" PostCount="pulDataBufferCount" />
+            <Param Type="ULONG*" Name="pulDataBufferCount" />
+            <Param Type="WEB_SOCKET_ACTION*" Name="pAction" />
+            <Param Type="WEB_SOCKET_BUFFER_TYPE*" Name="pBufferType" />
+            <Param Type="PVOID*" Name="pvApplicationContext" />
+            <Param Type="PVOID*" Name="pvActionContext" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WebSocketGetGlobalProperty">
+            <Param Type="WEB_SOCKET_PROPERTY" Name="eType" />
+            <Param Type="PVOID" Name="pvValue" PostLength="ulSize" />
+            <Param Type="ULONG*" Name="ulSize" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WebSocketReceive">
+            <Param Type="WEB_SOCKET_HANDLE" Name="hWebSocket" />
+            <Param Type="WEB_SOCKET_BUFFER*" Name="pBuffer" />
+            <Param Type="PVOID" Name="pvContext" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WebSocketSend">
+            <Param Type="WEB_SOCKET_HANDLE" Name="hWebSocket" />
+            <Param Type="WEB_SOCKET_BUFFER_TYPE" Name="BufferType" />
+            <Param Type="WEB_SOCKET_BUFFER*" Name="pBuffer" />
+            <Param Type="PVOID" Name="Context" />
+            <Return Type="HRESULT" />
+        </Api>
+
+    </Module>
+</ApiMonitor>

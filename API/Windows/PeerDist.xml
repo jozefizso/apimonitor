@@ -1,0 +1,279 @@
+<!--
+    API Monitor Definitions
+    (c) 2012, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="PeerDist.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        
+        <!-- Variables -->
+        <Variable Name="PEERDIST_INSTANCE_HANDLE"       Type="Alias"        Base="HANDLE" />
+        <Variable Name="PPEERDIST_INSTANCE_HANDLE"      Type="Pointer"      Base="PEERDIST_INSTANCE_HANDLE" />
+        <Variable Name="PEERDIST_CONTENT_HANDLE"        Type="Alias"        Base="HANDLE" />
+        <Variable Name="PPEERDIST_CONTENT_HANDLE"       Type="Pointer"      Base="PEERDIST_CONTENT_HANDLE" />
+        <Variable Name="PEERDIST_CONTENTINFO_HANDLE"    Type="Alias"        Base="HANDLE" />
+        <Variable Name="PPEERDIST_CONTENTINFO_HANDLE"   Type="Pointer"      Base="PEERDIST_CONTENTINFO_HANDLE" />
+        <Variable Name="PEERDIST_STREAM_HANDLE"         Type="Alias"        Base="HANDLE" />
+
+        <!-- PEERDIST_STATUS -->
+        <Variable Name="PEERDIST_STATUS" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="PEERDIST_STATUS_DISABLED"        Value="0" />
+                <Set Name="PEERDIST_STATUS_UNAVAILABLE"     Value="1" />
+                <Set Name="PEERDIST_STATUS_AVAILABLE"       Value="2" />
+            </Enum>
+        </Variable>
+        <Variable Name="PEERDIST_STATUS*" Type="Pointer" Base="PEERDIST_STATUS" />
+
+        <!-- PEERDIST_CLIENT_INFO_BY_HANDLE_CLASS -->
+        <Variable Name="PEERDIST_CLIENT_INFO_BY_HANDLE_CLASS" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="PeerDistClientBasicInfo" Value="0" />
+            </Enum>
+        </Variable>
+
+        <!-- PEERDIST_STATUS_INFO -->
+        <Variable Name="PEERDIST_STATUS_INFO" Type="Struct">
+            <Field Type="DWORD"             Name="cbSize" />
+            <Field Type="PEERDIST_STATUS"   Name="status" />
+            <Field Type="DWORD"             Name="dwMinVer" />
+            <Field Type="DWORD"             Name="dwMaxVer" />
+        </Variable>
+        <Variable Name="PEERDIST_STATUS_INFO*" Type="Pointer" Base="PEERDIST_STATUS_INFO" />
+
+        <!-- PEERDIST_CONTENT_TAG -->
+        <Variable Name="PEERDIST_CONTENT_TAG" Type="Struct">
+            <Field Type="BYTE [16]" Name="Data" />
+        </Variable>
+        <Variable Name="PCPEERDIST_CONTENT_TAG" Type="Pointer" Base="PEERDIST_CONTENT_TAG" />
+
+        <!-- PEERDIST_PUBLICATION_OPTIONS -->
+        <Variable Name="PEERDIST_PUBLICATION_OPTIONS" Type="Struct">
+            <Field Type="DWORD"     Name="dwVersion" />
+            <Field Type="DWORD"     Name="dwFlags" />
+        </Variable>
+        <Variable Name="PCPEERDIST_PUBLICATION_OPTIONS" Type="Pointer" Base="PEERDIST_PUBLICATION_OPTIONS" />
+
+        <!-- PEERDIST_RETRIEVAL_OPTIONS -->
+        <Variable Name="PEERDIST_RETRIEVAL_OPTIONS" Type="Struct">
+            <Field Type="DWORD"     Name="cbSize" />
+            <Field Type="DWORD"     Name="dwContentInfoMinVersion" />
+            <Field Type="DWORD"     Name="dwContentInfoMaxVersion" />
+            <Field Type="DWORD"     Name="dwReserved" />
+        </Variable>
+        <Variable Name="PEERDIST_RETRIEVAL_OPTIONS*" Type="Pointer" Base="PEERDIST_RETRIEVAL_OPTIONS" />
+
+        <!-- Peer Distribution -->
+        <!-- Client-Server -->
+        <Category Name="Networking/Peer-to-Peer/Peer Distribution/Client-Server" />
+        <Api Name="PeerDistStartup">
+            <Param Type="DWORD" Name="dwVersionRequested" />
+            <Param Type="PPEERDIST_INSTANCE_HANDLE" Name="phPeerDist" />
+            <Param Type="PDWORD" Name="pdwSupportedVersion" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PeerDistShutdown">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PeerDistGetStatus">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Param Type="PEERDIST_STATUS*" Name="pPeerDistStatus" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PeerDistGetStatusEx">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Param Type="PEERDIST_STATUS_INFO*" Name="pPeerDistStatusInfo" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PeerDistGetOverlappedResult">
+            <Param Type="LPOVERLAPPED" Name="lpOverlapped" />
+            <Param Type="LPDWORD" Name="lpNumberOfBytesTransferred" />
+            <Param Type="BOOL" Name="bWait" />
+            <Return Type="BOOL" />
+            <Success />
+        </Api>
+        <Api Name="PeerDistRegisterForStatusChangeNotification">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Param Type="HANDLE" Name="hCompletionPort" />
+            <Param Type="ULONG_PTR" Name="ulCompletionKey" />
+            <Param Type="LPOVERLAPPED" Name="lpOverlapped" />
+            <Param Type="PEERDIST_STATUS*" Name="pPeerDistStatus" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PeerDistRegisterForStatusChangeNotificationEx">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Param Type="HANDLE" Name="hCompletionPort" />
+            <Param Type="ULONG_PTR" Name="ulCompletionKey" />
+            <Param Type="LPOVERLAPPED" Name="lpOverlapped" />
+            <Param Type="PEERDIST_STATUS_INFO*" Name="pPeerDistStatus" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PeerDistUnregisterForStatusChangeNotification">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+
+        <!-- Client -->
+        <Category Name="Networking/Peer-to-Peer/Peer Distribution/Client" />
+        <Api Name="PeerDistClientOpenContent">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Param Type="PCPEERDIST_CONTENT_TAG" Name="pContentTag" />
+            <Param Type="HANDLE" Name="hCompletionPort" />
+            <Param Type="ULONG_PTR" Name="ulCompletionKey" />
+            <Param Type="PPEERDIST_CONTENT_HANDLE" Name="phContentHandle" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PeerDistClientCloseContent">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Param Type="PEERDIST_CONTENT_HANDLE" Name="hContentHandle" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PeerDistClientGetInformationByHandle">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Param Type="PEERDIST_CONTENT_HANDLE" Name="hContentHandle" />
+            <Param Type="PEERDIST_CLIENT_INFO_BY_HANDLE_CLASS" Name="PeerDistClientInfoClass" />
+            <Param Type="DWORD" Name="dwBufferSize" />
+            <Param Type="LPVOID" Name="lpInformation" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PeerDistClientAddContentInformation">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Param Type="PEERDIST_CONTENT_HANDLE" Name="hContentHandle" />
+            <Param Type="DWORD" Name="cbNumberOfBytes" />
+            <Param Type="PBYTE" Name="pBuffer" Length="cbNumberOfBytes" />
+            <Param Type="LPOVERLAPPED" Name="lpOverlapped" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PeerDistClientCompleteContentInformation">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Param Type="PEERDIST_CONTENT_HANDLE" Name="hContentHandle" />
+            <Param Type="LPOVERLAPPED" Name="lpOverlapped" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PeerDistClientAddData">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Param Type="PEERDIST_CONTENT_HANDLE" Name="hContentHandle" />
+            <Param Type="DWORD" Name="cbNumberOfBytes" />
+            <Param Type="PBYTE" Name="pBuffer" Length="cbNumberOfBytes" />
+            <Param Type="LPOVERLAPPED" Name="lpOverlapped" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PeerDistClientBlockRead">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Param Type="PEERDIST_CONTENT_HANDLE" Name="hContentHandle" />
+            <Param Type="DWORD" Name="cbMaxNumberOfBytesToRead" />
+            <Param Type="PBYTE" Name="pBuffer" PostLength="cbMaxNumberOfBytesToRead" />
+            <Param Type="DWORD" Name="dwTimeoutInMilliseconds" />
+            <Param Type="LPOVERLAPPED" Name="lpOverlapped" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PeerDistClientStreamRead">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Param Type="PEERDIST_CONTENT_HANDLE" Name="hContentHandle" />
+            <Param Type="DWORD" Name="cbMaxNumberOfBytesToRead" />
+            <Param Type="PBYTE" Name="pBuffer" PostLength="cbMaxNumberOfBytesToRead" />
+            <Param Type="DWORD" Name="dwTimeoutInMilliseconds" />
+            <Param Type="LPOVERLAPPED" Name="lpOverlapped" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PeerDistClientFlushContent">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Param Type="PCPEERDIST_CONTENT_TAG" Name="pContentTag" />
+            <Param Type="HANDLE" Name="hCompletionPort" />
+            <Param Type="ULONG_PTR" Name="ulCompletionKey" />
+            <Param Type="LPOVERLAPPED" Name="lpOverlapped" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PeerDistClientCancelAsyncOperation">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Param Type="PEERDIST_CONTENT_HANDLE" Name="hContentHandle" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+
+        <!-- Server -->
+        <Category Name="Networking/Peer-to-Peer/Peer Distribution/Server" />
+        <Api Name="PeerDistServerPublishStream">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Param Type="DWORD" Name="cbContentIdentifier" />
+            <Param Type="PBYTE" Name="pContentIdentifier" Length="cbContentLength" />
+            <Param Type="ULONGULONG" Name="cbContentLength" />
+            <Param Type="PCPEERDIST_PUBLICATION_OPTIONS" Name="pPublishOptions" />
+            <Param Type="HANDLE" Name="hCompletionPort" />
+            <Param Type="ULONG_PTR" Name="ulCompletionKey" />
+            <Param Type="PEERDIST_STREAM_HANDLE" Name="phStream" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PeerDistServerPublishAddToStream">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Param Type="PEERDIST_STREAM_HANDLE" Name="hStream" />
+            <Param Type="DWORD" Name="cbNumberOfBytes" />
+            <Param Type="PBYTE" Name="pBuffer" Length="cbNumberOfBytes" />
+            <Param Type="LPOVERLAPPED" Name="lpOverlapped" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PeerDistServerPublishCompleteStream">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Param Type="PEERDIST_STREAM_HANDLE" Name="hStream" />
+            <Param Type="LPOVERLAPPED" Name="lpOverlapped" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PeerDistServerCloseStreamHandle">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Param Type="PEERDIST_STREAM_HANDLE" Name="hStream" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PeerDistServerUnpublish">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Param Type="DWORD" Name="cbContentIdentifier" />
+            <Param Type="PBYTE" Name="pContentIdentifier" Length="cbContentIdentifier" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PeerDistServerOpenContentInformation">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Param Type="DWORD" Name="cbContentIdentifier" />
+            <Param Type="PBYTE" Name="pContentIdentifier" Length="cbContentIdentifier" />
+            <Param Type="ULONGULONG" Name="ullContentOffset" />
+            <Param Type="ULONGULONG" Name="cbContentLength" />
+            <Param Type="HANDLE" Name="hCompletionPort" />
+            <Param Type="ULONG_PTR" Name="ulCompletionKey" />
+            <Param Type="PPEERDIST_CONTENTINFO_HANDLE" Name="phContentInfo" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PeerDistServerOpenContentInformationEx">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Param Type="DWORD" Name="cbContentIdentifier" />
+            <Param Type="PBYTE" Name="pContentIdentifier" Length="cbContentIdentifier" />
+            <Param Type="ULONGLONG" Name="ullContentOffset" />
+            <Param Type="ULONGLONG" Name="cbContentLength" />
+            <Param Type="PEERDIST_RETRIEVAL_OPTIONS*" Name="pRetrievalOptions" />
+            <Param Type="HANDLE" Name="hCompletionPort" />
+            <Param Type="ULONG_PTR" Name="ulCompletionKey" />
+            <Param Type="PPEERDIST_CONTENTINFO_HANDLE" Name="phContentInfo" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PeerDistServerRetrieveContentInformation">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Param Type="PEERDIST_CONTENTINFO_HANDLE" Name="hContentInfo" />
+            <Param Type="DWORD" Name="cbMaxNumberOfBytes" />
+            <Param Type="PBYTE" Name="pBuffer" PostLength="cbMaxNumberOfBytes" />
+            <Param Type="LPOVERLAPPED" Name="lpOverlapped" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PeerDistServerCloseContentInformation">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Param Type="PEERDIST_CONTENT_HANDLE" Name="hContentInfo" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PeerDistServerCancelAsyncOperation">
+            <Param Type="PEERDIST_INSTANCE_HANDLE" Name="hPeerDist" />
+            <Param Type="DWORD" Name="cbContentIdentifier" />
+            <Param Type="PBYTE" Name="pContentIdentifier" Length="cbContentIdentifier" />
+            <Param Type="LPOVERLAPPED" Name="pOverlapped" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+
+    </Module>
+</ApiMonitor>

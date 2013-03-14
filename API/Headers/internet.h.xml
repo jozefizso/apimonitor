@@ -7,17 +7,28 @@
     <Include Filename="Headers\windows.h.xml" />
     <Headers>
         <!-- Variables -->
-        <Variable Name="HINTERNET"                              Type="Alias"    Base="LPVOID" />
-        <Variable Name="HINTERNET*"                             Type="Pointer"  Base="HINTERNET" />
         <Variable Name="GROUPID"                                Type="Alias"    Base="LONGLONG" />
         <Variable Name="GROUPID*"                               Type="Pointer"  Base="GROUPID" />
         <Variable Name="WINHTTP_STATUS_CALLBACK"                Type="Alias"    Base="LPVOID" />
         <Variable Name="GOPHER_ATTRIBUTE_ENUMERATOR"            Type="Alias"    Base="LPVOID" />
-        <Variable Name="INTERNET_STATUS_CALLBACK"               Type="Alias"    Base="LPVOID" />
         <Variable Name="DWORD [GROUP_OWNER_STORAGE_SIZE]"       Type="Array"    Base="DWORD"    Count="4" />
         <Variable Name="TCHAR [GROUPNAME_MAX_LENGTH]"           Type="Array"    Base="TCHAR"    Count="120" />
         <Variable Name="TCHAR [MAX_GOPHER_DISPLAY_TEXT + 1]"    Type="Array"    Base="TCHAR"    Count="129" />
         <Variable Name="TCHAR [MAX_GOPHER_LOCATOR_LENGTH + 1]"  Type="Array"    Base="TCHAR"    Count="653" />
+
+        <!-- INTERNET_STATUS_CALLBACK -->
+        <Variable Name="INTERNET_STATUS_CALLBACK" Type="Alias" Base="LPVOID">
+            <Enum>
+                <Set Name="INTERNET_INVALID_STATUS_CALLBACK" Value="-1" />
+            </Enum>
+            <Success Return="NotEqual" Value="-1" />
+        </Variable>
+
+        <!-- HINTERNET -->
+        <Variable Name="HINTERNET" Type="Alias" Base="LPVOID">
+            <Success Return="NotEqual" Value="0" />
+        </Variable>
+        <Variable Name="HINTERNET*" Type="Pointer" Base="HINTERNET" />
 
         <!-- INTERNET_CACHE_ENTRY_INFO -->
         <Variable Name="INTERNET_CACHE_ENTRY_INFO" Type="Struct">
@@ -293,6 +304,457 @@
             <Field Type="DWORD"                 Name="dwOffsetHigh" />
         </Variable>
         <Variable Name="LPINTERNET_BUFFERS" Type="Pointer" Base="INTERNET_BUFFERS" />
+
+        <!-- [INTERNET_OPTION] -->
+        <Variable Name="[INTERNET_OPTION]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="INTERNET_OPTION_CALLBACK"                            Value="1" />
+                <Set Name="INTERNET_OPTION_CONNECT_TIMEOUT"                     Value="2" />
+                <Set Name="INTERNET_OPTION_CONNECT_RETRIES"                     Value="3" />
+                <Set Name="INTERNET_OPTION_CONNECT_BACKOFF"                     Value="4" />
+                <Set Name="INTERNET_OPTION_SEND_TIMEOUT"                        Value="5" />
+                <Set Name="INTERNET_OPTION_RECEIVE_TIMEOUT"                     Value="6" />
+                <Set Name="INTERNET_OPTION_DATA_SEND_TIMEOUT"                   Value="7" />
+                <Set Name="INTERNET_OPTION_DATA_RECEIVE_TIMEOUT"                Value="8" />
+                <Set Name="INTERNET_OPTION_HANDLE_TYPE"                         Value="9" />
+                <Set Name="INTERNET_OPTION_CONTEXT_VALUE_OLD"                   Value="10" />
+                <Set Name="INTERNET_OPTION_LISTEN_TIMEOUT"                      Value="11" />
+                <Set Name="INTERNET_OPTION_READ_BUFFER_SIZE"                    Value="12" />
+                <Set Name="INTERNET_OPTION_WRITE_BUFFER_SIZE"                   Value="13" />
+                <Set Name="INTERNET_OPTION_ASYNC_ID"                            Value="15" />
+                <Set Name="INTERNET_OPTION_ASYNC_PRIORITY"                      Value="16" />
+                <Set Name="INTERNET_OPTION_PARENT_HANDLE"                       Value="21" />
+                <Set Name="INTERNET_OPTION_KEEP_CONNECTION"                     Value="22" />
+                <Set Name="INTERNET_OPTION_REQUEST_FLAGS"                       Value="23" />
+                <Set Name="INTERNET_OPTION_EXTENDED_ERROR"                      Value="24" />
+                <Set Name="INTERNET_OPTION_OFFLINE_MODE"                        Value="26" />
+                <Set Name="INTERNET_OPTION_CACHE_STREAM_HANDLE"                 Value="27" />
+                <Set Name="INTERNET_OPTION_USERNAME"                            Value="28" />
+                <Set Name="INTERNET_OPTION_PASSWORD"                            Value="29" />
+                <Set Name="INTERNET_OPTION_ASYNC"                               Value="30" />
+                <Set Name="INTERNET_OPTION_SECURITY_FLAGS"                      Value="31" />
+                <Set Name="INTERNET_OPTION_SECURITY_CERTIFICATE_STRUCT"         Value="32" />
+                <Set Name="INTERNET_OPTION_DATAFILE_NAME"                       Value="33" />
+                <Set Name="INTERNET_OPTION_URL"                                 Value="34" />
+                <Set Name="INTERNET_OPTION_SECURITY_CERTIFICATE"                Value="35" />
+                <Set Name="INTERNET_OPTION_SECURITY_KEY_BITNESS"                Value="36" />
+                <Set Name="INTERNET_OPTION_REFRESH"                             Value="37" />
+                <Set Name="INTERNET_OPTION_PROXY"                               Value="38" />
+                <Set Name="INTERNET_OPTION_SETTINGS_CHANGED"                    Value="39" />
+                <Set Name="INTERNET_OPTION_VERSION"                             Value="40" />
+                <Set Name="INTERNET_OPTION_USER_AGENT"                          Value="41" />
+                <Set Name="INTERNET_OPTION_END_BROWSER_SESSION"                 Value="42" />
+                <Set Name="INTERNET_OPTION_PROXY_USERNAME"                      Value="43" />
+                <Set Name="INTERNET_OPTION_PROXY_PASSWORD"                      Value="44" />
+                <Set Name="INTERNET_OPTION_CONTEXT_VALUE"                       Value="45" />
+                <Set Name="INTERNET_OPTION_CONNECT_LIMIT"                       Value="46" />
+                <Set Name="INTERNET_OPTION_SECURITY_SELECT_CLIENT_CERT"         Value="47" />
+                <Set Name="INTERNET_OPTION_POLICY"                              Value="48" />
+                <Set Name="INTERNET_OPTION_DISCONNECTED_TIMEOUT"                Value="49" />
+                <Set Name="INTERNET_OPTION_CONNECTED_STATE"                     Value="50" />
+                <Set Name="INTERNET_OPTION_IDLE_STATE"                          Value="51" />
+                <Set Name="INTERNET_OPTION_OFFLINE_SEMANTICS"                   Value="52" />
+                <Set Name="INTERNET_OPTION_SECONDARY_CACHE_KEY"                 Value="53" />
+                <Set Name="INTERNET_OPTION_CALLBACK_FILTER"                     Value="54" />
+                <Set Name="INTERNET_OPTION_CONNECT_TIME"                        Value="55" />
+                <Set Name="INTERNET_OPTION_SEND_THROUGHPUT"                     Value="56" />
+                <Set Name="INTERNET_OPTION_RECEIVE_THROUGHPUT"                  Value="57" />
+                <Set Name="INTERNET_OPTION_REQUEST_PRIORITY"                    Value="58" />
+                <Set Name="INTERNET_OPTION_HTTP_VERSION"                        Value="59" />
+                <Set Name="INTERNET_OPTION_RESET_URLCACHE_SESSION"              Value="60" />
+                <Set Name="INTERNET_OPTION_NET_SPEED"                           Value="61" />
+                <Set Name="INTERNET_OPTION_ERROR_MASK"                          Value="62" />
+                <Set Name="INTERNET_OPTION_FROM_CACHE_TIMEOUT"                  Value="63" />
+                <Set Name="INTERNET_OPTION_BYPASS_EDITED_ENTRY"                 Value="64" />
+                <Set Name="INTERNET_OPTION_HTTP_DECODING"                       Value="65" />
+                <Set Name="INTERNET_OPTION_SECURITY_CONNECTION_INFO"            Value="66" />
+                <Set Name="INTERNET_OPTION_DIAGNOSTIC_SOCKET_INFO"              Value="67" />
+                <Set Name="INTERNET_OPTION_CODEPAGE"                            Value="68" />
+                <Set Name="INTERNET_OPTION_CACHE_TIMESTAMPS"                    Value="69" />
+                <Set Name="INTERNET_OPTION_DISABLE_AUTODIAL"                    Value="70" />
+                <Set Name="INTERNET_OPTION_DETECT_POST_SEND"                    Value="71" />
+                <Set Name="INTERNET_OPTION_DISABLE_NTLM_PREAUTH"                Value="72" />
+                <Set Name="INTERNET_OPTION_MAX_CONNS_PER_SERVER"                Value="73" />
+                <Set Name="INTERNET_OPTION_MAX_CONNS_PER_1_0_SERVER"            Value="74" />
+                <Set Name="INTERNET_OPTION_PER_CONNECTION_OPTION"               Value="75" />
+                <Set Name="INTERNET_OPTION_DIGEST_AUTH_UNLOAD"                  Value="76" />
+                <Set Name="INTERNET_OPTION_IGNORE_OFFLINE"                      Value="77" />
+                <Set Name="INTERNET_OPTION_IDENTITY"                            Value="78" />
+                <Set Name="INTERNET_OPTION_REMOVE_IDENTITY"                     Value="79" />
+                <Set Name="INTERNET_OPTION_ALTER_IDENTITY"                      Value="80" />
+                <Set Name="INTERNET_OPTION_SUPPRESS_BEHAVIOR"                   Value="81" />
+                <Set Name="INTERNET_OPTION_AUTODIAL_MODE"                       Value="82" />
+                <Set Name="INTERNET_OPTION_AUTODIAL_CONNECTION"                 Value="83" />
+                <Set Name="INTERNET_OPTION_CLIENT_CERT_CONTEXT"                 Value="84" />
+                <Set Name="INTERNET_OPTION_AUTH_FLAGS"                          Value="85" />
+                <Set Name="INTERNET_OPTION_COOKIES_3RD_PARTY"                   Value="86" />
+                <Set Name="INTERNET_OPTION_DISABLE_PASSPORT_AUTH"               Value="87" />
+                <Set Name="INTERNET_OPTION_SEND_UTF8_SERVERNAME_TO_PROXY"       Value="88" />
+                <Set Name="INTERNET_OPTION_EXEMPT_CONNECTION_LIMIT"             Value="89" />
+                <Set Name="INTERNET_OPTION_ENABLE_PASSPORT_AUTH"                Value="90" />
+                <Set Name="INTERNET_OPTION_HIBERNATE_INACTIVE_WORKER_THREADS"   Value="91" />
+                <Set Name="INTERNET_OPTION_ACTIVATE_WORKER_THREADS"             Value="92" />
+                <Set Name="INTERNET_OPTION_RESTORE_WORKER_THREAD_DEFAULTS"      Value="93" />
+                <Set Name="INTERNET_OPTION_SOCKET_SEND_BUFFER_LENGTH"           Value="94" />
+                <Set Name="INTERNET_OPTION_PROXY_SETTINGS_CHANGED"              Value="95" />
+                <Set Name="INTERNET_OPTION_DATAFILE_EXT"                        Value="96" />
+                <Set Name="INTERNET_OPTION_ORIGINAL_CONNECT_FLAGS"              Value="97" />
+                <Set Name="INTERNET_OPTION_CERT_ERROR_FLAGS"                    Value="98" />
+                <Set Name="INTERNET_OPTION_IGNORE_CERT_ERROR_FLAGS"             Value="99" />
+                <Set Name="INTERNET_OPTION_CODEPAGE_PATH"                       Value="100" />
+                <Set Name="INTERNET_OPTION_CODEPAGE_EXTRA"                      Value="101" />
+                <Set Name="INTERNET_OPTION_IDN"                                 Value="102" />
+                <Set Name="INTERNET_OPTION_MAX_CONNS_PER_PROXY"                 Value="103" />
+                <Set Name="INTERNET_OPTION_SUPPRESS_SERVER_AUTH"                Value="104" />
+                <Set Name="INTERNET_OPTION_SERVER_CERT_CHAIN_CONTEXT"           Value="105" />
+                <Set Name="INTERNET_OPTION_SESSION_START_TIME"                  Value="106" />
+                <Set Name="INTERNET_OPTION_PROXY_CREDENTIALS"                   Value="107" />
+                <Set Name="INTERNET_OPTION_EXTENDED_CALLBACKS"                  Value="108" />
+                <Set Name="INTERNET_OPTION_PROXY_FROM_REQUEST"                  Value="109" />
+                <Set Name="INTERNET_OPTION_ALLOW_FAILED_CONNECT_CONTENT"        Value="110" />
+                <Set Name="INTERNET_OPTION_CACHE_PARTITION"                     Value="111" />
+                <Set Name="INTERNET_OPTION_AUTODIAL_HWND"                       Value="112" />
+                <Set Name="INTERNET_OPTION_SERVER_CREDENTIALS"                  Value="113" />
+                <Set Name="INTERNET_OPTION_WPAD_SLEEP"                          Value="114" />
+                <Set Name="INTERNET_OPTION_FAIL_ON_CACHE_WRITE_ERROR"           Value="115" />
+                <Set Name="INTERNET_OPTION_DOWNLOAD_MODE"                       Value="116" />
+                <Set Name="INTERNET_OPTION_RESPONSE_RESUMABLE"                  Value="117" />
+                <Set Name="INTERNET_OPTION_CM_HANDLE_COPY_REF"                  Value="118" />
+                <Set Name="INTERNET_OPTION_CONNECTION_INFO"                     Value="120" />
+                <Set Name="INTERNET_OPTION_BACKGROUND_CONNECTIONS"              Value="121" />
+                <Set Name="INTERNET_OPTION_DO_NOT_TRACK"                        Value="123" />
+                <Set Name="INTERNET_OPTION_USE_MODIFIED_HEADER_FILTER"          Value="124" />
+                <Set Name="INTERNET_OPTION_WWA_MODE"                            Value="125" />
+                <Set Name="INTERNET_OPTION_UPGRADE_TO_WEB_SOCKET"               Value="126" />
+                <Set Name="INTERNET_OPTION_WEB_SOCKET_KEEPALIVE_INTERVAL"       Value="127" />
+                <Set Name="INTERNET_OPTION_UNLOAD_NOTIFY_EVENT"                 Value="128" />
+                <Set Name="INTERNET_OPTION_SOCKET_NODELAY"                      Value="129" />
+                <Set Name="INTERNET_OPTION_APP_CACHE"                           Value="130" />
+                <Set Name="INTERNET_OPTION_DEPENDENCY_HANDLE"                   Value="131" />
+                <Set Name="INTERNET_OPTION_USE_FIRST_AVAILABLE_CONNECTION"      Value="132" />
+                <Set Name="INTERNET_OPTION_TIMED_CONNECTION_LIMIT_BYPASS"       Value="133" />
+                <Set Name="INTERNET_OPTION_WEB_SOCKET_CLOSE_TIMEOUT"            Value="134" />
+                <Set Name="INTERNET_OPTION_FLUSH_STATE"                         Value="135" />
+                <Set Name="INTERNET_OPTION_DISALLOW_PREMATURE_EOF"              Value="137" />
+                <Set Name="INTERNET_OPTION_SOCKET_NOTIFICATION_IOCTL"           Value="138" />
+                <Set Name="INTERNET_OPTION_CACHE_ENTRY_EXTRA_DATA"              Value="139" />
+                <Set Name="INTERNET_OPTION_MAX_QUERY_BUFFER_SIZE"               Value="140" />
+                <Set Name="INTERNET_OPTION_FALSE_START"                         Value="141" />
+                <Set Name="INTERNET_OPTION_USER_PASS_SERVER_ONLY"               Value="142" />
+                <Set Name="WININETINFO_OPTION_LOCK_HANDLE"                      Value="65534" />
+            </Enum>
+        </Variable>
+
+        <!-- [HTTP_QUERY_FLAGS] -->
+        <Variable Name="[HTTP_QUERY_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="HTTP_QUERY_MIME_VERSION"                 Value="0" />
+                <Set Name="HTTP_QUERY_CONTENT_TYPE"                 Value="1" />
+                <Set Name="HTTP_QUERY_CONTENT_TRANSFER_ENCODING"    Value="2" />
+                <Set Name="HTTP_QUERY_CONTENT_ID"                   Value="3" />
+                <Set Name="HTTP_QUERY_CONTENT_DESCRIPTION"          Value="4" />
+                <Set Name="HTTP_QUERY_CONTENT_LENGTH"               Value="5" />
+                <Set Name="HTTP_QUERY_CONTENT_LANGUAGE"             Value="6" />
+                <Set Name="HTTP_QUERY_ALLOW"                        Value="7" />
+                <Set Name="HTTP_QUERY_PUBLIC"                       Value="8" />
+                <Set Name="HTTP_QUERY_DATE"                         Value="9" />
+                <Set Name="HTTP_QUERY_EXPIRES"                      Value="10" />
+                <Set Name="HTTP_QUERY_LAST_MODIFIED"                Value="11" />
+                <Set Name="HTTP_QUERY_MESSAGE_ID"                   Value="12" />
+                <Set Name="HTTP_QUERY_URI"                          Value="13" />
+                <Set Name="HTTP_QUERY_DERIVED_FROM"                 Value="14" />
+                <Set Name="HTTP_QUERY_COST"                         Value="15" />
+                <Set Name="HTTP_QUERY_LINK"                         Value="16" />
+                <Set Name="HTTP_QUERY_PRAGMA"                       Value="17" />
+                <Set Name="HTTP_QUERY_VERSION"                      Value="18" />
+                <Set Name="HTTP_QUERY_STATUS_CODE"                  Value="19" />
+                <Set Name="HTTP_QUERY_STATUS_TEXT"                  Value="20" />
+                <Set Name="HTTP_QUERY_RAW_HEADERS"                  Value="21" />
+                <Set Name="HTTP_QUERY_RAW_HEADERS_CRLF"             Value="22" />
+                <Set Name="HTTP_QUERY_CONNECTION"                   Value="23" />
+                <Set Name="HTTP_QUERY_ACCEPT"                       Value="24" />
+                <Set Name="HTTP_QUERY_ACCEPT_CHARSET"               Value="25" />
+                <Set Name="HTTP_QUERY_ACCEPT_ENCODING"              Value="26" />
+                <Set Name="HTTP_QUERY_ACCEPT_LANGUAGE"              Value="27" />
+                <Set Name="HTTP_QUERY_AUTHORIZATION"                Value="28" />
+                <Set Name="HTTP_QUERY_CONTENT_ENCODING"             Value="29" />
+                <Set Name="HTTP_QUERY_FORWARDED"                    Value="30" />
+                <Set Name="HTTP_QUERY_FROM"                         Value="31" />
+                <Set Name="HTTP_QUERY_IF_MODIFIED_SINCE"            Value="32" />
+                <Set Name="HTTP_QUERY_LOCATION"                     Value="33" />
+                <Set Name="HTTP_QUERY_ORIG_URI"                     Value="34" />
+                <Set Name="HTTP_QUERY_REFERER"                      Value="35" />
+                <Set Name="HTTP_QUERY_RETRY_AFTER"                  Value="36" />
+                <Set Name="HTTP_QUERY_SERVER"                       Value="37" />
+                <Set Name="HTTP_QUERY_TITLE"                        Value="38" />
+                <Set Name="HTTP_QUERY_USER_AGENT"                   Value="39" />
+                <Set Name="HTTP_QUERY_WWW_AUTHENTICATE"             Value="40" />
+                <Set Name="HTTP_QUERY_PROXY_AUTHENTICATE"           Value="41" />
+                <Set Name="HTTP_QUERY_ACCEPT_RANGES"                Value="42" />
+                <Set Name="HTTP_QUERY_SET_COOKIE"                   Value="43" />
+                <Set Name="HTTP_QUERY_COOKIE"                       Value="44" />
+                <Set Name="HTTP_QUERY_REQUEST_METHOD"               Value="45" />
+                <Set Name="HTTP_QUERY_REFRESH"                      Value="46" />
+                <Set Name="HTTP_QUERY_CONTENT_DISPOSITION"          Value="47" />
+                <Set Name="HTTP_QUERY_AGE"                          Value="48" />
+                <Set Name="HTTP_QUERY_CACHE_CONTROL"                Value="49" />
+                <Set Name="HTTP_QUERY_CONTENT_BASE"                 Value="50" />
+                <Set Name="HTTP_QUERY_CONTENT_LOCATION"             Value="51" />
+                <Set Name="HTTP_QUERY_CONTENT_MD5"                  Value="52" />
+                <Set Name="HTTP_QUERY_CONTENT_RANGE"                Value="53" />
+                <Set Name="HTTP_QUERY_ETAG"                         Value="54" />
+                <Set Name="HTTP_QUERY_HOST"                         Value="55" />
+                <Set Name="HTTP_QUERY_IF_MATCH"                     Value="56" />
+                <Set Name="HTTP_QUERY_IF_NONE_MATCH"                Value="57" />
+                <Set Name="HTTP_QUERY_IF_RANGE"                     Value="58" />
+                <Set Name="HTTP_QUERY_IF_UNMODIFIED_SINCE"          Value="59" />
+                <Set Name="HTTP_QUERY_MAX_FORWARDS"                 Value="60" />
+                <Set Name="HTTP_QUERY_PROXY_AUTHORIZATION"          Value="61" />
+                <Set Name="HTTP_QUERY_RANGE"                        Value="62" />
+                <Set Name="HTTP_QUERY_TRANSFER_ENCODING"            Value="63" />
+                <Set Name="HTTP_QUERY_UPGRADE"                      Value="64" />
+                <Set Name="HTTP_QUERY_VARY"                         Value="65" />
+                <Set Name="HTTP_QUERY_VIA"                          Value="66" />
+                <Set Name="HTTP_QUERY_WARNING"                      Value="67" />
+                <Set Name="HTTP_QUERY_EXPECT"                       Value="68" />
+                <Set Name="HTTP_QUERY_PROXY_CONNECTION"             Value="69" />
+                <Set Name="HTTP_QUERY_UNLESS_MODIFIED_SINCE"        Value="70" />
+                <Set Name="HTTP_QUERY_ECHO_REQUEST"                 Value="71" />
+                <Set Name="HTTP_QUERY_ECHO_REPLY"                   Value="72" />
+                <Set Name="HTTP_QUERY_ECHO_HEADERS"                 Value="73" />
+                <Set Name="HTTP_QUERY_ECHO_HEADERS_CRLF"            Value="74" />
+                <Set Name="HTTP_QUERY_PROXY_SUPPORT"                Value="75" />
+                <Set Name="HTTP_QUERY_AUTHENTICATION_INFO"          Value="76" />
+                <Set Name="HTTP_QUERY_PASSPORT_URLS"                Value="77" />
+                <Set Name="HTTP_QUERY_PASSPORT_CONFIG"              Value="78" />
+                <Set Name="HTTP_QUERY_CUSTOM"                       Value="65535" />
+                <Set Name="HTTP_QUERY_FLAG_REQUEST_HEADERS"         Value="0x80000000" />
+                <Set Name="HTTP_QUERY_FLAG_SYSTEMTIME"              Value="0x40000000" />
+                <Set Name="HTTP_QUERY_FLAG_NUMBER"                  Value="0x20000000" />
+                <Set Name="HTTP_QUERY_FLAG_COALESCE"                Value="0x10000000" />
+                <Set Name="HTTP_QUERY_FLAG_NUMBER64"                Value="0x08000000" />
+            </Flag>
+        </Variable>
+
+        <!-- URL_SCHEME -->
+        <Variable Name="URL_SCHEME" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Enum>
+                <Set Name="URL_SCHEME_INVALID"          Value="-1" />
+                <Set Name="URL_SCHEME_UNKNOWN"          Value="0" />
+                <Set Name="URL_SCHEME_FTP"              Value="1" />
+                <Set Name="URL_SCHEME_HTTP"             Value="2" />
+                <Set Name="URL_SCHEME_GOPHER"           Value="3" />
+                <Set Name="URL_SCHEME_MAILTO"           Value="4" />
+                <Set Name="URL_SCHEME_NEWS"             Value="5" />
+                <Set Name="URL_SCHEME_NNTP"             Value="6" />
+                <Set Name="URL_SCHEME_TELNET"           Value="7" />
+                <Set Name="URL_SCHEME_WAIS"             Value="8" />
+                <Set Name="URL_SCHEME_FILE"             Value="9" />
+                <Set Name="URL_SCHEME_MK"               Value="10" />
+                <Set Name="URL_SCHEME_HTTPS"            Value="11" />
+                <Set Name="URL_SCHEME_SHELL"            Value="12" />
+                <Set Name="URL_SCHEME_SNEWS"            Value="13" />
+                <Set Name="URL_SCHEME_LOCAL"            Value="14" />
+                <Set Name="URL_SCHEME_JAVASCRIPT"       Value="15" />
+                <Set Name="URL_SCHEME_VBSCRIPT"         Value="16" />
+                <Set Name="URL_SCHEME_ABOUT"            Value="17" />
+                <Set Name="URL_SCHEME_RES"              Value="18" />
+                <Set Name="URL_SCHEME_MSSHELLROOTED"    Value="19" />
+                <Set Name="URL_SCHEME_MSSHELLIDLIST"    Value="20" />
+                <Set Name="URL_SCHEME_MSHELP"           Value="21" />
+                <Set Name="URL_SCHEME_MSSHELLDEVICE"    Value="22" />
+                <Set Name="URL_SCHEME_WILDCARD"         Value="23" />
+                <Set Name="URL_SCHEME_SEARCH_MS"        Value="24" />
+                <Set Name="URL_SCHEME_SEARCH"           Value="25" />
+                <Set Name="URL_SCHEME_KNOWNFOLDER"      Value="26" />
+            </Enum>
+        </Variable>
+
+        <!-- [URL_SCHEME|DWORD] -->
+        <Variable Name="[URL_SCHEME|DWORD]" Type="Alias" Base="URL_SCHEME">
+            <Display Name="UINT" />
+        </Variable>
+        <Variable Name="[URL_SCHEME*|DWORD*]" Type="Pointer" Base="[URL_SCHEME|DWORD]">
+            <Display Name="DWORD*" />
+        </Variable>
+
+        <!-- [ERROR_INTERNET] -->
+        <Variable Name="[ERROR_INTERNET]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="ERROR_INTERNET_OUT_OF_HANDLES"                           Value="12001" />
+                <Set Name="ERROR_INTERNET_TIMEOUT"                                  Value="12002" />
+                <Set Name="ERROR_INTERNET_EXTENDED_ERROR"                           Value="12003" />
+                <Set Name="ERROR_INTERNET_INTERNAL_ERROR"                           Value="12004" />
+                <Set Name="ERROR_INTERNET_INVALID_URL"                              Value="12005" />
+                <Set Name="ERROR_INTERNET_UNRECOGNIZED_SCHEME"                      Value="12006" />
+                <Set Name="ERROR_INTERNET_NAME_NOT_RESOLVED"                        Value="12007" />
+                <Set Name="ERROR_INTERNET_PROTOCOL_NOT_FOUND"                       Value="12008" />
+                <Set Name="ERROR_INTERNET_INVALID_OPTION"                           Value="12009" />
+                <Set Name="ERROR_INTERNET_BAD_OPTION_LENGTH"                        Value="12010" />
+                <Set Name="ERROR_INTERNET_OPTION_NOT_SETTABLE"                      Value="12011" />
+                <Set Name="ERROR_INTERNET_SHUTDOWN"                                 Value="12012" />
+                <Set Name="ERROR_INTERNET_INCORRECT_USER_NAME"                      Value="12013" />
+                <Set Name="ERROR_INTERNET_INCORRECT_PASSWORD"                       Value="12014" />
+                <Set Name="ERROR_INTERNET_LOGIN_FAILURE"                            Value="12015" />
+                <Set Name="ERROR_INTERNET_INVALID_OPERATION"                        Value="12016" />
+                <Set Name="ERROR_INTERNET_OPERATION_CANCELLED"                      Value="12017" />
+                <Set Name="ERROR_INTERNET_INCORRECT_HANDLE_TYPE"                    Value="12018" />
+                <Set Name="ERROR_INTERNET_INCORRECT_HANDLE_STATE"                   Value="12019" />
+                <Set Name="ERROR_INTERNET_NOT_PROXY_REQUEST"                        Value="12020" />
+                <Set Name="ERROR_INTERNET_REGISTRY_VALUE_NOT_FOUND"                 Value="12021" />
+                <Set Name="ERROR_INTERNET_BAD_REGISTRY_PARAMETER"                   Value="12022" />
+                <Set Name="ERROR_INTERNET_NO_DIRECT_ACCESS"                         Value="12023" />
+                <Set Name="ERROR_INTERNET_NO_CONTEXT"                               Value="12024" />
+                <Set Name="ERROR_INTERNET_NO_CALLBACK"                              Value="12025" />
+                <Set Name="ERROR_INTERNET_REQUEST_PENDING"                          Value="12026" />
+                <Set Name="ERROR_INTERNET_INCORRECT_FORMAT"                         Value="12027" />
+                <Set Name="ERROR_INTERNET_ITEM_NOT_FOUND"                           Value="12028" />
+                <Set Name="ERROR_INTERNET_CANNOT_CONNECT"                           Value="12029" />
+                <Set Name="ERROR_INTERNET_CONNECTION_ABORTED"                       Value="12030" />
+                <Set Name="ERROR_INTERNET_CONNECTION_RESET"                         Value="12031" />
+                <Set Name="ERROR_INTERNET_FORCE_RETRY"                              Value="12032" />
+                <Set Name="ERROR_INTERNET_INVALID_PROXY_REQUEST"                    Value="12033" />
+                <Set Name="ERROR_INTERNET_NEED_UI"                                  Value="12034" />
+                <Set Name="ERROR_INTERNET_HANDLE_EXISTS"                            Value="12036" />
+                <Set Name="ERROR_INTERNET_SEC_CERT_DATE_INVALID"                    Value="12037" />
+                <Set Name="ERROR_INTERNET_SEC_CERT_CN_INVALID"                      Value="12038" />
+                <Set Name="ERROR_INTERNET_HTTP_TO_HTTPS_ON_REDIR"                   Value="12039" />
+                <Set Name="ERROR_INTERNET_HTTPS_TO_HTTP_ON_REDIR"                   Value="12040" />
+                <Set Name="ERROR_INTERNET_MIXED_SECURITY"                           Value="12041" />
+                <Set Name="ERROR_INTERNET_CHG_POST_IS_NON_SECURE"                   Value="12042" />
+                <Set Name="ERROR_INTERNET_POST_IS_NON_SECURE"                       Value="12043" />
+                <Set Name="ERROR_INTERNET_CLIENT_AUTH_CERT_NEEDED"                  Value="12044" />
+                <Set Name="ERROR_INTERNET_INVALID_CA"                               Value="12045" />
+                <Set Name="ERROR_INTERNET_CLIENT_AUTH_NOT_SETUP"                    Value="12046" />
+                <Set Name="ERROR_INTERNET_ASYNC_THREAD_FAILED"                      Value="12047" />
+                <Set Name="ERROR_INTERNET_REDIRECT_SCHEME_CHANGE"                   Value="12048" />
+                <Set Name="ERROR_INTERNET_DIALOG_PENDING"                           Value="12049" />
+                <Set Name="ERROR_INTERNET_RETRY_DIALOG"                             Value="12050" />
+                <Set Name="ERROR_INTERNET_HTTPS_HTTP_SUBMIT_REDIR"                  Value="12052" />
+                <Set Name="ERROR_INTERNET_INSERT_CDROM"                             Value="12053" />
+                <Set Name="ERROR_INTERNET_FORTEZZA_LOGIN_NEEDED"                    Value="12054" />
+                <Set Name="ERROR_INTERNET_SEC_CERT_ERRORS"                          Value="12055" />
+                <Set Name="ERROR_INTERNET_SEC_CERT_NO_REV"                          Value="12056" />
+                <Set Name="ERROR_INTERNET_SEC_CERT_REV_FAILED"                      Value="12057" />
+                <Set Name="ERROR_FTP_TRANSFER_IN_PROGRESS"                          Value="12110" />
+                <Set Name="ERROR_FTP_DROPPED"                                       Value="12111" />
+                <Set Name="ERROR_FTP_NO_PASSIVE_MODE"                               Value="12112" />
+                <Set Name="ERROR_GOPHER_PROTOCOL_ERROR"                             Value="12130" />
+                <Set Name="ERROR_GOPHER_NOT_FILE"                                   Value="12131" />
+                <Set Name="ERROR_GOPHER_DATA_ERROR"                                 Value="12132" />
+                <Set Name="ERROR_GOPHER_END_OF_DATA"                                Value="12133" />
+                <Set Name="ERROR_GOPHER_INVALID_LOCATOR"                            Value="12134" />
+                <Set Name="ERROR_GOPHER_INCORRECT_LOCATOR_TYPE"                     Value="12135" />
+                <Set Name="ERROR_GOPHER_NOT_GOPHER_PLUS"                            Value="12136" />
+                <Set Name="ERROR_GOPHER_ATTRIBUTE_NOT_FOUND"                        Value="12137" />
+                <Set Name="ERROR_GOPHER_UNKNOWN_LOCATOR"                            Value="12138" />
+                <Set Name="ERROR_HTTP_HEADER_NOT_FOUND"                             Value="12150" />
+                <Set Name="ERROR_HTTP_DOWNLEVEL_SERVER"                             Value="12151" />
+                <Set Name="ERROR_HTTP_INVALID_SERVER_RESPONSE"                      Value="12152" />
+                <Set Name="ERROR_HTTP_INVALID_HEADER"                               Value="12153" />
+                <Set Name="ERROR_HTTP_INVALID_QUERY_REQUEST"                        Value="12154" />
+                <Set Name="ERROR_HTTP_HEADER_ALREADY_EXISTS"                        Value="12155" />
+                <Set Name="ERROR_HTTP_REDIRECT_FAILED"                              Value="12156" />
+                <Set Name="ERROR_HTTP_NOT_REDIRECTED"                               Value="12160" />
+                <Set Name="ERROR_HTTP_COOKIE_NEEDS_CONFIRMATION"                    Value="12161" />
+                <Set Name="ERROR_HTTP_COOKIE_DECLINED"                              Value="12162" />
+                <Set Name="ERROR_HTTP_REDIRECT_NEEDS_CONFIRMATION"                  Value="12168" />
+                <Set Name="ERROR_INTERNET_SECURITY_CHANNEL_ERROR"                   Value="12157" />
+                <Set Name="ERROR_INTERNET_UNABLE_TO_CACHE_FILE"                     Value="12158" />
+                <Set Name="ERROR_INTERNET_TCPIP_NOT_INSTALLED"                      Value="12159" />
+                <Set Name="ERROR_INTERNET_DISCONNECTED"                             Value="12163" />
+                <Set Name="ERROR_INTERNET_SERVER_UNREACHABLE"                       Value="12164" />
+                <Set Name="ERROR_INTERNET_PROXY_SERVER_UNREACHABLE"                 Value="12165" />
+                <Set Name="ERROR_INTERNET_BAD_AUTO_PROXY_SCRIPT"                    Value="12166" />
+                <Set Name="ERROR_INTERNET_UNABLE_TO_DOWNLOAD_SCRIPT"                Value="12167" />
+                <Set Name="ERROR_INTERNET_SEC_INVALID_CERT"                         Value="12169" />
+                <Set Name="ERROR_INTERNET_SEC_CERT_REVOKED"                         Value="12170" />
+                <Set Name="ERROR_INTERNET_FAILED_DUETOSECURITYCHECK"                Value="12171" />
+                <Set Name="ERROR_INTERNET_NOT_INITIALIZED"                          Value="12172" />
+                <Set Name="ERROR_INTERNET_NEED_MSN_SSPI_PKG"                        Value="12173" />
+                <Set Name="ERROR_INTERNET_LOGIN_FAILURE_DISPLAY_ENTITY_BODY"        Value="12174" />
+                <Set Name="ERROR_INTERNET_DECODING_FAILED"                          Value="12175" />
+            </Enum>
+        </Variable>
+
+        <!-- [HTTP_STATUS] -->
+        <Variable Name="[HTTP_STATUS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="HTTP_STATUS_CONTINUE"                Value="100" />
+                <Set Name="HTTP_STATUS_SWITCH_PROTOCOLS"        Value="101" />
+                <Set Name="HTTP_STATUS_OK"                      Value="200" />
+                <Set Name="HTTP_STATUS_CREATED"                 Value="201" />
+                <Set Name="HTTP_STATUS_ACCEPTED"                Value="202" />
+                <Set Name="HTTP_STATUS_PARTIAL"                 Value="203" />
+                <Set Name="HTTP_STATUS_NO_CONTENT"              Value="204" />
+                <Set Name="HTTP_STATUS_RESET_CONTENT"           Value="205" />
+                <Set Name="HTTP_STATUS_PARTIAL_CONTENT"         Value="206" />
+                <Set Name="HTTP_STATUS_WEBDAV_MULTI_STATUS"     Value="207" />
+                <Set Name="HTTP_STATUS_AMBIGUOUS"               Value="300" />
+                <Set Name="HTTP_STATUS_MOVED"                   Value="301" />
+                <Set Name="HTTP_STATUS_REDIRECT"                Value="302" />
+                <Set Name="HTTP_STATUS_REDIRECT_METHOD"         Value="303" />
+                <Set Name="HTTP_STATUS_NOT_MODIFIED"            Value="304" />
+                <Set Name="HTTP_STATUS_USE_PROXY"               Value="305" />
+                <Set Name="HTTP_STATUS_REDIRECT_KEEP_VERB"      Value="307" />
+                <Set Name="HTTP_STATUS_BAD_REQUEST"             Value="400" />
+                <Set Name="HTTP_STATUS_DENIED"                  Value="401" />
+                <Set Name="HTTP_STATUS_PAYMENT_REQ"             Value="402" />
+                <Set Name="HTTP_STATUS_FORBIDDEN"               Value="403" />
+                <Set Name="HTTP_STATUS_NOT_FOUND"               Value="404" />
+                <Set Name="HTTP_STATUS_BAD_METHOD"              Value="405" />
+                <Set Name="HTTP_STATUS_NONE_ACCEPTABLE"         Value="406" />
+                <Set Name="HTTP_STATUS_PROXY_AUTH_REQ"          Value="407" />
+                <Set Name="HTTP_STATUS_REQUEST_TIMEOUT"         Value="408" />
+                <Set Name="HTTP_STATUS_CONFLICT"                Value="409" />
+                <Set Name="HTTP_STATUS_GONE"                    Value="410" />
+                <Set Name="HTTP_STATUS_LENGTH_REQUIRED"         Value="411" />
+                <Set Name="HTTP_STATUS_PRECOND_FAILED"          Value="412" />
+                <Set Name="HTTP_STATUS_REQUEST_TOO_LARGE"       Value="413" />
+                <Set Name="HTTP_STATUS_URI_TOO_LONG"            Value="414" />
+                <Set Name="HTTP_STATUS_UNSUPPORTED_MEDIA"       Value="415" />
+                <Set Name="HTTP_STATUS_RETRY_WITH"              Value="449" />
+                <Set Name="HTTP_STATUS_SERVER_ERROR"            Value="500" />
+                <Set Name="HTTP_STATUS_NOT_SUPPORTED"           Value="501" />
+                <Set Name="HTTP_STATUS_BAD_GATEWAY"             Value="502" />
+                <Set Name="HTTP_STATUS_SERVICE_UNAVAIL"         Value="503" />
+                <Set Name="HTTP_STATUS_GATEWAY_TIMEOUT"         Value="504" />
+                <Set Name="HTTP_STATUS_VERSION_NOT_SUP"         Value="505" />
+            </Enum>
+        </Variable>
+
+        <!-- [HTTP_STATUS|long] -->
+        <Variable Name="[HTTP_STATUS|long]" Type="Alias" Base="[HTTP_STATUS]">
+            <Display Name="long" />
+        </Variable>
+        <Variable Name="[HTTP_STATUS*|long*]" Type="Pointer" Base="[HTTP_STATUS|long]">
+            <Display Name="long*" />
+        </Variable>
+
+        <!-- READYSTATE -->
+        <Variable Name="READYSTATE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="READYSTATE_UNINITIALIZED"    Value="0" />
+                <Set Name="READYSTATE_LOADING"          Value="1" />
+                <Set Name="READYSTATE_LOADED"           Value="2" />
+                <Set Name="READYSTATE_INTERACTIVE"      Value="3" />
+                <Set Name="READYSTATE_COMPLETE"         Value="4" />
+            </Enum>
+        </Variable>
+        <Variable Name="READYSTATE*" Type="Pointer" Base="READYSTATE" />
+
+        <!-- [READYSTATE|long] -->
+        <Variable Name="[READYSTATE|long]" Type="Alias" Base="READYSTATE">
+            <Display Name="long" />
+        </Variable>
+        <Variable Name="[READYSTATE*|long*]" Type="Pointer" Base="[READYSTATE|long]">
+            <Display Name="long*" />
+        </Variable>
 
     </Headers>
 </ApiMonitor>

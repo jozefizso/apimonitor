@@ -119,7 +119,7 @@
                 <Set Name="ICM_DRAW_WINDOW"                 Value="0x00004022" />
                 <Set Name="ICM_DRAW_SETTIME"                Value="0x00004023" />
                 <Set Name="ICM_DRAW_REALIZE"                Value="0x00004024" />
-                <Set Name="ICM_DRAW_FLUSH  "                Value="0x00004025" />
+                <Set Name="ICM_DRAW_FLUSH"                  Value="0x00004025" />
                 <Set Name="ICM_DRAW_RENDERBUFFER"           Value="0x00004026" />
                 <Set Name="ICM_DRAW_START_PLAY"             Value="0x00004027" />
                 <Set Name="ICM_DRAW_STOP_PLAY"              Value="0x00004028" />
@@ -138,33 +138,49 @@
             </Enum>
         </Variable>
 
-        <!-- Multimedia -->
-        <Category Name="Audio and Video/Legacy Audio and Video/Windows Multimedia" />
-        <Api Name="DrawDibBegin">
-            <Param Type="HDRAWDIB" Name="hdd" />
-            <Param Type="HDC" Name="hdc" />
-            <Param Type="int" Name="dxDest" />
-            <Param Type="int" Name="dyDest" />
-            <Param Type="LPBITMAPINFOHEADER" Name="lpbi" />
-            <Param Type="int" Name="dxSrc" />
-            <Param Type="int" Name="dySrc" />
-            <Param Type="UINT" Name="wFlags" />
-            <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
-        </Api>
-        <Api Name="DrawDibChangePalette">
-            <Param Type="HDRAWDIB" Name="hdd" />
-            <Param Type="int" Name="iStart" />
-            <Param Type="int" Name="iLen" />
-            <Param Type="LPPALETTEENTRY" Name="lppe" />
-            <Return Type="BOOL" />
+        <!-- [ICERR] -->
+        <Variable Name="[ICERR]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="ICERR_OK"                Value="0" />
+                <Set Name="ICERR_DONTDRAW"          Value="1" />
+                <Set Name="ICERR_NEWPALETTE"        Value="2" />
+                <Set Name="ICERR_GOTOKEYFRAME"      Value="3" />
+                <Set Name="ICERR_STOPDRAWING"       Value="4" />
+                <Set Name="ICERR_UNSUPPORTED"       Value="-1" />
+                <Set Name="ICERR_BADFORMAT"         Value="-2" />
+                <Set Name="ICERR_MEMORY"            Value="-3" />
+                <Set Name="ICERR_INTERNAL"          Value="-4" />
+                <Set Name="ICERR_BADFLAGS"          Value="-5" />
+                <Set Name="ICERR_BADPARAM"          Value="-6" />
+                <Set Name="ICERR_BADSIZE"           Value="-7" />
+                <Set Name="ICERR_BADHANDLE"         Value="-8" />
+                <Set Name="ICERR_CANTUPDATE"        Value="-9" />
+                <Set Name="ICERR_ABORT"             Value="-10" />
+                <Set Name="ICERR_ERROR"             Value="-100" />
+                <Set Name="ICERR_BADBITDEPTH"       Value="-200" />
+                <Set Name="ICERR_BADIMAGESIZE"      Value="-201" />
+            </Enum>
+            <Success Return="Equal" Value="0" ErrorFunc="" />
+        </Variable>
+
+        <!-- DrawDib -->
+        <Category Name="Audio and Video/Legacy Audio and Video/Windows Multimedia/Video for Windows/DrawDib/Library" />
+        <Api Name="DrawDibOpen">
+            <Return Type="HDRAWDIB" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="DrawDibClose">
             <Param Type="HDRAWDIB" Name="hdd" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
+        <Api Name="DrawDibProfileDisplay">
+            <Param Type="LPBITMAPINFOHEADER" Name="lpbi" />
+            <Return Type="BOOL" />
+        </Api>
+
+        <!-- DrawDib -->
+        <Category Name="Audio and Video/Legacy Audio and Video/Windows Multimedia/Video for Windows/DrawDib/Image Rendering" />
         <Api Name="DrawDibDraw">
             <Param Type="HDRAWDIB" Name="hdd" />
             <Param Type="HDC" Name="hdc" />
@@ -180,12 +196,6 @@
             <Param Type="int" Name="dySrc" />
             <Param Type="UINT" Name="wFlags" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
-        </Api>
-        <Api Name="DrawDibEnd">
-            <Param Type="HDRAWDIB" Name="hdd" />
-            <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="DrawDibGetBuffer">
             <Param Type="HDRAWDIB" Name="hdd" />
@@ -195,20 +205,51 @@
             <Return Type="LPVOID" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="DrawDibGetPalette">
+        <Api Name="StretchDIB">
+            <Param Type="LPBITMAPINFOHEADER" Name="biDst" />
+            <Param Type="LPVOID" Name="lpvDst" />
+            <Param Type="int" Name="DstX" />
+            <Param Type="int" Name="DstY" />
+            <Param Type="int" Name="DstXE" />
+            <Param Type="int" Name="DstYE" />
+            <Param Type="LPBITMAPINFOHEADER" Name="biSrc" />
+            <Param Type="LPVOID" Name="lpvSrc" />
+            <Param Type="int" Name="SrcX" />
+            <Param Type="int" Name="SrcY" />
+            <Param Type="int" Name="SrcXE" />
+            <Param Type="int" Name="SrcYE" />
+            <Return Type="void" />
+        </Api>
+
+        <!-- DrawDib -->
+        <Category Name="Audio and Video/Legacy Audio and Video/Windows Multimedia/Video for Windows/DrawDib/Sequences of Images" />
+        <Api Name="DrawDibBegin">
             <Param Type="HDRAWDIB" Name="hdd" />
-            <Return Type="HPALETTE" />
-            <Success Return="NotEqual" Value="0" />
-        </Api>
-        <Api Name="DrawDibOpen">
-            <Return Type="HDRAWDIB" />
-            <Success Return="NotEqual" Value="0" />
-        </Api>
-        <Api Name="DrawDibProfileDisplay">
+            <Param Type="HDC" Name="hdc" />
+            <Param Type="int" Name="dxDest" />
+            <Param Type="int" Name="dyDest" />
             <Param Type="LPBITMAPINFOHEADER" Name="lpbi" />
+            <Param Type="int" Name="dxSrc" />
+            <Param Type="int" Name="dySrc" />
+            <Param Type="UINT" Name="wFlags" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
+        <Api Name="DrawDibEnd">
+            <Param Type="HDRAWDIB" Name="hdd" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="DrawDibStart">
+            <Param Type="HDRAWDIB" Name="hdd" />
+            <Param Type="LONG" Name="rate" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="DrawDibStop">
+            <Param Type="HDRAWDIB" Name="hdd" />
+            <Return Type="BOOL" />
+        </Api>
+
+        <!-- DrawDib -->
+        <Category Name="Audio and Video/Legacy Audio and Video/Windows Multimedia/Video for Windows/DrawDib/Palettes" />
         <Api Name="DrawDibRealize">
             <Param Type="HDRAWDIB" Name="hdd" />
             <Param Type="HDC" Name="hdc" />
@@ -220,39 +261,61 @@
             <Param Type="HDRAWDIB" Name="hdd" />
             <Param Type="HPALETTE" Name="hpal" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="DrawDibStart">
+        <Api Name="DrawDibGetPalette">
             <Param Type="HDRAWDIB" Name="hdd" />
-            <Param Type="LONG" Name="rate" />
-            <Return Type="BOOL" />
+            <Return Type="HPALETTE" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="DrawDibStop">
+        <Api Name="DrawDibChangePalette">
             <Param Type="HDRAWDIB" Name="hdd" />
+            <Param Type="int" Name="iStart" />
+            <Param Type="int" Name="iLen" />
+            <Param Type="LPPALETTEENTRY" Name="lppe" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
+
+        <!-- DrawDib -->
+        <Category Name="Audio and Video/Legacy Audio and Video/Windows Multimedia/Video for Windows/DrawDib/Timing" />
         <Api Name="DrawDibTime">
             <Param Type="HDRAWDIB" Name="hdd" />
             <Param Type="LPDRAWDIBTIME" Name="lpddtime" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
+
+        <!-- AVIFile -->
+        <Category Name="Audio and Video/Legacy Audio and Video/Windows Multimedia/Video for Windows/AVIFile" />
         <Api Name="GetOpenFileNamePreview" BothCharset="True">
             <Param Type="LPOPENFILENAME" Name="lpofn" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetSaveFileNamePreview" BothCharset="True">
             <Param Type="LPOPENFILENAME" Name="lpofn" />
             <Return Type="BOOL" />
+        </Api>
+
+        <!-- MCIWnd Window Class -->
+        <Category Name="Audio and Video/Legacy Audio and Video/Windows Multimedia/MCIWnd Window Class" />
+        <Api Name="MCIWndCreate" BothCharset="True">
+            <Param Type="HWND" Name="hwndParent" />
+            <Param Type="HINSTANCE" Name="hInstance" />
+            <Param Type="DWORD" Name="dwStyle" />
+            <Param Type="LPCTSTR" Name="szFile" />
+            <Return Type="HWND" />
             <Success Return="NotEqual" Value="0" />
         </Api>
+        <Api Name="MCIWndRegisterClass">
+            <Param Type="HINSTANCE" Name="hInstance" />
+            <Return Type="BOOL" />
+        </Api>
+        
+        <!-- Video Compression Manager -->
+        <!-- ICDecompressEx, ICDecompressExBegin, ICDecompressExQuery, ICDrawSuggestFormat and ICSetStatusProc are inline -->
+        <Category Name="Audio and Video/Legacy Audio and Video/Windows Multimedia/Video for Windows/Video Compression Manager" />
+        <ErrorDecode ErrorFunc="" />
         <Api Name="ICClose">
             <Param Type="HIC" Name="hic" />
-            <Return Type="LRESULT" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ICERR]" Display="LRESULT" />
         </Api>
         <Api Name="ICCompress">
             <Param Type="HIC" Name="hic" />
@@ -268,8 +331,7 @@
             <Param Type="DWORD" Name="dwQuality" />
             <Param Type="LPBITMAPINFOHEADER" Name="lpbiPrev" />
             <Param Type="LPVOID" Name="lpPrev" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ICERR]" />
         </Api>
         <Api Name="ICCompressorChoose">
             <Param Type="HWND" Name="hwnd" />
@@ -279,7 +341,6 @@
             <Param Type="PCOMPVARS" Name="pc" />
             <Param Type="LPSTR" Name="lpszTitle" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="ICCompressorFree">
             <Param Type="PCOMPVARS" Name="pc" />
@@ -292,8 +353,7 @@
             <Param Type="LPVOID" Name="lpData" />
             <Param Type="LPBITMAPINFOHEADER" Name="lpbi" />
             <Param Type="LPVOID" Name="lpBits" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ICERR]" />
         </Api>
         <Api Name="ICDraw">
             <Param Type="HIC" Name="hic" />
@@ -302,8 +362,7 @@
             <Param Type="LPVOID" Name="lpData" />
             <Param Type="DWORD" Name="cbData" />
             <Param Type="LONG" Name="lTime" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ICERR]" />
         </Api>
         <Api Name="ICDrawBegin">
             <Param Type="HIC" Name="hic" />
@@ -322,8 +381,7 @@
             <Param Type="int" Name="dySrc" />
             <Param Type="DWORD" Name="dwRate" />
             <Param Type="DWORD" Name="dwScale" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ICERR]" />
         </Api>
         <Api Name="ICGetDisplayFormat">
             <Param Type="HIC" Name="hic" />
@@ -367,7 +425,6 @@
             <Param Type="DWORD" Name="fccHandler" />
             <Param Type="ICINFO*" Name="lpicinfo" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="ICInstall">
             <Param Type="DWORD" Name="fccType" />
@@ -376,9 +433,8 @@
             <Param Type="LPSTR" Name="szDesc" />
             <Param Type="UINT" Name="wFlags" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="ICLocate" ErrorFunc="">
+        <Api Name="ICLocate">
             <Param Type="DWORD" Name="fccType" />
             <Param Type="DWORD" Name="fccHandler" />
             <Param Type="LPBITMAPINFOHEADER" Name="lpbiIn" />
@@ -407,7 +463,6 @@
             <Param Type="DWORD" Name="fccHandler" />
             <Param Type="UINT" Name="wFlags" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="ICSendMessage">
             <Param Type="HIC" Name="hic" />
@@ -433,35 +488,6 @@
             <Param Type="PCOMPVARS" Name="pc" />
             <Param Type="LPBITMAPINFO" Name="lpbiIn" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
-        </Api>
-        <Api Name="MCIWndCreate" BothCharset="True">
-            <Param Type="HWND" Name="hwndParent" />
-            <Param Type="HINSTANCE" Name="hInstance" />
-            <Param Type="DWORD" Name="dwStyle" />
-            <Param Type="LPCTSTR" Name="szFile" />
-            <Return Type="HWND" />
-            <Success Return="NotEqual" Value="0" />
-        </Api>
-        <Api Name="MCIWndRegisterClass">
-            <Param Type="HINSTANCE" Name="hInstance" />
-            <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
-        </Api>
-        <Api Name="StretchDIB">
-            <Param Type="LPBITMAPINFOHEADER" Name="biDst" />
-            <Param Type="LPVOID" Name="lpvDst" />
-            <Param Type="int" Name="DstX" />
-            <Param Type="int" Name="DstY" />
-            <Param Type="int" Name="DstXE" />
-            <Param Type="int" Name="DstYE" />
-            <Param Type="LPBITMAPINFOHEADER" Name="biSrc" />
-            <Param Type="LPVOID" Name="lpvSrc" />
-            <Param Type="int" Name="SrcX" />
-            <Param Type="int" Name="SrcY" />
-            <Param Type="int" Name="SrcXE" />
-            <Param Type="int" Name="SrcYE" />
-            <Return Type="void" />
         </Api>
     </Module>
 </ApiMonitor>

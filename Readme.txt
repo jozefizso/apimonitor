@@ -1,5 +1,5 @@
 API Monitor v2 (Portable Edition)
-(c) 2000-2012 Rohitab Batra.
+(c) 2000-2013 Rohitab Batra.
 All rights reserved.
 
 
@@ -11,7 +11,7 @@ applications and services. Its a powerful tool for seeing how applications
 and services work or for tracking down problems that you have in your own
 applications.
 
-This is a Portable Edition of API Monitor that runs without installing files.
+This is the Portable Edition of API Monitor that runs without requiring installation.
 For more information and to download the Standard Edition with installers,
 please see http://www.rohitab.com/apimonitor
 

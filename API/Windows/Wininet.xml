@@ -4,13 +4,56 @@
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
-    
+
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\internet.h.xml" />
+    <Include Filename="Headers\cryptography.h.xml" />
+    <Include Filename="Headers\URL.h.xml" />
 
     <ErrorLookupModule Name="Wininet.dll" />
-    
+
     <Module Name="Wininet.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+
+        <!-- TODO: Missing API's
+        UnRegisterNetworkChangeNotification - Ordinal 423
+        ShowCertificate
+        SetGlobalJetParameters - Ordinal 413
+        RegisterForNetworkChangeNotification - Ordinal 422
+        IsLanConnection - Ordinal 420
+        IsDialUpConnection - Ordinal 421
+        InternetAutodialCallback
+        InternetAutoProxyOnSendRequestComplete - Ordinal 403
+        InternetAutoProxyGetProxyForUrl - Ordinal 402
+        GetCacheServerConnection - Ordinal 410
+        ForceNexusLookupExW
+        ForceNexusLookup
+        CreateCacheServerRpcBinding - Ordinal 411
+        -->
+
+        <!-- Variables -->
+        <Variable Name="HTTP_PUSH_WAIT_HANDLE"              Type="Alias"        Base="HANDLE" />
+        <Variable Name="HTTP_PUSH_WAIT_HANDLE*"             Type="Pointer"      Base="HTTP_PUSH_WAIT_HANDLE" />
+        <Variable Name="APP_CACHE_HANDLE"                   Type="Alias"        Base="PVOID" />
+        <Variable Name="APP_CACHE_HANDLE*"                  Type="Pointer"      Base="APP_CACHE_HANDLE" />
+        <Variable Name="HTTP_DEPENDENCY_HANDLE"             Type="Alias"        Base="PVOID" />
+        <Variable Name="HTTP_DEPENDENCY_HANDLE*"            Type="Pointer"      Base="HTTP_DEPENDENCY_HANDLE" />
+        <Variable Name="URLCACHE_HANDLE"                    Type="Alias"        Base="PVOID" />
+        <Variable Name="URLCACHE_HANDLE*"                   Type="Pointer"      Base="URLCACHE_HANDLE" />
+        <Variable Name="CACHE_OPERATOR"                     Type="Alias"        Base="LPVOID" />
+        <Variable Name="BSTR**"                             Type="Pointer"      Base="BSTR*" />
+        <Variable Name="P3PURL"                             Type="Alias"        Base="LPSTR" />
+        <Variable Name="P3PCURL"                            Type="Alias"        Base="LPSTR" />
+        <Variable Name="P3PVERB"                            Type="Alias"        Base="LPSTR" />
+        <Variable Name="P3PCXSL"                            Type="Alias"        Base="BSTR" />
+        <Variable Name="P3PHANDLE"                          Type="Alias"        Base="LPVOID" />
+
+        <!-- External Interfaces -->
+        <Variable Name="IDialEngine"        Type="Interface" />
+        <Variable Name="IDialBranding"      Type="Interface" />
+        <Variable Name="IDialEventSink"     Type="Interface" />
+
+        <!-- Arrays -->
+        <Variable Name="WCHAR [SZ_ALG_MAX_SIZE]"    Type="Array"    Base="WCHAR"    Count="64" />
 
         <!-- [InternetService] -->
         <Variable Name="[InternetService]" Type="Alias" Base="DWORD">
@@ -26,110 +69,16 @@
         <Variable Name="[CacheEntryType]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
-                <Set Name="NORMAL_CACHE_ENTRY"          Value="0x00000001" />
-                <Set Name="STICKY_CACHE_ENTRY"          Value="0x00000004" />
-                <Set Name="EDITED_CACHE_ENTRY"          Value="0x00000008" />
-                <Set Name="TRACK_OFFLINE_CACHE_ENTRY"   Value="0x00000010" />
-                <Set Name="TRACK_ONLINE_CACHE_ENTRY"    Value="0x00000020" />
-                <Set Name="SPARSE_CACHE_ENTRY"          Value="0x00010000" />
-                <Set Name="COOKIE_CACHE_ENTRY"          Value="0x00100000" />
-                <Set Name="URLHISTORY_CACHE_ENTRY"      Value="0x00200000" />
+                <Set Name="NORMAL_CACHE_ENTRY"              Value="0x00000001" />
+                <Set Name="STICKY_CACHE_ENTRY"              Value="0x00000004" />
+                <Set Name="EDITED_CACHE_ENTRY"              Value="0x00000008" />
+                <Set Name="TRACK_OFFLINE_CACHE_ENTRY"       Value="0x00000010" />
+                <Set Name="TRACK_ONLINE_CACHE_ENTRY"        Value="0x00000020" />
+                <Set Name="SPARSE_CACHE_ENTRY"              Value="0x00010000" />
+                <Set Name="COOKIE_CACHE_ENTRY"              Value="0x00100000" />
+                <Set Name="URLHISTORY_CACHE_ENTRY"          Value="0x00200000" />
+                <Set Name="URLCACHE_FIND_DEFAULT_FILTER"    Value="0x00300035" />
             </Flag>
-        </Variable>
-
-        <!-- [InternetOption] -->
-        <Variable Name="[InternetOption]" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
-            <Enum>
-                <Set Name="INTERNET_OPTION_CALLBACK"                            Value="1" />
-                <Set Name="INTERNET_OPTION_CONNECT_TIMEOUT"                     Value="2" />
-                <Set Name="INTERNET_OPTION_CONNECT_RETRIES"                     Value="3" />
-                <Set Name="INTERNET_OPTION_CONNECT_BACKOFF"                     Value="4" />
-                <Set Name="INTERNET_OPTION_SEND_TIMEOUT"                        Value="5" />
-                <Set Name="INTERNET_OPTION_RECEIVE_TIMEOUT"                     Value="6" />
-                <Set Name="INTERNET_OPTION_DATA_SEND_TIMEOUT"                   Value="7" />
-                <Set Name="INTERNET_OPTION_DATA_RECEIVE_TIMEOUT"                Value="8" />
-                <Set Name="INTERNET_OPTION_HANDLE_TYPE"                         Value="9" />
-                <Set Name="INTERNET_OPTION_LISTEN_TIMEOUT"                      Value="11" />
-                <Set Name="INTERNET_OPTION_READ_BUFFER_SIZE"                    Value="12" />
-                <Set Name="INTERNET_OPTION_WRITE_BUFFER_SIZE"                   Value="13" />
-                <Set Name="INTERNET_OPTION_ASYNC_ID"                            Value="15" />
-                <Set Name="INTERNET_OPTION_ASYNC_PRIORITY"                      Value="16" />
-                <Set Name="INTERNET_OPTION_PARENT_HANDLE"                       Value="21" />
-                <Set Name="INTERNET_OPTION_KEEP_CONNECTION"                     Value="22" />
-                <Set Name="INTERNET_OPTION_REQUEST_FLAGS"                       Value="23" />
-                <Set Name="INTERNET_OPTION_EXTENDED_ERROR"                      Value="24" />
-                <Set Name="INTERNET_OPTION_OFFLINE_MODE"                        Value="26" />
-                <Set Name="INTERNET_OPTION_CACHE_STREAM_HANDLE"                 Value="27" />
-                <Set Name="INTERNET_OPTION_USERNAME"                            Value="28" />
-                <Set Name="INTERNET_OPTION_PASSWORD"                            Value="29" />
-                <Set Name="INTERNET_OPTION_ASYNC"                               Value="30" />
-                <Set Name="INTERNET_OPTION_SECURITY_FLAGS"                      Value="31" />
-                <Set Name="INTERNET_OPTION_SECURITY_CERTIFICATE_STRUCT"         Value="32" />
-                <Set Name="INTERNET_OPTION_DATAFILE_NAME"                       Value="33" />
-                <Set Name="INTERNET_OPTION_URL"                                 Value="34" />
-                <Set Name="INTERNET_OPTION_SECURITY_CERTIFICATE"                Value="35" />
-                <Set Name="INTERNET_OPTION_SECURITY_KEY_BITNESS"                Value="36" />
-                <Set Name="INTERNET_OPTION_REFRESH"                             Value="37" />
-                <Set Name="INTERNET_OPTION_PROXY"                               Value="38" />
-                <Set Name="INTERNET_OPTION_SETTINGS_CHANGED"                    Value="39" />
-                <Set Name="INTERNET_OPTION_VERSION"                             Value="40" />
-                <Set Name="INTERNET_OPTION_USER_AGENT"                          Value="41" />
-                <Set Name="INTERNET_OPTION_END_BROWSER_SESSION"                 Value="42" />
-                <Set Name="INTERNET_OPTION_PROXY_USERNAME"                      Value="43" />
-                <Set Name="INTERNET_OPTION_PROXY_PASSWORD"                      Value="44" />
-                <Set Name="INTERNET_OPTION_CONTEXT_VALUE"                       Value="45" />
-                <Set Name="INTERNET_OPTION_CONNECT_LIMIT"                       Value="46" />
-                <Set Name="INTERNET_OPTION_SECURITY_SELECT_CLIENT_CERT"         Value="47" />
-                <Set Name="INTERNET_OPTION_POLICY"                              Value="48" />
-                <Set Name="INTERNET_OPTION_DISCONNECTED_TIMEOUT"                Value="49" />
-                <Set Name="INTERNET_OPTION_CONNECTED_STATE"                     Value="50" />
-                <Set Name="INTERNET_OPTION_IDLE_STATE"                          Value="51" />
-                <Set Name="INTERNET_OPTION_OFFLINE_SEMANTICS"                   Value="52" />
-                <Set Name="INTERNET_OPTION_SECONDARY_CACHE_KEY"                 Value="53" />
-                <Set Name="INTERNET_OPTION_CALLBACK_FILTER"                     Value="54" />
-                <Set Name="INTERNET_OPTION_CONNECT_TIME"                        Value="55" />
-                <Set Name="INTERNET_OPTION_SEND_THROUGHPUT"                     Value="56" />
-                <Set Name="INTERNET_OPTION_RECEIVE_THROUGHPUT"                  Value="57" />
-                <Set Name="INTERNET_OPTION_REQUEST_PRIORITY"                    Value="58" />
-                <Set Name="INTERNET_OPTION_HTTP_VERSION"                        Value="59" />
-                <Set Name="INTERNET_OPTION_RESET_URLCACHE_SESSION"              Value="60" />
-                <Set Name="INTERNET_OPTION_ERROR_MASK"                          Value="62" />
-                <Set Name="INTERNET_OPTION_FROM_CACHE_TIMEOUT"                  Value="63" />
-                <Set Name="INTERNET_OPTION_BYPASS_EDITED_ENTRY"                 Value="64" />
-                <Set Name="INTERNET_OPTION_HTTP_DECODING"                       Value="65" />
-                <Set Name="INTERNET_OPTION_DIAGNOSTIC_SOCKET_INFO"              Value="67" />
-                <Set Name="INTERNET_OPTION_CODEPAGE"                            Value="68" />
-                <Set Name="INTERNET_OPTION_CACHE_TIMESTAMPS"                    Value="69" />
-                <Set Name="INTERNET_OPTION_DISABLE_AUTODIAL"                    Value="70" />
-                <Set Name="INTERNET_OPTION_MAX_CONNS_PER_SERVER"                Value="73" />
-                <Set Name="INTERNET_OPTION_MAX_CONNS_PER_1_0_SERVER"            Value="74" />
-                <Set Name="INTERNET_OPTION_PER_CONNECTION_OPTION"               Value="75" />
-                <Set Name="INTERNET_OPTION_DIGEST_AUTH_UNLOAD"                  Value="76" />
-                <Set Name="INTERNET_OPTION_IGNORE_OFFLINE"                      Value="77" />
-                <Set Name="INTERNET_OPTION_IDENTITY"                            Value="78" />
-                <Set Name="INTERNET_OPTION_REMOVE_IDENTITY"                     Value="79" />
-                <Set Name="INTERNET_OPTION_ALTER_IDENTITY"                      Value="80" />
-                <Set Name="INTERNET_OPTION_SUPPRESS_BEHAVIOR"                   Value="81" />
-                <Set Name="INTERNET_OPTION_AUTODIAL_MODE"                       Value="82" />
-                <Set Name="INTERNET_OPTION_AUTODIAL_CONNECTION"                 Value="83" />
-                <Set Name="INTERNET_OPTION_CLIENT_CERT_CONTEXT"                 Value="84" />
-                <Set Name="INTERNET_OPTION_AUTH_FLAGS"                          Value="85" />
-                <Set Name="INTERNET_OPTION_COOKIES_3RD_PARTY"                   Value="86" />
-                <Set Name="INTERNET_OPTION_DISABLE_PASSPORT_AUTH"               Value="87" />
-                <Set Name="INTERNET_OPTION_SEND_UTF8_SERVERNAME_TO_PROXY"       Value="88" />
-                <Set Name="INTERNET_OPTION_EXEMPT_CONNECTION_LIMIT"             Value="89" />
-                <Set Name="INTERNET_OPTION_ENABLE_PASSPORT_AUTH"                Value="90" />
-                <Set Name="INTERNET_OPTION_HIBERNATE_INACTIVE_WORKER_THREADS"   Value="91" />
-                <Set Name="INTERNET_OPTION_ACTIVATE_WORKER_THREADS"             Value="92" />
-                <Set Name="INTERNET_OPTION_RESTORE_WORKER_THREAD_DEFAULTS"      Value="93" />
-                <Set Name="INTERNET_OPTION_SOCKET_SEND_BUFFER_LENGTH"           Value="94" />
-                <Set Name="INTERNET_OPTION_PROXY_SETTINGS_CHANGED"              Value="95" />
-                <Set Name="INTERNET_OPTION_DATAFILE_EXT"                        Value="96" />
-                <Set Name="INTERNET_OPTION_CODEPAGE_PATH"                       Value="100" />
-                <Set Name="INTERNET_OPTION_CODEPAGE_EXTRA"                      Value="101" />
-                <Set Name="INTERNET_OPTION_IDN"                                 Value="102" />
-            </Enum>
         </Variable>
 
         <!-- [InternetGetConnectedStateFlags] -->
@@ -201,97 +150,6 @@
             </Flag>
         </Variable>
 
-        <!-- [HttpQueryFlags] -->
-        <Variable Name="[HttpQueryFlags]" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
-            <Flag>
-                <Set Name="HTTP_QUERY_MIME_VERSION"                 Value="0" />
-                <Set Name="HTTP_QUERY_CONTENT_TYPE"                 Value="1" />
-                <Set Name="HTTP_QUERY_CONTENT_TRANSFER_ENCODING"    Value="2" />
-                <Set Name="HTTP_QUERY_CONTENT_ID"                   Value="3" />
-                <Set Name="HTTP_QUERY_CONTENT_DESCRIPTION"          Value="4" />
-                <Set Name="HTTP_QUERY_CONTENT_LENGTH"               Value="5" />
-                <Set Name="HTTP_QUERY_CONTENT_LANGUAGE"             Value="6" />
-                <Set Name="HTTP_QUERY_ALLOW"                        Value="7" />
-                <Set Name="HTTP_QUERY_PUBLIC"                       Value="8" />
-                <Set Name="HTTP_QUERY_DATE"                         Value="9" />
-                <Set Name="HTTP_QUERY_EXPIRES"                      Value="10" />
-                <Set Name="HTTP_QUERY_LAST_MODIFIED"                Value="11" />
-                <Set Name="HTTP_QUERY_MESSAGE_ID"                   Value="12" />
-                <Set Name="HTTP_QUERY_URI"                          Value="13" />
-                <Set Name="HTTP_QUERY_DERIVED_FROM"                 Value="14" />
-                <Set Name="HTTP_QUERY_COST"                         Value="15" />
-                <Set Name="HTTP_QUERY_LINK"                         Value="16" />
-                <Set Name="HTTP_QUERY_PRAGMA"                       Value="17" />
-                <Set Name="HTTP_QUERY_VERSION"                      Value="18" />
-                <Set Name="HTTP_QUERY_STATUS_CODE"                  Value="19" />
-                <Set Name="HTTP_QUERY_STATUS_TEXT"                  Value="20" />
-                <Set Name="HTTP_QUERY_RAW_HEADERS"                  Value="21" />
-                <Set Name="HTTP_QUERY_RAW_HEADERS_CRLF"             Value="22" />
-                <Set Name="HTTP_QUERY_CONNECTION"                   Value="23" />
-                <Set Name="HTTP_QUERY_ACCEPT"                       Value="24" />
-                <Set Name="HTTP_QUERY_ACCEPT_CHARSET"               Value="25" />
-                <Set Name="HTTP_QUERY_ACCEPT_ENCODING"              Value="26" />
-                <Set Name="HTTP_QUERY_ACCEPT_LANGUAGE"              Value="27" />
-                <Set Name="HTTP_QUERY_AUTHORIZATION"                Value="28" />
-                <Set Name="HTTP_QUERY_CONTENT_ENCODING"             Value="29" />
-                <Set Name="HTTP_QUERY_FORWARDED"                    Value="30" />
-                <Set Name="HTTP_QUERY_FROM"                         Value="31" />
-                <Set Name="HTTP_QUERY_IF_MODIFIED_SINCE"            Value="32" />
-                <Set Name="HTTP_QUERY_LOCATION"                     Value="33" />
-                <Set Name="HTTP_QUERY_ORIG_URI"                     Value="34" />
-                <Set Name="HTTP_QUERY_REFERER"                      Value="35" />
-                <Set Name="HTTP_QUERY_RETRY_AFTER"                  Value="36" />
-                <Set Name="HTTP_QUERY_SERVER"                       Value="37" />
-                <Set Name="HTTP_QUERY_TITLE"                        Value="38" />
-                <Set Name="HTTP_QUERY_USER_AGENT"                   Value="39" />
-                <Set Name="HTTP_QUERY_WWW_AUTHENTICATE"             Value="40" />
-                <Set Name="HTTP_QUERY_PROXY_AUTHENTICATE"           Value="41" />
-                <Set Name="HTTP_QUERY_ACCEPT_RANGES"                Value="42" />
-                <Set Name="HTTP_QUERY_SET_COOKIE"                   Value="43" />
-                <Set Name="HTTP_QUERY_COOKIE"                       Value="44" />
-                <Set Name="HTTP_QUERY_REQUEST_METHOD"               Value="45" />
-                <Set Name="HTTP_QUERY_REFRESH"                      Value="46" />
-                <Set Name="HTTP_QUERY_CONTENT_DISPOSITION"          Value="47" />
-                <Set Name="HTTP_QUERY_AGE"                          Value="48" />
-                <Set Name="HTTP_QUERY_CACHE_CONTROL"                Value="49" />
-                <Set Name="HTTP_QUERY_CONTENT_BASE"                 Value="50" />
-                <Set Name="HTTP_QUERY_CONTENT_LOCATION"             Value="51" />
-                <Set Name="HTTP_QUERY_CONTENT_MD5"                  Value="52" />
-                <Set Name="HTTP_QUERY_CONTENT_RANGE"                Value="53" />
-                <Set Name="HTTP_QUERY_ETAG"                         Value="54" />
-                <Set Name="HTTP_QUERY_HOST"                         Value="55" />
-                <Set Name="HTTP_QUERY_IF_MATCH"                     Value="56" />
-                <Set Name="HTTP_QUERY_IF_NONE_MATCH"                Value="57" />
-                <Set Name="HTTP_QUERY_IF_RANGE"                     Value="58" />
-                <Set Name="HTTP_QUERY_IF_UNMODIFIED_SINCE"          Value="59" />
-                <Set Name="HTTP_QUERY_MAX_FORWARDS"                 Value="60" />
-                <Set Name="HTTP_QUERY_PROXY_AUTHORIZATION"          Value="61" />
-                <Set Name="HTTP_QUERY_RANGE"                        Value="62" />
-                <Set Name="HTTP_QUERY_TRANSFER_ENCODING"            Value="63" />
-                <Set Name="HTTP_QUERY_UPGRADE"                      Value="64" />
-                <Set Name="HTTP_QUERY_VARY"                         Value="65" />
-                <Set Name="HTTP_QUERY_VIA"                          Value="66" />
-                <Set Name="HTTP_QUERY_WARNING"                      Value="67" />
-                <Set Name="HTTP_QUERY_EXPECT"                       Value="68" />
-                <Set Name="HTTP_QUERY_PROXY_CONNECTION"             Value="69" />
-                <Set Name="HTTP_QUERY_UNLESS_MODIFIED_SINCE"        Value="70" />
-                <Set Name="HTTP_QUERY_ECHO_REQUEST"                 Value="71" />
-                <Set Name="HTTP_QUERY_ECHO_REPLY"                   Value="72" />
-                <Set Name="HTTP_QUERY_ECHO_HEADERS"                 Value="73" />
-                <Set Name="HTTP_QUERY_ECHO_HEADERS_CRLF"            Value="74" />
-                <Set Name="HTTP_QUERY_PROXY_SUPPORT"                Value="75" />
-                <Set Name="HTTP_QUERY_AUTHENTICATION_INFO"          Value="76" />
-                <Set Name="HTTP_QUERY_PASSPORT_URLS"                Value="77" />
-                <Set Name="HTTP_QUERY_PASSPORT_CONFIG"              Value="78" />
-                <Set Name="HTTP_QUERY_CUSTOM"                       Value="65535" />
-                <Set Name="HTTP_QUERY_FLAG_REQUEST_HEADERS"         Value="0x80000000" />
-                <Set Name="HTTP_QUERY_FLAG_SYSTEMTIME"              Value="0x40000000" />
-                <Set Name="HTTP_QUERY_FLAG_NUMBER"                  Value="0x20000000" />
-                <Set Name="HTTP_QUERY_FLAG_COALESCE"                Value="0x10000000" />
-            </Flag>
-        </Variable>
-
         <!-- [InternetReadFileFlags] -->
         <Variable Name="[InternetReadFileFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
@@ -331,20 +189,6 @@
             </Flag>
         </Variable>
 
-        <!-- [InternetErrorDlgErrorCode] -->
-        <Variable Name="[InternetErrorDlgErrorCode]" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
-            <Enum>
-                <Set Name="ERROR_INTERNET_CLIENT_AUTH_CERT_NEEDED"      Value="12044" />
-                <Set Name="ERROR_INTERNET_HTTP_TO_HTTPS_ON_REDIR"       Value="12039" />
-                <Set Name="ERROR_INTERNET_INCORRECT_PASSWORD"           Value="12014" />
-                <Set Name="ERROR_INTERNET_INVALID_CA"                   Value="12045" />
-                <Set Name="ERROR_INTERNET_POST_IS_NON_SECURE"           Value="12043" />
-                <Set Name="ERROR_INTERNET_SEC_CERT_CN_INVALID"          Value="12038" />
-                <Set Name="ERROR_INTERNET_SEC_CERT_DATE_INVALID"        Value="12037" />
-            </Enum>
-        </Variable>
-
         <!-- [InternetErrorDlgFlags] -->
         <Variable Name="[InternetErrorDlgFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
@@ -371,7 +215,440 @@
                 <Set Name="CACHE_ENTRY_EXEMPT_DELTA_FC"     Value="0x00000800" />
             </Flag>
         </Variable>
-        
+
+        <!-- InternetCookieState -->
+        <Variable Name="InternetCookieState" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="COOKIE_STATE_UNKNOWN"    Value="0x0" />
+                <Set Name="COOKIE_STATE_ACCEPT"     Value="0x1" />
+                <Set Name="COOKIE_STATE_PROMPT"     Value="0x2" />
+                <Set Name="COOKIE_STATE_LEASH"      Value="0x3" />
+                <Set Name="COOKIE_STATE_DOWNGRADE"  Value="0x4" />
+                <Set Name="COOKIE_STATE_REJECT"     Value="0x5" />
+            </Enum>
+        </Variable>
+
+        <!-- FORTCMD -->
+        <Variable Name="FORTCMD" Type="Alias" Base="UINT">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="FORTCMD_LOGON"               Value="1" />
+                <Set Name="FORTCMD_LOGOFF"              Value="2" />
+                <Set Name="FORTCMD_CHG_PERSONALITY"     Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- FORTSTAT -->
+        <Variable Name="FORTSTAT" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="FORTSTAT_INSTALLED"      Value="0x00000001" />
+                <Set Name="FORTSTAT_LOGGEDON"       Value="0x00000002" />
+            </Flag>
+        </Variable>
+        <Variable Name="FORTSTAT*" Type="Pointer" Base="FORTSTAT">
+            <Display Name="DWORD*" />
+        </Variable>
+
+        <!-- [INTERNET_CACHE_CONTAINER_FLAGS] -->
+        <Variable Name="[INTERNET_CACHE_CONTAINER_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="INTERNET_CACHE_CONTAINER_NOSUBDIRS"          Value="0x1" />
+                <Set Name="INTERNET_CACHE_CONTAINER_AUTODELETE"         Value="0x2" />
+                <Set Name="INTERNET_CACHE_CONTAINER_RESERVED1"          Value="0x4" />
+                <Set Name="INTERNET_CACHE_CONTAINER_NODESKTOPINIT"      Value="0x8" />
+                <Set Name="INTERNET_CACHE_CONTAINER_MAP_ENABLED"        Value="0x10" />
+                <Set Name="INTERNET_CACHE_CONTAINER_SHARE_READ"         Value="0x100" />
+                <Set Name="INTERNET_CACHE_CONTAINER_SHARE_READ_WRITE"   Value="0x300" />
+            </Flag>
+        </Variable>
+
+        <!-- [CACHE_FIND_CONTAINER_FLAGS] -->
+        <Variable Name="[CACHE_FIND_CONTAINER_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="CACHE_FIND_CONTAINER_RETURN_NOCHANGE" Value="0x1" />
+            </Flag>
+        </Variable>
+
+        <!-- [CACHE_CONFIG_FC] -->
+        <Variable Name="[CACHE_CONFIG_FC]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="CACHE_CONFIG_FORCE_CLEANUP_FC"           Value="0x00000020" />
+                <Set Name="CACHE_CONFIG_DISK_CACHE_PATHS_FC"        Value="0x00000040" />
+                <Set Name="CACHE_CONFIG_SYNC_MODE_FC"               Value="0x00000080" />
+                <Set Name="CACHE_CONFIG_CONTENT_PATHS_FC"           Value="0x00000100" />
+                <Set Name="CACHE_CONFIG_COOKIES_PATHS_FC"           Value="0x00000200" />
+                <Set Name="CACHE_CONFIG_HISTORY_PATHS_FC"           Value="0x00000400" />
+                <Set Name="CACHE_CONFIG_QUOTA_FC"                   Value="0x00000800" />
+                <Set Name="CACHE_CONFIG_USER_MODE_FC"               Value="0x00001000" />
+                <Set Name="CACHE_CONFIG_CONTENT_USAGE_FC"           Value="0x00002000" />
+                <Set Name="CACHE_CONFIG_STICKY_CONTENT_USAGE_FC"    Value="0x00004000" />
+            </Flag>
+        </Variable>
+
+        <!-- [CACHE_NOTIFY_FILTER_OPTIONS] -->
+        <Variable Name="[CACHE_NOTIFY_FILTER_OPTIONS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="CACHE_NOTIFY_ADD_URL"            Value="0x00000001" />
+                <Set Name="CACHE_NOTIFY_DELETE_URL"         Value="0x00000002" />
+                <Set Name="CACHE_NOTIFY_UPDATE_URL"         Value="0x00000004" />
+                <Set Name="CACHE_NOTIFY_DELETE_ALL"         Value="0x00000008" />
+                <Set Name="CACHE_NOTIFY_URL_SET_STICKY"     Value="0x00000010" />
+                <Set Name="CACHE_NOTIFY_URL_UNSET_STICKY"   Value="0x00000020" />
+                <Set Name="CACHE_NOTIFY_SET_ONLINE"         Value="0x00000100" />
+                <Set Name="CACHE_NOTIFY_SET_OFFLINE"        Value="0x00000200" />
+                <Set Name="CACHE_NOTIFY_FILTER_CHANGED"     Value="0x10000000" />
+            </Flag>
+        </Variable>
+
+        <!-- [APP_CACHE_LOOKUP_FLAGS] -->
+        <Variable Name="[APP_CACHE_LOOKUP_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="APP_CACHE_LOOKUP_NO_MASTER_ONLY" Value="0x1" />
+            </Flag>
+        </Variable>
+
+        <!-- SecPkgContext_ConnectionInfo -->
+        <Variable Name="SecPkgContext_ConnectionInfo" Type="Struct">
+            <Field Type="DWORD"     Name="dwProtocol" />
+            <Field Type="ALG_ID"    Name="aiCipher" />
+            <Field Type="DWORD"     Name="dwCipherStrength" />
+            <Field Type="ALG_ID"    Name="aiHash" />
+            <Field Type="DWORD"     Name="dwHashStrength" />
+            <Field Type="ALG_ID"    Name="aiExch" />
+            <Field Type="DWORD"     Name="dwExchStrength" />
+        </Variable>
+
+        <!-- SecPkgContext_CipherInfo -->
+        <Variable Name="SecPkgContext_CipherInfo" Type="Struct">
+            <Field Type="DWORD"                         Name="dwVersion" />
+            <Field Type="DWORD"                         Name="dwProtocol" />
+            <Field Type="DWORD"                         Name="dwCipherSuite" />
+            <Field Type="DWORD"                         Name="dwBaseCipherSuite" />
+            <Field Type="WCHAR [SZ_ALG_MAX_SIZE]"       Name="szCipherSuite" />
+            <Field Type="WCHAR [SZ_ALG_MAX_SIZE]"       Name="szCipher" />
+            <Field Type="DWORD"                         Name="dwCipherLen" />
+            <Field Type="DWORD"                         Name="dwCipherBlockLen" />
+            <Field Type="WCHAR [SZ_ALG_MAX_SIZE]"       Name="szHash" />
+            <Field Type="DWORD"                         Name="dwHashLen" />
+            <Field Type="WCHAR [SZ_ALG_MAX_SIZE]"       Name="szExchange" />
+            <Field Type="DWORD"                         Name="dwMinExchangeLen" />
+            <Field Type="DWORD"                         Name="dwMaxExchangeLen" />
+            <Field Type="WCHAR [SZ_ALG_MAX_SIZE]"       Name="szCertificate" />
+            <Field Type="DWORD"                         Name="dwKeyType" />
+        </Variable>
+
+        <!-- SEC_CHANNEL_BINDINGS -->
+        <Variable Name="SEC_CHANNEL_BINDINGS" Type="Struct">
+            <Field Type="unsigned long"         Name="dwInitiatorAddrType" />
+            <Field Type="unsigned long"         Name="cbInitiatorLength" />
+            <Field Type="unsigned long"         Name="dwInitiatorOffset" />
+            <Field Type="unsigned long"         Name="dwAcceptorAddrType" />
+            <Field Type="unsigned long"         Name="cbAcceptorLength" />
+            <Field Type="unsigned long"         Name="dwAcceptorOffset" />
+            <Field Type="unsigned long"         Name="cbApplicationDataLength" />
+            <Field Type="unsigned long"         Name="dwApplicationDataOffset" />
+        </Variable>
+        <Variable Name="SEC_CHANNEL_BINDINGS*" Type="Pointer" Base="SEC_CHANNEL_BINDINGS" />
+
+        <!-- SecPkgContext_Bindings -->
+        <Variable Name="SecPkgContext_Bindings" Type="Struct">
+            <Field Type="unsigned long"             Name="BindingsLength" />
+            <Field Type="SEC_CHANNEL_BINDINGS*"     Name="Bindings" />
+        </Variable>
+
+        <!-- INTERNET_SECURITY_INFO -->
+        <Variable Name="INTERNET_SECURITY_INFO" Type="Struct">
+            <Field Type="DWORD"                         Name="dwSize" />
+            <Field Type="PCCERT_CONTEXT"                Name="pCertificate" />
+            <Field Type="PCCERT_CHAIN_CONTEXT"          Name="pcCertChain" />
+            <Field Type="SecPkgContext_ConnectionInfo"  Name="connectionInfo" />
+            <Field Type="SecPkgContext_CipherInfo"      Name="cipherInfo" />
+            <Field Type="PCCERT_CHAIN_CONTEXT"          Name="pcUnverifiedCertChain" />
+            <Field Type="SecPkgContext_Bindings"        Name="channelBindingToken" />
+        </Variable>
+        <Variable Name="LPINTERNET_SECURITY_INFO" Type="Pointer" Base="INTERNET_SECURITY_INFO" />
+
+        <!-- APP_CACHE_STATE -->
+        <Variable Name="APP_CACHE_STATE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="AppCacheStateNoUpdateNeeded"             Value="0" />
+                <Set Name="AppCacheStateUpdateNeeded"               Value="1" />
+                <Set Name="AppCacheStateUpdateNeededNew"            Value="2" />
+                <Set Name="AppCacheStateUpdateNeededMasterOnly"     Value="3" />
+            </Enum>
+        </Variable>
+        <Variable Name="APP_CACHE_STATE*" Type="Pointer" Base="APP_CACHE_STATE" />
+
+        <!-- URL_CACHE_LIMIT_TYPE -->
+        <Variable Name="URL_CACHE_LIMIT_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="UrlCacheLimitTypeIE"                 Value="0" />
+                <Set Name="UrlCacheLimitTypeIETotal"            Value="1" />
+                <Set Name="UrlCacheLimitTypeAppContainer"       Value="2" />
+                <Set Name="UrlCacheLimitTypeAppContainerTotal"  Value="3" />
+                <Set Name="UrlCacheLimitTypeNum"                Value="4" />
+            </Enum>
+        </Variable>
+
+        <!-- [APP_CACHE_ENTRY_TYPE] -->
+        <Variable Name="[APP_CACHE_ENTRY_TYPE]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="APP_CACHE_ENTRY_TYPE_MASTER"     Value="0x01" />
+                <Set Name="APP_CACHE_ENTRY_TYPE_EXPLICIT"   Value="0x02" />
+                <Set Name="APP_CACHE_ENTRY_TYPE_FALLBACK"   Value="0x04" />
+                <Set Name="APP_CACHE_ENTRY_TYPE_FOREIGN"    Value="0x08" />
+                <Set Name="APP_CACHE_ENTRY_TYPE_MANIFEST"   Value="0x10" />
+            </Flag>
+        </Variable>
+
+        <!-- APP_CACHE_DOWNLOAD_ENTRY -->
+        <Variable Name="APP_CACHE_DOWNLOAD_ENTRY" Type="Struct">
+            <Field Type="PWSTR"                     Name="pwszUrl" />
+            <Field Type="[APP_CACHE_ENTRY_TYPE]"    Name="dwEntryType" />
+        </Variable>
+        <Variable Name="APP_CACHE_DOWNLOAD_ENTRY*" Type="Pointer" Base="APP_CACHE_DOWNLOAD_ENTRY" />
+
+        <!-- APP_CACHE_DOWNLOAD_LIST -->
+        <Variable Name="APP_CACHE_DOWNLOAD_LIST" Type="Struct">
+            <Field Type="DWORD"                         Name="dwEntryCount" />
+            <Field Type="APP_CACHE_DOWNLOAD_ENTRY*"     Name="pEntries" Count="dwEntryCount" />
+        </Variable>
+        <Variable Name="APP_CACHE_DOWNLOAD_LIST*" Type="Pointer" Base="APP_CACHE_DOWNLOAD_LIST" />
+
+        <!-- HTTP_PUSH_TRANSPORT_SETTING -->
+        <Variable Name="HTTP_PUSH_TRANSPORT_SETTING" Type="Struct">
+            <Field Type="GUID"      Name="TransportSettingId" />
+            <Field Type="GUID"      Name="BrokerEventId" />
+            }
+        </Variable>
+        <Variable Name="HTTP_PUSH_TRANSPORT_SETTING*" Type="Pointer" Base="HTTP_PUSH_TRANSPORT_SETTING" />
+
+        <!-- HTTP_PUSH_WAIT_TYPE -->
+        <Variable Name="HTTP_PUSH_WAIT_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="HttpPushWaitEnableComplete"      Value="0" />
+                <Set Name="HttpPushWaitReceiveComplete"     Value="1" />
+                <Set Name="HttpPushWaitSendComplete"        Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- HTTP_PUSH_NOTIFICATION_STATUS -->
+        <Variable Name="HTTP_PUSH_NOTIFICATION_STATUS" Type="Struct">
+            <Field Type="BOOL"      Name="ChannelStatusValid" />
+            <Field Type="DWORD"     Name="ChannelStatus" />
+        </Variable>
+        <Variable Name="HTTP_PUSH_NOTIFICATION_STATUS*" Type="Pointer" Base="HTTP_PUSH_NOTIFICATION_STATUS" />
+
+        <!-- APP_CACHE_FINALIZE_STATE -->
+        <Variable Name="APP_CACHE_FINALIZE_STATE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="AppCacheFinalizeStateIncomplete"         Value="0" />
+                <Set Name="AppCacheFinalizeStateManifestChange"     Value="1" />
+                <Set Name="AppCacheFinalizeStateComplete"           Value="2" />
+            </Enum>
+        </Variable>
+        <Variable Name="APP_CACHE_FINALIZE_STATE*" Type="Pointer" Base="APP_CACHE_FINALIZE_STATE" />
+
+        <!-- APP_CACHE_GROUP_INFO -->
+        <Variable Name="APP_CACHE_GROUP_INFO" Type="Struct">
+            <Field Type="PWSTR"         Name="pwszManifestUrl" />
+            <Field Type="FILETIME"      Name="ftLastAccessTime" />
+            <Field Type="ULONGLONG"     Name="ullSize" />
+        </Variable>
+        <Variable Name="APP_CACHE_GROUP_INFO*" Type="Pointer" Base="APP_CACHE_GROUP_INFO" />
+
+        <!-- APP_CACHE_GROUP_LIST -->
+        <Variable Name="APP_CACHE_GROUP_LIST" Type="Struct">
+            <Field Type="DWORD"                     Name="dwAppCacheGroupCount" />
+            <Field Type="APP_CACHE_GROUP_INFO*"     Name="pAppCacheGroups" Count="dwAppCacheGroupCount" />
+        </Variable>
+        <Variable Name="APP_CACHE_GROUP_LIST*" Type="Pointer" Base="APP_CACHE_GROUP_LIST" />
+
+        <!-- URLCACHE_ENTRY_INFO -->
+        <Variable Name="URLCACHE_ENTRY_INFO" Type="Struct">
+            <Field Type="PWSTR"         Name="pwszSourceUrlName" />
+            <Field Type="PWSTR"         Name="pwszLocalFileName" />
+            <Field Type="DWORD"         Name="dwCacheEntryType" />
+            <Field Type="DWORD"         Name="dwUseCount" />
+            <Field Type="DWORD"         Name="dwHitRate" />
+            <Field Type="DWORD"         Name="dwSizeLow" />
+            <Field Type="DWORD"         Name="dwSizeHigh" />
+            <Field Type="FILETIME"      Name="ftLastModifiedTime" />
+            <Field Type="FILETIME"      Name="ftExpireTime" />
+            <Field Type="FILETIME"      Name="ftLastAccessTime" />
+            <Field Type="FILETIME"      Name="ftLastSyncTime" />
+            <Field Type="PBYTE"         Name="pbHeaderInfo" Length="cbHeaderInfoSize" />
+            <Field Type="DWORD"         Name="cbHeaderInfoSize" />
+            <Field Type="PBYTE"         Name="pbExtraData" Length="cbExtraDataSize" />
+            <Field Type="DWORD"         Name="cbExtraDataSize" />
+        </Variable>
+        <Variable Name="PURLCACHE_ENTRY_INFO" Type="Pointer" Base="URLCACHE_ENTRY_INFO" />
+
+        <!-- WININET_PROXY_INFO -->
+        <Variable Name="WININET_PROXY_INFO" Type="Struct">
+            <Field Type="BOOL"              Name="fProxy" />
+            <Field Type="BOOL"              Name="fBypass" />
+            <Field Type="INTERNET_SCHEME"   Name="ProxyScheme" />
+            <Field Type="PWSTR"             Name="pwszProxy" />
+            <Field Type="INTERNET_PORT"     Name="ProxyPort" />
+        </Variable>
+        <Variable Name="WININET_PROXY_INFO*" Type="Pointer" Base="WININET_PROXY_INFO" />
+
+        <!-- WININET_PROXY_INFO_LIST -->
+        <Variable Name="WININET_PROXY_INFO_LIST" Type="Struct">
+            <Field Type="DWORD"                 Name="dwProxyInfoCount" />
+            <Field Type="WININET_PROXY_INFO*"   Name="pProxyInfo" Count="dwProxyInfoCount" />
+        </Variable>
+        <Variable Name="WININET_PROXY_INFO_LIST*" Type="Pointer" Base="WININET_PROXY_INFO_LIST" />
+
+        <!-- INTERNET_CACHE_CONTAINER_INFO -->
+        <Variable Name="INTERNET_CACHE_CONTAINER_INFO" Type="Struct">
+            <Field Type="DWORD"     Name="dwCacheVersion" />
+            <Field Type="LPTSTR"    Name="lpszName" />
+            <Field Type="LPTSTR"    Name="lpszCachePrefix" />
+            <Field Type="LPTSTR"    Name="lpszVolumeLabel" />
+            <Field Type="LPTSTR"    Name="lpszVolumeTitle" />
+        </Variable>
+        <Variable Name="LPINTERNET_CACHE_CONTAINER_INFO" Type="Pointer" Base="INTERNET_CACHE_CONTAINER_INFO" />
+
+        <!-- INTERNET_CACHE_CONFIG_PATH_ENTRY -->
+        <Variable Name="INTERNET_CACHE_CONFIG_PATH_ENTRY" Type="Struct">
+            <Field Type="TCHAR [MAX_PATH]"  Name="CachePath" />
+            <Field Type="DWORD"             Name="dwCacheSize" />
+        </Variable>
+        <Variable Name="INTERNET_CACHE_CONFIG_PATH_ENTRY [ANYSIZE_ARRAY]" Type="Array" Base="INTERNET_CACHE_CONFIG_PATH_ENTRY" Count="1" />
+
+        <!-- INTERNET_CACHE_CONFIG_INFO -->
+        <Variable Name="INTERNET_CACHE_CONFIG_INFO" Type="Struct">
+            <Field Type="DWORD"                                             Name="dwStructSize" />
+            <Field Type="DWORD"                                             Name="dwContainer" />
+            <Field Type="DWORD"                                             Name="dwQuota" />
+            <Field Type="DWORD"                                             Name="dwReserved4" />
+            <Field Type="BOOL"                                              Name="fPerUser" />
+            <Field Type="DWORD"                                             Name="dwSyncMode" />
+            <Field Type="DWORD"                                             Name="dwNumCachePaths" />
+            <Field Type="INTERNET_CACHE_CONFIG_PATH_ENTRY [ANYSIZE_ARRAY]"  Name="CachePaths" Count="dwNumCachePaths" />
+            <Field Type="DWORD"                                             Name="dwNormalUsage" />
+            <Field Type="DWORD"                                             Name="dwExemptUsage" />
+        </Variable>
+        <Variable Name="LPINTERNET_CACHE_CONFIG_INFO" Type="Pointer" Base="INTERNET_CACHE_CONFIG_INFO" />
+
+        <!-- [INTERNET_DIAL_FLAGS] -->
+        <Variable Name="[INTERNET_DIAL_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="INTERNET_DIAL_FORCE_PROMPT"      Value="0x2000" />
+                <Set Name="INTERNET_DIAL_SHOW_OFFLINE"      Value="0x4000" />
+                <Set Name="INTERNET_DIAL_UNATTENDED"        Value="0x8000" />
+            </Flag>
+        </Variable>
+
+        <!-- [FTP_TRANSFER_FLAGS] -->
+        <Variable Name="[FTP_TRANSFER_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="FTP_TRANSFER_TYPE_UNKNOWN"           Value="0x00000000" />
+                <Set Name="FTP_TRANSFER_TYPE_ASCII"             Value="0x00000001" />
+                <Set Name="FTP_TRANSFER_TYPE_BINARY"            Value="0x00000002" />
+                <Set Name="INTERNET_FLAG_NO_CACHE_WRITE"        Value="0x04000000" />
+                <Set Name="INTERNET_FLAG_HYPERLINK"             Value="0x00000400" />
+                <Set Name="INTERNET_FLAG_NEED_FILE"             Value="0x00000010" />
+                <Set Name="INTERNET_FLAG_RELOAD"                Value="0x80000000" />
+                <Set Name="INTERNET_FLAG_RESYNCHRONIZE"         Value="0x00000800" />
+            </Flag>
+        </Variable>
+
+        <!-- WPAD_CACHE_DELETE -->
+        <Variable Name="WPAD_CACHE_DELETE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="WPAD_CACHE_DELETE_CURRENT"   Value="0x0" />
+                <Set Name="WPAD_CACHE_DELETE_ALL"       Value="0x1" />
+            </Enum>
+        </Variable>
+
+        <!-- P3PResource -->
+        <!-- TODO: Self-Referencing -->
+        <Variable Name="P3PResource" Type="Struct">
+            <Field Type="P3PCURL"                           Name="pszLocation" />
+            <Field Type="P3PVERB"                           Name="pszVerb" />
+            <Field Type="P3PCURL"                           Name="pszP3PHeaderRef" />
+            <Field Type="P3PCURL"                           Name="pszLinkTagRef" />
+            <Field Type="LPVOID" Display="P3PResource*"     Name="pContainer" />
+        </Variable>
+        <Variable Name="P3PResource*" Type="Pointer" Base="P3PResource" />
+
+        <!-- P3PSignal -->
+        <Variable Name="P3PSignal" Type="Struct">
+            <Field Type="HWND"              Name="hwnd" />
+            <Field Type="unsigned int"      Name="message" />
+            <Field Type="HANDLE"            Name="hEvent" />
+            <Field Type="void*"             Name="pContext" />
+            <Field Type="P3PHANDLE"         Name="hRequest" />
+        </Variable>
+        <Variable Name="P3PSignal*" Type="Pointer" Base="P3PSignal" />
+
+        <!-- P3PStatus -->
+        <Variable Name="P3PStatus" Type="Alias" Base="int">
+            <Display Name="int" />
+            <Enum>
+                <Set Name="P3P_Success"         Value="0x0" />
+                <Set Name="P3P_NoPolicy"        Value="0x2" />
+                <Set Name="P3P_InProgress"      Value="0x3" />
+                <Set Name="P3P_Failed"          Value="0x4" />
+                <Set Name="P3P_NotFound"        Value="0x5" />
+                <Set Name="P3P_FormatErr"       Value="0x6" />
+                <Set Name="P3P_Cancelled"       Value="0x7" />
+                <Set Name="P3P_NotStarted"      Value="0x8" />
+                <Set Name="P3P_XMLError"        Value="0x9" />
+                <Set Name="P3P_Expired"         Value="0xA" />
+                <Set Name="P3P_Error"           Value="0xFF" />
+            </Enum>
+            <Success Return="Equal" Value="0" />
+        </Variable>
+
+        <!-- HTTP_WEB_SOCKET_BUFFER_TYPE -->
+        <Variable Name="HTTP_WEB_SOCKET_BUFFER_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="HTTP_WEB_SOCKET_BINARY_MESSAGE_TYPE"     Value="0" />
+                <Set Name="HTTP_WEB_SOCKET_BINARY_FRAGMENT_TYPE"    Value="1" />
+                <Set Name="HTTP_WEB_SOCKET_UTF8_MESSAGE_TYPE"       Value="2" />
+                <Set Name="HTTP_WEB_SOCKET_UTF8_FRAGMENT_TYPE"      Value="3" />
+                <Set Name="HTTP_WEB_SOCKET_CLOSE_TYPE"              Value="4" />
+                <Set Name="HTTP_WEB_SOCKET_PING_TYPE"               Value="5" />
+            </Enum>
+        </Variable>
+        <Variable Name="HTTP_WEB_SOCKET_BUFFER_TYPE*" Type="Pointer" Base="HTTP_WEB_SOCKET_BUFFER_TYPE" />
+
+        <!-- HTTP_WEB_SOCKET_CLOSE_STATUS -->
+        <Variable Name="HTTP_WEB_SOCKET_CLOSE_STATUS" Type="Alias" Base="USHORT">
+            <Display Name="USHORT" />
+            <Enum>
+                <Set Name="HTTP_WEB_SOCKET_SUCCESS_CLOSE_STATUS"                    Value="1000" />
+                <Set Name="HTTP_WEB_SOCKET_ENDPOINT_TERMINATED_CLOSE_STATUS"        Value="1001" />
+                <Set Name="HTTP_WEB_SOCKET_PROTOCOL_ERROR_CLOSE_STATUS"             Value="1002" />
+                <Set Name="HTTP_WEB_SOCKET_INVALID_DATA_TYPE_CLOSE_STATUS"          Value="1003" />
+                <Set Name="HTTP_WEB_SOCKET_EMPTY_CLOSE_STATUS"                      Value="1005" />
+                <Set Name="HTTP_WEB_SOCKET_ABORTED_CLOSE_STATUS"                    Value="1006" />
+                <Set Name="HTTP_WEB_SOCKET_INVALID_PAYLOAD_CLOSE_STATUS"            Value="1007" />
+                <Set Name="HTTP_WEB_SOCKET_POLICY_VIOLATION_CLOSE_STATUS"           Value="1008" />
+                <Set Name="HTTP_WEB_SOCKET_MESSAGE_TOO_BIG_CLOSE_STATUS"            Value="1009" />
+                <Set Name="HTTP_WEB_SOCKET_UNSUPPORTED_EXTENSIONS_CLOSE_STATUS"     Value="1010" />
+                <Set Name="HTTP_WEB_SOCKET_SERVER_ERROR_CLOSE_STATUS"               Value="1011" />
+                <Set Name="HTTP_WEB_SOCKET_SECURE_HANDSHAKE_ERROR_CLOSE_STATUS"     Value="1015" />
+            </Enum>
+        </Variable>
+        <Variable Name="HTTP_WEB_SOCKET_CLOSE_STATUS*" Type="Pointer" Base="HTTP_WEB_SOCKET_CLOSE_STATUS">
+            <Display Name="USHORT*" />
+        </Variable>
+
         <!-- Windows Internet -->
         <Category Name="Internet/Windows Internet (WinINet)" />
         <Api Name="CommitUrlCacheEntry" BothCharset="True">
@@ -385,7 +662,6 @@
             <Param Type="LPCTSTR" Name="lpszFileExtension" />
             <Param Type="LPCTSTR" Name="lpszOriginalUrl" />
             <Return Type="BOOLAPI" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="CreateMD5SSOHash">
             <Param Type="PWSTR" Name="pszChallengeInfo" />
@@ -393,7 +669,6 @@
             <Param Type="PWSTR" Name="pwszTarget" />
             <Param Type="PBYTE" Name="pbHexHash" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="CreateUrlCacheEntry" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszUrlName" />
@@ -402,7 +677,6 @@
             <Param Type="LPTSTR" Name="lpszFileName" />
             <Param Type="DWORD" Name="dwReserved" />
             <Return Type="BOOLAPI" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="CreateUrlCacheGroup">
             <Param Type="DWORD" Name="dwFlags" />
@@ -413,26 +687,26 @@
         <Api Name="DeleteUrlCacheEntry" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszUrlName" />
             <Return Type="BOOLAPI" />
-            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DeleteUrlCacheEntry">
+            <Param Type="LPCSTR" Name="lpszUrlName" />
+            <Return Type="BOOLAPI" />
         </Api>
         <Api Name="DeleteUrlCacheGroup">
             <Param Type="GROUPID" Name="GroupId" />
             <Param Type="DWORD" Name="dwFlags" />
             <Param Type="LPVOID" Name="lpReserved" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="DetectAutoProxyUrl">
             <Param Type="LPSTR" Name="lpszAutoProxyUrl" />
             <Param Type="DWORD" Name="dwAutoProxyUrlLength" />
             <Param Type="DWORD" Name="dwDetectFlags" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="FindCloseUrlCache">
             <Param Type="HANDLE" Name="hEnumHandle" />
             <Return Type="BOOLAPI" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="FindFirstUrlCacheEntry" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszUrlSearchPattern" />
@@ -469,7 +743,6 @@
             <Param Type="LPINTERNET_CACHE_ENTRY_INFO" Name="lpNextCacheEntryInfo" />
             <Param Type="LPDWORD" Name="lpcbCacheEntryInfo" />
             <Return Type="BOOLAPI" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="FindNextUrlCacheEntryEx" BothCharset="True">
             <Param Type="HANDLE" Name="hEnumHandle" />
@@ -479,14 +752,12 @@
             <Param Type="LPDWORD" Name="lpcbGroupAttributes" />
             <Param Type="LPVOID" Name="lpReserved" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="FindNextUrlCacheGroup">
             <Param Type="HANDLE" Name="hFind" />
             <Param Type="GROUPID*" Name="lpGroupId" />
             <Param Type="LPVOID" Name="lpReserved" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="FtpCommand" BothCharset="True">
             <Param Type="HINTERNET" Name="hConnect" />
@@ -496,19 +767,16 @@
             <Param Type="DWORD_PTR" Name="dwContext" />
             <Param Type="HINTERNET*" Name="phFtpCommand" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="FtpCreateDirectory" BothCharset="True">
             <Param Type="HINTERNET" Name="hConnect" />
             <Param Type="LPCTSTR" Name="lpszDirectory" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="FtpDeleteFile" BothCharset="True">
             <Param Type="HINTERNET" Name="hConnect" />
             <Param Type="LPCTSTR" Name="lpszFileName" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="FtpFindFirstFile" BothCharset="True">
             <Param Type="HINTERNET" Name="hConnect" />
@@ -517,25 +785,22 @@
             <Param Type="DWORD" Name="dwFlags" />
             <Param Type="DWORD_PTR" Name="dwContext" />
             <Return Type="HINTERNET" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="FtpGetCurrentDirectory" BothCharset="True">
             <Param Type="HINTERNET" Name="hConnect" />
-            <Param Type="LPTSTR" Name="lpszCurrentDirectory" />
+            <Param Type="LPTSTR" Name="lpszCurrentDirectory" OutputOnly="True" />
             <Param Type="LPDWORD" Name="lpdwCurrentDirectory" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="FtpGetFile" BothCharset="True">
             <Param Type="HINTERNET" Name="hConnect" />
             <Param Type="LPCTSTR" Name="lpszRemoteFile" />
             <Param Type="LPCTSTR" Name="lpszNewFile" />
             <Param Type="BOOL" Name="fFailIfExists" />
-            <Param Type="DWORD" Name="dwFlagsAndAttributes" />
-            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="[FileAttributes]" Name="dwFlagsAndAttributes" />
+            <Param Type="[FTP_TRANSFER_FLAGS]" Name="dwFlags" />
             <Param Type="DWORD_PTR" Name="dwContext" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="FtpGetFileSize">
             <Param Type="HINTERNET" Name="hFile" />
@@ -550,42 +815,36 @@
             <Param Type="DWORD" Name="dwFlags" />
             <Param Type="DWORD_PTR" Name="dwContext" />
             <Return Type="HINTERNET" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="FtpPutFile" BothCharset="True">
             <Param Type="HINTERNET" Name="hConnect" />
             <Param Type="LPCTSTR" Name="lpszLocalFile" />
             <Param Type="LPCTSTR" Name="lpszNewRemoteFile" />
-            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="[FTP_TRANSFER_FLAGS]" Name="dwFlags" />
             <Param Type="DWORD_PTR" Name="dwContext" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="FtpRemoveDirectory" BothCharset="True">
             <Param Type="HINTERNET" Name="hConnect" />
             <Param Type="LPCTSTR" Name="lpszDirectory" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="FtpRenameFile" BothCharset="True">
             <Param Type="HINTERNET" Name="hConnect" />
             <Param Type="LPCTSTR" Name="lpszExisting" />
             <Param Type="LPCTSTR" Name="lpszNew" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="FtpSetCurrentDirectory" BothCharset="True">
             <Param Type="HINTERNET" Name="hConnect" />
             <Param Type="LPCTSTR" Name="lpszDirectory" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetUrlCacheEntryInfo" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszUrlName" />
             <Param Type="LPINTERNET_CACHE_ENTRY_INFO" Name="lpCacheEntryInfo" />
             <Param Type="LPDWORD" Name="lpcbCacheEntryInfo" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetUrlCacheEntryInfoEx" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszUrl" />
@@ -596,7 +855,6 @@
             <Param Type="LPVOID" Name="lpReserved" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="BOOLAPI" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetUrlCacheGroupAttribute" BothCharset="True">
             <Param Type="GROUPID" Name="gid" />
@@ -606,7 +864,6 @@
             <Param Type="LPDWORD" Name="lpdwGroupInfo" />
             <Param Type="LPVOID" Name="lpReserved" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GopherCreateLocator" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszHost" />
@@ -617,7 +874,6 @@
             <Param Type="LPTSTR" Name="lpszLocator" />
             <Param Type="LPDWORD" Name="lpdwBufferLength" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GopherFindFirstFile" BothCharset="True">
             <Param Type="HINTERNET" Name="hConnect" />
@@ -627,7 +883,6 @@
             <Param Type="DWORD" Name="dwFlags" />
             <Param Type="DWORD_PTR" Name="dwContext" />
             <Return Type="HINTERNET" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GopherGetAttribute" BothCharset="True">
             <Param Type="HINTERNET" Name="hConnect" />
@@ -639,13 +894,11 @@
             <Param Type="GOPHER_ATTRIBUTE_ENUMERATOR" Name="lpfnEnumerator" />
             <Param Type="DWORD_PTR" Name="dwContext" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GopherGetLocatorType" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszLocator" />
             <Param Type="LPDWORD" Name="lpdwGopherType" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GopherOpenFile" BothCharset="True">
             <Param Type="HINTERNET" Name="hConnect" />
@@ -654,7 +907,6 @@
             <Param Type="DWORD" Name="dwFlags" />
             <Param Type="DWORD_PTR" Name="dwContext" />
             <Return Type="HINTERNET" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="HttpAddRequestHeaders" BothCharset="True">
             <Param Type="HINTERNET" Name="hConnect" />
@@ -662,7 +914,6 @@
             <Param Type="DWORD" Name="dwHeadersLength" />
             <Param Type="[HttpAddReqFlag]" Name="dwModifiers" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="HttpEndRequest" BothCharset="True">
             <Param Type="HINTERNET" Name="hRequest" />
@@ -670,7 +921,6 @@
             <Param Type="DWORD" Name="dwFlags" />
             <Param Type="DWORD_PTR" Name="dwContext" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="HttpOpenRequest" BothCharset="True">
             <Param Type="HINTERNET" Name="hConnect" />
@@ -678,20 +928,19 @@
             <Param Type="LPCTSTR" Name="lpszObjectName" />
             <Param Type="LPCTSTR" Name="lpszVersion" />
             <Param Type="LPCTSTR" Name="lpszReferer" />
+            <!-- TODO: Count="[Null-Terminated] for lplpszAcceptTypes -->
             <Param Type="LPCTSTR*" Name="lplpszAcceptTypes" />
             <Param Type="[InternetFlags]" Name="dwFlags" />
             <Param Type="DWORD_PTR" Name="dwContext" />
             <Return Type="HINTERNET" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="HttpQueryInfo" BothCharset="True">
             <Param Type="HINTERNET" Name="hRequest" />
-            <Param Type="[HttpQueryFlags]" Name="dwInfoLevel" />
+            <Param Type="[HTTP_QUERY_FLAGS]" Name="dwInfoLevel" />
             <Param Type="LPVOID" Name="lpvBuffer" PostLength="lpdwBufferLength" />
             <Param Type="LPDWORD" Name="lpdwBufferLength" />
             <Param Type="LPDWORD" Name="lpdwIndex" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="HttpSendRequest" BothCharset="True">
             <Param Type="HINTERNET" Name="hRequest" />
@@ -700,7 +949,6 @@
             <Param Type="LPVOID" Name="lpOptional" Length="dwOptionalLength" />
             <Param Type="DWORD" Name="dwOptionalLength" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="HttpSendRequestEx" BothCharset="True">
             <Param Type="HINTERNET" Name="hRequest" />
@@ -709,23 +957,19 @@
             <Param Type="DWORD" Name="dwFlags" />
             <Param Type="DWORD_PTR" Name="dwContext" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetAttemptConnect">
             <Param Type="DWORD" Name="dwReserved" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="InternetAutodial">
             <Param Type="DWORD" Name="dwFlags" />
             <Param Type="HWND" Name="hwndParent" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetAutodialHangup">
             <Param Type="DWORD" Name="dwReserved" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetCanonicalizeUrl" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszUrl" />
@@ -733,19 +977,16 @@
             <Param Type="LPDWORD" Name="lpdwBufferLength" />
             <Param Type="[InternetCanonicalizeUrlFlags]" Name="dwFlags" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetCheckConnection" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszUrl" />
             <Param Type="DWORD" Name="dwFlags" />
             <Param Type="DWORD" Name="dwReserved" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetCloseHandle">
             <Param Type="HINTERNET" Name="hInternet" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetCombineUrl" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszBaseUrl" />
@@ -754,15 +995,20 @@
             <Param Type="LPDWORD" Name="lpdwBufferLength" />
             <Param Type="[InternetCanonicalizeUrlFlags]" Name="dwFlags" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="InternetConfirmZoneCrossing" BothCharset="True" ErrorIsReturnValue="True">
+        <Api Name="InternetConfirmZoneCrossing" BothCharset="True">
             <Param Type="HWND" Name="hWnd" />
             <Param Type="LPTSTR" Name="szUrlPrev" />
             <Param Type="LPTSTR" Name="szUrlNew" />
             <Param Type="BOOL" Name="bPost" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="InternetConfirmZoneCrossing">
+            <Param Type="HWND" Name="hWnd" />
+            <Param Type="LPSTR" Name="szUrlPrev" />
+            <Param Type="LPSTR" Name="szUrlNew" />
+            <Param Type="BOOL" Name="bPost" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="InternetConnect" BothCharset="True">
             <Param Type="HINTERNET" Name="hInternet" />
@@ -774,7 +1020,6 @@
             <Param Type="[InternetFlags]" Name="dwFlags" />
             <Param Type="DWORD_PTR" Name="dwContext" />
             <Return Type="HINTERNET" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetCrackUrl" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszUrl" />
@@ -782,7 +1027,6 @@
             <Param Type="[InternetCrackUrlFlags]" Name="dwFlags" />
             <Param Type="LPURL_COMPONENTS" Name="lpUrlComponents" OutputOnly="True" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetCreateUrl" BothCharset="True">
             <Param Type="LPURL_COMPONENTS" Name="lpUrlComponents" />
@@ -790,37 +1034,40 @@
             <Param Type="LPTSTR" Name="lpszUrl" OutputOnly="True" />
             <Param Type="LPDWORD" Name="lpdwUrlLength" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetDial" BothCharset="True">
             <Param Type="HWND" Name="hwndParent" />
             <Param Type="LPTSTR" Name="pszEntryName" />
-            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="[INTERNET_DIAL_FLAGS]" Name="dwFlags" />
             <Param Type="DWORD_PTR*" Name="lpdwConnection" />
             <Param Type="DWORD" Name="dwReserved" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="InternetDial">
+            <Param Type="HWND" Name="hwndParent" />
+            <Param Type="LPSTR" Name="pszEntryName" />
+            <Param Type="[INTERNET_DIAL_FLAGS]" Name="dwFlags" />
+            <Param Type="LPDWORD*" Name="lpdwConnection" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="InternetErrorDlg">
             <Param Type="HWND" Name="hWnd" />
             <Param Type="HINTERNET" Name="hRequest" />
-            <Param Type="[InternetErrorDlgErrorCode]" Name="dwError" />
+            <Param Type="[ERROR_INTERNET]" Name="dwError" />
             <Param Type="[InternetErrorDlgFlags]" Name="dwFlags" />
             <Param Type="LPVOID*" Name="lppvData" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="InternetFindNextFile" BothCharset="True">
             <Param Type="HINTERNET" Name="hFind" />
             <Param Type="LPVOID" Name="lpvFindData" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetGetConnectedState">
             <Param Type="[InternetGetConnectedStateFlags*]" Name="lpdwFlags" />
             <Param Type="DWORD" Name="dwReserved" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetGetConnectedStateEx" BothCharset="True">
             <Param Type="[InternetGetConnectedStateFlags*]" Name="lpdwFlags" />
@@ -828,7 +1075,13 @@
             <Param Type="DWORD" Name="dwNameLen" />
             <Param Type="DWORD" Name="dwReserved" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="InternetGetConnectedStateEx">
+            <Param Type="[InternetGetConnectedStateFlags*]" Name="lpdwFlags" />
+            <Param Type="LPSTR" Name="lpszConnectionName" />
+            <Param Type="DWORD" Name="dwNameLen" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="BOOL" />
         </Api>
         <Api Name="InternetGetCookie" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszUrl" />
@@ -836,7 +1089,6 @@
             <Param Type="LPTSTR" Name="lpszCookieData" />
             <Param Type="LPDWORD" Name="lpdwSize" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetGetCookieEx" BothCharset="True">
             <Param Type="LPCTSTR" Name="pchURL" />
@@ -846,33 +1098,34 @@
             <Param Type="[InternetCookieFlags]" Name="dwFlags" />
             <Param Type="LPVOID" Name="lpReserved" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetGetLastResponseInfo" BothCharset="True">
             <Param Type="LPDWORD" Name="lpdwError" />
             <Param Type="LPTSTR" Name="lpszBuffer" />
             <Param Type="LPDWORD" Name="lpdwBufferLength" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetGoOnline" BothCharset="True">
             <Param Type="LPTSTR" Name="lpszURL" />
             <Param Type="HWND" Name="hwndParent" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="InternetGoOnline">
+            <Param Type="LPSTR" Name="lpszURL" />
+            <Param Type="HWND" Name="hwndParent" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="BOOL" />
         </Api>
         <Api Name="InternetHangUp">
             <Param Type="DWORD_PTR" Name="dwConnection" />
             <Param Type="DWORD" Name="dwReserved" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="InternetLockRequestFile">
             <Param Type="HINTERNET" Name="hInternet" />
             <Param Type="HANDLE*" Name="lphLockReqHandle" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetOpen" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszAgent" />
@@ -881,7 +1134,6 @@
             <Param Type="LPCTSTR" Name="lpszProxyBypass" />
             <Param Type="[InternetOpenFlags]" Name="dwFlags" />
             <Return Type="HINTERNET" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetOpenUrl" BothCharset="True">
             <Param Type="HINTERNET" Name="hInternet" />
@@ -891,7 +1143,6 @@
             <Param Type="[InternetFlags]" Name="dwFlags" />
             <Param Type="DWORD_PTR" Name="dwContext" />
             <Return Type="HINTERNET" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetQueryDataAvailable">
             <Param Type="HINTERNET" Name="hFile" />
@@ -899,15 +1150,13 @@
             <Param Type="DWORD" Name="dwFlags" />
             <Param Type="DWORD_PTR" Name="dwContext" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetQueryOption" BothCharset="True">
             <Param Type="HINTERNET" Name="hInternet" />
-            <Param Type="[InternetOption]" Name="dwOption" />
+            <Param Type="[INTERNET_OPTION]" Name="dwOption" />
             <Param Type="LPVOID" Name="lpBuffer" PostLength="lpdwBufferLength" />
             <Param Type="LPDWORD" Name="lpdwBufferLength" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetReadFile">
             <Param Type="HINTERNET" Name="hFile" />
@@ -915,7 +1164,6 @@
             <Param Type="DWORD" Name="dwNumberOfBytesToRead" />
             <Param Type="LPDWORD" Name="lpdwNumberOfBytesRead" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetReadFileEx" BothCharset="True">
             <Param Type="HINTERNET" Name="hFile" />
@@ -923,14 +1171,12 @@
             <Param Type="[InternetReadFileFlags]" Name="dwFlags" />
             <Param Type="DWORD_PTR" Name="dwContext" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetSetCookie" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszUrl" />
             <Param Type="LPCTSTR" Name="lpszCookieName" />
             <Param Type="LPCTSTR" Name="lpszCookieData" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetSetCookieEx" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszURL" />
@@ -938,7 +1184,7 @@
             <Param Type="LPCTSTR" Name="lpszCookieData" />
             <Param Type="[InternetCookieFlags]" Name="dwFlags" />
             <Param Type="DWORD_PTR" Name="dwReserved" />
-            <Return Type="DWORD" />
+            <Return Type="InternetCookieState" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetSetFilePointer">
@@ -948,21 +1194,24 @@
             <Param Type="DWORD" Name="dwMoveMethod" />
             <Param Type="DWORD_PTR" Name="dwContext" />
             <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Success Return="NotEqual" Value="-1" />
         </Api>
         <Api Name="InternetSetOption" BothCharset="True">
             <Param Type="HINTERNET" Name="hInternet" />
-            <Param Type="[InternetOption]" Name="dwOption" />
+            <Param Type="[INTERNET_OPTION]" Name="dwOption" />
             <Param Type="LPVOID" Name="lpBuffer" Length="dwBufferLength" />
             <Param Type="DWORD" Name="dwBufferLength" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="InternetSetStatusCallback" BothCharset="True">
+            <Param Type="HINTERNET" Name="hInternet" />
+            <Param Type="INTERNET_STATUS_CALLBACK" Name="lpfnInternetCallback" />
+            <Return Type="INTERNET_STATUS_CALLBACK" />
         </Api>
         <Api Name="InternetSetStatusCallback">
             <Param Type="HINTERNET" Name="hInternet" />
             <Param Type="INTERNET_STATUS_CALLBACK" Name="lpfnInternetCallback" />
             <Return Type="INTERNET_STATUS_CALLBACK" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetTimeFromSystemTime" BothCharset="True">
             <Param Type="const SYSTEMTIME*" Name="pst" />
@@ -970,19 +1219,29 @@
             <Param Type="LPTSTR" Name="lpszTime" />
             <Param Type="DWORD" Name="cbTime" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="InternetTimeFromSystemTime">
+            <Param Type="const SYSTEMTIME*" Name="pst" />
+            <Param Type="DWORD" Name="dwRFC" />
+            <Param Type="LPSTR" Name="lpszTime" />
+            <Param Type="DWORD" Name="cbTime" />
+            <Return Type="BOOL" />
         </Api>
         <Api Name="InternetTimeToSystemTime" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszTime" />
             <Param Type="SYSTEMTIME*" Name="pst" />
             <Param Type="DWORD" Name="dwReserved" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="InternetTimeToSystemTime">
+            <Param Type="LPCSTR" Name="lpszTime" />
+            <Param Type="SYSTEMTIME*" Name="pst" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="BOOL" />
         </Api>
         <Api Name="InternetUnlockRequestFile">
             <Param Type="HANDLE" Name="hLockRequestInfo" />
             <Return Type="BOOLAPI" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetWriteFile">
             <Param Type="HINTERNET" Name="hFile" />
@@ -990,7 +1249,6 @@
             <Param Type="DWORD" Name="dwNumberOfBytesToWrite" />
             <Param Type="LPDWORD" Name="lpdwNumberOfBytesWritten" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="ReadUrlCacheEntryStream">
             <Param Type="HANDLE" Name="hUrlCacheStream" />
@@ -999,13 +1257,11 @@
             <Param Type="LPDWORD" Name="lpdwLen" />
             <Param Type="DWORD" Name="dwReserved" />
             <Return Type="BOOLAPI" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="ResumeSuspendedDownload">
             <Param Type="HINTERNET" Name="hRequest" />
             <Param Type="DWORD" Name="dwResultCode" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="RetrieveUrlCacheEntryFile" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszUrlName" />
@@ -1013,7 +1269,6 @@
             <Param Type="LPDWORD" Name="lpcbCacheEntryInfo" />
             <Param Type="DWORD" Name="dwReserved" />
             <Return Type="BOOLAPI" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="RetrieveUrlCacheEntryStream" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszUrlName" />
@@ -1032,14 +1287,21 @@
             <Param Type="DWORD" Name="cbGroupAttributes" />
             <Param Type="LPVOID" Name="lpReserved" />
             <Return Type="BOOLAPI" />
-            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetUrlCacheEntryGroup">
+            <Param Type="LPCSTR" Name="lpszUrlName" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="GROUPID" Name="GroupId" />
+            <Param Type="LPBYTE" Name="pbGroupAttributes" />
+            <Param Type="DWORD" Name="cbGroupAttributes" />
+            <Param Type="LPVOID" Name="lpReserved" />
+            <Return Type="BOOLAPI" />
         </Api>
         <Api Name="SetUrlCacheEntryInfo" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszUrlName" />
             <Param Type="LPINTERNET_CACHE_ENTRY_INFO" Name="lpCacheEntryInfo" />
             <Param Type="[CacheEntryFieldControl]" Name="dwFieldControl" />
             <Return Type="BOOLAPI" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SetUrlCacheGroupAttribute" BothCharset="True">
             <Param Type="GROUPID" Name="gid" />
@@ -1048,25 +1310,27 @@
             <Param Type="LPINTERNET_CACHE_GROUP_INFO" Name="lpGroupInfo" />
             <Param Type="LPVOID" Name="lpReserved" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="UnlockUrlCacheEntryFile" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszUrlName" />
             <Param Type="DWORD" Name="dwReserved" />
             <Return Type="BOOLAPI" />
-            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="UnlockUrlCacheEntryFile">
+            <Param Type="LPCSTR" Name="lpszUrlName" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="BOOLAPI" />
         </Api>
         <Api Name="UnlockUrlCacheEntryStream">
             <Param Type="HANDLE" Name="hUrlCacheStream" />
             <Param Type="DWORD" Name="dwReserved" />
             <Return Type="BOOLAPI" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
+
         <!-- Internet Privacy -->
         <Category Name="Web Development/Internet Explorer Development/Security and Privacy/Internet Privacy" />
         <Api Name="InternetClearAllPerSiteCookieDecisions">
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetEnumPerSiteCookieDecision" BothCharset="True">
             <Param Type="LPTSTR" Name="pszSiteName" />
@@ -1074,36 +1338,690 @@
             <Param Type="unsigned long*" Name="pdwDecision" />
             <Param Type="unsigned long" Name="dwIndex" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetGetPerSiteCookieDecision" BothCharset="True">
             <Param Type="LPCTSTR" Name="pchHostName" />
             <Param Type="unsigned long*" Name="pResult" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InternetSetPerSiteCookieDecision" BothCharset="True">
             <Param Type="LPCTSTR" Name="pchHostName" />
             <Param Type="DWORD" Name="dwDecision" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="PrivacyGetZonePreferenceW">
-            <Param Type="DWORD" Name="dwZone" />
+            <Param Type="[URLZONE|DWORD]" Name="dwZone" />
             <Param Type="DWORD" Name="dwType" />
             <Param Type="LPDWORD" Name="pdwTemplate" />
             <Param Type="LPWSTR" Name="pszBuffer" />
             <Param Type="LPDWORD" Name="pdwBufferLength" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PrivacySetZonePreferenceW">
-            <Param Type="DWORD" Name="dwZone" />
+            <Param Type="[URLZONE|DWORD]" Name="dwZone" />
             <Param Type="DWORD" Name="dwType" />
             <Param Type="DWORD" Name="dwTemplate" />
             <Param Type="LPCWSTR" Name="pszPreference" />
-            <Return Type="DWORD" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="InternetInitializeAutoProxyDll">
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="BOOL" />
+        </Api>
+
+        <!-- Windows Internet (Undocumented API's) -->
+        <Category Name="Internet/Windows Internet (WinINet)" OnlineHelp="" />
+        <Api Name="InternetAlgIdToString" BothCharset="True">
+            <Param Type="ALG_ID" Name="ai" />
+            <Param Type="LPTSTR" Name="lpstr" OutputOnly="True" />
+            <Param Type="LPDWORD" Name="lpdwstrLength" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="InternetSecurityProtocolToString" BothCharset="True">
+            <Param Type="DWORD" Name="dwProtocol" />
+            <Param Type="LPTSTR" Name="lpstr" OutputOnly="True" />
+            <Param Type="LPDWORD" Name="lpdwstrLength" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="InternetGetSecurityInfoByURL" BothCharset="True">
+            <Param Type="LPTSTR" Name="lpszURL" />
+            <Param Type="PCCERT_CHAIN_CONTEXT*" Name="ppCertChain" />
+            <Param Type="DWORD*" Name="pdwSecureFlags" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="InternetGetSecurityInfoByURL">
+            <Param Type="LPSTR" Name="lpszURL" />
+            <Param Type="PCCERT_CHAIN_CONTEXT*" Name="ppCertChain" />
+            <Param Type="DWORD*" Name="pdwSecureFlags" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="ShowSecurityInfo">
+            <Param Type="HWND" Name="hWndParent" />
+            <Param Type="LPINTERNET_SECURITY_INFO" Name="pSecurityInfo" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="ShowX509EncodedCertificate">
+            <Param Type="HWND" Name="hWndParent" />
+            <Param Type="LPBYTE" Name="lpCert" Length="cbCert" />
+            <Param Type="DWORD" Name="cbCert" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="ShowClientAuthCerts">
+            <Param Type="HWND" Name="hWndParent" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="ParseX509EncodedCertificateForListBoxEntry">
+            <Param Type="LPBYTE" Name="lpCert" Length="cbCert" />
+            <Param Type="DWORD" Name="cbCert" />
+            <Param Type="LPSTR" Name="lpszListBoxEntry" OutputOnly="True" />
+            <Param Type="LPDWORD" Name="lpdwListBoxEntry" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="InternetShowSecurityInfoByURL" BothCharset="True">
+            <Param Type="LPTSTR" Name="lpszURL" />
+            <Param Type="HWND" Name="hwndParent" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="InternetShowSecurityInfoByURL">
+            <Param Type="LPSTR" Name="lpszURL" />
+            <Param Type="HWND" Name="hwndParent" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="InternetGetCertByURL">
+            <Param Type="LPSTR" Name="lpszURL" />
+            <Param Type="LPSTR" Name="lpszCertText" OutputOnly="True" />
+            <Param Type="DWORD" Name="dwcbCertText" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="InternetGetCertByURLA">
+            <Param Type="LPSTR" Name="lpszURL" />
+            <Param Type="LPSTR" Name="lpszCertText" OutputOnly="True" />
+            <Param Type="DWORD" Name="dwcbCertText" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="InternetFortezzaCommand">
+            <Param Type="FORTCMD" Name="dwCommand" />
+            <Param Type="HWND" Name="hwnd" />
+            <Param Type="DWORD_PTR" Name="dwReserved" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="InternetQueryFortezzaStatus">
+            <Param Type="FORTSTAT*" Name="pdwStatus" />
+            <Param Type="DWORD_PTR" Name="dwReserved" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="InternetDebugGetLocalTime">
+            <Param Type="SYSTEMTIME*" Name="pstLocalTime" />
+            <Param Type="DWORD*" Name="pdwReserved" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="InternetWriteFileEx" BothCharset="True">
+            <Param Type="HINTERNET" Name="hFile" />
+            <Param Type="LPINTERNET_BUFFERS" Name="lpBuffersIn" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="DWORD_PTR" Name="dwContext" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="FindP3PPolicySymbol" Ordinal="118">
+            <Param Type="const char*" Name="pszSymbol" />
+            <Return Type="P3PStatus" />
+        </Api>
+        <Api Name="HttpPushEnable">
+            <Param Type="HINTERNET" Name="hRequest" />
+            <Param Type="HTTP_PUSH_TRANSPORT_SETTING*" Name="pTransportSetting" />
+            <Param Type="HTTP_PUSH_WAIT_HANDLE*" Name="phWait" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="HttpPushWait">
+            <Param Type="HTTP_PUSH_WAIT_HANDLE" Name="hWait" />
+            <Param Type="HTTP_PUSH_WAIT_TYPE" Name="eType" />
+            <Param Type="HTTP_PUSH_NOTIFICATION_STATUS*" Name="pNotificationStatus" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="HttpPushClose">
+            <Param Type="HTTP_PUSH_WAIT_HANDLE" Name="hWait" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="HttpCheckDavCompliance" BothCharset="True" OrdinalA="104" OrdinalW="105">
+            <Param Type="LPCTSTR" Name="lpszUrl" />
+            <Param Type="LPCTSTR" Name="lpszComplianceToken" />
+            <Param Type="LPBOOL" Name="lpfFound" />
+            <Param Type="HWND" Name="hWnd" />
+            <Param Type="LPVOID" Name="lpvReserved" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="HttpCheckDavCompliance">
+            <Param Type="LPCSTR" Name="lpszUrl" />
+            <Param Type="LPCSTR" Name="lpszComplianceToken" />
+            <Param Type="LPBOOL" Name="lpfFound" />
+            <Param Type="HWND" Name="hWnd" />
+            <Param Type="LPVOID" Name="lpvReserved" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="IsUrlCacheEntryExpired" BothCharset="True">
+            <Param Type="LPCTSTR" Name="lpszUrlName" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="FILETIME*" Name="pftLastModified" />
+            <Return Type="BOOLAPI" />
+            <Success />
+        </Api>
+        <Api Name="CreateUrlCacheEntryExW">
+            <Param Type="LPCWSTR" Name="lpszUrlName" />
+            <Param Type="DWORD" Name="dwExpectedFileSize" />
+            <Param Type="LPCWSTR" Name="lpszFileExtension" />
+            <Param Type="LPWSTR" Name="lpszFileName" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Param Type="BOOL" Name="fPreserveIncomingFileName" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="GetUrlCacheEntryBinaryBlob">
+            <Param Type="PCWSTR" Name="pwszUrlName" />
+            <Param Type="DWORD*" Name="dwType" />
+            <Param Type="FILETIME*" Name="pftExpireTime" />
+            <Param Type="FILETIME*" Name="pftAccessTime" />
+            <Param Type="FILETIME*" Name="pftModifiedTime" />
+            <Param Type="BYTE**" Name="ppbBlob" PostLength="pcbBlob" />
+            <Param Type="DWORD*" Name="pcbBlob" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="CommitUrlCacheEntryBinaryBlob">
+            <Param Type="PCWSTR" Name="pwszUrlName" />
+            <Param Type="DWORD" Name="dwType" />
+            <Param Type="FILETIME" Name="ftExpireTime" />
+            <Param Type="FILETIME" Name="ftModifiedTime" />
+            <Param Type="const BYTE*" Name="pbBlob" Length="cbBlob" />
+            <Param Type="DWORD" Name="cbBlob" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="CreateUrlCacheContainer" BothCharset="True">
+            <Param Type="LPCTSTR" Name="Name" />
+            <Param Type="LPCTSTR" Name="lpCachePrefix" />
+            <Param Type="LPCTSTR" Name="lpszCachePath" />
+            <Param Type="DWORD" Name="KBCacheLimit" />
+            <Param Type="DWORD" Name="dwContainerType" />
+            <Param Type="[INTERNET_CACHE_CONTAINER_FLAGS]" Name="dwOptions" />
+            <Param Type="LPVOID" Name="pvBuffer" Length="cbBuffer" />
+            <Param Type="LPDWORD" Name="cbBuffer" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="DeleteUrlCacheContainer" BothCharset="True">
+            <Param Type="LPCTSTR" Name="Name" />
+            <Param Type="DWORD" Name="dwOptions" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="FindFirstUrlCacheContainer" BothCharset="True">
+            <Param Type="LPDWORD" Name="pdwModified" />
+            <Param Type="LPINTERNET_CACHE_CONTAINER_INFO" Name="lpContainerInfo" />
+            <Param Type="LPDWORD" Name="lpcbContainerInfo" />
+            <Param Type="[CACHE_FIND_CONTAINER_FLAGS]" Name="dwOptions" />
+            <Return Type="HANDLE" />
             <Success Return="NotEqual" Value="0" />
         </Api>
+        <Api Name="FindNextUrlCacheContainer" BothCharset="True">
+            <Param Type="HANDLE" Name="hEnumHandle" />
+            <Param Type="LPINTERNET_CACHE_CONTAINER_INFO" Name="lpContainerInfo" />
+            <Param Type="LPDWORD" Name="lpcbContainerInfo" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="FreeUrlCacheSpace" BothCharset="True">
+            <Param Type="LPCTSTR" Name="lpszCachePath" />
+            <Param Type="DWORD" Name="dwSize" />
+            <Param Type="DWORD" Name="dwFilter" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="GetUrlCacheConfigInfo" BothCharset="True">
+            <Param Type="LPINTERNET_CACHE_CONFIG_INFO" Name="lpCacheConfigInfo" />
+            <Param Type="LPDWORD" Name="lpcbCacheConfigInfo" />
+            <Param Type="[CACHE_CONFIG_FC]" Name="dwFieldControl" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="SetUrlCacheConfigInfo" BothCharset="True">
+            <Param Type="LPINTERNET_CACHE_CONFIG_INFO" Name="lpCacheConfigInfo" />
+            <Param Type="[CACHE_CONFIG_FC]" Name="dwFieldControl" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="RunOnceUrlCache">
+            <Param Type="HWND" Name="hwnd" />
+            <Param Type="HINSTANCE" Name="hinst" />
+            <Param Type="LPSTR" Name="lpszCmd" />
+            <Param Type="int" Name="nCmdShow" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="DeleteIE3Cache">
+            <Param Type="HWND" Name="hwnd" />
+            <Param Type="HINSTANCE" Name="hinst" />
+            <Param Type="LPSTR" Name="lpszCmd" />
+            <Param Type="int" Name="nCmdShow" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="UpdateUrlCacheContentPath">
+            <Param Type="LPCSTR" Name="szNewPath" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="RegisterUrlCacheNotification">
+            <Param Type="HWND" Name="hWnd" />
+            <Param Type="UINT" Name="uMsg" />
+            <Param Type="GROUPID" Name="gid" />
+            <Param Type="[CACHE_NOTIFY_FILTER_OPTIONS]" Name="dwOpsFilter" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="GetUrlCacheHeaderData">
+            <Param Type="DWORD" Name="nIdx" />
+            <Param Type="LPDWORD" Name="lpdwData" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="SetUrlCacheHeaderData">
+            <Param Type="DWORD" Name="nIdx" />
+            <Param Type="DWORD" Name="dwData" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="IncrementUrlCacheHeaderData">
+            <Param Type="DWORD" Name="nIdx" />
+            <Param Type="LPDWORD" Name="lpdwData" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="LoadUrlCacheContent">
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="GetUrlCacheContainerInfo" BothCharset="True">
+            <Param Type="LPTSTR" Name="lpszUrlName" />
+            <Param Type="LPINTERNET_CACHE_CONTAINER_INFO" Name="lpContainerInfo" />
+            <Param Type="LPDWORD" Name="lpcbContainerInfo" />
+            <Param Type="DWORD" Name="dwOptions" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="AppCacheLookup">
+            <Param Type="PCWSTR" Name="pwszUrl" />
+            <Param Type="[APP_CACHE_LOOKUP_FLAGS]" Name="dwFlags" />
+            <Param Type="APP_CACHE_HANDLE*" Name="phAppCache" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="AppCacheCheckManifest">
+            <Param Type="PCWSTR" Name="pwszMasterUrl" />
+            <Param Type="PCWSTR" Name="pwszManifestUrl" />
+            <Param Type="const BYTE*" Name="pbManifestData" Length="dwManifestDataSize" />
+            <Param Type="DWORD" Name="dwManifestDataSize" />
+            <Param Type="const BYTE*" Name="pbManifestResponseHeaders" Length="dwManifestResponseHeadersSize" />
+            <Param Type="DWORD" Name="dwManifestResponseHeadersSize" />
+            <Param Type="APP_CACHE_STATE*" Name="peState" />
+            <Param Type="APP_CACHE_HANDLE*" Name="phNewAppCache" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="AppCacheGetDownloadList">
+            <Param Type="APP_CACHE_HANDLE" Name="hAppCache" />
+            <Param Type="APP_CACHE_DOWNLOAD_LIST*" Name="pDownloadList" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="AppCacheFreeDownloadList">
+            <Param Type="APP_CACHE_DOWNLOAD_LIST*" Name="pDownloadList" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="AppCacheFinalize">
+            <Param Type="APP_CACHE_HANDLE" Name="hAppCache" />
+            <Param Type="const BYTE*" Name="pbManifestData" Length="dwManifestDataSize" />
+            <Param Type="DWORD" Name="dwManifestDataSize" />
+            <Param Type="APP_CACHE_FINALIZE_STATE*" Name="peState" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="AppCacheGetFallbackUrl">
+            <Param Type="APP_CACHE_HANDLE" Name="hAppCache" />
+            <Param Type="PCWSTR" Name="pwszUrl" />
+            <Param Type="PWSTR*" Name="ppwszFallbackUrl" OutputOnly="True" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="AppCacheGetManifestUrl">
+            <Param Type="APP_CACHE_HANDLE" Name="hAppCache" />
+            <Param Type="PWSTR*" Name="ppwszManifestUrl" OutputOnly="True" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="AppCacheDuplicateHandle">
+            <Param Type="APP_CACHE_HANDLE" Name="hAppCache" />
+            <Param Type="APP_CACHE_HANDLE*" Name="phDuplicatedAppCache" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="AppCacheCloseHandle">
+            <Param Type="APP_CACHE_HANDLE" Name="hAppCache" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="AppCacheFreeGroupList">
+            <Param Type="APP_CACHE_GROUP_LIST*" Name="pAppCacheGroupList" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="AppCacheGetGroupList">
+            <Param Type="APP_CACHE_GROUP_LIST*" Name="pAppCacheGroupList" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="AppCacheGetInfo">
+            <Param Type="APP_CACHE_HANDLE" Name="hAppCache" />
+            <Param Type="APP_CACHE_GROUP_INFO*" Name="pAppCacheInfo" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="AppCacheDeleteGroup">
+            <Param Type="PCWSTR" Name="pwszManifestUrl" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="AppCacheGetIEGroupList">
+            <Param Type="APP_CACHE_GROUP_LIST*" Name="pAppCacheGroupList" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="AppCacheDeleteIEGroup">
+            <Param Type="PCWSTR" Name="pwszManifestUrl" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="AppCacheFreeIESpace">
+            <Param Type="FILETIME" Name="ftCutOff" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="HttpOpenDependencyHandle">
+            <Param Type="HINTERNET" Name="hRequestHandle" />
+            <Param Type="BOOL" Name="fBackground" />
+            <Param Type="HTTP_DEPENDENCY_HANDLE*" Name="phDependencyHandle" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="HttpCloseDependencyHandle">
+            <Param Type="HTTP_DEPENDENCY_HANDLE" Name="hDependencyHandle" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="HttpDuplicateDependencyHandle">
+            <Param Type="HTTP_DEPENDENCY_HANDLE" Name="hDependencyHandle" />
+            <Param Type="HTTP_DEPENDENCY_HANDLE*" Name="phDuplicatedDependencyHandle" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="UrlCacheFreeEntryInfo">
+            <Param Type="PURLCACHE_ENTRY_INFO" Name="pCacheEntryInfo" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="UrlCacheGetEntryInfo">
+            <Param Type="APP_CACHE_HANDLE" Name="hAppCache" />
+            <Param Type="PCWSTR" Name="pcwszUrl" />
+            <Param Type="PURLCACHE_ENTRY_INFO" Name="pCacheEntryInfo" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="UrlCacheCloseEntryHandle">
+            <Param Type="URLCACHE_HANDLE" Name="hEntryFile" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="UrlCacheRetrieveEntryFile">
+            <Param Type="APP_CACHE_HANDLE" Name="hAppCache" />
+            <Param Type="PCWSTR" Name="pcwszUrl" />
+            <Param Type="PURLCACHE_ENTRY_INFO" Name="pCacheEntryInfo" />
+            <Param Type="URLCACHE_HANDLE*" Name="phEntryFile" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="UrlCacheReadEntryStream">
+            <Param Type="URLCACHE_HANDLE" Name="hUrlCacheStream" />
+            <Param Type="ULONGLONG" Name="ullLocation" />
+            <Param Type="PVOID" Name="pBuffer" PostLength="pdwBufferLen" />
+            <Param Type="DWORD" Name="dwBufferLen" />
+            <Param Type="PDWORD" Name="pdwBufferLen" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="UrlCacheRetrieveEntryStream">
+            <Param Type="APP_CACHE_HANDLE" Name="hAppCache" />
+            <Param Type="PCWSTR" Name="pcwszUrl" />
+            <Param Type="BOOL" Name="fRandomRead" />
+            <Param Type="PURLCACHE_ENTRY_INFO" Name="pCacheEntryInfo" />
+            <Param Type="URLCACHE_HANDLE*" Name="phEntryStream" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="UrlCacheUpdateEntryExtraData">
+            <Param Type="APP_CACHE_HANDLE" Name="hAppCache" />
+            <Param Type="PCWSTR" Name="pcwszUrl" />
+            <Param Type="const BYTE*" Name="pbExtraData" Length="cbExtraData" />
+            <Param Type="DWORD" Name="cbExtraData" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="UrlCacheCreateContainer">
+            <Param Type="const WCHAR*" Name="pwszName" />
+            <Param Type="const WCHAR*" Name="pwszPrefix" />
+            <Param Type="const WCHAR*" Name="pwszDirectory" />
+            <Param Type="ULONGLONG" Name="ullLimit" />
+            <Param Type="[INTERNET_CACHE_CONTAINER_FLAGS]" Name="dwOptions" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="UrlCacheCheckEntriesExist">
+            <Param Type="PCWSTR*" Name="rgpwszUrls" Count="cEntries" />
+            <Param Type="DWORD" Name="cEntries" />
+            <Param Type="BOOL*" Name="rgfExist" PostCount="cEntries" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="UrlCacheGetContentPaths">
+            <Param Type="PWSTR**" Name="pppwszDirectories" DerefPostCount="pcDirectories" />
+            <Param Type="DWORD*" Name="pcDirectories" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="UrlCacheGetGlobalLimit">
+            <Param Type="URL_CACHE_LIMIT_TYPE" Name="limitType" />
+            <Param Type="ULONGLONG*" Name="pullLimit" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="UrlCacheSetGlobalLimit">
+            <Param Type="URL_CACHE_LIMIT_TYPE" Name="limitType" />
+            <Param Type="ULONGLONG" Name="ullLimit" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="UrlCacheReloadSettings">
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="UrlCacheContainerSetEntryMaximumAge">
+            <Param Type="const WCHAR*" Name="pwszPrefix" />
+            <Param Type="DWORD" Name="dwEntryMaxAge" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="InternetGetDialEngineW">
+            <Param Type="LPWSTR" Name="pwzConnectoid" />
+            <Param Type="IDialEventSink*" Name="pdes" />
+            <Param Type="IDialEngine**" Name="ppde" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="InternetGetDialBrandingW">
+            <Param Type="LPWSTR" Name="pwzConnectoid" />
+            <Param Type="IDialBranding**" Name="ppdb" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="ReadGuidsForConnectedNetworks" Ordinal="401">
+            <Param Type="DWORD*" Name="pcNetworks" />
+            <Param Type="PWSTR**" Name="pppwszNetworkGuids" DerefPostCount="pcNetworks" />
+            <Param Type="BSTR**" Name="pppbstrNetworkNames" DerefPostCount="pcNetworks" />
+            <Param Type="PWSTR**" Name="pppwszGWMacs" DerefPostCount="pcGatewayMacs" />
+            <Param Type="DWORD*" Name="pcGatewayMacs" />
+            <Param Type="DWORD*" Name="pdwFlags" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="InternetSetDialState" BothCharset="True">
+            <Param Type="LPCTSTR" Name="lpszConnectoid" />
+            <Param Type="DWORD" Name="dwState" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="InternetSetDialState">
+            <Param Type="LPCSTR" Name="lpszConnectoid" />
+            <Param Type="DWORD" Name="dwState" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="IsHostInProxyBypassList">
+            <Param Type="INTERNET_SCHEME" Name="tScheme" />
+            <Param Type="LPCSTR" Name="lpszHost" />
+            <Param Type="DWORD" Name="cchHost" />
+            <Return Type="BOOLAPI" />
+            <Success />
+        </Api>
+        <Api Name="InternetFreeProxyInfoList">
+            <Param Type="WININET_PROXY_INFO_LIST*" Name="pProxyInfoList" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="InternetGetProxyForUrl">
+            <Param Type="HINTERNET" Name="hInternet" />
+            <Param Type="PCWSTR" Name="pcwszUrl" />
+            <Param Type="WININET_PROXY_INFO_LIST*" Name="pProxyInfoList" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="DoConnectoidsExist" Ordinal="101">
+            <Return Type="BOOL" />
+            <Success />
+        </Api>
+        <Api Name="GetDiskInfoA" Ordinal="102">
+            <Param Type="PCSTR" Name="pszPath" />
+            <Param Type="PDWORD" Name="pdwClusterSize" />
+            <Param Type="PDWORDLONG" Name="pdlAvail" />
+            <Param Type="PDWORDLONG" Name="pdlTotal" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="PerformOperationOverUrlCacheA" Ordinal="103">
+            <Param Type="PCSTR" Name="pszUrlSearchPattern" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="DWORD" Name="dwFilter" />
+            <Param Type="GROUPID" Name="GroupId" />
+            <Param Type="PVOID" Name="pReserved1" />
+            <Param Type="PDWORD" Name="pdwReserved2" />
+            <Param Type="PVOID" Name="pReserved3" />
+            <Param Type="CACHE_OPERATOR" Name="op" />
+            <Param Type="PVOID" Name="pOperatorData" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="IsProfilesEnabled" Ordinal="112">
+            <Return Type="BOOL" />
+            <Success />
+        </Api>
+        <Api Name="_GetFileExtensionFromUrl">
+            <Param Type="LPSTR" Name="lpszUrl" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="LPSTR" Name="lpszExt" />
+            <Param Type="DWORD*" Name="pcchExt" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="InternalInternetGetCookie" Ordinal="346">
+            <Param Type="LPCSTR" Name="lpszUrl" />
+            <Param Type="LPSTR" Name="lpszCookieData" />
+            <Param Type="DWORD*" Name="lpdwDataSize" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="ImportCookieFile" BothCharset="True" OrdinalA="108" OrdinalW="110">
+            <Param Type="LPCTSTR" Name="szFilename" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="ExportCookieFile" BothCharset="True" OrdinalA="109" OrdinalW="111">
+            <Param Type="LPCTSTR" Name="szFilename" />
+            <Param Type="BOOL" Name="fAppend" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="IsDomainLegalCookieDomain" BothCharset="True" OrdinalA="116" OrdinalW="117">
+            <Param Type="LPCTSTR" Name="pchDomain" />
+            <Param Type="LPCTSTR" Name="pchFullDomain" />
+            <Return Type="BOOLAPI" />
+            <Success />
+        </Api>
+        <Api Name="UrlZonesDetach">
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="ReadUrlCacheEntryStreamEx">
+            <Param Type="HANDLE" Name="hUrlCacheStream" />
+            <Param Type="DWORDLONG" Name="qwLocation" />
+            <Param Type="LPVOID" Name="lpBuffer" PostLength="lpdwLen" />
+            <Param Type="LPDWORD" Name="lpdwLen" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="MapResourceToPolicy" Ordinal="120">
+            <Param Type="P3PResource*" Name="pResource" />
+            <Param Type="P3PURL" Name="pszPolicy" />
+            <Param Type="unsigned long" Name="dwSize" />
+            <Param Type="P3PSignal*" Name="pSignal" />
+            <Return Type="P3PStatus" />
+        </Api>
+        <Api Name="GetP3PPolicy" Ordinal="121">
+            <Param Type="P3PCURL" Name="pszPolicyURL" />
+            <Param Type="HANDLE" Name="hDestination" />
+            <Param Type="P3PCXSL" Name="pszXSLtransform" />
+            <Param Type="P3PSignal*" Name="pSignal" />
+            <Return Type="P3PStatus" />
+        </Api>
+        <Api Name="FreeP3PObject" Ordinal="122">
+            <Param Type="P3PHANDLE" Name="hObject" />
+            <Return Type="P3PStatus" />
+        </Api>
+        <Api Name="GetP3PRequestStatus" Ordinal="123">
+            <Param Type="P3PHANDLE" Name="hObject" />
+            <Return Type="P3PStatus" />
+        </Api>
+        <Api Name="InternetSetOptionEx" BothCharset="True">
+            <Param Type="HINTERNET" Name="hInternet" />
+            <Param Type="[INTERNET_OPTION]" Name="dwOption" />
+            <Param Type="LPVOID" Name="lpBuffer" Length="dwBufferLength" />
+            <Param Type="DWORD" Name="dwBufferLength" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="FtpPutFileEx">
+            <Param Type="HINTERNET" Name="hFtpSession" />
+            <Param Type="LPCWSTR" Name="lpszLocalFile" />
+            <Param Type="LPCSTR" Name="lpszNewRemoteFile" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="DWORD_PTR" Name="dwContext" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="FtpGetFileEx">
+            <Param Type="HINTERNET" Name="hFtpSession" />
+            <Param Type="LPCSTR" Name="lpszRemoteFile" />
+            <Param Type="LPCWSTR" Name="lpszNewFile" />
+            <Param Type="BOOL" Name="fFailIfExists" />
+            <Param Type="[FileAttributes]" Name="dwFlagsAndAttributes" />
+            <Param Type="[FTP_TRANSFER_FLAGS]" Name="dwFlags" />
+            <Param Type="DWORD_PTR" Name="dwContext" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="DeleteWpadCacheForNetworks">
+            <Param Type="WPAD_CACHE_DELETE" Name="enType" />
+            <Return Type="BOOLAPI" />
+        </Api>
+
+        <!-- WebSocket -->
+        <Category Name="Internet/Windows Internet (WinINet)/WebSocket" OnlineHelp="" />
+        <Api Name="HttpWebSocketCompleteUpgrade">
+            <Param Type="HINTERNET" Name="hRequest" />
+            <Param Type="DWORD_PTR" Name="dwContext" />
+            <Return Type="HINTERNET" />
+        </Api>
+        <Api Name="HttpWebSocketSend">
+            <Param Type="HINTERNET" Name="hWebSocket" />
+            <Param Type="HTTP_WEB_SOCKET_BUFFER_TYPE" Name="BufferType" />
+            <Param Type="PVOID" Name="pvBuffer" Length="dwBufferLength" />
+            <Param Type="DWORD" Name="dwBufferLength" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="HttpWebSocketReceive">
+            <Param Type="HINTERNET" Name="hWebSocket" />
+            <Param Type="PVOID" Name="pvBuffer" PostLength="pdwBytesRead" />
+            <Param Type="DWORD" Name="dwBufferLength" />
+            <Param Type="DWORD*" Name="pdwBytesRead" />
+            <Param Type="HTTP_WEB_SOCKET_BUFFER_TYPE*" Name="pBufferType" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="HttpWebSocketClose">
+            <Param Type="HINTERNET" Name="hWebSocket" />
+            <Param Type="HTTP_WEB_SOCKET_CLOSE_STATUS" Name="usStatus" />
+            <Param Type="PVOID" Name="pvReason" Length="dwReasonLength" />
+            <Param Type="DWORD" Name="dwReasonLength" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="HttpWebSocketShutdown">
+            <Param Type="HINTERNET" Name="hWebSocket" />
+            <Param Type="HTTP_WEB_SOCKET_CLOSE_STATUS" Name="usStatus" />
+            <Param Type="PVOID" Name="pvReason" Length="dwReasonLength" />
+            <Param Type="DWORD" Name="dwReasonLength" />
+            <Return Type="BOOLAPI" />
+        </Api>
+        <Api Name="HttpWebSocketQueryCloseStatus">
+            <Param Type="HINTERNET" Name="hWebSocket" />
+            <Param Type="HTTP_WEB_SOCKET_CLOSE_STATUS*" Name="pusStatus" />
+            <Param Type="PVOID" Name="pvReason" PostLength="pdwReasonLengthConsumed" />
+            <Param Type="DWORD" Name="dwReasonLength" />
+            <Param Type="DWORD*" Name="pdwReasonLengthConsumed" />
+            <Return Type="BOOLAPI" />
+        </Api>
+
     </Module>
 </ApiMonitor>

@@ -1,0 +1,157 @@
+<!--
+    API Monitor Definitions
+    (c) 2013, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Headers>
+        <!-- Interfaces -->
+        <Variable Name="IAppxBlockMapBlock"                             Type="Interface" />
+        <Variable Name="IAppxBlockMapBlocksEnumerator"                  Type="Interface" />
+        <Variable Name="IAppxBlockMapFile"                              Type="Interface" />
+        <Variable Name="IAppxBlockMapFilesEnumerator"                   Type="Interface" />
+        <Variable Name="IAppxBlockMapReader"                            Type="Interface" />
+        <Variable Name="IAppxFactory"                                   Type="Interface" />
+        <Variable Name="IAppxFile"                                      Type="Interface" />
+        <Variable Name="IAppxFilesEnumerator"                           Type="Interface" />
+        <Variable Name="IAppxManifestApplication"                       Type="Interface" />
+        <Variable Name="IAppxManifestApplicationsEnumerator"            Type="Interface" />
+        <Variable Name="IAppxManifestDeviceCapabilitiesEnumerator"      Type="Interface" />
+        <Variable Name="IAppxManifestPackageDependenciesEnumerator"     Type="Interface" />
+        <Variable Name="IAppxManifestPackageDependency"                 Type="Interface" />
+        <Variable Name="IAppxManifestPackageId"                         Type="Interface" />
+        <Variable Name="IAppxManifestProperties"                        Type="Interface" />
+        <Variable Name="IAppxManifestReader"                            Type="Interface" />
+        <Variable Name="IAppxManifestResourcesEnumerator"               Type="Interface" />
+        <Variable Name="IAppxPackageReader"                             Type="Interface" />
+        <Variable Name="IAppxPackageWriter"                             Type="Interface" />
+        
+        <!-- External Interfaces - TODO -->
+        <Variable Name="IUri"                                           Type="Interface" />
+
+        <!-- [PACKAGE_CONSTANTS] -->
+        <Variable Name="[PACKAGE_CONSTANTS]" Type="Alias" Base="UINT32">
+            <Display Name="const UINT32" />
+            <Flag>
+                <Set Name="PACKAGE_PROPERTY_FRAMEWORK"      Value="0x00000001" />
+                <Set Name="PACKAGE_FILTER_ALL_LOADED"       Value="0x00000000" />
+                <Set Name="PACKAGE_FILTER_HEAD"             Value="0x00000010" />
+                <Set Name="PACKAGE_FILTER_DIRECT"           Value="0x00000020" />
+                <Set Name="PACKAGE_INFORMATION_BASIC"       Value="0x00000000" />
+                <Set Name="PACKAGE_INFORMATION_FULL"        Value="0x00000100" />
+            </Flag>
+        </Variable>
+
+        <!-- [PACKAGE_FILTER_FLAGS] -->
+        <Variable Name="[PACKAGE_FILTER_FLAGS]" Type="Alias" Base="UINT32">
+            <Display Name="const UINT32" />
+            <Flag>
+                <Set Name="PACKAGE_FILTER_ALL_LOADED"       Value="0x00000000" />
+                <Set Name="PACKAGE_FILTER_HEAD"             Value="0x00000010" />
+                <Set Name="PACKAGE_FILTER_DIRECT"           Value="0x00000020" />
+            </Flag>
+        </Variable>
+
+        <!-- [PACKAGE_INFORMATION_FLAGS] -->
+        <Variable Name="[PACKAGE_INFORMATION_FLAGS]" Type="Alias" Base="UINT32">
+            <Display Name="const UINT32" />
+            <Flag>
+                <Set Name="PACKAGE_INFORMATION_BASIC"       Value="0x00000000" />
+                <Set Name="PACKAGE_INFORMATION_FULL"        Value="0x00000100" />
+            </Flag>
+        </Variable>
+
+        <!-- APPX_PACKAGE_ARCHITECTURE -->
+        <Variable Name="APPX_PACKAGE_ARCHITECTURE" Type="Alias" Base="UINT32">
+            <Display Name="UINT32" />
+            <Enum>
+                <Set Name="APPX_PACKAGE_ARCHITECTURE_X86"        Value="0" />
+                <Set Name="APPX_PACKAGE_ARCHITECTURE_ARM"        Value="5" />
+                <Set Name="APPX_PACKAGE_ARCHITECTURE_X64"        Value="9" />
+                <Set Name="APPX_PACKAGE_ARCHITECTURE_NEUTRAL"   Value="11" />
+            </Enum>
+        </Variable>
+        <Variable Name="APPX_PACKAGE_ARCHITECTURE*" Type="Pointer" Base="APPX_PACKAGE_ARCHITECTURE" />
+
+        <!-- [PACKAGE_VERSION_u_s] -->
+        <Variable Name="[PACKAGE_VERSION_u_s]" Type="Struct" Pack="4">
+            <Display Name="struct" />
+            <Field Type="USHORT"        Name="Revision" />
+            <Field Type="USHORT"        Name="Build" />
+            <Field Type="USHORT"        Name="Minor" />
+            <Field Type="USHORT"        Name="Major" />
+        </Variable>
+
+        <!-- [PACKAGE_VERSION_u] -->
+        <Variable Name="[PACKAGE_VERSION_u]" Type="Union" Pack="4">
+            <Display Name="union" />
+            <Field Type="UINT64"                    Name="Version" />
+            <Field Type="[PACKAGE_VERSION_u_s]"     Name="" />
+        </Variable>
+
+        <!-- PACKAGE_VERSION -->
+        <Variable Name="PACKAGE_VERSION" Type="Struct" Pack="4">
+            <Field Type="[PACKAGE_VERSION_u]" Name="" />
+        </Variable>
+
+        <!-- PACKAGE_ID -->
+        <Variable Name="PACKAGE_ID" Type="Struct" Pack="4">
+            <Field Type="UINT32"                        Name="reserved" />
+            <Field Type="APPX_PACKAGE_ARCHITECTURE"     Name="processorArchitecture" />
+            <Field Type="PACKAGE_VERSION"               Name="version" />
+            <Field Type="PWSTR"                         Name="name" />
+            <Field Type="PWSTR"                         Name="publisher" />
+            <Field Type="PWSTR"                         Name="resourceId" />
+            <Field Type="PWSTR"                         Name="publisherId" />
+        </Variable>
+        <Variable Name="const PACKAGE_ID*" Type="Pointer" Base="PACKAGE_ID" />
+
+        <!-- APPX_PACKAGE_SETTINGS -->
+        <Variable Name="APPX_PACKAGE_SETTINGS" Type="Struct">
+            <Field Type="BOOL"      Name="forceZip32" />
+            <Field Type="IUri*"     Name="hashMethod" />
+        </Variable>
+        <Variable Name="APPX_PACKAGE_SETTINGS*" Type="Pointer" Base="APPX_PACKAGE_SETTINGS" />
+
+        <!-- APPX_COMPRESSION_OPTION -->
+        <Variable Name="APPX_COMPRESSION_OPTION" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="APPX_COMPRESSION_OPTION_NONE"        Value="0" />
+                <Set Name="APPX_COMPRESSION_OPTION_NORMAL"      Value="1" />
+                <Set Name="APPX_COMPRESSION_OPTION_MAXIMUM"     Value="2" />
+                <Set Name="APPX_COMPRESSION_OPTION_FAST"        Value="3" />
+                <Set Name="APPX_COMPRESSION_OPTION_SUPERFAST"   Value="4" />
+            </Enum>
+        </Variable>
+        <Variable Name="APPX_COMPRESSION_OPTION*" Type="Pointer" Base="APPX_COMPRESSION_OPTION" />
+
+        <!-- APPX_FOOTPRINT_FILE_TYPE -->
+        <Variable Name="APPX_FOOTPRINT_FILE_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="APPX_FOOTPRINT_FILE_TYPE_MANIFEST"       Value="0" />
+                <Set Name="APPX_FOOTPRINT_FILE_TYPE_BLOCKMAP"       Value="1" />
+                <Set Name="APPX_FOOTPRINT_FILE_TYPE_SIGNATURE"      Value="2" />
+                <Set Name="APPX_FOOTPRINT_FILE_TYPE_CODEINTEGRITY"  Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- APPX_CAPABILITIES -->
+        <Variable Name="APPX_CAPABILITIES" Type="Alias" Base="UINT">
+            <Flag>
+                <Set Name="APPX_CAPABILITY_INTERNET_CLIENT"                     Value="0x1" />
+                <Set Name="APPX_CAPABILITY_INTERNET_CLIENT_SERVER"              Value="0x2" />
+                <Set Name="APPX_CAPABILITY_PRIVATE_NETWORK_CLIENT_SERVER"       Value="0x4" />
+                <Set Name="APPX_CAPABILITY_DOCUMENTS_LIBRARY"                   Value="0x8" />
+                <Set Name="APPX_CAPABILITY_PICTURES_LIBRARY"                    Value="0x10" />
+                <Set Name="APPX_CAPABILITY_VIDEOS_LIBRARY"                      Value="0x20" />
+                <Set Name="APPX_CAPABILITY_MUSIC_LIBRARY"                       Value="0x40" />
+                <Set Name="APPX_CAPABILITY_ENTERPRISE_AUTHENTICATION"           Value="0x80" />
+                <Set Name="APPX_CAPABILITY_SHARED_USER_CERTIFICATES"            Value="0x100" />
+                <Set Name="APPX_CAPABILITY_REMOVABLE_STORAGE"                   Value="0x200" />
+            </Flag>
+        </Variable>
+        <Variable Name="APPX_CAPABILITIES*" Type="Pointer" Base="APPX_CAPABILITIES" />
+
+    </Headers>
+</ApiMonitor>

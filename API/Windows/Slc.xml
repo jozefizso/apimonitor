@@ -1,12 +1,19 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Slc.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        
         <!-- Variables -->
+        <Variable Name="HSLC"       Type="Alias"        Base="PVOID" />
+        <Variable Name="HSLC*"      Type="Pointer"      Base="HSLC" />
+        <Variable Name="HSLP"       Type="Alias"        Base="PVOID" />
+        <Variable Name="HSLP*"      Type="Pointer"      Base="HSLP" />
+
+        <!-- SLDATATYPE -->
         <Variable Name="SLDATATYPE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="SL_DATA_NONE"        Value="0" />
@@ -19,19 +26,343 @@
         </Variable>
         <Variable Name="SLDATATYPE*" Type="Pointer" Base="SLDATATYPE" />
 
+        <!-- SLIDTYPE -->
+        <Variable Name="SLIDTYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="SL_ID_APPLICATION"    	    Value="0" />
+                <Set Name="SL_ID_PRODUCT_SKU"    	    Value="1" />
+                <Set Name="SL_ID_LICENSE_FILE"    	    Value="2" />
+                <Set Name="SL_ID_LICENSE"    		    Value="3" />
+                <Set Name="SL_ID_PKEY"    		        Value="4" />
+                <Set Name="SL_ID_ALL_LICENSES"    	    Value="5" />
+                <Set Name="SL_ID_ALL_LICENSE_FILES"     Value="6" />
+            </Enum>
+        </Variable>
+
+        <!-- SLREFERRALTYPE -->
+        <Variable Name="SLREFERRALTYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="SL_REFERRALTYPE_SKUID"    		    Value="0" />
+                <Set Name="SL_REFERRALTYPE_APPID"    		    Value="1" />
+                <Set Name="SL_REFERRALTYPE_OVERRIDE_SKUID"      Value="2" />
+                <Set Name="SL_REFERRALTYPE_OVERRIDE_APPID"      Value="3" />
+                <Set Name="SL_REFERRALTYPE_BEST_MATCH"          Value="4" />
+            </Enum>
+        </Variable>
+
+        <!-- SLLICENSINGSTATUS -->
+        <Variable Name="SLLICENSINGSTATUS" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="SL_LICENSING_STATUS_UNLICENSED"    		Value="0" />
+                <Set Name="SL_LICENSING_STATUS_LICENSED"    		Value="1" />
+                <Set Name="SL_LICENSING_STATUS_IN_GRACE_PERIOD"    	Value="2" />
+                <Set Name="SL_LICENSING_STATUS_NOTIFICATION"        Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- SL_LICENSING_STATUS -->
+        <Variable Name="SL_LICENSING_STATUS" Type="Struct">
+            <Field Type="SLID"                  Name="SkuId" />
+            <Field Type="SLLICENSINGSTATUS"     Name="eStatus" />
+            <Field Type="DWORD"                 Name="dwGraceTime" />
+            <Field Type="DWORD"                 Name="dwTotalGraceDays" />
+            <Field Type="HRESULT"               Name="hrReason" />
+            <Field Type="UINT64"                Name="qwValidityExpiration" />
+        </Variable>
+        <Variable Name="SL_LICENSING_STATUS*"  Type="Pointer" Base="SL_LICENSING_STATUS" />
+        <Variable Name="SL_LICENSING_STATUS**" Type="Pointer" Base="SL_LICENSING_STATUS*" />
+
+        <!-- SL_ACTIVATION_TYPE -->
+        <Variable Name="SL_ACTIVATION_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="SL_ACTIVATION_TYPE_DEFAULT"              Value="0" />
+                <Set Name="SL_ACTIVATION_TYPE_ACTIVE_DIRECTORY"     Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- SL_ACTIVATION_INFO_HEADER -->
+        <Variable Name="SL_ACTIVATION_INFO_HEADER" Type="Struct">
+            <Field Type="DWORD"                 Name="cbSize" />
+            <Field Type="SL_ACTIVATION_TYPE"    Name="type" />
+        </Variable>
+        <Variable Name="const SL_ACTIVATION_INFO_HEADER*" Type="Pointer" Base="SL_ACTIVATION_INFO_HEADER" />
+
         <!-- Software Licensing API (SLAPI) -->
         <Category Name="System Administration/Software Licensing API (SLAPI)" />
+        <Api Name="SLActivateProduct">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="const SLID*" Name="pProductSkuId" />
+            <Param Type="UINT" Name="cbAppSpecificData" />
+            <Param Type="const PVOID" Name="pvAppSpecificData" />
+            <Param Type="const SL_ACTIVATION_INFO_HEADER*" Name="pActivationInfo" />
+            <Param Type="PCWSTR" Name="pwszProxyServer" />
+            <Param Type="WORD" Name="wProxyPort" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLClose">
+            <Param Type="HSLC" Name="hSLC" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLConsumeRight">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="const SLID*" Name="pAppId" />
+            <Param Type="const SLID*" Name="pProductSkuId" />
+            <Param Type="PCWSTR" Name="pwszRightName" />
+            <Param Type="PVOID" Name="pvReserved" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLDepositMigrationBlob">
+            <Param Type="HANDLE" Name="hFile" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLDepositOfflineConfirmationId">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="const SLID*" Name="pProductSkuId" />
+            <Param Type="PCWSTR" Name="pwszInstallationId" />
+            <Param Type="PCWSTR" Name="pwszConfirmationId" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLDepositOfflineConfirmationIdEx">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="const SLID*" Name="pProductSkuId" />
+            <Param Type="const SL_ACTIVATION_INFO_HEADER*" Name="pActivationInfo" />
+            <Param Type="PCWSTR" Name="pwszInstallationId" />
+            <Param Type="PCWSTR" Name="pwszConfirmationId" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLFireEvent">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="PCWSTR" Name="pwszEventId" />
+            <Param Type="const SLID*" Name="pApplicationId" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLGatherMigrationBlob">
+            <Param Type="BOOL" Name="bMigratableOnly" />
+            <Param Type="LPCWSTR" Name="pwszEncryptorUri" />
+            <Param Type="HANDLE" Name="hFile" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLGenerateOfflineInstallationId">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="const SLID*" Name="pProductSkuId" />
+            <Param Type="PWSTR*" Name="ppwszInstallationId" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLGenerateOfflineInstallationIdEx">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="const SLID*" Name="pProductSkuId" />
+            <Param Type="const SL_ACTIVATION_INFO_HEADER*" Name="pActivationInfo" />
+            <Param Type="PWSTR*" Name="ppwszInstallationId" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLGetApplicationInformation">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="const SLID*" Name="pApplicationId" />
+            <Param Type="PCWSTR" Name="pwszValueName" />
+            <Param Type="SLDATATYPE*" Name="peDataType" />
+            <Param Type="UINT*" Name="pcbValue" />
+            <Param Type="PBYTE*" Name="ppbValue" PostLength="pcbValue" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLGetApplicationPolicy">
+            <Param Type="HSLP" Name="hPolicyContext" />
+            <Param Type="PCWSTR" Name="pwszValueName" />
+            <Param Type="SLDATATYPE*" Name="peDataType" />
+            <Param Type="UINT*" Name="pcbValue" />
+            <Param Type="PBYTE*" Name="ppbValue" PostLength="pcbValue" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLGetAuthenticationResult">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="UINT*" Name="pcbValue" />
+            <Param Type="PBYTE*" Name="ppbValue" PostLength="pcbValue" />
+            <Return Type="HRESULT" />
+        </Api>
         <Api Name="SLGetGenuineInformation">
             <Param Type="const SLID*" Name="pAppId" />
             <Param Type="PCWSTR" Name="pwszValueName" />
             <Param Type="SLDATATYPE*" Name="peDataType" />
             <Param Type="UINT*" Name="pcbValue" />
-            <Param Type="BYTE**" Name="ppbValue" />
+            <Param Type="BYTE**" Name="ppbValue" PostLength="pcbValue" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLSetGenuineInformation">
+            <Param Type="const SLID*" Name="pAppId" />
+            <Param Type="PCWSTR" Name="pwszValueName" />
+            <Param Type="SLDATATYPE" Name="eDataType" />
+            <Param Type="UINT" Name="cbValue" />
+            <Param Type="const BYTE*" Name="pbValue" Length="cbValue" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLGetGenuineInformationEx">
+            <Param Type="const SLID*" Name="pAppId" />
+            <Param Type="PCWSTR" Name="pwszValueName" />
+            <Param Type="SLDATATYPE*" Name="peDataType" />
+            <Param Type="UINT*" Name="pcbValue" />
+            <Param Type="BYTE**" Name="ppbValue" PostLength="pcbValue" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLGetInstalledProductKeyIds">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="const SLID*" Name="pProductSkuId" />
+            <Param Type="UINT*" Name="pnProductKeyIds" />
+            <Param Type="SLID**" Name="ppProductKeyIds" DerefPostCount="pnProductKeyIds" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="SLGetInstalledSAMLicenseApplications">
             <Param Type="UINT*" Name="pnReturnedAppIds" />
-            <Param Type="SLID**" Name="ppReturnedAppIds" />
+            <Param Type="SLID**" Name="ppReturnedAppIds" DerefPostCount="pnReturnedAppIds" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLGetLicense">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="const SLID*" Name="pLicenseFileId" />
+            <Param Type="UINT*" Name="pcbLicenseFile" />
+            <Param Type="PBYTE*" Name="ppbLicenseFile" PostLength="pcbLicenseFile" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLGetLicenseFileId">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="UINT" Name="cbLicenseBlob" />
+            <Param Type="const BYTE*" Name="pbLicenseBlob" />
+            <Param Type="SLID*" Name="pLicenseFileId" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLGetLicenseInformation">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="const SLID*" Name="pSLLicenseId" />
+            <Param Type="PCWSTR" Name="pwszValueName" />
+            <Param Type="SLDATATYPE*" Name="peDataType" />
+            <Param Type="UINT*" Name="pcbValue" />
+            <Param Type="PBYTE*" Name="ppbValue" PostLength="pcbValue" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLGetLicensingStatusInformation">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="const SLID*" Name="pAppID" />
+            <Param Type="const SLID*" Name="pProductSkuId" />
+            <Param Type="PCWSTR" Name="pwszRightName" />
+            <Param Type="UINT*" Name="pnStatusCount" />
+            <Param Type="SL_LICENSING_STATUS**" Name="ppLicensingStatus" DerefPostCount="pnStatusCount" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLGetPKeyId">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="PCWSTR" Name="pwszPKeyAlgorithm" />
+            <Param Type="PCWSTR" Name="pwszPKeyString" />
+            <Param Type="UINT" Name="cbPKeySpecificData" />
+            <Param Type="const BYTE*" Name="pbPKeySpecificData" />
+            <Param Type="SLID*" Name="pPKeyId" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLGetPKeyInformation">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="const SLID*" Name="pPKeyId" />
+            <Param Type="PCWSTR" Name="pwszValueName" />
+            <Param Type="SLDATATYPE*" Name="peDataType" />
+            <Param Type="UINT*" Name="pcbValue" />
+            <Param Type="PBYTE*" Name="ppbValue" PostLength="pcbValue" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLGetPolicyInformation">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="PCWSTR" Name="pwszValueName" />
+            <Param Type="SLDATATYPE*" Name="peDataType" />
+            <Param Type="UINT*" Name="pcbValue" />
+            <Param Type="PBYTE*" Name="ppbValue" PostLength="pcbValue" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLGetPolicyInformationDWORD">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="PCWSTR" Name="pwszValueName" />
+            <Param Type="DWORD*" Name="pdwValue" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLGetProductSkuInformation">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="const SLID*" Name="pProductSkuId" />
+            <Param Type="PCWSTR" Name="pwszValueName" />
+            <Param Type="SLDATATYPE*" Name="peDataType" />
+            <Param Type="UINT*" Name="pcbValue" />
+            <Param Type="PBYTE*" Name="ppbValue" PostLength="pcbValue" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLGetReferralInformation">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="SLREFERRALTYPE" Name="eReferralType" />
+            <Param Type="const SLID*" Name="pSkuOrAppId" />
+            <Param Type="PCWSTR" Name="pwszValueName" />
+            <Param Type="PWSTR*" Name="ppwszValue" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLGetSAMLicense">
+            <Param Type="const SLID*" Name="pApplicationId" />
+            <Param Type="UINT*" Name="pcbXmlLicenseData" />
+            <Param Type="PBYTE*" Name="ppbXmlLicenseData" PostLength="pcbXmlLicenseData" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLGetServerStatus">
+            <Param Type="PCWSTR" Name="pwszServerURL" />
+            <Param Type="PCWSTR" Name="pwszAcquisitionType" />
+            <Param Type="PCWSTR" Name="pwszProxyServer" />
+            <Param Type="WORD" Name="wProxyPort" />
+            <Param Type="HRESULT*" Name="phrStatus" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLGetServiceInformation">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="PCWSTR" Name="pwszValueName" />
+            <Param Type="SLDATATYPE*" Name="peDataType" />
+            <Param Type="UINT*" Name="pcbValue" />
+            <Param Type="PBYTE*" Name="ppbValue" PostLength="pcbValue" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLGetSLIDList">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="SLIDTYPE" Name="eQueryIdType" />
+            <Param Type="const SLID*" Name="pQueryId" />
+            <Param Type="SLIDTYPE" Name="eReturnIdType" />
+            <Param Type="UINT*" Name="pnReturnIds" />
+            <Param Type="SLID**" Name="ppReturnIds" DerefPostCount="pnReturnIds" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLGetWindowsInformation">
+            <Param Type="PCWSTR" Name="pwszValueName" />
+            <Param Type="SLDATATYPE*" Name="peDataType" />
+            <Param Type="UINT*" Name="pcbValue" />
+            <Param Type="PBYTE*" Name="ppbValue" PostLength="pcbValue" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLGetWindowsInformationDWORD">
+            <Param Type="PCWSTR" Name="pwszValueName" />
+            <Param Type="DWORD*" Name="pdwValue" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLInstallLicense">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="UINT" Name="cbLicenseBlob" />
+            <Param Type="const BYTE*" Name="pbLicenseBlob" />
+            <Param Type="SLID*" Name="pLicenseFileId" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLInstallProofOfPurchase">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="PCWSTR" Name="pwszPKeyAlgorithm" />
+            <Param Type="PCWSTR" Name="pwszPKeyString" />
+            <Param Type="UINT" Name="cbPKeySpecificData" />
+            <Param Type="PBYTE" Name="pbPKeySpecificData" />
+            <Param Type="SLID*" Name="pPKeyId" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLInstallProofOfPurchaseEx">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="const SLID*" Name="pApplicationId" />
+            <Param Type="const SLID*" Name="pProductSkuId" />
+            <Param Type="PCWSTR" Name="pwszPKeyAlgorithm" />
+            <Param Type="PCWSTR" Name="pwszPKeyString" />
+            <Param Type="UINT" Name="cbPKeySpecificData" />
+            <Param Type="PBYTE" Name="pbPKeySpecificData" />
+            <Param Type="SLID*" Name="pPKeyId" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="SLInstallSAMLicense">
@@ -40,35 +371,83 @@
             <Param Type="const BYTE*" Name="pbXmlLicenseData" />
             <Return Type="HRESULT" />
         </Api>
-        <Api Name="SLGetSAMLicense">
+        <Api Name="SLLoadApplicationPolicies">
             <Param Type="const SLID*" Name="pApplicationId" />
-            <Param Type="UINT*" Name="pcbXmlLicenseData" />
-            <Param Type="PBYTE*" Name="ppbXmlLicenseData" />
+            <Param Type="const SLID*" Name="pProductSkuId" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="HSLP*" Name="phPolicyContext" />
             <Return Type="HRESULT" />
         </Api>
-        <Api Name="SLGetWindowsInformation">
-            <Param Type="PCWSTR" Name="pwszValueName" />
-            <Param Type="SLDATATYPE*" Name="peDataType" />
-            <Param Type="UINT*" Name="pcbValue" />
-            <Param Type="PBYTE*" Name="ppbValue" />
+        <Api Name="SLOpen">
+            <Param Type="HSLC*" Name="phSLC" />
             <Return Type="HRESULT" />
         </Api>
-        <Api Name="SLGetWindowsInformationDWORD">
-            <Param Type="PCWSTR" Name="pwszValueName" />
-            <Param Type="DWORD*" Name="pdwValue" />
+        <Api Name="SLPersistApplicationPolicies">
+            <Param Type="const SLID*" Name="pApplicationId" />
+            <Param Type="const SLID*" Name="pProductSkuId" />
+            <Param Type="DWORD" Name="dwFlags" />
             <Return Type="HRESULT" />
         </Api>
-        <Api Name="SLSetGenuineInformation">
-            <Param Type="const SLID*" Name="pAppId" />
-            <Param Type="PCWSTR" Name="pwszValueName" />
-            <Param Type="SLDATATYPE" Name="eDataType" />
+        <Api Name="SLPersistRTSPayloadOverride">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="const SLID*" Name="pApplicationId" />
+            <Param Type="const SLID*" Name="pProductSkuId" />
+            <Param Type="BYTE*" Name="pbData" />
+            <Param Type="DWORD" Name="cbData" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLReArm">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="const SLID*" Name="pApplicationId" />
+            <Param Type="const SLID*" Name="pProductSkuId" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLRegisterEvent">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="PCWSTR" Name="pwszEventId" />
+            <Param Type="const SLID*" Name="pApplicationId" />
+            <Param Type="HANDLE" Name="hEvent" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLSetAuthenticationData">
+            <Param Type="HSLC" Name="hSLC" />
             <Param Type="UINT" Name="cbValue" />
-            <Param Type="const BYTE*" Name="pbValue" />
+            <Param Type="const BYTE*" Name="pbValue" Length="cbValue" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLSetCurrentProductKey">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="const SLID*" Name="pProductSkuId" />
+            <Param Type="const SLID*" Name="pProductKeyId" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLUninstallLicense">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="const SLID*" Name="pLicenseFileId" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLUninstallProofOfPurchase">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="const SLID*" Name="pPKeyId" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="SLUninstallSAMLicense">
             <Param Type="const SLID*" Name="pApplicationId" />
             <Return Type="HRESULT" />
         </Api>
+        <Api Name="SLUnloadApplicationPolicies">
+            <Param Type="HSLP" Name="hPolicyContext" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SLUnregisterEvent">
+            <Param Type="HSLC" Name="hSLC" />
+            <Param Type="PCWSTR" Name="pwszEventId" />
+            <Param Type="const SLID*" Name="pApplicationId" />
+            <Param Type="HANDLE" Name="hEvent" />
+            <Return Type="HRESULT" />
+        </Api>
+
     </Module>
 </ApiMonitor>

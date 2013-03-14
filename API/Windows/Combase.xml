@@ -1,0 +1,479 @@
+<!--
+    API Monitor Definitions
+    (c) 2012-2013, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\ole.h.xml" />
+    <Include Filename="Headers\runtime.h.xml" />
+    <Module Name="Combase.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
+        
+        <!-- TODO: Interfaces-->
+        <Variable Name="IRestrictedErrorInfo"           Type="Interface" />
+        <Variable Name="IRoMetaDataLocator"             Type="Interface" />
+        <Variable Name="IApartmentShutdown"             Type="Interface" />
+        <Variable Name="IViewObjectPresentNotifySite"   Type="Interface" />
+        <Variable Name="IInspectable"                   Type="Interface" />
+
+        <!-- Variables -->
+        <Variable Name="ROPARAMIIDHANDLE"                           Type="Alias"        Base="HANDLE" />
+        <Variable Name="ROPARAMIIDHANDLE*"                          Type="Pointer"      Base="ROPARAMIIDHANDLE" />
+        <Variable Name="const IRoMetaDataLocator&amp;"              Type="Alias"        Base="IRoMetaDataLocator*" />
+        <Variable Name="RO_REGISTRATION_COOKIE"                     Type="Alias"        Base="LPVOID" />
+        <Variable Name="RO_REGISTRATION_COOKIE*"                    Type="Pointer"      Base="RO_REGISTRATION_COOKIE" />
+        <Variable Name="APARTMENT_SHUTDOWN_REGISTRATION_COOKIE"     Type="Alias"        Base="HANDLE" />
+        <Variable Name="APARTMENT_SHUTDOWN_REGISTRATION_COOKIE*"    Type="Pointer"      Base="APARTMENT_SHUTDOWN_REGISTRATION_COOKIE" />
+        <Variable Name="PINSPECT_HSTRING_CALLBACK"                  Type="Alias"        Base="LPVOID" />
+        <Variable Name="PFNGETACTIVATIONFACTORY"                    Type="Alias"        Base="LPVOID" />
+        <Variable Name="PFNGETACTIVATIONFACTORY*"                   Type="Pointer"      Base="PFNGETACTIVATIONFACTORY" />
+        <Variable Name="PActivatableClassRegistration"              Type="Alias"        Base="LPVOID" />
+        <Variable Name="PActivatableClassRegistration*"             Type="Pointer"      Base="PActivatableClassRegistration" />
+
+        <!-- RO_ERROR_REPORTING_FLAGS -->
+        <Variable Name="RO_ERROR_REPORTING_FLAGS" Type="Alias" Base="UINT32">
+            <Display Name="UINT32" />
+            <Flag>
+                <Set Name="RO_ERROR_REPORTING_NONE"                     Value="0x00000000" />
+                <Set Name="RO_ERROR_REPORTING_SUPPRESSEXCEPTIONS"       Value="0x00000001" />
+                <Set Name="RO_ERROR_REPORTING_FORCEEXCEPTIONS"          Value="0x00000002" />
+                <Set Name="RO_ERROR_REPORTING_USESETERRORINFO"          Value="0x00000004" />
+                <Set Name="RO_ERROR_REPORTING_SUPPRESSSETERRORINFO"     Value="0x00000008" />
+            </Flag>
+        </Variable>
+        <Variable Name="RO_ERROR_REPORTING_FLAGS*" Type="Pointer" Base="RO_ERROR_REPORTING_FLAGS">
+            <Display Name="UINT32*" />
+        </Variable>
+
+        <!-- ServerInformation -->
+        <Variable Name="ServerInformation" Type="Struct">
+            <Field Type="DWORD"     Name="dwServerPid" />
+            <Field Type="DWORD"     Name="dwServerTid" />
+            <Field Type="UINT64"    Name="ui64ServerAddress" />
+        </Variable>
+        <Variable Name="PServerInformation" Type="Pointer" Base="ServerInformation" />
+
+        <!-- RO_INIT_TYPE -->
+        <Variable Name="RO_INIT_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="RO_INIT_SINGLETHREADED"  Value="0" />
+                <Set Name="RO_INIT_MULTITHREADED"   Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- COM Fundamentals -->
+        <Category Name="Component Object Model (COM)/COM Fundamentals" />
+        <Api Name="CoEnterApplicationThreadLifetimeLoop">
+            <Return Type="void" />
+        </Api>
+        <Api Name="CoGetApplicationThreadReference">
+            <Param Type="IUnknown**" Name="ppThreadReference" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="CoWaitForMultipleObjects">
+            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="DWORD" Name="dwTimeout" />
+            <Param Type="ULONG" Name="cHandles" />
+            <Param Type="LPHANDLE" Name="pHandles" />
+            <Param Type="LPDWORD" Name="lpdwIndex" />
+            <Return Type="HRESULT" />
+        </Api>
+
+        <!-- Windows Runtime C++ -->
+        <Category Name="Additional Resources/Windows Runtime C++" />
+        <Api Name="GetRestrictedErrorInfo">
+            <Param Type="IRestrictedErrorInfo**" Name="ppRestrictedErrorInfo" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="SetRestrictedErrorInfo">
+            <Param Type="IRestrictedErrorInfo*" Name="pRestrictedErrorInfo" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="CoDecodeProxy">
+            <Param Type="DWORD" Name="dwClientPid" />
+            <Param Type="UINT64" Name="ui64ProxyAddress" />
+            <Param Type="PServerInformation" Name="pServerInformation" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="HSTRING_UserFree">
+            <Param Type="ULONG*" Name="pFlags" />
+            <Param Type="HSTRING*" Name="ppidl" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="HSTRING_UserFree64">
+            <Param Type="ULONG*" Name="pFlags" />
+            <Param Type="HSTRING*" Name="ppidl" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="HSTRING_UserMarshal">
+            <Param Type="ULONG*" Name="pFlags" />
+            <Param Type="UCHAR*" Name="pBuffer" />
+            <Param Type="HSTRING*" Name="ppidl" />
+            <Return Type="UCHAR*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="HSTRING_UserMarshal64">
+            <Param Type="ULONG*" Name="pFlags" />
+            <Param Type="UCHAR*" Name="pBuffer" />
+            <Param Type="HSTRING*" Name="ppidl" />
+            <Return Type="UCHAR*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="HSTRING_UserSize">
+            <Param Type="ULONG*" Name="pFlags" />
+            <Param Type="ULONG" Name="StartingSize" />
+            <Param Type="HSTRING*" Name="ppidl" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="HSTRING_UserSize64">
+            <Param Type="ULONG*" Name="pFlags" />
+            <Param Type="ULONG" Name="StartingSize" />
+            <Param Type="HSTRING*" Name="ppidl" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="HSTRING_UserUnmarshal">
+            <Param Type="ULONG*" Name="pFlags" />
+            <Param Type="UCHAR*" Name="pBuffer" />
+            <Param Type="HSTRING*" Name="ppidl" />
+            <Return Type="UCHAR*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="HSTRING_UserUnmarshal64">
+            <Param Type="ULONG*" Name="pFlags" />
+            <Param Type="UCHAR*" Name="pBuffer" />
+            <Param Type="HSTRING*" Name="ppidl" />
+            <Return Type="UCHAR*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="RoActivateInstance">
+            <Param Type="HSTRING" Name="activatableClassId" />
+            <Param Type="IInspectable**" Name="instance" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="RoCaptureErrorContext">
+            <Param Type="HRESULT" Name="hrError" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="RoFailFastWithErrorContext">
+            <Param Type="HRESULT" Name="hrError" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="RoFreeParameterizedTypeExtra">
+            <Param Type="ROPARAMIIDHANDLE" Name="extra" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="RoGetActivatableClassRegistration">
+            <Param Type="HSTRING" Name="activatableClassId" />
+            <Param Type="PActivatableClassRegistration*" Name="activatableClassRegistration" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="RoGetActivationFactory">
+            <Param Type="HSTRING" Name="activatableClassId" />
+            <Param Type="REFIID" Name="iid" />
+            <Param Type="void**" Name="factory" InterfaceId="iid" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="RoGetApartmentIdentifier">
+            <Param Type="UINT64*" Name="apartmentIdentifier" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="RoGetErrorReportingFlags">
+            <Param Type="RO_ERROR_REPORTING_FLAGS*" Name="pflags" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="RoGetParameterizedTypeInstanceIID">
+            <Param Type="UINT32" Name="nameElementCount" />
+            <Param Type="PCWSTR*" Name="nameElements" Count="nameElementCount" />
+            <Param Type="const IRoMetaDataLocator&amp;" Name="metaDataLocator" />
+            <Param Type="GUID*" Name="iid" />
+            <Param Type="ROPARAMIIDHANDLE*" Name="pExtra" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="RoGetServerActivatableClasses">
+            <Param Type="HSTRING" Name="serverName" />
+            <Param Type="HSTRING**" Name="activatableClassIds" DerefPostCount="count" />
+            <Param Type="DWORD*" Name="count" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="RoInitialize">
+            <Param Type="RO_INIT_TYPE" Name="initType" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="RoOriginateError">
+            <Param Type="HRESULT" Name="error" />
+            <Param Type="HSTRING" Name="message" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="RoOriginateErrorW">
+            <Param Type="HRESULT" Name="error" />
+            <Param Type="UINT" Name="cchMax" />
+            <Param Type="PCWSTR" Name="message" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="RoParameterizedTypeExtraGetTypeSignature">
+            <Param Type="ROPARAMIIDHANDLE" Name="extra" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="RoRegisterActivationFactories">
+            <Param Type="HSTRING*" Name="activatableClassIds" Count="count" />
+            <Param Type="PFNGETACTIVATIONFACTORY*" Name="activationFactoryCallbacks" Count="count" />
+            <Param Type="UINT32" Name="count" />
+            <Param Type="RO_REGISTRATION_COOKIE*" Name="cookie" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="RoRegisterForApartmentShutdown">
+            <Param Type="IApartmentShutdown*" Name="callbackObject" />
+            <Param Type="UINT64*" Name="apartmentIdentifier" />
+            <Param Type="APARTMENT_SHUTDOWN_REGISTRATION_COOKIE*" Name="regCookie" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="RoResolveRestrictedErrorInfoReference">
+            <Param Type="PCWSTR" Name="reference" />
+            <Param Type="IRestrictedErrorInfo**" Name="ppRestrictedErrorInfo" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="RoRevokeActivationFactories">
+            <Param Type="RO_REGISTRATION_COOKIE" Name="cookie" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="RoSetErrorReportingFlags">
+            <Param Type="RO_ERROR_REPORTING_FLAGS" Name="flags" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="RoTransformError">
+            <Param Type="HRESULT" Name="oldError" />
+            <Param Type="HRESULT" Name="newError" />
+            <Param Type="HSTRING" Name="message" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="RoTransformErrorW">
+            <Param Type="HRESULT" Name="oldError" />
+            <Param Type="HRESULT" Name="newError" />
+            <Param Type="UINT" Name="cchMax" />
+            <Param Type="PCWSTR" Name="message" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="RoUninitialize">
+            <Return Type="void" />
+        </Api>
+        <Api Name="RoUnregisterForApartmentShutdown">
+            <Param Type="APARTMENT_SHUTDOWN_REGISTRATION_COOKIE" Name="regCookie" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WindowsCompareStringOrdinal">
+            <Param Type="HSTRING" Name="string1" />
+            <Param Type="HSTRING" Name="string2" />
+            <Param Type="INT32*" Name="result" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WindowsConcatString">
+            <Param Type="HSTRING" Name="string1" />
+            <Param Type="HSTRING" Name="string2" />
+            <Param Type="HSTRING*" Name="newString" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WindowsCreateString">
+            <Param Type="LPCWSTR" Name="sourceString" />
+            <Param Type="UINT32" Name="length" />
+            <Param Type="HSTRING*" Name="string" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WindowsCreateStringReference">
+            <Param Type="PCWSTR" Name="sourceString" />
+            <Param Type="UINT32" Name="length" />
+            <Param Type="HSTRING_HEADER*" Name="hstringHeader" />
+            <Param Type="HSTRING*" Name="string" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WindowsDeleteString">
+            <Param Type="HSTRING" Name="string" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WindowsDeleteStringBuffer">
+            <Param Type="HSTRING_BUFFER" Name="bufferHandle" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WindowsDuplicateString">
+            <Param Type="HSTRING" Name="string" />
+            <Param Type="HSTRING*" Name="newString" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WindowsGetStringLen">
+            <Param Type="HSTRING" Name="string" />
+            <Return Type="UINT32" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WindowsGetStringRawBuffer">
+            <Param Type="HSTRING" Name="string" />
+            <Param Type="UINT32*" Name="length" />
+            <Return Type="PCWSTR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WindowsInspectString">
+            <Param Type="UINT_PTR" Name="targetHString" />
+            <Param Type="USHORT" Name="machine" />
+            <Param Type="PINSPECT_HSTRING_CALLBACK" Name="callback" />
+            <Param Type="void*" Name="context" />
+            <Param Type="UINT32*" Name="length" />
+            <Param Type="UINT_PTR*" Name="targetStringAddress" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WindowsIsStringEmpty">
+            <Param Type="HSTRING" Name="string" />
+            <Return Type="BOOL" />
+            <Success />
+        </Api>
+        <Api Name="WindowsPreallocateStringBuffer">
+            <Param Type="UINT32" Name="length" />
+            <Param Type="WCHAR**" Name="mutableBuffer" />
+            <Param Type="HSTRING_BUFFER*" Name="bufferHandle" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WindowsPromoteStringBuffer">
+            <Param Type="HSTRING_BUFFER" Name="bufferHandle" />
+            <Param Type="HSTRING*" Name="string" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WindowsReplaceString">
+            <Param Type="HSTRING" Name="string" />
+            <Param Type="HSTRING" Name="stringReplaced" />
+            <Param Type="HSTRING" Name="stringReplaceWith" />
+            <Param Type="HSTRING*" Name="newString" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WindowsStringHasEmbeddedNull">
+            <Param Type="HSTRING" Name="string" />
+            <Param Type="BOOL*" Name="hasEmbedNull" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WindowsSubstring">
+            <Param Type="HSTRING" Name="string" />
+            <Param Type="UINT32" Name="startIndex" />
+            <Param Type="HSTRING*" Name="newString" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WindowsSubstringWithSpecifiedLength">
+            <Param Type="HSTRING" Name="string" />
+            <Param Type="UINT32" Name="startIndex" />
+            <Param Type="UINT32" Name="length" />
+            <Param Type="HSTRING*" Name="newString" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WindowsTrimStringEnd">
+            <Param Type="HSTRING" Name="string" />
+            <Param Type="HSTRING" Name="trimString" />
+            <Param Type="HSTRING*" Name="newString" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WindowsTrimStringStart">
+            <Param Type="HSTRING" Name="string" />
+            <Param Type="HSTRING" Name="trimString" />
+            <Param Type="HSTRING*" Name="newString" />
+            <Return Type="HRESULT" />
+        </Api>
+
+        <!-- Component Object Model (COM) -->
+        <Category Name="Component Object Model (COM)/COM Fundamentals" />
+        <Api Name="CoAllowUnmarshalerCLSID">
+            <Param Type="REFCLSID" Name="clsid" />
+            <Return Type="HRESULT" />
+        </Api>
+
+        <!-- Ole32.dll -->
+        <SourceModule Name="Ole32.dll" Include="Windows\Ole32.xml">
+            <Api Name="CLSIDFromProgID" />
+            <Api Name="CLSIDFromString" />
+            <Api Name="CoAddRefServerProcess" />
+            <Api Name="CoCancelCall" />
+            <Api Name="CoCopyProxy" />
+            <Api Name="CoCreateFreeThreadedMarshaler" />
+            <Api Name="CoCreateGuid" />
+            <Api Name="CoCreateInstance" />
+            <Api Name="CoCreateInstanceEx" />
+            <Api Name="CoCreateInstanceFromApp" />
+            <Api Name="CoDecrementMTAUsage" />
+            <Api Name="CoDisableCallCancellation" />
+            <Api Name="CoDisconnectContext" />
+            <Api Name="CoDisconnectObject" />
+            <Api Name="CoEnableCallCancellation" />
+            <Api Name="CoFreeUnusedLibraries" />
+            <Api Name="CoFreeUnusedLibrariesEx" />
+            <Api Name="CoGetApartmentType" />
+            <Api Name="CoGetCallContext" />
+            <Api Name="CoGetCallerTID" />
+            <Api Name="CoGetCancelObject" />
+            <Api Name="CoGetClassObject" />
+            <Api Name="CoGetContextToken" />
+            <Api Name="CoGetCurrentLogicalThreadId" />
+            <Api Name="CoGetCurrentProcess" />
+            <Api Name="CoGetInstanceFromFile" />
+            <Api Name="CoGetInstanceFromIStorage" />
+            <Api Name="CoGetInterfaceAndReleaseStream" />
+            <Api Name="CoGetMalloc" />
+            <Api Name="CoGetMarshalSizeMax" />
+            <Api Name="CoGetModuleType" />
+            <Api Name="CoGetObjectContext" />
+            <Api Name="CoGetPSClsid" />
+            <Api Name="CoGetStandardMarshal" />
+            <Api Name="CoGetStdMarshalEx" />
+            <Api Name="CoGetTreatAsClass" />
+            <Api Name="CoImpersonateClient" />
+            <Api Name="CoIncrementMTAUsage" />
+            <Api Name="CoInitializeEx" />
+            <Api Name="CoInitializeSecurity" />
+            <Api Name="CoInvalidateRemoteMachineBindings" />
+            <Api Name="CoIsHandlerConnected" />
+            <Api Name="CoLockObjectExternal" />
+            <Api Name="CoMarshalHresult" />
+            <Api Name="CoMarshalInterface" />
+            <Api Name="CoMarshalInterThreadInterfaceInStream" />
+            <Api Name="CoQueryAuthenticationServices" />
+            <Api Name="CoQueryClientBlanket" />
+            <Api Name="CoQueryProxyBlanket" />
+            <Api Name="CoRegisterClassObject" />
+            <Api Name="CoRegisterInitializeSpy" />
+            <Api Name="CoRegisterMallocSpy" />
+            <Api Name="CoRegisterMessageFilter" />
+            <Api Name="CoRegisterPSClsid" />
+            <Api Name="CoRegisterSurrogate" />
+            <Api Name="CoReleaseMarshalData" />
+            <Api Name="CoReleaseServerProcess" />
+            <Api Name="CoResumeClassObjects" />
+            <Api Name="CoRevertToSelf" />
+            <Api Name="CoRevokeClassObject" />
+            <Api Name="CoRevokeInitializeSpy" />
+            <Api Name="CoRevokeMallocSpy" />
+            <Api Name="CoSetCancelObject" />
+            <Api Name="CoSetProxyBlanket" />
+            <Api Name="CoSuspendClassObjects" />
+            <Api Name="CoSwitchCallContext" />
+            <Api Name="CoTaskMemAlloc" />
+            <Api Name="CoTaskMemFree" />
+            <Api Name="CoTaskMemRealloc" />
+            <Api Name="CoTestCancel" />
+            <Api Name="CoUninitialize" />
+            <Api Name="CoUnmarshalHresult" />
+            <Api Name="CoUnmarshalInterface" />
+            <Api Name="CoWaitForMultipleHandles" />
+            <Api Name="CreateStreamOnHGlobal" />
+            <Api Name="FreePropVariantArray" />
+            <Api Name="GetHGlobalFromStream" />
+            <Api Name="IIDFromString" />
+            <Api Name="ProgIDFromCLSID" />
+            <Api Name="PropVariantClear" />
+            <Api Name="PropVariantCopy" />
+            <Api Name="StringFromCLSID" />
+            <Api Name="StringFromGUID2" />
+            <Api Name="StringFromIID" />
+        </SourceModule>
+
+        <!-- OleAut32.dll -->
+        <SourceModule Name="OleAut32.dll" Include="Windows\OleAut32.xml">
+            <Api Name="CreateErrorInfo" />
+            <Api Name="GetErrorInfo" />
+            <Api Name="SetErrorInfo" />
+        </SourceModule>
+
+    </Module>
+</ApiMonitor>

@@ -1,12 +1,13 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
+    <ErrorLookupModule Name="Iscsidsc.dll" />
     <Module Name="Iscsidsc.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
-        
+
         <!-- Variables -->
         <Variable Name="TCHAR [MAX_ISCSI_PORTAL_NAME_LEN]"      Type="Array" Base="TCHAR" Count="256" />
         <Variable Name="TCHAR [MAX_ISCSI_PORTAL_ADDRESS_LEN]"   Type="Array" Base="TCHAR" Count="256" />
@@ -16,8 +17,8 @@
 
         <!-- ISCSI_UNIQUE_SESSION_ID -->
         <Variable Name="ISCSI_UNIQUE_SESSION_ID" Type="Struct">
-            <Field Type="ULONGLONG" 	Name="AdapterUnique" />
-            <Field Type="ULONGLONG" 	Name="AdapterSpecific" />
+            <Field Type="ULONGLONG"     Name="AdapterUnique" />
+            <Field Type="ULONGLONG"     Name="AdapterSpecific" />
         </Variable>
         <Variable Name="PISCSI_UNIQUE_SESSION_ID"   Type="Pointer" Base="ISCSI_UNIQUE_SESSION_ID" />
         <Variable Name="PISCSI_UNIQUE_SESSION_ID*"  Type="Pointer" Base="PISCSI_UNIQUE_SESSION_ID" />
@@ -71,32 +72,32 @@
 
         <!-- ISCSI_LOGIN_OPTIONS -->
         <Variable Name="ISCSI_LOGIN_OPTIONS" Type="Struct">
-            <Field Type="ULONG" 	            Name="Version" />
-            <Field Type="ISCSI_LOGIN_OPTIONS_INFO_SPECIFIED" Name="InformationSpecified" />
-            <Field Type="ISCSI_LOGIN_FLAGS" 	Name="LoginFlags" />
-            <Field Type="ISCSI_AUTH_TYPES" 	    Name="AuthType" />
-            <Field Type="ISCSI_DIGEST_TYPES" 	Name="HeaderDigest" />
-            <Field Type="ISCSI_DIGEST_TYPES" 	Name="DataDigest" />
-            <Field Type="ULONG" 	            Name="MaximumConnections" />
-            <Field Type="ULONG" 	            Name="DefaultTime2Wait" />
-            <Field Type="ULONG" 	            Name="DefaultTime2Retain" />
-            <Field Type="ULONG" 	            Name="UsernameLength" />
-            <Field Type="ULONG" 	            Name="PasswordLength" />
-            <Field Type="PUCHAR" 	            Name="Username" Length="UsernameLength" />
-            <Field Type="PUCHAR" 	            Name="Password" Length="PasswordLength" />
+            <Field Type="ULONG"                                 Name="Version" />
+            <Field Type="ISCSI_LOGIN_OPTIONS_INFO_SPECIFIED"    Name="InformationSpecified" />
+            <Field Type="ISCSI_LOGIN_FLAGS"                     Name="LoginFlags" />
+            <Field Type="ISCSI_AUTH_TYPES"                      Name="AuthType" />
+            <Field Type="ISCSI_DIGEST_TYPES"                    Name="HeaderDigest" />
+            <Field Type="ISCSI_DIGEST_TYPES"                    Name="DataDigest" />
+            <Field Type="ULONG"                                 Name="MaximumConnections" />
+            <Field Type="ULONG"                                 Name="DefaultTime2Wait" />
+            <Field Type="ULONG"                                 Name="DefaultTime2Retain" />
+            <Field Type="ULONG"                                 Name="UsernameLength" />
+            <Field Type="ULONG"                                 Name="PasswordLength" />
+            <Field Type="PUCHAR"                                Name="Username" Length="UsernameLength" />
+            <Field Type="PUCHAR"                                Name="Password" Length="PasswordLength" />
         </Variable>
         <Variable Name="PISCSI_LOGIN_OPTIONS" Type="Pointer" Base="ISCSI_LOGIN_OPTIONS" />
 
         <!-- ISCSI_VERSION_INFO -->
         <Variable Name="ISCSI_VERSION_INFO" Type="Struct">
-            <Field Type="ULONG" 	Name="MajorVersion" />
-            <Field Type="ULONG" 	Name="MinorVersion" />
-            <Field Type="ULONG" 	Name="BuildNumber" />
+            <Field Type="ULONG"     Name="MajorVersion" />
+            <Field Type="ULONG"     Name="MinorVersion" />
+            <Field Type="ULONG"     Name="BuildNumber" />
         </Variable>
         <Variable Name="PISCSI_VERSION_INFO" Type="Pointer" Base="ISCSI_VERSION_INFO" />
 
         <!-- ISDSC_STATUS -->
-        <Variable Name="ISDSC_STATUS" Type="Alias" Base="ULONG">
+        <Variable Name="ISDSC_STATUS" Type="Alias" Base="[ERROR_CODE]">
             <Enum>
                 <Set Name="ISDSC_NON_SPECIFIC_ERROR"                        Value="0xEFFF0001" />
                 <Set Name="ISDSC_LOGIN_FAILED"                              Value="0xEFFF0002" />
@@ -249,7 +250,7 @@
                 <Set Name="LoginOptions"                Value="7" />
             </Enum>
         </Variable>
-        
+
         <!-- SCSI_LUN_LIST -->
         <Variable Name="SCSI_LUN_LIST" Type="Struct">
             <Field Type="ULONG"         Name="OSLUN" />
@@ -480,7 +481,6 @@
         <Api Name="AddISNSServer" BothCharset="True">
             <Param Type="PTCHAR" Name="Address" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="AddIScsiConnection" BothCharset="True">
             <Param Type="PISCSI_UNIQUE_SESSION_ID" Name="UniqueSessionId" />
@@ -493,7 +493,6 @@
             <Param Type="PCHAR" Name="Key" />
             <Param Type="PISCSI_UNIQUE_CONNECTION_ID" Name="ConnectionId" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="AddIScsiSendTargetPortal" BothCharset="True">
             <Param Type="PTCHAR" Name="InitiatorName" />
@@ -502,7 +501,6 @@
             <Param Type="ISCSI_SECURITY_FLAGS" Name="SecurityFlags" />
             <Param Type="PISCSI_TARGET_PORTAL" Name="Portal" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="AddIScsiStaticTarget" BothCharset="True">
             <Param Type="PTCHAR" Name="TargetName" />
@@ -513,28 +511,23 @@
             <Param Type="PISCSI_LOGIN_OPTIONS" Name="LoginOptions" />
             <Param Type="PISCSI_TARGET_PORTAL_GROUP" Name="PortalGroup" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="AddPersistentIScsiDevice" BothCharset="True">
             <Param Type="PTCHAR" Name="VolumePath" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="AddRadiusServer" BothCharset="True">
             <Param Type="PWCHAR" Name="Address" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="ClearPersistentIScsiDevices">
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="GetDevicesForIScsiSession" BothCharset="True">
             <Param Type="PISCSI_UNIQUE_SESSION_ID" Name="UniqueSessionId" />
             <Param Type="ULONG*" Name="DeviceCount" />
             <Param Type="PISCSI_DEVICE_ON_SESSION" Name="Devices" PostCount="DeviceCount" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="GetIScsiIKEInfo" BothCharset="True">
             <Param Type="PTCHAR" Name="InitiatorName" />
@@ -542,19 +535,16 @@
             <Param Type="PULONG" Name="Reserved" />
             <Param Type="PIKE_AUTHENTICATION_INFORMATION" Name="AuthInfo" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="GetIScsiInitiatorNodeName" BothCharset="True">
-            <Param Type="PTCHAR" Name="InitiatorNodeName" />
+            <Param Type="PTCHAR" Name="InitiatorNodeName" OutputOnly="True" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="GetIScsiSessionList" BothCharset="True">
             <Param Type="ULONG*" Name="BufferSize" />
             <Param Type="ULONG*" Name="SessionCount" />
             <Param Type="PISCSI_SESSION_INFO" Name="SessionInfo" PostCount="SessionCount" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="GetIScsiTargetInformation" BothCharset="True">
             <Param Type="PTCHAR" Name="TargetName" />
@@ -563,12 +553,10 @@
             <Param Type="PULONG" Name="BufferSize" />
             <Param Type="PVOID" Name="Buffer" PostLength="BufferSize" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="GetIScsiVersionInformation">
             <Param Type="PISCSI_VERSION_INFO" Name="VersionInfo" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LoginIScsiTarget" BothCharset="True">
             <Param Type="PTCHAR" Name="TargetName" />
@@ -585,35 +573,29 @@
             <Param Type="PISCSI_UNIQUE_SESSION_ID" Name="UniqueSessionId" />
             <Param Type="PISCSI_UNIQUE_CONNECTION_ID" Name="UniqueConnectionId" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="LogoutIScsiTarget">
             <Param Type="PISCSI_UNIQUE_SESSION_ID" Name="UniqueSessionId" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RefreshISNSServer" BothCharset="True">
             <Param Type="PTCHAR" Name="Address" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RefreshIScsiSendTargetPortal" BothCharset="True">
             <Param Type="PTCHAR" Name="InitiatorInstance" />
             <Param Type="ULONG" Name="InitiatorPortNumber" />
             <Param Type="PISCSI_TARGET_PORTAL" Name="Portal" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RemoveISNSServer" BothCharset="True">
             <Param Type="PTCHAR" Name="Address" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RemoveIScsiConnection">
             <Param Type="PISCSI_UNIQUE_SESSION_ID" Name="UniqueSessionId" />
             <Param Type="PISCSI_UNIQUE_CONNECTION_ID" Name="UniqueConnectionId" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RemoveIScsiPersistentTarget" BothCharset="True">
             <Param Type="PTCHAR" Name="InitiatorInstance" />
@@ -621,75 +603,63 @@
             <Param Type="PTCHAR" Name="TargetName" />
             <Param Type="PISCSI_TARGET_PORTAL" Name="Portal" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RemoveIScsiSendTargetPortal" BothCharset="True">
             <Param Type="PTCHAR" Name="InitiatorInstance" />
             <Param Type="ULONG" Name="InitiatorPortNumber" />
             <Param Type="PISCSI_TARGET_PORTAL" Name="Portal" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RemoveIScsiStaticTarget" BothCharset="True">
             <Param Type="PTCHAR" Name="TargetName" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RemovePersistentIScsiDevice" BothCharset="True">
             <Param Type="PTCHAR" Name="VolumePath" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RemoveRadiusServer" BothCharset="True">
             <Param Type="PTCHAR" Name="Address" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="ReportActiveIScsiTargetMappings" BothCharset="True">
             <Param Type="PULONG" Name="BufferSize" />
             <Param Type="PULONG" Name="MappingCount" />
             <Param Type="PISCSI_TARGET_MAPPING" Name="Mappings" PostCount="MappingCount" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="ReportISNSServerList" BothCharset="True">
             <Param Type="PULONG" Name="BufferSizeInChar" />
             <Param Type="PTCHAR" Name="Buffer" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="ReportIScsiInitiatorList" BothCharset="True">
             <Param Type="ULONG*" Name="BufferSize" />
             <Param Type="PTCHAR" Name="Buffer" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="ReportIScsiPersistentLogins" BothCharset="True">
             <Param Type="ULONG*" Name="Count" />
             <Param Type="PPERSISTENT_ISCSI_LOGIN_INFO" Name="PersistentLoginInfo" Count="Count" />
             <Param Type="PULONG" Name="BufferSizeInBytes" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="ReportIScsiSendTargetPortals" BothCharset="True">
             <Param Type="PULONG" Name="PortalCount" />
             <Param Type="PISCSI_TARGET_PORTAL_INFO" Name="PortalInfo" Count="PortalCount" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="ReportIScsiSendTargetPortalsEx" BothCharset="True">
             <Param Type="PULONG" Name="PortalCount" />
             <Param Type="PULONG" Name="PortalInfoSize" />
             <Param Type="PISCSI_TARGET_PORTAL_INFO_EX" Name="PortalInfo" Count="PortalCount" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="ReportIScsiTargets" BothCharset="True">
             <Param Type="BOOLEAN" Name="ForceUpdate" />
             <Param Type="PULONG" Name="BufferSize" />
-            <Param Type="PTCHAR" Name="Buffer" />
+            <Param Type="PTCHAR" Name="Buffer" OutputOnly="True" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="ReportIScsiTargetPortals" BothCharset="True">
             <Param Type="PWCHAR" Name="InitiatorName" />
@@ -698,19 +668,16 @@
             <Param Type="PULONG" Name="ElementCount" />
             <Param Type="PISCSI_TARGET_PORTAL" Name="Portals" Count="ElementCount" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="ReportPersistentIScsiDevices" BothCharset="True">
             <Param Type="PULONG" Name="BufferSizeInChar" />
             <Param Type="PTCHAR" Name="Buffer" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="ReportRadiusServerList" BothCharset="True">
             <Param Type="PULONG" Name="BufferSizeInChar" />
             <Param Type="PTCHAR" Name="Buffer" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SendScsiInquiry">
             <Param Type="PISCSI_UNIQUE_SESSION_ID*" Name="UniqueSessionId" />
@@ -723,7 +690,6 @@
             <Param Type="PULONG*" Name="SenseSize" />
             <Param Type="PUCHAR" Name="SenseBuffer" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SendScsiReadCapacity">
             <Param Type="PISCSI_UNIQUE_SESSION_ID" Name="UniqueSessionId" />
@@ -734,7 +700,6 @@
             <Param Type="PULONG*" Name="SenseSize" />
             <Param Type="PUCHAR" Name="SenseBuffer" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SendScsiReportLuns">
             <Param Type="PISCSI_UNIQUE_SESSION_ID" Name="UniqueSessionId" />
@@ -744,14 +709,12 @@
             <Param Type="PULONG*" Name="SenseSize" />
             <Param Type="PUCHAR" Name="SenseBuffer" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SetIScsiGroupPresharedKey">
             <Param Type="ULONG" Name="KeyLength" />
             <Param Type="PUCHAR" Name="Key" />
             <Param Type="BOOLEAN" Name="Persist" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SetIScsiIKEInfo" BothCharset="True">
             <Param Type="PTCHAR" Name="InitiatorName" />
@@ -759,24 +722,20 @@
             <Param Type="PIKE_AUTHENTICATION_INFORMATION" Name="AuthInfo" />
             <Param Type="BOOLEAN" Name="Persist" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SetIScsiInitiatorCHAPSharedSecret">
             <Param Type="ULONG" Name="SharedSecretLength" />
             <Param Type="PUCHAR" Name="SharedSecret" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SetIScsiInitiatorRADIUSSharedSecret">
             <Param Type="ULONG" Name="SharedSecretLength" />
             <Param Type="PUCHAR" Name="SharedSecret" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SetIScsiInitiatorNodeName" BothCharset="True">
             <Param Type="PTCHAR" Name="InitiatorNodeName" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SetIScsiTunnelModeOuterAddress" BothCharset="True">
             <Param Type="PTCHAR" Name="InitiatorName" />
@@ -785,11 +744,9 @@
             <Param Type="PTCHAR" Name="OuterModeAddress" />
             <Param Type="BOOLEAN" Name="Persist" />
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="SetupPersistentIScsiDevices">
             <Return Type="ISDSC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
     </Module>
 </ApiMonitor>

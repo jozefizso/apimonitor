@@ -10,6 +10,12 @@
     <Include Filename="Headers\gdi.h.xml" />
     <Module Name="Ole32.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
 
+        <!-- External Interfaces (TODO) -->
+        <Variable Name="IMessageDispatcher"             Type="Interface" />
+        
+        <!-- Interface Aliases -->
+        <Variable Name="PMessageDispatcher"             Type="Alias"    Base="IMessageDispatcher*" />
+
         <!-- Variables -->
         <Variable Name="IMemoryAllocator*"              Type="Alias"    Base="LPVOID" />
         <Variable Name="LPENUMFORMATETC*"               Type="Alias"    Base="IEnumFORMATETC**" />
@@ -34,7 +40,9 @@
         <Variable Name="LPMARSHAL"                      Type="Alias"    Base="IMarshal*" />
         <Variable Name="LPMARSHAL*"                     Type="Pointer"  Base="LPMARSHAL" />
         <Variable Name="LPOLESTREAM"                    Type="Alias"    Base="LPVOID" />
-
+        <Variable Name="CO_MTA_USAGE_COOKIE"            Type="Alias"    Base="HANDLE" />
+        <Variable Name="CO_MTA_USAGE_COOKIE*"           Type="Pointer"  Base="CO_MTA_USAGE_COOKIE" />
+        
         <!-- STGOPTIONS -->
         <Variable Name="STGOPTIONS" Type="Struct">
             <Field Type="USHORT" 	    Name="usVersion" />
@@ -128,8 +136,28 @@
                 <Set Name="STGFMT_NATIVE"       Value="1" />
                 <Set Name="STGFMT_FILE"         Value="3" />
                 <Set Name="STGFMT_ANY"          Value="4" />
-                <Set Name="STGFMT_DOCFILE"      Value="5"  />
+                <Set Name="STGFMT_DOCFILE"      Value="5" />
             </Enum>
+        </Variable>
+
+        <!-- OLERENDER -->
+        <Variable Name="OLERENDER" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="OLERENDER_NONE"      Value="0" />
+                <Set Name="OLERENDER_DRAW"      Value="1" />
+                <Set Name="OLERENDER_FORMAT"    Value="2" />
+                <Set Name="OLERENDER_ASIS"      Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- [ASYNC_MODE_FLAGS] -->
+        <Variable Name="[ASYNC_MODE_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="ASYNC_MODE_DEFAULT"          Value="0x00000000" />
+                <Set Name="ASYNC_MODE_COMPATIBILITY"    Value="0x00000001" />
+            </Flag>
         </Variable>
 
         <!-- Component Object Model (COM) -->
@@ -188,7 +216,7 @@
             <Param Type="LPUNKNOWN" Name="pUnkOuter" />
             <Param Type="[CLSCTX]" Name="dwClsContext" />
             <Param Type="REFIID" Name="riid" />
-            <Param Type="LPVOID*" Name="ppv" />
+            <Param Type="LPVOID*" Name="ppv" DISABLED_InterfaceId="riid" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="CoCreateInstanceEx">
@@ -218,7 +246,6 @@
             <Param Type="WORD" Name="nDosTime" />
             <Param Type="FILETIME*" Name="lpFileTime" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="CoEnableCallCancellation">
             <Param Type="LPVOID" Name="pReserved" />
@@ -233,7 +260,6 @@
             <Param Type="LPWORD" Name="lpDosDate" />
             <Param Type="LPWORD" Name="lpDosTime" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="CoFreeAllLibraries">
             <Return Type="void" />
@@ -267,7 +293,7 @@
         <Api Name="CoGetCancelObject">
             <Param Type="DWORD" Name="dwThreadId" />
             <Param Type="REFIID" Name="iid" />
-            <Param Type="void**" Name="ppUnk" />
+            <Param Type="void**" Name="ppUnk" InterfaceId="iid" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="CoGetClassObject">
@@ -275,7 +301,7 @@
             <Param Type="[CLSCTX]" Name="dwClsContext" />
             <Param Type="COSERVERINFO*" Name="pServerInfo" />
             <Param Type="REFIID" Name="riid" />
-            <Param Type="LPVOID*" Name="ppv" />
+            <Param Type="LPVOID*" Name="ppv" DISABLED_InterfaceId="riid" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="CoGetContextToken">
@@ -294,7 +320,7 @@
             <Param Type="CLSID*" Name="pClsid" />
             <Param Type="IUnknown*" Name="punkOuter" />
             <Param Type="[CLSCTX]" Name="dwClsCtx" />
-            <Param Type="DWORD" Name="grfMode" />
+            <Param Type="[STGM_FLAGS]" Name="grfMode" />
             <Param Type="OLECHAR*" Name="pwszName" />
             <Param Type="DWORD" Name="dwCount" />
             <Param Type="MULTI_QI*" Name="pResults" Count="dwCount" />
@@ -314,7 +340,7 @@
             <Param Type="REFIID" Name="iidIntercepted" />
             <Param Type="IUnknown*" Name="punkOuter" />
             <Param Type="REFIID" Name="iid" />
-            <Param Type="void**" Name="ppv" />
+            <Param Type="void**" Name="ppv" InterfaceId="iid" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="CoGetInterfaceAndReleaseStream">
@@ -341,12 +367,12 @@
             <Param Type="LPCWSTR" Name="pszName" />
             <Param Type="BIND_OPTS*" Name="pBindOptions" />
             <Param Type="REFIID" Name="riid" />
-            <Param Type="void**" Name="ppv" />
+            <Param Type="void**" Name="ppv" InterfaceId="riid" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="CoGetObjectContext">
             <Param Type="REFIID" Name="riid" />
-            <Param Type="LPVOID*" Name="ppv" />
+            <Param Type="LPVOID*" Name="ppv" InterfaceId="riid" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="CoGetPSClsid">
@@ -380,13 +406,11 @@
         <Api Name="CoInitialize">
             <Param Type="LPVOID" Name="pvReserved" />
             <Return Type="HRESULT" />
-            <Success Return="Greater" Value="-1" />
         </Api>
         <Api Name="CoInitializeEx">
             <Param Type="LPVOID" Name="pvReserved" />
             <Param Type="[COINIT_FLAG]" Name="dwCoInit" />
             <Return Type="HRESULT" />
-            <Success Return="Greater" Value="-1" />
         </Api>
         <Api Name="CoInitializeSecurity">
             <Param Type="PSECURITY_DESCRIPTOR" Name="pSecDesc" />
@@ -415,12 +439,10 @@
         <Api Name="CoIsHandlerConnected">
             <Param Type="LPUNKNOWN" Name="pUnk" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="CoIsOle1Class">
             <Param Type="REFCLSID" Name="rclsid" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="CoLoadLibrary">
             <Param Type="LPOLESTR" Name="lpszLibName" />
@@ -517,7 +539,6 @@
         </Api>
         <Api Name="CoReleaseServerProcess">
             <Return Type="ULONG" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="CoResumeClassObjects">
             <Return Type="HRESULT" />
@@ -666,11 +687,14 @@
             <Param Type="LPMSG" Name="lpMsg" />
             <Param Type="WORD*" Name="lpwCmd" />
             <Return Type="BOOL" />
+            <Success />
         </Api>
+        <!-- IsEqualCLSID is a macro -->
         <Api Name="IsEqualGUID">
             <Param Type="REFGUID" Name="rguid1" />
             <Param Type="REFGUID" Name="rguid2" />
             <Return Type="BOOL" />
+            <Success />
         </Api>
         <Api Name="MkParseDisplayName">
             <Param Type="LPBC" Name="pbc" />
@@ -754,6 +778,38 @@
             <Param Type="LPOLESTR*" Name="lplpsz" />
             <Return Type="HRESULT" />
         </Api>
+        <Api Name="CoRegisterChannelHook">
+            <Param Type="REFGUID" Name="ExtensionUuid" />
+            <Param Type="IChannelHook*" Name="pChannelHook" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="CoCreateInstanceFromApp">
+            <Param Type="REFCLSID" Name="rclsid" />
+            <Param Type="IUnknown*" Name="punkOuter" />
+            <Param Type="DWORD" Name="dwClsCtx" />
+            <Param Type="PVOID" Name="reserved" />
+            <Param Type="DWORD" Name="dwCount" />
+            <Param Type="MULTI_QI*" Name="pResults" Count="dwCount" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="CoDecrementMTAUsage">
+            <Param Type="CO_MTA_USAGE_COOKIE" Name="Cookie" />
+            <Return Type="HRESULT" />
+        </Api>
+        <!-- TODO: Forwared to Combase.dll!CoHandlePriorityEventsFromMessagePump Ordinal 111 -->
+        <Api Name="CoHandlePriorityEventsFromMessagePump">
+            <Return Type="void" />
+        </Api>
+        <Api Name="CoIncrementMTAUsage">
+            <Param Type="CO_MTA_USAGE_COOKIE*" Name="pCookie" />
+            <Return Type="HRESULT" />
+        </Api>
+        <!-- TODO: Forwared to Combase.dll!CoSetMessageDispatcher Ordinal 110 -->
+        <Api Name="CoSetMessageDispatcher">
+            <Param Type="PMessageDispatcher" Name="pMessageDispatcher" />
+            <Return Type="HRESULT" />
+        </Api>
+
         <!-- OLE and Data Transfer -->
         <Category Name="Component Object Model (COM)/OLE and Data Transfer" />
         <Api Name="CreateDataAdviseHolder">
@@ -778,11 +834,21 @@
             <Param Type="LPDWORD" Name="pdwEffect" />
             <Return Type="HRESULT" />
         </Api>
+        <Api Name="OleCreate">
+            <Param Type="REFCLSID" Name="rclsid" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="OLERENDER" Name="renderopt" />
+            <Param Type="LPFORMATETC" Name="pFormatEtc" />
+            <Param Type="LPOLECLIENTSITE" Name="pClientSite" />
+            <Param Type="LPSTORAGE" Name="pStg" />
+            <Param Type="LPVOID*" Name="ppvObj" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+        </Api>
         <Api Name="OleCreateDefaultHandler">
             <Param Type="REFCLSID" Name="clsid" />
             <Param Type="LPUNKNOWN" Name="pUnkOuter" />
             <Param Type="REFIID" Name="riid" />
-            <Param Type="LPVOID*" Name="lplpObj" />
+            <Param Type="LPVOID*" Name="lplpObj" InterfaceId="riid" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="OleCreateEmbeddingHelper">
@@ -791,58 +857,58 @@
             <Param Type="DWORD" Name="flags" />
             <Param Type="LPCLASSFACTORY" Name="pCF" />
             <Param Type="REFIID" Name="riid" />
-            <Param Type="LPVOID*" Name="lplpObj" />
+            <Param Type="LPVOID*" Name="lplpObj" InterfaceId="riid" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="OleCreateEx">
             <Param Type="REFCLSID" Name="rclsid" />
             <Param Type="REFIID" Name="riid" />
             <Param Type="DWORD" Name="dwFlags" />
-            <Param Type="DWORD" Name="renderopt" />
+            <Param Type="OLERENDER" Name="renderopt" />
             <Param Type="ULONG" Name="cFormats" />
-            <Param Type="DWORD*" Name="rgAdvf" />
-            <Param Type="LPFORMATETC" Name="rgFormatEtc" />
+            <Param Type="DWORD*" Name="rgAdvf" Count="cFormats" />
+            <Param Type="LPFORMATETC" Name="rgFormatEtc" Count="cFormats" />
             <Param Type="IAdviseSink*" Name="lpAdviseSink" />
             <Param Type="DWORD*" Name="rgdwConnection" />
             <Param Type="LPOLECLIENTSITE" Name="pClientSite" />
             <Param Type="LPSTORAGE" Name="pStg" />
-            <Param Type="LPVOID*" Name="ppvObj" />
+            <Param Type="LPVOID*" Name="ppvObj" InterfaceId="riid" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="OleCreateFromData">
             <Param Type="LPDATAOBJECT" Name="pSrcDataObj" />
             <Param Type="REFIID" Name="riid" />
-            <Param Type="DWORD" Name="renderopt" />
+            <Param Type="OLERENDER" Name="renderopt" />
             <Param Type="LPFORMATETC" Name="pFormatEtc" />
             <Param Type="LPOLECLIENTSITE" Name="pClientSite" />
             <Param Type="LPSTORAGE" Name="pStg" />
-            <Param Type="LPVOID*" Name="ppvObj" />
+            <Param Type="LPVOID*" Name="ppvObj" InterfaceId="riid" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="OleCreateFromDataEx">
             <Param Type="LPDATAOBJECT" Name="pSrcDataObj" />
             <Param Type="REFIID" Name="riid" />
             <Param Type="DWORD" Name="dwFlags" />
-            <Param Type="DWORD" Name="renderopt" />
+            <Param Type="OLERENDER" Name="renderopt" />
             <Param Type="ULONG" Name="cFormats" />
-            <Param Type="DWORD*" Name="rgAdvf" />
-            <Param Type="LPFORMATETC" Name="rgFormatEtc" />
+            <Param Type="DWORD*" Name="rgAdvf" Count="cFormats" />
+            <Param Type="LPFORMATETC" Name="rgFormatEtc" Count="cFormats" />
             <Param Type="IAdviseSink*" Name="lpAdviseSink" />
             <Param Type="DWORD*" Name="rgdwConnection" />
             <Param Type="LPOLECLIENTSITE" Name="pClientSite" />
             <Param Type="LPSTORAGE" Name="pStg" />
-            <Param Type="LPVOID*" Name="ppvObj" />
+            <Param Type="LPVOID*" Name="ppvObj" InterfaceId="riid" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="OleCreateFromFile">
             <Param Type="REFCLSID" Name="rclsid" />
             <Param Type="LPCOLESTR" Name="lpszFileName" />
             <Param Type="REFIID" Name="riid" />
-            <Param Type="DWORD" Name="renderopt" />
+            <Param Type="OLERENDER" Name="renderopt" />
             <Param Type="LPFORMATETC" Name="lpFormatEtc" />
             <Param Type="LPOLECLIENTSITE" Name="pClientSite" />
             <Param Type="LPSTORAGE" Name="pStg" />
-            <Param Type="LPVOID*" Name="ppvObj" />
+            <Param Type="LPVOID*" Name="ppvObj" InterfaceId="riid" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="OleCreateFromFileEx">
@@ -850,90 +916,90 @@
             <Param Type="LPCOLESTR" Name="lpszFileName" />
             <Param Type="REFIID" Name="riid" />
             <Param Type="DWORD" Name="dwFlags" />
-            <Param Type="DWORD" Name="renderopt" />
+            <Param Type="OLERENDER" Name="renderopt" />
             <Param Type="ULONG" Name="cFormats" />
-            <Param Type="DWORD*" Name="rgAdvf" />
-            <Param Type="LPFORMATETC" Name="rgFormatEtc" />
+            <Param Type="DWORD*" Name="rgAdvf" Count="cFormats" />
+            <Param Type="LPFORMATETC" Name="rgFormatEtc" Count="cFormats" />
             <Param Type="IAdviseSink*" Name="lpAdviseSink" />
             <Param Type="DWORD*" Name="rgdwConnection" />
             <Param Type="LPOLECLIENTSITE" Name="pClientSite" />
             <Param Type="LPSTORAGE" Name="pStg" />
-            <Param Type="LPVOID*" Name="ppvObj" />
+            <Param Type="LPVOID*" Name="ppvObj" InterfaceId="riid" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="OleCreateLink">
             <Param Type="LPMONIKER" Name="pmkLinkSrc" />
             <Param Type="REFIID" Name="riid" />
-            <Param Type="DWORD" Name="renderopt" />
+            <Param Type="OLERENDER" Name="renderopt" />
             <Param Type="LPFORMATETC" Name="lpFormatEtc" />
             <Param Type="LPOLECLIENTSITE" Name="pClientSite" />
             <Param Type="LPSTORAGE" Name="pStg" />
-            <Param Type="LPVOID*" Name="ppvObj" />
+            <Param Type="LPVOID*" Name="ppvObj" InterfaceId="riid" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="OleCreateLinkEx">
             <Param Type="LPMONIKER" Name="pmkLinkSrc" />
             <Param Type="REFIID" Name="riid" />
             <Param Type="DWORD" Name="dwFlags" />
-            <Param Type="DWORD" Name="renderopt" />
+            <Param Type="OLERENDER" Name="renderopt" />
             <Param Type="ULONG" Name="cFormats" />
-            <Param Type="DWORD*" Name="rgAdvf" />
-            <Param Type="LPFORMATETC" Name="rgFormatEtc" />
+            <Param Type="DWORD*" Name="rgAdvf" Count="cFormats" />
+            <Param Type="LPFORMATETC" Name="rgFormatEtc" Count="cFormats" />
             <Param Type="IAdviseSink*" Name="lpAdviseSink" />
             <Param Type="DWORD*" Name="rgdwConnection" />
             <Param Type="LPOLECLIENTSITE" Name="pClientSite" />
             <Param Type="LPSTORAGE" Name="pStg" />
-            <Param Type="LPVOID*" Name="ppvObj" />
+            <Param Type="LPVOID*" Name="ppvObj" InterfaceId="riid" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="OleCreateLinkFromData">
             <Param Type="LPDATAOBJECT" Name="pSrcDataObj" />
             <Param Type="REFIID" Name="riid" />
-            <Param Type="DWORD" Name="renderopt" />
+            <Param Type="OLERENDER" Name="renderopt" />
             <Param Type="LPFORMATETC" Name="pFormatEtc" />
             <Param Type="LPOLECLIENTSITE" Name="pClientSite" />
             <Param Type="LPSTORAGE" Name="pStg" />
-            <Param Type="LPVOID*" Name="ppvObj" />
+            <Param Type="LPVOID*" Name="ppvObj" InterfaceId="riid" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="OleCreateLinkFromDataEx">
             <Param Type="LPDATAOBJECT" Name="pSrcDataObj" />
             <Param Type="REFIID" Name="riid" />
             <Param Type="DWORD" Name="dwFlags" />
-            <Param Type="DWORD" Name="renderopt" />
+            <Param Type="OLERENDER" Name="renderopt" />
             <Param Type="ULONG" Name="cFormats" />
-            <Param Type="DWORD*" Name="rgAdvf" />
-            <Param Type="LPFORMATETC" Name="rgFormatEtc" />
+            <Param Type="DWORD*" Name="rgAdvf" Count="cFormats" />
+            <Param Type="LPFORMATETC" Name="rgFormatEtc" Count="cFormats" />
             <Param Type="IAdviseSink*" Name="lpAdviseSink" />
             <Param Type="DWORD*" Name="rgdwConnection" />
             <Param Type="LPOLECLIENTSITE" Name="pClientSite" />
             <Param Type="LPSTORAGE" Name="pStg" />
-            <Param Type="LPVOID*" Name="ppvObj" />
+            <Param Type="LPVOID*" Name="ppvObj" InterfaceId="riid" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="OleCreateLinkToFile">
             <Param Type="LPCOLESTR" Name="lpszFileName" />
             <Param Type="REFIID" Name="riid" />
-            <Param Type="DWORD" Name="renderopt" />
+            <Param Type="OLERENDER" Name="renderopt" />
             <Param Type="LPFORMATETC" Name="lpFormatEtc" />
             <Param Type="LPOLECLIENTSITE" Name="pClientSite" />
             <Param Type="LPSTORAGE" Name="pStg" />
-            <Param Type="LPVOID*" Name="ppvObj" />
+            <Param Type="LPVOID*" Name="ppvObj" InterfaceId="riid" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="OleCreateLinkToFileEx">
             <Param Type="LPCOLESTR" Name="lpszFileName" />
             <Param Type="REFIID" Name="riid" />
             <Param Type="DWORD" Name="dwFlags" />
-            <Param Type="DWORD" Name="renderopt" />
+            <Param Type="OLERENDER" Name="renderopt" />
             <Param Type="ULONG" Name="cFormats" />
-            <Param Type="DWORD*" Name="rgAdvf" />
-            <Param Type="LPFORMATETC" Name="rgFormatEtc" />
+            <Param Type="DWORD*" Name="rgAdvf" Count="cFormats" />
+            <Param Type="LPFORMATETC" Name="rgFormatEtc" Count="cFormats" />
             <Param Type="IAdviseSink*" Name="lpAdviseSink" />
             <Param Type="DWORD*" Name="rgdwConnection" />
             <Param Type="LPOLECLIENTSITE" Name="pClientSite" />
             <Param Type="LPSTORAGE" Name="pStg" />
-            <Param Type="LPVOID*" Name="ppvObj" />
+            <Param Type="LPVOID*" Name="ppvObj" InterfaceId="riid" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="OleCreateMenuDescriptor">
@@ -945,7 +1011,7 @@
         <Api Name="OleCreateStaticFromData">
             <Param Type="LPDATAOBJECT" Name="pSrcDataObj" />
             <Param Type="REFIID" Name="iid" />
-            <Param Type="DWORD" Name="renderopt" />
+            <Param Type="OLERENDER" Name="renderopt" />
             <Param Type="LPFORMATETC" Name="pFormatEtc" />
             <Param Type="LPOLECLIENTSITE" Name="pClientSite" />
             <Param Type="LPSTORAGE" Name="pStg" />
@@ -988,7 +1054,14 @@
         <Api Name="OleIsRunning">
             <Param Type="LPOLEOBJECT" Name="pObject" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="OleLoad">
+            <Param Type="LPSTORAGE" Name="pStg" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="REFCLSID" Name="rclsid" />
+            <Param Type="LPOLECLIENTSITE" Name="pClientSite" />
+            <Param Type="LPVOID*" Name="ppvObj" InterfaceId="riid" />
+            <Return Type="HRESULT" />
         </Api>
         <Api Name="OleLoadFromStream">
             <Param Type="LPSTREAM" Name="pStm" />
@@ -1088,6 +1161,7 @@
             <Param Type="HWND" Name="hwnd" />
             <Return Type="HRESULT" />
         </Api>
+        
         <!-- Structured Storage -->
         <Category Name="Component Object Model (COM)/Structured Storage" />
         <Api Name="CreateILockBytesOnHGlobal">
@@ -1109,7 +1183,7 @@
         </Api>
         <Api Name="FreePropVariantArray">
             <Param Type="ULONG" Name="cVariants" />
-            <Param Type="PROPVARIANT*" Name="rgvars" />
+            <Param Type="PROPVARIANT*" Name="rgvars" Count="cVariants" />
             <Return Type="WINOLEAPI" />
         </Api>
         <Api Name="GetConvertStg">
@@ -1193,7 +1267,6 @@
             <Param Type="PROPVARIANT*" Name="pvar" />
             <Param Type="IMemoryAllocator*" Name="pma" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SetConvertStg">
             <Param Type="IStorage*" Name="pStg" />
@@ -1235,7 +1308,7 @@
             <Param Type="IUnknown*" Name="pUnk" />
             <Param Type="REFFMTID" Name="fmtid" />
             <Param Type="const CLSID*" Name="pclsid" />
-            <Param Type="DWORD" Name="grfFlags" />
+            <Param Type="[PROPSETFLAG]" Name="grfFlags" />
             <Param Type="DWORD" Name="dwReserved" />
             <Param Type="IPropertyStorage**" Name="ppPropStg" />
             <Return Type="HRESULT" />
@@ -1271,15 +1344,15 @@
         </Api>
         <Api Name="StgOpenAsyncDocfileOnIFillLockBytes">
             <Param Type="IFillLockBytes*" Name="ppflb" />
-            <Param Type="DWORD" Name="grfmode" />
-            <Param Type="DWORD" Name="asyncFlags" />
+            <Param Type="[STGM_FLAGS]" Name="grfmode" />
+            <Param Type="[ASYNC_MODE_FLAGS]" Name="asyncFlags" />
             <Param Type="IStorage**" Name="ppstgOpen" />
             <Return Type="WINOLEAPI" />
         </Api>
         <Api Name="StgOpenPropStg">
             <Param Type="IUnknown*" Name="pUnk" />
             <Param Type="REFFMTID" Name="fmtid" />
-            <Param Type="DWORD" Name="grfFlags" />
+            <Param Type="[PROPSETFLAG]" Name="grfFlags" />
             <Param Type="DWORD" Name="dwReserved" />
             <Param Type="IPropertyStorage**" Name="ppPropStg" />
             <Return Type="HRESULT" />
@@ -1307,7 +1380,7 @@
         <Api Name="StgOpenStorageOnILockBytes">
             <Param Type="ILockBytes*" Name="plkbyt" />
             <Param Type="IStorage*" Name="pStgPriority" />
-            <Param Type="DWORD" Name="grfMode" />
+            <Param Type="[STGM_FLAGS]" Name="grfMode" />
             <Param Type="SNB" Name="snbExclude" />
             <Param Type="DWORD" Name="reserved" />
             <Param Type="IStorage**" Name="ppstgOpen" />
@@ -1344,5 +1417,14 @@
             <Param Type="LPWSTR*" Name="lpszUserType" />
             <Return Type="WINOLEAPI" />
         </Api>
+
+        <!-- Undocumented (UnDoc'd) -->
+        <Category Name="Undocumented (UnDoc'd)" OnlineHelp="UnDoc'd-ole32" />
+        <Api Name="CoGetModuleType">
+            <Param Type="LPCWSTR" Name="pwszFile" />
+            <Param Type="int*" Name="pModuleType" />
+            <Return Type="HRESULT" />
+        </Api>
+
     </Module>
 </ApiMonitor>

@@ -20,24 +20,31 @@
         <Variable Name="ISyncMgrConflictResolveInfo"        Type="Interface" />
         <Variable Name="ISyncMgrConflictStore"              Type="Interface" />
         <Variable Name="ISyncMgrControl"                    Type="Interface" />
+        <Variable Name="ISyncMgrEnumItems"                  Type="Interface" />
         <Variable Name="ISyncMgrEvent"                      Type="Interface" />
         <Variable Name="ISyncMgrEventLinkUIOperation"       Type="Interface" />
         <Variable Name="ISyncMgrEventStore"                 Type="Interface" />
         <Variable Name="ISyncMgrHandler"                    Type="Interface" />
         <Variable Name="ISyncMgrHandlerCollection"          Type="Interface" />
         <Variable Name="ISyncMgrHandlerInfo"                Type="Interface" />
+        <Variable Name="ISyncMgrRegister"                   Type="Interface" />
         <Variable Name="ISyncMgrResolutionHandler"          Type="Interface" />
         <Variable Name="ISyncMgrScheduleWizardUIOperation"  Type="Interface" />
         <Variable Name="ISyncMgrSessionCreator"             Type="Interface" />
         <Variable Name="ISyncMgrSyncCallback"               Type="Interface" />
+        <Variable Name="ISyncMgrSynchronize"                Type="Interface" />
+        <Variable Name="ISyncMgrSynchronizeCallback"        Type="Interface" />
+        <Variable Name="ISyncMgrSynchronizeInvoke"          Type="Interface" />
         <Variable Name="ISyncMgrSyncItem"                   Type="Interface" />
         <Variable Name="ISyncMgrSyncItemContainer"          Type="Interface" />
         <Variable Name="ISyncMgrSyncItemInfo"               Type="Interface" />
         <Variable Name="ISyncMgrSyncResult"                 Type="Interface" />
         <Variable Name="ISyncMgrUIOperation"                Type="Interface" />
-        
+
         <!-- Variables -->
-        <Variable Name="byte [1]" Type="Array" Base="byte" Count="1" />
+        <Variable Name="byte [1]"                       Type="Array"    Base="byte"    Count="1" />
+        <Variable Name="WCHAR [MAX_SYNCMGRITEMNAME]"    Type="Array"    Base="WCHAR"   Count="128" />
+        <Variable Name="WCHAR [MAX_SYNCMGRHANDLERNAME]" Type="Array"    Base="WCHAR"   Count="32" />
 
         <!-- SYNCMGR_ITEM_POLICIES -->
         <Variable Name="SYNCMGR_ITEM_POLICIES" Type="Alias" Base="DWORD">
@@ -242,7 +249,7 @@
         <!-- BYTE_BLOB -->
         <Variable Name="BYTE_BLOB" Type="Struct">
             <Field Type="unsigned long"     Name="clSize" />
-            <Field Type="byte [1]"          Name="abData" Count="clSize"  />
+            <Field Type="byte [1]"          Name="abData" Count="clSize" />
         </Variable>
         <Variable Name="BYTE_BLOB*" Type="Pointer" Base="BYTE_BLOB" />
 
@@ -278,6 +285,165 @@
             </Flag>
         </Variable>
         <Variable Name="SYNCMGR_ITEM_CAPABILITIES*" Type="Pointer" Base="SYNCMGR_ITEM_CAPABILITIES" />
+
+        <!-- SYNCMGRITEMFLAGS -->
+        <Variable Name="SYNCMGRITEMFLAGS" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="SYNCMGRITEM_HASPROPERTIES"       Value="0x0001" />
+                <Set Name="SYNCMGRITEM_TEMPORARY"           Value="0x0002" />
+                <Set Name="SYNCMGRITEM_ROAMINGUSER"         Value="0x0004" />
+                <Set Name="SYNCMGRITEM_LASTUPDATETIME"      Value="0x0008" />
+                <Set Name="SYNCMGRITEM_MAYDELETEITEM"       Value="0x0010" />
+                <Set Name="SYNCMGRITEM_HIDDEN"              Value="0x0020" />
+            </Flag>
+        </Variable>
+
+        <!-- SYNCMGRITEMSTATE -->
+        <Variable Name="SYNCMGRITEMSTATE" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="SYNCMGRITEMSTATE_UNCHECKED"      Value="0x0000" />
+                <Set Name="SYNCMGRITEMSTATE_CHECKED"        Value="0x0001" />
+            </Enum>
+        </Variable>
+
+        <!-- SYNCMGRITEM -->
+        <Variable Name="SYNCMGRITEM" Type="Struct">
+            <Field Type="DWORD"                         Name="cbSize" />
+            <Field Type="SYNCMGRITEMFLAGS"              Name="dwFlags" />
+            <Field Type="GUID"                          Name="ItemID" />
+            <Field Type="SYNCMGRITEMSTATE"              Name="dwItemState" />
+            <Field Type="HICON"                         Name="hIcon" />
+            <Field Type="WCHAR [MAX_SYNCMGRITEMNAME]"   Name="wszItemName" />
+            <Field Type="FILETIME"                      Name="ftLastUpdate" />
+        </Variable>
+        <Variable Name="SYNCMGRITEM*" Type="Pointer" Base="SYNCMGRITEM" />
+
+        <!-- SYNCMGRFLAG -->
+        <Variable Name="SYNCMGRFLAG" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="SYNCMGRFLAG_CONNECT"                 Value="0x0001" />
+                <Set Name="SYNCMGRFLAG_PENDINGDISCONNECT"       Value="0x0002" />
+                <Set Name="SYNCMGRFLAG_MANUAL"                  Value="0x0003" />
+                <Set Name="SYNCMGRFLAG_IDLE"                    Value="0x0004" />
+                <Set Name="SYNCMGRFLAG_INVOKE"                  Value="0x0005" />
+                <Set Name="SYNCMGRFLAG_SCHEDULED"               Value="0x0006" />
+                <Set Name="SYNCMGRFLAG_SETTINGS"                Value="0x0100" />
+                <Set Name="SYNCMGRFLAG_MAYBOTHERUSER"           Value="0x0200" />
+            </Flag>
+        </Variable>
+
+        <!-- SYNCMGRSTATUS -->
+        <Variable Name="SYNCMGRSTATUS" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="SYNCMGRSTATUS_STOPPED"                   Value="0x0000" />
+                <Set Name="SYNCMGRSTATUS_SKIPPED"                   Value="0x0001" />
+                <Set Name="SYNCMGRSTATUS_PENDING"                   Value="0x0002" />
+                <Set Name="SYNCMGRSTATUS_UPDATING"                  Value="0x0003" />
+                <Set Name="SYNCMGRSTATUS_SUCCEEDED"                 Value="0x0004" />
+                <Set Name="SYNCMGRSTATUS_FAILED"                    Value="0x0005" />
+                <Set Name="SYNCMGRSTATUS_PAUSED"                    Value="0x0006" />
+                <Set Name="SYNCMGRSTATUS_RESUMING"                  Value="0x0007" />
+                <Set Name="SYNCMGRSTATUS_UPDATING_INDETERMINATE"    Value="0x0008" />
+                <Set Name="SYNCMGRSTATUS_DELETED"                   Value="0x0100" />
+            </Flag>
+        </Variable>
+
+        <!-- SYNCMGRHANDLERFLAGS -->
+        <Variable Name="SYNCMGRHANDLERFLAGS" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="SYNCMGRHANDLER_HASPROPERTIES"            Value="0x0001" />
+                <Set Name="SYNCMGRHANDLER_MAYESTABLISHCONNECTION"   Value="0x0002" />
+                <Set Name="SYNCMGRHANDLER_ALWAYSLISTHANDLER"        Value="0x0004" />
+                <Set Name="SYNCMGRHANDLER_HIDDEN"                   Value="0x0008" />
+            </Flag>
+        </Variable>
+
+        <!-- SYNCMGRHANDLERINFO -->
+        <Variable Name="SYNCMGRHANDLERINFO" Type="Struct">
+            <Field Type="DWORD"                             Name="cbSize" />
+            <Field Type="HICON"                             Name="hIcon" />
+            <Field Type="SYNCMGRHANDLERFLAGS"               Name="SyncMgrHandlerFlags" />
+            <Field Type="WCHAR [MAX_SYNCMGRHANDLERNAME]"    Name="wszHandlerName" />
+        </Variable>
+        <Variable Name="SYNCMGRHANDLERINFO*"  Type="Pointer" Base="SYNCMGRHANDLERINFO" />
+        <Variable Name="SYNCMGRHANDLERINFO**" Type="Pointer" Base="SYNCMGRHANDLERINFO*" />
+
+        <!-- [SYNCMGRPROGRESSITEM_MASK] -->
+        <Variable Name="[SYNCMGRPROGRESSITEM_MASK]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Flag>
+                <Set Name="SYNCMGRPROGRESSITEM_STATUSTEXT"      Value="0x0001" />
+                <Set Name="SYNCMGRPROGRESSITEM_STATUSTYPE"      Value="0x0002" />
+                <Set Name="SYNCMGRPROGRESSITEM_PROGVALUE"       Value="0x0004" />
+                <Set Name="SYNCMGRPROGRESSITEM_MAXVALUE"        Value="0x0008" />
+            </Flag>
+        </Variable>
+
+        <!-- SYNCMGRPROGRESSITEM -->
+        <Variable Name="SYNCMGRPROGRESSITEM" Type="Struct">
+            <Field Type="DWORD"                         Name="cbSize" />
+            <Field Type="[SYNCMGRPROGRESSITEM_MASK]"    Name="mask" />
+            <Field Type="LPCWSTR"                       Name="lpcStatusText" />
+            <Field Type="SYNCMGRSTATUS"                 Name="dwStatusType" />
+            <Field Type="int"                           Name="iProgValue" />
+            <Field Type="int"                           Name="iMaxValue" />
+        </Variable>
+        <Variable Name="const SYNCMGRPROGRESSITEM*" Type="Pointer" Base="SYNCMGRPROGRESSITEM" />
+
+        <!-- [SYNCMGRLOGERROR_MASK] -->
+        <Variable Name="[SYNCMGRLOGERROR_MASK]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="SYNCMGRLOGERROR_ERRORFLAGS"  Value="0x0001" />
+                <Set Name="SYNCMGRLOGERROR_ERRORID"     Value="0x0002" />
+                <Set Name="SYNCMGRLOGERROR_ITEMID"      Value="0x0004" />
+            </Flag>
+        </Variable>
+
+        <!-- SYNCMGRERRORFLAGS -->
+        <Variable Name="SYNCMGRERRORFLAGS" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="SYNCMGRERRORFLAG_ENABLEJUMPTEXT"  Value="0x1" />
+            </Flag>
+        </Variable>
+
+        <!-- SYNCMGRLOGERRORINFO -->
+        <Variable Name="SYNCMGRLOGERRORINFO" Type="Struct">
+            <Field Type="DWORD"                     Name="cbSize" />
+            <Field Type="[SYNCMGRLOGERROR_MASK]"    Name="mask" />
+            <Field Type="SYNCMGRERRORFLAGS"         Name="dwSyncMgrErrorFlags" />
+            <Field Type="GUID"                      Name="ErrorID" />
+            <Field Type="GUID"                      Name="ItemID" />
+        </Variable>
+        <Variable Name="const SYNCMGRLOGERRORINFO*" Type="Pointer" Base="SYNCMGRLOGERRORINFO" />
+
+        <!-- SYNCMGRREGISTERFLAGS -->
+        <Variable Name="SYNCMGRREGISTERFLAGS" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="SYNCMGRREGISTERFLAG_CONNECT"             Value="0x1" />
+                <Set Name="SYNCMGRREGISTERFLAG_PENDINGDISCONNECT"   Value="0x2" />
+                <Set Name="SYNCMGRREGISTERFLAG_IDLE"                Value="0x4" />
+            </Flag>
+        </Variable>
+        <Variable Name="SYNCMGRREGISTERFLAGS*" Type="Pointer" Base="SYNCMGRREGISTERFLAGS">
+            <Display Name="LPDWORD" />
+        </Variable>
+
+        <!-- SYNCMGRINVOKEFLAGS -->
+        <Variable Name="SYNCMGRINVOKEFLAGS" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="SYNCMGRINVOKE_STARTSYNC"     Value="0x2" />
+                <Set Name="SYNCMGRINVOKE_MINIMIZED"     Value="0x4" />
+            </Flag>
+        </Variable>
 
     </Headers>
 </ApiMonitor>

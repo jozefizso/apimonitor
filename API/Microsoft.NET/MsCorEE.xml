@@ -66,37 +66,21 @@
             </Flag>
         </Variable>
 
-        <!-- .NET Framework/Unmanaged API/Hosting -->
-        <Category Name="Microsoft .NET/Unmanaged API/Hosting" />
+        <!-- [SN_CMP_RESULT] -->
+        <Variable Name="[SN_CMP_RESULT]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="SN_CMP_DIFFERENT"    Value="0" />
+                <Set Name="SN_CMP_IDENTICAL"    Value="1" />
+                <Set Name="SN_CMP_SIGONLY"      Value="2" />
+            </Enum>
+        </Variable>
+        <Variable Name="[SN_CMP_RESULT*]" Type="Pointer" Base="[SN_CMP_RESULT]">
+            <Display Name="DWORD*" />
+        </Variable>
 
-        <Api Name="_CorDllMain">
-            <Param Type="HINSTANCE" Name="hInst" />
-            <Param Type="DWORD" Name="dwReason" />
-            <Param Type="LPVOID" Name="lpReserved" />
-            <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
-        </Api>
-        <Api Name="_CorExeMain">
-            <Return Type="__int32" />
-        </Api>
-        <Api Name="_CorExeMain2">
-            <Param Type="PBYTE" Name="pUnmappedPE" />
-            <Param Type="DWORD" Name="cUnmappedPE" />
-            <Param Type="LPWSTR" Name="pImageNameIn" />
-            <Param Type="LPWSTR" Name="pLoadersFileName" />
-            <Param Type="LPWSTR" Name="pCmdLine" />
-            <Return Type="__int32" />
-            <Success Return="NotEqual" Value="0" />
-        </Api>
-        <Api Name="_CorImageUnloading">
-            <Param Type="PVOID*" Name="ImageBase" />
-            <Return Type="STDAPI_(VOID)" />
-        </Api>
-        <Api Name="_CorValidateImage">
-            <Param Type="PVOID*" Name="ImageBase" />
-            <Param Type="LPCWSTR" Name="FileName" />
-            <Return Type="STDAPI" />
-        </Api>
+        <!-- .NET Framework/Unmanaged/Hosting -->
+        <Category Name="Microsoft .NET/Unmanaged/Hosting" />
         <Api Name="CallFunctionShim">
             <Param Type="LPCWSTR" Name="szDllName" />
             <Param Type="LPCSTR" Name="szFunctionName" />
@@ -122,7 +106,6 @@
         <Api Name="CoInitializeEE">
             <Param Type="COINITIEE" Name="fFlags" />
             <Return Type="HRESULT" />
-            <Success Return="Less" Value="2" />
         </Api>
         <Api Name="CorBindToCurrentRuntime">
             <Param Type="LPCWSTR" Name="pwszFileName" />
@@ -297,8 +280,8 @@
             <Return Type="HRESULT" />
         </Api>
 
-        <!-- .NET Framework/Unmanaged API/Strong Naming -->
-        <Category Name="Microsoft .NET/Unmanaged API/Strong Naming" />
+        <!-- .NET Framework/Unmanaged/Strong Naming -->
+        <Category Name="Microsoft .NET/Unmanaged/Strong Naming" />
         <Api Name="GetHashFromAssemblyFile" BothCharset="True" SuffixA="">
             <Param Type="LPCTSTR" Name="szFilePath" />
             <Param Type="unsigned int*" Name="piHashAlg" />
@@ -348,9 +331,8 @@
         <Api Name="StrongNameCompareAssemblies">
             <Param Type="LPCWSTR" Name="wszAssembly1" />
             <Param Type="LPCWSTR" Name="wszAssembly2" />
-            <Param Type="DWORD*" Name="pdwResult" />
+            <Param Type="[SN_CMP_RESULT*]" Name="pdwResult" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="StrongNameFreeBuffer">
             <Param Type="BYTE*" Name="pbMemory" />
@@ -361,7 +343,6 @@
             <Param Type="BYTE*" Name="pbBlob" PostLength="pcbBlob" />
             <Param Type="DWORD*" Name="pcbBlob" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="StrongNameGetBlobFromImage">
             <Param Type="BYTE*" Name="pbBase" />
@@ -369,7 +350,6 @@
             <Param Type="BYTE*" Name="pbBlob" PostLength="pcbBlob" />
             <Param Type="DWORD*" Name="pcbBlob" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="StrongNameGetPublicKey">
             <Param Type="LPCWSTR" Name="szKeyContainer" />
@@ -378,18 +358,15 @@
             <Param Type="BYTE**" Name="ppbPublicKeyBlob" PostLength="pcbPublicKeyBlob" />
             <Param Type="ULONG*" Name="pcbPublicKeyBlob" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="StrongNameHashSize">
             <Param Type="ULONG" Name="ulHashAlg" />
             <Param Type="DWORD*" Name="pcbSize" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="StrongNameKeyDelete">
             <Param Type="LPCWSTR" Name="wszKeyContainer" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="StrongNameKeyGen">
             <Param Type="LPCWSTR" Name="wszKeyContainer" />
@@ -397,7 +374,6 @@
             <Param Type="BYTE**" Name="ppbKeyBlob" PostLength="pcbKeyBlob" />
             <Param Type="ULONG*" Name="pcbKeyBlob" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="StrongNameKeyGenEx">
             <Param Type="LPCWSTR" Name="wszKeyContainer" />
@@ -406,14 +382,12 @@
             <Param Type="BYTE**" Name="ppbKeyBlob" PostLength="pcbKeyBlob" />
             <Param Type="ULONG*" Name="pcbKeyBlob" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="StrongNameKeyInstall">
             <Param Type="LPCWSTR" Name="wszKeyContainer" />
             <Param Type="BYTE*" Name="pbKeyBlob" Length="cbKeyBlob" />
             <Param Type="ULONG" Name="cbKeyBlob" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="StrongNameSignatureGeneration">
             <Param Type="LPCWSTR" Name="wszFilePath" />
@@ -423,7 +397,6 @@
             <Param Type="BYTE**" Name="ppbSignatureBlob" PostLength="pcbSignatureBlob" />
             <Param Type="ULONG*" Name="pcbSignatureBlob" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="StrongNameSignatureGenerationEx">
             <Param Type="LPCWSTR" Name="wszFilePath" />
@@ -434,28 +407,24 @@
             <Param Type="ULONG*" Name="pcbSignatureBlob" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="StrongNameSignatureSize">
             <Param Type="BYTE*" Name="pbPublicKeyBlob" Length="cbPublicKeyBlob" />
             <Param Type="ULONG" Name="cbPublicKeyBlob" />
             <Param Type="DWORD*" Name="pcbSize" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="StrongNameSignatureVerification">
             <Param Type="LPCWSTR" Name="wszFilePath" />
             <Param Type="DWORD" Name="dwInFlags" />
             <Param Type="DWORD*" Name="pdwOutFlags" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="StrongNameSignatureVerificationEx">
             <Param Type="LPCWSTR" Name="wszFilePath" />
             <Param Type="BOOLEAN" Name="fForceVerification" />
             <Param Type="BOOLEAN*" Name="pfWasVerified" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="StrongNameSignatureVerificationFromImage">
             <Param Type="BYTE*" Name="pbBase" />
@@ -463,14 +432,12 @@
             <Param Type="DWORD" Name="dwInFlags" />
             <Param Type="DWORD*" Name="pdwOutFlags" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="StrongNameTokenFromAssembly">
             <Param Type="LPCWSTR" Name="wszFilePath" />
             <Param Type="BYTE**" Name="ppbStrongNameToken" PostLength="pcbStrongNameToken" />
             <Param Type="ULONG*" Name="pcbStrongNameToken" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="StrongNameTokenFromAssemblyEx">
             <Param Type="LPCWSTR" Name="wszFilePath" />
@@ -479,7 +446,6 @@
             <Param Type="BYTE**" Name="ppbPublicKeyBlob" PostLength="pcbPublicKeyBlob" />
             <Param Type="ULONG*" Name="pcbPublicKeyBlob" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="StrongNameTokenFromPublicKey">
             <Param Type="BYTE*" Name="pbPublicKeyBlob" Length="cbPublicKeyBlob" />
@@ -487,11 +453,18 @@
             <Param Type="BYTE**" Name="ppbStrongNameToken" PostLength="pcbStrongNameToken" />
             <Param Type="ULONG*" Name="pcbStrongNameToken" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         
         <!-- Restore Default Error Function -->
         <ErrorDecode ErrorFunc="HRESULT" />
+
+        <Category Name="Additional Resources/Windows Runtime C++" />
+        <Api Name="MetaDataGetDispenser">
+            <Param Type="REFCLSID" Name="rclsid" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="LPVOID*" Name="ppv" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+        </Api>
 
     </Module>
 </ApiMonitor>

@@ -1,0 +1,636 @@
+<!--
+    API Monitor Definitions
+    (c) 2012, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="hid.dll" CallingConvention="STDCALL" OnlineHelp="MSDN">
+        
+        <!-- Variables -->
+        <Variable Name="USAGE"                          Type="Alias"    Base="USHORT" />
+        <Variable Name="PUSAGE"                         Type="Pointer"  Base="USAGE" />
+        <Variable Name="PHIDP_INSERT_SCANCODES"         Type="Pointer"  Base="LPVOID" />
+        <Variable Name="PHIDP_PREPARSED_DATA"           Type="Alias"    Base="LPVOID" />
+        <Variable Name="PHIDP_PREPARSED_DATA*"          Type="Pointer"  Base="PHIDP_PREPARSED_DATA" />
+
+        <!-- TODO: Structures -->
+        <Variable Name="PDRIVER_OBJECT"                 Type="Alias"    Base="LPVOID" />
+        
+        <!-- Arrays -->
+        <Variable Name="ULONG [10]"                     Type="Array"    Base="ULONG"    Count="10" />
+        <Variable Name="USHORT [5]"                     Type="Array"    Base="USHORT"   Count="5" />
+        <Variable Name="USHORT [17]"                    Type="Array"    Base="USHORT"   Count="17" />
+
+        <!-- [HIDP_STATUS] -->
+        <Variable Name="[HIDP_STATUS]" Type="Alias" Base="UINT" DisplayHex="True">
+            <Display Name="NTSTATUS" />
+            <Enum>
+                <Set Name="HIDP_STATUS_SUCCESS"                         Value="0x00110000" />
+                <Set Name="HIDP_STATUS_NULL"                            Value="0x80110001" />
+                <Set Name="HIDP_STATUS_INVALID_PREPARSED_DATA"          Value="0xc0110001" />
+                <Set Name="HIDP_STATUS_INVALID_REPORT_TYPE"             Value="0xc0110002" />
+                <Set Name="HIDP_STATUS_INVALID_REPORT_LENGTH"           Value="0xc0110003" />
+                <Set Name="HIDP_STATUS_USAGE_NOT_FOUND"                 Value="0xc0110004" />
+                <Set Name="HIDP_STATUS_VALUE_OUT_OF_RANGE"              Value="0xc0110005" />
+                <Set Name="HIDP_STATUS_BAD_LOG_PHY_VALUES"              Value="0xc0110006" />
+                <Set Name="HIDP_STATUS_BUFFER_TOO_SMALL"                Value="0xc0110007" />
+                <Set Name="HIDP_STATUS_INTERNAL_ERROR"                  Value="0xc0110008" />
+                <Set Name="HIDP_STATUS_I8042_TRANS_UNKNOWN"             Value="0xc0110009" />
+                <Set Name="HIDP_STATUS_INCOMPATIBLE_REPORT_ID"          Value="0xc011000a" />
+                <Set Name="HIDP_STATUS_NOT_VALUE_ARRAY"                 Value="0xc011000b" />
+                <Set Name="HIDP_STATUS_IS_VALUE_ARRAY"                  Value="0xc011000c" />
+                <Set Name="HIDP_STATUS_DATA_INDEX_NOT_FOUND"            Value="0xc011000d" />
+                <Set Name="HIDP_STATUS_DATA_INDEX_OUT_OF_RANGE"         Value="0xc011000e" />
+                <Set Name="HIDP_STATUS_BUTTON_NOT_PRESSED"              Value="0xc011000f" />
+                <Set Name="HIDP_STATUS_REPORT_DOES_NOT_EXIST"           Value="0xc0110010" />
+                <Set Name="HIDP_STATUS_NOT_IMPLEMENTED"                 Value="0xc0110020" />
+            </Enum>
+            <Success Return="Equal" Value="0x00110000" />
+        </Variable>
+
+        <!-- HIDP_REPORT_TYPE -->
+        <Variable Name="HIDP_REPORT_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="HidP_Input"      Value="0" />
+                <Set Name="HidP_Output"     Value="1" />
+                <Set Name="HidP_Feature"    Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- HIDP_KEYBOARD_DIRECTION -->
+        <Variable Name="HIDP_KEYBOARD_DIRECTION" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="HidP_Keyboard_Break"     Value="0" />
+                <Set Name="HidP_Keyboard_Make"      Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- HIDD_ATTRIBUTES -->
+        <Variable Name="HIDD_ATTRIBUTES" Type="Struct" Pack="4">
+            <Field Type="ULONG"     Name="Size" />
+            <Field Type="USHORT"    Name="VendorID" />
+            <Field Type="USHORT"    Name="ProductID" />
+            <Field Type="USHORT"    Name="VersionNumber" />
+        </Variable>
+        <Variable Name="PHIDD_ATTRIBUTES" Type="Pointer" Base="HIDD_ATTRIBUTES" />
+
+        <!-- HIDP_LINK_COLLECTION_NODE -->
+        <Variable Name="HIDP_LINK_COLLECTION_NODE" Type="Struct" Pack="4">
+            <Field Type="USAGE"     Name="LinkUsage" />
+            <Field Type="USAGE"     Name="LinkUsagePage" />
+            <Field Type="USHORT"    Name="Parent" />
+            <Field Type="USHORT"    Name="NumberOfChildren" />
+            <Field Type="USHORT"    Name="NextSibling" />
+            <Field Type="USHORT"    Name="FirstChild" />
+            <!-- TODO: Reserved is a bitfield -->
+            <Field Type="ULONG"     Name="Reserved" />
+            <Field Type="PVOID"     Name="UserContext" />
+        </Variable>
+        <Variable Name="PHIDP_LINK_COLLECTION_NODE" Type="Pointer" Base="HIDP_LINK_COLLECTION_NODE" />
+
+        <!-- USAGE_AND_PAGE -->
+        <Variable Name="USAGE_AND_PAGE" Type="Struct" Pack="4">
+            <Field Type="USAGE"     Name="Usage" />
+            <Field Type="USAGE"     Name="UsagePage" />
+        </Variable>
+        <Variable Name="PUSAGE_AND_PAGE" Type="Pointer" Base="USAGE_AND_PAGE" />
+
+        <!-- HID_MINIDRIVER_REGISTRATION -->
+        <Variable Name="HID_MINIDRIVER_REGISTRATION" Type="Struct">
+            <Field Type="ULONG"             Name="Revision" />
+            <Field Type="PDRIVER_OBJECT"    Name="DriverObject" />
+            <Field Type="PUNICODE_STRING"   Name="RegistryPath" />
+            <Field Type="ULONG"             Name="DeviceExtensionSize" />
+            <Field Type="BOOLEAN"           Name="DevicesArePolled" />
+            <Field Type="UCHAR [3]"         Name="Reserved" />
+        </Variable>
+        <Variable Name="PHID_MINIDRIVER_REGISTRATION" Type="Pointer" Base="HID_MINIDRIVER_REGISTRATION" />
+
+        <!-- HIDP_UNKNOWN_TOKEN -->
+        <Variable Name="HIDP_UNKNOWN_TOKEN" Type="Struct" Pack="4">
+            <Field Type="UCHAR"         Name="Token" />
+            <Field Type="UCHAR [3]"     Name="Reserved" />
+            <Field Type="ULONG"         Name="BitField" />
+        </Variable>
+        <Variable Name="PHIDP_UNKNOWN_TOKEN" Type="Pointer" Base="HIDP_UNKNOWN_TOKEN" />
+
+        <!-- HIDP_EXTENDED_ATTRIBUTES -->
+        <Variable Name="HIDP_EXTENDED_ATTRIBUTES" Type="Struct" Pack="4">
+            <Field Type="UCHAR"                 Name="NumGlobalUnknowns" />
+            <Field Type="UCHAR [3]"             Name="Reserved" />
+            <Field Type="PHIDP_UNKNOWN_TOKEN"   Name="GlobalUnknowns" />
+            <Field Type="ULONG [1]"             Name="Data" />
+        </Variable>
+        <Variable Name="PHIDP_EXTENDED_ATTRIBUTES" Type="Pointer" Base="HIDP_EXTENDED_ATTRIBUTES" />
+
+        <!-- [HIDP_DATA_u] -->
+        <Variable Name="[HIDP_DATA_u]" Type="Union" Pack="4">
+            <Display Name="union" />
+            <Field Type="ULONG"     Name="RawValue" />
+            <Field Type="BOOLEAN"   Name="On" />
+        </Variable>
+
+        <!-- HIDP_DATA -->
+        <Variable Name="HIDP_DATA" Type="Struct" Pack="4">
+            <Field Type="USHORT"            Name="DataIndex" />
+            <Field Type="USHORT"            Name="Reserved" />
+            <Field Type="[HIDP_DATA_u]"     Name="" />
+        </Variable>
+        <Variable Name="PHIDP_DATA" Type="Pointer" Base="HIDP_DATA" />
+
+        <!-- HIDP_CAPS -->
+        <Variable Name="HIDP_CAPS" Type="Struct" Pack="4">
+            <Field Type="USAGE"         Name="Usage" />
+            <Field Type="USAGE"         Name="UsagePage" />
+            <Field Type="USHORT"        Name="InputReportByteLength" />
+            <Field Type="USHORT"        Name="OutputReportByteLength" />
+            <Field Type="USHORT"        Name="FeatureReportByteLength" />
+            <Field Type="USHORT [17]"   Name="Reserved" />
+            <Field Type="USHORT"        Name="NumberLinkCollectionNodes" />
+            <Field Type="USHORT"        Name="NumberInputButtonCaps" />
+            <Field Type="USHORT"        Name="NumberInputValueCaps" />
+            <Field Type="USHORT"        Name="NumberInputDataIndices" />
+            <Field Type="USHORT"        Name="NumberOutputButtonCaps" />
+            <Field Type="USHORT"        Name="NumberOutputValueCaps" />
+            <Field Type="USHORT"        Name="NumberOutputDataIndices" />
+            <Field Type="USHORT"        Name="NumberFeatureButtonCaps" />
+            <Field Type="USHORT"        Name="NumberFeatureValueCaps" />
+            <Field Type="USHORT"        Name="NumberFeatureDataIndices" />
+        </Variable>
+        <Variable Name="PHIDP_CAPS" Type="Pointer" Base="HIDP_CAPS" />
+
+        <!-- [HIDP_BUTTON_CAPS_s1] -->
+        <Variable Name="[HIDP_BUTTON_CAPS_s1]" Type="Struct" Pack="4">
+            <Display Name="struct" />
+            <Field Type="USAGE"     Name="UsageMin" />
+            <Field Type="USAGE"     Name="UsageMax" />
+            <Field Type="USHORT"    Name="StringMin" />
+            <Field Type="USHORT"    Name="StringMax" />
+            <Field Type="USHORT"    Name="DesignatorMin" />
+            <Field Type="USHORT"    Name="DesignatorMax" />
+            <Field Type="USHORT"    Name="DataIndexMin" />
+            <Field Type="USHORT"    Name="DataIndexMax" />
+        </Variable>
+
+        <!-- [HIDP_BUTTON_CAPS_s2] -->
+        <Variable Name="[HIDP_BUTTON_CAPS_s2]" Type="Struct" Pack="4">
+            <Display Name="struct" />
+            <Field Type="USAGE"     Name="Usage" />
+            <Field Type="USAGE"     Name="Reserved1" />
+            <Field Type="USHORT"    Name="StringIndex" />
+            <Field Type="USHORT"    Name="Reserved2" />
+            <Field Type="USHORT"    Name="DesignatorIndex" />
+            <Field Type="USHORT"    Name="Reserved3" />
+            <Field Type="USHORT"    Name="DataIndex" />
+            <Field Type="USHORT"    Name="Reserved4" />
+        </Variable>
+
+        <!-- [HIDP_BUTTON_CAPS_u] -->
+        <Variable Name="[HIDP_BUTTON_CAPS_u]" Type="Union" Pack="4">
+            <Display Name="union" />
+            <Field Type="[HIDP_BUTTON_CAPS_s1]"     Name="Range" />
+            <Field Type="[HIDP_BUTTON_CAPS_s2]"     Name="NotRange" />
+        </Variable>
+
+        <!-- HIDP_BUTTON_CAPS -->
+        <Variable Name="HIDP_BUTTON_CAPS" Type="Struct" Pack="4">
+            <Field Type="USAGE"                 Name="UsagePage" />
+            <Field Type="UCHAR"                 Name="ReportID" />
+            <Field Type="BOOLEAN"               Name="IsAlias" />
+            <Field Type="USHORT"                Name="BitField" />
+            <Field Type="USHORT"                Name="LinkCollection" />
+            <Field Type="USAGE"                 Name="LinkUsage" />
+            <Field Type="USAGE"                 Name="LinkUsagePage" />
+            <Field Type="BOOLEAN"               Name="IsRange" />
+            <Field Type="BOOLEAN"               Name="IsStringRange" />
+            <Field Type="BOOLEAN"               Name="IsDesignatorRange" />
+            <Field Type="BOOLEAN"               Name="IsAbsolute" />
+            <Field Type="ULONG [10]"            Name="Reserved" />
+            <Field Type="[HIDP_BUTTON_CAPS_u]"  Name="" />
+        </Variable>
+        <Variable Name="PHIDP_BUTTON_CAPS" Type="Pointer" Base="HIDP_BUTTON_CAPS" />
+
+        <!-- [HIDP_VALUE_CAPS_s1] -->
+        <Variable Name="[HIDP_VALUE_CAPS_s1]" Type="Struct" Pack="4">
+            <Display Name="struct" />
+            <Field Type="USAGE"     Name="UsageMin" />
+            <Field Type="USAGE"     Name="UsageMax" />
+            <Field Type="USHORT"    Name="StringMin" />
+            <Field Type="USHORT"    Name="StringMax" />
+            <Field Type="USHORT"    Name="DesignatorMin" />
+            <Field Type="USHORT"    Name="DesignatorMax" />
+            <Field Type="USHORT"    Name="DataIndexMin" />
+            <Field Type="USHORT"    Name="DataIndexMax" />
+        </Variable>
+
+        <!-- [HIDP_VALUE_CAPS_s2] -->
+        <Variable Name="[HIDP_VALUE_CAPS_s2]" Type="Struct" Pack="4">
+            <Display Name="struct" />
+            <Field Type="USAGE"     Name="Usage" />
+            <Field Type="USAGE"     Name="Reserved1" />
+            <Field Type="USHORT"    Name="StringIndex" />
+            <Field Type="USHORT"    Name="Reserved2" />
+            <Field Type="USHORT"    Name="DesignatorIndex" />
+            <Field Type="USHORT"    Name="Reserved3" />
+            <Field Type="USHORT"    Name="DataIndex" />
+            <Field Type="USHORT"    Name="Reserved4" />
+        </Variable>
+
+        <!-- [HIDP_VALUE_CAPS_u] -->
+        <Variable Name="[HIDP_VALUE_CAPS_u]" Type="Union" Pack="4">
+            <Display Name="union" />
+            <Field Type="[HIDP_VALUE_CAPS_s1]"  Name="Range" />
+            <Field Type="[HIDP_VALUE_CAPS_s2]"  Name="NotRange" />
+        </Variable>
+
+        <!-- HIDP_VALUE_CAPS -->
+        <Variable Name="HIDP_VALUE_CAPS" Type="Struct" Pack="4">
+            <Field Type="USAGE"                 Name="UsagePage" />
+            <Field Type="UCHAR"                 Name="ReportID" />
+            <Field Type="BOOLEAN"               Name="IsAlias" />
+            <Field Type="USHORT"                Name="BitField" />
+            <Field Type="USHORT"                Name="LinkCollection" />
+            <Field Type="USAGE"                 Name="LinkUsage" />
+            <Field Type="USAGE"                 Name="LinkUsagePage" />
+            <Field Type="BOOLEAN"               Name="IsRange" />
+            <Field Type="BOOLEAN"               Name="IsStringRange" />
+            <Field Type="BOOLEAN"               Name="IsDesignatorRange" />
+            <Field Type="BOOLEAN"               Name="IsAbsolute" />
+            <Field Type="BOOLEAN"               Name="HasNull" />
+            <Field Type="UCHAR"                 Name="Reserved" />
+            <Field Type="USHORT"                Name="BitSize" />
+            <Field Type="USHORT"                Name="ReportCount" />
+            <Field Type="USHORT [5]"            Name="Reserved2" />
+            <Field Type="ULONG"                 Name="UnitsExp" />
+            <Field Type="ULONG"                 Name="Units" />
+            <Field Type="LONG"                  Name="LogicalMin" />
+            <Field Type="LONG"                  Name="LogicalMax" />
+            <Field Type="LONG"                  Name="PhysicalMin" />
+            <Field Type="LONG"                  Name="PhysicalMax" />
+            <Field Type="[HIDP_VALUE_CAPS_u]"   Name="" />
+        </Variable>
+        <Variable Name="PHIDP_VALUE_CAPS" Type="Pointer" Base="HIDP_VALUE_CAPS" />
+
+        <!-- HIDP_KEYBOARD_MODIFIER_STATE -->
+        <!-- TODO: Structure contains a bitfield -->
+        <Variable Name="HIDP_KEYBOARD_MODIFIER_STATE" Type="Struct" Pack="4">
+            <Field Type="ULONG" Name="ul" />
+        </Variable>
+        <Variable Name="PHIDP_KEYBOARD_MODIFIER_STATE" Type="Pointer" Base="HIDP_KEYBOARD_MODIFIER_STATE" />
+
+        <!-- HIDD_CONFIGURATION -->
+        <Variable Name="HIDD_CONFIGURATION" Type="Struct" Pack="4">
+            <Field Type="PVOID"     Name="cookie" />
+            <Field Type="ULONG"     Name="size" />
+            <Field Type="ULONG"     Name="RingBufferSize" />
+        </Variable>
+        <Variable Name="PHIDD_CONFIGURATION" Type="Pointer" Base="HIDD_CONFIGURATION" />
+
+        <!-- Human Input Devices -->
+        <Category Name="Windows Driver Kit/Device and Driver Technologies/Human Input Devices" />
+
+        <Api Name="HidD_FlushQueue">
+            <Param Type="HANDLE" Name="HidDeviceObject" />
+            <Return Type="BOOLEAN" />
+        </Api>
+        <Api Name="HidD_FreePreparsedData">
+            <Param Type="PHIDP_PREPARSED_DATA" Name="PreparsedData" />
+            <Return Type="BOOLEAN" />
+        </Api>
+        <Api Name="HidD_GetAttributes">
+            <Param Type="HANDLE" Name="HidDeviceObject" />
+            <Param Type="PHIDD_ATTRIBUTES" Name="Attributes" />
+            <Return Type="BOOLEAN" />
+        </Api>
+        <Api Name="HidD_GetFeature">
+            <Param Type="HANDLE" Name="HidDeviceObject" />
+            <Param Type="PVOID" Name="ReportBuffer" Length="ReportBufferLength" />
+            <Param Type="ULONG" Name="ReportBufferLength" />
+            <Return Type="BOOLEAN" />
+        </Api>
+        <Api Name="HidD_GetHidGuid">
+            <Param Type="LPGUID" Name="HidGuid" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="HidD_GetIndexedString">
+            <Param Type="HANDLE" Name="HidDeviceObject" />
+            <Param Type="ULONG" Name="StringIndex" />
+            <Param Type="PVOID" Name="Buffer" Length="BufferLength" />
+            <Param Type="ULONG" Name="BufferLength" />
+            <Return Type="BOOLEAN" />
+        </Api>
+        <Api Name="HidD_GetInputReport">
+            <Param Type="HANDLE" Name="HidDeviceObject" />
+            <Param Type="PVOID" Name="ReportBuffer" Length="ReportBufferLength" />
+            <Param Type="ULONG" Name="ReportBufferLength" />
+            <Return Type="BOOLEAN" />
+        </Api>
+        <Api Name="HidD_GetManufacturerString">
+            <Param Type="HANDLE" Name="HidDeviceObject" />
+            <Param Type="PVOID" Name="Buffer" Length="BufferLength" />
+            <Param Type="ULONG" Name="BufferLength" />
+            <Return Type="BOOLEAN" />
+        </Api>
+        <Api Name="HidD_GetNumInputBuffers">
+            <Param Type="HANDLE" Name="HidDeviceObject" />
+            <Param Type="PULONG" Name="NumberBuffers" />
+            <Return Type="BOOLEAN" />
+        </Api>
+        <Api Name="HidD_GetPhysicalDescriptor">
+            <Param Type="HANDLE" Name="HidDeviceObject" />
+            <Param Type="PVOID" Name="Buffer" Length="BufferLength" />
+            <Param Type="ULONG" Name="BufferLength" />
+            <Return Type="BOOLEAN" />
+        </Api>
+        <Api Name="HidD_GetPreparsedData">
+            <Param Type="HANDLE" Name="HidDeviceObject" />
+            <Param Type="PHIDP_PREPARSED_DATA*" Name="PreparsedData" />
+            <Return Type="BOOLEAN" />
+        </Api>
+        <Api Name="HidD_GetProductString">
+            <Param Type="HANDLE" Name="HidDeviceObject" />
+            <Param Type="PVOID" Name="Buffer" Length="BufferLength" />
+            <Param Type="ULONG" Name="BufferLength" />
+            <Return Type="BOOLEAN" />
+        </Api>
+        <Api Name="HidD_GetSerialNumberString">
+            <Param Type="HANDLE" Name="HidDeviceObject" />
+            <Param Type="PVOID" Name="Buffer" Length="BufferLength" />
+            <Param Type="ULONG" Name="BufferLength" />
+            <Return Type="BOOLEAN" />
+        </Api>
+        <Api Name="HidD_SetFeature">
+            <Param Type="HANDLE" Name="HidDeviceObject" />
+            <Param Type="PVOID" Name="ReportBuffer" Length="ReportBufferLength" />
+            <Param Type="ULONG" Name="ReportBufferLength" />
+            <Return Type="BOOLEAN" />
+        </Api>
+        <Api Name="HidD_SetNumInputBuffers">
+            <Param Type="HANDLE" Name="HidDeviceObject" />
+            <Param Type="ULONG" Name="NumberBuffers" />
+            <Return Type="BOOLEAN" />
+        </Api>
+        <Api Name="HidD_SetOutputReport">
+            <Param Type="HANDLE" Name="HidDeviceObject" />
+            <Param Type="PVOID" Name="ReportBuffer" Length="ReportBufferLength" />
+            <Param Type="ULONG" Name="ReportBufferLength" />
+            <Return Type="BOOLEAN" />
+        </Api>
+        <Api Name="HidP_GetButtonCaps">
+            <Param Type="HIDP_REPORT_TYPE" Name="ReportType" />
+            <Param Type="PHIDP_BUTTON_CAPS" Name="ButtonCaps" />
+            <Param Type="PUSHORT" Name="ButtonCapsLength" />
+            <Param Type="PHIDP_PREPARSED_DATA" Name="PreparsedData" />
+            <Return Type="[HIDP_STATUS]" />
+        </Api>
+        <!-- HidP_GetButtons and HidP_GetButtonsEx are macros -->
+        <Api Name="HidP_GetCaps">
+            <Param Type="PHIDP_PREPARSED_DATA" Name="PreparsedData" />
+            <Param Type="PHIDP_CAPS" Name="Capabilities" />
+            <Return Type="[HIDP_STATUS]" />
+        </Api>
+        <Api Name="HidP_GetData">
+            <Param Type="HIDP_REPORT_TYPE" Name="ReportType" />
+            <Param Type="PHIDP_DATA" Name="DataList" />
+            <Param Type="PULONG" Name="DataLength" />
+            <Param Type="PHIDP_PREPARSED_DATA" Name="PreparsedData" />
+            <Param Type="PCHAR" Name="Report" />
+            <Param Type="ULONG" Name="ReportLength" />
+            <Return Type="[HIDP_STATUS]" />
+        </Api>
+        <Api Name="HidP_GetExtendedAttributes">
+            <Param Type="HIDP_REPORT_TYPE" Name="ReportType" />
+            <Param Type="USHORT" Name="DataIndex" />
+            <Param Type="PHIDP_PREPARSED_DATA" Name="PreparsedData" />
+            <Param Type="PHIDP_EXTENDED_ATTRIBUTES" Name="Attributes" />
+            <Param Type="PULONG" Name="LengthAttributes" />
+            <Return Type="[HIDP_STATUS]" />
+        </Api>
+        <Api Name="HidP_GetLinkCollectionNodes">
+            <Param Type="PHIDP_LINK_COLLECTION_NODE" Name="LinkCollectionNodes" />
+            <Param Type="PULONG" Name="LinkCollectionNodesLength" />
+            <Param Type="PHIDP_PREPARSED_DATA" Name="PreparsedData" />
+            <Return Type="[HIDP_STATUS]" />
+        </Api>
+        <Api Name="HidP_GetScaledUsageValue">
+            <Param Type="HIDP_REPORT_TYPE" Name="ReportType" />
+            <Param Type="USAGE" Name="UsagePage" />
+            <Param Type="USHORT" Name="LinkCollection" />
+            <Param Type="USAGE" Name="Usage" />
+            <Param Type="PLONG" Name="UsageValue" />
+            <Param Type="PHIDP_PREPARSED_DATA" Name="PreparsedData" />
+            <Param Type="PCHAR" Name="Report" />
+            <Param Type="ULONG" Name="ReportLength" />
+            <Return Type="[HIDP_STATUS]" />
+        </Api>
+        <Api Name="HidP_GetSpecificButtonCaps">
+            <Param Type="HIDP_REPORT_TYPE" Name="ReportType" />
+            <Param Type="USAGE" Name="UsagePage" />
+            <Param Type="USHORT" Name="LinkCollection" />
+            <Param Type="USAGE" Name="Usage" />
+            <Param Type="PHIDP_BUTTON_CAPS" Name="ButtonCaps" />
+            <Param Type="PUSHORT" Name="ButtonCapsLength" />
+            <Param Type="PHIDP_PREPARSED_DATA" Name="PreparsedData" />
+            <Return Type="[HIDP_STATUS]" />
+        </Api>
+        <Api Name="HidP_GetSpecificValueCaps">
+            <Param Type="HIDP_REPORT_TYPE" Name="ReportType" />
+            <Param Type="USAGE" Name="UsagePage" />
+            <Param Type="USHORT" Name="LinkCollection" />
+            <Param Type="USAGE" Name="Usage" />
+            <Param Type="PHIDP_VALUE_CAPS" Name="ValueCaps" />
+            <Param Type="PUSHORT" Name="ValueCapsLength" />
+            <Param Type="PHIDP_PREPARSED_DATA" Name="PreparsedData" />
+            <Return Type="[HIDP_STATUS]" />
+        </Api>
+        <Api Name="HidP_GetUsages">
+            <Param Type="HIDP_REPORT_TYPE" Name="ReportType" />
+            <Param Type="USAGE" Name="UsagePage" />
+            <Param Type="USHORT" Name="LinkCollection" />
+            <Param Type="PUSAGE" Name="UsageList" />
+            <Param Type="PULONG" Name="UsageLength" />
+            <Param Type="PHIDP_PREPARSED_DATA" Name="PreparsedData" />
+            <Param Type="PCHAR" Name="Report" />
+            <Param Type="ULONG" Name="ReportLength" />
+            <Return Type="[HIDP_STATUS]" />
+        </Api>
+        <Api Name="HidP_GetUsagesEx">
+            <Param Type="HIDP_REPORT_TYPE" Name="ReportType" />
+            <Param Type="USHORT" Name="LinkCollection" />
+            <Param Type="PUSAGE_AND_PAGE" Name="ButtonList" />
+            <Param Type="ULONG*" Name="UsageLength" />
+            <Param Type="PHIDP_PREPARSED_DATA" Name="PreparsedData" />
+            <Param Type="PCHAR" Name="Report" />
+            <Param Type="ULONG" Name="ReportLength" />
+            <Return Type="[HIDP_STATUS]" />
+        </Api>
+        <Api Name="HidP_GetUsageValue">
+            <Param Type="HIDP_REPORT_TYPE" Name="ReportType" />
+            <Param Type="USAGE" Name="UsagePage" />
+            <Param Type="USHORT" Name="LinkCollection" />
+            <Param Type="USAGE" Name="Usage" />
+            <Param Type="PULONG" Name="UsageValue" />
+            <Param Type="PHIDP_PREPARSED_DATA" Name="PreparsedData" />
+            <Param Type="PCHAR" Name="Report" />
+            <Param Type="ULONG" Name="ReportLength" />
+            <Return Type="[HIDP_STATUS]" />
+        </Api>
+        <Api Name="HidP_GetUsageValueArray">
+            <Param Type="HIDP_REPORT_TYPE" Name="ReportType" />
+            <Param Type="USAGE" Name="UsagePage" />
+            <Param Type="USHORT" Name="LinkCollection" />
+            <Param Type="USAGE" Name="Usage" />
+            <Param Type="PCHAR" Name="UsageValue" />
+            <Param Type="USHORT" Name="UsageValueByteLength" />
+            <Param Type="PHIDP_PREPARSED_DATA" Name="PreparsedData" />
+            <Param Type="PCHAR" Name="Report" />
+            <Param Type="ULONG" Name="ReportLength" />
+            <Return Type="[HIDP_STATUS]" />
+        </Api>
+        <Api Name="HidP_GetValueCaps">
+            <Param Type="HIDP_REPORT_TYPE" Name="ReportType" />
+            <Param Type="PHIDP_VALUE_CAPS" Name="ValueCaps" />
+            <Param Type="PUSHORT" Name="ValueCapsLength" />
+            <Param Type="PHIDP_PREPARSED_DATA" Name="PreparsedData" />
+            <Return Type="[HIDP_STATUS]" />
+        </Api>
+        <Api Name="HidP_InitializeReportForID">
+            <Param Type="HIDP_REPORT_TYPE" Name="ReportType" />
+            <Param Type="UCHAR" Name="ReportID" />
+            <Param Type="PHIDP_PREPARSED_DATA" Name="PreparsedData" />
+            <Param Type="PCHAR" Name="Report" />
+            <Param Type="ULONG" Name="ReportLength" />
+            <Return Type="[HIDP_STATUS]" />
+        </Api>
+        <Api Name="HidP_IsSameUsageAndPage">
+            <Param Type="USAGE_AND_PAGE" Name="u1" />
+            <Param Type="USAGE_AND_PAGE" Name="u2" />
+            <Return Type="BOOLEAN" />
+        </Api>
+        <Api Name="HidP_MaxDataListLength">
+            <Param Type="HIDP_REPORT_TYPE" Name="ReportType" />
+            <Param Type="PHIDP_PREPARSED_DATA" Name="PreparsedData" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="HidP_MaxUsageListLength">
+            <Param Type="HIDP_REPORT_TYPE" Name="ReportType" />
+            <Param Type="USAGE" Name="UsagePage" />
+            <Param Type="PHIDP_PREPARSED_DATA" Name="PreparsedData" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <!-- HidP_SetButtons is a macro -->
+        <Api Name="HidP_SetData">
+            <Param Type="HIDP_REPORT_TYPE" Name="ReportType" />
+            <Param Type="PHIDP_DATA" Name="DataList" />
+            <Param Type="PULONG" Name="DataLength" />
+            <Param Type="PHIDP_PREPARSED_DATA" Name="PreparsedData" />
+            <Param Type="PCHAR" Name="Report" />
+            <Param Type="ULONG" Name="ReportLength" />
+            <Return Type="[HIDP_STATUS]" />
+        </Api>
+        <Api Name="HidP_SetScaledUsageValue">
+            <Param Type="HIDP_REPORT_TYPE" Name="ReportType" />
+            <Param Type="USAGE" Name="UsagePage" />
+            <Param Type="USHORT" Name="LinkCollection" />
+            <Param Type="USAGE" Name="Usage" />
+            <Param Type="LONG" Name="UsageValue" />
+            <Param Type="PHIDP_PREPARSED_DATA" Name="PreparsedData" />
+            <Param Type="PCHAR" Name="Report" />
+            <Param Type="ULONG" Name="ReportLength" />
+            <Return Type="[HIDP_STATUS]" />
+        </Api>
+        <Api Name="HidP_SetUsages">
+            <Param Type="HIDP_REPORT_TYPE" Name="ReportType" />
+            <Param Type="USAGE" Name="UsagePage" />
+            <Param Type="USHORT" Name="LinkCollection" />
+            <Param Type="PUSAGE" Name="UsageList" />
+            <Param Type="PULONG" Name="UsageLength" />
+            <Param Type="PHIDP_PREPARSED_DATA" Name="PreparsedData" />
+            <Param Type="PCHAR" Name="Report" />
+            <Param Type="ULONG" Name="ReportLength" />
+            <Return Type="[HIDP_STATUS]" />
+        </Api>
+        <Api Name="HidP_SetUsageValue">
+            <Param Type="HIDP_REPORT_TYPE" Name="ReportType" />
+            <Param Type="USAGE" Name="UsagePage" />
+            <Param Type="USHORT" Name="LinkCollection" />
+            <Param Type="USAGE" Name="Usage" />
+            <Param Type="ULONG" Name="UsageValue" />
+            <Param Type="PHIDP_PREPARSED_DATA" Name="PreparsedData" />
+            <Param Type="PCHAR" Name="Report" />
+            <Param Type="ULONG" Name="ReportLength" />
+            <Return Type="[HIDP_STATUS]" />
+        </Api>
+        <Api Name="HidP_SetUsageValueArray">
+            <Param Type="HIDP_REPORT_TYPE" Name="ReportType" />
+            <Param Type="USAGE" Name="UsagePage" />
+            <Param Type="USHORT" Name="LinkCollection" />
+            <Param Type="USAGE" Name="Usage" />
+            <Param Type="PCHAR" Name="UsageValue" />
+            <Param Type="USHORT" Name="UsageValueByteLength" />
+            <Param Type="PHIDP_PREPARSED_DATA" Name="PreparsedData" />
+            <Param Type="PCHAR" Name="Report" />
+            <Param Type="ULONG" Name="ReportLength" />
+            <Return Type="[HIDP_STATUS]" />
+        </Api>
+        <Api Name="HidP_TranslateUsagesToI8042ScanCodes">
+            <Param Type="PUSAGE" Name="ChangedUsageList" />
+            <Param Type="ULONG" Name="UsageListLength" />
+            <Param Type="HIDP_KEYBOARD_DIRECTION" Name="KeyAction" />
+            <Param Type="PHIDP_KEYBOARD_MODIFIER_STATE" Name="ModifierState" />
+            <Param Type="PHIDP_INSERT_SCANCODES" Name="InsertCodesProcedure" />
+            <Param Type="PVOID" Name="InsertCodesContext" />
+            <Return Type="[HIDP_STATUS]" />
+        </Api>
+        <!-- HidP_UnsetButtons is a macro -->
+        <Api Name="HidP_UnsetUsages">
+            <Param Type="HIDP_REPORT_TYPE" Name="ReportType" />
+            <Param Type="USAGE" Name="UsagePage" />
+            <Param Type="USHORT" Name="LinkCollection" />
+            <Param Type="PUSAGE" Name="UsageList" />
+            <Param Type="PULONG" Name="UsageLength" />
+            <Param Type="PHIDP_PREPARSED_DATA" Name="PreparsedData" />
+            <Param Type="PCHAR" Name="Report" />
+            <Param Type="ULONG" Name="ReportLength" />
+            <Return Type="[HIDP_STATUS]" />
+        </Api>
+        <!-- MSDN: routine is not implemented
+        <Api Name="HidP_UsageAndPageListDifference" />
+        -->
+        <Api Name="HidP_UsageListDifference">
+            <Param Type="PUSAGE" Name="PreviousUsageList" />
+            <Param Type="PUSAGE" Name="CurrentUsageList" />
+            <Param Type="PUSAGE" Name="BreakUsageList" />
+            <Param Type="PUSAGE" Name="MakeUsageList" />
+            <Param Type="ULONG" Name="UsageListLength" />
+            <Return Type="[HIDP_STATUS]" />
+        </Api>
+        <Api Name="HidD_GetConfiguration">
+            <Param Type="HANDLE" Name="HidDeviceObject" />
+            <Param Type="PHIDD_CONFIGURATION" Name="Configuration" />
+            <Param Type="ULONG" Name="ConfigurationLength" />
+            <Return Type="BOOLEAN" />
+        </Api>
+        <Api Name="HidD_SetConfiguration">
+            <Param Type="HANDLE" Name="HidDeviceObject" />
+            <Param Type="PHIDD_CONFIGURATION" Name="Configuration" />
+            <Param Type="ULONG" Name="ConfigurationLength" />
+            <Return Type="BOOLEAN" />
+        </Api>
+        <Api Name="HidD_GetMsGenreDescriptor">
+            <Param Type="HANDLE" Name="HidDeviceObject" />
+            <Param Type="PVOID" Name="Buffer" Length="BufferLength" />
+            <Param Type="ULONG" Name="BufferLength" />
+            <Return Type="BOOLEAN" />
+        </Api>
+        <Api Name="HidD_Hello">
+            <Param Type="PCHAR" Name="Buffer" />
+            <Param Type="ULONG" Name="BufferLength" />
+            <Return Type="ULONG" />
+        </Api>
+
+    </Module>
+</ApiMonitor>

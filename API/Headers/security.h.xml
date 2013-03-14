@@ -13,10 +13,19 @@
         <Variable Name="PSEC_WINNT_AUTH_IDENTITY_OPAQUE*"   Type="Pointer"  Base="PSEC_WINNT_AUTH_IDENTITY_OPAQUE" />
 
         <!-- Variables -->
+        <!-- TODO: SECURITY_STATUS - Overwrite S_OK with SEC_E_OK? -->
+        <Variable Name="SECURITY_STATUS"                Type="Alias"    Base="HRESULT" />
         <Variable Name="SAFER_LEVEL_HANDLE"             Type="Alias"    Base="HANDLE" />
         <Variable Name="SAFER_LEVEL_HANDLE*"            Type="Pointer"  Base="SAFER_LEVEL_HANDLE" />
         <Variable Name="BYTE [SAFER_MAX_HASH_SIZE]"     Type="Array"    Base="BYTE" Count="64" />
         <Variable Name="CHAR [TOKEN_SOURCE_LENGTH]"     Type="Array"    Base="CHAR" Count="8" />
+
+        <!-- TODO: External Interfaces -->
+        <Variable Name="ISecurityInformation"   Type="Interface" />
+
+        <!-- Interface Aliases -->
+        <Variable Name="LPSECURITYINFO"         Type="Alias"    Base="ISecurityInformation*" />
+        <Variable Name="LPSECURITYINFO*"        Type="Pointer"  Base="LPSECURITYINFO" />
 
         <!-- [AceFlags] -->
         <Variable Name="[AceFlags]" Type="Alias" Base="DWORD">
@@ -63,7 +72,7 @@
             </Enum>
         </Variable>
 
-        <!-- TRUSTEE_TYPE  -->
+        <!-- TRUSTEE_TYPE -->
         <Variable Name="TRUSTEE_TYPE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="TRUSTEE_IS_UNKNOWN"          Value="0" />
@@ -141,10 +150,10 @@
 
         <!-- EXPLICIT_ACCESS -->
         <Variable Name="EXPLICIT_ACCESS" Type="Struct">
-            <Field Type="ACCESS_MASK"   Name="grfAccessPermissions" Display="DWORD" />
-            <Field Type="ACCESS_MODE"   Name="grfAccessMode" />
-            <Field Type="[AceFlags]"    Name="grfInheritance" />
-            <Field Type="TRUSTEE"       Name="Trustee" />
+            <Field Type="[ACCESS_MASK_DWORD]"   Name="grfAccessPermissions" />
+            <Field Type="ACCESS_MODE"           Name="grfAccessMode" />
+            <Field Type="[AceFlags]"            Name="grfInheritance" />
+            <Field Type="TRUSTEE"               Name="Trustee" />
         </Variable>
         <Variable Name="PEXPLICIT_ACCESS"   Type="Pointer" Base="EXPLICIT_ACCESS" />
         <Variable Name="PEXPLICIT_ACCESS*"  Type="Pointer" Base="PEXPLICIT_ACCESS" />
@@ -169,18 +178,6 @@
             </Flag>
         </Variable>
 
-        <!-- URLZONE -->
-        <Variable Name="URLZONE" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
-            <Enum>
-                <Set Name="URLZONE_LOCAL_MACHINE"   Value="0" />
-                <Set Name="URLZONE_INTRANET"        Value="1" />
-                <Set Name="URLZONE_TRUSTED"         Value="2" />
-                <Set Name="URLZONE_INTERNET"        Value="3" />
-                <Set Name="URLZONE_UNTRUSTED"       Value="4" />
-            </Enum>
-        </Variable>
-
         <!-- SAFER_CODE_PROPERTIES -->
         <Variable Name="SAFER_CODE_PROPERTIES" Type="Struct" Pack="8">
             <Field Type="DWORD"                         Name="cbSize" />
@@ -195,7 +192,11 @@
             <Field Type="LPBYTE"                        Name="pByteBlock" />
             <Field Type="HWND"                          Name="hWndParent" />
             <Field Type="[WTD_UI]"                      Name="dwWVTUIChoice" />
-
+            <Field Type="LPCWSTR"                       Name="PackageMoniker" />
+            <Field Type="LPCWSTR"                       Name="PackagePublisher" />
+            <Field Type="LPCWSTR"                       Name="PackageName" />
+            <Field Type="ULONG64"                       Name="PackageVersion" />
+            <Field Type="BOOL"                          Name="PackageIsFramework" />
         </Variable>
         <Variable Name="PSAFER_CODE_PROPERTIES" Type="Pointer" Base="SAFER_CODE_PROPERTIES" />
 
@@ -218,25 +219,30 @@
         <Variable Name="[AceType]" Type="Alias" Base="BYTE">
             <Display Name="BYTE" />
             <Enum>
-                <Set Name="ACCESS_ALLOWED"                      Value="0x0" />
-                <Set Name="ACCESS_DENIED"                       Value="0x1" />
-                <Set Name="SYSTEM_AUDIT"                        Value="0x2" />
-                <Set Name="SYSTEM_ALARM"                        Value="0x3" />
-                <Set Name="ACCESS_ALLOWED_COMPOUND"             Value="0x4" />
-                <Set Name="ACCESS_ALLOWED_OBJECT"               Value="0x5" />
-                <Set Name="ACCESS_DENIED_OBJECT"                Value="0x6" />
-                <Set Name="SYSTEM_AUDIT_OBJECT"                 Value="0x7" />
-                <Set Name="SYSTEM_ALARM_OBJECT"                 Value="0x8" />
-                <Set Name="ACCESS_ALLOWED_CALLBACK"             Value="0x9" />
-                <Set Name="ACCESS_DENIED_CALLBACK"              Value="0xA" />
-                <Set Name="ACCESS_ALLOWED_CALLBACK_OBJECT"      Value="0xB" />
-                <Set Name="ACCESS_DENIED_CALLBACK_OBJECT"       Value="0xC" />
-                <Set Name="SYSTEM_AUDIT_CALLBACK"               Value="0xD" />
-                <Set Name="SYSTEM_ALARM_CALLBACK"               Value="0xE" />
-                <Set Name="SYSTEM_AUDIT_CALLBACK_OBJECT"        Value="0xF" />
-                <Set Name="SYSTEM_ALARM_CALLBACK_OBJECT"        Value="0x10" />
-                <Set Name="SYSTEM_MANDATORY_LABEL"              Value="0x11" />
+                <Set Name="ACCESS_ALLOWED_ACE_TYPE"                     Value="0x0" />
+                <Set Name="ACCESS_DENIED_ACE_TYPE"                      Value="0x1" />
+                <Set Name="SYSTEM_AUDIT_ACE_TYPE"                       Value="0x2" />
+                <Set Name="SYSTEM_ALARM_ACE_TYPE"                       Value="0x3" />
+                <Set Name="ACCESS_ALLOWED_COMPOUND_ACE_TYPE"            Value="0x4" />
+                <Set Name="ACCESS_ALLOWED_OBJECT_ACE_TYPE"              Value="0x5" />
+                <Set Name="ACCESS_DENIED_OBJECT_ACE_TYPE"               Value="0x6" />
+                <Set Name="SYSTEM_AUDIT_OBJECT_ACE_TYPE"                Value="0x7" />
+                <Set Name="SYSTEM_ALARM_OBJECT_ACE_TYPE"                Value="0x8" />
+                <Set Name="ACCESS_ALLOWED_CALLBACK_ACE_TYPE"            Value="0x9" />
+                <Set Name="ACCESS_DENIED_CALLBACK_ACE_TYPE"             Value="0xA" />
+                <Set Name="ACCESS_ALLOWED_CALLBACK_OBJECT_ACE_TYPE"     Value="0xB" />
+                <Set Name="ACCESS_DENIED_CALLBACK_OBJECT_ACE_TYPE"      Value="0xC" />
+                <Set Name="SYSTEM_AUDIT_CALLBACK_ACE_TYPE"              Value="0xD" />
+                <Set Name="SYSTEM_ALARM_CALLBACK_ACE_TYPE"              Value="0xE" />
+                <Set Name="SYSTEM_AUDIT_CALLBACK_OBJECT_ACE_TYPE"       Value="0xF" />
+                <Set Name="SYSTEM_ALARM_CALLBACK_OBJECT_ACE_TYPE"       Value="0x10" />
+                <Set Name="SYSTEM_MANDATORY_LABEL_ACE_TYPE"             Value="0x11" />
+                <Set Name="SYSTEM_RESOURCE_ATTRIBUTE_ACE_TYPE"          Value="0x12" />
+                <Set Name="SYSTEM_SCOPED_POLICY_ID_ACE_TYPE"            Value="0x13" />
             </Enum>
+        </Variable>
+        <Variable Name="[ACE_TYPE|UCHAR]" Type="Alias" Base="[AceType]">
+            <Display Name="UCHAR" />
         </Variable>
 
         <!-- [AceFlags] -->
@@ -383,8 +389,8 @@
 
         <!-- SecHandle -->
         <Variable Name="SecHandle" Type="Struct">
-            <Field Type="ULONG_PTR" 	Name="dwLower"  />
-            <Field Type="ULONG_PTR"     Name="dwUpper"  />
+            <Field Type="ULONG_PTR" 	Name="dwLower" />
+            <Field Type="ULONG_PTR"     Name="dwUpper" />
         </Variable>
         
         <!-- PCtxtHandle -->
@@ -518,106 +524,111 @@
         <!-- WELL_KNOWN_SID_TYPE -->
         <Variable Name="WELL_KNOWN_SID_TYPE" Type="Alias" Base="UINT">
             <Enum>
-                <Set Name="WinNullSid"                                  Value="0" />
-                <Set Name="WinWorldSid"                                 Value="1" />
-                <Set Name="WinLocalSid"                                 Value="2" />
-                <Set Name="WinCreatorOwnerSid"                          Value="3" />
-                <Set Name="WinCreatorGroupSid"                          Value="4" />
-                <Set Name="WinCreatorOwnerServerSid"                    Value="5" />
-                <Set Name="WinCreatorGroupServerSid"                    Value="6" />
-                <Set Name="WinNtAuthoritySid"                           Value="7" />
-                <Set Name="WinDialupSid"                                Value="8" />
-                <Set Name="WinNetworkSid"                               Value="9" />
-                <Set Name="WinBatchSid"                                 Value="10" />
-                <Set Name="WinInteractiveSid"                           Value="11" />
-                <Set Name="WinServiceSid"                               Value="12" />
-                <Set Name="WinAnonymousSid"                             Value="13" />
-                <Set Name="WinProxySid"                                 Value="14" />
-                <Set Name="WinEnterpriseControllersSid"                 Value="15" />
-                <Set Name="WinSelfSid"                                  Value="16" />
-                <Set Name="WinAuthenticatedUserSid"                     Value="17" />
-                <Set Name="WinRestrictedCodeSid"                        Value="18" />
-                <Set Name="WinTerminalServerSid"                        Value="19" />
-                <Set Name="WinRemoteLogonIdSid"                         Value="20" />
-                <Set Name="WinLogonIdsSid"                              Value="21" />
-                <Set Name="WinLocalSystemSid"                           Value="22" />
-                <Set Name="WinLocalServiceSid"                          Value="23" />
-                <Set Name="WinNetworkServiceSid"                        Value="24" />
-                <Set Name="WinBuiltinDomainSid"                         Value="25" />
-                <Set Name="WinBuiltinAdministratorsSid"                 Value="26" />
-                <Set Name="WinBuiltinUsersSid"                          Value="27" />
-                <Set Name="WinBuiltinGuestsSid"                         Value="28" />
-                <Set Name="WinBuiltinPowerUsersSid"                     Value="29" />
-                <Set Name="WinBuiltinAccountOperatorsSid"               Value="30" />
-                <Set Name="WinBuiltinSystemOperatorsSid"                Value="31" />
-                <Set Name="WinBuiltinPrintOperatorsSid"                 Value="32" />
-                <Set Name="WinBuiltinBackupOperatorsSid"                Value="33" />
-                <Set Name="WinBuiltinReplicatorSid"                     Value="34" />
-                <Set Name="WinBuiltinPreWindows2000CompatibleAccessSid" Value="35" />
-                <Set Name="WinBuiltinRemoteDesktopUsersSid"             Value="36" />
-                <Set Name="WinBuiltinNetworkConfigurationOperatorsSid"  Value="37" />
-                <Set Name="WinAccountAdministratorSid"                  Value="38" />
-                <Set Name="WinAccountGuestSid"                          Value="39" />
-                <Set Name="WinAccountKrbtgtSid"                         Value="40" />
-                <Set Name="WinAccountDomainAdminsSid"                   Value="41" />
-                <Set Name="WinAccountDomainUsersSid"                    Value="42" />
-                <Set Name="WinAccountDomainGuestsSid"                   Value="43" />
-                <Set Name="WinAccountComputersSid"                      Value="44" />
-                <Set Name="WinAccountControllersSid"                    Value="45" />
-                <Set Name="WinAccountCertAdminsSid"                     Value="46" />
-                <Set Name="WinAccountSchemaAdminsSid"                   Value="47" />
-                <Set Name="WinAccountEnterpriseAdminsSid"               Value="48" />
-                <Set Name="WinAccountPolicyAdminsSid"                   Value="49" />
-                <Set Name="WinAccountRasAndIasServersSid"               Value="50" />
-                <Set Name="WinNTLMAuthenticationSid"                    Value="51" />
-                <Set Name="WinDigestAuthenticationSid"                  Value="52" />
-                <Set Name="WinSChannelAuthenticationSid"                Value="53" />
-                <Set Name="WinThisOrganizationSid"                      Value="54" />
-                <Set Name="WinOtherOrganizationSid"                     Value="55" />
-                <Set Name="WinBuiltinIncomingForestTrustBuildersSid"    Value="56" />
-                <Set Name="WinBuiltinPerfMonitoringUsersSid"            Value="57" />
-                <Set Name="WinBuiltinPerfLoggingUsersSid"               Value="58" />
-                <Set Name="WinBuiltinAuthorizationAccessSid"            Value="59" />
-                <Set Name="WinBuiltinTerminalServerLicenseServersSid"   Value="60" />
-                <Set Name="WinBuiltinDCOMUsersSid"                      Value="61" />
-                <Set Name="WinBuiltinIUsersSid"                         Value="62" />
-                <Set Name="WinIUserSid"                                 Value="63" />
-                <Set Name="WinBuiltinCryptoOperatorsSid"                Value="64" />
-                <Set Name="WinUntrustedLabelSid"                        Value="65" />
-                <Set Name="WinLowLabelSid"                              Value="66" />
-                <Set Name="WinMediumLabelSid"                           Value="67" />
-                <Set Name="WinHighLabelSid"                             Value="68" />
-                <Set Name="WinSystemLabelSid"                           Value="69" />
-                <Set Name="WinWriteRestrictedCodeSid"                   Value="70" />
-                <Set Name="WinCreatorOwnerRightsSid"                    Value="71" />
-                <Set Name="WinCacheablePrincipalsGroupSid"              Value="72" />
-                <Set Name="WinNonCacheablePrincipalsGroupSid"           Value="73" />
-                <Set Name="WinEnterpriseReadonlyControllersSid"         Value="74" />
-                <Set Name="WinAccountReadonlyControllersSid"            Value="75" />
-                <Set Name="WinBuiltinEventLogReadersGroup"              Value="76" />
-                <Set Name="WinNewEnterpriseReadonlyControllersSid"      Value="77" />
-                <Set Name="WinBuiltinCertSvcDComAccessGroup"            Value="78" />
-                <Set Name="WinMediumPlusLabelSid"                       Value="79" />
-                <Set Name="WinLocalLogonSid"                            Value="80" />
-                <Set Name="WinConsoleLogonSid"                          Value="81" />
-                <Set Name="WinThisOrganizationCertificateSid"           Value="82" />
-                <Set Name="WinApplicationPackageAuthoritySid"           Value="83" />
-                <Set Name="WinBuiltinAnyPackageSid"                     Value="84" />
-                <Set Name="WinCapabilityInternetClientSid"              Value="85" />
-                <Set Name="WinCapabilityInternetClientServerSid"        Value="86" />
-                <Set Name="WinCapabilityPrivateNetworkClientServerSid"  Value="87" />
-                <Set Name="WinCapabilityPicturesLibrarySid"             Value="88" />
-                <Set Name="WinCapabilityVideosLibrarySid"               Value="89" />
-                <Set Name="WinCapabilityMusicLibrarySid"                Value="90" />
-                <Set Name="WinCapabilityDocumentsLibrarySid"            Value="91" />
-                <Set Name="WinCapabilitySharedUserCertificatesSid"      Value="92" />
-                <Set Name="WinCapabilityDefaultWindowsCredentialsSid"   Value="93" />
-                <Set Name="WinCapabilityRemovableStorageSid"            Value="94" />
-                <Set Name="WinBuiltinRDSRemoteAccessServersSid"         Value="95" />
-                <Set Name="WinBuiltinRDSEndpointServersSid"             Value="96" />
-                <Set Name="WinBuiltinRDSManagementServersSid"           Value="97" />
-                <Set Name="WinUserModeDriversSid"                       Value="98" />
-                <Set Name="WinBuiltinHyperVAdminsSid"                   Value="99" />
+                <Set Name="WinNullSid"                                      Value="0" />
+                <Set Name="WinWorldSid"                                     Value="1" />
+                <Set Name="WinLocalSid"                                     Value="2" />
+                <Set Name="WinCreatorOwnerSid"                              Value="3" />
+                <Set Name="WinCreatorGroupSid"                              Value="4" />
+                <Set Name="WinCreatorOwnerServerSid"                        Value="5" />
+                <Set Name="WinCreatorGroupServerSid"                        Value="6" />
+                <Set Name="WinNtAuthoritySid"                               Value="7" />
+                <Set Name="WinDialupSid"                                    Value="8" />
+                <Set Name="WinNetworkSid"                                   Value="9" />
+                <Set Name="WinBatchSid"                                     Value="10" />
+                <Set Name="WinInteractiveSid"                               Value="11" />
+                <Set Name="WinServiceSid"                                   Value="12" />
+                <Set Name="WinAnonymousSid"                                 Value="13" />
+                <Set Name="WinProxySid"                                     Value="14" />
+                <Set Name="WinEnterpriseControllersSid"                     Value="15" />
+                <Set Name="WinSelfSid"                                      Value="16" />
+                <Set Name="WinAuthenticatedUserSid"                         Value="17" />
+                <Set Name="WinRestrictedCodeSid"                            Value="18" />
+                <Set Name="WinTerminalServerSid"                            Value="19" />
+                <Set Name="WinRemoteLogonIdSid"                             Value="20" />
+                <Set Name="WinLogonIdsSid"                                  Value="21" />
+                <Set Name="WinLocalSystemSid"                               Value="22" />
+                <Set Name="WinLocalServiceSid"                              Value="23" />
+                <Set Name="WinNetworkServiceSid"                            Value="24" />
+                <Set Name="WinBuiltinDomainSid"                             Value="25" />
+                <Set Name="WinBuiltinAdministratorsSid"                     Value="26" />
+                <Set Name="WinBuiltinUsersSid"                              Value="27" />
+                <Set Name="WinBuiltinGuestsSid"                             Value="28" />
+                <Set Name="WinBuiltinPowerUsersSid"                         Value="29" />
+                <Set Name="WinBuiltinAccountOperatorsSid"                   Value="30" />
+                <Set Name="WinBuiltinSystemOperatorsSid"                    Value="31" />
+                <Set Name="WinBuiltinPrintOperatorsSid"                     Value="32" />
+                <Set Name="WinBuiltinBackupOperatorsSid"                    Value="33" />
+                <Set Name="WinBuiltinReplicatorSid"                         Value="34" />
+                <Set Name="WinBuiltinPreWindows2000CompatibleAccessSid"     Value="35" />
+                <Set Name="WinBuiltinRemoteDesktopUsersSid"                 Value="36" />
+                <Set Name="WinBuiltinNetworkConfigurationOperatorsSid"      Value="37" />
+                <Set Name="WinAccountAdministratorSid"                      Value="38" />
+                <Set Name="WinAccountGuestSid"                              Value="39" />
+                <Set Name="WinAccountKrbtgtSid"                             Value="40" />
+                <Set Name="WinAccountDomainAdminsSid"                       Value="41" />
+                <Set Name="WinAccountDomainUsersSid"                        Value="42" />
+                <Set Name="WinAccountDomainGuestsSid"                       Value="43" />
+                <Set Name="WinAccountComputersSid"                          Value="44" />
+                <Set Name="WinAccountControllersSid"                        Value="45" />
+                <Set Name="WinAccountCertAdminsSid"                         Value="46" />
+                <Set Name="WinAccountSchemaAdminsSid"                       Value="47" />
+                <Set Name="WinAccountEnterpriseAdminsSid"                   Value="48" />
+                <Set Name="WinAccountPolicyAdminsSid"                       Value="49" />
+                <Set Name="WinAccountRasAndIasServersSid"                   Value="50" />
+                <Set Name="WinNTLMAuthenticationSid"                        Value="51" />
+                <Set Name="WinDigestAuthenticationSid"                      Value="52" />
+                <Set Name="WinSChannelAuthenticationSid"                    Value="53" />
+                <Set Name="WinThisOrganizationSid"                          Value="54" />
+                <Set Name="WinOtherOrganizationSid"                         Value="55" />
+                <Set Name="WinBuiltinIncomingForestTrustBuildersSid"        Value="56" />
+                <Set Name="WinBuiltinPerfMonitoringUsersSid"                Value="57" />
+                <Set Name="WinBuiltinPerfLoggingUsersSid"                   Value="58" />
+                <Set Name="WinBuiltinAuthorizationAccessSid"                Value="59" />
+                <Set Name="WinBuiltinTerminalServerLicenseServersSid"       Value="60" />
+                <Set Name="WinBuiltinDCOMUsersSid"                          Value="61" />
+                <Set Name="WinBuiltinIUsersSid"                             Value="62" />
+                <Set Name="WinIUserSid"                                     Value="63" />
+                <Set Name="WinBuiltinCryptoOperatorsSid"                    Value="64" />
+                <Set Name="WinUntrustedLabelSid"                            Value="65" />
+                <Set Name="WinLowLabelSid"                                  Value="66" />
+                <Set Name="WinMediumLabelSid"                               Value="67" />
+                <Set Name="WinHighLabelSid"                                 Value="68" />
+                <Set Name="WinSystemLabelSid"                               Value="69" />
+                <Set Name="WinWriteRestrictedCodeSid"                       Value="70" />
+                <Set Name="WinCreatorOwnerRightsSid"                        Value="71" />
+                <Set Name="WinCacheablePrincipalsGroupSid"                  Value="72" />
+                <Set Name="WinNonCacheablePrincipalsGroupSid"               Value="73" />
+                <Set Name="WinEnterpriseReadonlyControllersSid"             Value="74" />
+                <Set Name="WinAccountReadonlyControllersSid"                Value="75" />
+                <Set Name="WinBuiltinEventLogReadersGroup"                  Value="76" />
+                <Set Name="WinNewEnterpriseReadonlyControllersSid"          Value="77" />
+                <Set Name="WinBuiltinCertSvcDComAccessGroup"                Value="78" />
+                <Set Name="WinMediumPlusLabelSid"                           Value="79" />
+                <Set Name="WinLocalLogonSid"                                Value="80" />
+                <Set Name="WinConsoleLogonSid"                              Value="81" />
+                <Set Name="WinThisOrganizationCertificateSid"               Value="82" />
+                <Set Name="WinApplicationPackageAuthoritySid"               Value="83" />
+                <Set Name="WinBuiltinAnyPackageSid"                         Value="84" />
+                <Set Name="WinCapabilityInternetClientSid"                  Value="85" />
+                <Set Name="WinCapabilityInternetClientServerSid"            Value="86" />
+                <Set Name="WinCapabilityPrivateNetworkClientServerSid"      Value="87" />
+                <Set Name="WinCapabilityPicturesLibrarySid"                 Value="88" />
+                <Set Name="WinCapabilityVideosLibrarySid"                   Value="89" />
+                <Set Name="WinCapabilityMusicLibrarySid"                    Value="90" />
+                <Set Name="WinCapabilityDocumentsLibrarySid"                Value="91" />
+                <Set Name="WinCapabilitySharedUserCertificatesSid"          Value="92" />
+                <Set Name="WinCapabilityDefaultWindowsCredentialsSid"       Value="93" />
+                <Set Name="WinCapabilityRemovableStorageSid"                Value="94" />
+                <Set Name="WinBuiltinRDSRemoteAccessServersSid"             Value="95" />
+                <Set Name="WinBuiltinRDSEndpointServersSid"                 Value="96" />
+                <Set Name="WinBuiltinRDSManagementServersSid"               Value="97" />
+                <Set Name="WinUserModeDriversSid"                           Value="98" />
+                <Set Name="WinBuiltinHyperVAdminsSid"                       Value="99" />
+                <Set Name="WinAccountCloneableControllersSid"               Value="100" />
+                <Set Name="WinBuiltinAccessControlAssistanceOperatorsSid"   Value="101" />
+                <Set Name="WinBuiltinRemoteManagementUsersSid"              Value="102" />
+                <Set Name="WinAuthenticationAuthorityAssertedSid"           Value="103" />
+                <Set Name="WinAuthenticationServiceAssertedSid"             Value="104" />
             </Enum>
         </Variable>
 
@@ -673,9 +684,10 @@
         <!-- CRED_MARSHAL_TYPE -->
         <Variable Name="CRED_MARSHAL_TYPE" Type="Alias" Base="UINT">
             <Enum>
-                <Set Name="CertCredential"              Value="1" />
-                <Set Name="UsernameTargetCredential"    Value="2" />
-                <Set Name="BinaryBlobCredential"        Value="3" />
+                <Set Name="CertCredential"                  Value="1" />
+                <Set Name="UsernameTargetCredential"        Value="2" />
+                <Set Name="BinaryBlobCredential"            Value="3" />
+                <Set Name="UsernameForPackedCredentials"    Value="4" />
             </Enum>
         </Variable>
         <Variable Name="PCRED_MARSHAL_TYPE" Type="Pointer" Base="CRED_MARSHAL_TYPE" />
@@ -704,43 +716,6 @@
         </Variable>
         <Variable Name="PPOLICY_AUDIT_EVENT_TYPE" Type="Pointer" Base="POLICY_AUDIT_EVENT_TYPE" />
 
-        <!-- SECURITY_STATUS -->
-        <Variable Name="SECURITY_STATUS" Type="Alias" Base="LONG">
-            <Enum>
-                <Set Name="SEC_E_OK"                                Value="0x00000000" />
-                <Set Name="SEC_E_INSUFFICIENT_MEMORY"               Value="0x80090300" />
-                <Set Name="SEC_E_INVALID_HANDLE"                    Value="0x80090301" />
-                <Set Name="SEC_E_UNSUPPORTED_FUNCTION"              Value="0x80090302" />
-                <Set Name="SEC_E_TARGET_UNKNOWN"                    Value="0x80090303" />
-                <Set Name="SEC_E_INTERNAL_ERROR"                    Value="0x80090304" />
-                <Set Name="SEC_E_SECPKG_NOT_FOUND"                  Value="0x80090305" />
-                <Set Name="SEC_E_NOT_OWNER"                         Value="0x80090306" />
-                <Set Name="SEC_E_CANNOT_INSTALL"                    Value="0x80090307" />
-                <Set Name="SEC_E_INVALID_TOKEN"                     Value="0x80090308" />
-                <Set Name="SEC_E_CANNOT_PACK"                       Value="0x80090309" />
-                <Set Name="SEC_E_QOP_NOT_SUPPORTED"                 Value="0x8009030A" />
-                <Set Name="SEC_E_NO_IMPERSONATION"                  Value="0x8009030B" />
-                <Set Name="SEC_E_LOGON_DENIED"                      Value="0x8009030C" />
-                <Set Name="SEC_E_UNKNOWN_CREDENTIALS"               Value="0x8009030D" />
-                <Set Name="SEC_E_NO_CREDENTIALS"                    Value="0x8009030E" />
-                <Set Name="SEC_E_MESSAGE_ALTERED"                   Value="0x8009030F" />
-                <Set Name="SEC_E_OUT_OF_SEQUENCE"                   Value="0x80090310" />
-                <Set Name="SEC_E_NO_AUTHENTICATING_AUTHORITY"       Value="0x80090311" />
-                <Set Name="SEC_E_CONTEXT_EXPIRED"                   Value="0x80090317" />
-                <Set Name="SEC_E_INCOMPLETE_MESSAGE"                Value="0x80090318" />
-                <Set Name="SEC_I_CONTINUE_NEEDED"                   Value="0x00090312" />
-                <Set Name="SEC_I_COMPLETE_NEEDED"                   Value="0x00090313" />
-                <Set Name="SEC_I_COMPLETE_AND_CONTINUE"             Value="0x00090314" />
-                <Set Name="SEC_I_LOCAL_LOGON"                       Value="0x00090315" />
-                <Set Name="SEC_I_CONTEXT_EXPIRED"            		Value="0x00090317" />
-                <Set Name="SEC_I_INCOMPLETE_CREDENTIALS"     		Value="0x00090320" />
-                <Set Name="SEC_I_RENEGOTIATE"                		Value="0x00090321" />
-                <Set Name="SEC_I_NO_LSA_CONTEXT"             		Value="0x00090323" />
-                <Set Name="SEC_I_SIGNATURE_NEEDED"           		Value="0x0009035C" />
-                <Set Name="SEC_I_NO_RENEGOTIATION"           		Value="0x00090360" />
-            </Enum>
-        </Variable>
-
         <!-- OBJECT_TYPE_LIST -->
         <Variable Name="OBJECT_TYPE_LIST" Type="Struct">
             <Field Type="WORD"   	Name="Level" />
@@ -754,7 +729,9 @@
             <Field Type="PSID" 	Name="Sid" />
             <Field Type="DWORD" Name="Attributes" />
         </Variable>
+        <Variable Name="SID_AND_ATTRIBUTES*"                Type="Pointer"  Base="SID_AND_ATTRIBUTES" />
         <Variable Name="PSID_AND_ATTRIBUTES"                Type="Pointer"  Base="SID_AND_ATTRIBUTES" />
+        <Variable Name="PSID_AND_ATTRIBUTES*"               Type="Pointer"  Base="PSID_AND_ATTRIBUTES" />
         <Variable Name="SID_AND_ATTRIBUTES [ANYSIZE_ARRAY]" Type="Array"    Base="SID_AND_ATTRIBUTES" Count="1" />
 
         <!-- TOKEN_GROUPS -->
@@ -783,6 +760,7 @@
             <Field Type="PSECURITY_DESCRIPTOR" 	Name="lpSecurityDescriptor" />
             <Field Type="BOOL" 	                Name="bInheritHandle" />
         </Variable>
+        <Variable Name="SECURITY_ATTRIBUTES*"           Type="Pointer" Base="SECURITY_ATTRIBUTES" />
         <Variable Name="LPSECURITY_ATTRIBUTES"          Type="Pointer" Base="SECURITY_ATTRIBUTES" />
         <Variable Name="PSECURITY_ATTRIBUTES"           Type="Pointer" Base="SECURITY_ATTRIBUTES" />
         <Variable Name="const LPSECURITY_ATTRIBUTES"    Type="Pointer" Base="SECURITY_ATTRIBUTES" />

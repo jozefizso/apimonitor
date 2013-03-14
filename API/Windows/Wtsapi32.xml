@@ -5,9 +5,14 @@
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
-    <Module Name="Wtsapi32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-
-        <!-- Variables -->
+    <Module Name="WtsApi32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        
+        <!-- Arrays -->
+        <Variable Name="TCHAR [WTS_COMMENT_LENGTH + 1]"     Type="Array"    Base="TCHAR"    Count="61" />
+        <Variable Name="TCHAR [USERNAME_LENGTH + 1]"        Type="Array"    Base="TCHAR"    Count="21" />
+        <Variable Name="TCHAR [DOMAIN_LENGTH + 1]"          Type="Array"    Base="TCHAR"    Count="18" />
+        <Variable Name="WTSLISTENERNAME"                    Type="Array"    Base="TCHAR"    Count="33" />
+        <Variable Name="PWTSLISTENERNAME"                   Type="Pointer"  Base="WTSLISTENERNAME" />
 
         <!-- WTS_PROCESS_INFO -->
         <Variable Name="WTS_PROCESS_INFO" Type="Struct">
@@ -17,7 +22,7 @@
             <Field Type="PSID"  	Name="pUserSid" />
         </Variable>
         <Variable Name="PWTS_PROCESS_INFO"      Type="Pointer" Base="WTS_PROCESS_INFO" />
-        <Variable Name="PWTS_PROCESS_INFO*"     Type="Pointer" Base="PWTS_PROCESS_INFO"/>
+        <Variable Name="PWTS_PROCESS_INFO*"     Type="Pointer" Base="PWTS_PROCESS_INFO" />
 
         <!-- WTS_CONNECTSTATE_CLASS -->
         <Variable Name="WTS_CONNECTSTATE_CLASS" Type="Alias" Base="UINT">
@@ -42,8 +47,9 @@
             <Field Type="WTS_CONNECTSTATE_CLASS" 	Name="State" />
         </Variable>
         <Variable Name="PWTS_SESSION_INFO"      Type="Pointer" Base="WTS_SESSION_INFO" />
-        <Variable Name="PWTS_SESSION_INFO*"     Type="Pointer" Base="PWTS_SESSION_INFO"/>
+        <Variable Name="PWTS_SESSION_INFO*"     Type="Pointer" Base="PWTS_SESSION_INFO" />
 
+        <!-- WTS_INFO_CLASS -->
         <Variable Name="WTS_INFO_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="WTSInitialProgram"       Value="0" />
@@ -72,6 +78,7 @@
             </Enum>
         </Variable>
 
+        <!-- WTS_CONFIG_CLASS -->
         <Variable Name="WTS_CONFIG_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="WTSUserConfigInitialProgram"                 Value="0" />
@@ -96,6 +103,7 @@
             </Enum>
         </Variable>
 
+        <!-- WTS_VIRTUAL_CLASS -->
         <Variable Name="WTS_VIRTUAL_CLASS" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="WTSVirtualClientData"    Value="0" />
@@ -103,6 +111,7 @@
             </Enum>
         </Variable>
 
+        <!-- [ConsoleNotificationFlags] -->
         <Variable Name="[ConsoleNotificationFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Enum>
@@ -111,6 +120,7 @@
             </Enum>
         </Variable>
 
+        <!-- [WtsServerHandle] -->
         <Variable Name="[WtsServerHandle]" Type="Alias" Base="HANDLE">
             <Display Name="HANDLE" />
             <Enum Reset="True">
@@ -118,6 +128,7 @@
             </Enum>
         </Variable>
 
+        <!-- [WtsEventFlags] -->
         <Variable Name="[WtsEventFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -135,10 +146,75 @@
                 <Set Name="WTS_EVENT_FLUSH"         Value="0x80000000" />
             </Flag>
         </Variable>
-
         <Variable Name="[WtsEventFlags*]" Type="Pointer" Base="[WtsEventFlags]">
             <Display Name="DWORD*" />
         </Variable>
+
+        <!-- WTSLISTENERCONFIGW -->
+        <Variable Name="WTSLISTENERCONFIG" Type="Struct">
+            <Field Type="ULONG"                             Name="version" />
+            <Field Type="ULONG"                             Name="fEnableListener" />
+            <Field Type="ULONG"                             Name="MaxConnectionCount" />
+            <Field Type="ULONG"                             Name="fPromptForPassword" />
+            <Field Type="ULONG"                             Name="fInheritColorDepth" />
+            <Field Type="ULONG"                             Name="ColorDepth" />
+            <Field Type="ULONG"                             Name="fInheritBrokenTimeoutSettings" />
+            <Field Type="ULONG"                             Name="BrokenTimeoutSettings" />
+            <Field Type="ULONG"                             Name="fDisablePrinterRedirection" />
+            <Field Type="ULONG"                             Name="fDisableDriveRedirection" />
+            <Field Type="ULONG"                             Name="fDisableComPortRedirection" />
+            <Field Type="ULONG"                             Name="fDisableLPTPortRedirection" />
+            <Field Type="ULONG"                             Name="fDisableClipboardRedirection" />
+            <Field Type="ULONG"                             Name="fDisableAudioRedirection" />
+            <Field Type="ULONG"                             Name="fDisablePNPRedirection" />
+            <Field Type="ULONG"                             Name="fDisableDefaultMainClientPrinter" />
+            <Field Type="ULONG"                             Name="LanAdapter" />
+            <Field Type="ULONG"                             Name="PortNumber" />
+            <Field Type="ULONG"                             Name="fInheritShadowSettings" />
+            <Field Type="ULONG"                             Name="ShadowSettings" />
+            <Field Type="ULONG"                             Name="TimeoutSettingsConnection" />
+            <Field Type="ULONG"                             Name="TimeoutSettingsDisconnection" />
+            <Field Type="ULONG"                             Name="TimeoutSettingsIdle" />
+            <Field Type="ULONG"                             Name="SecurityLayer" />
+            <Field Type="ULONG"                             Name="MinEncryptionLevel" />
+            <Field Type="ULONG"                             Name="UserAuthentication" />
+            <Field Type="TCHAR [WTS_COMMENT_LENGTH + 1]"    Name="Comment" />
+            <Field Type="TCHAR [USERNAME_LENGTH + 1]"       Name="LogonUserName" />
+            <Field Type="TCHAR [DOMAIN_LENGTH + 1]"         Name="LogonDomain" />
+            <Field Type="TCHAR [MAX_PATH + 1]"              Name="WorkDirectory" />
+            <Field Type="TCHAR [MAX_PATH + 1]"              Name="InitialProgram" />
+        </Variable>
+        <Variable Name="PWTSLISTENERCONFIG" Type="Pointer" Base="WTSLISTENERCONFIG" />
+
+        <!-- WTS_TYPE_CLASS -->
+        <Variable Name="WTS_TYPE_CLASS" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="WTSTypeProcessInfoLevel0"		Value="0" />
+                <Set Name="WTSTypeProcessInfoLevel1"		Value="1" />
+                <Set Name="WTSTypeSessionInfoLevel1"        Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- WTS_SERVER_INFO -->
+        <Variable Name="WTS_SERVER_INFO" Type="Struct">
+            <Field Type="LPTSTR" Name="pServerName" />
+        </Variable>
+        <Variable Name="PWTS_SERVER_INFO"  Type="Pointer" Base="WTS_SERVER_INFO" />
+        <Variable Name="PWTS_SERVER_INFO*" Type="Pointer" Base="PWTS_SERVER_INFO" />
+
+        <!-- WTS_SESSION_INFO_1 -->
+        <Variable Name="WTS_SESSION_INFO_1" Type="Struct">
+            <Field Type="DWORD"                     Name="ExecEnvId" />
+            <Field Type="WTS_CONNECTSTATE_CLASS"    Name="State" />
+            <Field Type="DWORD"                     Name="SessionId" />
+            <Field Type="LPTSTR"                    Name="pSessionName" />
+            <Field Type="LPTSTR"                    Name="pHostName" />
+            <Field Type="LPTSTR"                    Name="pUserName" />
+            <Field Type="LPTSTR"                    Name="pDomainName" />
+            <Field Type="LPTSTR"                    Name="pFarmName" />
+        </Variable>
+        <Variable Name="PWTS_SESSION_INFO_1"  Type="Pointer" Base="WTS_SESSION_INFO_1" />
+        <Variable Name="PWTS_SESSION_INFO_1*" Type="Pointer" Base="PWTS_SESSION_INFO_1" />
 
         <!-- Terminal Services API -->
         <Category Name="System Services/Remote Desktop Services" />
@@ -152,14 +228,33 @@
             <Param Type="PTSTR" Name="pPassword" />
             <Param Type="BOOL" Name="bWait" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WTSCreateListener" BothCharset="True">
+            <Param Type="[WtsServerHandle]" Name="hServer" />
+            <Param Type="PVOID" Name="pReserved" />
+            <Param Type="DWORD" Name="Reserved" />
+            <Param Type="LPTSTR" Name="pListenerName" />
+            <Param Type="PWTSLISTENERCONFIG" Name="pBuffer" />
+            <Param Type="DWORD" Name="flag" />
+            <Return Type="BOOL" />
         </Api>
         <Api Name="WTSDisconnectSession">
             <Param Type="[WtsServerHandle]" Name="hServer" />
             <Param Type="DWORD" Name="SessionId" />
             <Param Type="BOOL" Name="bWait" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WTSEnableChildSessions">
+            <Param Type="BOOL" Name="bEnable" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WTSEnumerateListeners" BothCharset="True">
+            <Param Type="[WtsServerHandle]" Name="hServer" />
+            <Param Type="PVOID" Name="pReserved" />
+            <Param Type="DWORD" Name="Reserved" />
+            <Param Type="PWTSLISTENERNAME" Name="pListeners" />
+            <Param Type="DWORD*" Name="pCount" />
+            <Return Type="BOOL" />
         </Api>
         <Api Name="WTSEnumerateProcesses" BothCharset="True">
             <Param Type="[WtsServerHandle]" Name="hServer" />
@@ -168,7 +263,22 @@
             <Param Type="PWTS_PROCESS_INFO*" Name="ppProcessInfo" />
             <Param Type="DWORD*" Name="pCount" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WTSEnumerateProcessesEx" BothCharset="True">
+            <Param Type="[WtsServerHandle]" Name="hServer" />
+            <Param Type="DWORD*" Name="pLevel" />
+            <Param Type="DWORD" Name="SessionID" />
+            <Param Type="LPTSTR*" Name="ppProcessInfo" />
+            <Param Type="DWORD*" Name="pCount" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WTSEnumerateServers" BothCharset="True">
+            <Param Type="LPTSTR" Name="pDomainName" />
+            <Param Type="DWORD" Name="Reserved" />
+            <Param Type="DWORD" Name="Version" />
+            <Param Type="PWTS_SERVER_INFO*" Name="ppServerInfo" />
+            <Param Type="DWORD*" Name="pCount" />
+            <Return Type="BOOL" />
         </Api>
         <Api Name="WTSEnumerateSessions" BothCharset="True">
             <Param Type="[WtsServerHandle]" Name="hServer" />
@@ -177,23 +287,67 @@
             <Param Type="PWTS_SESSION_INFO*" Name="ppSessionInfo" />
             <Param Type="DWORD*" Name="pCount" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WTSEnumerateSessionsEx" BothCharset="True">
+            <Param Type="[WtsServerHandle]" Name="hServer" />
+            <Param Type="DWORD*" Name="pLevel" />
+            <Param Type="DWORD" Name="Filter" />
+            <Param Type="PWTS_SESSION_INFO_1*" Name="ppSessionInfo" />
+            <Param Type="DWORD*" Name="pCount" />
+            <Return Type="BOOL" />
         </Api>
         <Api Name="WTSFreeMemory">
             <Param Type="PVOID" Name="pMemory" />
             <Return Type="void" />
+        </Api>
+        <Api Name="WTSFreeMemoryEx" BothCharset="True">
+            <Param Type="WTS_TYPE_CLASS" Name="WTSTypeClass" />
+            <Param Type="PVOID" Name="pMemory" />
+            <Param Type="ULONG" Name="NumberOfEntries" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WTSGetChildSessionId">
+            <Param Type="ULONG*" Name="pSessionId" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WTSGetListenerSecurity" BothCharset="True">
+            <Param Type="[WtsServerHandle]" Name="hServer" />
+            <Param Type="PVOID" Name="pReserved" />
+            <Param Type="DWORD" Name="Reserved" />
+            <Param Type="LPTSTR" Name="pListenerName" />
+            <Param Type="SECURITY_INFORMATION" Name="SecurityInformation" />
+            <Param Type="PSECURITY_DESCRIPTOR" Name="pSecurityDescriptor" />
+            <Param Type="DWORD" Name="nLength" />
+            <Param Type="LPDWORD" Name="lpnLengthNeeded" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WTSIsChildSessionsEnabled">
+            <Param Type="BOOL*" Name="pbEnabled" />
+            <Return Type="BOOL" />
         </Api>
         <Api Name="WTSLogoffSession">
             <Param Type="[WtsServerHandle]" Name="hServer" />
             <Param Type="DWORD" Name="SessionId" />
             <Param Type="BOOL" Name="bWait" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WTSOpenServer" BothCharset="True">
             <Param Type="LPTSTR" Name="pServerName" />
             <Return Type="HANDLE" />
             <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WTSOpenServerEx" BothCharset="True">
+            <Param Type="LPTSTR" Name="pServerName" />
+            <Return Type="HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WTSQueryListenerConfig" BothCharset="True">
+            <Param Type="[WtsServerHandle]" Name="hServer" />
+            <Param Type="PVOID" Name="pReserved" />
+            <Param Type="DWORD" Name="Reserved" />
+            <Param Type="LPTSTR" Name="pListenerName" />
+            <Param Type="PWTSLISTENERCONFIG" Name="pBuffer" />
+            <Return Type="BOOL" />
         </Api>
         <Api Name="WTSQuerySessionInformation" BothCharset="True">
             <Param Type="[WtsServerHandle]" Name="hServer" />
@@ -202,7 +356,6 @@
             <Param Type="LPTSTR*" Name="ppBuffer" />
             <Param Type="DWORD*" Name="pBytesReturned" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WTSQueryUserConfig" BothCharset="True">
             <Param Type="LPTSTR" Name="pServerName" />
@@ -211,26 +364,22 @@
             <Param Type="LPTSTR*" Name="ppBuffer" />
             <Param Type="DWORD*" Name="pBytesReturned" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WTSQueryUserToken">
             <Param Type="ULONG" Name="SessionId" />
             <Param Type="PHANDLE" Name="phToken" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WTSRegisterSessionNotification">
             <Param Type="HWND" Name="hWnd" />
             <Param Type="[ConsoleNotificationFlags]" Name="dwFlags" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WTSRegisterSessionNotificationEx">
             <Param Type="[WtsServerHandle]" Name="hServer" />
             <Param Type="HWND" Name="hWnd" />
             <Param Type="[ConsoleNotificationFlags]" Name="dwFlags" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WTSSendMessage" BothCharset="True">
             <Param Type="[WtsServerHandle]" Name="hServer" />
@@ -244,7 +393,15 @@
             <Param Type="DWORD*" Name="pResponse" />
             <Param Type="BOOL" Name="bWait" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WTSSetListenerSecurity" BothCharset="True">
+            <Param Type="[WtsServerHandle]" Name="hServer" />
+            <Param Type="PVOID" Name="pReserved" />
+            <Param Type="DWORD" Name="Reserved" />
+            <Param Type="LPTSTR" Name="pListenerName" />
+            <Param Type="SECURITY_INFORMATION" Name="SecurityInformation" />
+            <Param Type="PSECURITY_DESCRIPTOR" Name="pSecurityDescriptor" />
+            <Return Type="BOOL" />
         </Api>
         <Api Name="WTSSetUserConfig" BothCharset="True">
             <Param Type="LPTSTR" Name="pServerName" />
@@ -253,13 +410,11 @@
             <Param Type="LPTSTR" Name="pBuffer" />
             <Param Type="DWORD" Name="DataLength" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WTSShutdownSystem">
             <Param Type="[WtsServerHandle]" Name="hServer" />
             <Param Type="DWORD" Name="ShutdownFlag" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WTSStartRemoteControlSession" BothCharset="True">
             <Param Type="LPTSTR" Name="pTargetServerName" />
@@ -267,35 +422,29 @@
             <Param Type="BYTE" Name="HotkeyVk" />
             <Param Type="USHORT" Name="HotkeyModifiers" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WTSStopRemoteControlSession">
             <Param Type="ULONG" Name="LogonId" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WTSTerminateProcess">
             <Param Type="[WtsServerHandle]" Name="hServer" />
             <Param Type="DWORD" Name="ProcessId" />
             <Param Type="DWORD" Name="ExitCode" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WTSUnRegisterSessionNotification">
             <Param Type="HWND" Name="hWnd" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WTSUnRegisterSessionNotificationEx">
             <Param Type="[WtsServerHandle]" Name="hServer" />
             <Param Type="HWND" Name="hWnd" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WTSVirtualChannelClose">
             <Param Type="HANDLE" Name="hChannelHandle" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WTSVirtualChannelOpen">
             <Param Type="[WtsServerHandle]" Name="hServer" />
@@ -304,15 +453,20 @@
             <Return Type="HANDLE" />
             <Success Return="NotEqual" Value="0" />
         </Api>
+        <Api Name="WTSVirtualChannelOpenEx">
+            <Param Type="DWORD" Name="SessionId" />
+            <Param Type="LPSTR" Name="pVirtualName" />
+            <Param Type="DWORD" Name="flags" />
+            <Return Type="HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
         <Api Name="WTSVirtualChannelPurgeInput">
             <Param Type="HANDLE" Name="hChannelHandle" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WTSVirtualChannelPurgeOutput">
             <Param Type="HANDLE" Name="hChannelHandle" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WTSVirtualChannelQuery">
             <Param Type="HANDLE" Name="hChannelHandle" />
@@ -320,7 +474,6 @@
             <Param Type="PVOID*" Name="ppBuffer" />
             <Param Type="DWORD*" Name="pBytesReturned" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WTSVirtualChannelRead">
             <Param Type="HANDLE" Name="hChannelHandle" />
@@ -329,7 +482,6 @@
             <Param Type="ULONG" Name="BufferSize" />
             <Param Type="PULONG" Name="pBytesRead" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WTSVirtualChannelWrite">
             <Param Type="HANDLE" Name="hChannelHandle" />
@@ -337,14 +489,22 @@
             <Param Type="ULONG" Name="Length" />
             <Param Type="PULONG" Name="pBytesWritten" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WTSWaitSystemEvent">
             <Param Type="[WtsServerHandle]" Name="hServer" />
             <Param Type="[WtsEventFlags]" Name="EventMask" />
             <Param Type="[WtsEventFlags*]" Name="pEventFlags" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <!-- RemoteFX Media Redirection -->
+        <Category Name="System Services/Remote Desktop Services/RemoteFX Media Redirection" />
+        <Api Name="WTSSetRenderHint">
+            <Param Type="UINT64*" Name="pRenderHintID" />
+            <Param Type="HWND" Name="hwndOwner" />
+            <Param Type="DWORD" Name="renderHintType" />
+            <Param Type="DWORD" Name="cbHintDataLength" />
+            <Param Type="BYTE*" Name="pHintData" />
+            <Return Type="HRESULT" />
         </Api>
     </Module>
 </ApiMonitor>

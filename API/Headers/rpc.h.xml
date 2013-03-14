@@ -1,6 +1,6 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
@@ -12,6 +12,9 @@
         <Variable Name="RPC_BINDING_HANDLE*"                Type="Pointer"  Base="RPC_BINDING_HANDLE" />
         <Variable Name="RPC_TSTR"                           Type="Alias"    Base="LPTSTR" />
         <Variable Name="RPC_TSTR*"                          Type="Pointer"  Base="RPC_TSTR" />
+        <Variable Name="RPC_CSTR"                           Type="Alias"    Base="LPSTR" />
+        <Variable Name="RPC_CSTR*"                          Type="Pointer"  Base="RPC_CSTR" />
+        <Variable Name="RPC_WSTR"                           Type="Alias"    Base="LPWSTR" />
         <Variable Name="RPC_IF_HANDLE"                      Type="Alias"    Base="void*" />
         <Variable Name="RPC_NS_HANDLE"                      Type="Alias"    Base="void*" />
         <Variable Name="RPC_NS_HANDLE*"                     Type="Pointer"  Base="RPC_NS_HANDLE" />
@@ -254,6 +257,7 @@
             <Field Type="unsigned short" 	Name="MajorVersion" />
             <Field Type="unsigned short" 	Name="MinorVersion" />
         </Variable>
+        <Variable Name="RPC_VERSION*" Type="Pointer" Base="RPC_VERSION" />
 
         <!-- RPC_SYNTAX_IDENTIFIER -->
         <Variable Name="RPC_SYNTAX_IDENTIFIER" Type="Struct">
@@ -266,19 +270,10 @@
         <Variable Name="[RPC_POLICY_EndPoint]" Type="Alias" Base="unsigned long">
             <Display Name="unsigned long" />
             <Flag>
-                <Set Name="RPC_C_USE_INTERNET_PORT"             Value="0x1" />
-                <Set Name="RPC_C_USE_INTRANET_PORT"             Value="0x2" />
-                <Set Name="RPC_C_MQ_TEMPORARY"                  Value="0x0000" />
-                <Set Name="RPC_C_MQ_PERMANENT"                  Value="0x0001" />
-                <Set Name="RPC_C_MQ_CLEAR_ON_OPEN"              Value="0x0002" />
-                <Set Name="RPC_C_MQ_USE_EXISTING_SECURITY"      Value="0x0004" />
-                <!-- TODO: Values Unknown
-                <Set Name="RPC_C_MQ_AUTHENTICATE"               Value="" />
-                <Set Name="RPC_C_MQ_ENCRYPT"                    Value="" />
-                 -->
-                <Set Name="RPC_C_MQ_AUTHN_LEVEL_NONE"           Value="0x0000" />
-                <Set Name="RPC_C_MQ_AUTHN_LEVEL_PKT_INTEGRITY"  Value="0x0008" />
-                <Set Name="RPC_C_MQ_AUTHN_LEVEL_PKT_PRIVACY"    Value="0x0010" />
+                <Set Name="RPC_C_USE_INTERNET_PORT"         Value="0x1" />
+                <Set Name="RPC_C_USE_INTRANET_PORT"         Value="0x2" />
+                <Set Name="RPC_C_DONT_FAIL"                 Value="0x4" />
+                <Set Name="RPC_C_RPCHTTP_USE_LOAD_BALANCE"  Value="0x8" />
             </Flag>
         </Variable>
 
@@ -292,9 +287,9 @@
 
         <!-- RPC_POLICY -->
         <Variable Name="RPC_POLICY" Type="Struct">
-            <Field Type="unsigned int" 	            Name="Length"  />
-            <Field Type="[RPC_POLICY_EndPoint]"     Name="EndpointFlags"  />
-            <Field Type="[RPC_POLICY_Nic]"          Name="NICFlags"  />
+            <Field Type="unsigned int" 	            Name="Length" />
+            <Field Type="[RPC_POLICY_EndPoint]"     Name="EndpointFlags" />
+            <Field Type="[RPC_POLICY_Nic]"          Name="NICFlags" />
         </Variable>
         <Variable Name="PRPC_POLICY" Type="Pointer" Base="RPC_POLICY" />
 
@@ -337,7 +332,7 @@
         </Variable>
 
         <!-- RPC_STATUS -->
-        <Variable Name="RPC_STATUS" Type="Alias" Base="long">
+        <Variable Name="RPC_STATUS" Type="Alias" Base="[ERROR_CODE]">
             <Enum>
                 <Set Name="RPC_S_OK"                        Value="0" />
                 <Set Name="RPC_S_INVALID_ARG"               Value="87" />

@@ -1,0 +1,105 @@
+<!--
+    API Monitor Definitions
+    (c) 2012, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="api-ms-win-net-isolation-l1.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        
+        <!-- Variables -->
+        <Variable Name="PAC_CHANGES_CALLBACK_FN"        Type="Alias"    Base="LPVOID" />
+
+        <!-- NETISO_ERROR_TYPE -->
+        <Variable Name="NETISO_ERROR_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="NETISO_ERROR_TYPE_NONE"                      Value="0x00" />
+                <Set Name="NETISO_ERROR_TYPE_PRIVATE_NETWORK"           Value="0x01" />
+                <Set Name="NETISO_ERROR_TYPE_INTERNET_CLIENT"           Value="0x02" />
+                <Set Name="NETISO_ERROR_TYPE_INTERNET_CLIENT_SERVER"    Value="0x03" />
+            </Enum>
+        </Variable>
+        <Variable Name="NETISO_ERROR_TYPE*" Type="Pointer" Base="NETISO_ERROR_TYPE" />
+
+        <!-- INET_FIREWALL_AC_CAPABILITIES -->
+        <Variable Name="INET_FIREWALL_AC_CAPABILITIES" Type="Struct">
+            <Field Type="DWORD"                 Name="count" />
+            <Field Type="SID_AND_ATTRIBUTES*"   Name="capabilities" Count="count" />
+        </Variable>
+
+        <!-- INET_FIREWALL_AC_BINARIES -->
+        <Variable Name="INET_FIREWALL_AC_BINARIES" Type="Struct">
+            <Field Type="DWORD"     Name="count" />
+            <Field Type="LPWSTR*"   Name="binaries" Count="count" />
+        </Variable>
+
+        <!-- INET_FIREWALL_APP_CONTAINER -->
+        <Variable Name="INET_FIREWALL_APP_CONTAINER" Type="Struct">
+            <Field Type="SID*"                              Name="appContainerSid" />
+            <Field Type="SID*"                              Name="userSid" />
+            <Field Type="LPWSTR"                            Name="appContainerName" />
+            <Field Type="LPWSTR"                            Name="displayName" />
+            <Field Type="LPWSTR"                            Name="description" />
+            <Field Type="INET_FIREWALL_AC_CAPABILITIES"     Name="capabilities" />
+            <Field Type="INET_FIREWALL_AC_BINARIES"         Name="binaries" />
+            <Field Type="LPWSTR"                            Name="workingDirectory" />
+            <Field Type="LPWSTR"                            Name="packageFullName" />
+        </Variable>
+        <Variable Name="PINET_FIREWALL_APP_CONTAINER"   Type="Pointer" Base="INET_FIREWALL_APP_CONTAINER" />
+        <Variable Name="PINET_FIREWALL_APP_CONTAINER*"  Type="Pointer" Base="PINET_FIREWALL_APP_CONTAINER" />
+
+        <!-- Windows Firewall with Advanced Security -->
+        <Category Name="Networking/Windows Firewall Technologies/Windows Firewall with Advanced Security" />
+        <Api Name="NetworkIsolationDiagnoseConnectFailureAndGetInfo">
+            <Param Type="LPCWSTR" Name="wszServerName" />
+            <Param Type="NETISO_ERROR_TYPE*" Name="netIsoError" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="NetworkIsolationEnumAppContainers">
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="DWORD*" Name="pdwNumPublicAppCs" />
+            <Param Type="PINET_FIREWALL_APP_CONTAINER*" Name="ppPublicAppCs" DerefPostCount="pdwNumPublicAppCs" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="NetworkIsolationEnumerateAppContainerRules">
+            <Param Type="IEnumVARIANT**" Name="newEnum" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="NetworkIsolationFreeAppContainers">
+            <Param Type="PINET_FIREWALL_APP_CONTAINER" Name="pPublicAppCs" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="NetworkIsolationGetAppContainerConfig">
+            <Param Type="DWORD*" Name="pdwNumPublicAppCs" />
+            <Param Type="PSID_AND_ATTRIBUTES*" Name="appContainerSids" DerefPostCount="pdwNumPublicAppCs" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="NetworkIsolationRegisterForAppContainerChanges">
+            <Param Type="DWORD" Name="flags" />
+            <Param Type="PAC_CHANGES_CALLBACK_FN" Name="callback" />
+            <Param Type="PVOID" Name="context" />
+            <Param Type="HANDLE*" Name="registrationObject" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="NetworkIsolationSetAppContainerConfig">
+            <Param Type="DWORD" Name="dwNumPublicAppCs" />
+            <Param Type="PSID_AND_ATTRIBUTES" Name="appContainerSids" Count="dwNumPublicAppCs" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="NetworkIsolationSetupAppContainerBinaries">
+            <Param Type="PSID" Name="applicationContainerSid" />
+            <Param Type="LPCWSTR" Name="packageFullName" />
+            <Param Type="LPCWSTR" Name="packageFolder" />
+            <Param Type="LPCWSTR" Name="displayName" />
+            <Param Type="BOOL" Name="bBinariesFullyComputed" />
+            <Param Type="LPCWSTR*" Name="binaries" Count="binariesCount" />
+            <Param Type="DWORD" Name="binariesCount" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="NetworkIsolationUnregisterForAppContainerChanges">
+            <Param Type="HANDLE" Name="registrationObject" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        
+    </Module>
+</ApiMonitor>

@@ -1,4 +1,4 @@
-<!--
+c<!--
     API Monitor Definitions
     (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
@@ -6,31 +6,23 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="esent.dll" CallingConvention="STDCALL" OnlineHelp="MSDN">
+        
+        <!-- TODO: Decode JET_GRBIT for all API's -->
 
         <!-- Variables -->
         <Variable Name="JET_GRBIT"                          Type="Alias"    Base="unsigned long" />
         <Variable Name="const JET_GRBIT"                    Type="Alias"    Base="JET_GRBIT" />
         <Variable Name="JET_PCSTR"                          Type="Alias"    Base="LPCTSTR" />
         <Variable Name="JET_PSTR"                           Type="Alias"    Base="LPCTSTR" />
-        <Variable Name="JET_PCTSTR"                         Type="Alias"    Base="LPCTSTR" />
         <Variable Name="JET_API_PTR"                        Type="Alias"    Base="UINT_PTR" />
         <Variable Name="JET_API_PTR*"                       Type="Pointer"  Base="JET_API_PTR" />
-        <Variable Name="JET_SESID"                          Type="Alias"    Base="JET_API_PTR" />
-        <Variable Name="JET_SESID*"                         Type="Pointer"  Base="JET_SESID" />
-        <Variable Name="JET_TABLEID"                        Type="Alias"    Base="JET_API_PTR" />
-        <Variable Name="JET_TABLEID*"                       Type="Pointer"  Base="JET_TABLEID" />
         <Variable Name="JET_COLUMNID"                       Type="Alias"    Base="unsigned long" />
         <Variable Name="JET_COLUMNID*"                      Type="Pointer"  Base="JET_COLUMNID" />
-        <Variable Name="JET_INSTANCE"                       Type="Alias"    Base="JET_API_PTR" />
-        <Variable Name="JET_INSTANCE*"                      Type="Pointer"  Base="JET_INSTANCE" />
-        <Variable Name="JET_DBID"                           Type="Alias"    Base="unsigned long" />
-        <Variable Name="JET_DBID*"                          Type="Pointer"  Base="JET_DBID" />
+        <Variable Name="const JET_COLUMNID* const"          Type="Pointer"  Base="JET_COLUMNID" />
         <Variable Name="JET_HANDLE"                         Type="Alias"    Base="JET_API_PTR" />
         <Variable Name="JET_HANDLE*"                        Type="Pointer"  Base="JET_HANDLE" />
         <Variable Name="JET_PFNSTATUS"                      Type="Alias"    Base="LPVOID" />
         <Variable Name="JET_CALLBACK"                       Type="Alias"    Base="LPVOID" />
-        <Variable Name="JET_LS"                             Type="Alias"    Base="JET_API_PTR" />
-        <Variable Name="JET_LS*"                            Type="Pointer"  Base="JET_LS" />
         <Variable Name="JET_CBTYP"                          Type="Alias"    Base="unsigned long" />
         <Variable Name="JET_OBJTYP"                         Type="Alias"    Base="unsigned long" />
         <Variable Name="JET_OSSNAPID"                       Type="Alias"    Base="JET_API_PTR" />
@@ -39,7 +31,189 @@
         <Variable Name="JET_PFNREALLOC"                     Type="Alias"    Base="LPVOID" />
         <Variable Name="JET_COLTYP"                         Type="Alias"    Base="unsigned long" />
         <Variable Name="const TCHAR*"                       Type="Alias"    Base="TCHAR*" />
-        <Variable Name="TCHAR [JET_BASE_NAME_LENGTH + 1]"   Type="Array"    Base="TCHAR" Count="4" />
+        <Variable Name="unsigned long* const"               Type="Alias"    Base="unsigned long*" />
+        <Variable Name="const unsigned long*"               Type="Alias"    Base="unsigned long*" />
+
+        <!-- Arrays -->
+        <Variable Name="TCHAR [JET_BASE_NAME_LENGTH + 1]"           Type="Array"    Base="TCHAR"    Count="4" />
+        <Variable Name="char [JET_MAX_COMPUTERNAME_LENGTH + 1]"     Type="Array"    Base="char"     Count="16" />
+
+        <!-- JET_SESID -->
+        <Variable Name="JET_SESID" Type="Alias" Base="JET_API_PTR" DisplayHex="True">
+            <Enum>
+                <Set Name="NULL"            Value="0" />
+                <Set Name="JET_sesidNil"    Value="-1" />
+            </Enum>
+        </Variable>
+        <Variable Name="JET_SESID*" Type="Pointer" Base="JET_SESID" />
+
+        <!-- JET_INSTANCE -->
+        <Variable Name="JET_INSTANCE" Type="Alias" Base="JET_API_PTR" DisplayHex="True">
+            <Enum>
+                <Set Name="NULL"                Value="0" />
+                <Set Name="JET_instanceNil"     Value="-1" />
+            </Enum>
+        </Variable>
+        <Variable Name="JET_INSTANCE*" Type="Pointer" Base="JET_INSTANCE" />
+
+        <!-- JET_TABLEID -->
+        <Variable Name="JET_TABLEID" Type="Alias" Base="JET_API_PTR" DisplayHex="True">
+            <Enum>
+                <Set Name="NULL"            Value="0" />
+                <Set Name="JET_tableidNil"  Value="-1" />
+            </Enum>
+        </Variable>
+        <Variable Name="JET_TABLEID*" Type="Pointer" Base="JET_TABLEID" />
+
+        <!-- JET_LS -->
+        <Variable Name="JET_LS" Type="Alias" Base="JET_API_PTR" DisplayHex="True">
+            <Enum>
+                <Set Name="NULL"            Value="0" />
+                <Set Name="JET_LSNil"       Value="-1" />
+            </Enum>
+        </Variable>
+        <Variable Name="JET_LS*" Type="Pointer" Base="JET_LS" />
+
+        <!-- [JET_param] -->
+        <Variable Name="[JET_param]" Type="Alias" Base="unsigned long">
+            <Display Name="unsigned long" />
+            <Enum>
+                <Set Name="JET_paramSystemPath"                                         Value="0" />
+                <Set Name="JET_paramTempPath"                                           Value="1" />
+                <Set Name="JET_paramLogFilePath"                                        Value="2" />
+                <Set Name="JET_paramBaseName"                                           Value="3" />
+                <Set Name="JET_paramEventSource"                                        Value="4" />
+                <Set Name="JET_paramMaxSessions"                                        Value="5" />
+                <Set Name="JET_paramMaxOpenTables"                                      Value="6" />
+                <Set Name="JET_paramPreferredMaxOpenTables"                             Value="7" />
+                <Set Name="JET_paramMaxCursors"                                         Value="8" />
+                <Set Name="JET_paramMaxVerPages"                                        Value="9" />
+                <Set Name="JET_paramMaxTemporaryTables"                                 Value="10" />
+                <Set Name="JET_paramLogFileSize"                                        Value="11" />
+                <Set Name="JET_paramLogBuffers"                                         Value="12" />
+                <Set Name="JET_paramWaitLogFlush"                                       Value="13" />
+                <Set Name="JET_paramLogCheckpointPeriod"                                Value="14" />
+                <Set Name="JET_paramLogWaitingUserMax"                                  Value="15" />
+                <Set Name="JET_paramCommitDefault"                                      Value="16" />
+                <Set Name="JET_paramCircularLog"                                        Value="17" />
+                <Set Name="JET_paramDbExtensionSize"                                    Value="18" />
+                <Set Name="JET_paramPageTempDBMin"                                      Value="19" />
+                <Set Name="JET_paramPageFragment"                                       Value="20" />
+                <Set Name="JET_paramBatchIOBufferMax"                                   Value="22" />
+                <Set Name="JET_paramCacheSizeMax"                                       Value="23" />
+                <Set Name="JET_paramCheckpointDepthMax"                                 Value="24" />
+                <Set Name="JET_paramLRUKCorrInterval"                                   Value="25" />
+                <Set Name="JET_paramLRUKHistoryMax"                                     Value="26" />
+                <Set Name="JET_paramLRUKPolicy"                                         Value="27" />
+                <Set Name="JET_paramLRUKTimeout"                                        Value="28" />
+                <Set Name="JET_paramLRUKTrxCorrInterval"                                Value="29" />
+                <Set Name="JET_paramOutstandingIOMax"                                   Value="30" />
+                <Set Name="JET_paramStartFlushThreshold"                                Value="31" />
+                <Set Name="JET_paramStopFlushThreshold"                                 Value="32" />
+                <Set Name="JET_paramRecovery"                                           Value="34" />
+                <Set Name="JET_paramEnableOnlineDefrag"                                 Value="35" />
+                <Set Name="JET_paramCacheSize"                                          Value="41" />
+                <Set Name="JET_paramCheckFormatWhenOpenFail"                            Value="44" />
+                <Set Name="JET_paramEnableIndexChecking"                                Value="45" />
+                <Set Name="JET_paramEnableTempTableVersioning"                          Value="46" />
+                <Set Name="JET_paramIgnoreLogVersion"                                   Value="47" />
+                <Set Name="JET_paramDeleteOldLogs"                                      Value="48" />
+                <Set Name="JET_paramEventSourceKey"                                     Value="49" />
+                <Set Name="JET_paramNoInformationEvent"                                 Value="50" />
+                <Set Name="JET_paramEventLoggingLevel"                                  Value="51" />
+                <Set Name="JET_paramDeleteOutOfRangeLogs"                               Value="52" />
+                <Set Name="JET_paramAccessDeniedRetryPeriod"                            Value="53" />
+                <Set Name="JET_paramEnableIndexCleanup"                                 Value="54" />
+                <Set Name="JET_paramCacheSizeMin"                                       Value="60" />
+                <Set Name="JET_paramPreferredVerPages"                                  Value="63" />
+                <Set Name="JET_paramDatabasePageSize"                                   Value="64" />
+                <Set Name="JET_paramDisableCallbacks"                                   Value="65" />
+                <Set Name="JET_paramBackupChunkSize"                                    Value="66" />
+                <Set Name="JET_paramBackupOutstandingReads"                             Value="67" />
+                <Set Name="JET_paramSLVProviderEnable"                                  Value="68" />
+                <Set Name="JET_paramLogFileCreateAsynch"                                Value="69" />
+                <Set Name="JET_paramErrorToString"                                      Value="70" />
+                <Set Name="JET_paramZeroDatabaseDuringBackup"                           Value="71" />
+                <Set Name="JET_paramUnicodeIndexDefault"                                Value="72" />
+                <Set Name="JET_paramRuntimeCallback"                                    Value="73" />
+                <Set Name="JET_paramCleanupMismatchedLogFiles"                          Value="77" />
+                <Set Name="JET_paramRecordUpgradeDirtyLevel"                            Value="78" />
+                <Set Name="JET_paramGlobalMinVerPages"                                  Value="81" />
+                <Set Name="JET_paramOSSnapshotTimeout"                                  Value="82" />
+                <Set Name="JET_paramExceptionAction"                                    Value="98" />
+                <Set Name="JET_paramEventLogCache"                                      Value="99" />
+                <Set Name="JET_paramCreatePathIfNotExist"                               Value="100" />
+                <Set Name="JET_paramPageHintCacheSize"                                  Value="101" />
+                <Set Name="JET_paramOneDatabasePerSession"                              Value="102" />
+                <Set Name="JET_paramMaxInstances"                                       Value="104" />
+                <Set Name="JET_paramVersionStoreTaskQueueMax"                           Value="105" />
+                <Set Name="JET_paramDisablePerfmon"                                     Value="107" />
+                <Set Name="JET_paramIndexTuplesLengthMin"                               Value="110" />
+                <Set Name="JET_paramIndexTuplesLengthMax"                               Value="111" />
+                <Set Name="JET_paramIndexTuplesToIndexMax"                              Value="112" />
+                <Set Name="JET_paramAlternateDatabaseRecoveryPath"                      Value="113" />
+                <Set Name="JET_paramCachedClosedTables"                                 Value="125" />
+                <Set Name="JET_paramEnableFileCache"                                    Value="126" />
+                <Set Name="JET_paramEnableViewCache"                                    Value="127" />
+                <Set Name="JET_paramVerPageSize"                                        Value="128" />
+                <Set Name="JET_paramConfiguration"                                      Value="129" />
+                <Set Name="JET_paramEnableAdvanced"                                     Value="130" />
+                <Set Name="JET_paramMaxColtyp"                                          Value="131" />
+                <Set Name="JET_paramIndexTupleIncrement"                                Value="132" />
+                <Set Name="JET_paramIndexTupleStart"                                    Value="133" />
+                <Set Name="JET_paramKeyMost"                                            Value="134" />
+                <Set Name="JET_paramCheckpointIOMax"                                    Value="135" />
+                <Set Name="JET_paramLegacyFileNames"                                    Value="136" />
+                <Set Name="JET_paramTableClass1Name"                                    Value="137" />
+                <Set Name="JET_paramTableClass2Name"                                    Value="138" />
+                <Set Name="JET_paramTableClass3Name"                                    Value="139" />
+                <Set Name="JET_paramTableClass4Name"                                    Value="140" />
+                <Set Name="JET_paramTableClass5Name"                                    Value="141" />
+                <Set Name="JET_paramTableClass6Name"                                    Value="142" />
+                <Set Name="JET_paramTableClass7Name"                                    Value="143" />
+                <Set Name="JET_paramTableClass8Name"                                    Value="144" />
+                <Set Name="JET_paramTableClass9Name"                                    Value="145" />
+                <Set Name="JET_paramTableClass10Name"                                   Value="146" />
+                <Set Name="JET_paramTableClass11Name"                                   Value="147" />
+                <Set Name="JET_paramTableClass12Name"                                   Value="148" />
+                <Set Name="JET_paramTableClass13Name"                                   Value="149" />
+                <Set Name="JET_paramTableClass14Name"                                   Value="150" />
+                <Set Name="JET_paramTableClass15Name"                                   Value="151" />
+                <Set Name="JET_paramIOPriority"                                         Value="152" />
+                <Set Name="JET_paramWaypointLatency"                                    Value="153" />
+                <Set Name="JET_paramEnablePersistedCallbacks"                           Value="156" />
+                <Set Name="JET_paramDefragmentSequentialBTrees"                         Value="160" />
+                <Set Name="JET_paramDefragmentSequentialBTreesDensityCheckFrequency"    Value="161" />
+                <Set Name="JET_paramIOThrottlingTimeQuanta"                             Value="162" />
+                <Set Name="JET_paramLVChunkSizeMost"                                    Value="163" />
+                <Set Name="JET_paramMaxCoalesceReadSize"                                Value="164" />
+                <Set Name="JET_paramMaxCoalesceWriteSize"                               Value="165" />
+                <Set Name="JET_paramMaxCoalesceReadGapSize"                             Value="166" />
+                <Set Name="JET_paramMaxCoalesceWriteGapSize"                            Value="167" />
+                <Set Name="JET_paramEnableDBScanInRecovery"                             Value="169" />
+                <Set Name="JET_paramDbScanThrottle"                                     Value="170" />
+                <Set Name="JET_paramDbScanIntervalMinSec"                               Value="171" />
+                <Set Name="JET_paramDbScanIntervalMaxSec"                               Value="172" />
+                <Set Name="JET_paramCachePriority"                                      Value="177" />
+                <Set Name="JET_paramMaxTransactionSize"                                 Value="178" />
+                <Set Name="JET_paramPrereadIOMax"                                       Value="179" />
+                <Set Name="JET_paramEnableDBScanSerialization"                          Value="180" />
+                <Set Name="JET_paramHungIOThreshold"                                    Value="181" />
+                <Set Name="JET_paramHungIOActions"                                      Value="182" />
+                <Set Name="JET_paramMinDataForXpress"                                   Value="183" />
+                <Set Name="JET_paramProcessFriendlyName"                                Value="186" />
+                <Set Name="JET_paramDurableCommitCallback"                              Value="187" />
+            </Enum>
+        </Variable>
+
+        <!-- JET_DBID -->
+        <Variable Name="JET_DBID" Type="Alias" Base="unsigned long">
+            <Enum>
+                <Set Name="NULL"        Value="0" />
+                <Set Name="JET_dbidNil" Value="0xFFFFFFFF" />
+            </Enum>
+        </Variable>
+        <Variable Name="JET_DBID*" Type="Pointer" Base="JET_DBID" />
 
         <!-- JET_INDEXID (32-bit) -->
         <Condition Architecture="32">
@@ -67,366 +241,381 @@
         <!-- JET_ERR -->
         <Variable Name="JET_ERR" Type="Alias" Base="long">
             <Enum>
-                <Set Name="JET_errSuccess"                                      Value="0"/>
-                <Set Name="JET_wrnNyi"                                          Value="-1"/>
-                <Set Name="JET_errRfsFailure"                                   Value="-100"/>
-                <Set Name="JET_errRfsNotArmed"                                  Value="-101"/>
-                <Set Name="JET_errFileClose"                                    Value="-102"/>
-                <Set Name="JET_errOutOfThreads"                                 Value="-103"/>
-                <Set Name="JET_errTooManyIO"                                    Value="-105"/>
-                <Set Name="JET_errTaskDropped"                                  Value="-106"/>
-                <Set Name="JET_errInternalError"                                Value="-107"/>
-                <Set Name="JET_errDatabaseBufferDependenciesCorrupted"          Value="-255"/>
-                <Set Name="JET_wrnRemainingVersions"                            Value="321"/>
-                <Set Name="JET_errPreviousVersion"                              Value="-322"/>
-                <Set Name="JET_errPageBoundary"                                 Value="-323"/>
-                <Set Name="JET_errKeyBoundary"                                  Value="-324"/>
-                <Set Name="JET_errBadPageLink"                                  Value="-327"/>
-                <Set Name="JET_errBadBookmark"                                  Value="-328"/>
-                <Set Name="JET_errNTSystemCallFailed"                           Value="-334"/>
-                <Set Name="JET_errBadParentPageLink"                            Value="-338"/>
-                <Set Name="JET_errSPAvailExtCacheOutOfSync"                     Value="-340"/>
-                <Set Name="JET_errSPAvailExtCorrupted"                          Value="-341"/>
-                <Set Name="JET_errSPAvailExtCacheOutOfMemory"                   Value="-342"/>
-                <Set Name="JET_errSPOwnExtCorrupted"                            Value="-343"/>
-                <Set Name="JET_errDbTimeCorrupted"                              Value="-344"/>
-                <Set Name="JET_wrnUniqueKey"                                    Value="345"/>
-                <Set Name="JET_errKeyTruncated"                                 Value="-346"/>
-                <Set Name="JET_wrnSeparateLongValue"                            Value="406"/>
-                <Set Name="JET_errKeyTooBig"                                    Value="-408"/>
-                <Set Name="JET_errInvalidLoggedOperation"                       Value="-500"/>
-                <Set Name="JET_errLogFileCorrupt"                               Value="-501"/>
-                <Set Name="JET_errNoBackupDirectory"                            Value="-503"/>
-                <Set Name="JET_errBackupDirectoryNotEmpty"                      Value="-504"/>
-                <Set Name="JET_errBackupInProgress"                             Value="-505"/>
-                <Set Name="JET_errRestoreInProgress"                            Value="-506"/>
-                <Set Name="JET_errMissingPreviousLogFile"                       Value="-509"/>
-                <Set Name="JET_errLogWriteFail"                                 Value="-510"/>
-                <Set Name="JET_errLogDisabledDueToRecoveryFailure"              Value="-511"/>
-                <Set Name="JET_errCannotLogDuringRecoveryRedo"                  Value="-512"/>
-                <Set Name="JET_errLogGenerationMismatch"                        Value="-513"/>
-                <Set Name="JET_errBadLogVersion"                                Value="-514"/>
-                <Set Name="JET_errInvalidLogSequence"                           Value="-515"/>
-                <Set Name="JET_errLoggingDisabled"                              Value="-516"/>
-                <Set Name="JET_errLogBufferTooSmall"                            Value="-517"/>
-                <Set Name="JET_errLogSequenceEnd"                               Value="-519"/>
-                <Set Name="JET_errNoBackup"                                     Value="-520"/>
-                <Set Name="JET_errInvalidBackupSequence"                        Value="-521"/>
-                <Set Name="JET_errBackupNotAllowedYet"                          Value="-523"/>
-                <Set Name="JET_errDeleteBackupFileFail"                         Value="-524"/>
-                <Set Name="JET_errMakeBackupDirectoryFail"                      Value="-525"/>
-                <Set Name="JET_errInvalidBackup"                                Value="-526"/>
-                <Set Name="JET_errRecoveredWithErrors"                          Value="-527"/>
-                <Set Name="JET_errMissingLogFile"                               Value="-528"/>
-                <Set Name="JET_errLogDiskFull"                                  Value="-529"/>
-                <Set Name="JET_errBadLogSignature"                              Value="-530"/>
-                <Set Name="JET_errBadDbSignature"                               Value="-531"/>
-                <Set Name="JET_errBadCheckpointSignature"                       Value="-532"/>
-                <Set Name="JET_errCheckpointCorrupt"                            Value="-533"/>
-                <Set Name="JET_errMissingPatchPage"                             Value="-534"/>
-                <Set Name="JET_errBadPatchPage"                                 Value="-535"/>
-                <Set Name="JET_errRedoAbruptEnded"                              Value="-536"/>
-                <Set Name="JET_errBadSLVSignature"                              Value="-537"/>
-                <Set Name="JET_errPatchFileMissing"                             Value="-538"/>
-                <Set Name="JET_errDatabaseLogSetMismatch"                       Value="-539"/>
-                <Set Name="JET_errDatabaseStreamingFileMismatch"                Value="-540"/>
-                <Set Name="JET_errLogFileSizeMismatch"                          Value="-541"/>
-                <Set Name="JET_errCheckpointFileNotFound"                       Value="-542"/>
-                <Set Name="JET_errRequiredLogFilesMissing"                      Value="-543"/>
-                <Set Name="JET_errSoftRecoveryOnBackupDatabase"                 Value="-544"/>
-                <Set Name="JET_errLogFileSizeMismatchDatabasesConsistent"       Value="-545"/>
-                <Set Name="JET_errLogSectorSizeMismatch"                        Value="-546"/>
-                <Set Name="JET_errLogSectorSizeMismatchDatabasesConsistent"     Value="-547"/>
-                <Set Name="JET_errLogSequenceEndDatabasesConsistent"            Value="-548"/>
-                <Set Name="JET_errStreamingDataNotLogged"                       Value="-549"/>
-                <Set Name="JET_errDatabaseDirtyShutdown"                        Value="-550"/>
-                <Set Name="JET_errConsistentTimeMismatch"                       Value="-551"/>
-                <Set Name="JET_errDatabasePatchFileMismatch"                    Value="-552"/>
-                <Set Name="JET_errEndingRestoreLogTooLow"                       Value="-553"/>
-                <Set Name="JET_errStartingRestoreLogTooHigh"                    Value="-554"/>
-                <Set Name="JET_errGivenLogFileHasBadSignature"                  Value="-555"/>
-                <Set Name="JET_errGivenLogFileIsNotContiguous"                  Value="-556"/>
-                <Set Name="JET_errMissingRestoreLogFiles"                       Value="-557"/>
-                <Set Name="JET_wrnExistingLogFileHasBadSignature"               Value="558"/>
-                <Set Name="JET_wrnExistingLogFileIsNotContiguous"               Value="559"/>
-                <Set Name="JET_errMissingFullBackup"                            Value="-560"/>
-                <Set Name="JET_errBadBackupDatabaseSize"                        Value="-561"/>
-                <Set Name="JET_errDatabaseAlreadyUpgraded"                      Value="-562"/>
-                <Set Name="JET_errDatabaseIncompleteUpgrade"                    Value="-563"/>
-                <Set Name="JET_wrnSkipThisRecord"                               Value="564"/>
-                <Set Name="JET_errMissingCurrentLogFiles"                       Value="-565"/>
-                <Set Name="JET_errDbTimeTooOld"                                 Value="-566"/>
-                <Set Name="JET_errDbTimeTooNew"                                 Value="-567"/>
-                <Set Name="JET_errMissingFileToBackup"                          Value="-569"/>
-                <Set Name="JET_errLogTornWriteDuringHardRestore"                Value="-570"/>
-                <Set Name="JET_errLogTornWriteDuringHardRecovery"               Value="-571"/>
-                <Set Name="JET_errLogCorruptDuringHardRestore"                  Value="-573"/>
-                <Set Name="JET_errLogCorruptDuringHardRecovery"                 Value="-574"/>
-                <Set Name="JET_errMustDisableLoggingForDbUpgrade"               Value="-575"/>
-                <Set Name="JET_errBadRestoreTargetInstance"                     Value="-577"/>
-                <Set Name="JET_wrnTargetInstanceRunning"                        Value="578"/>
-                <Set Name="JET_errRecoveredWithoutUndo"                         Value="-579"/>
-                <Set Name="JET_errDatabasesNotFromSameSnapshot"                 Value="-580"/>
-                <Set Name="JET_errSoftRecoveryOnSnapshot"                       Value="-581"/>
-                <Set Name="JET_errSectorSizeNotSupported"                       Value="-583"/>
-                <Set Name="JET_wrnDatabaseRepaired"                             Value="595"/>
-                <Set Name="JET_errUnicodeTranslationBufferTooSmall"             Value="-601"/>
-                <Set Name="JET_errUnicodeTranslationFail"                       Value="-602"/>
-                <Set Name="JET_errUnicodeNormalizationNotSupported"             Value="-603"/>
-                <Set Name="JET_errExistingLogFileHasBadSignature"               Value="-610"/>
-                <Set Name="JET_errExistingLogFileIsNotContiguous"               Value="-611"/>
-                <Set Name="JET_errLogReadVerifyFailure"                         Value="-612"/>
-                <Set Name="JET_errSLVReadVerifyFailure"                         Value="-613"/>
-                <Set Name="JET_errCheckpointDepthTooDeep"                       Value="-614"/>
-                <Set Name="JET_errRestoreOfNonBackupDatabase"                   Value="-615"/>
-                <Set Name="JET_errLogFileNotCopied"                             Value="-616"/>
-                <Set Name="JET_errInvalidGrbit"                                 Value="-900"/>
-                <Set Name="JET_errTermInProgress"                               Value="-1000"/>
-                <Set Name="JET_errFeatureNotAvailable"                          Value="-1001"/>
-                <Set Name="JET_errInvalidName"                                  Value="-1002"/>
-                <Set Name="JET_errInvalidParameter"                             Value="-1003"/>
-                <Set Name="JET_wrnColumnNull"                                   Value="1004"/>
-                <Set Name="JET_wrnBufferTruncated"                              Value="1006"/>
-                <Set Name="JET_wrnDatabaseAttached"                             Value="1007"/>
-                <Set Name="JET_errDatabaseFileReadOnly"                         Value="-1008"/>
-                <Set Name="JET_wrnSortOverflow"                                 Value="1009"/>
-                <Set Name="JET_errInvalidDatabaseId"                            Value="-1010"/>
-                <Set Name="JET_errOutOfMemory"                                  Value="-1011"/>
-                <Set Name="JET_errOutOfDatabaseSpace"                           Value="-1012"/>
-                <Set Name="JET_errOutOfCursors"                                 Value="-1013"/>
-                <Set Name="JET_errOutOfBuffers"                                 Value="-1014"/>
-                <Set Name="JET_errTooManyIndexes"                               Value="-1015"/>
-                <Set Name="JET_errTooManyKeys"                                  Value="-1016"/>
-                <Set Name="JET_errRecordDeleted"                                Value="-1017"/>
-                <Set Name="JET_errReadVerifyFailure"                            Value="-1018"/>
-                <Set Name="JET_errPageNotInitialized"                           Value="-1019"/>
-                <Set Name="JET_errOutOfFileHandles"                             Value="-1020"/>
-                <Set Name="JET_errDiskIO"                                       Value="-1022"/>
-                <Set Name="JET_errInvalidPath"                                  Value="-1023"/>
-                <Set Name="JET_errInvalidSystemPath"                            Value="-1024"/>
-                <Set Name="JET_errInvalidLogDirectory"                          Value="-1025"/>
-                <Set Name="JET_errRecordTooBig"                                 Value="-1026"/>
-                <Set Name="JET_errTooManyOpenDatabases"                         Value="-1027"/>
-                <Set Name="JET_errInvalidDatabase"                              Value="-1028"/>
-                <Set Name="JET_errNotInitialized"                               Value="-1029"/>
-                <Set Name="JET_errAlreadyInitialized"                           Value="-1030"/>
-                <Set Name="JET_errInitInProgress"                               Value="-1031"/>
-                <Set Name="JET_errFileAccessDenied"                             Value="-1032"/>
-                <Set Name="JET_errBufferTooSmall"                               Value="-1038"/>
-                <Set Name="JET_wrnSeekNotEqual"                                 Value="1039"/>
-                <Set Name="JET_errTooManyColumns"                               Value="-1040"/>
-                <Set Name="JET_errContainerNotEmpty"                            Value="-1043"/>
-                <Set Name="JET_errInvalidFilename"                              Value="-1044"/>
-                <Set Name="JET_errInvalidBookmark"                              Value="-1045"/>
-                <Set Name="JET_errColumnInUse"                                  Value="-1046"/>
-                <Set Name="JET_errInvalidBufferSize"                            Value="-1047"/>
-                <Set Name="JET_errColumnNotUpdatable"                           Value="-1048"/>
-                <Set Name="JET_errIndexInUse"                                   Value="-1051"/>
-                <Set Name="JET_errLinkNotSupported"                             Value="-1052"/>
-                <Set Name="JET_errNullKeyDisallowed"                            Value="-1053"/>
-                <Set Name="JET_errNotInTransaction"                             Value="-1054"/>
-                <Set Name="JET_wrnNoErrorInfo"                                  Value="1055"/>
-                <Set Name="JET_wrnNoIdleActivity"                               Value="1058"/>
-                <Set Name="JET_errTooManyActiveUsers"                           Value="-1059"/>
-                <Set Name="JET_errInvalidCountry"                               Value="-1061"/>
-                <Set Name="JET_errInvalidLanguageId"                            Value="-1062"/>
-                <Set Name="JET_errInvalidCodePage"                              Value="-1063"/>
-                <Set Name="JET_errInvalidLCMapStringFlags"                      Value="-1064"/>
-                <Set Name="JET_errVersionStoreEntryTooBig"                      Value="-1065"/>
-                <Set Name="JET_errVersionStoreOutOfMemoryAndCleanupTimedOut"    Value="-1066"/>
-                <Set Name="JET_wrnNoWriteLock"                                  Value="1067"/>
-                <Set Name="JET_wrnColumnSetNull"                                Value="1068"/>
-                <Set Name="JET_errVersionStoreOutOfMemory"                      Value="-1069"/>
-                <Set Name="JET_errCannotIndex"                                  Value="-1071"/>
-                <Set Name="JET_errRecordNotDeleted"                             Value="-1072"/>
-                <Set Name="JET_errTooManyMempoolEntries"                        Value="-1073"/>
-                <Set Name="JET_errOutOfObjectIDs"                               Value="-1074"/>
-                <Set Name="JET_errOutOfLongValueIDs"                            Value="-1075"/>
-                <Set Name="JET_errOutOfAutoincrementValues"                     Value="-1076"/>
-                <Set Name="JET_errOutOfDbtimeValues"                            Value="-1077"/>
-                <Set Name="JET_errOutOfSequentialIndexValues"                   Value="-1078"/>
-                <Set Name="JET_errRunningInOneInstanceMode"                     Value="-1080"/>
-                <Set Name="JET_errRunningInMultiInstanceMode"                   Value="-1081"/>
-                <Set Name="JET_errSystemParamsAlreadySet"                       Value="-1082"/>
-                <Set Name="JET_errSystemPathInUse"                              Value="-1083"/>
-                <Set Name="JET_errLogFilePathInUse"                             Value="-1084"/>
-                <Set Name="JET_errTempPathInUse"                                Value="-1085"/>
-                <Set Name="JET_errInstanceNameInUse"                            Value="-1086"/>
-                <Set Name="JET_errInstanceUnavailable"                          Value="-1090"/>
-                <Set Name="JET_errDatabaseUnavailable"                          Value="-1091"/>
-                <Set Name="JET_errInstanceUnavailableDueToFatalLogDiskFull"     Value="-1092"/>
-                <Set Name="JET_errOutOfSessions"                                Value="-1101"/>
-                <Set Name="JET_errWriteConflict"                                Value="-1102"/>
-                <Set Name="JET_errTransTooDeep"                                 Value="-1103"/>
-                <Set Name="JET_errInvalidSesid"                                 Value="-1104"/>
-                <Set Name="JET_errWriteConflictPrimaryIndex"                    Value="-1105"/>
-                <Set Name="JET_errInTransaction"                                Value="-1108"/>
-                <Set Name="JET_errRollbackRequired"                             Value="-1109"/>
-                <Set Name="JET_errTransReadOnly"                                Value="-1110"/>
-                <Set Name="JET_errSessionWriteConflict"                         Value="-1111"/>
-                <Set Name="JET_errRecordTooBigForBackwardCompatibility"         Value="-1112"/>
-                <Set Name="JET_errCannotMaterializeForwardOnlySort"             Value="-1113"/>
-                <Set Name="JET_errSesidTableIdMismatch"                         Value="-1114"/>
-                <Set Name="JET_errInvalidInstance"                              Value="-1115"/>
-                <Set Name="JET_errDatabaseDuplicate"                            Value="-1201"/>
-                <Set Name="JET_errDatabaseInUse"                                Value="-1202"/>
-                <Set Name="JET_errDatabaseNotFound"                             Value="-1203"/>
-                <Set Name="JET_errDatabaseInvalidName"                          Value="-1204"/>
-                <Set Name="JET_errDatabaseInvalidPages"                         Value="-1205"/>
-                <Set Name="JET_errDatabaseCorrupted"                            Value="-1206"/>
-                <Set Name="JET_errDatabaseLocked"                               Value="-1207"/>
-                <Set Name="JET_errCannotDisableVersioning"                      Value="-1208"/>
-                <Set Name="JET_errInvalidDatabaseVersion"                       Value="-1209"/>
-                <Set Name="JET_errDatabase200Format"                            Value="-1210"/>
-                <Set Name="JET_errDatabase400Format"                            Value="-1211"/>
-                <Set Name="JET_errDatabase500Format"                            Value="-1212"/>
-                <Set Name="JET_errPageSizeMismatch"                             Value="-1213"/>
-                <Set Name="JET_errTooManyInstances"                             Value="-1214"/>
-                <Set Name="JET_errDatabaseSharingViolation"                     Value="-1215"/>
-                <Set Name="JET_errAttachedDatabaseMismatch"                     Value="-1216"/>
-                <Set Name="JET_errDatabaseInvalidPath"                          Value="-1217"/>
-                <Set Name="JET_errDatabaseIdInUse"                              Value="-1218"/>
-                <Set Name="JET_errForceDetachNotAllowed"                        Value="-1219"/>
-                <Set Name="JET_errCatalogCorrupted"                             Value="-1220"/>
-                <Set Name="JET_errPartiallyAttachedDB"                          Value="-1221"/>
-                <Set Name="JET_errDatabaseSignInUse"                            Value="-1222"/>
-                <Set Name="JET_errDatabaseCorruptedNoRepair"                    Value="-1224"/>
-                <Set Name="JET_errInvalidCreateDbVersion"                       Value="-1225"/>
-                <Set Name="JET_wrnTableEmpty"                                   Value="1301"/>
-                <Set Name="JET_errTableLocked"                                  Value="-1302"/>
-                <Set Name="JET_errTableDuplicate"                               Value="-1303"/>
-                <Set Name="JET_errTableInUse"                                   Value="-1304"/>
-                <Set Name="JET_errObjectNotFound"                               Value="-1305"/>
-                <Set Name="JET_errDensityInvalid"                               Value="-1307"/>
-                <Set Name="JET_errTableNotEmpty"                                Value="-1308"/>
-                <Set Name="JET_errInvalidTableId"                               Value="-1310"/>
-                <Set Name="JET_errTooManyOpenTables"                            Value="-1311"/>
-                <Set Name="JET_errIllegalOperation"                             Value="-1312"/>
-                <Set Name="JET_errTooManyOpenTablesAndCleanupTimedOut"          Value="-1313"/>
-                <Set Name="JET_errObjectDuplicate"                              Value="-1314"/>
-                <Set Name="JET_errInvalidObject"                                Value="-1316"/>
-                <Set Name="JET_errCannotDeleteTempTable"                        Value="-1317"/>
-                <Set Name="JET_errCannotDeleteSystemTable"                      Value="-1318"/>
-                <Set Name="JET_errCannotDeleteTemplateTable"                    Value="-1319"/>
-                <Set Name="JET_errExclusiveTableLockRequired"                   Value="-1322"/>
-                <Set Name="JET_errFixedDDL"                                     Value="-1323"/>
-                <Set Name="JET_errFixedInheritedDDL"                            Value="-1324"/>
-                <Set Name="JET_errCannotNestDDL"                                Value="-1325"/>
-                <Set Name="JET_errDDLNotInheritable"                            Value="-1326"/>
-                <Set Name="JET_wrnTableInUseBySystem"                           Value="1327"/>
-                <Set Name="JET_errInvalidSettings"                              Value="-1328"/>
-                <Set Name="JET_errClientRequestToStopJetService"                Value="-1329"/>
-                <Set Name="JET_errCannotAddFixedVarColumnToDerivedTable"        Value="-1330"/>
-                <Set Name="JET_errIndexCantBuild"                               Value="-1401"/>
-                <Set Name="JET_errIndexHasPrimary"                              Value="-1402"/>
-                <Set Name="JET_errIndexDuplicate"                               Value="-1403"/>
-                <Set Name="JET_errIndexNotFound"                                Value="-1404"/>
-                <Set Name="JET_errIndexMustStay"                                Value="-1405"/>
-                <Set Name="JET_errIndexInvalidDef"                              Value="-1406"/>
-                <Set Name="JET_errInvalidCreateIndex"                           Value="-1409"/>
-                <Set Name="JET_errTooManyOpenIndexes"                           Value="-1410"/>
-                <Set Name="JET_errMultiValuedIndexViolation"                    Value="-1411"/>
-                <Set Name="JET_errIndexBuildCorrupted"                          Value="-1412"/>
-                <Set Name="JET_errPrimaryIndexCorrupted"                        Value="-1413"/>
-                <Set Name="JET_errSecondaryIndexCorrupted"                      Value="-1414"/>
-                <Set Name="JET_wrnCorruptIndexDeleted"                          Value="1415"/>
-                <Set Name="JET_errInvalidIndexId"                               Value="-1416"/>
-                <Set Name="JET_errIndexTuplesSecondaryIndexOnly"                Value="-1430"/>
-                <Set Name="JET_errIndexTuplesTooManyColumns"                    Value="-1431"/>
-                <Set Name="JET_errIndexTuplesNonUniqueOnly"                     Value="-1432"/>
-                <Set Name="JET_errIndexTuplesTextBinaryColumnsOnly"             Value="-1433"/>
-                <Set Name="JET_errIndexTuplesVarSegMacNotAllowed"               Value="-1434"/>
-                <Set Name="JET_errIndexTuplesInvalidLimits"                     Value="-1435"/>
-                <Set Name="JET_errIndexTuplesCannotRetrieveFromIndex"           Value="-1436"/>
-                <Set Name="JET_errIndexTuplesKeyTooSmall"                       Value="-1437"/>
-                <Set Name="JET_errColumnLong"                                   Value="-1501"/>
-                <Set Name="JET_errColumnNoChunk"                                Value="-1502"/>
-                <Set Name="JET_errColumnDoesNotFit"                             Value="-1503"/>
-                <Set Name="JET_errNullInvalid"                                  Value="-1504"/>
-                <Set Name="JET_errColumnIndexed"                                Value="-1505"/>
-                <Set Name="JET_errColumnTooBig"                                 Value="-1506"/>
-                <Set Name="JET_errColumnNotFound"                               Value="-1507"/>
-                <Set Name="JET_errColumnDuplicate"                              Value="-1508"/>
-                <Set Name="JET_errMultiValuedColumnMustBeTagged"                Value="-1509"/>
-                <Set Name="JET_errColumnRedundant"                              Value="-1510"/>
-                <Set Name="JET_errInvalidColumnType"                            Value="-1511"/>
-                <Set Name="JET_wrnColumnMaxTruncated"                           Value="1512"/>
-                <Set Name="JET_errTaggedNotNULL"                                Value="-1514"/>
-                <Set Name="JET_errNoCurrentIndex"                               Value="-1515"/>
-                <Set Name="JET_errKeyIsMade"                                    Value="-1516"/>
-                <Set Name="JET_errBadColumnId"                                  Value="-1517"/>
-                <Set Name="JET_errBadItagSequence"                              Value="-1518"/>
-                <Set Name="JET_errColumnInRelationship"                         Value="-1519"/>
-                <Set Name="JET_wrnCopyLongValue"                                Value="1520"/>
-                <Set Name="JET_errCannotBeTagged"                               Value="-1521"/>
-                <Set Name="JET_errDefaultValueTooBig"                           Value="-1524"/>
-                <Set Name="JET_errMultiValuedDuplicate"                         Value="-1525"/>
-                <Set Name="JET_errLVCorrupted"                                  Value="-1526"/>
-                <Set Name="JET_errMultiValuedDuplicateAfterTruncation"          Value="-1528"/>
-                <Set Name="JET_errDerivedColumnCorruption"                      Value="-1529"/>
-                <Set Name="JET_errInvalidPlaceholderColumn"                     Value="-1530"/>
-                <Set Name="JET_wrnColumnSkipped"                                Value="1531"/>
-                <Set Name="JET_wrnColumnNotLocal"                               Value="1532"/>
-                <Set Name="JET_wrnColumnMoreTags"                               Value="1533"/>
-                <Set Name="JET_wrnColumnTruncated"                              Value="1534"/>
-                <Set Name="JET_wrnColumnPresent"                                Value="1535"/>
-                <Set Name="JET_wrnColumnSingleValue"                            Value="1536"/>
-                <Set Name="JET_wrnColumnDefault"                                Value="1537"/>
-                <Set Name="JET_errRecordNotFound"                               Value="-1601"/>
-                <Set Name="JET_errRecordNoCopy"                                 Value="-1602"/>
-                <Set Name="JET_errNoCurrentRecord"                              Value="-1603"/>
-                <Set Name="JET_errRecordPrimaryChanged"                         Value="-1604"/>
-                <Set Name="JET_errKeyDuplicate"                                 Value="-1605"/>
-                <Set Name="JET_errAlreadyPrepared"                              Value="-1607"/>
-                <Set Name="JET_errKeyNotMade"                                   Value="-1608"/>
-                <Set Name="JET_errUpdateNotPrepared"                            Value="-1609"/>
-                <Set Name="JET_wrnDataHasChanged"                               Value="1610"/>
-                <Set Name="JET_errDataHasChanged"                               Value="-1611"/>
-                <Set Name="JET_wrnKeyChanged"                                   Value="1618"/>
-                <Set Name="JET_errLanguageNotSupported"                         Value="-1619"/>
-                <Set Name="JET_errTooManySorts"                                 Value="-1701"/>
-                <Set Name="JET_errInvalidOnSort"                                Value="-1702"/>
-                <Set Name="JET_errTempFileOpenError"                            Value="-1803"/>
-                <Set Name="JET_errTooManyAttachedDatabases"                     Value="-1805"/>
-                <Set Name="JET_errDiskFull"                                     Value="-1808"/>
-                <Set Name="JET_errPermissionDenied"                             Value="-1809"/>
-                <Set Name="JET_errFileNotFound"                                 Value="-1811"/>
-                <Set Name="JET_errFileInvalidType"                              Value="-1812"/>
-                <Set Name="JET_wrnFileOpenReadOnly"                             Value="1813"/>
-                <Set Name="JET_errAfterInitialization"                          Value="-1850"/>
-                <Set Name="JET_errLogCorrupted"                                 Value="-1852"/>
-                <Set Name="JET_errInvalidOperation"                             Value="-1906"/>
-                <Set Name="JET_errAccessDenied"                                 Value="-1907"/>
-                <Set Name="JET_wrnIdleFull"                                     Value="1908"/>
-                <Set Name="JET_errTooManySplits"                                Value="-1909"/>
-                <Set Name="JET_errSessionSharingViolation"                      Value="-1910"/>
-                <Set Name="JET_errEntryPointNotFound"                           Value="-1911"/>
-                <Set Name="JET_errSessionContextAlreadySet"                     Value="-1912"/>
-                <Set Name="JET_errSessionContextNotSetByThisThread"             Value="-1913"/>
-                <Set Name="JET_errSessionInUse"                                 Value="-1914"/>
-                <Set Name="JET_errRecordFormatConversionFailed"                 Value="-1915"/>
-                <Set Name="JET_errOneDatabasePerSession"                        Value="-1916"/>
-                <Set Name="JET_errRollbackError"                                Value="-1917"/>
-                <Set Name="JET_wrnDefragAlreadyRunning"                         Value="2000"/>
-                <Set Name="JET_wrnDefragNotRunning"                             Value="2001"/>
-                <Set Name="JET_wrnCallbackNotRegistered"                        Value="2100"/>
-                <Set Name="JET_errCallbackFailed"                               Value="-2101"/>
-                <Set Name="JET_errCallbackNotResolved"                          Value="-2102"/>
-                <Set Name="JET_errOSSnapshotInvalidSequence"                    Value="-2401"/>
-                <Set Name="JET_errOSSnapshotTimeOut"                            Value="-2402"/>
-                <Set Name="JET_errOSSnapshotNotAllowed"                         Value="-2403"/>
-                <Set Name="JET_errOSSnapshotInvalidSnapId"                      Value="-2404"/>
-                <Set Name="JET_errLSCallbackNotSpecified"                       Value="-3000"/>
-                <Set Name="JET_errLSAlreadySet"                                 Value="-3001"/>
-                <Set Name="JET_errLSNotSet"                                     Value="-3002"/>
-                <Set Name="JET_errFileIOSparse"                                 Value="-4000"/>
-                <Set Name="JET_errFileIOBeyondEOF"                              Value="-4001"/>
-                <Set Name="JET_errFileIOAbort"                                  Value="-4002"/>
-                <Set Name="JET_errFileIORetry"                                  Value="-4003"/>
-                <Set Name="JET_errFileIOFail"                                   Value="-4004"/>
-                <Set Name="JET_errFileCompressed"                               Value="-4005"/>
+                <Set Name="JET_errSuccess"                                      Value="0" />
+                <Set Name="JET_wrnNyi"                                          Value="-1" />
+                <Set Name="JET_errRfsFailure"                                   Value="-100" />
+                <Set Name="JET_errRfsNotArmed"                                  Value="-101" />
+                <Set Name="JET_errFileClose"                                    Value="-102" />
+                <Set Name="JET_errOutOfThreads"                                 Value="-103" />
+                <Set Name="JET_errTooManyIO"                                    Value="-105" />
+                <Set Name="JET_errTaskDropped"                                  Value="-106" />
+                <Set Name="JET_errInternalError"                                Value="-107" />
+                <Set Name="JET_errDatabaseBufferDependenciesCorrupted"          Value="-255" />
+                <Set Name="JET_wrnRemainingVersions"                            Value="321" />
+                <Set Name="JET_errPreviousVersion"                              Value="-322" />
+                <Set Name="JET_errPageBoundary"                                 Value="-323" />
+                <Set Name="JET_errKeyBoundary"                                  Value="-324" />
+                <Set Name="JET_errBadPageLink"                                  Value="-327" />
+                <Set Name="JET_errBadBookmark"                                  Value="-328" />
+                <Set Name="JET_errNTSystemCallFailed"                           Value="-334" />
+                <Set Name="JET_errBadParentPageLink"                            Value="-338" />
+                <Set Name="JET_errSPAvailExtCacheOutOfSync"                     Value="-340" />
+                <Set Name="JET_errSPAvailExtCorrupted"                          Value="-341" />
+                <Set Name="JET_errSPAvailExtCacheOutOfMemory"                   Value="-342" />
+                <Set Name="JET_errSPOwnExtCorrupted"                            Value="-343" />
+                <Set Name="JET_errDbTimeCorrupted"                              Value="-344" />
+                <Set Name="JET_wrnUniqueKey"                                    Value="345" />
+                <Set Name="JET_errKeyTruncated"                                 Value="-346" />
+                <Set Name="JET_wrnSeparateLongValue"                            Value="406" />
+                <Set Name="JET_errKeyTooBig"                                    Value="-408" />
+                <Set Name="JET_errInvalidLoggedOperation"                       Value="-500" />
+                <Set Name="JET_errLogFileCorrupt"                               Value="-501" />
+                <Set Name="JET_errNoBackupDirectory"                            Value="-503" />
+                <Set Name="JET_errBackupDirectoryNotEmpty"                      Value="-504" />
+                <Set Name="JET_errBackupInProgress"                             Value="-505" />
+                <Set Name="JET_errRestoreInProgress"                            Value="-506" />
+                <Set Name="JET_errMissingPreviousLogFile"                       Value="-509" />
+                <Set Name="JET_errLogWriteFail"                                 Value="-510" />
+                <Set Name="JET_errLogDisabledDueToRecoveryFailure"              Value="-511" />
+                <Set Name="JET_errCannotLogDuringRecoveryRedo"                  Value="-512" />
+                <Set Name="JET_errLogGenerationMismatch"                        Value="-513" />
+                <Set Name="JET_errBadLogVersion"                                Value="-514" />
+                <Set Name="JET_errInvalidLogSequence"                           Value="-515" />
+                <Set Name="JET_errLoggingDisabled"                              Value="-516" />
+                <Set Name="JET_errLogBufferTooSmall"                            Value="-517" />
+                <Set Name="JET_errLogSequenceEnd"                               Value="-519" />
+                <Set Name="JET_errNoBackup"                                     Value="-520" />
+                <Set Name="JET_errInvalidBackupSequence"                        Value="-521" />
+                <Set Name="JET_errBackupNotAllowedYet"                          Value="-523" />
+                <Set Name="JET_errDeleteBackupFileFail"                         Value="-524" />
+                <Set Name="JET_errMakeBackupDirectoryFail"                      Value="-525" />
+                <Set Name="JET_errInvalidBackup"                                Value="-526" />
+                <Set Name="JET_errRecoveredWithErrors"                          Value="-527" />
+                <Set Name="JET_errMissingLogFile"                               Value="-528" />
+                <Set Name="JET_errLogDiskFull"                                  Value="-529" />
+                <Set Name="JET_errBadLogSignature"                              Value="-530" />
+                <Set Name="JET_errBadDbSignature"                               Value="-531" />
+                <Set Name="JET_errBadCheckpointSignature"                       Value="-532" />
+                <Set Name="JET_errCheckpointCorrupt"                            Value="-533" />
+                <Set Name="JET_errMissingPatchPage"                             Value="-534" />
+                <Set Name="JET_errBadPatchPage"                                 Value="-535" />
+                <Set Name="JET_errRedoAbruptEnded"                              Value="-536" />
+                <Set Name="JET_errBadSLVSignature"                              Value="-537" />
+                <Set Name="JET_errPatchFileMissing"                             Value="-538" />
+                <Set Name="JET_errDatabaseLogSetMismatch"                       Value="-539" />
+                <Set Name="JET_errDatabaseStreamingFileMismatch"                Value="-540" />
+                <Set Name="JET_errLogFileSizeMismatch"                          Value="-541" />
+                <Set Name="JET_errCheckpointFileNotFound"                       Value="-542" />
+                <Set Name="JET_errRequiredLogFilesMissing"                      Value="-543" />
+                <Set Name="JET_errSoftRecoveryOnBackupDatabase"                 Value="-544" />
+                <Set Name="JET_errLogFileSizeMismatchDatabasesConsistent"       Value="-545" />
+                <Set Name="JET_errLogSectorSizeMismatch"                        Value="-546" />
+                <Set Name="JET_errLogSectorSizeMismatchDatabasesConsistent"     Value="-547" />
+                <Set Name="JET_errLogSequenceEndDatabasesConsistent"            Value="-548" />
+                <Set Name="JET_errStreamingDataNotLogged"                       Value="-549" />
+                <Set Name="JET_errDatabaseDirtyShutdown"                        Value="-550" />
+                <Set Name="JET_errConsistentTimeMismatch"                       Value="-551" />
+                <Set Name="JET_errDatabasePatchFileMismatch"                    Value="-552" />
+                <Set Name="JET_errEndingRestoreLogTooLow"                       Value="-553" />
+                <Set Name="JET_errStartingRestoreLogTooHigh"                    Value="-554" />
+                <Set Name="JET_errGivenLogFileHasBadSignature"                  Value="-555" />
+                <Set Name="JET_errGivenLogFileIsNotContiguous"                  Value="-556" />
+                <Set Name="JET_errMissingRestoreLogFiles"                       Value="-557" />
+                <Set Name="JET_wrnExistingLogFileHasBadSignature"               Value="558" />
+                <Set Name="JET_wrnExistingLogFileIsNotContiguous"               Value="559" />
+                <Set Name="JET_errMissingFullBackup"                            Value="-560" />
+                <Set Name="JET_errBadBackupDatabaseSize"                        Value="-561" />
+                <Set Name="JET_errDatabaseAlreadyUpgraded"                      Value="-562" />
+                <Set Name="JET_errDatabaseIncompleteUpgrade"                    Value="-563" />
+                <Set Name="JET_wrnSkipThisRecord"                               Value="564" />
+                <Set Name="JET_errMissingCurrentLogFiles"                       Value="-565" />
+                <Set Name="JET_errDbTimeTooOld"                                 Value="-566" />
+                <Set Name="JET_errDbTimeTooNew"                                 Value="-567" />
+                <Set Name="JET_errMissingFileToBackup"                          Value="-569" />
+                <Set Name="JET_errLogTornWriteDuringHardRestore"                Value="-570" />
+                <Set Name="JET_errLogTornWriteDuringHardRecovery"               Value="-571" />
+                <Set Name="JET_errLogCorruptDuringHardRestore"                  Value="-573" />
+                <Set Name="JET_errLogCorruptDuringHardRecovery"                 Value="-574" />
+                <Set Name="JET_errMustDisableLoggingForDbUpgrade"               Value="-575" />
+                <Set Name="JET_errBadRestoreTargetInstance"                     Value="-577" />
+                <Set Name="JET_wrnTargetInstanceRunning"                        Value="578" />
+                <Set Name="JET_errRecoveredWithoutUndo"                         Value="-579" />
+                <Set Name="JET_errDatabasesNotFromSameSnapshot"                 Value="-580" />
+                <Set Name="JET_errSoftRecoveryOnSnapshot"                       Value="-581" />
+                <Set Name="JET_errSectorSizeNotSupported"                       Value="-583" />
+                <Set Name="JET_wrnDatabaseRepaired"                             Value="595" />
+                <Set Name="JET_errUnicodeTranslationBufferTooSmall"             Value="-601" />
+                <Set Name="JET_errUnicodeTranslationFail"                       Value="-602" />
+                <Set Name="JET_errUnicodeNormalizationNotSupported"             Value="-603" />
+                <Set Name="JET_errExistingLogFileHasBadSignature"               Value="-610" />
+                <Set Name="JET_errExistingLogFileIsNotContiguous"               Value="-611" />
+                <Set Name="JET_errLogReadVerifyFailure"                         Value="-612" />
+                <Set Name="JET_errSLVReadVerifyFailure"                         Value="-613" />
+                <Set Name="JET_errCheckpointDepthTooDeep"                       Value="-614" />
+                <Set Name="JET_errRestoreOfNonBackupDatabase"                   Value="-615" />
+                <Set Name="JET_errLogFileNotCopied"                             Value="-616" />
+                <Set Name="JET_errInvalidGrbit"                                 Value="-900" />
+                <Set Name="JET_errTermInProgress"                               Value="-1000" />
+                <Set Name="JET_errFeatureNotAvailable"                          Value="-1001" />
+                <Set Name="JET_errInvalidName"                                  Value="-1002" />
+                <Set Name="JET_errInvalidParameter"                             Value="-1003" />
+                <Set Name="JET_wrnColumnNull"                                   Value="1004" />
+                <Set Name="JET_wrnBufferTruncated"                              Value="1006" />
+                <Set Name="JET_wrnDatabaseAttached"                             Value="1007" />
+                <Set Name="JET_errDatabaseFileReadOnly"                         Value="-1008" />
+                <Set Name="JET_wrnSortOverflow"                                 Value="1009" />
+                <Set Name="JET_errInvalidDatabaseId"                            Value="-1010" />
+                <Set Name="JET_errOutOfMemory"                                  Value="-1011" />
+                <Set Name="JET_errOutOfDatabaseSpace"                           Value="-1012" />
+                <Set Name="JET_errOutOfCursors"                                 Value="-1013" />
+                <Set Name="JET_errOutOfBuffers"                                 Value="-1014" />
+                <Set Name="JET_errTooManyIndexes"                               Value="-1015" />
+                <Set Name="JET_errTooManyKeys"                                  Value="-1016" />
+                <Set Name="JET_errRecordDeleted"                                Value="-1017" />
+                <Set Name="JET_errReadVerifyFailure"                            Value="-1018" />
+                <Set Name="JET_errPageNotInitialized"                           Value="-1019" />
+                <Set Name="JET_errOutOfFileHandles"                             Value="-1020" />
+                <Set Name="JET_errDiskIO"                                       Value="-1022" />
+                <Set Name="JET_errInvalidPath"                                  Value="-1023" />
+                <Set Name="JET_errInvalidSystemPath"                            Value="-1024" />
+                <Set Name="JET_errInvalidLogDirectory"                          Value="-1025" />
+                <Set Name="JET_errRecordTooBig"                                 Value="-1026" />
+                <Set Name="JET_errTooManyOpenDatabases"                         Value="-1027" />
+                <Set Name="JET_errInvalidDatabase"                              Value="-1028" />
+                <Set Name="JET_errNotInitialized"                               Value="-1029" />
+                <Set Name="JET_errAlreadyInitialized"                           Value="-1030" />
+                <Set Name="JET_errInitInProgress"                               Value="-1031" />
+                <Set Name="JET_errFileAccessDenied"                             Value="-1032" />
+                <Set Name="JET_errBufferTooSmall"                               Value="-1038" />
+                <Set Name="JET_wrnSeekNotEqual"                                 Value="1039" />
+                <Set Name="JET_errTooManyColumns"                               Value="-1040" />
+                <Set Name="JET_errContainerNotEmpty"                            Value="-1043" />
+                <Set Name="JET_errInvalidFilename"                              Value="-1044" />
+                <Set Name="JET_errInvalidBookmark"                              Value="-1045" />
+                <Set Name="JET_errColumnInUse"                                  Value="-1046" />
+                <Set Name="JET_errInvalidBufferSize"                            Value="-1047" />
+                <Set Name="JET_errColumnNotUpdatable"                           Value="-1048" />
+                <Set Name="JET_errIndexInUse"                                   Value="-1051" />
+                <Set Name="JET_errLinkNotSupported"                             Value="-1052" />
+                <Set Name="JET_errNullKeyDisallowed"                            Value="-1053" />
+                <Set Name="JET_errNotInTransaction"                             Value="-1054" />
+                <Set Name="JET_wrnNoErrorInfo"                                  Value="1055" />
+                <Set Name="JET_wrnNoIdleActivity"                               Value="1058" />
+                <Set Name="JET_errTooManyActiveUsers"                           Value="-1059" />
+                <Set Name="JET_errInvalidCountry"                               Value="-1061" />
+                <Set Name="JET_errInvalidLanguageId"                            Value="-1062" />
+                <Set Name="JET_errInvalidCodePage"                              Value="-1063" />
+                <Set Name="JET_errInvalidLCMapStringFlags"                      Value="-1064" />
+                <Set Name="JET_errVersionStoreEntryTooBig"                      Value="-1065" />
+                <Set Name="JET_errVersionStoreOutOfMemoryAndCleanupTimedOut"    Value="-1066" />
+                <Set Name="JET_wrnNoWriteLock"                                  Value="1067" />
+                <Set Name="JET_wrnColumnSetNull"                                Value="1068" />
+                <Set Name="JET_errVersionStoreOutOfMemory"                      Value="-1069" />
+                <Set Name="JET_errCannotIndex"                                  Value="-1071" />
+                <Set Name="JET_errRecordNotDeleted"                             Value="-1072" />
+                <Set Name="JET_errTooManyMempoolEntries"                        Value="-1073" />
+                <Set Name="JET_errOutOfObjectIDs"                               Value="-1074" />
+                <Set Name="JET_errOutOfLongValueIDs"                            Value="-1075" />
+                <Set Name="JET_errOutOfAutoincrementValues"                     Value="-1076" />
+                <Set Name="JET_errOutOfDbtimeValues"                            Value="-1077" />
+                <Set Name="JET_errOutOfSequentialIndexValues"                   Value="-1078" />
+                <Set Name="JET_errRunningInOneInstanceMode"                     Value="-1080" />
+                <Set Name="JET_errRunningInMultiInstanceMode"                   Value="-1081" />
+                <Set Name="JET_errSystemParamsAlreadySet"                       Value="-1082" />
+                <Set Name="JET_errSystemPathInUse"                              Value="-1083" />
+                <Set Name="JET_errLogFilePathInUse"                             Value="-1084" />
+                <Set Name="JET_errTempPathInUse"                                Value="-1085" />
+                <Set Name="JET_errInstanceNameInUse"                            Value="-1086" />
+                <Set Name="JET_errInstanceUnavailable"                          Value="-1090" />
+                <Set Name="JET_errDatabaseUnavailable"                          Value="-1091" />
+                <Set Name="JET_errInstanceUnavailableDueToFatalLogDiskFull"     Value="-1092" />
+                <Set Name="JET_errOutOfSessions"                                Value="-1101" />
+                <Set Name="JET_errWriteConflict"                                Value="-1102" />
+                <Set Name="JET_errTransTooDeep"                                 Value="-1103" />
+                <Set Name="JET_errInvalidSesid"                                 Value="-1104" />
+                <Set Name="JET_errWriteConflictPrimaryIndex"                    Value="-1105" />
+                <Set Name="JET_errInTransaction"                                Value="-1108" />
+                <Set Name="JET_errRollbackRequired"                             Value="-1109" />
+                <Set Name="JET_errTransReadOnly"                                Value="-1110" />
+                <Set Name="JET_errSessionWriteConflict"                         Value="-1111" />
+                <Set Name="JET_errRecordTooBigForBackwardCompatibility"         Value="-1112" />
+                <Set Name="JET_errCannotMaterializeForwardOnlySort"             Value="-1113" />
+                <Set Name="JET_errSesidTableIdMismatch"                         Value="-1114" />
+                <Set Name="JET_errInvalidInstance"                              Value="-1115" />
+                <Set Name="JET_errDatabaseDuplicate"                            Value="-1201" />
+                <Set Name="JET_errDatabaseInUse"                                Value="-1202" />
+                <Set Name="JET_errDatabaseNotFound"                             Value="-1203" />
+                <Set Name="JET_errDatabaseInvalidName"                          Value="-1204" />
+                <Set Name="JET_errDatabaseInvalidPages"                         Value="-1205" />
+                <Set Name="JET_errDatabaseCorrupted"                            Value="-1206" />
+                <Set Name="JET_errDatabaseLocked"                               Value="-1207" />
+                <Set Name="JET_errCannotDisableVersioning"                      Value="-1208" />
+                <Set Name="JET_errInvalidDatabaseVersion"                       Value="-1209" />
+                <Set Name="JET_errDatabase200Format"                            Value="-1210" />
+                <Set Name="JET_errDatabase400Format"                            Value="-1211" />
+                <Set Name="JET_errDatabase500Format"                            Value="-1212" />
+                <Set Name="JET_errPageSizeMismatch"                             Value="-1213" />
+                <Set Name="JET_errTooManyInstances"                             Value="-1214" />
+                <Set Name="JET_errDatabaseSharingViolation"                     Value="-1215" />
+                <Set Name="JET_errAttachedDatabaseMismatch"                     Value="-1216" />
+                <Set Name="JET_errDatabaseInvalidPath"                          Value="-1217" />
+                <Set Name="JET_errDatabaseIdInUse"                              Value="-1218" />
+                <Set Name="JET_errForceDetachNotAllowed"                        Value="-1219" />
+                <Set Name="JET_errCatalogCorrupted"                             Value="-1220" />
+                <Set Name="JET_errPartiallyAttachedDB"                          Value="-1221" />
+                <Set Name="JET_errDatabaseSignInUse"                            Value="-1222" />
+                <Set Name="JET_errDatabaseCorruptedNoRepair"                    Value="-1224" />
+                <Set Name="JET_errInvalidCreateDbVersion"                       Value="-1225" />
+                <Set Name="JET_wrnTableEmpty"                                   Value="1301" />
+                <Set Name="JET_errTableLocked"                                  Value="-1302" />
+                <Set Name="JET_errTableDuplicate"                               Value="-1303" />
+                <Set Name="JET_errTableInUse"                                   Value="-1304" />
+                <Set Name="JET_errObjectNotFound"                               Value="-1305" />
+                <Set Name="JET_errDensityInvalid"                               Value="-1307" />
+                <Set Name="JET_errTableNotEmpty"                                Value="-1308" />
+                <Set Name="JET_errInvalidTableId"                               Value="-1310" />
+                <Set Name="JET_errTooManyOpenTables"                            Value="-1311" />
+                <Set Name="JET_errIllegalOperation"                             Value="-1312" />
+                <Set Name="JET_errTooManyOpenTablesAndCleanupTimedOut"          Value="-1313" />
+                <Set Name="JET_errObjectDuplicate"                              Value="-1314" />
+                <Set Name="JET_errInvalidObject"                                Value="-1316" />
+                <Set Name="JET_errCannotDeleteTempTable"                        Value="-1317" />
+                <Set Name="JET_errCannotDeleteSystemTable"                      Value="-1318" />
+                <Set Name="JET_errCannotDeleteTemplateTable"                    Value="-1319" />
+                <Set Name="JET_errExclusiveTableLockRequired"                   Value="-1322" />
+                <Set Name="JET_errFixedDDL"                                     Value="-1323" />
+                <Set Name="JET_errFixedInheritedDDL"                            Value="-1324" />
+                <Set Name="JET_errCannotNestDDL"                                Value="-1325" />
+                <Set Name="JET_errDDLNotInheritable"                            Value="-1326" />
+                <Set Name="JET_wrnTableInUseBySystem"                           Value="1327" />
+                <Set Name="JET_errInvalidSettings"                              Value="-1328" />
+                <Set Name="JET_errClientRequestToStopJetService"                Value="-1329" />
+                <Set Name="JET_errCannotAddFixedVarColumnToDerivedTable"        Value="-1330" />
+                <Set Name="JET_errIndexCantBuild"                               Value="-1401" />
+                <Set Name="JET_errIndexHasPrimary"                              Value="-1402" />
+                <Set Name="JET_errIndexDuplicate"                               Value="-1403" />
+                <Set Name="JET_errIndexNotFound"                                Value="-1404" />
+                <Set Name="JET_errIndexMustStay"                                Value="-1405" />
+                <Set Name="JET_errIndexInvalidDef"                              Value="-1406" />
+                <Set Name="JET_errInvalidCreateIndex"                           Value="-1409" />
+                <Set Name="JET_errTooManyOpenIndexes"                           Value="-1410" />
+                <Set Name="JET_errMultiValuedIndexViolation"                    Value="-1411" />
+                <Set Name="JET_errIndexBuildCorrupted"                          Value="-1412" />
+                <Set Name="JET_errPrimaryIndexCorrupted"                        Value="-1413" />
+                <Set Name="JET_errSecondaryIndexCorrupted"                      Value="-1414" />
+                <Set Name="JET_wrnCorruptIndexDeleted"                          Value="1415" />
+                <Set Name="JET_errInvalidIndexId"                               Value="-1416" />
+                <Set Name="JET_errIndexTuplesSecondaryIndexOnly"                Value="-1430" />
+                <Set Name="JET_errIndexTuplesTooManyColumns"                    Value="-1431" />
+                <Set Name="JET_errIndexTuplesNonUniqueOnly"                     Value="-1432" />
+                <Set Name="JET_errIndexTuplesTextBinaryColumnsOnly"             Value="-1433" />
+                <Set Name="JET_errIndexTuplesVarSegMacNotAllowed"               Value="-1434" />
+                <Set Name="JET_errIndexTuplesInvalidLimits"                     Value="-1435" />
+                <Set Name="JET_errIndexTuplesCannotRetrieveFromIndex"           Value="-1436" />
+                <Set Name="JET_errIndexTuplesKeyTooSmall"                       Value="-1437" />
+                <Set Name="JET_errColumnLong"                                   Value="-1501" />
+                <Set Name="JET_errColumnNoChunk"                                Value="-1502" />
+                <Set Name="JET_errColumnDoesNotFit"                             Value="-1503" />
+                <Set Name="JET_errNullInvalid"                                  Value="-1504" />
+                <Set Name="JET_errColumnIndexed"                                Value="-1505" />
+                <Set Name="JET_errColumnTooBig"                                 Value="-1506" />
+                <Set Name="JET_errColumnNotFound"                               Value="-1507" />
+                <Set Name="JET_errColumnDuplicate"                              Value="-1508" />
+                <Set Name="JET_errMultiValuedColumnMustBeTagged"                Value="-1509" />
+                <Set Name="JET_errColumnRedundant"                              Value="-1510" />
+                <Set Name="JET_errInvalidColumnType"                            Value="-1511" />
+                <Set Name="JET_wrnColumnMaxTruncated"                           Value="1512" />
+                <Set Name="JET_errTaggedNotNULL"                                Value="-1514" />
+                <Set Name="JET_errNoCurrentIndex"                               Value="-1515" />
+                <Set Name="JET_errKeyIsMade"                                    Value="-1516" />
+                <Set Name="JET_errBadColumnId"                                  Value="-1517" />
+                <Set Name="JET_errBadItagSequence"                              Value="-1518" />
+                <Set Name="JET_errColumnInRelationship"                         Value="-1519" />
+                <Set Name="JET_wrnCopyLongValue"                                Value="1520" />
+                <Set Name="JET_errCannotBeTagged"                               Value="-1521" />
+                <Set Name="JET_errDefaultValueTooBig"                           Value="-1524" />
+                <Set Name="JET_errMultiValuedDuplicate"                         Value="-1525" />
+                <Set Name="JET_errLVCorrupted"                                  Value="-1526" />
+                <Set Name="JET_errMultiValuedDuplicateAfterTruncation"          Value="-1528" />
+                <Set Name="JET_errDerivedColumnCorruption"                      Value="-1529" />
+                <Set Name="JET_errInvalidPlaceholderColumn"                     Value="-1530" />
+                <Set Name="JET_wrnColumnSkipped"                                Value="1531" />
+                <Set Name="JET_wrnColumnNotLocal"                               Value="1532" />
+                <Set Name="JET_wrnColumnMoreTags"                               Value="1533" />
+                <Set Name="JET_wrnColumnTruncated"                              Value="1534" />
+                <Set Name="JET_wrnColumnPresent"                                Value="1535" />
+                <Set Name="JET_wrnColumnSingleValue"                            Value="1536" />
+                <Set Name="JET_wrnColumnDefault"                                Value="1537" />
+                <Set Name="JET_errRecordNotFound"                               Value="-1601" />
+                <Set Name="JET_errRecordNoCopy"                                 Value="-1602" />
+                <Set Name="JET_errNoCurrentRecord"                              Value="-1603" />
+                <Set Name="JET_errRecordPrimaryChanged"                         Value="-1604" />
+                <Set Name="JET_errKeyDuplicate"                                 Value="-1605" />
+                <Set Name="JET_errAlreadyPrepared"                              Value="-1607" />
+                <Set Name="JET_errKeyNotMade"                                   Value="-1608" />
+                <Set Name="JET_errUpdateNotPrepared"                            Value="-1609" />
+                <Set Name="JET_wrnDataHasChanged"                               Value="1610" />
+                <Set Name="JET_errDataHasChanged"                               Value="-1611" />
+                <Set Name="JET_wrnKeyChanged"                                   Value="1618" />
+                <Set Name="JET_errLanguageNotSupported"                         Value="-1619" />
+                <Set Name="JET_errTooManySorts"                                 Value="-1701" />
+                <Set Name="JET_errInvalidOnSort"                                Value="-1702" />
+                <Set Name="JET_errTempFileOpenError"                            Value="-1803" />
+                <Set Name="JET_errTooManyAttachedDatabases"                     Value="-1805" />
+                <Set Name="JET_errDiskFull"                                     Value="-1808" />
+                <Set Name="JET_errPermissionDenied"                             Value="-1809" />
+                <Set Name="JET_errFileNotFound"                                 Value="-1811" />
+                <Set Name="JET_errFileInvalidType"                              Value="-1812" />
+                <Set Name="JET_wrnFileOpenReadOnly"                             Value="1813" />
+                <Set Name="JET_errAfterInitialization"                          Value="-1850" />
+                <Set Name="JET_errLogCorrupted"                                 Value="-1852" />
+                <Set Name="JET_errInvalidOperation"                             Value="-1906" />
+                <Set Name="JET_errAccessDenied"                                 Value="-1907" />
+                <Set Name="JET_wrnIdleFull"                                     Value="1908" />
+                <Set Name="JET_errTooManySplits"                                Value="-1909" />
+                <Set Name="JET_errSessionSharingViolation"                      Value="-1910" />
+                <Set Name="JET_errEntryPointNotFound"                           Value="-1911" />
+                <Set Name="JET_errSessionContextAlreadySet"                     Value="-1912" />
+                <Set Name="JET_errSessionContextNotSetByThisThread"             Value="-1913" />
+                <Set Name="JET_errSessionInUse"                                 Value="-1914" />
+                <Set Name="JET_errRecordFormatConversionFailed"                 Value="-1915" />
+                <Set Name="JET_errOneDatabasePerSession"                        Value="-1916" />
+                <Set Name="JET_errRollbackError"                                Value="-1917" />
+                <Set Name="JET_wrnDefragAlreadyRunning"                         Value="2000" />
+                <Set Name="JET_wrnDefragNotRunning"                             Value="2001" />
+                <Set Name="JET_wrnCallbackNotRegistered"                        Value="2100" />
+                <Set Name="JET_errCallbackFailed"                               Value="-2101" />
+                <Set Name="JET_errCallbackNotResolved"                          Value="-2102" />
+                <Set Name="JET_errOSSnapshotInvalidSequence"                    Value="-2401" />
+                <Set Name="JET_errOSSnapshotTimeOut"                            Value="-2402" />
+                <Set Name="JET_errOSSnapshotNotAllowed"                         Value="-2403" />
+                <Set Name="JET_errOSSnapshotInvalidSnapId"                      Value="-2404" />
+                <Set Name="JET_errLSCallbackNotSpecified"                       Value="-3000" />
+                <Set Name="JET_errLSAlreadySet"                                 Value="-3001" />
+                <Set Name="JET_errLSNotSet"                                     Value="-3002" />
+                <Set Name="JET_errFileIOSparse"                                 Value="-4000" />
+                <Set Name="JET_errFileIOBeyondEOF"                              Value="-4001" />
+                <Set Name="JET_errFileIOAbort"                                  Value="-4002" />
+                <Set Name="JET_errFileIORetry"                                  Value="-4003" />
+                <Set Name="JET_errFileIOFail"                                   Value="-4004" />
+                <Set Name="JET_errFileCompressed"                               Value="-4005" />
             </Enum>
+            <!-- Errors are negative, warnings are positive and success is 0. We only want to display errors. -->
+            <Success Return="Greater" Value="-1" />
         </Variable>
+
+        <!-- JET_SPACEHINTS -->
+        <Variable Name="JET_SPACEHINTS" Type="Struct">
+            <Field Type="unsigned long"     Name="cbStruct" />
+            <Field Type="unsigned long"     Name="ulInitialDensity" />
+            <Field Type="unsigned long"     Name="cbInitial" />
+            <Field Type="JET_GRBIT"         Name="grbit" />
+            <Field Type="unsigned long"     Name="ulMaintDensity" />
+            <Field Type="unsigned long"     Name="ulGrowth" />
+            <Field Type="unsigned long"     Name="cbMinExtent" />
+            <Field Type="unsigned long"     Name="cbMaxExtent" />
+        </Variable>
+        <Variable Name="JET_SPACEHINTS*" Type="Pointer" Base="JET_SPACEHINTS" />
 
         <!-- [JET_UNICODEINDEX_FLAGS] -->
         <Variable Name="[JET_UNICODEINDEX_FLAGS]" Type="Alias" Base="unsigned long">
@@ -449,6 +638,13 @@
             <Field Type="[JET_UNICODEINDEX_FLAGS]"      Name="dwMapFlags" />
         </Variable>
         <Variable Name="JET_UNICODEINDEX*" Type="Pointer" Base="JET_UNICODEINDEX" />
+
+        <!-- JET_UNICODEINDEX2 -->
+        <Variable Name="JET_UNICODEINDEX2" Type="Struct">
+            <Field Type="WCHAR*"                        Name="szLocaleName" />
+            <Field Type="[JET_UNICODEINDEX_FLAGS]"      Name="dwMapFlags" />
+        </Variable>
+        <Variable Name="JET_UNICODEINDEX2*" Type="Pointer" Base="JET_UNICODEINDEX2" />
 
         <!-- JET_COLUMNDEF -->
         <Variable Name="JET_COLUMNDEF" Type="Struct">
@@ -521,6 +717,24 @@
         </Variable>
         <Variable Name="JET_INDEXCREATE*" Type="Pointer" Base="JET_INDEXCREATE" />
 
+        <!-- JET_INDEXCREATE2 -->
+        <Variable Name="JET_INDEXCREATE2" Type="Struct">
+            <Field Type="unsigned long"             Name="cbStruct" />
+            <Field Type="TCHAR*"                    Name="szIndexName" />
+            <Field Type="TCHAR*"                    Name="szKey" />
+            <Field Type="unsigned long"             Name="cbKey" />
+            <Field Type="JET_GRBIT"                 Name="grbit" />
+            <Field Type="unsigned long"             Name="ulDensity" />
+            <Field Type="[JET_INDEXCREATE_u1]"      Name="" />
+            <Field Type="[JET_INDEXCREATE_u2]"      Name="" />
+            <Field Type="JET_CONDITIONALCOLUMN*"    Name="rgconditionalcolumn" Count="cConditionalColumn" />
+            <Field Type="unsigned long"             Name="cConditionalColumn" />
+            <Field Type="JET_ERR"                   Name="err" />
+            <Field Type="unsigned long"             Name="cbKeyMost" />
+            <Field Type="JET_SPACEHINTS*"           Name="pSpacehints" />
+        </Variable>
+        <Variable Name="JET_INDEXCREATE2*" Type="Pointer" Base="JET_INDEXCREATE2" />
+
         <!-- JET_COLUMNCREATE -->
         <Variable Name="JET_COLUMNCREATE" Type="Struct">
             <Field Type="unsigned long"     Name="cbStruct" />
@@ -528,7 +742,7 @@
             <Field Type="JET_COLTYP"        Name="coltyp" />
             <Field Type="unsigned long"     Name="cbMax" />
             <Field Type="JET_GRBIT"         Name="grbit" />
-            <Field Type="void*"             Name="pvDefault" length="cbDefault" />
+            <Field Type="void*"             Name="pvDefault" Length="cbDefault" />
             <Field Type="unsigned long"     Name="cbDefault" />
             <Field Type="unsigned long"     Name="cp" />
             <Field Type="JET_COLUMNID"      Name="columnid" />
@@ -574,7 +788,7 @@
 
         <!-- JET_SETSYSPARAM -->
         <Variable Name="JET_SETSYSPARAM" Type="Struct">
-            <Field Type="unsigned long"     Name="paramid" />
+            <Field Type="[JET_param]"       Name="paramid" />
             <Field Type="JET_API_PTR"       Name="lParam" />
             <Field Type="const TCHAR*"      Name="sz" />
             <Field Type="JET_ERR"           Name="err" />
@@ -642,9 +856,9 @@
             <Field Type="JET_INSTANCE"      Name="hInstanceId" />
             <Field Type="TCHAR*"            Name="szInstanceName" />
             <Field Type="JET_API_PTR"       Name="cDatabases" />
-            <Field Type="TCHAR**"           Name="szDatabaseFileName" />
-            <Field Type="TCHAR**"           Name="szDatabaseDisplayName" />
-            <Field Type="TCHAR**"           Name="szDatabaseSLVFileName" />
+            <Field Type="TCHAR**"           Name="szDatabaseFileName" Count="cDatabases" />
+            <Field Type="TCHAR**"           Name="szDatabaseDisplayName" Count="cDatabases" />
+            <Field Type="TCHAR**"           Name="szDatabaseSLVFileName" Count="cDatabases" />
         </Variable>
         <Variable Name="JET_INSTANCE_INFO*"     Type="Pointer" Base="JET_INSTANCE_INFO" />
         <Variable Name="JET_INSTANCE_INFO**"    Type="Pointer" Base="JET_INSTANCE_INFO*" />
@@ -701,7 +915,7 @@
         <!-- JET_RSTINFO -->
         <Variable Name="JET_RSTINFO" Type="Struct">
             <Field Type="unsigned long"     Name="cbStruct" />
-            <Field Type="JET_RSTMAP*"       Name="rgrstmap" />
+            <Field Type="JET_RSTMAP*"       Name="rgrstmap" Count="crstmap" />
             <Field Type="long"              Name="crstmap" />
             <Field Type="JET_LGPOS"         Name="lgposStop" />
             <Field Type="JET_LOGTIME"       Name="logtimeStop" />
@@ -729,16 +943,30 @@
         <!-- JET_OPENTEMPORARYTABLE -->
         <Variable Name="JET_OPENTEMPORARYTABLE" Type="Struct">
             <Field Type="unsigned long"             Name="cbStruct" />
-            <Field Type="const JET_COLUMNDEF*"      Name="prgcolumndef" />
+            <Field Type="const JET_COLUMNDEF*"      Name="prgcolumndef" Count="ccolumn" />
             <Field Type="unsigned long"             Name="ccolumn" />
             <Field Type="JET_UNICODEINDEX*"         Name="pidxunicode" />
             <Field Type="JET_GRBIT"                 Name="grbit" />
-            <Field Type="JET_COLUMNID*"             Name="prgcolumnid" />
+            <Field Type="JET_COLUMNID*"             Name="prgcolumnid" PostCount="ccolumn" />
             <Field Type="unsigned long"             Name="cbKeyMost" />
             <Field Type="unsigned long"             Name="cbVarSegMac" />
             <Field Type="JET_TABLEID"               Name="tableid" />
         </Variable>
         <Variable Name="JET_OPENTEMPORARYTABLE*" Type="Pointer" Base="JET_OPENTEMPORARYTABLE" />
+
+        <!-- JET_OPENTEMPORARYTABLE2 -->
+        <Variable Name="JET_OPENTEMPORARYTABLE2" Type="Struct">
+            <Field Type="unsigned long"             Name="cbStruct" />
+            <Field Type="const JET_COLUMNDEF*"      Name="prgcolumndef" Count="ccolumn" />
+            <Field Type="unsigned long"             Name="ccolumn" />
+            <Field Type="JET_UNICODEINDEX2*"        Name="pidxunicode" />
+            <Field Type="JET_GRBIT"                 Name="grbit" />
+            <Field Type="JET_COLUMNID*"             Name="prgcolumnid" PostCount="ccolumn" />
+            <Field Type="unsigned long"             Name="cbKeyMost" />
+            <Field Type="unsigned long"             Name="cbVarSegMac" />
+            <Field Type="JET_TABLEID"               Name="tableid" />
+        </Variable>
+        <Variable Name="JET_OPENTEMPORARYTABLE2*" Type="Pointer" Base="JET_OPENTEMPORARYTABLE2" />
 
         <!-- JET_RETINFO -->
         <Variable Name="JET_RETINFO" Type="Struct">
@@ -1132,7 +1360,94 @@
                 <Set Name="JET_prepInsertCopyDeleteOriginal"    Value="7" />
             </Enum>
         </Variable>
-        
+
+        <!-- JET_SIGNATURE -->
+        <Variable Name="JET_SIGNATURE" Type="Struct">
+            <Field Type="unsigned long"                             Name="ulRandom" />
+            <Field Type="JET_LOGTIME"                               Name="logtimeCreate" />
+            <Field Type="char [JET_MAX_COMPUTERNAME_LENGTH + 1]"    Name="szComputerName" />
+        </Variable>
+
+        <!-- JET_COMMIT_ID -->
+        <Variable Name="JET_COMMIT_ID" Type="Struct">
+            <Field Type="JET_SIGNATURE"     Name="signLog" />
+            <Field Type="int"               Name="reserved" />
+            <Field Type="__int64"           Name="commitId" />
+        </Variable>
+        <Variable Name="JET_COMMIT_ID*" Type="Pointer" Base="JET_COMMIT_ID" />
+
+        <!-- JET_TABLECREATE3 -->
+        <Variable Name="JET_TABLECREATE3" Type="Struct">
+            <Field Type="unsigned long"         Name="cbStruct" />
+            <Field Type="TCHAR*"                Name="szTableName" />
+            <Field Type="TCHAR*"                Name="szTemplateTableName" />
+            <Field Type="unsigned long"         Name="ulPages" />
+            <Field Type="unsigned long"         Name="ulDensity" />
+            <Field Type="JET_COLUMNCREATE*"     Name="rgcolumncreate" Count="cColumns" />
+            <Field Type="unsigned long"         Name="cColumns" />
+            <Field Type="JET_INDEXCREATE2*"     Name="rgindexcreate" Count="cIndexes" />
+            <Field Type="unsigned long"         Name="cIndexes" />
+            <Field Type="TCHAR*"                Name="szCallback" />
+            <Field Type="JET_CBTYP"             Name="cbtyp" />
+            <Field Type="JET_GRBIT"             Name="grbit" />
+            <Field Type="JET_SPACEHINTS*"       Name="pSeqSpacehints" />
+            <Field Type="JET_SPACEHINTS*"       Name="pLVSpacehints" />
+            <Field Type="unsigned long"         Name="cbSeparateLV" />
+            <Field Type="JET_TABLEID"           Name="tableid" />
+            <Field Type="unsigned long"         Name="cCreated" />
+        </Variable>
+        <Variable Name="JET_TABLECREATE3*" Type="Pointer" Base="JET_TABLECREATE3" />
+
+        <!-- JET_RECSIZE2 -->
+        <Variable Name="JET_RECSIZE2" Type="Struct">
+            <Field Type="unsigned __int64"      Name="cbData" />
+            <Field Type="unsigned __int64"      Name="cbLongValueData" />
+            <Field Type="unsigned __int64"      Name="cbOverhead" />
+            <Field Type="unsigned __int64"      Name="cbLongValueOverhead" />
+            <Field Type="unsigned __int64"      Name="cNonTaggedColumns" />
+            <Field Type="unsigned __int64"      Name="cTaggedColumns" />
+            <Field Type="unsigned __int64"      Name="cLongValues" />
+            <Field Type="unsigned __int64"      Name="cMultiValues" />
+            <Field Type="unsigned __int64"      Name="cCompressedColumns" />
+            <Field Type="unsigned __int64"      Name="cbDataCompressed" />
+            <Field Type="unsigned __int64"      Name="cbLongValueDataCompressed" />
+        </Variable>
+        <Variable Name="JET_RECSIZE2*" Type="Pointer" Base="JET_RECSIZE2" />
+
+        <!-- JET_RELOP -->
+        <Variable Name="JET_RELOP" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="JET_relopEquals"                 Value="0" />
+                <Set Name="JET_relopPrefixEquals"           Value="1" />
+                <Set Name="JET_relopNotEquals"              Value="2" />
+                <Set Name="JET_relopLessThanOrEqual"        Value="3" />
+                <Set Name="JET_relopLessThan"               Value="4" />
+                <Set Name="JET_relopGreaterThanOrEqual"     Value="5" />
+                <Set Name="JET_relopGreaterThan"            Value="6" />
+                <Set Name="JET_relopBitmaskEqualsZero"      Value="7" />
+                <Set Name="JET_relopBitmaskNotEqualsZero"   Value="8" />
+            </Enum>
+        </Variable>
+
+        <!-- JET_INDEX_COLUMN -->
+        <Variable Name="JET_INDEX_COLUMN" Type="Struct">
+            <Field Type="JET_COLUMNID"      Name="columnid" />
+            <Field Type="JET_RELOP"         Name="relop" />
+            <Field Type="void*"             Name="pv" />
+            <Field Type="unsigned long"     Name="cb" />
+            <Field Type="JET_GRBIT"         Name="grbit" />
+        </Variable>
+        <Variable Name="JET_INDEX_COLUMN*" Type="Pointer" Base="JET_INDEX_COLUMN" />
+
+        <!-- JET_INDEX_RANGE -->
+        <Variable Name="JET_INDEX_RANGE" Type="Struct">
+            <Field Type="JET_INDEX_COLUMN*"     Name="rgStartColumns" Count="cStartColumns" />
+            <Field Type="unsigned long"         Name="cStartColumns" />
+            <Field Type="JET_INDEX_COLUMN*"     Name="rgEndColumns" Count="cEndColumns" />
+            <Field Type="unsigned long"         Name="cEndColumns" />
+        </Variable>
+        <Variable Name="const JET_INDEX_RANGE* const" Type="Pointer" Base="JET_INDEX_RANGE" />
+
         <!-- Extensible Storage Engine -->
         <Category Name="Data Access and Storage/Extensible Storage Engine" />
         <Api Name="JetAddColumn" BothCharset="True">
@@ -1144,29 +1459,25 @@
             <Param Type="unsigned long" Name="cbDefault" />
             <Param Type="JET_COLUMNID*" Name="pcolumnid" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetAttachDatabase" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
-            <Param Type="JET_PCTSTR" Name="szFilename" />
+            <Param Type="JET_PCSTR" Name="szFilename" />
             <Param Type="[JetOpenDatabaseFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetAttachDatabase2" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
-            <Param Type="JET_PCTSTR" Name="szFilename" />
+            <Param Type="JET_PCSTR" Name="szFilename" />
             <Param Type="const unsigned long" Name="cpgDatabaseSizeMax" />
             <Param Type="[JetOpenDatabaseFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetBackup" BothCharset="True">
             <Param Type="JET_PCSTR" Name="szBackupPath" />
             <Param Type="[JetBackupFlags]" Name="grbit" />
             <Param Type="JET_PFNSTATUS" Name="pfnStatus" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetBackupInstance" BothCharset="True">
             <Param Type="JET_INSTANCE" Name="instance" />
@@ -1174,18 +1485,15 @@
             <Param Type="[JetBackupFlags]" Name="grbit" />
             <Param Type="JET_PFNSTATUS" Name="pfnStatus" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetBeginExternalBackup">
             <Param Type="[JetBackupFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetBeginExternalBackupInstance">
             <Param Type="JET_INSTANCE" Name="instance" />
             <Param Type="[JetBackupFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetBeginSession" BothCharset="True">
             <Param Type="JET_INSTANCE" Name="instance" />
@@ -1193,48 +1501,40 @@
             <Param Type="JET_PCSTR" Name="szUserName" />
             <Param Type="JET_PCSTR" Name="szPassword" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetBeginTransaction">
             <Param Type="JET_SESID" Name="sesid" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetBeginTransaction2">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="[JetBeginTransaction2Flags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetCloseDatabase">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_DBID" Name="dbid" />
             <Param Type="JET_GRBIT" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetCloseFile">
             <Param Type="JET_HANDLE" Name="hfFile" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetCloseFileInstance">
             <Param Type="JET_INSTANCE" Name="instance" />
             <Param Type="JET_HANDLE" Name="hfFile" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetCloseTable">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_TABLEID" Name="tableid" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetCommitTransaction">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="[JetCommitTransactionFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetCompact" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
@@ -1244,13 +1544,11 @@
             <Param Type="JET_CONVERT*" Name="pconvert" />
             <Param Type="[JetCompactFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetComputeStats">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_TABLEID" Name="tableid" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetCreateDatabase" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
@@ -1259,73 +1557,64 @@
             <Param Type="JET_DBID*" Name="pdbid" />
             <Param Type="[JetCreateDatabaseFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetCreateDatabase2" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
-            <Param Type="JET_PCTSTR" Name="szFilename" />
+            <Param Type="JET_PCSTR" Name="szFilename" />
             <Param Type="const unsigned long" Name="cpgDatabaseSizeMax" />
             <Param Type="JET_DBID*" Name="pdbid" />
             <Param Type="[JetCreateDatabaseFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetCreateIndex" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_TABLEID" Name="tableid" />
             <Param Type="JET_PCSTR" Name="szIndexName" />
             <Param Type="[JetCreateIndexFlags]" Name="grbit" />
-            <Param Type="JET_PCTSTR" Name="szKey" />
+            <Param Type="JET_PCSTR" Name="szKey" />
             <Param Type="unsigned long" Name="cbKey" />
             <Param Type="unsigned long" Name="lDensity" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetCreateIndex2" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_TABLEID" Name="tableid" />
-            <Param Type="JET_INDEXCREATE*" Name="pindexcreate" />
+            <Param Type="JET_INDEXCREATE*" Name="pindexcreate" Count="cIndexCreate" />
             <Param Type="unsigned long" Name="cIndexCreate" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetCreateInstance" BothCharset="True">
             <Param Type="JET_INSTANCE*" Name="pinstance" />
-            <Param Type="JET_PCTSTR" Name="szInstanceName" />
+            <Param Type="JET_PCSTR" Name="szInstanceName" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetCreateInstance2" BothCharset="True">
             <Param Type="JET_INSTANCE*" Name="pinstance" />
-            <Param Type="JET_PCTSTR" Name="szInstanceName" />
-            <Param Type="JET_PCTSTR" Name="szDisplayName" />
+            <Param Type="JET_PCSTR" Name="szInstanceName" />
+            <Param Type="JET_PCSTR" Name="szDisplayName" />
             <Param Type="JET_GRBIT" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetCreateTable" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_DBID" Name="dbid" />
-            <Param Type="JET_PCTSTR" Name="szTableName" />
+            <Param Type="JET_PCSTR" Name="szTableName" />
             <Param Type="unsigned long" Name="lPages" />
             <Param Type="unsigned long" Name="lDensity" />
             <Param Type="JET_TABLEID*" Name="ptableid" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetCreateTableColumnIndex" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_DBID" Name="dbid" />
             <Param Type="JET_TABLECREATE*" Name="ptablecreate" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetCreateTableColumnIndex2" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_DBID" Name="dbid" />
             <Param Type="JET_TABLECREATE2*" Name="ptablecreate" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetDefragment" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
@@ -1335,7 +1624,6 @@
             <Param Type="unsigned long*" Name="pcSeconds" />
             <Param Type="[JetDefragmentFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetDefragment2" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
@@ -1346,55 +1634,47 @@
             <Param Type="JET_CALLBACK" Name="callback" />
             <Param Type="[JetDefragmentFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetDelete">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_TABLEID" Name="tableid" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetDeleteColumn" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_TABLEID" Name="tableid" />
-            <Param Type="JET_PCTSTR" Name="szColumnName" />
+            <Param Type="JET_PCSTR" Name="szColumnName" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetDeleteColumn2" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_TABLEID" Name="tableid" />
-            <Param Type="JET_PCTSTR" Name="szColumnName" />
+            <Param Type="JET_PCSTR" Name="szColumnName" />
             <Param Type="const JET_GRBIT" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetDeleteIndex" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_TABLEID" Name="tableid" />
             <Param Type="JET_PCSTR" Name="szIndexName" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetDeleteTable" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_DBID" Name="dbid" />
-            <Param Type="JET_PCTSTR" Name="szTableName" />
+            <Param Type="JET_PCSTR" Name="szTableName" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetDetachDatabase" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
-            <Param Type="JET_PCTSTR" Name="szFilename" />
+            <Param Type="JET_PCSTR" Name="szFilename" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetDetachDatabase2" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
-            <Param Type="JET_PCTSTR" Name="szFilename" />
+            <Param Type="JET_PCSTR" Name="szFilename" />
             <Param Type="[JetDetachDatabase2Flags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetDupCursor">
             <Param Type="JET_SESID" Name="sesid" />
@@ -1402,55 +1682,47 @@
             <Param Type="JET_TABLEID*" Name="ptableid" />
             <Param Type="JET_GRBIT" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetDupSession">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_SESID*" Name="psesid" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetEnableMultiInstance" BothCharset="True">
-            <Param Type="JET_SETSYSPARAM*" Name="psetsysparam" />
+            <Param Type="JET_SETSYSPARAM*" Name="psetsysparam" Count="csetsysparam" />
             <Param Type="unsigned long" Name="csetsysparam" />
             <Param Type="unsigned long*" Name="pcsetsucceed" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetEndExternalBackup">
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetEndExternalBackupInstance">
             <Param Type="JET_INSTANCE" Name="instance" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetEndExternalBackupInstance2">
             <Param Type="JET_INSTANCE" Name="instance" />
             <Param Type="[JetEndExternalBackupInstance2Flags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetEndSession">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_GRBIT" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetEnumerateColumns">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_TABLEID" Name="tableid" />
             <Param Type="unsigned long" Name="cEnumColumnId" />
-            <Param Type="JET_ENUMCOLUMNID*" Name="rgEnumColumnId" />
+            <Param Type="JET_ENUMCOLUMNID*" Name="rgEnumColumnId" Count="cEnumColumnId" />
             <Param Type="unsigned long*" Name="pcEnumColumn" />
-            <Param Type="JET_ENUMCOLUMN**" Name="prgEnumColumn" />
+            <Param Type="JET_ENUMCOLUMN**" Name="prgEnumColumn" DerefPostCount="pcEnumColumn" />
             <Param Type="JET_PFNREALLOC" Name="pfnRealloc" />
             <Param Type="void*" Name="pvReallocContext" />
             <Param Type="unsigned long" Name="cbDataMost" />
             <Param Type="[JetEnumerateColumnsFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetEscrowUpdate">
             <Param Type="JET_SESID" Name="sesid" />
@@ -1463,24 +1735,22 @@
             <Param Type="unsigned long*" Name="pcbOldActual" />
             <Param Type="[JetEscrowUpdateFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetExternalRestore" BothCharset="True">
             <Param Type="JET_PSTR" Name="szCheckpointFilePath" />
             <Param Type="JET_PSTR" Name="szLogPath" />
-            <Param Type="JET_RSTMAP*" Name="rgrstmap" />
+            <Param Type="JET_RSTMAP*" Name="rgrstmap" Count="crstfilemap" />
             <Param Type="long" Name="crstfilemap" />
             <Param Type="JET_PSTR" Name="szBackupLogPath" />
             <Param Type="long" Name="genLow" />
             <Param Type="long" Name="genHigh" />
             <Param Type="JET_PFNSTATUS" Name="pfn" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetExternalRestore2" BothCharset="True">
             <Param Type="JET_PSTR" Name="szCheckpointFilePath" />
             <Param Type="JET_PSTR" Name="szLogPath" />
-            <Param Type="JET_RSTMAP*" Name="rgrstmap" />
+            <Param Type="JET_RSTMAP*" Name="rgrstmap" Count="crstfilemap" />
             <Param Type="long" Name="crstfilemap" />
             <Param Type="JET_PSTR" Name="szBackupLogPath" />
             <Param Type="JET_LOGINFO*" Name="pLogInfo" />
@@ -1489,19 +1759,16 @@
             <Param Type="JET_PSTR" Name="szTargetInstanceCheckpointPath" />
             <Param Type="JET_PFNSTATUS" Name="pfn" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetFreeBuffer">
             <Param Type="char*" Name="pbBuf" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetAttachInfo" BothCharset="True">
             <Param Type="tchar*" Name="szz" />
             <Param Type="unsigned long" Name="cbMax" />
             <Param Type="unsigned long*" Name="pcbActual" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetAttachInfoInstance" BothCharset="True">
             <Param Type="JET_INSTANCE" Name="instance" />
@@ -1509,7 +1776,6 @@
             <Param Type="unsigned long" Name="cbMax" />
             <Param Type="unsigned long*" Name="pcbActual" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetBookmark">
             <Param Type="JET_SESID" Name="sesid" />
@@ -1518,18 +1784,16 @@
             <Param Type="unsigned long" Name="cbMax" />
             <Param Type="unsigned long*" Name="pcbActual" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetColumnInfo" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_DBID" Name="dbid" />
-            <Param Type="JET_PCTSTR" Name="szTableName" />
-            <Param Type="JET_PCTSTR" Name="szColumnName" />
+            <Param Type="JET_PCSTR" Name="szTableName" />
+            <Param Type="JET_PCSTR" Name="szColumnName" />
             <Param Type="void*" Name="pvResult" />
             <Param Type="unsigned long" Name="cbMax" />
             <Param Type="unsigned long" Name="InfoLevel" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetCurrentIndex" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
@@ -1537,7 +1801,6 @@
             <Param Type="JET_PSTR" Name="szIndexName" />
             <Param Type="unsigned long" Name="cchIndexName" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetCursorInfo">
             <Param Type="JET_SESID" Name="sesid" />
@@ -1546,15 +1809,13 @@
             <Param Type="unsigned long" Name="cbMax" />
             <Param Type="unsigned long" Name="InfoLevel" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetDatabaseFileInfo" BothCharset="True">
-            <Param Type="JET_PCTSTR" Name="szDatabaseName" />
+            <Param Type="JET_PCSTR" Name="szDatabaseName" />
             <Param Type="void*" Name="pvResult" />
             <Param Type="unsigned long" Name="cbMax" />
             <Param Type="unsigned long" Name="InfoLevel" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetDatabaseInfo" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
@@ -1563,24 +1824,21 @@
             <Param Type="unsigned long" Name="cbMax" />
             <Param Type="unsigned long" Name="InfoLevel" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetIndexInfo" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_DBID" Name="dbid" />
-            <Param Type="JET_PCTSTR" Name="szTableName" />
-            <Param Type="JET_PCTSTR" Name="szIndexName" />
+            <Param Type="JET_PCSTR" Name="szTableName" />
+            <Param Type="JET_PCSTR" Name="szIndexName" />
             <Param Type="void*" Name="pvResult" />
             <Param Type="unsigned long" Name="cbResult" />
             <Param Type="unsigned long" Name="InfoLevel" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetInstanceInfo" BothCharset="True">
             <Param Type="unsigned long*" Name="pcInstanceInfo" />
             <Param Type="JET_INSTANCE_INFO**" Name="paInstanceInfo" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetInstanceMiscInfo">
             <Param Type="JET_INSTANCE" Name="instance" />
@@ -1588,21 +1846,18 @@
             <Param Type="unsigned long" Name="cbMax" />
             <Param Type="unsigned long" Name="InfoLevel" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetLock">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_TABLEID" Name="tableid" />
             <Param Type="[JetGetLockFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetLogInfo" BothCharset="True">
             <Param Type="tchar*" Name="szz" />
             <Param Type="unsigned long" Name="cbMax" />
             <Param Type="unsigned long*" Name="pcbActual" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetLogInfoInstance" BothCharset="True">
             <Param Type="JET_INSTANCE" Name="instance" />
@@ -1610,7 +1865,6 @@
             <Param Type="unsigned long" Name="cbMax" />
             <Param Type="unsigned long*" Name="pcbActual" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetLogInfoInstance2" BothCharset="True">
             <Param Type="JET_INSTANCE" Name="instance" />
@@ -1619,7 +1873,6 @@
             <Param Type="unsigned long*" Name="pcbActual" />
             <Param Type="JET_LOGINFO*" Name="pLogInfo" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetLS">
             <Param Type="JET_SESID" Name="sesid" />
@@ -1627,19 +1880,17 @@
             <Param Type="JET_LS*" Name="pls" />
             <Param Type="[JetGetLSFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetObjectInfo" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_DBID" Name="dbid" />
             <Param Type="JET_OBJTYP" Name="objtyp" />
-            <Param Type="JET_PCTSTR" Name="szContainerName" />
-            <Param Type="JET_PCTSTR" Name="szObjectName" />
+            <Param Type="JET_PCSTR" Name="szContainerName" />
+            <Param Type="JET_PCSTR" Name="szObjectName" />
             <Param Type="void*" Name="pvResult" />
             <Param Type="unsigned long" Name="cbMax" />
             <Param Type="unsigned long" Name="InfoLevel" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetRecordPosition">
             <Param Type="JET_SESID" Name="sesid" />
@@ -1647,7 +1898,6 @@
             <Param Type="JET_RECPOS*" Name="precpos" />
             <Param Type="unsigned long" Name="cbRecpos" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetRecordSize">
             <Param Type="JET_SESID" Name="sesid" />
@@ -1655,7 +1905,6 @@
             <Param Type="JET_RECSIZE*" Name="precsize" />
             <Param Type="const JET_GRBIT" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetSecondaryIndexBookmark">
             <Param Type="JET_SESID" Name="sesid" />
@@ -1668,37 +1917,33 @@
             <Param Type="unsigned long*" Name="pcbPrimaryKeyActual" />
             <Param Type="const JET_GRBIT" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetSystemParameter" BothCharset="True">
             <Param Type="JET_INSTANCE" Name="instance" />
             <Param Type="JET_SESID" Name="sesid" />
-            <Param Type="unsigned long" Name="paramid" />
+            <Param Type="[JET_param]" Name="paramid" />
             <Param Type="JET_API_PTR*" Name="plParam" />
             <Param Type="JET_PSTR" Name="szParam" />
             <Param Type="unsigned long" Name="cbMax" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetTableColumnInfo" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_TABLEID" Name="tableid" />
-            <Param Type="JET_PCTSTR" Name="szColumnName" />
+            <Param Type="JET_PCSTR" Name="szColumnName" />
             <Param Type="void*" Name="pvResult" />
             <Param Type="unsigned long" Name="cbMax" />
             <Param Type="unsigned long" Name="InfoLevel" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetTableIndexInfo" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_TABLEID" Name="tableid" />
-            <Param Type="JET_PCTSTR" Name="szIndexName" />
+            <Param Type="JET_PCSTR" Name="szIndexName" />
             <Param Type="void*" Name="pvResult" />
             <Param Type="unsigned long" Name="cbResult" />
             <Param Type="unsigned long" Name="InfoLevel" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetTableInfo" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
@@ -1707,13 +1952,11 @@
             <Param Type="unsigned long" Name="cbMax" />
             <Param Type="unsigned long" Name="InfoLevel" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetThreadStats">
             <Param Type="void*" Name="pvResult" />
             <Param Type="unsigned long" Name="cbMax" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetTruncateLogInfoInstance" BothCharset="True">
             <Param Type="JET_INSTANCE" Name="instance" />
@@ -1721,13 +1964,11 @@
             <Param Type="unsigned long" Name="cbMax" />
             <Param Type="unsigned long*" Name="pcbActual" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGetVersion">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="unsigned long*" Name="pwVersion" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGotoBookmark">
             <Param Type="JET_SESID" Name="sesid" />
@@ -1735,14 +1976,12 @@
             <Param Type="void*" Name="pvBookmark" Length="cbBookmark" />
             <Param Type="unsigned long" Name="cbBookmark" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGotoPosition">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_TABLEID" Name="tableid" />
             <Param Type="JET_RECPOS*" Name="precpos" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGotoSecondaryIndexBookmark">
             <Param Type="JET_SESID" Name="sesid" />
@@ -1753,7 +1992,6 @@
             <Param Type="unsigned long" Name="cbPrimaryBookmark" />
             <Param Type="[JetGotoSecondaryIndexBookmarkFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetGrowDatabase">
             <Param Type="JET_SESID" Name="sesid" />
@@ -1761,13 +1999,11 @@
             <Param Type="unsigned long" Name="cpg" />
             <Param Type="unsigned long*" Name="pcpgReal" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetIdle">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="[JetIdleFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetIndexRecordCount">
             <Param Type="JET_SESID" Name="sesid" />
@@ -1775,34 +2011,29 @@
             <Param Type="unsigned long*" Name="pcrec" />
             <Param Type="unsigned long" Name="crecMax" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetInit">
             <Param Type="JET_INSTANCE*" Name="pinstance" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetInit2">
             <Param Type="JET_INSTANCE*" Name="pinstance" />
             <Param Type="[JetInitFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetInit3" BothCharset="True">
             <Param Type="JET_INSTANCE*" Name="pinstance" />
             <Param Type="JET_RSTINFO*" Name="prstInfo" />
             <Param Type="[JetInitFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetIntersectIndexes">
             <Param Type="JET_SESID" Name="sesid" />
-            <Param Type="JET_INDEXRANGE*" Name="rgindexrange" />
+            <Param Type="JET_INDEXRANGE*" Name="rgindexrange" Count="cindexrange" />
             <Param Type="unsigned long" Name="cindexrange" />
             <Param Type="JET_RECORDLIST*" Name="precordlist" />
             <Param Type="JET_GRBIT" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetMakeKey">
             <Param Type="JET_SESID" Name="sesid" />
@@ -1811,7 +2042,6 @@
             <Param Type="unsigned long" Name="cbData" />
             <Param Type="[JetMakeKeyFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetMove">
             <Param Type="JET_SESID" Name="sesid" />
@@ -1819,24 +2049,21 @@
             <Param Type="[JetMoveRow]" Name="cRow" />
             <Param Type="[JetMoveFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetOpenDatabase" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
-            <Param Type="JET_PCTSTR" Name="szFilename" />
-            <Param Type="JET_PCTSTR" Name="szConnect" />
+            <Param Type="JET_PCSTR" Name="szFilename" />
+            <Param Type="JET_PCSTR" Name="szConnect" />
             <Param Type="JET_DBID*" Name="pdbid" />
             <Param Type="[JetOpenDatabaseFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetOpenFile" BothCharset="True">
-            <Param Type="JET_PCTSTR" Name="szFileName" />
+            <Param Type="JET_PCSTR" Name="szFileName" />
             <Param Type="JET_HANDLE*" Name="phfFile" />
             <Param Type="unsigned long*" Name="pulFileSizeLow" />
             <Param Type="unsigned long*" Name="pulFileSizeHigh" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetOpenFileInstance" BothCharset="True">
             <Param Type="JET_INSTANCE" Name="instance" />
@@ -1845,68 +2072,60 @@
             <Param Type="unsigned long*" Name="pulFileSizeLow" />
             <Param Type="unsigned long*" Name="pulFileSizeHigh" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetOpenTable" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_DBID" Name="dbid" />
-            <Param Type="JET_PCTSTR" Name="szTableName" />
-            <Param Type="const void*" Name="pvParameters" />
+            <Param Type="JET_PCSTR" Name="szTableName" />
+            <Param Type="const void*" Name="pvParameters" Length="cbParameters" />
             <Param Type="unsigned long" Name="cbParameters" />
             <Param Type="[JetOpenTableFlags]" Name="grbit" />
             <Param Type="JET_TABLEID*" Name="ptableid" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetOpenTemporaryTable">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_OPENTEMPORARYTABLE*" Name="popentemporarytable" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetOpenTempTable">
             <Param Type="JET_SESID" Name="sesid" />
-            <Param Type="const JET_COLUMNDEF*" Name="prgcolumndef" />
+            <Param Type="const JET_COLUMNDEF*" Name="prgcolumndef" Count="ccolumn" />
             <Param Type="unsigned long" Name="ccolumn" />
             <Param Type="[JetOpenTempTableFlags]" Name="grbit" />
             <Param Type="JET_TABLEID*" Name="ptableid" />
-            <Param Type="JET_COLUMNID*" Name="prgcolumnid" />
+            <Param Type="JET_COLUMNID*" Name="prgcolumnid" PostCount="ccolumn" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetOpenTempTable2">
             <Param Type="JET_SESID" Name="sesid" />
-            <Param Type="const JET_COLUMNDEF*" Name="prgcolumndef" />
+            <Param Type="const JET_COLUMNDEF*" Name="prgcolumndef" Count="ccolumn" />
             <Param Type="unsigned long" Name="ccolumn" />
             <Param Type="unsigned long" Name="lcid" />
             <Param Type="[JetOpenTempTableFlags]" Name="grbit" />
             <Param Type="JET_TABLEID*" Name="ptableid" />
-            <Param Type="JET_COLUMNID*" Name="prgcolumnid" />
+            <Param Type="JET_COLUMNID*" Name="prgcolumnid" PostCount="ccolumn" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetOpenTempTable3">
             <Param Type="JET_SESID" Name="sesid" />
-            <Param Type="const JET_COLUMNDEF*" Name="prgcolumndef" />
+            <Param Type="const JET_COLUMNDEF*" Name="prgcolumndef" Count="ccolumn" />
             <Param Type="unsigned long" Name="ccolumn" />
             <Param Type="JET_UNICODEINDEX*" Name="pidxunicode" />
             <Param Type="[JetOpenTempTableFlags]" Name="grbit" />
             <Param Type="JET_TABLEID*" Name="ptableid" />
-            <Param Type="JET_COLUMNID*" Name="prgcolumnid" />
+            <Param Type="JET_COLUMNID*" Name="prgcolumnid" PostCount="ccolumn" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetOSSnapshotAbort">
             <Param Type="const JET_OSSNAPID" Name="snapId" />
             <Param Type="const JET_GRBIT" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetOSSnapshotEnd">
             <Param Type="const JET_OSSNAPID" Name="snapId" />
             <Param Type="const JET_GRBIT" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetOSSnapshotFreeze" BothCharset="True">
             <Param Type="const JET_OSSNAPID" Name="snapId" />
@@ -1914,7 +2133,6 @@
             <Param Type="JET_INSTANCE_INFO**" Name="paInstanceInfo" />
             <Param Type="const JET_GRBIT" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetOSSnapshotGetFreezeInfo" BothCharset="True">
             <Param Type="const JET_OSSNAPID" Name="snapId" />
@@ -1922,63 +2140,54 @@
             <Param Type="JET_INSTANCE_INFO**" Name="paInstanceInfo" />
             <Param Type="const JET_GRBIT" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetOSSnapshotPrepare">
             <Param Type="JET_OSSNAPID*" Name="psnapId" />
             <Param Type="const JET_GRBIT" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetOSSnapshotPrepareInstance">
             <Param Type="JET_OSSNAPID" Name="snapId" />
             <Param Type="JET_INSTANCE" Name="instance" />
             <Param Type="const JET_GRBIT" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetOSSnapshotThaw">
             <Param Type="const JET_OSSNAPID" Name="snapId" />
             <Param Type="const JET_GRBIT" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetOSSnapshotTruncateLog">
             <Param Type="const JET_OSSNAPID" Name="snapId" />
             <Param Type="const JET_GRBIT" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetOSSnapshotTruncateLogInstance">
             <Param Type="const JET_OSSNAPID" Name="snapId" />
             <Param Type="JET_INSTANCE" Name="instance" />
             <Param Type="const JET_GRBIT" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetPrepareUpdate">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_TABLEID" Name="tableid" />
             <Param Type="[JetPrepareUpdateOption]" Name="prep" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetReadFile">
             <Param Type="JET_HANDLE" Name="hfFile" />
-            <Param Type="void*" Name="pv" />
+            <Param Type="void*" Name="pv" PostLength="pcbActual" />
             <Param Type="unsigned long" Name="cb" />
             <Param Type="unsigned long*" Name="pcbActual" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetReadFileInstance">
             <Param Type="JET_INSTANCE" Name="instance" />
             <Param Type="JET_HANDLE" Name="hfFile" />
-            <Param Type="void*" Name="pv" />
+            <Param Type="void*" Name="pv" PostLength="pcb" />
             <Param Type="unsigned long" Name="cb" />
             <Param Type="unsigned long*" Name="pcb" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetRegisterCallback">
             <Param Type="JET_SESID" Name="sesid" />
@@ -1988,7 +2197,6 @@
             <Param Type="void*" Name="pvContext" />
             <Param Type="JET_HANDLE*" Name="phCallbackId" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetRenameColumn" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
@@ -1997,40 +2205,34 @@
             <Param Type="JET_PCSTR" Name="szNameNew" />
             <Param Type="JET_GRBIT" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetRenameTable" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_DBID" Name="dbid" />
-            <Param Type="JET_PCTSTR" Name="szName" />
-            <Param Type="JET_PCTSTR" Name="szNameNew" />
+            <Param Type="JET_PCSTR" Name="szName" />
+            <Param Type="JET_PCSTR" Name="szNameNew" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetResetSessionContext">
             <Param Type="JET_SESID" Name="sesid" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetResetTableSequential">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_TABLEID" Name="tableid" />
             <Param Type="JET_GRBIT" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetRestore" BothCharset="True">
             <Param Type="JET_PCSTR" Name="sz" />
             <Param Type="JET_PFNSTATUS" Name="pfn" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetRestore2" BothCharset="True">
             <Param Type="JET_PCSTR" Name="sz" />
             <Param Type="JET_PCSTR" Name="szDest" />
             <Param Type="JET_PFNSTATUS" Name="pfn" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetRestoreInstance" BothCharset="True">
             <Param Type="JET_INSTANCE" Name="instance" />
@@ -2038,50 +2240,44 @@
             <Param Type="JET_PCSTR" Name="szDest" />
             <Param Type="JET_PFNSTATUS" Name="pfn" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetRetrieveColumn">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_TABLEID" Name="tableid" />
             <Param Type="JET_COLUMNID" Name="columnid" />
-            <Param Type="void*" Name="pvData" />
+            <Param Type="void*" Name="pvData" PostLength="pcbActual" />
             <Param Type="unsigned long" Name="cbData" />
             <Param Type="unsigned long*" Name="pcbActual" />
             <Param Type="[JetRetrieveColumnFlags]" Name="grbit" />
             <Param Type="JET_RETINFO*" Name="pretinfo" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetRetrieveColumns">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_TABLEID" Name="tableid" />
-            <Param Type="JET_RETRIEVECOLUMN*" Name="pretrievecolumn" />
+            <Param Type="JET_RETRIEVECOLUMN*" Name="pretrievecolumn" Count="cretrievecolumn" />
             <Param Type="unsigned long" Name="cretrievecolumn" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetRetrieveKey">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_TABLEID" Name="tableid" />
-            <Param Type="void*" Name="pvData" />
+            <Param Type="void*" Name="pvData" PostLength="pcbActual" />
             <Param Type="unsigned long" Name="cbMax" />
             <Param Type="unsigned long*" Name="pcbActual" />
             <Param Type="JET_GRBIT" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetRollback">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="[JetRollbackFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetSeek">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_TABLEID" Name="tableid" />
             <Param Type="[JetSeekFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetSetColumn">
             <Param Type="JET_SESID" Name="sesid" />
@@ -2092,33 +2288,29 @@
             <Param Type="[JetSetColumnFlags]" Name="grbit" />
             <Param Type="JET_SETINFO*" Name="psetinfo" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetSetColumnDefaultValue" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_DBID" Name="dbid" />
             <Param Type="JET_PCSTR" Name="szTableName" />
             <Param Type="JET_PCSTR" Name="szColumnName" />
-            <Param Type="const void*" Name="pvData" />
+            <Param Type="const void*" Name="pvData" Length="cbData" />
             <Param Type="const unsigned long" Name="cbData" />
             <Param Type="const JET_GRBIT" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetSetColumns">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_TABLEID" Name="tableid" />
-            <Param Type="JET_SETCOLUMN*" Name="psetcolumn" />
+            <Param Type="JET_SETCOLUMN*" Name="psetcolumn" Count="csetcolumn" />
             <Param Type="unsigned long" Name="csetcolumn" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetSetCurrentIndex" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_TABLEID" Name="tableid" />
-            <Param Type="JET_PCTSTR" Name="szIndexName" />
+            <Param Type="JET_PCSTR" Name="szIndexName" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetSetCurrentIndex2" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
@@ -2126,7 +2318,6 @@
             <Param Type="JET_PCSTR" Name="szIndexName" />
             <Param Type="[JetSetCurrentIndexFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetSetCurrentIndex3" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
@@ -2135,7 +2326,6 @@
             <Param Type="[JetSetCurrentIndexFlags]" Name="grbit" />
             <Param Type="unsigned long" Name="itagSequence" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetSetCurrentIndex4" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
@@ -2145,7 +2335,6 @@
             <Param Type="[JetSetCurrentIndexFlags]" Name="grbit" />
             <Param Type="unsigned long" Name="itagSequence" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetSetDatabaseSize" BothCharset="True">
             <Param Type="JET_SESID" Name="sesid" />
@@ -2153,14 +2342,12 @@
             <Param Type="unsigned long" Name="cpg" />
             <Param Type="unsigned long*" Name="pcpgReal" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetSetIndexRange">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_TABLEID" Name="tableidSrc" />
             <Param Type="[JetSetIndexRangeFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetSetLS">
             <Param Type="JET_SESID" Name="sesid" />
@@ -2168,67 +2355,55 @@
             <Param Type="JET_LS" Name="ls" />
             <Param Type="JET_GRBIT" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetSetSessionContext">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_API_PTR" Name="ulContext" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetSetSystemParameter" BothCharset="True">
             <Param Type="JET_INSTANCE*" Name="pinstance" />
             <Param Type="JET_SESID" Name="sesid" />
-            <Param Type="unsigned long" Name="paramid" />
+            <Param Type="[JET_param]" Name="paramid" />
             <Param Type="JET_API_PTR" Name="lParam" />
             <Param Type="JET_PCSTR" Name="szParam" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetSetTableSequential">
             <Param Type="JET_SESID" Name="sesid" />
             <Param Type="JET_TABLEID" Name="tableid" />
             <Param Type="JET_GRBIT" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetStopBackup">
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetStopBackupInstance">
             <Param Type="JET_INSTANCE" Name="instance" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetStopService">
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetStopServiceInstance">
             <Param Type="JET_INSTANCE" Name="instance" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetTerm">
             <Param Type="JET_INSTANCE" Name="instance" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetTerm2">
             <Param Type="JET_INSTANCE" Name="instance" />
             <Param Type="[JetTerm2Flags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetTruncateLog">
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetTruncateLogInstance">
             <Param Type="JET_INSTANCE" Name="instance" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetUnregisterCallback">
             <Param Type="JET_SESID" Name="sesid" />
@@ -2236,7 +2411,6 @@
             <Param Type="JET_CBTYP" Name="cbtyp" />
             <Param Type="JET_HANDLE" Name="hCallbackId" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetUpdate">
             <Param Type="JET_SESID" Name="sesid" />
@@ -2245,7 +2419,6 @@
             <Param Type="unsigned long" Name="cbBookmark" />
             <Param Type="unsigned long*" Name="pcbActual" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="JetUpdate2">
             <Param Type="JET_SESID" Name="sesid" />
@@ -2255,7 +2428,133 @@
             <Param Type="unsigned long*" Name="pcbActual" />
             <Param Type="[JetUpdateFlags]" Name="grbit" />
             <Return Type="JET_ERR" />
-            <Success Return="Equal" Value="0" />
         </Api>
+        <Api Name="JetBeginTransaction3">
+            <Param Type="JET_SESID" Name="sesid" />
+            <Param Type="__int64" Name="trxid" />
+            <Param Type="JET_GRBIT" Name="grbit" />
+            <Return Type="JET_ERR" />
+        </Api>
+        <Api Name="JetCommitTransaction2">
+            <Param Type="JET_SESID" Name="sesid" />
+            <Param Type="JET_GRBIT" Name="grbit" />
+            <Param Type="DWORD" Name="cmsecDurableCommit" />
+            <Param Type="JET_COMMIT_ID*" Name="pCommitID" />
+            <Return Type="JET_ERR" />
+        </Api>
+        <Api Name="JetCreateIndex3" BothCharset="True">
+            <Param Type="JET_SESID" Name="sesid" />
+            <Param Type="JET_TABLEID" Name="tableid" />
+            <Param Type="JET_INDEXCREATE2*" Name="pindexcreate" Count="cIndexCreate" />
+            <Param Type="unsigned long" Name="cIndexCreate" />
+            <Return Type="JET_ERR" />
+        </Api>
+        <Api Name="JetCreateIndex4" BothCharset="True">
+            <Param Type="JET_SESID" Name="sesid" />
+            <Param Type="JET_TABLEID" Name="tableid" />
+            <Param Type="JET_INDEXCREATE2*" Name="pindexcreate" Count="cIndexCreate" />
+            <Param Type="unsigned long" Name="cIndexCreate" />
+            <Return Type="JET_ERR" />
+        </Api>
+        <Api Name="JetCreateTableColumnIndex3" BothCharset="True">
+            <Param Type="JET_SESID" Name="sesid" />
+            <Param Type="JET_DBID" Name="dbid" />
+            <Param Type="JET_TABLECREATE3*" Name="ptablecreate" />
+            <Return Type="JET_ERR" />
+        </Api>
+        <Api Name="JetCreateTableColumnIndex4" BothCharset="True">
+            <Param Type="JET_SESID" Name="sesid" />
+            <Param Type="JET_DBID" Name="dbid" />
+            <Param Type="JET_TABLECREATE3*" Name="ptablecreate" />
+            <Return Type="JET_ERR" />
+        </Api>
+        <Api Name="JetGetErrorInfoW">
+            <Param Type="void*" Name="pvContext" />
+            <Param Type="void*" Name="pvResult" />
+            <Param Type="unsigned long" Name="cbMax" />
+            <Param Type="unsigned long" Name="InfoLevel" />
+            <Param Type="JET_GRBIT" Name="grbit" />
+            <Return Type="JET_ERR" />
+        </Api>
+        <Api Name="JetGetRecordSize2">
+            <Param Type="JET_SESID" Name="sesid" />
+            <Param Type="JET_TABLEID" Name="tableid" />
+            <Param Type="JET_RECSIZE2*" Name="precsize" />
+            <Param Type="const JET_GRBIT" Name="grbit" />
+            <Return Type="JET_ERR" />
+        </Api>
+        <Api Name="JetGetSessionParameter">
+            <Param Type="JET_SESID" Name="sesid" />
+            <Param Type="unsigned long" Name="sesparamid" />
+            <Param Type="void*" Name="pvParam" />
+            <Param Type="unsigned long" Name="cbParamMax" />
+            <Param Type="unsigned long" Name="pcbParamActual" />
+            <Return Type="JET_ERR" />
+        </Api>
+        <Api Name="JetPrereadIndexRanges">
+            <Param Type="JET_SESID" Name="sesid" />
+            <Param Type="JET_TABLEID" Name="tableid" />
+            <Param Type="const JET_INDEX_RANGE* const" Name="rgIndexRanges" Count="cIndexRanges" />
+            <Param Type="const unsigned long" Name="cIndexRanges" />
+            <Param Type="unsigned long* const" Name="pcRangesPreread" />
+            <Param Type="const JET_COLUMNID* const" Name="rgcolumnidPreread" Count="ccolumnidPreread" />
+            <Param Type="const unsigned long" Name="ccolumnidPreread" />
+            <Param Type="JET_GRBIT" Name="grbit" />
+            <Return Type="JET_ERR" />
+        </Api>
+        <Api Name="JetPrereadKeys">
+            <Param Type="JET_SESID" Name="sesid" />
+            <Param Type="JET_TABLEID" Name="tableid" />
+            <Param Type="const void**" Name="rgpvKeys" Count="ckeys" />
+            <Param Type="const unsigned long*" Name="rgcbKeys" Count="ckeys" />
+            <Param Type="long" Name="ckeys" />
+            <Param Type="long*" Name="pckeysPreread" />
+            <Param Type="JET_GRBIT" Name="grbit" />
+            <Return Type="JET_ERR" />
+        </Api>
+        <Api Name="JetResizeDatabase">
+            <Param Type="JET_SESID" Name="sesid" />
+            <Param Type="JET_DBID" Name="dbid" />
+            <Param Type="unsigned long" Name="cpg" />
+            <Param Type="unsigned long*" Name="pcpgActual" />
+            <Param Type="const JET_GRBIT" Name="grbit" />
+            <Return Type="JET_ERR" />
+        </Api>
+        <Api Name="JetSetCursorFilter">
+            <Param Type="JET_SESID" Name="sesid" />
+            <Param Type="JET_TABLEID" Name="tableid" />
+            <Param Type="JET_INDEX_COLUMN*" Name="rgFilters" Count="cFilters" />
+            <Param Type="DWORD" Name="cFilters" />
+            <Param Type="JET_GRBIT" Name="grbit" />
+            <Return Type="JET_ERR" />
+        </Api>
+        <Api Name="JetSetSessionParameter">
+            <Param Type="JET_SESID" Name="sesid" />
+            <Param Type="unsigned long" Name="sesparamid" />
+            <Param Type="void*" Name="pvParam" Length="cbParam" />
+            <Param Type="unsigned long" Name="cbParam" />
+            <Return Type="JET_ERR" />
+        </Api>
+        <Api Name="JetStopServiceInstance2">
+            <Param Type="JET_INSTANCE" Name="instance" />
+            <Return Type="JET_ERR" />
+        </Api>
+        <Api Name="JetDefragment3" BothCharset="True">
+            <Param Type="JET_SESID" Name="sesid" />
+            <Param Type="JET_PCSTR" Name="szDatabaseName" />
+            <Param Type="JET_PCSTR" Name="szTableName" />
+            <Param Type="unsigned long*" Name="pcPasses" />
+            <Param Type="unsigned long*" Name="pcSeconds" />
+            <Param Type="JET_CALLBACK" Name="callback" />
+            <Param Type="void*" Name="pvContext" />
+            <Param Type="JET_GRBIT" Name="grbit" />
+            <Return Type="JET_ERR" />
+        </Api>
+        <Api Name="JetOpenTemporaryTable2">
+            <Param Type="JET_SESID" Name="sesid" />
+            <Param Type="JET_OPENTEMPORARYTABLE2*" Name="popentemporarytable" />
+            <Return Type="JET_ERR" />
+        </Api>
+
     </Module>
 </ApiMonitor>

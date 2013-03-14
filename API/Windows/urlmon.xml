@@ -1,113 +1,21 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2013, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\shell.h.xml" />
     <Include Filename="Headers\ole.h.xml" />
+    <Include Filename="Headers\URL.h.xml" />
 
     <Module Name="urlmon.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
 
-        <!-- Variables -->
-        <Variable Name="IUri"                               Type="Interface" />
-        <Variable Name="IUriBuilder"                        Type="Interface" />
-        <Variable Name="IInternetZoneManager"               Type="Interface" />
-        <Variable Name="IInternetSecurityManager"           Type="Interface" />
-        <Variable Name="IInternetSecurityManagerEx2"        Type="Interface" />
-        <Variable Name="IBindStatusCallback"                Type="Interface" />
-        <Variable Name="IServiceProvider"                   Type="Interface" />
-        <Variable Name="LPBINDSTATUSCALLBACK"               Type="Alias"    Base="IBindStatusCallback*" />
+        <!-- External Interfaces -->
+        <Variable Name="IServiceProvider" Type="Interface" />
 
-        <!-- BINDINFOF -->
-        <Variable Name="BINDINFOF" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
-            <Flag>
-                <Set Name="BINDINFOF_URLENCODESTGMEDDATA"   Value="0x1" />
-                <Set Name="BINDINFOF_URLENCODEDEXTRAINFO"   Value="0x2" />
-            </Flag>
-        </Variable>
-
-        <!-- BINDVERB -->
-        <Variable Name="BINDVERB" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
-            <Enum>
-                <Set Name="BINDVERB_GET"            Value="0" />
-                <Set Name="BINDVERB_POST"           Value="0x1" />
-                <Set Name="BINDVERB_PUT"            Value="0x2" />
-                <Set Name="BINDVERB_CUSTOM"         Value="0x3" />
-                <Set Name="BINDVERB_RESERVED1"      Value="0x4" />
-            </Enum>
-        </Variable>
-
-        <!-- BINDINFO_OPTIONS -->
-        <Variable Name="BINDINFO_OPTIONS" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
-            <Flag>
-                <Set Name="BINDINFO_OPTIONS_WININETFLAG"                    Value="0x10000" />
-                <Set Name="BINDINFO_OPTIONS_ENABLE_UTF8"                    Value="0x20000" />
-                <Set Name="BINDINFO_OPTIONS_DISABLE_UTF8"                   Value="0x40000" />
-                <Set Name="BINDINFO_OPTIONS_USE_IE_ENCODING"                Value="0x80000" />
-                <Set Name="BINDINFO_OPTIONS_BINDTOOBJECT"                   Value="0x100000" />
-                <Set Name="BINDINFO_OPTIONS_SECURITYOPTOUT"                 Value="0x200000" />
-                <Set Name="BINDINFO_OPTIONS_IGNOREMIMETEXTPLAIN"            Value="0x400000" />
-                <Set Name="BINDINFO_OPTIONS_USEBINDSTRINGCREDS"             Value="0x800000" />
-                <Set Name="BINDINFO_OPTIONS_IGNOREHTTPHTTPSREDIRECTS"       Value="0x1000000" />
-                <Set Name="BINDINFO_OPTIONS_IGNORE_SSLERRORS_ONCE"          Value="0x2000000" />
-                <Set Name="BINDINFO_WPC_DOWNLOADBLOCKED"                    Value="0x8000000" />
-                <Set Name="BINDINFO_WPC_LOGGING_ENABLED"                    Value="0x10000000" />
-                <Set Name="BINDINFO_OPTIONS_ALLOWCONNECTDATA"               Value="0x20000000" />
-                <Set Name="BINDINFO_OPTIONS_DISABLEAUTOREDIRECTS"           Value="0x40000000" />
-                <Set Name="BINDINFO_OPTIONS_SHDOCVW_NAVIGATE"               Value="0x80000000" />
-            </Flag>
-        </Variable>
-
-        <!-- BINDINFO -->
-        <Variable Name="BINDINFO" Type="Struct">
-            <Field Type="ULONG" 	            Name="cbSize" />
-            <Field Type="LPWSTR" 	            Name="szExtraInfo" />
-            <Field Type="STGMEDIUM"             Name="stgmedData" />
-            <Field Type="BINDINFOF" 	        Name="grfBindInfoF" />
-            <Field Type="BINDVERB" 	            Name="dwBindVerb" />
-            <Field Type="LPWSTR" 	            Name="szCustomVerb" />
-            <Field Type="DWORD" 	            Name="cbstgmedData" />
-            <Field Type="DWORD" 	            Name="dwOptions" />
-            <Field Type="BINDINFO_OPTIONS"      Name="dwOptionsFlags" />
-            <Field Type="[CodePageEnum]"        Name="dwCodePage" Display="DWORD" />
-            <Field Type="SECURITY_ATTRIBUTES" 	Name="securityAttributes" />
-            <Field Type="IID" 	                Name="iid" />
-            <Field Type="IUnknown*"	            Name="pUnk" />
-            <Field Type="DWORD" 	            Name="dwReserved" />
-        </Variable>
-        <Variable Name="BINDINFO*"          Type="Pointer" Base="BINDINFO" />
-        <Variable Name="const BINDINFO*"    Type="Pointer" Base="BINDINFO" />
-
-        <!-- [CreateUriFlags] -->
-        <Variable Name="[CreateUriFlags]" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
-            <Flag>
-                <Set Name="Uri_CREATE_ALLOW_RELATIVE"                       Value="0x00000001" />
-                <Set Name="Uri_CREATE_ALLOW_IMPLICIT_WILDCARD_SCHEME"       Value="0x00000002" />
-                <Set Name="Uri_CREATE_ALLOW_IMPLICIT_FILE_SCHEME"           Value="0x00000004" />
-                <Set Name="Uri_CREATE_NOFRAG"                               Value="0x00000008" />
-                <Set Name="Uri_CREATE_NO_CANONICALIZE"                      Value="0x00000010" />
-                <Set Name="Uri_CREATE_CANONICALIZE"                         Value="0x00000100" />
-                <Set Name="Uri_CREATE_FILE_USE_DOS_PATH"                    Value="0x00000020" />
-                <Set Name="Uri_CREATE_DECODE_EXTRA_INFO"                    Value="0x00000040" />
-                <Set Name="Uri_CREATE_NO_DECODE_EXTRA_INFO"                 Value="0x00000080" />
-                <Set Name="Uri_CREATE_CRACK_UNKNOWN_SCHEMES"                Value="0x00000200" />
-                <Set Name="Uri_CREATE_NO_CRACK_UNKNOWN_SCHEMES"             Value="0x00000400" />
-                <Set Name="Uri_CREATE_PRE_PROCESS_HTML_URI"                 Value="0x00000800" />
-                <Set Name="Uri_CREATE_NO_PRE_PROCESS_HTML_URI"              Value="0x00001000" />
-                <Set Name="Uri_CREATE_IE_SETTINGS"                          Value="0x00002000" />
-                <Set Name="Uri_CREATE_NO_IE_SETTINGS"                       Value="0x00004000" />
-                <Set Name="Uri_CREATE_NO_ENCODE_FORBIDDEN_CHARACTERS"       Value="0x00008000" />
-            </Flag>
-        </Variable>
-
-        <!-- [UriEncodingFlags] -->
-        <Variable Name="[UriEncodingFlags]" Type="Alias" Base="DWORD">
+        <!-- [Uri_ENCODING_FLAGS] -->
+        <Variable Name="[Uri_ENCODING_FLAGS]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
                 <Set Name="Uri_ENCODING_USER_INFO_AND_PATH_IS_PERCENT_ENCODED_UTF8"     Value="0x00000001" />
@@ -174,48 +82,25 @@
         <Variable Name="[UrlFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
-                <Set Name="URL_UNESCAPE"                    Value="0x10000000" />
-                <Set Name="URL_ESCAPE_UNSAFE"               Value="0x20000000" />
-                <Set Name="URL_PLUGGABLE_PROTOCOL"          Value="0x40000000" />
-                <Set Name="URL_WININET_COMPATIBILITY"       Value="0x80000000" />
-                <Set Name="URL_BROWSER_MODE"                Value="0x02000000" />
-                <Set Name="URL_ESCAPE_SPACES_ONLY"          Value="0x04000000" />
-                <Set Name="URL_DONT_SIMPLIFY"               Value="0x08000000" />
-                <Set Name="URL_UNESCAPE_INPLACE"            Value="0x00100000" />
-                <Set Name="URL_CONVERT_IF_DOSPATH"          Value="0x00200000" />
-                <Set Name="URL_UNESCAPE_HIGH_ANSI_ONLY"     Value="0x00400000" />
-                <Set Name="URL_INTERNAL_PATH"               Value="0x00800000" />
-                <Set Name="URL_FILE_USE_PATHURL"            Value="0x00010000" />
-                <Set Name="URL_DONT_UNESCAPE"               Value="0x00020000" />
-                <Set Name="URL_ESCAPE_PERCENT"              Value="0x00001000" />
-                <Set Name="URL_ESCAPE_SEGMENT_ONLY"         Value="0x00002000" />
-                <Set Name="URL_APPLY_DEFAULT"               Value="0x00000001" />
-                <Set Name="URL_APPLY_GUESSSCHEME"           Value="0x00000002" />
-                <Set Name="URL_APPLY_GUESSFILE"             Value="0x00000004" />
-                <Set Name="URL_APPLY_FORCEAPPLY"            Value="0x00000008" />
+                <Set Name="URL_UNESCAPE"                        Value="0x10000000" />
+                <Set Name="URL_ESCAPE_UNSAFE"                   Value="0x20000000" />
+                <Set Name="URL_PLUGGABLE_PROTOCOL"              Value="0x40000000" />
+                <Set Name="URL_WININET_COMPATIBILITY"           Value="0x80000000" />
+                <Set Name="URL_BROWSER_MODE"                    Value="0x02000000" />
+                <Set Name="URL_ESCAPE_SPACES_ONLY"              Value="0x04000000" />
+                <Set Name="URL_DONT_SIMPLIFY"                   Value="0x08000000" />
+                <Set Name="URL_UNESCAPE_INPLACE"                Value="0x00100000" />
+                <Set Name="URL_CONVERT_IF_DOSPATH"              Value="0x00200000" />
+                <Set Name="URL_UNESCAPE_HIGH_ANSI_ONLY"         Value="0x00400000" />
+                <Set Name="URL_INTERNAL_PATH"                   Value="0x00800000" />
+                <Set Name="URL_FILE_USE_PATHURL"                Value="0x00010000" />
+                <Set Name="URL_DONT_UNESCAPE"                   Value="0x00020000" />
+                <Set Name="URL_ESCAPE_AS_UTF8"                  Value="0x00040000" />
+                <Set Name="URL_ESCAPE_ASCII_URI_COMPONENT"      Value="0x00080000" />
+                <Set Name="URL_ESCAPE_URI_COMPONENT"            Value="0x000C0000" />
+                <Set Name="URL_ESCAPE_PERCENT"                  Value="0x00001000" />
+                <Set Name="URL_ESCAPE_SEGMENT_ONLY"             Value="0x00002000" />
             </Flag>
-        </Variable>
-
-        <!-- QUERYOPTION -->
-        <Variable Name="QUERYOPTION" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="QUERY_EXPIRATION_DATE"               Value="1" />
-                <Set Name="QUERY_TIME_OF_LAST_CHANGE"           Value="2" />
-                <Set Name="QUERY_CONTENT_ENCODING"              Value="3" />
-                <Set Name="QUERY_CONTENT_TYPE"                  Value="4" />
-                <Set Name="QUERY_REFRESH"                       Value="5" />
-                <Set Name="QUERY_RECOMBINE"                     Value="6" />
-                <Set Name="QUERY_CAN_NAVIGATE"                  Value="7" />
-                <Set Name="QUERY_USES_NETWORK"                  Value="8" />
-                <Set Name="QUERY_IS_CACHED"                     Value="9" />
-                <Set Name="QUERY_IS_INSTALLEDENTRY"             Value="10" />
-                <Set Name="QUERY_IS_CACHED_OR_MAPPED"           Value="11" />
-                <Set Name="QUERY_USES_CACHE"                    Value="12" />
-                <Set Name="QUERY_IS_SECURE"                     Value="13" />
-                <Set Name="QUERY_IS_SAFE"                       Value="14" />
-                <Set Name="QUERY_USES_HISTORYFOLDER"            Value="15" />
-                <Set Name="QUERY_IS_CACHED_AND_USABLE_OFFLINE"  Value="16" />
-            </Enum>
         </Variable>
 
         <!-- PSUACTION -->
@@ -223,31 +108,6 @@
             <Enum>
                 <Set Name="PSU_DEFAULT"             Value="1" />
                 <Set Name="PSU_SECURITY_URL_ONLY"   Value="2" />
-            </Enum>
-        </Variable>
-
-        <!-- PARSEACTION -->
-        <Variable Name="PARSEACTION" Type="Alias" Base="UINT">
-            <Enum>
-                <Set Name="PARSE_CANONICALIZE"      Value="1" />
-                <Set Name="PARSE_FRIENDLY"          Value="2" />
-                <Set Name="PARSE_SECURITY_URL"      Value="3" />
-                <Set Name="PARSE_ROOTDOCUMENT"      Value="4" />
-                <Set Name="PARSE_DOCUMENT"          Value="5" />
-                <Set Name="PARSE_ANCHOR"            Value="6" />
-                <Set Name="PARSE_ENCODE"            Value="7" />
-                <Set Name="PARSE_DECODE"            Value="8" />
-                <Set Name="PARSE_PATH_FROM_URL"     Value="9" />
-                <Set Name="PARSE_URL_FROM_PATH"     Value="10" />
-                <Set Name="PARSE_MIME"              Value="11" />
-                <Set Name="PARSE_SERVER"            Value="12" />
-                <Set Name="PARSE_SCHEMA"            Value="13" />
-                <Set Name="PARSE_SITE"              Value="14" />
-                <Set Name="PARSE_DOMAIN"            Value="15" />
-                <Set Name="PARSE_LOCATION"          Value="16" />
-                <Set Name="PARSE_SECURITY_DOMAIN"   Value="17" />
-                <Set Name="PARSE_ESCAPE"            Value="18" />
-                <Set Name="PARSE_UNESCAPE"          Value="19" />
             </Enum>
         </Variable>
 
@@ -263,11 +123,21 @@
             </Enum>
         </Variable>
 
+        <!-- [FIEF_FLAGS] -->
+        <Variable Name="[FIEF_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="FIEF_FLAG_FORCE_JITUI"                   Value="0x1" />
+                <Set Name="FIEF_FLAG_PEEK"                          Value="0x2" />
+                <Set Name="FIEF_FLAG_SKIP_INSTALLED_VERSION_CHECK"  Value="0x4" />
+            </Flag>
+        </Variable>
+
         <!-- OLE and Data Transfer -->
         <Category Name="Component Object Model (COM)/OLE and Data Transfer" />
         <Api Name="CreateFormatEnumerator">
             <Param Type="UINT" Name="cfmtetc" />
-            <Param Type="FORMATETC*" Name="rgfmtetc" />
+            <Param Type="FORMATETC*" Name="rgfmtetc" Count="cfmtetc" />
             <Param Type="IEnumFORMATETC**" Name="ppenumfmtetc" />
             <Return Type="HRESULT" />
         </Api>
@@ -390,6 +260,18 @@
             <Param Type="DWORD" Name="dwCompareFlags" />
             <Return Type="HRESULT" />
         </Api>
+        <Api Name="CoInternetGetProtocolFlags">
+            <Param Type="LPCWSTR" Name="pwzUrl" />
+            <Param Type="DWORD*" Name="pdwFlags" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="CoInternetGetSession">
+            <Param Type="DWORD" Name="dwSessionMode" />
+            <Param Type="IInternetSession**" Name="ppIInternetSession" />
+            <Param Type="DWORD" Name="dwReserved" />
+            <Return Type="HRESULT" />
+        </Api>
         <Api Name="CoInternetParseIUri">
             <Param Type="IUri*" Name="pIUri" />
             <Param Type="PARSEACTION" Name="ParseAction" />
@@ -463,16 +345,16 @@
         </Api>
         <Api Name="CreateUri">
             <Param Type="LPCWSTR" Name="pwzURI" />
-            <Param Type="[CreateUriFlags]" Name="dwFlags" />
+            <Param Type="[Uri_CREATE_FLAGS]" Name="dwFlags" />
             <Param Type="DWORD_PTR" Name="dwReserved" />
             <Param Type="IUri**" Name="ppURI" />
             <Return Type="STDAPI" />
         </Api>
         <Api Name="CreateUriFromMultiByteString">
             <Param Type="LPCSTR" Name="pszANSIInputUri" />
-            <Param Type="[UriEncodingFlags]" Name="dwEncodingFlags" />
+            <Param Type="[Uri_ENCODING_FLAGS]" Name="dwEncodingFlags" />
             <Param Type="DWORD" Name="dwCodePage" />
-            <Param Type="[CreateUriFlags]" Name="dwCreateFlags" />
+            <Param Type="[Uri_CREATE_FLAGS]" Name="dwCreateFlags" />
             <Param Type="DWORD_PTR" Name="dwReserved" />
             <Param Type="IUri**" Name="ppURI" />
             <Return Type="HRESULT" />
@@ -480,9 +362,15 @@
         <Api Name="CreateUriWithFragment">
             <Param Type="LPCWSTR" Name="pwzURI" />
             <Param Type="LPCWSTR" Name="pwzFragment" />
-            <Param Type="[CreateUriFlags]" Name="dwFlags" />
+            <Param Type="[Uri_CREATE_FLAGS]" Name="dwFlags" />
             <Param Type="DWORD_PTR" Name="dwReserved" />
             <Param Type="IUri**" Name="ppURI" />
+            <Return Type="STDAPI" />
+        </Api>
+        <Api Name="CreateURLBinding">
+            <Param Type="LPCWSTR" Name="lpszUrl" />
+            <Param Type="IBindCtx*" Name="pbc" />
+            <Param Type="IBinding**" Name="ppBdg" />
             <Return Type="STDAPI" />
         </Api>
         <Api Name="CreateURLMoniker">
@@ -509,7 +397,7 @@
             <Param Type="HWND" Name="hWnd" />
             <Param Type="uCLSSPEC*" Name="pClassSpec" />
             <Param Type="QUERYCONTEXT*" Name="pQuery" />
-            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="[FIEF_FLAGS]" Name="dwFlags" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="FindMediaType">
@@ -543,6 +431,11 @@
             <Param Type="LPCWSTR" Name="szMime" />
             <Param Type="DWORD" Name="dwReserved" />
             <Param Type="CLSID*" Name="pclsid" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="GetClassURL">
+            <Param Type="LPCWSTR" Name="szURL" />
+            <Param Type="CLSID*" Name="pClsID" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="GetComponentIDFromCLSSPEC">
@@ -593,15 +486,15 @@
         <Api Name="RegisterMediaTypeClass">
             <Param Type="LPBC" Name="pbc" />
             <Param Type="UINT" Name="ctypes" />
-            <Param Type="LPCSTR*" Name="rgszTypes" />
-            <Param Type="CLSID*" Name="rgclsID" />
+            <Param Type="LPCSTR*" Name="rgszTypes" Count="ctypes" />
+            <Param Type="CLSID*" Name="rgclsID" Count="ctypes" />
             <Param Type="DWORD" Name="dwReserved" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="RegisterMediaTypes">
             <Param Type="UINT" Name="ctypes" />
-            <Param Type="LPCSTR*" Name="rgszTypes" />
-            <Param Type="CLIPFORMAT*" Name="rgcfTypes" />
+            <Param Type="LPCSTR*" Name="rgszTypes" Count="ctypes" />
+            <Param Type="CLIPFORMAT*" Name="rgcfTypes" PostCount="ctypes" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="ReleaseBindInfo">

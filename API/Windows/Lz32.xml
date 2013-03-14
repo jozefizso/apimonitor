@@ -1,10 +1,10 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2013, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
-    <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\native.h.xml" />
     <Module Name="Lz32.dll" CallingConvention="STDCALL" OnlineHelp="MSDN">
         
         <!-- [OpenFlags] -->
@@ -31,12 +31,12 @@
         </Variable>
        
         <!-- API's -->
-        <Category Name="Data Access and Storage/Local File Systems/File Management" />
+        <Category Name="Data Access and Storage/Local File Systems/File Management/Lempel-Ziv (LZ) Compression" />
         <Api Name="GetExpandedName" BothCharset="True">
             <Param Type="LPTSTR" Name="lpszSource" />
-            <Param Type="LPTSTR" Name="lpszBuffer" />
+            <Param Type="LPTSTR" Name="lpszBuffer" OutputOnly="True" />
             <Return Type="INT" />
-            <Success Return="Equal" Value="1" />
+            <Success Return="Greater" Value="-1" />
         </Api>
         <Api Name="LZClose">
             <Param Type="INT" Name="hFile" />
@@ -62,7 +62,7 @@
         </Api>
         <Api Name="LZRead">
             <Param Type="INT" Name="hFile" />
-            <Param Type="LPBYTE" Display="LPSTR" Name="lpBuffer" PostLength="[Retval]" />
+            <Param Type="LPBYTE" Display="LPSTR" Name="lpBuffer" PostLength="Return" />
             <Param Type="INT" Name="cbRead" />
             <Return Type="INT" />
             <Success Return="Greater" Value="-1" />
@@ -74,5 +74,30 @@
             <Return Type="LONG" />
             <Success Return="Greater" Value="-1" />
         </Api>
+        <Api Name="CopyLZFile">
+            <Param Type="INT" Name="hfSource" />
+            <Param Type="INT" Name="hfDest" />
+            <Return Type="LONG" />
+            <Success Return="Greater" Value="-1" />
+        </Api>
+        <Api Name="LZDone">
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="LZStart">
+            <Return Type="INT" />
+            <Success Return="Greater" Value="-1" />
+        </Api>
+        <Api Name="LZCloseFile">
+            <Param Type="INT" Name="hFile" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="LZCreateFileW">
+            <Param Type="[FILE_ACCESS_MASK]" Name="dwDesiredAccess" />
+            <Param Type="[FILE_SHARE_MODE]" Name="dwShareMode" />
+            <Param Type="[CreationDisposition]" Name="dwCreationDisposition" />
+            <Param Type="LPWSTR" Name="lpString1" />
+            <Return Type="ULONG" />
+        </Api>
+
     </Module>
 </ApiMonitor>

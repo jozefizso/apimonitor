@@ -1,16 +1,15 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="VirtDisk.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        <!-- Variables -->
         
         <!-- TODO: Arrays (Complex)-->
-        <Variable Name="PSTORAGE_DEPENDENCY_INFO"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="PGET_VIRTUAL_DISK_INFO"                 Type="Alias"    Base="LPVOID" />
+        <Variable Name="PSTORAGE_DEPENDENCY_INFO"       Type="Alias"    Base="LPVOID" />
+        <Variable Name="PGET_VIRTUAL_DISK_INFO"         Type="Alias"    Base="LPVOID" />
 
         <!-- MERGE_VIRTUAL_DISK_VERSION -->
         <Variable Name="MERGE_VIRTUAL_DISK_VERSION" Type="Alias" Base="UINT">
@@ -28,16 +27,24 @@
             </Flag>
         </Variable>
 
-        <!-- [MERGE_VIRTUAL_DISK_PARAMETERS_u_s] -->
-        <Variable Name="[MERGE_VIRTUAL_DISK_PARAMETERS_u_s]" Type="Struct">
+        <!-- [MERGE_VIRTUAL_DISK_PARAMETERS_u_s1] -->
+        <Variable Name="[MERGE_VIRTUAL_DISK_PARAMETERS_u_s1]" Type="Struct">
             <Display Name="struct" />
             <Field Type="[VirtMergeDepth]" Name="MergeDepth" />
+        </Variable>
+
+        <!-- [MERGE_VIRTUAL_DISK_PARAMETERS_u_s2] -->
+        <Variable Name="[MERGE_VIRTUAL_DISK_PARAMETERS_u_s2]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="[VirtMergeDepth]" Name="MergeSourceDepth" />
+            <Field Type="[VirtMergeDepth]" Name="MergeTargetDepth" />
         </Variable>
 
         <!-- [MERGE_VIRTUAL_DISK_PARAMETERS_u] -->
         <Variable Name="[MERGE_VIRTUAL_DISK_PARAMETERS_u]" Type="Union">
             <Display Name="union" />
-            <Field Type="[MERGE_VIRTUAL_DISK_PARAMETERS_u_s]" Name="Version1" />
+            <Field Type="[MERGE_VIRTUAL_DISK_PARAMETERS_u_s1]"  Name="Version1" />
+            <Field Type="[MERGE_VIRTUAL_DISK_PARAMETERS_u_s2]"  Name="Version2" />
         </Variable>
 
         <!-- MERGE_VIRTUAL_DISK_PARAMETERS -->
@@ -78,8 +85,25 @@
             </Enum>
         </Variable>
 
-        <!-- [CREATE_VIRTUAL_DISK_PARAMETERS_u_s] -->
-        <Variable Name="[CREATE_VIRTUAL_DISK_PARAMETERS_u_s]" Type="Struct">
+        <!-- OPEN_VIRTUAL_DISK_FLAG -->
+        <Variable Name="OPEN_VIRTUAL_DISK_FLAG" Type="Alias" Base="UINT">
+            <Flag>
+                <Set Name="OPEN_VIRTUAL_DISK_FLAG_NONE"             Value="0x00000000" />
+                <Set Name="OPEN_VIRTUAL_DISK_FLAG_NO_PARENTS"       Value="0x00000001" />
+                <Set Name="OPEN_VIRTUAL_DISK_FLAG_BLANK_FILE"       Value="0x00000002" />
+                <Set Name="OPEN_VIRTUAL_DISK_FLAG_BOOT_DRIVE"       Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <!-- VIRTUAL_STORAGE_TYPE -->
+        <Variable Name="VIRTUAL_STORAGE_TYPE" Type="Struct">
+            <Field Type="ULONG" 	Name="DeviceId" />
+            <Field Type="GUID"  	Name="VendorId" />
+        </Variable>
+        <Variable Name="PVIRTUAL_STORAGE_TYPE" Type="Pointer" Base="VIRTUAL_STORAGE_TYPE" />
+
+        <!-- [CREATE_VIRTUAL_DISK_PARAMETERS_u_s1] -->
+        <Variable Name="[CREATE_VIRTUAL_DISK_PARAMETERS_u_s1]" Type="Struct">
             <Display Name="struct" />
             <Field Type="GUID"              Name="UniqueId" />
             <Field Type="ULONGLONG"         Name="MaximumSize" />
@@ -89,10 +113,27 @@
             <Field Type="PCWSTR"            Name="SourcePath" />
         </Variable>
 
+        <!-- [CREATE_VIRTUAL_DISK_PARAMETERS_u_s2] -->
+        <Variable Name="[CREATE_VIRTUAL_DISK_PARAMETERS_u_s2]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="GUID"                      Name="UniqueId" />
+            <Field Type="ULONGLONG"                 Name="MaximumSize" />
+            <Field Type="ULONG"                     Name="BlockSizeInBytes" />
+            <Field Type="ULONG"                     Name="SectorSizeInBytes" />
+            <Field Type="ULONG"                     Name="PhysicalSectorSizeInBytes" />
+            <Field Type="PCWSTR"                    Name="ParentPath" />
+            <Field Type="PCWSTR"                    Name="SourcePath" />
+            <Field Type="OPEN_VIRTUAL_DISK_FLAG"    Name="OpenFlags" />
+            <Field Type="VIRTUAL_STORAGE_TYPE"      Name="ParentVirtualStorageType" />
+            <Field Type="VIRTUAL_STORAGE_TYPE"      Name="SourceVirtualStorageType" />
+            <Field Type="GUID"                      Name="ResiliencyGuid" />
+        </Variable>
+        
         <!-- [CREATE_VIRTUAL_DISK_PARAMETERS_u] -->
         <Variable Name="[CREATE_VIRTUAL_DISK_PARAMETERS_u]" Type="Union">
             <Display Name="union" />
-            <Field Type="[CREATE_VIRTUAL_DISK_PARAMETERS_u_s]"   Name="Version1" />
+            <Field Type="[CREATE_VIRTUAL_DISK_PARAMETERS_u_s1]"     Name="Version1" />
+            <Field Type="[CREATE_VIRTUAL_DISK_PARAMETERS_u_s2]"     Name="Version2" />
         </Variable>
 
         <!-- CREATE_VIRTUAL_DISK_PARAMETERS -->
@@ -110,16 +151,25 @@
             </Enum>
         </Variable>
 
-        <!-- [OPEN_VIRTUAL_DISK_PARAMETERS_u_s] -->
-        <Variable Name="[OPEN_VIRTUAL_DISK_PARAMETERS_u_s]" Type="Struct">
+        <!-- [OPEN_VIRTUAL_DISK_PARAMETERS_u_s1] -->
+        <Variable Name="[OPEN_VIRTUAL_DISK_PARAMETERS_u_s1]" Type="Struct">
             <Display Name="struct" />
             <Field Type="ULONG" Name="RWDepth" />
+        </Variable>
+
+        <!-- [OPEN_VIRTUAL_DISK_PARAMETERS_u_s2] -->
+        <Variable Name="[OPEN_VIRTUAL_DISK_PARAMETERS_u_s2]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="BOOL"  Name="GetInfoOnly" />
+            <Field Type="BOOL"  Name="ReadOnly" />
+            <Field Type="GUID"  Name="ResiliencyGuid" />
         </Variable>
 
         <!-- [OPEN_VIRTUAL_DISK_PARAMETERS_u] -->
         <Variable Name="[OPEN_VIRTUAL_DISK_PARAMETERS_u]" Type="Union">
             <Display Name="union" />
-            <Field Type="[OPEN_VIRTUAL_DISK_PARAMETERS_u_s]"  Name="Version1" />
+            <Field Type="[OPEN_VIRTUAL_DISK_PARAMETERS_u_s1]"   Name="Version1" />
+            <Field Type="[OPEN_VIRTUAL_DISK_PARAMETERS_u_s2]"   Name="Version2" />
         </Variable>
 
         <!-- OPEN_VIRTUAL_DISK_PARAMETERS -->
@@ -210,13 +260,6 @@
         </Variable>
         <Variable Name="PATTACH_VIRTUAL_DISK_PARAMETERS" Type="Pointer" Base="ATTACH_VIRTUAL_DISK_PARAMETERS" />
 
-        <!-- VIRTUAL_STORAGE_TYPE -->
-        <Variable Name="VIRTUAL_STORAGE_TYPE" Type="Struct">
-            <Field Type="ULONG" 	Name="DeviceId" />
-            <Field Type="GUID"  	Name="VendorId" />
-        </Variable>
-        <Variable Name="PVIRTUAL_STORAGE_TYPE" Type="Pointer" Base="VIRTUAL_STORAGE_TYPE" />
-
         <!-- VIRTUAL_DISK_PROGRESS -->
         <Variable Name="VIRTUAL_DISK_PROGRESS" Type="Struct">
             <Field Type="DWORD"      	Name="OperationStatus" />
@@ -281,16 +324,6 @@
             </Flag>
         </Variable>
 
-        <!-- OPEN_VIRTUAL_DISK_FLAG -->
-        <Variable Name="OPEN_VIRTUAL_DISK_FLAG" Type="Alias" Base="UINT">
-            <Flag>
-                <Set Name="OPEN_VIRTUAL_DISK_FLAG_NONE"             Value="0x00000000" />
-                <Set Name="OPEN_VIRTUAL_DISK_FLAG_NO_PARENTS"       Value="0x00000001" />
-                <Set Name="OPEN_VIRTUAL_DISK_FLAG_BLANK_FILE"       Value="0x00000002" />
-                <Set Name="OPEN_VIRTUAL_DISK_FLAG_BOOT_DRIVE"       Value="0x00000004" />
-            </Flag>
-        </Variable>
-
         <!-- VIRTUAL_DISK_ACCESS_MASK -->
         <Variable Name="VIRTUAL_DISK_ACCESS_MASK" Type="Alias" Base="UINT">
             <Flag>
@@ -305,9 +338,87 @@
                 <Set Name="VIRTUAL_DISK_ACCESS_WRITABLE"        Value="0x0032000" />
             </Flag>
         </Variable>
-        
+
+        <!-- MIRROR_VIRTUAL_DISK_FLAG -->
+        <Variable Name="MIRROR_VIRTUAL_DISK_FLAG" Type="Alias" Base="UINT">
+            <Flag>
+                <Set Name="MIRROR_VIRTUAL_DISK_FLAG_NONE"               Value="0x00000000" />
+                <Set Name="MIRROR_VIRTUAL_DISK_FLAG_EXISTING_FILE"      Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- RESIZE_VIRTUAL_DISK_FLAG -->
+        <Variable Name="RESIZE_VIRTUAL_DISK_FLAG" Type="Alias" Base="UINT">
+            <Flag>
+                <Set Name="RESIZE_VIRTUAL_DISK_FLAG_NONE"                                   Value="0x0" />
+                <Set Name="RESIZE_VIRTUAL_DISK_FLAG_ALLOW_UNSAFE_VIRTUAL_SIZE"              Value="0x1" />
+                <Set Name="RESIZE_VIRTUAL_DISK_FLAG_RESIZE_TO_SMALLEST_SAFE_VIRTUAL_SIZE"   Value="0x2" />
+            </Flag>
+        </Variable>
+
+        <!-- MIRROR_VIRTUAL_DISK_VERSION -->
+        <Variable Name="MIRROR_VIRTUAL_DISK_VERSION" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="MIRROR_VIRTUAL_DISK_VERSION_UNSPECIFIED"     Value="0" />
+                <Set Name="MIRROR_VIRTUAL_DISK_VERSION_1"               Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- RESIZE_VIRTUAL_DISK_VERSION -->
+        <Variable Name="RESIZE_VIRTUAL_DISK_VERSION" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="RESIZE_VIRTUAL_DISK_VERSION_UNSPECIFIED"     Value="0" />
+                <Set Name="RESIZE_VIRTUAL_DISK_VERSION_1"               Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- [MIRROR_VIRTUAL_DISK_PARAMETERS_s] -->
+        <Variable Name="[MIRROR_VIRTUAL_DISK_PARAMETERS_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="PCWSTR" Name="MirrorVirtualDiskPath" />
+        </Variable>
+
+        <!-- [MIRROR_VIRTUAL_DISK_PARAMETERS_u] -->
+        <Variable Name="[MIRROR_VIRTUAL_DISK_PARAMETERS_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="[MIRROR_VIRTUAL_DISK_PARAMETERS_s]" Name="Version1" />
+        </Variable>
+
+        <!-- MIRROR_VIRTUAL_DISK_PARAMETERS -->
+        <!-- TODO: Conditional Union -->
+        <Variable Name="MIRROR_VIRTUAL_DISK_PARAMETERS" Type="Struct">
+            <Field Type="MIRROR_VIRTUAL_DISK_VERSION"           Name="Version" />
+            <Field Type="[MIRROR_VIRTUAL_DISK_PARAMETERS_u]"    Name="" />
+        </Variable>
+        <Variable Name="PMIRROR_VIRTUAL_DISK_PARAMETERS" Type="Pointer" Base="MIRROR_VIRTUAL_DISK_PARAMETERS" />
+
+        <!-- [RESIZE_VIRTUAL_DISK_PARAMETERS_s] -->
+        <Variable Name="[RESIZE_VIRTUAL_DISK_PARAMETERS_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="ULONGLONG" Name="NewSize" />
+        </Variable>
+
+        <!-- [RESIZE_VIRTUAL_DISK_PARAMETERS_u] -->
+        <Variable Name="[RESIZE_VIRTUAL_DISK_PARAMETERS_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="[RESIZE_VIRTUAL_DISK_PARAMETERS_s]" Name="Version1" />
+        </Variable>
+
+        <!-- RESIZE_VIRTUAL_DISK_PARAMETERS -->
+        <!-- TODO: Conditional Union -->
+        <Variable Name="RESIZE_VIRTUAL_DISK_PARAMETERS" Type="Struct">
+            <Field Type="RESIZE_VIRTUAL_DISK_VERSION"           Name="Version" />
+            <Field Type="[RESIZE_VIRTUAL_DISK_PARAMETERS_u]"    Name="" />
+        </Variable>
+        <Variable Name="PRESIZE_VIRTUAL_DISK_PARAMETERS" Type="Pointer" Base="RESIZE_VIRTUAL_DISK_PARAMETERS" />
+
         <!-- APIs -->
         <Category Name="Data Access and Storage/Virtual Storage/Virtual Hard Disk" />
+        <Api Name="AddVirtualDiskParent">
+            <Param Type="HANDLE" Name="VirtualDiskHandle" />
+            <Param Type="PCWSTR" Name="ParentPath" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
         <Api Name="AttachVirtualDisk">
             <Param Type="HANDLE" Name="VirtualDiskHandle" />
             <Param Type="PSECURITY_DESCRIPTOR" Name="SecurityDescriptor" />
@@ -315,6 +426,10 @@
             <Param Type="ULONG" Name="ProviderSpecificFlags" />
             <Param Type="PATTACH_VIRTUAL_DISK_PARAMETERS" Name="Parameters" />
             <Param Type="LPOVERLAPPED" Name="Overlapped" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="BreakMirrorVirtualDisk">
+            <Param Type="HANDLE" Name="VirtualDiskHandle" />
             <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="CompactVirtualDisk">
@@ -336,10 +451,21 @@
             <Param Type="PHANDLE" Name="Handle" />
             <Return Type="[ERROR_CODE]" />
         </Api>
+        <Api Name="DeleteVirtualDiskMetadata">
+            <Param Type="HANDLE" Name="VirtualDiskHandle" />
+            <Param Type="LPGUID" Name="Item" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
         <Api Name="DetachVirtualDisk">
             <Param Type="HANDLE" Name="VirtualDiskHandle" />
             <Param Type="DETACH_VIRTUAL_DISK_FLAG" Name="Flags" />
             <Param Type="ULONG" Name="ProviderSpecificFlags" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="EnumerateVirtualDiskMetadata">
+            <Param Type="HANDLE" Name="VirtualDiskHandle" />
+            <Param Type="PULONG" Name="NumberOfItems" />
+            <Param Type="GUID*" Name="Items" />
             <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="ExpandVirtualDisk">
@@ -364,6 +490,13 @@
             <Param Type="PULONG" Name="SizeUsed" />
             <Return Type="[ERROR_CODE]" />
         </Api>
+        <Api Name="GetVirtualDiskMetadata">
+            <Param Type="HANDLE" Name="VirtualDiskHandle" />
+            <Param Type="LPGUID" Name="Item" />
+            <Param Type="PULONG" Name="MetaDataSize" />
+            <Param Type="PVOID" Name="MetaData" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
         <Api Name="GetVirtualDiskOperationProgress">
             <Param Type="HANDLE" Name="VirtualDiskHandle" />
             <Param Type="LPOVERLAPPED" Name="Overlapped" />
@@ -383,6 +516,13 @@
             <Param Type="LPOVERLAPPED" Name="Overlapped" />
             <Return Type="[ERROR_CODE]" />
         </Api>
+        <Api Name="MirrorVirtualDisk">
+            <Param Type="HANDLE" Name="VirtualDiskHandle" />
+            <Param Type="MIRROR_VIRTUAL_DISK_FLAG" Name="Flags" />
+            <Param Type="PMIRROR_VIRTUAL_DISK_PARAMETERS" Name="Parameters" />
+            <Param Type="LPOVERLAPPED" Name="Overlapped" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
         <Api Name="OpenVirtualDisk">
             <Param Type="PVIRTUAL_STORAGE_TYPE" Name="VirtualStorageType" />
             <Param Type="PCWSTR" Name="Path" />
@@ -392,10 +532,25 @@
             <Param Type="PHANDLE" Name="Handle" />
             <Return Type="[ERROR_CODE]" />
         </Api>
+        <Api Name="ResizeVirtualDisk">
+            <Param Type="HANDLE" Name="VirtualDiskHandle" />
+            <Param Type="RESIZE_VIRTUAL_DISK_FLAG" Name="Flags" />
+            <Param Type="PRESIZE_VIRTUAL_DISK_PARAMETERS" Name="Parameters" />
+            <Param Type="LPOVERLAPPED" Name="Overlapped" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
         <Api Name="SetVirtualDiskInformation">
             <Param Type="HANDLE" Name="VirtualDiskHandle" />
             <Param Type="PSET_VIRTUAL_DISK_INFO" Name="VirtualDiskInfo" />
             <Return Type="[ERROR_CODE]" />
         </Api>
+        <Api Name="SetVirtualDiskMetadata">
+            <Param Type="HANDLE" Name="VirtualDiskHandle" />
+            <Param Type="LPGUID" Name="Item" />
+            <Param Type="ULONG" Name="MetaDataSize" />
+            <Param Type="PVOID" Name="MetaData" Length="MetaDataSize" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+
     </Module>
 </ApiMonitor>

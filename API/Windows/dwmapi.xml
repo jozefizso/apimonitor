@@ -1,12 +1,13 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\gdi.h.xml" />
     <Module Name="dwmapi.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
+
         <!-- Variables -->
         <Variable Name="DWM_FRAME_COUNT"    Type="Alias"    Base="ULONGLONG" />
         <Variable Name="QPC_TIME"           Type="Alias"    Base="ULONGLONG" />
@@ -138,6 +139,44 @@
         </Variable>
         <Variable Name="const DWM_THUMBNAIL_PROPERTIES*" Type="Pointer" Base="DWM_THUMBNAIL_PROPERTIES" />
 
+        <!-- GESTURE_TYPE -->
+        <Variable Name="GESTURE_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="GT_PEN_TAP"                      Value="0" />
+                <Set Name="GT_PEN_DOUBLETAP"                Value="1" />
+                <Set Name="GT_PEN_RIGHTTAP"                 Value="2" />
+                <Set Name="GT_PEN_PRESSANDHOLD"             Value="3" />
+                <Set Name="GT_PEN_PRESSANDHOLDABORT"        Value="4" />
+                <Set Name="GT_TOUCH_TAP"                    Value="5" />
+                <Set Name="GT_TOUCH_DOUBLETAP"              Value="6" />
+                <Set Name="GT_TOUCH_RIGHTTAP"               Value="7" />
+                <Set Name="GT_TOUCH_PRESSANDHOLD"           Value="8" />
+                <Set Name="GT_TOUCH_PRESSANDHOLDABORT"      Value="9" />
+                <Set Name="GT_TOUCH_PRESSANDTAP"            Value="10" />
+            </Enum>
+        </Variable>
+
+        <!-- DWM_SHOWCONTACT -->
+        <Variable Name="DWM_SHOWCONTACT" Type="Alias" Base="UINT">
+            <Flag>
+                <Set Name="DWMSC_DOWN"          Value="0x00000001" />
+                <Set Name="DWMSC_UP"            Value="0x00000002" />
+                <Set Name="DWMSC_DRAG"          Value="0x00000004" />
+                <Set Name="DWMSC_HOLD"          Value="0x00000008" />
+                <Set Name="DWMSC_PENBARREL"     Value="0x00000010" />
+                <Set Name="DWMSC_NONE"          Value="0x00000000" />
+                <Set Name="DWMSC_ALL"           Value="0xFFFFFFFF" />
+            </Flag>
+        </Variable>
+
+        <!-- DWMTRANSITION_OWNEDWINDOW_TARGET -->
+        <Variable Name="DWMTRANSITION_OWNEDWINDOW_TARGET" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="DWMTRANSITION_OWNEDWINDOW_NULL"          Value="-1" />
+                <Set Name="DWMTRANSITION_OWNEDWINDOW_REPOSITION"    Value="0" />
+            </Enum>
+        </Variable>
+
         <!-- Desktop Window Manager (DWM) -->
         <Category Name="Windows Application UI Development/Desktop Window Manager (DWM)" />
         <Api Name="DwmAttachMilContent">
@@ -151,6 +190,7 @@
             <Param Type="LPARAM" Name="lParam" />
             <Param Type="LRESULT*" Name="plResult" />
             <Return Type="BOOL" />
+            <Success />
         </Api>
         <Api Name="DwmDetachMilContent">
             <Param Type="HWND" Name="hwnd" />
@@ -229,6 +269,13 @@
             <Param Type="PSIZE" Name="pSize" />
             <Return Type="HRESULT" />
         </Api>
+        <Api Name="DwmRenderGesture">
+            <Param Type="GESTURE_TYPE" Name="gt" />
+            <Param Type="UINT" Name="cContacts" />
+            <Param Type="DWORD*" Name="pdwPointerID" />
+            <Param Type="POINT*" Name="pPoints" />
+            <Return Type="HRESULT" />
+        </Api>
         <Api Name="DwmSetDxFrameDuration">
             <Param Type="HWND" Name="hwnd" />
             <Param Type="INT" Name="cRefreshes" />
@@ -257,6 +304,22 @@
             <Param Type="[DwmWindowAttr]" Name="dwAttribute" />
             <Param Type="LPCVOID" Name="pvAttribute" Length="cbAttribute" />
             <Param Type="DWORD" Name="cbAttribute" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="DwmShowContact">
+            <Param Type="DWORD" Name="dwPointerID" />
+            <Param Type="DWM_SHOWCONTACT" Name="eShowContact" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="DwmTetherContact">
+            <Param Type="DWORD" Name="dwPointerID" />
+            <Param Type="BOOL" Name="fEnable" />
+            <Param Type="POINT" Name="ptTether" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="DwmTransitionOwnedWindow">
+            <Param Type="HWND" Name="hwnd" />
+            <Param Type="DWMTRANSITION_OWNEDWINDOW_TARGET" Name="target" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="DwmUnregisterThumbnail">

@@ -6,15 +6,20 @@
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="Rstrtmgr.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-        <!-- Variables -->
-        <Variable Name="RM_WRITE_STATUS_CALLBACK" Type="Alias" Base="LPVOID" />
 
+        <!-- Variables -->
+        <Variable Name="RM_WRITE_STATUS_CALLBACK"           Type="Alias"    Base="LPVOID" />
+        <Variable Name="const WCHAR []"                     Type="Alias"    Base="WCHAR []" />
+        <Variable Name="WCHAR [CCH_RM_MAX_APP_NAME + 1]"    Type="Array"    Base="WCHAR" Count="256" />
+        <Variable Name="WCHAR [CCH_RM_MAX_SVC_NAME + 1]"    Type="Array"    Base="WCHAR" Count="64" />
+        
         <!-- RM_UNIQUE_PROCESS -->
         <Variable Name="RM_UNIQUE_PROCESS" Type="Struct">
             <Field Type="DWORD" 	Name="dwProcessId" />
             <Field Type="FILETIME" 	Name="ProcessStartTime" />
         </Variable>
-        <Variable Name="RM_UNIQUE_PROCESS*" Type="Pointer" Base="RM_UNIQUE_PROCESS" />
+        <Variable Name="RM_UNIQUE_PROCESS*"     Type="Pointer" Base="RM_UNIQUE_PROCESS" />
+        <Variable Name="RM_UNIQUE_PROCESS []"   Type="Pointer" Base="RM_UNIQUE_PROCESS" />
 
         <!-- RM_FILTER_ACTION -->
         <Variable Name="RM_FILTER_ACTION" Type="Alias" Base="UINT">
@@ -25,6 +30,31 @@
             </Enum>
         </Variable>
 
+        <!-- RM_APP_TYPE -->
+        <Variable Name="RM_APP_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="RmUnknownApp"    Value="0" />
+                <Set Name="RmMainWindow"    Value="1" />
+                <Set Name="RmOtherWindow"   Value="2" />
+                <Set Name="RmService"     	Value="3" />
+                <Set Name="RmExplorer"     	Value="4" />
+                <Set Name="RmConsole"     	Value="5" />
+                <Set Name="RmCritical"      Value="1000" />
+            </Enum>
+        </Variable>
+
+        <!-- RM_PROCESS_INFO -->
+        <Variable Name="RM_PROCESS_INFO" Type="Struct">
+            <Field Type="RM_UNIQUE_PROCESS"     Name="Process" />
+            <Field Type="WCHAR [CCH_RM_MAX_APP_NAME + 1]"   Name="strAppName" />
+            <Field Type="WCHAR [CCH_RM_MAX_SVC_NAME + 1]"   Name="strServiceShortName" />
+            <Field Type="RM_APP_TYPE"                       Name="ApplicationType" />
+            <Field Type="ULONG"                             Name="AppStatus" />
+            <Field Type="DWORD"                             Name="TSSessionId" />
+            <Field Type="BOOL"                              Name="bRestartable" />
+        </Variable>
+        <Variable Name="RM_PROCESS_INFO []" Type="Pointer" Base="RM_PROCESS_INFO" />
+
         <!-- Restart Manager -->
         <Category Name="Application Installation and Servicing/Restart Manager" />
         <Api Name="RmAddFilter">
@@ -33,75 +63,70 @@
             <Param Type="RM_UNIQUE_PROCESS*" Name="Application" />
             <Param Type="LPCWSTR" Name="strShortServiceName" />
             <Param Type="RM_FILTER_ACTION" Name="ActionType" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RmStartSession">
             <Param Type="DWORD*" Name="pSessionHandle" />
             <Param Type="DWORD" Name="dwSessionFlags" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Param Type="WCHAR []" Name="strSessionKey" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RmJoinSession">
             <Param Type="DWORD*" Name="pSessionHandle" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Param Type="const WCHAR []" Name="strSessionKey" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RmEndSession">
             <Param Type="DWORD" Name="dwSessionHandle" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RmRegisterResources">
             <Param Type="DWORD" Name="dwSessionHandle" />
             <Param Type="UINT" Name="nFiles" />
+            <Param Type="LPCWSTR []" Name="rgsFileNames" Count="nFiles" />
             <Param Type="UINT" Name="nApplications" />
+            <Param Type="RM_UNIQUE_PROCESS []" Name="rgApplications" Count="nApplications" />
             <Param Type="UINT" Name="nServices" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Param Type="LPCWSTR []" Name="rgsServiceNames" Count="nServices" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RmGetList">
             <Param Type="DWORD" Name="dwSessionHandle" />
             <Param Type="UINT*" Name="pnProcInfoNeeded" />
             <Param Type="UINT*" Name="pnProcInfo" />
+            <Param Type="RM_PROCESS_INFO []" Name="rgAffectedApps" PostCount="pnProcInfo" />
             <Param Type="LPDWORD" Name="lpdwRebootReasons" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RmGetFilterList">
             <Param Type="DWORD" Name="dwSessionHandle" />
             <Param Type="PBYTE" Name="pbFilterBuf" />
             <Param Type="DWORD" Name="cbFilterBuf" />
             <Param Type="LPDWORD" Name="cbFilterBufNeeded" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RmShutdown">
             <Param Type="DWORD" Name="dwSessionHandle" />
             <Param Type="ULONG" Name="lActionFlags" />
             <Param Type="RM_WRITE_STATUS_CALLBACK" Name="fnStatus" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RmRemoveFilter">
             <Param Type="DWORD" Name="dwSessionHandle" />
             <Param Type="LPCWSTR" Name="strFilename" />
             <Param Type="RM_UNIQUE_PROCESS*" Name="Application" />
             <Param Type="LPCWSTR" Name="strShortServiceName" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RmRestart">
             <Param Type="DWORD" Name="dwSessionHandle" />
             <Param Type="DWORD" Name="dwRestartFlags" />
             <Param Type="RM_WRITE_STATUS_CALLBACK" Name="fnStatus" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RmCancelCurrentTask">
             <Param Type="DWORD" Name="dwSessionHandle" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
     </Module>
 </ApiMonitor>

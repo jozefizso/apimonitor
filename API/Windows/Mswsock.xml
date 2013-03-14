@@ -1,6 +1,6 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
@@ -24,53 +24,131 @@
 
         <!-- SERVICE_ADDRESS -->
         <Variable Name="SERVICE_ADDRESS" Type="Struct">
-            <Field Type="[AddressFamily]"           Name="dwAddressType" Display="DWORD"  />
-            <Field Type="[SERVICE_ADDRESS_FLAG]"    Name="dwAddressFlags"  />
-            <Field Type="DWORD"                     Name="dwAddressLength"  />
-            <Field Type="DWORD"                     Name="dwPrincipalLength"  />
-            <Field Type="BYTE*"                     Name="lpAddress" Length="dwAddressLength"  />
-            <Field Type="BYTE*"                     Name="lpPrincipal" Length="dwPrincipalLength"  />
+            <Field Type="[AddressFamily]"           Name="dwAddressType" Display="DWORD" />
+            <Field Type="[SERVICE_ADDRESS_FLAG]"    Name="dwAddressFlags" />
+            <Field Type="DWORD"                     Name="dwAddressLength" />
+            <Field Type="DWORD"                     Name="dwPrincipalLength" />
+            <Field Type="BYTE*"                     Name="lpAddress" Length="dwAddressLength" />
+            <Field Type="BYTE*"                     Name="lpPrincipal" Length="dwPrincipalLength" />
         </Variable>
         <Variable Name="SERVICE_ADDRESS [1]" Type="Array" Base="SERVICE_ADDRESS" Count="1" />
 
         <!-- SERVICE_ADDRESSES -->
         <Variable Name="SERVICE_ADDRESSES" Type="Struct">
-            <Field Type="DWORD"                 Name="dwAddressCount"  />
-            <Field Type="SERVICE_ADDRESS [1]"   Name="Addresses" Count="dwAddressCount"  />
+            <Field Type="DWORD"                 Name="dwAddressCount" />
+            <Field Type="SERVICE_ADDRESS [1]"   Name="Addresses" Count="dwAddressCount" />
         </Variable>
         <Variable Name="LPSERVICE_ADDRESSES" Type="Pointer" Base="SERVICE_ADDRESSES" />
 
         <!-- SERVICE_ASYNC_INFO -->
         <Variable Name="SERVICE_ASYNC_INFO" Type="Struct">
-            <Field Type="LPSERVICE_CALLBACK_PROC" 	Name="lpServiceCallbackProc" />
-            <Field Type="LPARAM" 	                Name="lParam" />
-            <Field Type="HANDLE" 	                Name="hAsyncTaskHandle" />
+            <Field Type="LPSERVICE_CALLBACK_PROC"   Name="lpServiceCallbackProc" />
+            <Field Type="LPARAM"                    Name="lParam" />
+            <Field Type="HANDLE"                    Name="hAsyncTaskHandle" />
         </Variable>
         <Variable Name="LPSERVICE_ASYNC_INFO" Type="Pointer" Base="SERVICE_ASYNC_INFO" />
 
         <!-- SERVICE_INFO -->
         <Variable Name="SERVICE_INFO" Type="Struct">
-            <Field Type="LPGUID" 	            Name="lpServiceType"  />
-            <Field Type="LPTSTR"   	            Name="lpServiceName"  />
-            <Field Type="LPTSTR"   	            Name="lpComment"  />
-            <Field Type="LPTSTR"   	            Name="lpLocale"  />
-            <Field Type="DWORD" 	            Name="dwDisplayHint"  />
-            <Field Type="DWORD" 	            Name="dwVersion"  />
-            <Field Type="DWORD" 	            Name="dwTime"  />
-            <Field Type="LPTSTR"   	            Name="lpMachineName"  />
-            <Field Type="LPSERVICE_ADDRESSES" 	Name="lpServiceAddress"  />
-            <Field Type="BLOB" 	                Name="ServiceSpecificInfo"  />
+            <Field Type="LPGUID"                Name="lpServiceType" />
+            <Field Type="LPTSTR"                Name="lpServiceName" />
+            <Field Type="LPTSTR"                Name="lpComment" />
+            <Field Type="LPTSTR"                Name="lpLocale" />
+            <Field Type="DWORD"                 Name="dwDisplayHint" />
+            <Field Type="DWORD"                 Name="dwVersion" />
+            <Field Type="DWORD"                 Name="dwTime" />
+            <Field Type="LPTSTR"                Name="lpMachineName" />
+            <Field Type="LPSERVICE_ADDRESSES"   Name="lpServiceAddress" />
+            <Field Type="BLOB"                  Name="ServiceSpecificInfo" />
         </Variable>
         <Variable Name="LPSERVICE_INFO" Type="Pointer" Base="SERVICE_INFO" />
 
         <!-- TRANSMIT_FILE_BUFFERS -->
         <Variable Name="TRANSMIT_FILE_BUFFERS" Type="Struct">
-            <Field Type="LPVOID" 	Name="Head" />
-            <Field Type="DWORD" 	Name="HeadLength" />
-            <Field Type="LPVOID" 	Name="Tail" />
-            <Field Type="DWORD" 	Name="TailLength" />
+            <Field Type="LPVOID"    Name="Head" />
+            <Field Type="DWORD"     Name="HeadLength" />
+            <Field Type="LPVOID"    Name="Tail" />
+            <Field Type="DWORD"     Name="TailLength" />
         </Variable>
         <Variable Name="LPTRANSMIT_FILE_BUFFERS" Type="Pointer" Base="TRANSMIT_FILE_BUFFERS" />
+
+        <!-- RIO_CQ -->
+        <Variable Name="RIO_CQ" Type="Alias" Base="LPVOID">
+            <Enum>
+                <Set Name="RIO_INVALID_CQ" Value="0" />
+            </Enum>
+            <Success Return="NotEqual" Value="0" />
+        </Variable>
+
+        <!-- RIO_RQ -->
+        <Variable Name="RIO_RQ" Type="Alias" Base="LPVOID">
+            <Enum>
+                <Set Name="RIO_INVALID_RQ" Value="0" />
+            </Enum>
+            <Success Return="NotEqual" Value="0" />
+        </Variable>
+
+        <!-- RIO_BUFFERID -->
+        <Variable Name="RIO_BUFFERID" Type="Alias" Base="LPVOID">
+            <Enum>
+                <Set Name="RIO_INVALID_BUFFERID" Value="0" />
+            </Enum>
+            <Success Return="NotEqual" Value="0xFFFFFFFF" />
+        </Variable>
+
+        <!-- RIORESULT -->
+        <Variable Name="RIORESULT" Type="Struct">
+            <Field Type="LONG"          Name="Status" />
+            <Field Type="ULONG"         Name="BytesTransferred" />
+            <Field Type="ULONGLONG"     Name="SocketContext" />
+            <Field Type="ULONGLONG"     Name="RequestContext" />
+        </Variable>
+        <Variable Name="PRIORESULT" Type="Pointer" Base="RIORESULT" />
+
+        <!-- RIO_BUF -->
+        <Variable Name="RIO_BUF" Type="Struct">
+            <Field Type="RIO_BUFFERID"      Name="BufferId" />
+            <Field Type="ULONG"             Name="Offset" />
+            <Field Type="ULONG"             Name="Length" />
+        </Variable>
+        <Variable Name="PRIO_BUF" Type="Pointer" Base="RIO_BUF" />
+
+        <!-- RIO_NOTIFICATION_COMPLETION_TYPE -->
+        <Variable Name="RIO_NOTIFICATION_COMPLETION_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="RIO_EVENT_COMPLETION"    Value="1" />
+                <Set Name="RIO_IOCP_COMPLETION"     Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- [RIO_NOTIFICATION_COMPLETION_s1] -->
+        <Variable Name="[RIO_NOTIFICATION_COMPLETION_s1]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="HANDLE"    Name="EventHandle" />
+            <Field Type="BOOL"      Name="NotifyReset" />
+        </Variable>
+
+        <!-- [RIO_NOTIFICATION_COMPLETION_s2] -->
+        <Variable Name="[RIO_NOTIFICATION_COMPLETION_s2]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="HANDLE"    Name="IocpHandle" />
+            <Field Type="PVOID"     Name="CompletionKey" />
+            <Field Type="PVOID"     Name="Overlapped" />
+        </Variable>
+
+        <!-- [RIO_NOTIFICATION_COMPLETION_u] -->
+        <Variable Name="[RIO_NOTIFICATION_COMPLETION_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="[RIO_NOTIFICATION_COMPLETION_s1]"      Name="Event" />
+            <Field Type="[RIO_NOTIFICATION_COMPLETION_s2]"      Name="Iocp" />
+        </Variable>
+
+        <!-- RIO_NOTIFICATION_COMPLETION -->
+        <Variable Name="RIO_NOTIFICATION_COMPLETION" Type="Struct">
+            <Field Type="RIO_NOTIFICATION_COMPLETION_TYPE"      Name="Type" />
+            <Field Type="[RIO_NOTIFICATION_COMPLETION_u]"       Name="" />
+        </Variable>
+        <Variable Name="RIO_NOTIFICATION_COMPLETION*" Type="Pointer" Base="RIO_NOTIFICATION_COMPLETION" />
 
         <!-- Windows Sockets 2 -->
         <Category Name="Networking/Windows Sockets 2" />
@@ -102,7 +180,6 @@
             <Param Type="LPDWORD" Name="lpdwBytesReceived" />
             <Param Type="LPOVERLAPPED" Name="lpOverlapped" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetAddressByName" BothCharset="True">
             <Param Type="[NameSpaceFlags]" Name="dwNameSpace" />
@@ -161,7 +238,6 @@
             <Param Type="LPTRANSMIT_FILE_BUFFERS" Name="lpTransmitBuffers" />
             <Param Type="[TransmitFile_Flags]" Name="dwFlags" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WSARecvEx">
             <Param Type="SOCKET" Name="s" />
@@ -171,5 +247,101 @@
             <Return Type="[SocketCode-int]" />
             <Success Return="NotEqual" Value="-1" />
         </Api>
+
+        <!-- Registered IO -->
+        <Category Name="Networking/Windows Sockets 2/Registered //IO" />
+        <Api Name="RIOCloseCompletionQueue">
+            <Param Type="RIO_CQ" Name="CQ" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="RIOCreateCompletionQueue">
+            <Param Type="DWORD" Name="QueueSize" />
+            <!-- TODO: Check Data Type for NotificationCompletion -->
+            <Param Type="RIO_NOTIFICATION_COMPLETION*" Name="NotificationCompletion" />
+            <Return Type="RIO_CQ" />
+        </Api>
+        <Api Name="RIOCreateRequestQueue">
+            <Param Type="SOCKET" Name="Socket" />
+            <Param Type="ULONG" Name="MaxOutstandingReceive" />
+            <Param Type="ULONG" Name="MaxReceiveDataBuffers" />
+            <Param Type="ULONG" Name="MaxOutstandingSend" />
+            <Param Type="ULONG" Name="MaxSendDataBuffers" />
+            <Param Type="RIO_CQ" Name="ReceiveCQ" />
+            <Param Type="RIO_CQ" Name="SendCQ" />
+            <Param Type="PVOID" Name="SocketContext" />
+            <Return Type="RIO_RQ" />
+        </Api>
+        <Api Name="RIODequeueCompletion">
+            <Param Type="RIO_CQ" Name="CQ" />
+            <Param Type="PRIORESULT" Name="Array" PostLength="ArraySize" />
+            <Param Type="ULONG" Name="ArraySize" />
+            <Return Type="ULONG" />
+            <Success Return="NotEqual" Value="0xFFFFFFFF" />
+        </Api>
+        <Api Name="RIODeregisterBuffer">
+            <Param Type="RIO_BUFFERID" Name="BufferId" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="RIONotify">
+            <Param Type="RIO_CQ" Name="CQ" />
+            <Return Type="[ERROR_CODE]" Display="INT" />
+        </Api>
+        <Api Name="RIOReceive">
+            <Param Type="RIO_RQ" Name="SocketQueue" />
+            <Param Type="PRIO_BUF" Name="pData" />
+            <Param Type="ULONG" Name="DataBufferCount" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="PVOID" Name="RequestContext" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="RIOReceiveEx">
+            <Param Type="RIO_RQ" Name="SocketQueue" />
+            <Param Type="PRIO_BUF" Name="pData" />
+            <Param Type="ULONG" Name="DataBufferCount" />
+            <Param Type="PRIO_BUF" Name="pLocalAddress" />
+            <Param Type="PRIO_BUF" Name="pRemoteAddress" />
+            <Param Type="PRIO_BUF" Name="pControlContext" />
+            <Param Type="PRIO_BUF" Name="pFlags" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="PVOID" Name="RequestContext" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="RIORegisterBuffer">
+            <Param Type="LPVOID" Display="PCHAR" Name="DataBuffer" Length="DataLength" />
+            <Param Type="DWORD" Name="DataLength" />
+            <Return Type="RIO_BUFFERID" />
+        </Api>
+        <Api Name="RIOResizeCompletionQueue">
+            <Param Type="RIO_CQ" Name="CQ" />
+            <Param Type="DWORD" Name="QueueSize" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="RIOResizeRequestQueue">
+            <Param Type="RIO_RQ" Name="RQ" />
+            <Param Type="DWORD" Name="MaxOutstandingReceive" />
+            <Param Type="DWORD" Name="MaxOutstandingSend" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="RIOSend">
+            <Param Type="RIO_RQ" Name="SocketQueue" />
+            <Param Type="PRIO_BUF" Name="pData" />
+            <Param Type="ULONG" Name="DataBufferCount" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="PVOID" Name="RequestContext" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="RIOSendEx">
+            <Param Type="RIO_RQ" Name="SocketQueue" />
+            <Param Type="PRIO_BUF" Name="pData" />
+            <Param Type="ULONG" Name="DataBufferCount" />
+            <Param Type="PRIO_BUF" Name="pLocalAddress" />
+            <Param Type="PRIO_BUF" Name="pRemoteAddress" />
+            <Param Type="PRIO_BUF" Name="pControlContext" />
+            <Param Type="PRIO_BUF" Name="pFlags" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="PVOID" Name="RequestContext" />
+            <Return Type="BOOL" />
+        </Api>
+
     </Module>
 </ApiMonitor>

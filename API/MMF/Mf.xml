@@ -1,11 +1,14 @@
 <!--
     API Monitor Definitions
-    (c) 2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2011-2013, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="MMF\mmfdefs.h.xml" />
+
+    <ErrorLookupModule Name="mferror.dll" />
+    
     <Module Name="Mf.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
 
         <!-- Graphics and Multimedia/Audio and Video/Microsoft Media Foundation -->
@@ -19,6 +22,18 @@
             <Param Type="IMFMediaType*" Name="pVideoMediaType" />
             <Param Type="IMFMediaType*" Name="pAudioMediaType" />
             <Param Type="IMFMediaSink**" Name="ppIMediaSink" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="MFCreateAC3MediaSink">
+            <Param Type="IMFByteStream*" Name="pTargetByteStream" />
+            <Param Type="IMFMediaType*" Name="pAudioMediaType" />
+            <Param Type="IMFMediaSink**" Name="ppMediaSink" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="MFCreateADTSMediaSink">
+            <Param Type="IMFByteStream*" Name="pTargetByteStream" />
+            <Param Type="IMFMediaType*" Name="pAudioMediaType" />
+            <Param Type="IMFMediaSink**" Name="ppMediaSink" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="MFCreateAggregateSource">
@@ -124,6 +139,13 @@
             <Param Type="IMFMediaSink**" Name="ppIMediaSink" />
             <Return Type="HRESULT" />
         </Api>
+        <Api Name="MFCreateMuxSink">
+            <Param Type="GUID" Name="guidOutputSubType" />
+            <Param Type="IMFAttributes*" Name="pOutputAttributes" />
+            <Param Type="IMFByteStream*" Name="pOutputByteStream" />
+            <Param Type="IMFMediaSink**" Name="ppMuxSink" />
+            <Return Type="HRESULT" />
+        </Api>
         <Api Name="MFCreateNetSchemePlugin">
             <Param Type="REFIID" Name="riid" />
             <Param Type="LPVOID*" Name="ppvHandler" InterfaceId="riid" />
@@ -217,9 +239,16 @@
             <Param Type="IMFTopology**" Name="ppTranscodeTopo" />
             <Return Type="STDAPI" />
         </Api>
+        <Api Name="MFCreateTranscodeTopologyFromByteStream">
+            <Param Type="IMFMediaSource*" Name="pSrc" />
+            <Param Type="IMFByteStream*" Name="pOutputStream" />
+            <Param Type="IMFTranscodeProfile*" Name="pProfile" />
+            <Param Type="IMFTopology**" Name="ppTranscodeTopo" />
+            <Return Type="HRESULT" />
+        </Api>
         <Api Name="MFCreateVideoRenderer">
             <Param Type="REFIID" Name="riidRenderer" />
-            <Param Type="void**" Name="ppVideoRenderer" />
+            <Param Type="void**" Name="ppVideoRenderer" InterfaceId="riidRenderer" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="MFCreateVideoRendererActivate">
@@ -282,6 +311,36 @@
             <Param Type="IMFCollection**" Name="ppAvailableTypes" />
             <Return Type="HRESULT" />
         </Api>
-
+        <Api Name="MFCreateFMPEG4MediaSink">
+            <Param Type="IMFByteStream*" Name="pIByteStream" />
+            <Param Type="IMFMediaType*" Name="pVideoMediaType" />
+            <Param Type="IMFMediaType*" Name="pAudioMediaType" />
+            <Param Type="IMFMediaSink**" Name="ppIMediaSink" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="MFCreateMP3ByteStreamPlugin">
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="LPVOID*" Name="ppvHandler" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="MFCreateProtectedEnvironmentAccess">
+            <Param Type="IMFProtectedEnvironmentAccess**" Name="ppAccess" />
+            <Return Type="STDAPI" />
+        </Api>
+        <Api Name="MFGetLocalId">
+            <Param Type="const BYTE*" Name="verifier" />
+            <Param Type="UINT32" Name="size" />
+            <Param Type="LPWSTR*" Name="id" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="MFGetSystemId">
+            <Param Type="IMFSystemId**" Name="ppId" />
+            <Return Type="STDAPI" />
+        </Api>
+        <Api Name="MFLoadSignedLibrary">
+            <Param Type="LPCWSTR" Name="pszName" />
+            <Param Type="IMFSignedLibrary**" Name="ppLib" />
+            <Return Type="STDAPI" />
+        </Api>
     </Module>
 </ApiMonitor>

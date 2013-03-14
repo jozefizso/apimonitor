@@ -7,6 +7,9 @@
     <Include Filename="Headers\windows.h.xml" />
     <Headers>
 
+        <!-- External Interfaces -->
+        <Variable Name="IUnknown" Type="Interface" />
+
         <!-- TODO: Should we display FOURCC as String/Char ? -->
         <Variable Name="FOURCC" Type="Alias" Base="DWORD">
             <Set Name="streamtypeVIDEO"         Value="0x73646976" />
@@ -18,6 +21,7 @@
         <!-- MMRESULT -->
         <Variable Name="MMRESULT" Type="Alias" Base="UINT">
             <Enum>
+                <!-- Common -->
                 <Set Name="MMSYSERR_NOERROR"                Value="0" />
                 <Set Name="MMSYSERR_ERROR"                  Value="1" />
                 <Set Name="MMSYSERR_BADDEVICEID"            Value="2" />
@@ -40,10 +44,14 @@
                 <Set Name="MMSYSERR_VALNOTFOUND"            Value="19" />
                 <Set Name="MMSYSERR_NODRIVERCB"             Value="20" />
                 <Set Name="MMSYSERR_MOREDATA"               Value="21" />
+                
+                <!-- Wave -->
                 <Set Name="WAVERR_BADFORMAT"                Value="32" />
                 <Set Name="WAVERR_STILLPLAYING"             Value="33" />
                 <Set Name="WAVERR_UNPREPARED"               Value="34" />
                 <Set Name="WAVERR_SYNC"                     Value="35" />
+                
+                <!-- Midi -->
                 <Set Name="MIDIERR_UNPREPARED"              Value="64" />
                 <Set Name="MIDIERR_STILLPLAYING"            Value="65" />
                 <Set Name="MIDIERR_NOMAP"                   Value="66" />
@@ -52,9 +60,17 @@
                 <Set Name="MIDIERR_INVALIDSETUP"            Value="69" />
                 <Set Name="MIDIERR_BADOPENMODE"             Value="70" />
                 <Set Name="MIDIERR_DONT_CONTINUE"           Value="71" />
+                
+                <!-- Timer -->
+                <Set Name="TIMERR_NOCANDO"                  Value="97" />
+                <Set Name="TIMERR_STRUCT"                   Value="129" />
+
+                <!-- Joystick -->
                 <Set Name="JOYERR_PARMS"                    Value="165" />
                 <Set Name="JOYERR_NOCANDO"                  Value="166" />
                 <Set Name="JOYERR_UNPLUGGED"                Value="167" />
+                
+                <!-- MMIO -->
                 <Set Name="MMIOERR_FILENOTFOUND"            Value="257" />
                 <Set Name="MMIOERR_OUTOFMEMORY"             Value="258" />
                 <Set Name="MMIOERR_CANNOTOPEN"              Value="259" />
@@ -71,14 +87,19 @@
                 <Set Name="MMIOERR_NETWORKERROR"            Value="270" />
                 <Set Name="MMIOERR_TOOMANYOPENFILES"        Value="271" />
                 <Set Name="MMIOERR_INVALIDFILE"             Value="272" />
+                
+                <!-- ACM -->
                 <Set Name="ACMERR_NOTPOSSIBLE"              Value="512" />
                 <Set Name="ACMERR_BUSY"                     Value="513" />
                 <Set Name="ACMERR_UNPREPARED"               Value="514" />
                 <Set Name="ACMERR_CANCELED"                 Value="515" />
+                
+                <!-- Mixer -->
                 <Set Name="MIXERR_INVALLINE"                Value="1024" />
                 <Set Name="MIXERR_INVALCONTROL"             Value="1025" />
                 <Set Name="MIXERR_INVALVALUE"               Value="1026" />
             </Enum>
+            <Success Return="Equal" Value="0" />
         </Variable>
 
         <!-- [WaveFormat] -->
@@ -250,11 +271,11 @@
             <Field Type="WORD"          Name="wBitsPerSample" />
             <Field Type="WORD"          Name="cbSize" />
         </Variable>
-        <Variable Name="LPWAVEFORMATEX"         Type="Pointer" Base="WAVEFORMATEX"/>
-        <Variable Name="LPCWAVEFORMATEX"        Type="Pointer" Base="WAVEFORMATEX"/>
-        <Variable Name="WAVEFORMATEX*"          Type="Pointer" Base="WAVEFORMATEX"/>
-        <Variable Name="WAVEFORMATEX**"         Type="Pointer" Base="WAVEFORMATEX*"/>
-        <Variable Name="const WAVEFORMATEX*"    Type="Pointer" Base="WAVEFORMATEX"/>
+        <Variable Name="LPWAVEFORMATEX"         Type="Pointer" Base="WAVEFORMATEX" />
+        <Variable Name="LPCWAVEFORMATEX"        Type="Pointer" Base="WAVEFORMATEX" />
+        <Variable Name="WAVEFORMATEX*"          Type="Pointer" Base="WAVEFORMATEX" />
+        <Variable Name="WAVEFORMATEX**"         Type="Pointer" Base="WAVEFORMATEX*" />
+        <Variable Name="const WAVEFORMATEX*"    Type="Pointer" Base="WAVEFORMATEX" />
 
         <!-- [SPEAKER_POSITION] -->
         <Variable Name="[SPEAKER_POSITION]" Type="Alias" Base="DWORD">
@@ -281,6 +302,22 @@
                 <Set Name="SPEAKER_ALL"                     Value="0x80000000" />
             </Flag>
         </Variable>
+
+        <!-- AM_MEDIA_TYPE -->
+        <Variable Name="AM_MEDIA_TYPE" Type="Struct">
+            <Field Type="GUID" 	        Name="majortype" />
+            <Field Type="GUID" 	        Name="subtype" />
+            <Field Type="BOOL" 	        Name="bFixedSizeSamples" />
+            <Field Type="BOOL" 	        Name="bTemporalCompression" />
+            <Field Type="ULONG" 	    Name="lSampleSize" />
+            <Field Type="GUID" 	        Name="formattype" />
+            <Field Type="IUnknown*" 	Name="pUnk" />
+            <Field Type="ULONG" 	    Name="cbFormat" />
+            <Field Type="BYTE*" 	    Name="pbFormat" Length="cbFormat" />
+        </Variable>
+        <Variable Name="AM_MEDIA_TYPE*"         Type="Pointer" Base="AM_MEDIA_TYPE" />
+        <Variable Name="AM_MEDIA_TYPE**"        Type="Pointer" Base="AM_MEDIA_TYPE*" />
+        <Variable Name="const AM_MEDIA_TYPE*"   Type="Pointer" Base="AM_MEDIA_TYPE" />
 
     </Headers>
 </ApiMonitor>

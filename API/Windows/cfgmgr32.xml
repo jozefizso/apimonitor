@@ -1,0 +1,1983 @@
+<!--
+    API Monitor Definitions
+    (c) 2010-2013, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\setup.h.xml" />
+    <Include Filename="Headers\gdi.h.xml" />
+    <Include Filename="Headers\registry.h.xml" />
+    
+    <Module Name="CfgMgr32.dll" CallingConvention="STDCALL" OnlineHelp="MSDN">
+
+        <!-- Variables -->
+        <Variable Name="DEVINSTID"                          Type="Alias"        Base="TCHAR*" />
+        <Variable Name="LOG_CONF"                           Type="Alias"        Base="DWORD_PTR" />
+        <Variable Name="PLOG_CONF"                          Type="Pointer"      Base="LOG_CONF" />
+        <Variable Name="DEVINST"                            Type="Alias"        Base="DWORD" />
+        <Variable Name="PDEVINST"                           Type="Pointer"      Base="DWORD" />
+        <Variable Name="RES_DES"                            Type="Alias"        Base="DWORD_PTR" />
+        <Variable Name="PRES_DES"                           Type="Pointer"      Base="RES_DES" />
+        <Variable Name="HMACHINE"                           Type="Alias"        Base="HANDLE" />
+        <Variable Name="PHMACHINE"                          Type="Pointer"      Base="HMACHINE" />
+        <Variable Name="CONFLICT_LIST"                      Type="Alias"        Base="ULONG_PTR" />
+        <Variable Name="PCONFLICT_LIST"                     Type="Pointer"      Base="CONFLICT_LIST" />
+        <Variable Name="RANGE_LIST"                         Type="Alias"        Base="DWORD_PTR" />
+        <Variable Name="PRANGE_LIST"                        Type="Pointer"      Base="RANGE_LIST" />
+        <Variable Name="DEVNODE"                            Type="Alias"        Base="DWORD" />
+        <Variable Name="RANGE_ELEMENT"                      Type="Alias"        Base="DWORD_PTR" />
+        <Variable Name="PRANGE_ELEMENT"                     Type="Pointer"      Base="RANGE_ELEMENT" />
+        <Variable Name="PCM_NOTIFY_CALLBACK"                Type="Alias"        Base="LPVOID" />
+        <Variable Name="HCMNOTIFICATION"                    Type="Alias"        Base="HANDLE" />
+        <Variable Name="PHCMNOTIFICATION"                   Type="Pointer"      Base="HCMNOTIFICATION" />
+
+        <!-- Arrays -->
+        <Variable Name="WCHAR [MAX_DEVICE_ID_LEN]"          Type="Array"        Base="WCHAR"    Count="200" />
+
+        <!-- PRIORITY -->
+        <Variable Name="PRIORITY" Type="Alias" Base="ULONG">
+            <Flag>
+                <Set Name="LCPRI_FORCECONFIG"           Value="0x00000000" />
+                <Set Name="LCPRI_BOOTCONFIG"            Value="0x00000001" />
+                <Set Name="LCPRI_DESIRED"               Value="0x00002000" />
+                <Set Name="LCPRI_NORMAL"                Value="0x00003000" />
+                <Set Name="LCPRI_LASTBESTCONFIG"        Value="0x00003FFF" />
+                <Set Name="LCPRI_SUBOPTIMAL"            Value="0x00005000" />
+                <Set Name="LCPRI_LASTSOFTCONFIG"        Value="0x00007FFF" />
+                <Set Name="LCPRI_RESTART"               Value="0x00008000" />
+                <Set Name="LCPRI_REBOOT"                Value="0x00009000" />
+                <Set Name="LCPRI_POWEROFF"              Value="0x0000A000" />
+                <Set Name="LCPRI_HARDRECONFIG"          Value="0x0000C000" />
+                <Set Name="LCPRI_HARDWIRED"             Value="0x0000E000" />
+                <Set Name="LCPRI_IMPOSSIBLE"            Value="0x0000F000" />
+                <Set Name="LCPRI_DISABLED"              Value="0x0000FFFF" />
+            </Flag>
+        </Variable>
+        <Variable Name="PPRIORITY" Type="Pointer" Base="PRIORITY" />
+
+        <!-- RESOURCEID -->
+        <Variable Name="RESOURCEID" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="ResType_None"                Value="0x00000000" />
+                <Set Name="ResType_Mem"                 Value="0x00000001" />
+                <Set Name="ResType_IO"                  Value="0x00000002" />
+                <Set Name="ResType_DMA"                 Value="0x00000003" />
+                <Set Name="ResType_IRQ"                 Value="0x00000004" />
+                <Set Name="ResType_DoNotUse"            Value="0x00000005" />
+                <Set Name="ResType_BusNumber"           Value="0x00000006" />
+                <Set Name="ResType_MemLarge"            Value="0x00000007" />
+                <Set Name="ResType_Ignored_Bit"         Value="0x00008000" />
+                <Set Name="ResType_ClassSpecific"       Value="0x0000FFFF" />
+                <Set Name="ResType_Reserved"            Value="0x00008000" />
+                <Set Name="ResType_DevicePrivate"       Value="0x00008001" />
+                <Set Name="ResType_PcCardConfig"        Value="0x00008002" />
+                <Set Name="ResType_MfCardConfig"        Value="0x00008003" />
+                <Set Name="ResType_Connection"          Value="0x00008004" />
+            </Flag>
+        </Variable>
+        <Variable Name="PRESOURCEID" Type="Pointer" Base="RESOURCEID" />
+
+        <!-- CONFIGRET -->
+        <Variable Name="CONFIGRET" Type="Alias" Base="DWORD">
+            <Enum>
+                <Set Name="CR_SUCCESS"                      Value="0x00000000" />
+                <Set Name="CR_DEFAULT"                      Value="0x00000001" />
+                <Set Name="CR_OUT_OF_MEMORY"                Value="0x00000002" />
+                <Set Name="CR_INVALID_POINTER"              Value="0x00000003" />
+                <Set Name="CR_INVALID_FLAG"                 Value="0x00000004" />
+                <Set Name="CR_INVALID_DEVNODE"              Value="0x00000005" />
+                <Set Name="CR_INVALID_RES_DES"              Value="0x00000006" />
+                <Set Name="CR_INVALID_LOG_CONF"             Value="0x00000007" />
+                <Set Name="CR_INVALID_ARBITRATOR"           Value="0x00000008" />
+                <Set Name="CR_INVALID_NODELIST"             Value="0x00000009" />
+                <Set Name="CR_DEVNODE_HAS_REQS"             Value="0x0000000A" />
+                <Set Name="CR_INVALID_RESOURCEID"           Value="0x0000000B" />
+                <Set Name="CR_DLVXD_NOT_FOUND"              Value="0x0000000C" />
+                <Set Name="CR_NO_SUCH_DEVNODE"              Value="0x0000000D" />
+                <Set Name="CR_NO_MORE_LOG_CONF"             Value="0x0000000E" />
+                <Set Name="CR_NO_MORE_RES_DES"              Value="0x0000000F" />
+                <Set Name="CR_ALREADY_SUCH_DEVNODE"         Value="0x00000010" />
+                <Set Name="CR_INVALID_RANGE_LIST"           Value="0x00000011" />
+                <Set Name="CR_INVALID_RANGE"                Value="0x00000012" />
+                <Set Name="CR_FAILURE"                      Value="0x00000013" />
+                <Set Name="CR_NO_SUCH_LOGICAL_DEV"          Value="0x00000014" />
+                <Set Name="CR_CREATE_BLOCKED"               Value="0x00000015" />
+                <Set Name="CR_NOT_SYSTEM_VM"                Value="0x00000016" />
+                <Set Name="CR_REMOVE_VETOED"                Value="0x00000017" />
+                <Set Name="CR_APM_VETOED"                   Value="0x00000018" />
+                <Set Name="CR_INVALID_LOAD_TYPE"            Value="0x00000019" />
+                <Set Name="CR_BUFFER_SMALL"                 Value="0x0000001A" />
+                <Set Name="CR_NO_ARBITRATOR"                Value="0x0000001B" />
+                <Set Name="CR_NO_REGISTRY_HANDLE"           Value="0x0000001C" />
+                <Set Name="CR_REGISTRY_ERROR"               Value="0x0000001D" />
+                <Set Name="CR_INVALID_DEVICE_ID"            Value="0x0000001E" />
+                <Set Name="CR_INVALID_DATA"                 Value="0x0000001F" />
+                <Set Name="CR_INVALID_API"                  Value="0x00000020" />
+                <Set Name="CR_DEVLOADER_NOT_READY"          Value="0x00000021" />
+                <Set Name="CR_NEED_RESTART"                 Value="0x00000022" />
+                <Set Name="CR_NO_MORE_HW_PROFILES"          Value="0x00000023" />
+                <Set Name="CR_DEVICE_NOT_THERE"             Value="0x00000024" />
+                <Set Name="CR_NO_SUCH_VALUE"                Value="0x00000025" />
+                <Set Name="CR_WRONG_TYPE"                   Value="0x00000026" />
+                <Set Name="CR_INVALID_PRIORITY"             Value="0x00000027" />
+                <Set Name="CR_NOT_DISABLEABLE"              Value="0x00000028" />
+                <Set Name="CR_FREE_RESOURCES"               Value="0x00000029" />
+                <Set Name="CR_QUERY_VETOED"                 Value="0x0000002A" />
+                <Set Name="CR_CANT_SHARE_IRQ"               Value="0x0000002B" />
+                <Set Name="CR_NO_DEPENDENT"                 Value="0x0000002C" />
+                <Set Name="CR_SAME_RESOURCES"               Value="0x0000002D" />
+                <Set Name="CR_NO_SUCH_REGISTRY_KEY"         Value="0x0000002E" />
+                <Set Name="CR_INVALID_MACHINENAME"          Value="0x0000002F" />
+                <Set Name="CR_REMOTE_COMM_FAILURE"          Value="0x00000030" />
+                <Set Name="CR_MACHINE_UNAVAILABLE"          Value="0x00000031" />
+                <Set Name="CR_NO_CM_SERVICES"               Value="0x00000032" />
+                <Set Name="CR_ACCESS_DENIED"                Value="0x00000033" />
+                <Set Name="CR_CALL_NOT_IMPLEMENTED"         Value="0x00000034" />
+                <Set Name="CR_INVALID_PROPERTY"             Value="0x00000035" />
+                <Set Name="CR_DEVICE_INTERFACE_ACTIVE"      Value="0x00000036" />
+                <Set Name="CR_NO_SUCH_DEVICE_INTERFACE"     Value="0x00000037" />
+                <Set Name="CR_INVALID_REFERENCE_STRING"     Value="0x00000038" />
+                <Set Name="CR_INVALID_CONFLICT_LIST"        Value="0x00000039" />
+                <Set Name="CR_INVALID_INDEX"                Value="0x0000003A" />
+                <Set Name="CR_INVALID_STRUCTURE_SIZE"       Value="0x0000003B" />
+            </Enum>
+            <Success Return="Equal" Value="0" />
+        </Variable>
+
+        <!-- [CM_CDMASK] -->
+        <Variable Name="[CM_CDMASK]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CM_CDMASK_DEVINST"       Value="0x00000001" />
+                <Set Name="CM_CDMASK_RESDES"        Value="0x00000002" />
+                <Set Name="CM_CDMASK_FLAGS"         Value="0x00000004" />
+                <Set Name="CM_CDMASK_DESCRIPTION"   Value="0x00000008" />
+            </Flag>
+        </Variable>
+
+        <!-- [CM_CDFLAGS] -->
+        <Variable Name="[CM_CDFLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CM_CDFLAGS_DRIVER"       Value="0x00000001" />
+                <Set Name="CM_CDFLAGS_ROOT_OWNED"   Value="0x00000002" />
+                <Set Name="CM_CDFLAGS_RESERVED"     Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <!-- CONFLICT_DETAILS -->
+        <Variable Name="CONFLICT_DETAILS" Type="Struct">
+            <Field Type="ULONG"             Name="CD_ulSize" />
+            <Field Type="[CM_CDMASK]"       Name="CD_ulMask" />
+            <Field Type="DEVINST"           Name="CD_dnDevInst" />
+            <Field Type="RES_DES"           Name="CD_rdResDes" />
+            <Field Type="[CM_CDFLAGS]"      Name="CD_ulFlags" />
+            <Field Type="TCHAR [MAX_PATH]"  Name="CD_szDescription" />
+        </Variable>
+        <Variable Name="PCONFLICT_DETAILS" Type="Pointer" Base="CONFLICT_DETAILS" />
+
+        <!-- [CM_Locate_DevNode_Flags] -->
+        <Variable Name="[CM_Locate_DevNode_Flags]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CM_LOCATE_DEVNODE_NORMAL"        Value="0x00000000" />
+                <Set Name="CM_LOCATE_DEVNODE_PHANTOM"       Value="0x00000001" />
+                <Set Name="CM_LOCATE_DEVNODE_CANCELREMOVE"  Value="0x00000002" />
+                <Set Name="CM_LOCATE_DEVNODE_NOVALIDATION"  Value="0x00000004" />
+                <Set Name="CM_LOCATE_DEVNODE_BITS"          Value="0x00000007" />
+            </Flag>
+        </Variable>
+
+        <!-- [CsConfigFlags] -->
+        <Variable Name="[CsConfigFlags]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CSCONFIGFLAG_BITS"               Value="0x00000007" />
+                <Set Name="CSCONFIGFLAG_DISABLED"           Value="0x00000001" />
+                <Set Name="CSCONFIGFLAG_DO_NOT_CREATE"      Value="0x00000002" />
+                <Set Name="CSCONFIGFLAG_DO_NOT_START"       Value="0x00000004" />
+            </Flag>
+        </Variable>
+        <Variable Name="[CsConfigFlags*]" Type="Pointer" Base="[CsConfigFlags]">
+            <Display Name="PULONG" />
+        </Variable>
+
+        <!-- [LogicalConfigFlags] -->
+        <Variable Name="[LogicalConfigFlags]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="BASIC_LOG_CONF"          Value="0x00000000" />
+                <Set Name="FILTERED_LOG_CONF"       Value="0x00000001" />
+                <Set Name="ALLOC_LOG_CONF"          Value="0x00000002" />
+                <Set Name="BOOT_LOG_CONF"           Value="0x00000003" />
+                <Set Name="FORCED_LOG_CONF"         Value="0x00000004" />
+                <Set Name="OVERRIDE_LOG_CONF"       Value="0x00000005" />
+                <Set Name="PRIORITY_EQUAL_FIRST"    Value="0x00000008" />
+            </Enum>
+        </Variable>
+
+        <!-- [CmProblemNumber] -->
+        <Variable Name="[CmProblemNumber]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="CM_PROB_NOT_CONFIGURED"                  Value="0x00000001" />
+                <Set Name="CM_PROB_DEVLOADER_FAILED"                Value="0x00000002" />
+                <Set Name="CM_PROB_OUT_OF_MEMORY"                   Value="0x00000003" />
+                <Set Name="CM_PROB_ENTRY_IS_WRONG_TYPE"             Value="0x00000004" />
+                <Set Name="CM_PROB_LACKED_ARBITRATOR"               Value="0x00000005" />
+                <Set Name="CM_PROB_BOOT_CONFIG_CONFLICT"            Value="0x00000006" />
+                <Set Name="CM_PROB_FAILED_FILTER"                   Value="0x00000007" />
+                <Set Name="CM_PROB_DEVLOADER_NOT_FOUND"             Value="0x00000008" />
+                <Set Name="CM_PROB_INVALID_DATA"                    Value="0x00000009" />
+                <Set Name="CM_PROB_FAILED_START"                    Value="0x0000000A" />
+                <Set Name="CM_PROB_LIAR"                            Value="0x0000000B" />
+                <Set Name="CM_PROB_NORMAL_CONFLICT"                 Value="0x0000000C" />
+                <Set Name="CM_PROB_NOT_VERIFIED"                    Value="0x0000000D" />
+                <Set Name="CM_PROB_NEED_RESTART"                    Value="0x0000000E" />
+                <Set Name="CM_PROB_REENUMERATION"                   Value="0x0000000F" />
+                <Set Name="CM_PROB_PARTIAL_LOG_CONF"                Value="0x00000010" />
+                <Set Name="CM_PROB_UNKNOWN_RESOURCE"                Value="0x00000011" />
+                <Set Name="CM_PROB_REINSTALL"                       Value="0x00000012" />
+                <Set Name="CM_PROB_REGISTRY"                        Value="0x00000013" />
+                <Set Name="CM_PROB_VXDLDR"                          Value="0x00000014" />
+                <Set Name="CM_PROB_WILL_BE_REMOVED"                 Value="0x00000015" />
+                <Set Name="CM_PROB_DISABLED"                        Value="0x00000016" />
+                <Set Name="CM_PROB_DEVLOADER_NOT_READY"             Value="0x00000017" />
+                <Set Name="CM_PROB_DEVICE_NOT_THERE"                Value="0x00000018" />
+                <Set Name="CM_PROB_MOVED"                           Value="0x00000019" />
+                <Set Name="CM_PROB_TOO_EARLY"                       Value="0x0000001A" />
+                <Set Name="CM_PROB_NO_VALID_LOG_CONF"               Value="0x0000001B" />
+                <Set Name="CM_PROB_FAILED_INSTALL"                  Value="0x0000001C" />
+                <Set Name="CM_PROB_HARDWARE_DISABLED"               Value="0x0000001D" />
+                <Set Name="CM_PROB_CANT_SHARE_IRQ"                  Value="0x0000001E" />
+                <Set Name="CM_PROB_FAILED_ADD"                      Value="0x0000001F" />
+                <Set Name="CM_PROB_DISABLED_SERVICE"                Value="0x00000020" />
+                <Set Name="CM_PROB_TRANSLATION_FAILED"              Value="0x00000021" />
+                <Set Name="CM_PROB_NO_SOFTCONFIG"                   Value="0x00000022" />
+                <Set Name="CM_PROB_BIOS_TABLE"                      Value="0x00000023" />
+                <Set Name="CM_PROB_IRQ_TRANSLATION_FAILED"          Value="0x00000024" />
+                <Set Name="CM_PROB_FAILED_DRIVER_ENTRY"             Value="0x00000025" />
+                <Set Name="CM_PROB_DRIVER_FAILED_PRIOR_UNLOAD"      Value="0x00000026" />
+                <Set Name="CM_PROB_DRIVER_FAILED_LOAD"              Value="0x00000027" />
+                <Set Name="CM_PROB_DRIVER_SERVICE_KEY_INVALID"      Value="0x00000028" />
+                <Set Name="CM_PROB_LEGACY_SERVICE_NO_DEVICES"       Value="0x00000029" />
+                <Set Name="CM_PROB_DUPLICATE_DEVICE"                Value="0x0000002A" />
+                <Set Name="CM_PROB_FAILED_POST_START"               Value="0x0000002B" />
+                <Set Name="CM_PROB_HALTED"                          Value="0x0000002C" />
+                <Set Name="CM_PROB_PHANTOM"                         Value="0x0000002D" />
+                <Set Name="CM_PROB_SYSTEM_SHUTDOWN"                 Value="0x0000002E" />
+                <Set Name="CM_PROB_HELD_FOR_EJECT"                  Value="0x0000002F" />
+                <Set Name="CM_PROB_DRIVER_BLOCKED"                  Value="0x00000030" />
+                <Set Name="CM_PROB_REGISTRY_TOO_LARGE"              Value="0x00000031" />
+                <Set Name="CM_PROB_SETPROPERTIES_FAILED"            Value="0x00000032" />
+                <Set Name="CM_PROB_WAITING_ON_DEPENDENCY"           Value="0x00000033" />
+                <Set Name="CM_PROB_UNSIGNED_DRIVER"                 Value="0x00000034" />
+            </Enum>
+        </Variable>
+        <Variable Name="[CmProblemNumber*]" Type="Pointer" Base="[CmProblemNumber]">
+            <Display Name="PULONG" />
+        </Variable>
+
+        <!-- PPNP_VETO_TYPE -->
+        <Variable Name="PPNP_VETO_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="PNP_VetoTypeUnknown"             Value="0" />
+                <Set Name="PNP_VetoLegacyDevice"            Value="1" />
+                <Set Name="PNP_VetoPendingClose"            Value="2" />
+                <Set Name="PNP_VetoWindowsApp"              Value="3" />
+                <Set Name="PNP_VetoWindowsService"          Value="4" />
+                <Set Name="PNP_VetoOutstandingOpen"         Value="5" />
+                <Set Name="PNP_VetoDevice"                  Value="6" />
+                <Set Name="PNP_VetoDriver"                  Value="7" />
+                <Set Name="PNP_VetoIllegalDeviceRequest"    Value="8" />
+                <Set Name="PNP_VetoInsufficientPower"       Value="9" />
+                <Set Name="PNP_VetoNonDisableable"          Value="10" />
+                <Set Name="PNP_VetoLegacyDriver"            Value="11" />
+                <Set Name="PNP_VetoInsufficientRights"      Value="12" />
+            </Enum>
+        </Variable>
+
+        <!-- [CM_ADD_RANGE_FLAGS] -->
+        <Variable Name="[CM_ADD_RANGE_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CM_ADD_RANGE_ADDIFCONFLICT"          Value="0x00000000" />
+                <Set Name="CM_ADD_RANGE_DONOTADDIFCONFLICT"     Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- [CM_ADD_ID_FLAGS] -->
+        <Variable Name="[CM_ADD_ID_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CM_ADD_ID_HARDWARE"      Value="0x00000000" />
+                <Set Name="CM_ADD_ID_COMPATIBLE"    Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- [CM_ENUMERATE_CLASSES_FLAGS] -->
+        <Variable Name="[CM_ENUMERATE_CLASSES_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CM_ENUMERATE_CLASSES_INSTALLER"      Value="0x00000000" />
+                <Set Name="CM_ENUMERATE_CLASSES_INTERFACE"      Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- [CM_DRP] -->
+        <Variable Name="[CM_DRP]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="CM_DRP_DEVICEDESC"                           Value="0x00000001" />
+                <Set Name="CM_DRP_HARDWAREID"                           Value="0x00000002" />
+                <Set Name="CM_DRP_COMPATIBLEIDS"                        Value="0x00000003" />
+                <Set Name="CM_DRP_UNUSED0"                              Value="0x00000004" />
+                <Set Name="CM_DRP_SERVICE"                              Value="0x00000005" />
+                <Set Name="CM_DRP_UNUSED1"                              Value="0x00000006" />
+                <Set Name="CM_DRP_UNUSED2"                              Value="0x00000007" />
+                <Set Name="CM_DRP_CLASS"                                Value="0x00000008" />
+                <Set Name="CM_DRP_CLASSGUID"                            Value="0x00000009" />
+                <Set Name="CM_DRP_DRIVER"                               Value="0x0000000A" />
+                <Set Name="CM_DRP_CONFIGFLAGS"                          Value="0x0000000B" />
+                <Set Name="CM_DRP_MFG"                                  Value="0x0000000C" />
+                <Set Name="CM_DRP_FRIENDLYNAME"                         Value="0x0000000D" />
+                <Set Name="CM_DRP_LOCATION_INFORMATION"                 Value="0x0000000E" />
+                <Set Name="CM_DRP_PHYSICAL_DEVICE_OBJECT_NAME"          Value="0x0000000F" />
+                <Set Name="CM_DRP_CAPABILITIES"                         Value="0x00000010" />
+                <Set Name="CM_DRP_UI_NUMBER"                            Value="0x00000011" />
+                <Set Name="CM_DRP_UPPERFILTERS"                         Value="0x00000012" />
+                <Set Name="CM_DRP_LOWERFILTERS"                         Value="0x00000013" />
+                <Set Name="CM_DRP_BUSTYPEGUID"                          Value="0x00000014" />
+                <Set Name="CM_DRP_LEGACYBUSTYPE"                        Value="0x00000015" />
+                <Set Name="CM_DRP_BUSNUMBER"                            Value="0x00000016" />
+                <Set Name="CM_DRP_ENUMERATOR_NAME"                      Value="0x00000017" />
+                <Set Name="CM_DRP_SECURITY"                             Value="0x00000018" />
+                <Set Name="CM_DRP_SECURITY_SDS"                         Value="0x00000019" />
+                <Set Name="CM_DRP_DEVTYPE"                              Value="0x0000001A" />
+                <Set Name="CM_DRP_EXCLUSIVE"                            Value="0x0000001B" />
+                <Set Name="CM_DRP_CHARACTERISTICS"                      Value="0x0000001C" />
+                <Set Name="CM_DRP_ADDRESS"                              Value="0x0000001D" />
+                <Set Name="CM_DRP_UI_NUMBER_DESC_FORMAT"                Value="0x0000001E" />
+                <Set Name="CM_DRP_DEVICE_POWER_DATA"                    Value="0x0000001F" />
+                <Set Name="CM_DRP_REMOVAL_POLICY"                       Value="0x00000020" />
+                <Set Name="CM_DRP_REMOVAL_POLICY_HW_DEFAULT"            Value="0x00000021" />
+                <Set Name="CM_DRP_REMOVAL_POLICY_OVERRIDE"              Value="0x00000022" />
+                <Set Name="CM_DRP_INSTALL_STATE"                        Value="0x00000023" />
+                <Set Name="CM_DRP_LOCATION_PATHS"                       Value="0x00000024" />
+                <Set Name="CM_DRP_BASE_CONTAINERID"                     Value="0x00000025" />
+            </Enum>
+        </Variable>
+
+        <!-- [CM_CRP] -->
+        <Variable Name="[CM_CRP]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="CM_CRP_UPPERFILTERS"         Value="0x00000012" />
+                <Set Name="CM_CRP_LOWERFILTERS"         Value="0x00000013" />
+                <Set Name="CM_CRP_SECURITY"             Value="0x00000018" />
+                <Set Name="CM_CRP_SECURITY_SDS"         Value="0x00000019" />
+                <Set Name="CM_CRP_DEVTYPE"              Value="0x0000001A" />
+                <Set Name="CM_CRP_EXCLUSIVE"            Value="0x0000001B" />
+                <Set Name="CM_CRP_CHARACTERISTICS"      Value="0x0000001C" />
+            </Enum>
+        </Variable>
+
+        <!-- [CM_GETIDLIST_FLAGS] -->
+        <Variable Name="[CM_GETIDLIST_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CM_GETIDLIST_FILTER_NONE"                    Value="0x00000000" />
+                <Set Name="CM_GETIDLIST_FILTER_ENUMERATOR"              Value="0x00000001" />
+                <Set Name="CM_GETIDLIST_FILTER_SERVICE"                 Value="0x00000002" />
+                <Set Name="CM_GETIDLIST_FILTER_EJECTRELATIONS"          Value="0x00000004" />
+                <Set Name="CM_GETIDLIST_FILTER_REMOVALRELATIONS"        Value="0x00000008" />
+                <Set Name="CM_GETIDLIST_FILTER_POWERRELATIONS"          Value="0x00000010" />
+                <Set Name="CM_GETIDLIST_FILTER_BUSRELATIONS"            Value="0x00000020" />
+                <Set Name="CM_GETIDLIST_DONOTGENERATE"                  Value="0x10000040" />
+                <Set Name="CM_GETIDLIST_FILTER_TRANSPORTRELATIONS"      Value="0x00000080" />
+                <Set Name="CM_GETIDLIST_FILTER_PRESENT"                 Value="0x00000100" />
+                <Set Name="CM_GETIDLIST_FILTER_CLASS"                   Value="0x00000200" />
+            </Flag>
+        </Variable>
+
+        <!-- [CM_GET_DEVICE_INTERFACE_LIST_FLAGS] -->
+        <Variable Name="[CM_GET_DEVICE_INTERFACE_LIST_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CM_GET_DEVICE_INTERFACE_LIST_PRESENT"        Value="0x00000000" />
+                <Set Name="CM_GET_DEVICE_INTERFACE_LIST_ALL_DEVICES"    Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- [CM_REENUMERATE_FLAGS] -->
+        <Variable Name="[CM_REENUMERATE_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CM_REENUMERATE_NORMAL"               Value="0x00000000" />
+                <Set Name="CM_REENUMERATE_SYNCHRONOUS"          Value="0x00000001" />
+                <Set Name="CM_REENUMERATE_RETRY_INSTALLATION"   Value="0x00000002" />
+                <Set Name="CM_REENUMERATE_ASYNCHRONOUS"         Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <!-- [CM_SET_DEVNODE_PROBLEM_FLAGS] -->
+        <Variable Name="[CM_SET_DEVNODE_PROBLEM_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CM_SET_DEVNODE_PROBLEM_NORMAL"       Value="0x00000000" />
+                <Set Name="CM_SET_DEVNODE_PROBLEM_OVERRIDE"     Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- [CM_SETUP_DEVNODE_FLAGS] -->
+        <Variable Name="[CM_SETUP_DEVNODE_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CM_SETUP_DEVNODE_READY"      Value="0x00000000" />
+                <Set Name="CM_SETUP_DEVNODE_RESET"      Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <!-- [CM_CREATE_DEVNODE_FLAGS] -->
+        <Variable Name="[CM_CREATE_DEVNODE_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CM_CREATE_DEVNODE_NORMAL"                Value="0x00000000" />
+                <Set Name="CM_CREATE_DEVNODE_NO_WAIT_INSTALL"       Value="0x00000001" />
+                <Set Name="CM_CREATE_DEVNODE_PHANTOM"               Value="0x00000002" />
+                <Set Name="CM_CREATE_DEVNODE_GENERATE_ID"           Value="0x00000004" />
+                <Set Name="CM_CREATE_DEVNODE_DO_NOT_INSTALL"        Value="0x00000008" />
+            </Flag>
+        </Variable>
+
+        <!-- [CM_DELETE_CLASS_FLAGS] -->
+        <Variable Name="[CM_DELETE_CLASS_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CM_DELETE_CLASS_ONLY"        Value="0x00000000" />
+                <Set Name="CM_DELETE_CLASS_SUBKEYS"     Value="0x00000001" />
+                <Set Name="CM_DELETE_CLASS_INTERFACE"   Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <!-- [CM_DISABLE_FLAGS] -->
+        <Variable Name="[CM_DISABLE_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CM_DISABLE_POLITE"       Value="0x00000000" />
+                <Set Name="CM_DISABLE_ABSOLUTE"     Value="0x00000001" />
+                <Set Name="CM_DISABLE_HARDWARE"     Value="0x00000002" />
+                <Set Name="CM_DISABLE_UI_NOT_OK"    Value="0x00000004" />
+            </Flag>
+        </Variable>
+
+        <!-- [CM_CLASS_PROPERTY_FLAGS] -->
+        <Variable Name="[CM_CLASS_PROPERTY_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CM_CLASS_PROPERTY_INSTALLER"     Value="0x00000000" />
+                <Set Name="CM_CLASS_PROPERTY_INTERFACE"     Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- [CM_CUSTOMDEVPROP_FLAGS] -->
+        <Variable Name="[CM_CUSTOMDEVPROP_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CM_CUSTOMDEVPROP_MERGE_MULTISZ" Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- REGDISPOSITION -->
+        <Variable Name="REGDISPOSITION" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="RegDisposition_OpenAlways"       Value="0x00000000" />
+                <Set Name="RegDisposition_OpenExisting"     Value="0x00000001" />
+            </Enum>
+        </Variable>
+
+        <!-- [CM_OPEN_CLASS_KEY_FLAGS] -->
+        <Variable Name="[CM_OPEN_CLASS_KEY_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CM_OPEN_CLASS_KEY_INSTALLER"     Value="0x00000000" />
+                <Set Name="CM_OPEN_CLASS_KEY_INTERFACE"     Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- [CM_REGISTRY_FLAGS] -->
+        <Variable Name="[CM_REGISTRY_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CM_REGISTRY_HARDWARE"    Value="0x00000000" />
+                <Set Name="CM_REGISTRY_SOFTWARE"    Value="0x00000001" />
+                <Set Name="CM_REGISTRY_USER"        Value="0x00000100" />
+                <Set Name="CM_REGISTRY_CONFIG"      Value="0x00000200" />
+            </Flag>
+        </Variable>
+
+        <!-- [CM_QUERY_ARBITRATOR_FLAGS] -->
+        <Variable Name="[CM_QUERY_ARBITRATOR_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CM_QUERY_ARBITRATOR_RAW"         Value="0x00000000" />
+                <Set Name="CM_QUERY_ARBITRATOR_TRANSLATED"  Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- [CM_REGISTER_DEVICE_DRIVER_FLAGS] -->
+        <Variable Name="[CM_REGISTER_DEVICE_DRIVER_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CM_REGISTER_DEVICE_DRIVER_STATIC"        Value="0x00000000" />
+                <Set Name="CM_REGISTER_DEVICE_DRIVER_DISABLEABLE"   Value="0x00000001" />
+                <Set Name="CM_REGISTER_DEVICE_DRIVER_REMOVABLE"     Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <!-- [CM_DETECT_FLAGS] -->
+        <Variable Name="[CM_DETECT_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CM_DETECT_NEW_PROFILE"           Value="0x00000001" />
+                <Set Name="CM_DETECT_CRASHED"               Value="0x00000002" />
+                <Set Name="CM_DETECT_HWPROF_FIRST_BOOT"     Value="0x00000004" />
+                <Set Name="CM_DETECT_RUN"                   Value="0x80000000" />
+            </Flag>
+        </Variable>
+
+        <!-- [CM_SET_HW_PROF_FLAGS] -->
+        <Variable Name="[CM_SET_HW_PROF_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CM_SET_HW_PROF_FLAGS_UI_NOT_OK"  Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- [CM_REMOVE_FLAGS] -->
+        <Variable Name="[CM_REMOVE_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="CM_REMOVE_UI_OK"         Value="0x00000000" />
+                <Set Name="CM_REMOVE_UI_NOT_OK"     Value="0x00000001" />
+                <Set Name="CM_REMOVE_NO_RESTART"    Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <!-- [CM_HWPI_FLAGS] -->
+        <Variable Name="[CM_HWPI_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="CM_HWPI_NOT_DOCKABLE"    Value="0x00000000" />
+                <Set Name="CM_HWPI_UNDOCKED"        Value="0x00000001" />
+                <Set Name="CM_HWPI_DOCKED"          Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <!-- HWPROFILEINFO -->
+        <Variable Name="HWPROFILEINFO" Type="Struct">
+            <Field Type="ULONG"                     Name="HWPI_ulHWProfile" />
+            <Field Type="TCHAR [MAX_PROFILE_LEN]"   Name="HWPI_szFriendlyName" />
+            <Field Type="[CM_HWPI_FLAGS]"           Name="HWPI_dwFlags" />
+        </Variable>
+        <Variable Name="PHWPROFILEINFO" Type="Pointer" Base="HWPROFILEINFO" />
+
+        <!-- CM_NOTIFY_FILTER_TYPE -->
+        <Variable Name="CM_NOTIFY_FILTER_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE"       Value="0" />
+                <Set Name="CM_NOTIFY_FILTER_TYPE_DEVICEHANDLE"          Value="1" />
+                <Set Name="CM_NOTIFY_FILTER_TYPE_DEVICEINSTANCE"        Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- [CM_NOTIFY_FILTER_FLAGS] -->
+        <Variable Name="[CM_NOTIFY_FILTER_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="CM_NOTIFY_FILTER_FLAG_ALL_INTERFACE_CLASSES"     Value="0x00000001" />
+                <Set Name="CM_NOTIFY_FILTER_FLAG_ALL_DEVICE_INSTANCES"      Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <!-- [CM_NOTIFY_FILTER_u_s1] -->
+        <Variable Name="[CM_NOTIFY_FILTER_u_s1]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="GUID" Name="ClassGuid" />
+        </Variable>
+
+        <!-- [CM_NOTIFY_FILTER_u_s2] -->
+        <Variable Name="[CM_NOTIFY_FILTER_u_s2]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="HANDLE" Name="hTarget" />
+        </Variable>
+
+        <!-- [CM_NOTIFY_FILTER_u_s3] -->
+        <Variable Name="[CM_NOTIFY_FILTER_u_s3]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="WCHAR [MAX_DEVICE_ID_LEN]" Name="InstanceId" />
+        </Variable>
+
+        <!-- [CM_NOTIFY_FILTER_u] -->
+        <Variable Name="[CM_NOTIFY_FILTER_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="[CM_NOTIFY_FILTER_u_s1]"       Name="DeviceInterface" />
+            <Field Type="[CM_NOTIFY_FILTER_u_s2]"       Name="DeviceHandle" />
+            <Field Type="[CM_NOTIFY_FILTER_u_s3]"       Name="DeviceInstance" />
+        </Variable>
+
+        <!-- CM_NOTIFY_FILTER -->
+        <Variable Name="CM_NOTIFY_FILTER" Type="Struct">
+            <Field Type="DWORD"                     Name="cbSize" />
+            <Field Type="[CM_NOTIFY_FILTER_FLAGS]"  Name="Flags" />
+            <Field Type="CM_NOTIFY_FILTER_TYPE"     Name="FilterType" />
+            <Field Type="DWORD"                     Name="Reserved" />
+            <Field Type="[CM_NOTIFY_FILTER_u]"      Name="u" />
+        </Variable>
+        <Variable Name="PCM_NOTIFY_FILTER" Type="Pointer" Base="CM_NOTIFY_FILTER" />
+
+        <!-- [DN_FLAGS] -->
+        <Variable Name="[DN_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DN_ROOT_ENUMERATED"              Value="0x00000001" />
+                <Set Name="DN_DRIVER_LOADED"                Value="0x00000002" />
+                <Set Name="DN_ENUM_LOADED"                  Value="0x00000004" />
+                <Set Name="DN_STARTED"                      Value="0x00000008" />
+                <Set Name="DN_MANUAL"                       Value="0x00000010" />
+                <Set Name="DN_NEED_TO_ENUM"                 Value="0x00000020" />
+                <Set Name="DN_DRIVER_BLOCKED"               Value="0x00000040" />
+                <Set Name="DN_HARDWARE_ENUM"                Value="0x00000080" />
+                <Set Name="DN_NEED_RESTART"                 Value="0x00000100" />
+                <Set Name="DN_CHILD_WITH_INVALID_ID"        Value="0x00000200" />
+                <Set Name="DN_HAS_PROBLEM"                  Value="0x00000400" />
+                <Set Name="DN_FILTERED"                     Value="0x00000800" />
+                <Set Name="DN_LEGACY_DRIVER"                Value="0x00001000" />
+                <Set Name="DN_DISABLEABLE"                  Value="0x00002000" />
+                <Set Name="DN_REMOVABLE"                    Value="0x00004000" />
+                <Set Name="DN_PRIVATE_PROBLEM"              Value="0x00008000" />
+                <Set Name="DN_MF_PARENT"                    Value="0x00010000" />
+                <Set Name="DN_MF_CHILD"                     Value="0x00020000" />
+                <Set Name="DN_WILL_BE_REMOVED"              Value="0x00040000" />
+                <Set Name="DN_NOT_FIRST_TIMEE"              Value="0x00080000" />
+                <Set Name="DN_STOP_FREE_RES"                Value="0x00100000" />
+                <Set Name="DN_REBAL_CANDIDATE"              Value="0x00200000" />
+                <Set Name="DN_BAD_PARTIAL"                  Value="0x00400000" />
+                <Set Name="DN_NT_ENUMERATOR"                Value="0x00800000" />
+                <Set Name="DN_NT_DRIVER"                    Value="0x01000000" />
+                <Set Name="DN_DEVICE_DISCONNECTED"          Value="0x02000000" />
+                <Set Name="DN_ARM_WAKEUP"                   Value="0x04000000" />
+                <Set Name="DN_APM_ENUMERATOR"               Value="0x08000000" />
+                <Set Name="DN_APM_DRIVER"                   Value="0x10000000" />
+                <Set Name="DN_SILENT_INSTALL"               Value="0x20000000" />
+                <Set Name="DN_NO_SHOW_IN_DM"                Value="0x40000000" />
+                <Set Name="DN_BOOT_LOG_PROB"                Value="0x80000000" />
+                <!-- TODO: Duplicate Values
+                <Set Name="DN_NOT_FIRST_TIME"               Value="0x00000040" />
+                <Set Name="DN_LIAR"                         Value="0x00000100" />
+                <Set Name="DN_HAS_MARK"                     Value="0x00000200" />
+                <Set Name="DN_MOVED"                        Value="0x00001000" />
+                <Set Name="DN_NEEDS_LOCKING"                Value="0x02000000" />
+                -->
+            </Flag>
+        </Variable>
+        <Variable Name="[DN_FLAGS*]" Type="Pointer" Base="[DN_FLAGS]">
+            <Display Name="PULONG" />
+        </Variable>
+
+        <!-- PnP Configuration Manager/Public -->
+        <Category Name="Windows Driver Kit/Device and Driver Installation/PnP Configuration Manager/Public" />
+        <Api Name="CM_Add_Empty_Log_Conf">
+            <Param Type="PLOG_CONF" Name="plcLogConf" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="PRIORITY" Name="Priority" />
+            <Param Type="[LogicalConfigFlags]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Add_Empty_Log_Conf_Ex">
+            <Param Type="PLOG_CONF" Name="plcLogConf" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="PRIORITY" Name="Priority" />
+            <Param Type="[LogicalConfigFlags]" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Add_ID" BothCharset="True">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="PTSTR" Name="pszID" />
+            <Param Type="[CM_ADD_ID_FLAGS]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Add_ID_Ex" BothCharset="True">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="PTSTR" Name="pszID" />
+            <Param Type="[CM_ADD_ID_FLAGS]" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Add_Res_Des">
+            <Param Type="PRES_DES" Name="prdResDes" />
+            <Param Type="LOG_CONF" Name="lcLogConf" />
+            <Param Type="RESOURCEID" Name="ResourceID" />
+            <Param Type="PCVOID" Name="ResourceData" Length="ResourceLen" />
+            <Param Type="ULONG" Name="ResourceLen" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Add_Res_Des_Ex">
+            <Param Type="PRES_DES" Name="prdResDes" />
+            <Param Type="LOG_CONF" Name="lcLogConf" />
+            <Param Type="RESOURCEID" Name="ResourceID" />
+            <Param Type="PCVOID" Name="ResourceData" Length="ResourceLen" />
+            <Param Type="ULONG" Name="ResourceLen" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Connect_Machine" BothCharset="True">
+            <Param Type="PCTSTR" Name="UNCServerName" />
+            <Param Type="PHMACHINE" Name="phMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Delete_Class_Key">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="[CM_DELETE_CLASS_FLAGS]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Delete_Device_Interface_Key" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszDeviceInterface" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Delete_DevNode_Key">
+            <Param Type="DEVNODE" Name="dnDevNode" />
+            <Param Type="ULONG" Name="ulHardwareProfile" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Disable_DevNode">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="[CM_DISABLE_FLAGS]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Disconnect_Machine">
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Enable_DevNode">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Enumerate_Classes">
+            <Param Type="ULONG" Name="ulClassIndex" />
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="[CM_ENUMERATE_CLASSES_FLAGS]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Enumerate_Classes_Ex">
+            <Param Type="ULONG" Name="ulClassIndex" />
+            <Param Type="LPGUID" Name="ClassGuid" OutputOnly="True" />
+            <Param Type="[CM_ENUMERATE_CLASSES_FLAGS]" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Enumerate_Enumerators" BothCharset="True">
+            <Param Type="ULONG" Name="ulEnumIndex" />
+            <Param Type="PTCHAR" Name="Buffer" OutputOnly="True" />
+            <Param Type="PULONG" Name="pulLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Enumerate_Enumerators_Ex" BothCharset="True">
+            <Param Type="ULONG" Name="ulEnumIndex" />
+            <Param Type="PTCHAR" Name="Buffer" OutputOnly="True" />
+            <Param Type="PULONG" Name="pulLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Free_Log_Conf">
+            <Param Type="LOG_CONF" Name="lcLogConfToBeFreed" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Free_Log_Conf_Ex">
+            <Param Type="LOG_CONF" Name="lcLogConfToBeFreed" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Free_Log_Conf_Handle">
+            <Param Type="LOG_CONF" Name="lcLogConf" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Free_Res_Des">
+            <Param Type="PRES_DES" Name="prdResDes" />
+            <Param Type="RES_DES" Name="rdResDes" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Free_Res_Des_Ex">
+            <Param Type="PRES_DES" Name="prdResDes" />
+            <Param Type="RES_DES" Name="rdResDes" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Free_Res_Des_Handle">
+            <Param Type="RES_DES" Name="rdResDes" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Free_Resource_Conflict_Handle">
+            <Param Type="CONFLICT_LIST" Name="clConflictList" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Child">
+            <Param Type="PDEVINST" Name="pdnDevInst" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Child_Ex">
+            <Param Type="PDEVINST" Name="pdnDevInst" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Class_PropertyW">
+            <Param Type="LPCGUID" Name="ClassGUID" />
+            <Param Type="CONST DEVPROPKEY*" Name="PropertyKey" />
+            <Param Type="DEVPROPTYPE*" Name="PropertyType" />
+            <Param Type="PBYTE" Name="PropertyBuffer" PostLength="PropertyBufferSize" />
+            <Param Type="PULONG" Name="PropertyBufferSize" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Class_Property_Keys">
+            <Param Type="LPCGUID" Name="ClassGUID" />
+            <Param Type="DEVPROPKEY*" Name="PropertyKeyArray" PostCount="PropertyKeyCount" />
+            <Param Type="PULONG" Name="PropertyKeyCount" />
+            <Param Type="[CM_CLASS_PROPERTY_FLAGS]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Class_Registry_Property" BothCharset="True">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="[CM_CRP]" Name="ulProperty" />
+            <Param Type="PULONG" Name="pulRegDataType" />
+            <Param Type="PVOID" Name="Buffer" PostLength="pulLength" />
+            <Param Type="PULONG" Name="pulLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Depth">
+            <Param Type="PULONG" Name="pulDepth" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Depth_Ex">
+            <Param Type="PULONG" Name="pulDepth" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Device_ID" BothCharset="True">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="PTCHAR" Name="Buffer" OutputOnly="True" />
+            <Param Type="ULONG" Name="BufferLen" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Device_ID_Ex" BothCharset="True">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="PTCHAR" Name="Buffer" OutputOnly="True" />
+            <Param Type="ULONG" Name="BufferLen" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Device_ID_List" BothCharset="True">
+            <Param Type="PCTSTR" Name="pszFilter" />
+            <Param Type="PTCHAR" Name="Buffer" OutputOnly="True" />
+            <Param Type="ULONG" Name="BufferLen" />
+            <Param Type="[CM_GETIDLIST_FLAGS]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Device_ID_List_Ex" BothCharset="True">
+            <Param Type="PCTSTR" Name="pszFilter" />
+            <Param Type="PTCHAR" Name="Buffer" OutputOnly="True" />
+            <Param Type="ULONG" Name="BufferLen" />
+            <Param Type="[CM_GETIDLIST_FLAGS]" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Device_ID_List_Size" BothCharset="True">
+            <Param Type="PULONG" Name="pulLen" />
+            <Param Type="PCTSTR" Name="pszFilter" />
+            <Param Type="[CM_GETIDLIST_FLAGS]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Device_ID_List_Size_Ex" BothCharset="True">
+            <Param Type="PULONG" Name="pulLen" />
+            <Param Type="PCTSTR" Name="pszFilter" />
+            <Param Type="[CM_GETIDLIST_FLAGS]" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Device_ID_Size">
+            <Param Type="PULONG" Name="pulLen" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Device_ID_Size_Ex">
+            <Param Type="PULONG" Name="pulLen" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Device_Interface_List" BothCharset="True">
+            <Param Type="LPGUID" Name="InterfaceClassGuid" />
+            <Param Type="DEVINSTID" Name="pDeviceID" />
+            <Param Type="PTCHAR" Name="Buffer" OutputOnly="True" />
+            <Param Type="ULONG" Name="BufferLen" />
+            <Param Type="[CM_GET_DEVICE_INTERFACE_LIST_FLAGS]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Device_Interface_List_Size" BothCharset="True">
+            <Param Type="PULONG" Name="pulLen" />
+            <Param Type="LPGUID" Name="InterfaceClassGuid" />
+            <Param Type="DEVINSTID" Name="pDeviceID" />
+            <Param Type="[CM_GET_DEVICE_INTERFACE_LIST_FLAGS]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Device_Interface_PropertyW">
+            <Param Type="LPCWSTR" Name="pszDeviceInterface" />
+            <Param Type="CONST DEVPROPKEY*" Name="PropertyKey" />
+            <Param Type="DEVPROPTYPE*" Name="PropertyType" />
+            <Param Type="PBYTE" Name="PropertyBuffer" PostLength="PropertyBufferSize" />
+            <Param Type="PULONG" Name="PropertyBufferSize" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Device_Interface_Property_KeysW">
+            <Param Type="LPCWSTR" Name="pszDeviceInterface" />
+            <Param Type="DEVPROPKEY*" Name="PropertyKeyArray" PostCount="PropertyKeyCount" />
+            <Param Type="PULONG" Name="PropertyKeyCount" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_DevNode_PropertyW">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="CONST DEVPROPKEY*" Name="PropertyKey" />
+            <Param Type="DEVPROPTYPE*" Name="PropertyType" />
+            <Param Type="PBYTE" Name="PropertyBuffer" PostLength="PropertyBufferSize" />
+            <Param Type="PULONG" Name="PropertyBufferSize" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_DevNode_Property_Keys">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="DEVPROPKEY*" Name="PropertyKeyArray" PostCount="PropertyKeyCount" />
+            <Param Type="PULONG" Name="PropertyKeyCount" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_DevNode_Registry_Property" BothCharset="True">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="[CM_DRP]" Name="ulProperty" />
+            <Param Type="PULONG" Name="pulRegDataType" />
+            <Param Type="PVOID" Name="Buffer" PostLength="pulLength" />
+            <Param Type="PULONG" Name="pulLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_DevNode_Status">
+            <Param Type="[DN_FLAGS*]" Name="pulStatus" />
+            <Param Type="[CmProblemNumber*]" Name="pulProblemNumber" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_DevNode_Status_Ex">
+            <Param Type="[DN_FLAGS*]" Name="pulStatus" />
+            <Param Type="[CmProblemNumber*]" Name="pulProblemNumber" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_First_Log_Conf">
+            <Param Type="PLOG_CONF" Name="plcLogConf" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="[LogicalConfigFlags]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_First_Log_Conf_Ex">
+            <Param Type="PLOG_CONF" Name="plcLogConf" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="[LogicalConfigFlags]" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_HW_Prof_Flags" BothCharset="True">
+            <Param Type="DEVINSTID" Name="pDeviceID" />
+            <Param Type="[CsConfigFlags*]" Name="pulValue" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_HW_Prof_Flags_Ex" BothCharset="True">
+            <Param Type="DEVINSTID" Name="pDeviceID" />
+            <Param Type="ULONG" Name="ulHardwareProfile" />
+            <Param Type="[CsConfigFlags*]" Name="pulValue" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Log_Conf_Priority">
+            <Param Type="LOG_CONF" Name="lcLogConf" />
+            <Param Type="PPRIORITY" Name="pPriority" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Log_Conf_Priority_Ex">
+            <Param Type="LOG_CONF" Name="lcLogConf" />
+            <Param Type="PPRIORITY" Name="pPriority" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Next_Log_Conf">
+            <Param Type="PLOG_CONF" Name="plcLogConf" />
+            <Param Type="LOG_CONF" Name="lcLogConf" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Next_Log_Conf_Ex">
+            <Param Type="PLOG_CONF" Name="plcLogConf" />
+            <Param Type="LOG_CONF" Name="lcLogConf" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Next_Res_Des">
+            <Param Type="PRES_DES" Name="prdResDes" />
+            <Param Type="RES_DES" Name="rdResDes" />
+            <Param Type="RESOURCEID" Name="ForResource" />
+            <Param Type="PRESOURCEID" Name="pResourceID" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Next_Res_Des_Ex">
+            <Param Type="PRES_DES" Name="prdResDes" />
+            <Param Type="RES_DES" Name="rdResDes" />
+            <Param Type="RESOURCEID" Name="ForResource" />
+            <Param Type="PRESOURCEID" Name="pResourceID" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Parent">
+            <Param Type="PDEVINST" Name="pdnDevInst" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Parent_Ex">
+            <Param Type="PDEVINST" Name="pdnDevInst" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Res_Des_Data">
+            <Param Type="RES_DES" Name="rdResDes" />
+            <Param Type="PVOID" Name="Buffer" />
+            <Param Type="ULONG" Name="BufferLen" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Res_Des_Data_Ex">
+            <Param Type="RES_DES" Name="rdResDes" />
+            <Param Type="PVOID" Name="Buffer" />
+            <Param Type="ULONG" Name="BufferLen" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Res_Des_Data_Size">
+            <Param Type="PULONG" Name="pulSize" />
+            <Param Type="RES_DES" Name="rdResDes" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Res_Des_Data_Size_Ex">
+            <Param Type="PULONG" Name="pulSize" />
+            <Param Type="RES_DES" Name="rdResDes" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Resource_Conflict_Count">
+            <Param Type="CONFLICT_LIST" Name="clConflictList" />
+            <Param Type="PULONG" Name="pulCount" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Resource_Conflict_Details" BothCharset="True">
+            <Param Type="CONFLICT_LIST" Name="clConflictList" />
+            <Param Type="ULONG" Name="ulIndex" />
+            <Param Type="PCONFLICT_DETAILS" Name="pConflictDetails" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Sibling">
+            <Param Type="PDEVINST" Name="pdnDevInst" />
+            <Param Type="DEVINST" Name="DevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Sibling_Ex">
+            <Param Type="PDEVINST" Name="pdnDevInst" />
+            <Param Type="DEVINST" Name="DevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Version">
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Version_Ex">
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Is_Dock_Station_Present">
+            <Param Type="PBOOL" Name="pbPresent" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Is_Dock_Station_Present_Ex">
+            <Param Type="PBOOL" Name="pbPresent" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Is_Version_Available">
+            <Param Type="WORD" Name="wVersion" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Is_Version_Available_Ex">
+            <Param Type="WORD" Name="wVersion" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Locate_DevNode" BothCharset="True">
+            <Param Type="PDEVINST" Name="pdnDevInst" />
+            <Param Type="DEVINSTID" Name="pDeviceID" />
+            <Param Type="[CM_Locate_DevNode_Flags]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Locate_DevNode_Ex" BothCharset="True">
+            <Param Type="PDEVINST" Name="pdnDevInst" />
+            <Param Type="DEVINSTID" Name="pDeviceID" />
+            <Param Type="[CM_Locate_DevNode_Flags]" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Modify_Res_Des">
+            <Param Type="PRES_DES" Name="prdResDes" />
+            <Param Type="RES_DES" Name="rdResDes" />
+            <Param Type="RESOURCEID" Name="ResourceID" />
+            <Param Type="PCVOID" Name="ResourceData" Length="ResourceLen" />
+            <Param Type="ULONG" Name="ResourceLen" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Modify_Res_Des_Ex">
+            <Param Type="PRES_DES" Name="prdResDes" />
+            <Param Type="RES_DES" Name="rdResDes" />
+            <Param Type="RESOURCEID" Name="ResourceID" />
+            <Param Type="PCVOID" Name="ResourceData" Length="ResourceLen" />
+            <Param Type="ULONG" Name="ResourceLen" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Open_Class_Key" BothCharset="True">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="LPCTSTR" Name="pszClassName" />
+            <Param Type="REGSAM" Name="samDesired" />
+            <Param Type="REGDISPOSITION" Name="Disposition" />
+            <Param Type="PHKEY" Name="phkClass" />
+            <Param Type="[CM_OPEN_CLASS_KEY_FLAGS]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Open_Device_Interface_Key" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszDeviceInterface" />
+            <Param Type="REGSAM" Name="samDesired" />
+            <Param Type="REGDISPOSITION" Name="Disposition" />
+            <Param Type="PHKEY" Name="phkDeviceInterface" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Open_DevNode_Key">
+            <Param Type="DEVINST" Name="dnDevNode" />
+            <Param Type="REGSAM" Name="samDesired" />
+            <Param Type="ULONG" Name="ulHardwareProfile" />
+            <Param Type="REGDISPOSITION" Name="Disposition" />
+            <Param Type="PHKEY" Name="phkDevice" />
+            <Param Type="[CM_REGISTRY_FLAGS]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Query_And_Remove_SubTree" BothCharset="True">
+            <Param Type="DEVINST" Name="dnAncestor" />
+            <Param Type="PPNP_VETO_TYPE" Name="pVetoType" />
+            <Param Type="LPTSTR" Name="pszVetoName" />
+            <Param Type="ULONG" Name="ulNameLength" />
+            <Param Type="[CM_REMOVE_FLAGS]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Query_And_Remove_SubTree_Ex" BothCharset="True">
+            <Param Type="DEVINST" Name="dnAncestor" />
+            <Param Type="PPNP_VETO_TYPE" Name="pVetoType" />
+            <Param Type="LPTSTR" Name="pszVetoName" />
+            <Param Type="ULONG" Name="ulNameLength" />
+            <Param Type="[CM_REMOVE_FLAGS]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Query_Resource_Conflict_List">
+            <Param Type="PCONFLICT_LIST" Name="pclConflictList" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="RESOURCEID" Name="ResourceID" />
+            <Param Type="PCVOID" Name="ResourceData" Length="ResourceLen" />
+            <Param Type="ULONG" Name="ResourceLen" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Reenumerate_DevNode">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="[CM_REENUMERATE_FLAGS]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Reenumerate_DevNode_Ex">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="[CM_REENUMERATE_FLAGS]" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Register_Notification">
+            <Param Type="PCM_NOTIFY_FILTER" Name="pFilter" />
+            <Param Type="PVOID" Name="pContext" />
+            <Param Type="PCM_NOTIFY_CALLBACK" Name="pCallback" />
+            <Param Type="PHCMNOTIFICATION" Name="pNotifyContext" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Request_Device_Eject" BothCharset="True">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="PPNP_VETO_TYPE" Name="pVetoType" />
+            <Param Type="LPTSTR" Name="pszVetoName" />
+            <Param Type="ULONG" Name="ulNameLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Request_Device_Eject_Ex" BothCharset="True">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="PPNP_VETO_TYPE" Name="pVetoType" />
+            <Param Type="LPTSTR" Name="pszVetoName" />
+            <Param Type="ULONG" Name="ulNameLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Request_Eject_PC">
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Request_Eject_PC_Ex">
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Set_Class_PropertyW">
+            <Param Type="LPCGUID" Name="ClassGUID" />
+            <Param Type="CONST DEVPROPKEY*" Name="PropertyKey" />
+            <Param Type="DEVPROPTYPE" Name="PropertyType" />
+            <Param Type="CONST PBYTE" Name="PropertyBuffer" Length="PropertyBufferSize" />
+            <Param Type="ULONG" Name="PropertyBufferSize" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Set_Class_Registry_Property" BothCharset="True">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="[CM_CRP]" Name="ulProperty" />
+            <Param Type="PCVOID" Name="Buffer" Length="ulLength" />
+            <Param Type="ULONG" Name="ulLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Set_Device_Interface_PropertyW">
+            <Param Type="LPCWSTR" Name="pszDeviceInterface" />
+            <Param Type="CONST DEVPROPKEY*" Name="PropertyKey" />
+            <Param Type="DEVPROPTYPE" Name="PropertyType" />
+            <Param Type="CONST PBYTE" Name="PropertyBuffer" Length="PropertyBufferSize" />
+            <Param Type="ULONG" Name="PropertyBufferSize" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Set_DevNode_Problem">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="[CmProblemNumber]" Name="ulProblem" />
+            <Param Type="[CM_SET_DEVNODE_PROBLEM_FLAGS]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Set_DevNode_Problem_Ex">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="[CmProblemNumber]" Name="ulProblem" />
+            <Param Type="[CM_SET_DEVNODE_PROBLEM_FLAGS]" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Set_DevNode_PropertyW">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="CONST DEVPROPKEY*" Name="PropertyKey" />
+            <Param Type="DEVPROPTYPE" Name="PropertyType" />
+            <Param Type="CONST PBYTE" Name="PropertyBuffer" Length="PropertyBufferSize" />
+            <Param Type="ULONG" Name="PropertyBufferSize" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Set_DevNode_Registry_Property" BothCharset="True">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="[CM_DRP]" Name="ulProperty" />
+            <Param Type="PCVOID" Name="Buffer" Length="ulLength" />
+            <Param Type="ULONG" Name="ulLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Setup_DevNode">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="[CM_SETUP_DEVNODE_FLAGS]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Uninstall_DevNode">
+            <Param Type="DEVNODE" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Unregister_Notification">
+            <Param Type="HCMNOTIFICATION" Name="NotifyContext" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_WaitNoPendingInstallEvents">
+            <Param Type="DWORD" Name="dwTimeout" />
+            <Return Type="[WAIT_RESULT]" />
+        </Api>
+        <Api Name="CMP_WaitNoPendingInstallEvents">
+            <Param Type="DWORD" Name="dwTimeout" />
+            <Return Type="[WAIT_RESULT]" />
+        </Api>
+
+        <!-- PnP Configuration Manager/Private -->
+        <Category Name="Windows Driver Kit/Device and Driver Installation/PnP Configuration Manager/Private" />
+        <Api Name="CM_Add_Range">
+            <Param Type="DWORDLONG" Name="ullStartValue" />
+            <Param Type="DWORDLONG" Name="ullEndValue" />
+            <Param Type="RANGE_LIST" Name="rlh" />
+            <Param Type="[CM_ADD_RANGE_FLAGS]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Create_DevNode" BothCharset="True">
+            <Param Type="PDEVINST" Name="pdnDevInst" />
+            <Param Type="DEVINSTID" Name="pDeviceID" />
+            <Param Type="DEVINST" Name="dnParent" />
+            <Param Type="[CM_CREATE_DEVNODE_FLAGS]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Create_DevNode_Ex" BothCharset="True">
+            <Param Type="PDEVINST" Name="pdnDevInst" />
+            <Param Type="DEVINSTID" Name="pDeviceID" />
+            <Param Type="DEVINST" Name="dnParent" />
+            <Param Type="[CM_CREATE_DEVNODE_FLAGS]" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Create_Range_List">
+            <Param Type="PRANGE_LIST" Name="prlh" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Delete_Class_Key_Ex">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="[CM_DELETE_CLASS_FLAGS]" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Delete_DevNode_Key_Ex">
+            <Param Type="DEVNODE" Name="dnDevNode" />
+            <Param Type="ULONG" Name="ulHardwareProfile" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Delete_Range">
+            <Param Type="DWORDLONG" Name="ullStartValue" />
+            <Param Type="DWORDLONG" Name="ullEndValue" />
+            <Param Type="RANGE_LIST" Name="rlh" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Disable_DevNode_Ex">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="[CM_DISABLE_FLAGS]" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Dup_Range_List">
+            <Param Type="RANGE_LIST" Name="rlhOld" />
+            <Param Type="RANGE_LIST" Name="rlhNew" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Enable_DevNode_Ex">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Find_Range">
+            <Param Type="PDWORDLONG" Name="pullStart" />
+            <Param Type="DWORDLONG" Name="ullStart" />
+            <Param Type="ULONG" Name="ulLength" />
+            <Param Type="DWORDLONG" Name="ullAlignment" />
+            <Param Type="DWORDLONG" Name="ullEnd" />
+            <Param Type="RANGE_LIST" Name="rlh" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_First_Range">
+            <Param Type="RANGE_LIST" Name="rlh" />
+            <Param Type="PDWORDLONG" Name="pullStart" />
+            <Param Type="PDWORDLONG" Name="pullEnd" />
+            <Param Type="PRANGE_ELEMENT" Name="preElement" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Free_Range_List">
+            <Param Type="RANGE_LIST" Name="rlh" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Class_Key_Name" BothCharset="True">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="LPTSTR" Name="pszKeyName" OutputOnly="True" />
+            <Param Type="PULONG" Name="pulLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Class_Key_Name_Ex" BothCharset="True">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="LPTSTR" Name="pszKeyName" OutputOnly="True" />
+            <Param Type="PULONG" Name="pulLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Class_Name" BothCharset="True">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="PTSTR" Name="Buffer" OutputOnly="True" />
+            <Param Type="PULONG" Name="pulLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Class_Name_Ex" BothCharset="True">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="PTSTR" Name="Buffer" OutputOnly="True" />
+            <Param Type="PULONG" Name="pulLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Device_Interface_Alias" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszDeviceInterface" />
+            <Param Type="LPGUID" Name="AliasInterfaceGuid" />
+            <Param Type="LPTSTR" Name="pszAliasDeviceInterface" OutputOnly="True" />
+            <Param Type="PULONG" Name="pulLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Device_Interface_Alias_Ex" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszDeviceInterface" />
+            <Param Type="LPGUID" Name="AliasInterfaceGuid" />
+            <Param Type="LPTSTR" Name="pszAliasDeviceInterface" OutputOnly="True" />
+            <Param Type="PULONG" Name="pulLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Device_Interface_List_Ex" BothCharset="True">
+            <Param Type="LPGUID" Name="InterfaceClassGuid" />
+            <Param Type="DEVINSTID" Name="pDeviceID" />
+            <Param Type="PTCHAR" Name="Buffer" />
+            <Param Type="ULONG" Name="BufferLen" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Device_Interface_List_Size_Ex" BothCharset="True">
+            <Param Type="PULONG" Name="pulLen" />
+            <Param Type="LPGUID" Name="InterfaceClassGuid" />
+            <Param Type="DEVINSTID" Name="pDeviceID" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_DevNode_Custom_Property" BothCharset="True">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="PCTSTR" Name="pszCustomPropertyName" />
+            <Param Type="PULONG" Name="pulRegDataType" />
+            <Param Type="PVOID" Name="Buffer" PostLength="pulLength" />
+            <Param Type="PULONG" Name="pulLength" />
+            <Param Type="[CM_CUSTOMDEVPROP_FLAGS]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_DevNode_Custom_Property_ExW">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="PCTSTR" Name="pszCustomPropertyName" />
+            <Param Type="PULONG" Name="pulRegDataType" />
+            <Param Type="PVOID" Name="Buffer" PostLength="pulLength" />
+            <Param Type="PULONG" Name="pulLength" />
+            <Param Type="[CM_CUSTOMDEVPROP_FLAGS]" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_DevNode_Registry_Property_Ex" BothCharset="True">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="[CM_DRP]" Name="ulProperty" />
+            <Param Type="PULONG" Name="pulRegDataType" />
+            <Param Type="PVOID" Name="Buffer" PostLength="pulLength" />
+            <Param Type="PULONG" Name="pulLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Global_State">
+            <Param Type="PULONG" Name="pulState" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Global_State_Ex">
+            <Param Type="PULONG" Name="pulState" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Hardware_Profile_Info" BothCharset="True">
+            <Param Type="ULONG" Name="ulIndex" />
+            <Param Type="PHWPROFILEINFO" Name="pHWProfileInfo" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Hardware_Profile_Info_Ex" BothCharset="True">
+            <Param Type="ULONG" Name="ulIndex" />
+            <Param Type="PHWPROFILEINFO" Name="pHWProfileInfo" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Intersect_Range_List">
+            <Param Type="RANGE_LIST" Name="rlhOld1" />
+            <Param Type="RANGE_LIST" Name="rlhOld2" />
+            <Param Type="RANGE_LIST" Name="rlhNew" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Invert_Range_List">
+            <Param Type="RANGE_LIST" Name="rlhOld" />
+            <Param Type="RANGE_LIST" Name="rlhNew" />
+            <Param Type="DWORDLONG" Name="ullMaxValue" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Merge_Range_List">
+            <Param Type="RANGE_LIST" Name="rlhOld1" />
+            <Param Type="RANGE_LIST" Name="rlhOld2" />
+            <Param Type="RANGE_LIST" Name="rlhNew" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Move_DevNode">
+            <Param Type="DEVINST" Name="dnFromDevInst" />
+            <Param Type="DEVINST" Name="dnToDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Move_DevNode_Ex">
+            <Param Type="DEVINST" Name="dnFromDevInst" />
+            <Param Type="DEVINST" Name="dnToDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Next_Range">
+            <Param Type="PRANGE_ELEMENT" Name="preElement" />
+            <Param Type="PDWORDLONG" Name="pullStart" />
+            <Param Type="PDWORDLONG" Name="pullEnd" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Open_Class_Key_Ex" BothCharset="True">
+            <Param Type="LPGUID" Name="ClassGuid" />
+            <Param Type="LPCTSTR" Name="pszClassName" />
+            <Param Type="REGSAM" Name="samDesired" />
+            <Param Type="REGDISPOSITION" Name="Disposition" />
+            <Param Type="PHKEY" Name="phkClass" />
+            <Param Type="[CM_OPEN_CLASS_KEY_FLAGS]" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Open_DevNode_Key_Ex">
+            <Param Type="DEVINST" Name="dnDevNode" />
+            <Param Type="REGSAM" Name="samDesired" />
+            <Param Type="ULONG" Name="ulHardwareProfile" />
+            <Param Type="REGDISPOSITION" Name="Disposition" />
+            <Param Type="PHKEY" Name="phkDevice" />
+            <Param Type="[CM_REGISTRY_FLAGS]" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Query_Arbitrator_Free_Data">
+            <Param Type="PVOID" Name="pData" />
+            <Param Type="ULONG" Name="DataLen" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="RESOURCEID" Name="ResourceID" />
+            <Param Type="[CM_QUERY_ARBITRATOR_FLAGS]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Query_Arbitrator_Free_Data_Ex">
+            <Param Type="PVOID" Name="pData" />
+            <Param Type="ULONG" Name="DataLen" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="RESOURCEID" Name="ResourceID" />
+            <Param Type="[CM_QUERY_ARBITRATOR_FLAGS]" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Query_Arbitrator_Free_Size">
+            <Param Type="PULONG" Name="pulSize" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="RESOURCEID" Name="ResourceID" />
+            <Param Type="[CM_QUERY_ARBITRATOR_FLAGS]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Query_Arbitrator_Free_Size_Ex">
+            <Param Type="PULONG" Name="pulSize" />
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="RESOURCEID" Name="ResourceID" />
+            <Param Type="[CM_QUERY_ARBITRATOR_FLAGS]" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Query_Remove_SubTree">
+            <Param Type="DEVINST" Name="dnAncestor" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Query_Remove_SubTree_Ex">
+            <Param Type="DEVINST" Name="dnAncestor" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Register_Device_Driver">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="[CM_REGISTER_DEVICE_DRIVER_FLAGS]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Register_Device_Driver_Ex">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="[CM_REGISTER_DEVICE_DRIVER_FLAGS]" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Register_Device_Interface" BothCharset="True">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="LPGUID" Name="InterfaceClassGuid" />
+            <Param Type="LPCTSTR" Name="pszReference" />
+            <Param Type="LPTSTR" Name="pszDeviceInterface" />
+            <Param Type="PULONG" Name="pulLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Register_Device_Interface_Ex" BothCharset="True">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="LPGUID" Name="InterfaceClassGuid" />
+            <Param Type="LPCTSTR" Name="pszReference" />
+            <Param Type="LPTSTR" Name="pszDeviceInterface" />
+            <Param Type="PULONG" Name="pulLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Run_Detection">
+            <Param Type="[CM_DETECT_FLAGS]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Run_Detection_Ex">
+            <Param Type="[CM_DETECT_FLAGS]" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Set_DevNode_Registry_Property_Ex" BothCharset="True">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="[CM_DRP]" Name="ulProperty" />
+            <Param Type="PCVOID" Name="Buffer" Length="ulLength" />
+            <Param Type="ULONG" Name="ulLength" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Set_HW_Prof">
+            <Param Type="ULONG" Name="ulHardwareProfile" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Set_HW_Prof_Ex">
+            <Param Type="ULONG" Name="ulHardwareProfile" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Set_HW_Prof_Flags" BothCharset="True">
+            <Param Type="DEVINSTID" Name="pDeviceID" />
+            <Param Type="ULONG" Name="ulConfig" />
+            <Param Type="ULONG" Name="ulValue" />
+            <Param Type="[CM_SET_HW_PROF_FLAGS]" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Set_HW_Prof_Flags_Ex" BothCharset="True">
+            <Param Type="DEVINSTID" Name="pDeviceID" />
+            <Param Type="ULONG" Name="ulConfig" />
+            <Param Type="ULONG" Name="ulValue" />
+            <Param Type="[CM_SET_HW_PROF_FLAGS]" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Setup_DevNode_Ex">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Test_Range_Available">
+            <Param Type="DWORDLONG" Name="ullStartValue" />
+            <Param Type="DWORDLONG" Name="ullEndValue" />
+            <Param Type="RANGE_LIST" Name="rlh" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Uninstall_DevNode_Ex">
+            <Param Type="DEVNODE" Name="dnDevInst" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Unregister_Device_Interface" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszDeviceInterface" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Unregister_Device_Interface_Ex" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszDeviceInterface" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+
+        <!-- PnP Configuration Manager/Obsolete -->
+        <Category Name="Windows Driver Kit/Device and Driver Installation/PnP Configuration Manager/Obsolete" />
+        <Api Name="CM_Detect_Resource_Conflict">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="RESOURCEID" Name="ResourceID" />
+            <Param Type="PCVOID" Name="ResourceData" Length="ResourceLen" />
+            <Param Type="ULONG" Name="ResourceLen" />
+            <Param Type="PBOOL" Name="pbConflictDetected" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Detect_Resource_Conflict_Ex">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="RESOURCEID" Name="ResourceID" />
+            <Param Type="PCVOID" Name="ResourceData" Length="ResourceLen" />
+            <Param Type="ULONG" Name="ResourceLen" />
+            <Param Type="PBOOL" Name="pbConflictDetected" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Remove_SubTree">
+            <Param Type="DEVINST" Name="dnAncestor" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Remove_SubTree_Ex">
+            <Param Type="DEVINST" Name="dnAncestor" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+
+        <!-- PnP Configuration Manager/Power Schemes -->
+        <Category Name="Windows Driver Kit/Device and Driver Installation/PnP Configuration Manager/Power Schemes" />
+        <Api Name="CM_RestoreAll_DefaultPowerSchemes">
+            <Param Type="PDWORD" Name="Error" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Restore_DefaultPowerScheme">
+            <Param Type="CONST GUID*" Name="SchemeGuid" />
+            <Param Type="PDWORD" Name="Error" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Set_ActiveScheme">
+            <Param Type="CONST GUID*" Name="SchemeGuid" />
+            <Param Type="PDWORD" Name="Error" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Apply_PowerScheme">
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Delete_PowerScheme">
+            <Param Type="CONST GUID*" Name="SchemeGuid" />
+            <Param Type="PDWORD" Name="Error" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Duplicate_PowerScheme">
+            <Param Type="CONST GUID*" Name="SourceSchemeGuid" />
+            <Param Type="GUID**" Name="DestinationSchemeGuid" />
+            <Param Type="PDWORD" Name="Error" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Import_PowerScheme">
+            <Param Type="LPCWSTR" Name="ImportFileNamePath" />
+            <Param Type="GUID**" Name="DestinationSchemeGuid" />
+            <Param Type="PDWORD" Name="Error" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Write_UserPowerKey">
+            <Param Type="CONST GUID*" Name="SchemeGuid" />
+            <Param Type="CONST GUID*" Name="SubGroupOfPowerSettingsGuid" />
+            <Param Type="CONST GUID*" Name="PowerSettingGuid" />
+            <Param Type="ULONG" Name="AccessFlags" />
+            <Param Type="ULONG" Name="Type" />
+            <Param Type="UCHAR*" Name="Buffer" Length="BufferSize" />
+            <Param Type="DWORD" Name="BufferSize" />
+            <Param Type="PDWORD" Name="Error" />
+            <Return Type="CONFIGRET" />
+        </Api>
+
+        <!-- PnP Configuration Manager/Private (Real category unavailable) -->
+        <Category Name="Windows Driver Kit/Device and Driver Installation/PnP Configuration Manager/Private" />
+        <Api Name="CM_Set_Class_Property_ExW">
+            <Param Type="LPCGUID" Name="ClassGUID" />
+            <Param Type="CONST DEVPROPKEY*" Name="PropertyKey" />
+            <Param Type="DEVPROPTYPE" Name="PropertyType" />
+            <Param Type="CONST PBYTE" Name="PropertyBuffer" Length="PropertyBufferSize" />
+            <Param Type="ULONG" Name="PropertyBufferSize" />
+            <Param Type="[CM_CLASS_PROPERTY_FLAGS]" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Set_DevNode_Property_ExW">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="CONST DEVPROPKEY*" Name="PropertyKey" />
+            <Param Type="DEVPROPTYPE" Name="PropertyType" />
+            <Param Type="CONST PBYTE" Name="PropertyBuffer" Length="PropertyBufferSize" />
+            <Param Type="ULONG" Name="PropertyBufferSize" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Set_Device_Interface_Property_ExW">
+            <Param Type="LPCWSTR" Name="pszDeviceInterface" />
+            <Param Type="CONST DEVPROPKEY*" Name="PropertyKey" />
+            <Param Type="DEVPROPTYPE" Name="PropertyType" />
+            <Param Type="CONST PBYTE" Name="PropertyBuffer" Length="PropertyBufferSize" />
+            <Param Type="ULONG" Name="PropertyBufferSize" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Delete_Device_Interface_Key_Ex" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszDeviceInterface" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Class_Property_ExW">
+            <Param Type="LPCGUID" Name="ClassGUID" />
+            <Param Type="CONST DEVPROPKEY*" Name="PropertyKey" />
+            <Param Type="DEVPROPTYPE*" Name="PropertyType" />
+            <Param Type="PBYTE" Name="PropertyBuffer" PostLength="PropertyBufferSize" />
+            <Param Type="PULONG" Name="PropertyBufferSize" />
+            <Param Type="[CM_CLASS_PROPERTY_FLAGS]" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Class_Property_Keys_Ex">
+            <Param Type="LPCGUID" Name="ClassGUID" />
+            <Param Type="DEVPROPKEY*" Name="PropertyKeyArray" PostCount="PropertyKeyCount" />
+            <Param Type="PULONG" Name="PropertyKeyCount" />
+            <Param Type="[CM_CLASS_PROPERTY_FLAGS]" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_DevNode_Property_ExW">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="CONST DEVPROPKEY*" Name="PropertyKey" />
+            <Param Type="DEVPROPTYPE*" Name="PropertyType" />
+            <Param Type="PBYTE" Name="PropertyBuffer" PostLength="PropertyBufferSize" />
+            <Param Type="PULONG" Name="PropertyBufferSize" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_DevNode_Property_Keys_Ex">
+            <Param Type="DEVINST" Name="dnDevInst" />
+            <Param Type="DEVPROPKEY*" Name="PropertyKeyArray" PostCount="PropertyKeyCount" />
+            <Param Type="PULONG" Name="PropertyKeyCount" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Device_Interface_Property_ExW">
+            <Param Type="LPCWSTR" Name="pszDeviceInterface" />
+            <Param Type="CONST DEVPROPKEY*" Name="PropertyKey" />
+            <Param Type="DEVPROPTYPE*" Name="PropertyType" />
+            <Param Type="PBYTE" Name="PropertyBuffer" PostLength="PropertyBufferSize" />
+            <Param Type="PULONG" Name="PropertyBufferSize" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Get_Device_Interface_Property_Keys_ExW">
+            <Param Type="LPCWSTR" Name="pszDeviceInterface" />
+            <Param Type="DEVPROPKEY*" Name="PropertyKeyArray" PostCount="PropertyKeyCount" />
+            <Param Type="PULONG" Name="PropertyKeyCount" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+        <Api Name="CM_Open_Device_Interface_Key_Ex" BothCharset="True">
+            <Param Type="LPCTSTR" Name="pszDeviceInterface" />
+            <Param Type="REGSAM" Name="samDesired" />
+            <Param Type="REGDISPOSITION" Name="Disposition" />
+            <Param Type="PHKEY" Name="phkDeviceInterface" />
+            <Param Type="ULONG" Name="ulFlags" />
+            <Param Type="HMACHINE" Name="hMachine" />
+            <Return Type="CONFIGRET" />
+        </Api>
+
+
+    </Module>
+</ApiMonitor>

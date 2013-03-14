@@ -1,11 +1,12 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
-    <Module Name="Pdh.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
+    <ErrorLookupModule Name="Pdh.dll" />
+    <Module Name="Pdh.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
 
         <!-- TODO: Structures (Bitfields) -->
         <Variable Name="PPDH_BROWSE_DLG_CONFIG"     Type="Alias"    Base="LPVOID" />
@@ -19,150 +20,9 @@
         <Variable Name="PDH_HLOG*"                  Type="Pointer"  Base="PDH_HLOG" />
         <Variable Name="volatile DWORD"             Type="Alias"    Base="DWORD" />
 
-        <!-- [PDH_LOG_TYPE] -->
-        <Variable Name="[PDH_LOG_TYPE]" Type="Alias" Base="DWORD">
-            <Display Name="DWORD" />
-            <Enum>
-                <Set Name="PDH_LOG_TYPE_UNDEFINED"          Value="0" />
-                <Set Name="PDH_LOG_TYPE_CSV"                Value="1" />
-                <Set Name="PDH_LOG_TYPE_TSV"                Value="2" />
-                <Set Name="PDH_LOG_TYPE_TRACE_KERNEL"       Value="4" />
-                <Set Name="PDH_LOG_TYPE_TRACE_GENERIC"      Value="5" />
-                <Set Name="PDH_LOG_TYPE_PERFMON"            Value="6" />
-                <Set Name="PDH_LOG_TYPE_SQL"                Value="7" />
-                <Set Name="PDH_LOG_TYPE_BINARY"             Value="8" />
-            </Enum>
-        </Variable>
-
-        <!-- [PDH_COUNTER_INFO_u_s] -->
-        <Variable Name="[PDH_COUNTER_INFO_u_s]" Type="Struct">
-            <Display Name="struct" />
-            <Field Type="LPTSTR"    Name="szMachineName" />
-            <Field Type="LPTSTR"    Name="szObjectName" />
-            <Field Type="LPTSTR"    Name="szInstanceName" />
-            <Field Type="LPTSTR"    Name="szParentInstance" />
-            <Field Type="DWORD"     Name="dwInstanceIndex" />
-            <Field Type="LPTSTR"    Name="szCounterName" />
-        </Variable>
-
-        <!-- PDH_DATA_ITEM_PATH_ELEMENTS -->
-        <Variable Name="PDH_DATA_ITEM_PATH_ELEMENTS" Type="Struct">
-            <Field Type="LPTSTR"    Name="szMachineName" />
-            <Field Type="GUID"      Name="ObjectGUID" />
-            <Field Type="DWORD"     Name="dwItemId" />
-            <Field Type="LPTSTR"    Name="szInstanceName" />
-        </Variable>
-
-        <!-- PDH_COUNTER_PATH_ELEMENTS -->
-        <Variable Name="PDH_COUNTER_PATH_ELEMENTS" Type="Struct">
-            <Field Type="LPTSTR"    Name="szMachineName" />
-            <Field Type="LPTSTR"    Name="szObjectName" />
-            <Field Type="LPTSTR"    Name="szInstanceName" />
-            <Field Type="LPTSTR"    Name="szParentInstance" />
-            <Field Type="DWORD"     Name="dwInstanceIndex" />
-            <Field Type="LPTSTR"    Name="szCounterName" />
-        </Variable>
-        <Variable Name="PDH_COUNTER_PATH_ELEMENTS*" Type="Pointer" Base="PDH_COUNTER_PATH_ELEMENTS" />
-
-        <!-- [PDH_COUNTER_INFO_u] -->
-        <Variable Name="[PDH_COUNTER_INFO_u]" Type="Union">
-            <Display Name="union" />
-            <Field Type="PDH_DATA_ITEM_PATH_ELEMENTS"   Name="DataItemPath" />
-            <Field Type="PDH_COUNTER_PATH_ELEMENTS"     Name="CounterPath" />
-            <Field Type="[PDH_COUNTER_INFO_u_s]"        Name="" />
-        </Variable>
-
-        <!-- PDH_COUNTER_INFO -->
-        <Variable Name="PDH_COUNTER_INFO" Type="Struct">
-            <Field Type="DWORD"                 Name="dwLength" />
-            <Field Type="DWORD"                 Name="dwType" />
-            <Field Type="DWORD"                 Name="CVersion" />
-            <Field Type="DWORD"                 Name="CStatus" />
-            <Field Type="LONG"                  Name="lScale" />
-            <Field Type="LONG"                  Name="lDefaultScale" />
-            <Field Type="DWORD_PTR"             Name="dwUserData" />
-            <Field Type="DWORD_PTR"             Name="dwQueryUserData" />
-            <Field Type="LPTSTR"                Name="szFullPath" />
-            <Field Type="[PDH_COUNTER_INFO_u]"  Name="" />
-            <Field Type="LPTSTR"                Name="szExplainText" />
-            <Field Type="DWORD [1]"             Name="DataBuffer" />
-        </Variable>
-        <Variable Name="PPDH_COUNTER_INFO" Type="Pointer" Base="PDH_COUNTER_INFO" />
-
-        <!-- [PDH_FMT_COUNTERVALUE_u] -->
-        <Variable Name="[PDH_FMT_COUNTERVALUE_u]" Type="Union">
-            <Display Name="union" />
-            <Field Type="LONG"          Name="longValue" />
-            <Field Type="double"        Name="doubleValue" />
-            <Field Type="LONGLONG"      Name="largeValue" />
-            <Field Type="LPCSTR"        Name="AnsiStringValue" />
-            <Field Type="LPCWSTR"       Name="WideStringValue" />
-        </Variable>
-
-        <!-- PDH_FMT_COUNTERVALUE -->
-        <Variable Name="PDH_FMT_COUNTERVALUE" Type="Struct">
-            <Field Type="DWORD"                     Name="CStatus" />
-            <Field Type="[PDH_FMT_COUNTERVALUE_u]"  Name="" />
-        </Variable>
-        <Variable Name="PPDH_FMT_COUNTERVALUE" Type="Pointer" Base="PDH_FMT_COUNTERVALUE" />
-
-        <!-- PDH_FMT_COUNTERVALUE_ITEM -->
-        <Variable Name="PDH_FMT_COUNTERVALUE_ITEM" Type="Struct">
-            <Field Type="LPTSTR"                    Name="szName" />
-            <Field Type="PDH_FMT_COUNTERVALUE"      Name="FmtValue" />
-        </Variable>
-        <Variable Name="PPDH_FMT_COUNTERVALUE_ITEM" Type="Pointer" Base="PDH_FMT_COUNTERVALUE_ITEM" />
-
-        <!-- PDH_STATISTICS -->
-        <Variable Name="PDH_STATISTICS" Type="Struct">
-            <Field Type="DWORD"                     Name="dwFormat" />
-            <Field Type="DWORD"                     Name="count" />
-            <Field Type="PDH_FMT_COUNTERVALUE"      Name="min" />
-            <Field Type="PDH_FMT_COUNTERVALUE"      Name="max" />
-            <Field Type="PDH_FMT_COUNTERVALUE"      Name="mean" />
-        </Variable>
-        <Variable Name="PPDH_STATISTICS" Type="Pointer" Base="PDH_STATISTICS" />
-
-        <!-- PDH_RAW_COUNTER -->
-        <Variable Name="PDH_RAW_COUNTER" Type="Struct">
-            <Field Type="volatile DWORD" 	Name="CStatus" />
-            <Field Type="FILETIME"    	    Name="TimeStamp" />
-            <Field Type="LONGLONG"    	    Name="FirstValue" />
-            <Field Type="LONGLONG"    	    Name="SecondValue" />
-            <Field Type="DWORD"       	    Name="MultiCount" />
-        </Variable>
-        <Variable Name="PPDH_RAW_COUNTER" Type="Pointer" Base="PDH_RAW_COUNTER" />
-
-        <!-- PDH_RAW_COUNTER_ITEM -->
-        <Variable Name="PDH_RAW_COUNTER_ITEM" Type="Struct">
-            <Field Type="LPTSTR"            Name="szName" />
-            <Field Type="PDH_RAW_COUNTER"   Name="RawValue" />
-        </Variable>
-        <Variable Name="PPDH_RAW_COUNTER_ITEM" Type="Pointer" Base="PDH_RAW_COUNTER_ITEM" />
-
-        <!-- PDH_RAW_LOG_RECORD -->
-        <Variable Name="PDH_RAW_LOG_RECORD" Type="Struct">
-            <Field Type="DWORD"             Name="dwStructureSize" />
-            <Field Type="[PDH_LOG_TYPE]"    Name="dwRecordType" />
-            <Field Type="DWORD"             Name="dwItems" />
-            <Field Type="UCHAR [1]"         Name="RawBytes" />
-        </Variable>
-        <Variable Name="PPDH_RAW_LOG_RECORD" Type="Pointer" Base="PDH_RAW_LOG_RECORD" />
-
-        <!-- PDH_TIME_INFO -->
-        <Variable Name="PDH_TIME_INFO" Type="Struct">
-            <Field Type="LONGLONG"    	Name="StartTime" />
-            <Field Type="LONGLONG"    	Name="EndTime" />
-            <Field Type="DWORD"       	Name="SampleCount" />
-        </Variable>
-        <Variable Name="PPDH_TIME_INFO" Type="Pointer" Base="PDH_TIME_INFO" />
-
         <!-- PDH_STATUS -->
-        <!-- TODO: CHECKME: Is this CSTATUS or STATUS? CSTATUS is used in structures -->
-        <Variable Name="PDH_STATUS" Type="Alias" Base="LONG">
+        <Variable Name="PDH_STATUS" Type="Alias" Base="[ERROR_CODE]">
             <Enum>
-                <Set Name="PDH_CSTATUS_VALID_DATA"                          Value="0x00000000" />
-                <Set Name="PDH_CSTATUS_NEW_DATA"                            Value="0x00000001" />
                 <Set Name="PDH_CSTATUS_NO_MACHINE"                          Value="0x800007D0" />
                 <Set Name="PDH_CSTATUS_NO_INSTANCE"                         Value="0x800007D1" />
                 <Set Name="PDH_MORE_DATA"                                   Value="0x800007D2" />
@@ -249,7 +109,166 @@
                 <Set Name="PDH_QUERY_PERF_DATA_TIMEOUT"                     Value="0xC0000BFE" />
             </Enum>
         </Variable>
-        
+
+        <!-- [PDH_CSTATUS] -->
+        <Variable Name="[PDH_CSTATUS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="PDH_CSTATUS_VALID_DATA"              Value="0x0" />
+                <Set Name="PDH_CSTATUS_NEW_DATA"                Value="0x1" />
+                <Set Name="PDH_CSTATUS_NO_MACHINE"              Value="0x800007D0" />
+                <Set Name="PDH_CSTATUS_NO_INSTANCE"             Value="0x800007D1" />
+                <Set Name="PDH_CSTATUS_ITEM_NOT_VALIDATED"      Value="0x800007D3" />
+                <Set Name="PDH_CSTATUS_NO_OBJECT"               Value="0xC0000BB8" />
+                <Set Name="PDH_CSTATUS_NO_COUNTER"              Value="0xC0000BB9" />
+                <Set Name="PDH_CSTATUS_INVALID_DATA"            Value="0xC0000BBA" />
+                <Set Name="PDH_CSTATUS_NO_COUNTERNAME"          Value="0xC0000BBF" />
+                <Set Name="PDH_CSTATUS_BAD_COUNTERNAME"         Value="0xC0000BC0" />
+            </Enum>
+        </Variable>
+
+        <!-- [PDH_LOG_TYPE] -->
+        <Variable Name="[PDH_LOG_TYPE]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="PDH_LOG_TYPE_UNDEFINED"          Value="0" />
+                <Set Name="PDH_LOG_TYPE_CSV"                Value="1" />
+                <Set Name="PDH_LOG_TYPE_TSV"                Value="2" />
+                <Set Name="PDH_LOG_TYPE_TRACE_KERNEL"       Value="4" />
+                <Set Name="PDH_LOG_TYPE_TRACE_GENERIC"      Value="5" />
+                <Set Name="PDH_LOG_TYPE_PERFMON"            Value="6" />
+                <Set Name="PDH_LOG_TYPE_SQL"                Value="7" />
+                <Set Name="PDH_LOG_TYPE_BINARY"             Value="8" />
+            </Enum>
+        </Variable>
+        <Variable Name="[PDH_LOG_TYPE*]" Type="Pointer" Base="[PDH_LOG_TYPE]">
+            <Display Name="LPDWORD" />
+        </Variable>
+
+        <!-- [PDH_COUNTER_INFO_u_s] -->
+        <Variable Name="[PDH_COUNTER_INFO_u_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="LPTSTR"    Name="szMachineName" />
+            <Field Type="LPTSTR"    Name="szObjectName" />
+            <Field Type="LPTSTR"    Name="szInstanceName" />
+            <Field Type="LPTSTR"    Name="szParentInstance" />
+            <Field Type="DWORD"     Name="dwInstanceIndex" />
+            <Field Type="LPTSTR"    Name="szCounterName" />
+        </Variable>
+
+        <!-- PDH_DATA_ITEM_PATH_ELEMENTS -->
+        <Variable Name="PDH_DATA_ITEM_PATH_ELEMENTS" Type="Struct">
+            <Field Type="LPTSTR"    Name="szMachineName" />
+            <Field Type="GUID"      Name="ObjectGUID" />
+            <Field Type="DWORD"     Name="dwItemId" />
+            <Field Type="LPTSTR"    Name="szInstanceName" />
+        </Variable>
+
+        <!-- PDH_COUNTER_PATH_ELEMENTS -->
+        <Variable Name="PDH_COUNTER_PATH_ELEMENTS" Type="Struct">
+            <Field Type="LPTSTR"    Name="szMachineName" />
+            <Field Type="LPTSTR"    Name="szObjectName" />
+            <Field Type="LPTSTR"    Name="szInstanceName" />
+            <Field Type="LPTSTR"    Name="szParentInstance" />
+            <Field Type="DWORD"     Name="dwInstanceIndex" />
+            <Field Type="LPTSTR"    Name="szCounterName" />
+        </Variable>
+        <Variable Name="PDH_COUNTER_PATH_ELEMENTS*" Type="Pointer" Base="PDH_COUNTER_PATH_ELEMENTS" />
+
+        <!-- [PDH_COUNTER_INFO_u] -->
+        <Variable Name="[PDH_COUNTER_INFO_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="PDH_DATA_ITEM_PATH_ELEMENTS"   Name="DataItemPath" />
+            <Field Type="PDH_COUNTER_PATH_ELEMENTS"     Name="CounterPath" />
+            <Field Type="[PDH_COUNTER_INFO_u_s]"        Name="" />
+        </Variable>
+
+        <!-- PDH_COUNTER_INFO -->
+        <Variable Name="PDH_COUNTER_INFO" Type="Struct">
+            <Field Type="DWORD"                 Name="dwLength" />
+            <Field Type="DWORD"                 Name="dwType" />
+            <Field Type="DWORD"                 Name="CVersion" />
+            <Field Type="[PDH_CSTATUS]"         Name="CStatus" />
+            <Field Type="LONG"                  Name="lScale" />
+            <Field Type="LONG"                  Name="lDefaultScale" />
+            <Field Type="DWORD_PTR"             Name="dwUserData" />
+            <Field Type="DWORD_PTR"             Name="dwQueryUserData" />
+            <Field Type="LPTSTR"                Name="szFullPath" />
+            <Field Type="[PDH_COUNTER_INFO_u]"  Name="" />
+            <Field Type="LPTSTR"                Name="szExplainText" />
+            <Field Type="DWORD [1]"             Name="DataBuffer" />
+        </Variable>
+        <Variable Name="PPDH_COUNTER_INFO" Type="Pointer" Base="PDH_COUNTER_INFO" />
+
+        <!-- [PDH_FMT_COUNTERVALUE_u] -->
+        <Variable Name="[PDH_FMT_COUNTERVALUE_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="LONG"          Name="longValue" />
+            <Field Type="double"        Name="doubleValue" />
+            <Field Type="LONGLONG"      Name="largeValue" />
+            <Field Type="LPCSTR"        Name="AnsiStringValue" />
+            <Field Type="LPCWSTR"       Name="WideStringValue" />
+        </Variable>
+
+        <!-- PDH_FMT_COUNTERVALUE -->
+        <Variable Name="PDH_FMT_COUNTERVALUE" Type="Struct">
+            <Field Type="[PDH_CSTATUS]"             Name="CStatus" />
+            <Field Type="[PDH_FMT_COUNTERVALUE_u]"  Name="" />
+        </Variable>
+        <Variable Name="PPDH_FMT_COUNTERVALUE" Type="Pointer" Base="PDH_FMT_COUNTERVALUE" />
+
+        <!-- PDH_FMT_COUNTERVALUE_ITEM -->
+        <Variable Name="PDH_FMT_COUNTERVALUE_ITEM" Type="Struct">
+            <Field Type="LPTSTR"                    Name="szName" />
+            <Field Type="PDH_FMT_COUNTERVALUE"      Name="FmtValue" />
+        </Variable>
+        <Variable Name="PPDH_FMT_COUNTERVALUE_ITEM" Type="Pointer" Base="PDH_FMT_COUNTERVALUE_ITEM" />
+
+        <!-- PDH_STATISTICS -->
+        <Variable Name="PDH_STATISTICS" Type="Struct">
+            <Field Type="DWORD"                     Name="dwFormat" />
+            <Field Type="DWORD"                     Name="count" />
+            <Field Type="PDH_FMT_COUNTERVALUE"      Name="min" />
+            <Field Type="PDH_FMT_COUNTERVALUE"      Name="max" />
+            <Field Type="PDH_FMT_COUNTERVALUE"      Name="mean" />
+        </Variable>
+        <Variable Name="PPDH_STATISTICS" Type="Pointer" Base="PDH_STATISTICS" />
+
+        <!-- PDH_RAW_COUNTER -->
+        <Variable Name="PDH_RAW_COUNTER" Type="Struct">
+            <Field Type="[PDH_CSTATUS]" Display="volatile DWORD" 	Name="CStatus" />
+            <Field Type="FILETIME"    	                            Name="TimeStamp" />
+            <Field Type="LONGLONG"    	                            Name="FirstValue" />
+            <Field Type="LONGLONG"    	                            Name="SecondValue" />
+            <Field Type="DWORD"       	                            Name="MultiCount" />
+        </Variable>
+        <Variable Name="PPDH_RAW_COUNTER" Type="Pointer" Base="PDH_RAW_COUNTER" />
+
+        <!-- PDH_RAW_COUNTER_ITEM -->
+        <Variable Name="PDH_RAW_COUNTER_ITEM" Type="Struct">
+            <Field Type="LPTSTR"            Name="szName" />
+            <Field Type="PDH_RAW_COUNTER"   Name="RawValue" />
+        </Variable>
+        <Variable Name="PPDH_RAW_COUNTER_ITEM" Type="Pointer" Base="PDH_RAW_COUNTER_ITEM" />
+
+        <!-- PDH_RAW_LOG_RECORD -->
+        <Variable Name="PDH_RAW_LOG_RECORD" Type="Struct">
+            <Field Type="DWORD"             Name="dwStructureSize" />
+            <Field Type="[PDH_LOG_TYPE]"    Name="dwRecordType" />
+            <Field Type="DWORD"             Name="dwItems" />
+            <Field Type="UCHAR [1]"         Name="RawBytes" />
+        </Variable>
+        <Variable Name="PPDH_RAW_LOG_RECORD" Type="Pointer" Base="PDH_RAW_LOG_RECORD" />
+
+        <!-- PDH_TIME_INFO -->
+        <Variable Name="PDH_TIME_INFO" Type="Struct">
+            <Field Type="LONGLONG"    	Name="StartTime" />
+            <Field Type="LONGLONG"    	Name="EndTime" />
+            <Field Type="DWORD"       	Name="SampleCount" />
+        </Variable>
+        <Variable Name="PPDH_TIME_INFO" Type="Pointer" Base="PDH_TIME_INFO" />
+
+        <!-- [PdhFormatFlags] -->
         <Variable Name="[PdhFormatFlags]" Type="Alias" Base="DWORD">
                 <Display Name="DWORD" />
             <Flag>
@@ -265,7 +284,8 @@
                 <Set Name="PDH_FMT_NOCAP100"    Value="0x00008000" />
             </Flag>
         </Variable>
-        
+
+        <!-- [PerfDetailLevel] -->
         <Variable Name="[PerfDetailLevel]" Type="Alias" Base="DWORD">
                 <Display Name="DWORD" />
             <Enum>
@@ -275,7 +295,8 @@
                 <Set Name="PERF_DETAIL_WIZARD"      Value="400" />
             </Enum>
         </Variable>
-        
+
+        <!-- [PdhExpandFlags] -->
         <Variable Name="[PdhExpandFlags]" Type="Alias" Base="DWORD">
                 <Display Name="DWORD" />
             <Flag>
@@ -283,7 +304,8 @@
                 <Set Name="PDH_NOEXPANDINSTANCES"   Value="2" />
             </Flag>
         </Variable>
-        
+
+        <!-- [PdhPathFlags] -->
         <Variable Name="[PdhPathFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -291,7 +313,8 @@
                 <Set Name="PDH_PATH_WBEM_INPUT"     Value="0x00000002" />
             </Flag>
         </Variable>
-        
+
+        <!-- [PdhOpenLogFlags] -->
         <Variable Name="[PdhOpenLogFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
             <Flag>
@@ -306,10 +329,6 @@
             </Flag>
         </Variable>
         
-        <Variable Name="[PDH_LOG_TYPE*]" Type="Pointer" Base="[PDH_LOG_TYPE]">
-            <Display Name="LPDWORD" />
-        </Variable>
-            
         <!-- Performance Counters -->
         <Category Name="Diagnostics/Performance Counters" />
         <Api Name="PdhAddCounter" BothCharset="True">
@@ -318,7 +337,6 @@
             <Param Type="DWORD_PTR" Name="dwUserData" />
             <Param Type="PDH_HCOUNTER*" Name="phCounter" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhAddEnglishCounter" BothCharset="True">
             <Param Type="PDH_HQUERY" Name="hQuery" />
@@ -326,23 +344,19 @@
             <Param Type="DWORD_PTR" Name="dwUserData" />
             <Param Type="PDH_HCOUNTER*" Name="phCounter" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhBindInputDataSource" BothCharset="True">
             <Param Type="PDH_HLOG*" Name="phDataSource" />
             <Param Type="LPCTSTR" Name="szLogFileNameList" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhBrowseCounters" BothCharset="True">
             <Param Type="PPDH_BROWSE_DLG_CONFIG" Name="pBrowseDlgData" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhBrowseCountersH" BothCharset="True">
             <Param Type="PPDH_BROWSE_DLG_CONFIG" Name="pBrowseDlgData" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhCalculateCounterFromRawValue">
             <Param Type="PDH_HCOUNTER" Name="hCounter" />
@@ -351,36 +365,30 @@
             <Param Type="PPDH_RAW_COUNTER" Name="rawValue2" />
             <Param Type="PPDH_FMT_COUNTERVALUE" Name="fmtValue" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhCloseLog">
             <Param Type="PDH_HLOG" Name="hLog" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhCloseQuery">
             <Param Type="PDH_HQUERY" Name="hQuery" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhCollectQueryData">
             <Param Type="PDH_HQUERY" Name="hQuery" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhCollectQueryDataEx">
             <Param Type="PDH_HQUERY" Name="hQuery" />
             <Param Type="DWORD" Name="dwIntervalTime" />
             <Param Type="HANDLE" Name="hNewDataEvent" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhCollectQueryDataWithTime">
             <Param Type="PDH_HQUERY" Name="hQuery" />
             <Param Type="LONGLONG*" Name="pllTimeStamp" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhComputeCounterStatistics">
             <Param Type="PDH_HCOUNTER" Name="hCounter" />
@@ -390,104 +398,92 @@
             <Param Type="PPDH_RAW_COUNTER" Name="lpRawValueArray" Count="dwNumEntries" />
             <Param Type="PPDH_STATISTICS" Name="data" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhConnectMachine" BothCharset="True">
             <Param Type="LPCTSTR" Name="szMachineName" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhEnumLogSetNames" BothCharset="True">
             <Param Type="LPCTSTR" Name="szDataSource" />
-            <Param Type="LPTSTR" Name="mszLogSetNameList" />
+            <Param Type="LPTSTR" Name="mszLogSetNameList" OutputOnly="True" />
             <Param Type="LPDWORD" Name="pcchBufferLength" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhEnumMachines" BothCharset="True">
             <Param Type="LPCTSTR" Name="szDataSource" />
-            <Param Type="LPTSTR" Name="mszMachineNameList" />
+            <Param Type="LPTSTR" Name="mszMachineNameList" OutputOnly="True" />
             <Param Type="LPDWORD" Name="pcchBufferLength" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhEnumMachinesH" BothCharset="True">
             <Param Type="PDH_HLOG" Name="hDataSource" />
-            <Param Type="LPTSTR" Name="mszMachineNameList" />
+            <Param Type="LPTSTR" Name="mszMachineNameList" OutputOnly="True" />
             <Param Type="LPDWORD" Name="pcchBufferLength" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhEnumObjectItems" BothCharset="True">
             <Param Type="LPCTSTR" Name="szDataSource" />
             <Param Type="LPCTSTR" Name="szMachineName" />
             <Param Type="LPCTSTR" Name="szObjectName" />
-            <Param Type="LPTSTR" Name="mszCounterList" />
+            <Param Type="LPTSTR" Name="mszCounterList" OutputOnly="True" />
             <Param Type="LPDWORD" Name="pcchCounterListLength" />
-            <Param Type="LPTSTR" Name="mszInstanceList" />
+            <Param Type="LPTSTR" Name="mszInstanceList" OutputOnly="True" />
             <Param Type="LPDWORD" Name="pcchInstanceListLength" />
             <Param Type="[PerfDetailLevel]" Name="dwDetailLevel" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhEnumObjectItemsH" BothCharset="True">
             <Param Type="PDH_HLOG" Name="hDataSource" />
             <Param Type="LPCTSTR" Name="szMachineName" />
             <Param Type="LPCTSTR" Name="szObjectName" />
-            <Param Type="LPTSTR" Name="mszCounterList" />
+            <Param Type="LPTSTR" Name="mszCounterList" OutputOnly="True" />
             <Param Type="LPDWORD" Name="pcchCounterListLength" />
-            <Param Type="LPTSTR" Name="mszInstanceList" />
+            <Param Type="LPTSTR" Name="mszInstanceList" OutputOnly="True" />
             <Param Type="LPDWORD" Name="pcchInstanceListLength" />
             <Param Type="[PerfDetailLevel]" Name="dwDetailLevel" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhEnumObjects" BothCharset="True">
             <Param Type="LPCTSTR" Name="szDataSource" />
             <Param Type="LPCTSTR" Name="szMachineName" />
-            <Param Type="LPTSTR" Name="mszObjectList" />
+            <Param Type="LPTSTR" Name="mszObjectList" OutputOnly="True" />
             <Param Type="LPDWORD" Name="pcchBufferLength" />
             <Param Type="[PerfDetailLevel]" Name="dwDetailLevel" />
             <Param Type="BOOL" Name="bRefresh" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhEnumObjectsH" BothCharset="True">
             <Param Type="PDH_HLOG" Name="hDataSource" />
             <Param Type="LPCTSTR" Name="szMachineName" />
-            <Param Type="LPTSTR" Name="mszObjectList" />
+            <Param Type="LPTSTR" Name="mszObjectList" OutputOnly="True" />
             <Param Type="LPDWORD" Name="pcchBufferLength" />
             <Param Type="[PerfDetailLevel]" Name="dwDetailLevel" />
             <Param Type="BOOL" Name="bRefresh" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhExpandCounterPath" BothCharset="True">
             <Param Type="LPCTSTR" Name="szWildCardPath" />
-            <Param Type="LPTSTR" Name="mszExpandedPathList" />
+            <Param Type="LPTSTR" Name="mszExpandedPathList" OutputOnly="True" />
             <Param Type="LPDWORD" Name="pcchPathListLength" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhExpandWildCardPath" BothCharset="True">
             <Param Type="LPCTSTR" Name="szDataSource" />
             <Param Type="LPCTSTR" Name="szWildCardPath" />
-            <Param Type="LPTSTR" Name="mszExpandedPathList" />
+            <Param Type="LPTSTR" Name="mszExpandedPathList" OutputOnly="True" />
             <Param Type="LPDWORD" Name="pcchPathListLength" />
             <Param Type="[PdhExpandFlags]" Name="dwFlags" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhExpandWildCardPathH" BothCharset="True">
             <Param Type="PDH_HLOG" Name="hDataSource" />
             <Param Type="LPCTSTR" Name="szWildCardPath" />
-            <Param Type="LPTSTR" Name="mszExpandedPathList" />
+            <Param Type="LPTSTR" Name="mszExpandedPathList" OutputOnly="True" />
             <Param Type="LPDWORD" Name="pcchPathListLength" />
             <Param Type="[PdhExpandFlags]" Name="dwFlags" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhFormatFromRawValue">
             <Param Type="DWORD" Name="dwCounterType" />
@@ -497,21 +493,18 @@
             <Param Type="PPDH_RAW_COUNTER" Name="rawValue2" />
             <Param Type="PPDH_FMT_COUNTERVALUE" Name="fmtValue" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhGetCounterInfo" BothCharset="True">
             <Param Type="PDH_HCOUNTER" Name="hCounter" />
             <Param Type="BOOLEAN" Name="bRetrieveExplainText" />
             <Param Type="LPDWORD" Name="pdwBufferSize" />
-            <Param Type="PPDH_COUNTER_INFO" Name="lpBuffer" PostLength="pdwBufferSize" />
+            <Param Type="PPDH_COUNTER_INFO" Name="lpBuffer" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhGetCounterTimeBase">
             <Param Type="PDH_HCOUNTER" Name="hCounter" />
             <Param Type="LONGLONG*" Name="pTimeBase" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhGetDataSourceTimeRange" BothCharset="True">
             <Param Type="LPCTSTR" Name="szDataSource" />
@@ -519,7 +512,6 @@
             <Param Type="PPDH_TIME_INFO" Name="pInfo" PostCount="pdwNumEntries" />
             <Param Type="LPDWORD" Name="pdwBufferSize" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhGetDataSourceTimeRangeH">
             <Param Type="PDH_HLOG" Name="hDataSource" />
@@ -527,46 +519,40 @@
             <Param Type="PPDH_TIME_INFO" Name="pInfo" PostCount="pdwNumEntries" />
             <Param Type="LPDWORD" Name="pdwBufferSize" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhGetDefaultPerfCounter" BothCharset="True">
             <Param Type="LPCTSTR" Name="szDataSource" />
             <Param Type="LPCTSTR" Name="szMachineName" />
             <Param Type="LPCTSTR" Name="szObjectName" />
-            <Param Type="LPTSTR" Name="szDefaultCounterName" />
+            <Param Type="LPTSTR" Name="szDefaultCounterName" OutputOnly="True" />
             <Param Type="LPDWORD" Name="pcchBufferSize" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhGetDefaultPerfCounterH" BothCharset="True">
             <Param Type="PDH_HLOG" Name="hDataSource" />
             <Param Type="LPCTSTR" Name="szMachineName" />
             <Param Type="LPCTSTR" Name="szObjectName" />
-            <Param Type="LPTSTR" Name="szDefaultCounterName" />
+            <Param Type="LPTSTR" Name="szDefaultCounterName" OutputOnly="True" />
             <Param Type="LPDWORD" Name="pcchBufferSize" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhGetDefaultPerfObject" BothCharset="True">
             <Param Type="LPCTSTR" Name="szDataSource" />
             <Param Type="LPCTSTR" Name="szMachineName" />
-            <Param Type="LPTSTR" Name="szDefaultObjectName" />
+            <Param Type="LPTSTR" Name="szDefaultObjectName" OutputOnly="True" />
             <Param Type="LPDWORD" Name="pcchBufferSize" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhGetDefaultPerfObjectH" BothCharset="True">
             <Param Type="PDH_HLOG" Name="hDataSource" />
             <Param Type="LPCTSTR" Name="szMachineName" />
-            <Param Type="LPTSTR" Name="szDefaultObjectName" />
+            <Param Type="LPTSTR" Name="szDefaultObjectName" OutputOnly="True" />
             <Param Type="LPDWORD" Name="pcchBufferSize" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhGetDllVersion">
             <Param Type="LPDWORD" Name="lpdwVersion" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhGetFormattedCounterArray" BothCharset="True">
             <Param Type="PDH_HCOUNTER" Name="hCounter" />
@@ -575,7 +561,6 @@
             <Param Type="LPDWORD" Name="lpdwBufferCount" />
             <Param Type="PPDH_FMT_COUNTERVALUE_ITEM" Name="ItemBuffer" PostCount="lpdwBufferCount" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhGetFormattedCounterValue">
             <Param Type="PDH_HCOUNTER" Name="hCounter" />
@@ -583,13 +568,11 @@
             <Param Type="LPDWORD" Name="lpdwType" />
             <Param Type="PPDH_FMT_COUNTERVALUE" Name="pValue" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhGetLogFileSize">
             <Param Type="PDH_HLOG" Name="hLog" />
             <Param Type="LONGLONG*" Name="llSize" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhGetRawCounterArray" BothCharset="True">
             <Param Type="PDH_HCOUNTER" Name="hCounter" />
@@ -597,42 +580,37 @@
             <Param Type="LPDWORD" Name="lpdwItemCount" />
             <Param Type="PPDH_RAW_COUNTER_ITEM" Name="ItemBuffer" PostCount="lpdwItemCount" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhGetRawCounterValue">
             <Param Type="PDH_HCOUNTER" Name="hCounter" />
             <Param Type="LPDWORD" Name="lpdwType" />
             <Param Type="PPDH_RAW_COUNTER" Name="pValue" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhIsRealTimeQuery">
             <Param Type="PDH_HQUERY" Name="hQuery" />
             <Return Type="BOOL" />
-            <Success Return="Equal" Value="0" />
+            <Success />
         </Api>
         <Api Name="PdhLookupPerfIndexByName" BothCharset="True">
             <Param Type="LPCTSTR" Name="szMachineName" />
             <Param Type="LPCTSTR" Name="szNameBuffer" />
             <Param Type="LPDWORD" Name="pdwIndex" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhLookupPerfNameByIndex" BothCharset="True">
             <Param Type="LPCTSTR" Name="szMachineName" />
             <Param Type="DWORD" Name="dwNameIndex" />
-            <Param Type="LPTSTR" Name="szNameBuffer" />
+            <Param Type="LPTSTR" Name="szNameBuffer" OutputOnly="True" />
             <Param Type="LPDWORD" Name="pcchNameBufferSize" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhMakeCounterPath" BothCharset="True">
             <Param Type="PDH_COUNTER_PATH_ELEMENTS*" Name="pCounterPathElements" />
-            <Param Type="LPTSTR" Name="szFullPathBuffer" />
+            <Param Type="LPTSTR" Name="szFullPathBuffer" OutputOnly="True" />
             <Param Type="LPDWORD" Name="pcchBufferSize" />
             <Param Type="[PdhPathFlags]" Name="dwFlags" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhOpenLog" BothCharset="True">
             <Param Type="LPCTSTR" Name="szLogFileName" />
@@ -643,21 +621,18 @@
             <Param Type="LPCTSTR" Name="szUserCaption" />
             <Param Type="PDH_HLOG*" Name="phLog" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhOpenQuery" BothCharset="True">
             <Param Type="LPCTSTR" Name="szDataSource" />
             <Param Type="DWORD_PTR" Name="dwUserData" />
             <Param Type="PDH_HQUERY*" Name="phQuery" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhOpenQueryH">
             <Param Type="PDH_HLOG" Name="hDataSource" />
             <Param Type="DWORD_PTR" Name="dwUserData" />
             <Param Type="PDH_HQUERY*" Name="phQuery" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhParseCounterPath" BothCharset="True">
             <Param Type="LPCTSTR" Name="szFullPathBuffer" />
@@ -665,77 +640,65 @@
             <Param Type="LPDWORD" Name="pdwBufferSize" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhParseInstanceName" BothCharset="True">
             <Param Type="LPCTSTR" Name="szInstanceString" />
-            <Param Type="LPTSTR" Name="szInstanceName" />
+            <Param Type="LPTSTR" Name="szInstanceName" OutputOnly="True" />
             <Param Type="LPDWORD" Name="pcchInstanceNameLength" />
-            <Param Type="LPTSTR" Name="szParentName" />
+            <Param Type="LPTSTR" Name="szParentName" OutputOnly="True" />
             <Param Type="LPDWORD" Name="pcchParentNameLength" />
             <Param Type="LPDWORD" Name="lpIndex" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhReadRawLogRecord">
             <Param Type="PDH_HLOG" Name="hLog" />
             <Param Type="FILETIME" Name="ftRecord" />
-            <Param Type="PPDH_RAW_LOG_RECORD" Name="pRawLogRecord" PostLength="pdwBufferLength" />
+            <Param Type="PPDH_RAW_LOG_RECORD" Name="pRawLogRecord" />
             <Param Type="LPDWORD" Name="pdwBufferLength" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhRemoveCounter">
             <Param Type="PDH_HCOUNTER" Name="hCounter" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhSelectDataSource" BothCharset="True">
             <Param Type="HWND" Name="hWndOwner" />
             <Param Type="DWORD" Name="dwFlags" />
-            <Param Type="LPTSTR" Name="szDataSource" />
+            <Param Type="LPTSTR" Name="szDataSource" OutputOnly="True" />
             <Param Type="LPDWORD" Name="pcchBufferLength" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhSetCounterScaleFactor">
             <Param Type="PDH_HCOUNTER" Name="hCounter" />
             <Param Type="LONG" Name="lFactor" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhSetDefaultRealTimeDataSource">
             <Param Type="DWORD" Name="dwDataSourceId" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhSetQueryTimeRange">
             <Param Type="PDH_HQUERY" Name="hQuery" />
             <Param Type="PPDH_TIME_INFO" Name="pInfo" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhUpdateLog" BothCharset="True">
             <Param Type="PDH_HLOG" Name="hLog" />
             <Param Type="LPCTSTR" Name="szUserString" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhUpdateLogFileCatalog">
             <Param Type="PDH_HLOG" Name="hLog" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhValidatePath" BothCharset="True">
             <Param Type="LPCTSTR" Name="szFullCounterPath" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PdhValidatePathEx" BothCharset="True">
             <Param Type="PDH_HLOG" Name="hDataSource" />
             <Param Type="LPCTSTR" Name="szFullPathBuffer" />
             <Return Type="PDH_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
     </Module>
 </ApiMonitor>

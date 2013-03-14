@@ -1,6 +1,6 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
@@ -10,8 +10,6 @@
     <Module Name="Rasapi32.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
         
         <!-- Variables -->
-        <Variable Name="HRASCONN"                           Type="Alias"    Base="HANDLE" />
-        <Variable Name="LPHRASCONN"                         Type="Pointer"  Base="HRASCONN" />
         <Variable Name="ProbationTime"                      Type="Alias"    Base="FILETIME" />
         <Variable Name="ConnectionId"                       Type="Alias"    Base="GUID" />
         <Variable Name="ConnectionId*"                      Type="Pointer"  Base="ConnectionId" />
@@ -19,7 +17,8 @@
         <Variable Name="RASIPV4ADDR*"                       Type="Pointer"  Base="RASIPV4ADDR" />
         <Variable Name="RASIPV6ADDR"                        Type="Alias"    Base="IN6_ADDR" />
         <Variable Name="RASIPV6ADDR*"                       Type="Pointer"  Base="RASIPV6ADDR" />
-        
+
+        <!-- Arrays -->
         <Variable Name="TCHAR [RAS_MaxDeviceType + 1]"      Type="Array"    Base="TCHAR"    Count="17" />
         <Variable Name="TCHAR [RAS_MaxDeviceName + 1]"      Type="Array"    Base="TCHAR"    Count="129" />
         <Variable Name="TCHAR [RAS_MaxPhoneNumber + 1]"     Type="Array"    Base="TCHAR"    Count="129" />
@@ -33,7 +32,16 @@
         <Variable Name="TCHAR [UNLEN + 1]"                  Type="Array"    Base="TCHAR"    Count="257" />
         <Variable Name="TCHAR [PWLEN + 1]"                  Type="Array"    Base="TCHAR"    Count="257" />
         <Variable Name="TCHAR [DNLEN + 1]"                  Type="Array"    Base="TCHAR"    Count="16" />
-        
+
+        <!-- HRASCONN -->
+        <Variable Name="HRASCONN" Type="Alias" Base="HANDLE">
+            <Display Name="HANDLE" />
+            <Flag>
+                <Set Name="INVALID_HANDLE_VALUE" Value="-1" />
+            </Flag>
+        </Variable>
+        <Variable Name="LPHRASCONN" Type="Pointer" Base="HRASCONN" />
+
         <!-- RASAPIVERSION -->
         <Variable Name="RASAPIVERSION" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
@@ -80,6 +88,7 @@
             <Field Type="DWORD"                                 Name="dwSubEntry" />
             <Field Type="ULONG_PTR"                             Name="dwCallbackId" />
             <Field Type="DWORD"                                 Name="dwIfIndex" />
+            <Field Type="LPTSTR"                                Name="szEncPassword" />
         </Variable>
         <Variable Name="LPRASDIALPARAMS" Type="Pointer" Base="RASDIALPARAMS" />
 
@@ -101,7 +110,7 @@
             <Field Type="TCHAR [RAS_MaxEntryName + 1]"      Name="szEntryName" />
             <Field Type="TCHAR [RAS_MaxDeviceType + 1]"     Name="szDeviceType" />
             <Field Type="TCHAR [RAS_MaxDeviceName + 1]"     Name="szDeviceName" />
-            <Field Type="TCHAR [MAX_PATH]"                  Name="szPhonebook"  />
+            <Field Type="TCHAR [MAX_PATH]"                  Name="szPhonebook" />
             <Field Type="DWORD"                             Name="dwSubEntry" />
             <Field Type="GUID"                              Name="guidEntry" />
             <Field Type="[RASCONN_FLAGS]"                   Name="dwFlags" />
@@ -617,7 +626,7 @@
             <Field Type="DWORD"                             Name="dwfFlags" />
             <Field Type="TCHAR [RAS_MaxDeviceType + 1]"     Name="szDeviceType" />
             <Field Type="TCHAR [RAS_MaxDeviceName + 1]"     Name="szDeviceName" />
-            <Field Type="TCHAR [RAS_MaxPhoneNumber + 1]"    Name="szLocalPhoneNumber"  />
+            <Field Type="TCHAR [RAS_MaxPhoneNumber + 1]"    Name="szLocalPhoneNumber" />
             <Field Type="DWORD"                             Name="dwAlternateOffset" />
         </Variable>
         <Variable Name="LPRASSUBENTRY" Type="Pointer" Base="RASSUBENTRY" />
@@ -725,7 +734,7 @@
                 <Set Name="RASP_PppIpv6"    Value="0x8057" />
                 <Set Name="RASP_PppCcp"     Value="0x80FD" />
                 <Set Name="RASP_PppLcp"     Value="0xC021" />
-                <Set Name="RASP_Slip"       Value="0x20000"  />
+                <Set Name="RASP_Slip"       Value="0x20000" />
             </Flag>
         </Variable>
         
@@ -733,40 +742,34 @@
         <Category Name="Networking/Routing and Remote Access Service/Remote Access/Remote Access Service" />
         <Api Name="RasClearConnectionStatistics">
             <Param Type="HRASCONN" Name="hRasConn" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasClearLinkStatistics">
             <Param Type="HRASCONN" Name="hRasConn" />
             <Param Type="DWORD" Name="dwSubEntry" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasConnectionNotification" BothCharset="True">
             <Param Type="HRASCONN" Name="hrasconn" />
             <Param Type="HANDLE" Name="hEvent" />
             <Param Type="[RasConnNotifyFlags]" Name="dwFlags" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasCreatePhonebookEntry" BothCharset="True">
             <Param Type="HWND" Name="hwnd" />
             <Param Type="LPCTSTR" Name="lpszPhonebook" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasDeleteEntry" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszPhonebook" />
             <Param Type="LPCTSTR" Name="lpszEntry" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasDeleteSubEntry" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszPhonebook" />
             <Param Type="LPCTSTR" Name="lpszEntry" />
             <Param Type="DWORD" Name="dwSubEntryId" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasDial" BothCharset="True">
             <Param Type="LPRASDIALEXTENSIONS" Name="lpRasDialExtensions" />
@@ -775,36 +778,31 @@
             <Param Type="DWORD" Name="dwNotifierType" />
             <Param Type="LPVOID" Name="lpvNotifier" />
             <Param Type="LPHRASCONN" Name="lphRasConn" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasEditPhonebookEntry" BothCharset="True">
             <Param Type="HWND" Name="hwnd" />
             <Param Type="LPCTSTR" Name="lpszPhonebook" />
             <Param Type="LPCTSTR" Name="lpszEntryName" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasEnumAutodialAddresses" BothCharset="True">
             <Param Type="LPTSTR*" Name="lppAddresses" />
             <Param Type="LPDWORD" Name="lpdwcbAddresses" />
             <Param Type="LPDWORD" Name="lpdwcAddresses" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasEnumConnections" BothCharset="True">
             <Param Type="LPRASCONN" Name="lprasconn" PostCount="lpcConnections" />
             <Param Type="LPDWORD" Name="lpcb" />
             <Param Type="LPDWORD" Name="lpcConnections" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasEnumDevices" BothCharset="True">
             <Param Type="LPRASDEVINFO" Name="lpRasDevInfo" />
             <Param Type="LPDWORD" Name="lpcb" />
             <Param Type="LPDWORD" Name="lpcDevices" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasEnumEntries" BothCharset="True">
             <Param Type="LPCTSTR" Name="reserved" />
@@ -812,8 +810,7 @@
             <Param Type="LPRASENTRYNAME" Name="lprasentryname" PostCount="lpcEntries" />
             <Param Type="LPDWORD" Name="lpcb" />
             <Param Type="LPDWORD" Name="lpcEntries" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasFreeEapUserIdentity" BothCharset="True">
             <Param Type="LPRASEAPUSERIDENTITY" Name="pRasEapUserIdentity" />
@@ -825,54 +822,46 @@
             <Param Type="LPRASAUTODIALENTRY" Name="lpAutoDialEntries" />
             <Param Type="LPDWORD" Name="lpdwcbAutoDialEntries" />
             <Param Type="LPDWORD" Name="lpdwcAutoDialEntries" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasGetAutodialEnable" BothCharset="True">
             <Param Type="DWORD" Name="dwDialingLocation" />
             <Param Type="LPBOOL" Name="lpfEnabled" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasGetAutodialParam" BothCharset="True">
             <Param Type="DWORD" Name="dwKey" />
             <Param Type="LPVOID" Name="lpvValue" />
             <Param Type="LPDWORD" Name="lpdwcbValue" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasGetConnectionStatistics">
             <Param Type="HRASCONN" Name="hRasConn" />
             <Param Type="RAS_STATS*" Name="lpStatistics" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasGetConnectStatus" BothCharset="True">
             <Param Type="HRASCONN" Name="hrasconn" />
             <Param Type="LPRASCONNSTATUS" Name="lprasconnstatus" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasGetCountryInfo" BothCharset="True">
             <Param Type="LPRASCTRYINFO" Name="lpRasCtryInfo" />
             <Param Type="LPDWORD" Name="lpdwSize" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasGetCredentials" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszPhonebook" />
             <Param Type="LPCTSTR" Name="lpszEntry" />
             <Param Type="LPRASCREDENTIALS" Name="lpCredentials" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasGetCustomAuthData" BothCharset="True">
             <Param Type="LPCWSTR" Name="pszPhonebook" />
             <Param Type="LPCWSTR" Name="pszEntry" />
             <Param Type="BYTE*" Name="pbCustomAuthData" />
             <Param Type="DWORD*" Name="pdwSizeofCustomAuthData" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasGetEapUserData" BothCharset="True">
             <Param Type="HANDLE" Name="hToken" />
@@ -880,8 +869,7 @@
             <Param Type="LPCTSTR" Name="pszEntry" />
             <Param Type="BYTE*" Name="pbEapData" />
             <Param Type="DWORD*" Name="pdwSizeofEapData" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasGetEapUserIdentity" BothCharset="True">
             <Param Type="LPCSTR" Name="pszPhonebook" />
@@ -889,15 +877,13 @@
             <Param Type="DWORD" Name="dwFlags" />
             <Param Type="HWND" Name="hwnd" />
             <Param Type="LPRASEAPUSERIDENTITY*" Name="ppRasEapUserIdentity" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasGetEntryDialParams" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszPhonebook" />
             <Param Type="LPRASDIALPARAMS" Name="lprasdialparams" />
             <Param Type="LPBOOL" Name="lpfPassword" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasGetEntryProperties" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszPhonebook" />
@@ -906,56 +892,48 @@
             <Param Type="LPDWORD" Name="lpdwEntryInfoSize" />
             <Param Type="LPBYTE" Name="lpbDeviceInfo" />
             <Param Type="LPDWORD" Name="lpdwDeviceInfoSize" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasGetErrorString" BothCharset="True">
             <Param Type="UINT" Name="uErrorValue" />
             <Param Type="LPTSTR" Name="lpszErrorString" />
             <Param Type="DWORD" Name="cBufSize" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasGetLinkStatistics">
             <Param Type="HRASCONN" Name="hRasConn" />
             <Param Type="DWORD" Name="dwSubEntry" />
             <Param Type="RAS_STATS*" Name="lpStatistics" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasGetNapStatus">
             <Param Type="HRASCONN" Name="hRasConn" />
             <Param Type="LPRASNAPSTATE" Name="pNapState" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasGetProjectionInfo" BothCharset="True">
             <Param Type="HRASCONN" Name="hrasconn" />
             <Param Type="RASPROJECTION" Name="rasprojection" />
             <Param Type="LPVOID" Name="lpprojection" PostLength="lpcb" />
             <Param Type="LPDWORD" Name="lpcb" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasGetProjectionInfoEx">
             <Param Type="HRASCONN" Name="Hrasconn" />
             <Param Type="PRAS_PROJECTION_INFO" Name="pRasProjection" />
             <Param Type="LPDWORD" Name="lpdwSize" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasGetQuarantineConnectionId">
             <Param Type="HRASCONN" Name="hRasConn" />
             <Param Type="ConnectionId*" Name="lpConnectionId" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasGetSubEntryHandle" BothCharset="True">
             <Param Type="HRASCONN" Name="hRasConn" />
             <Param Type="DWORD" Name="dwSubEntry" />
             <Param Type="LPHRASCONN" Name="lphRasConn" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasGetSubEntryProperties" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszPhonebook" />
@@ -965,28 +943,24 @@
             <Param Type="LPDWORD" Name="lpdwcb" />
             <Param Type="LPBYTE" Name="lpbDeviceConfig" />
             <Param Type="LPDWORD" Name="lpcbDeviceConfig" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasHangUp" BothCharset="True">
             <Param Type="HRASCONN" Name="hrasconn" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasInvokeEapUI">
             <Param Type="HRASCONN" Name="hRasConn" />
             <Param Type="DWORD" Name="dwSubEntry" />
             <Param Type="LPRASDIALEXTENSIONS" Name="lpExtensions" />
             <Param Type="HWND" Name="hwnd" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasRenameEntry" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszPhonebook" />
             <Param Type="LPCTSTR" Name="lpszOldEntry" />
             <Param Type="LPCTSTR" Name="lpszNewEntry" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasSetAutodialAddress" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszAddress" />
@@ -994,37 +968,32 @@
             <Param Type="LPRASAUTODIALENTRY" Name="lpAutoDialEntries" />
             <Param Type="DWORD" Name="dwcbAutoDialEntries" />
             <Param Type="DWORD" Name="dwcAutoDialEntries" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasSetAutodialEnable" BothCharset="True">
             <Param Type="DWORD" Name="dwDialingLocation" />
             <Param Type="BOOL" Name="fEnabled" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasSetAutodialParam" BothCharset="True">
             <Param Type="DWORD" Name="dwKey" />
             <Param Type="LPVOID" Name="lpvValue" />
             <Param Type="DWORD" Name="dwcbValue" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasSetCredentials" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszPhonebook" />
             <Param Type="LPCTSTR" Name="lpszEntry" />
             <Param Type="LPRASCREDENTIALS" Name="lpCredentials" />
             <Param Type="BOOL" Name="fClearCredentials" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasSetCustomAuthData" BothCharset="True">
             <Param Type="LPCWSTR" Name="pszPhonebook" />
             <Param Type="LPCWSTR" Name="pszEntry" />
             <Param Type="BYTE*" Name="pbCustomAuthData" />
             <Param Type="DWORD" Name="dwSizeofCustomAuthData" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasSetEapUserData" BothCharset="True">
             <Param Type="HANDLE" Name="hToken" />
@@ -1032,15 +1001,13 @@
             <Param Type="LPCTSTR" Name="pszEntry" />
             <Param Type="BYTE*" Name="pbEapData" />
             <Param Type="DWORD" Name="dwSizeofEapData" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasSetEntryDialParams" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszPhonebook" />
             <Param Type="LPRASDIALPARAMS" Name="lprasdialparams" />
             <Param Type="BOOL" Name="fRemovePassword" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasSetEntryProperties" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszPhonebook" />
@@ -1049,8 +1016,7 @@
             <Param Type="DWORD" Name="dwEntryInfoSize" />
             <Param Type="LPBYTE" Name="lpbDeviceInfo" />
             <Param Type="DWORD" Name="dwDeviceInfoSize" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasSetSubEntryProperties" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszPhonebook" />
@@ -1060,20 +1026,17 @@
             <Param Type="DWORD" Name="dwcbRasSubEntry" />
             <Param Type="LPBYTE" Name="lpbDeviceConfig" />
             <Param Type="DWORD" Name="dwcbDeviceConfig" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasUpdateConnection">
             <Param Type="HRASCONN" Name="hrasconn" />
             <Param Type="LPRASUPDATECONN" Name="lprasupdateconn" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="RasValidateEntryName" BothCharset="True">
             <Param Type="LPCTSTR" Name="lpszPhonebook" />
             <Param Type="LPCTSTR" Name="lpszEntry" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
     </Module>
 </ApiMonitor>

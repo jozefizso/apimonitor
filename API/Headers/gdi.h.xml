@@ -38,11 +38,19 @@
         <Variable Name="REFERENCE_TIME"         Type="Alias"    Base="LONGLONG" />
         <Variable Name="REFERENCE_TIME*"        Type="Pointer"  Base="REFERENCE_TIME" />
         <Variable Name="const REFERENCE_TIME*"  Type="Alias"    Base="REFERENCE_TIME*" />
+        <Variable Name="HPROFILE"               Type="Alias"    Base="HANDLE" />
+        <Variable Name="PHPROFILE"              Type="Pointer"  Base="HPROFILE" />
+        <Variable Name="FXPT2DOT30"             Type="Alias"    Base="long" />
+        <Variable Name="PBMCALLBACKFN"          Type="Alias"    Base="LPVOID" />
+        <Variable Name="LPBMCALLBACKFN"         Type="Alias"    Base="PBMCALLBACKFN" />
+        <Variable Name="DLGPROC"                Type="Alias"    Base="LPVOID" />
 
         <!-- Arrays -->
-        <Variable Name="TCHAR [LF_FACESIZE]"    Type="Array"    Base="TCHAR"    Count="32" />
-        <Variable Name="WCHAR [LF_FACESIZE]"    Type="Array"    Base="WCHAR"    Count="32" />
-
+        <Variable Name="TCHAR [LF_FACESIZE]"        Type="Array"    Base="TCHAR"        Count="32" />
+        <Variable Name="WCHAR [LF_FACESIZE]"        Type="Array"    Base="WCHAR"        Count="32" />
+        <Variable Name="COLOR_NAME"                 Type="Array"    Base="char"         Count="32" />
+        <Variable Name="PCOLOR_NAME"                Type="Pointer"  Base="COLOR_NAME" />
+        <Variable Name="BYTE [MAX_COLOR_CHANNELS]"  Type="Array"    Base="BYTE"         Count="8" />
 
         <!-- RGBQUAD -->
         <Variable Name="RGBQUAD" Type="Struct">
@@ -76,7 +84,7 @@
         <!-- RGNDATA -->
         <Variable Name="RGNDATA" Type="Struct">
             <Field Type="RGNDATAHEADER"     Name="rdh" />
-            <Field Type="char"              Name="Buffer" Display="char [1]"/>
+            <Field Type="char"              Name="Buffer" Display="char [1]" />
         </Variable>
         <Variable Name="RGNDATA*"           Type="Pointer"  Base="RGNDATA" />
         <Variable Name="RGNDATA**"          Type="Pointer"  Base="RGNDATA*" />
@@ -90,8 +98,9 @@
                 <Set Name="CLR_INVALID" Value="0xFFFFFFFF" />
             </Enum>
         </Variable>
-        <Variable Name="COLORREF*"       Type="Pointer"  Base="COLORREF" />
-        <Variable Name="const COLORREF*" Type="Alias"    Base="COLORREF*" />
+        <Variable Name="COLORREF*"       Type="Pointer" Base="COLORREF" />
+        <Variable Name="LPCOLORREF"      Type="Pointer" Base="COLORREF" />
+        <Variable Name="const COLORREF*" Type="Pointer" Base="COLORREF" />
 
         <!-- SIZE -->
         <Variable Name="SIZE" Type="Struct">
@@ -448,7 +457,7 @@
             <Field Type="DWORD"         Name="nFilterIndex" />
             <Field Type="LPTSTR"        Name="lpstrFile" />
             <Field Type="DWORD"         Name="nMaxFile" />
-            <Field Type="LPTSTR"        Name="lpstrFileTitle" OutputOnly="True"  />
+            <Field Type="LPTSTR"        Name="lpstrFileTitle" OutputOnly="True" />
             <Field Type="DWORD"         Name="nMaxFileTitle" />
             <Field Type="LPCTSTR"       Name="lpstrInitialDir" />
             <Field Type="LPCTSTR"       Name="lpstrTitle" />
@@ -774,7 +783,6 @@
                 <Set Name="AMINTERLACE_IsInterlaced"                Value="0x00000001" />
                 <Set Name="AMINTERLACE_1FieldPerSample"             Value="0x00000002" />
                 <Set Name="AMINTERLACE_Field1First"                 Value="0x00000004" />
-                <Set Name="AMINTERLACE_UNUSED"                      Value="0x00000008" />
                 <Set Name="AMINTERLACE_FieldPatField1Only"          Value="0x00000000" />
                 <Set Name="AMINTERLACE_FieldPatField2Only"          Value="0x00000010" />
                 <Set Name="AMINTERLACE_FieldPatBothRegular"         Value="0x00000020" />
@@ -899,6 +907,409 @@
         </Variable>
         <Variable Name="ABC*"  Type="Pointer" Base="ABC" />
         <Variable Name="LPABC" Type="Pointer" Base="ABC" />
+
+        <!-- LCSCSTYPE -->
+        <Variable Name="LCSCSTYPE" Type="Alias" Base="LONG">
+            <Enum>
+                <Set Name="LCS_sRGB"                    Value="0x73524742" />
+                <Set Name="LCS_WINDOWS_COLOR_SPACE"     Value="0x57696e20" />
+                <Set Name="LCS_CALIBRATED_RGB"          Value="0x00000000" />
+            </Enum>
+        </Variable>
+
+        <!-- [LCSCSTYPE_DWORD] -->
+        <Variable Name="[LCSCSTYPE_DWORD]" Type="Alias" Base="LCSCSTYPE">
+            <Display Name="DWORD" />
+        </Variable>
+
+        <!-- LCSGAMUTMATCH -->
+        <Variable Name="LCSGAMUTMATCH" Type="Alias" Base="LONG">
+            <Enum>
+                <Set Name="LCS_GM_BUSINESS"             Value="0x00000001" />
+                <Set Name="LCS_GM_GRAPHICS"             Value="0x00000002" />
+                <Set Name="LCS_GM_IMAGES"               Value="0x00000004" />
+                <Set Name="LCS_GM_ABS_COLORIMETRIC"     Value="0x00000008" />
+            </Enum>
+        </Variable>
+
+        <!-- CIEXYZ -->
+        <Variable Name="CIEXYZ" Type="Struct">
+            <Field Type="FXPT2DOT30"        Name="ciexyzX" />
+            <Field Type="FXPT2DOT30"        Name="ciexyzY" />
+            <Field Type="FXPT2DOT30"        Name="ciexyzZ" />
+        </Variable>
+
+        <!-- CIEXYZTRIPLE -->
+        <Variable Name="CIEXYZTRIPLE" Type="Struct">
+            <Field Type="CIEXYZ"        Name="ciexyzRed" />
+            <Field Type="CIEXYZ"        Name="ciexyzGreen" />
+            <Field Type="CIEXYZ"        Name="ciexyzBlue" />
+        </Variable>
+
+        <!-- LOGCOLORSPACE -->
+        <Variable Name="LOGCOLORSPACE" Type="Struct">
+            <Field Type="DWORD"             Name="lcsSignature" />
+            <Field Type="DWORD"             Name="lcsVersion" />
+            <Field Type="DWORD"             Name="lcsSize" />
+            <Field Type="LCSCSTYPE"         Name="lcsCSType" />
+            <Field Type="LCSGAMUTMATCH"     Name="lcsIntent" />
+            <Field Type="CIEXYZTRIPLE"      Name="lcsEndpoints" />
+            <Field Type="DWORD"             Name="lcsGammaRed" />
+            <Field Type="DWORD"             Name="lcsGammaGreen" />
+            <Field Type="DWORD"             Name="lcsGammaBlue" />
+            <Field Type="TCHAR [MAX_PATH]"  Name="lcsFilename" />
+        </Variable>
+        <Variable Name="LPLOGCOLORSPACE" Type="Pointer" Base="LOGCOLORSPACE" />
+
+        <!-- BMFORMAT -->
+        <Variable Name="BMFORMAT" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="BM_x555RGB"              	Value="0x0000" />
+                <Set Name="BM_x555XYZ"              	Value="0x0101" />
+                <Set Name="BM_x555Yxy"        	        Value="0x0102" />
+                <Set Name="BM_x555Lab"        	        Value="0x0103" />
+                <Set Name="BM_x555G3CH"        	        Value="0x0104" />
+                <Set Name="BM_RGBTRIPLETS"          	Value="0x0002" />
+                <Set Name="BM_BGRTRIPLETS"          	Value="0x0004" />
+                <Set Name="BM_XYZTRIPLETS"          	Value="0x0201" />
+                <Set Name="BM_YxyTRIPLETS"        	    Value="0x0202" />
+                <Set Name="BM_LabTRIPLETS"        	    Value="0x0203" />
+                <Set Name="BM_G3CHTRIPLETS"        	    Value="0x0204" />
+                <Set Name="BM_5CHANNEL"        	        Value="0x0205" />
+                <Set Name="BM_6CHANNEL"        	        Value="0x0206" />
+                <Set Name="BM_7CHANNEL"        	        Value="0x0207" />
+                <Set Name="BM_8CHANNEL"        	        Value="0x0208" />
+                <Set Name="BM_GRAY"        	            Value="0x0209" />
+                <Set Name="BM_xRGBQUADS"            	Value="0x0008" />
+                <Set Name="BM_xBGRQUADS"            	Value="0x0010" />
+                <Set Name="BM_xG3CHQUADS"           	Value="0x0304" />
+                <Set Name="BM_KYMCQUADS"        	    Value="0x0305" />
+                <Set Name="BM_CMYKQUADS"            	Value="0x0020" />
+                <Set Name="BM_10b_RGB"              	Value="0x0009" />
+                <Set Name="BM_10b_XYZ"              	Value="0x0401" />
+                <Set Name="BM_10b_Yxy"        	        Value="0x0402" />
+                <Set Name="BM_10b_Lab"        	        Value="0x0403" />
+                <Set Name="BM_10b_G3CH"        	        Value="0x0404" />
+                <Set Name="BM_NAMED_INDEX"        	    Value="0x0405" />
+                <Set Name="BM_16b_RGB"              	Value="0x000A" />
+                <Set Name="BM_16b_XYZ"              	Value="0x0501" />
+                <Set Name="BM_16b_Yxy"        	        Value="0x0502" />
+                <Set Name="BM_16b_Lab"        	        Value="0x0503" />
+                <Set Name="BM_16b_G3CH"        	        Value="0x0504" />
+                <Set Name="BM_16b_GRAY"        	        Value="0x0505" />
+                <Set Name="BM_565RGB"               	Value="0x0001" />
+                <Set Name="BM_32b_scRGB"                Value="0x0601" />
+                <Set Name="BM_32b_scARGB"               Value="0x0602" />
+                <Set Name="BM_S2DOT13FIXED_scRGB"       Value="0x0603" />
+                <Set Name="BM_S2DOT13FIXED_scARGB"      Value="0x0604" />
+                <Set Name="BM_R10G10B10A2"              Value="0x0701" />
+                <Set Name="BM_R10G10B10A2_XR"           Value="0x0702" />
+                <Set Name="BM_R16G16B16A16_FLOAT"       Value="0x0703" />
+            </Enum>
+        </Variable>
+
+        <!-- NAMED_PROFILE_INFO -->
+        <Variable Name="NAMED_PROFILE_INFO" Type="Struct">
+            <Field Type="DWORD"             Name="dwFlags" />
+            <Field Type="DWORD"             Name="dwCount" />
+            <Field Type="DWORD"             Name="dwCountDevCoordinates" />
+            <Field Type="COLOR_NAME"        Name="szPrefix" />
+            <Field Type="COLOR_NAME"        Name="szSuffix" />
+        </Variable>
+        <Variable Name="PNAMED_PROFILE_INFO" Type="Pointer" Base="NAMED_PROFILE_INFO" />
+
+        <!-- GRAYCOLOR -->
+        <Variable Name="GRAYCOLOR" Type="Struct">
+            <Field Type="WORD"      Name="gray" />
+        </Variable>
+
+        <!-- RGBCOLOR -->
+        <Variable Name="RGBCOLOR" Type="Struct">
+            <Field Type="WORD"      Name="red" />
+            <Field Type="WORD"      Name="green" />
+            <Field Type="WORD"      Name="blue" />
+        </Variable>
+
+        <!-- CMYKCOLOR -->
+        <Variable Name="CMYKCOLOR" Type="Struct">
+            <Field Type="WORD"      Name="cyan" />
+            <Field Type="WORD"      Name="magenta" />
+            <Field Type="WORD"      Name="yellow" />
+            <Field Type="WORD"      Name="black" />
+        </Variable>
+
+        <!-- XYZCOLOR -->
+        <Variable Name="XYZCOLOR" Type="Struct">
+            <Field Type="WORD"      Name="X" />
+            <Field Type="WORD"      Name="Y" />
+            <Field Type="WORD"      Name="Z" />
+        </Variable>
+
+        <!-- YxyCOLOR -->
+        <Variable Name="YxyCOLOR" Type="Struct">
+            <Field Type="WORD"      Name="Y" />
+            <Field Type="WORD"      Name="x" />
+            <Field Type="WORD"      Name="y" />
+        </Variable>
+
+        <!-- LabCOLOR -->
+        <Variable Name="LabCOLOR" Type="Struct">
+            <Field Type="WORD"      Name="L" />
+            <Field Type="WORD"      Name="a" />
+            <Field Type="WORD"      Name="b" />
+        </Variable>
+
+        <!-- GENERIC3CHANNEL -->
+        <Variable Name="GENERIC3CHANNEL" Type="Struct">
+            <Field Type="WORD"      Name="ch1" />
+            <Field Type="WORD"      Name="ch2" />
+            <Field Type="WORD"      Name="ch3" />
+        </Variable>
+
+        <!-- NAMEDCOLOR -->
+        <Variable Name="NAMEDCOLOR" Type="Struct">
+            <Field Type="DWORD"     Name="dwIndex" />
+        </Variable>
+
+        <!-- HiFiCOLOR -->
+        <Variable Name="HiFiCOLOR" Type="Struct">
+            <Field Type="BYTE [MAX_COLOR_CHANNELS]" Name="channel" />
+        </Variable>
+
+        <!-- [COLOR_s] -->
+        <Variable Name="[COLOR_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="DWORD"     Name="reserved1" />
+            <Field Type="VOID*"     Name="reserved2" />
+        </Variable>
+
+        <!-- COLOR -->
+        <Variable Name="COLOR" Type="Union">
+            <Field Type="GRAYCOLOR"         Name="gray" />
+            <Field Type="RGBCOLOR"          Name="rgb" />
+            <Field Type="CMYKCOLOR"         Name="cmyk" />
+            <Field Type="XYZCOLOR"          Name="XYZ" />
+            <Field Type="YxyCOLOR"          Name="Yxy" />
+            <Field Type="LabCOLOR"          Name="Lab" />
+            <Field Type="GENERIC3CHANNEL"   Name="gen3ch" />
+            <Field Type="NAMEDCOLOR"        Name="named" />
+            <Field Type="HiFiCOLOR"         Name="hifi" />
+            <Field Type="[COLOR_s]"         Name="" />
+        </Variable>
+        <Variable Name="PCOLOR"  Type="Pointer" Base="COLOR" />
+        <Variable Name="LPCOLOR" Type="Pointer" Base="COLOR" />
+
+        <!-- COLORDATATYPE -->
+        <Variable Name="COLORDATATYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="COLOR_BYTE"                  Value="1" />
+                <Set Name="COLOR_WORD"                  Value="2" />
+                <Set Name="COLOR_FLOAT"                 Value="3" />
+                <Set Name="COLOR_S2DOT13FIXED"          Value="4" />
+                <Set Name="COLOR_10b_R10G10B10A2"       Value="5" />
+                <Set Name="COLOR_10b_R10G10B10A2_XR"    Value="6" />
+                <Set Name="COLOR_FLOAT16"               Value="7" />
+            </Enum>
+        </Variable>
+
+        <!-- [ENUMTYPE_FIELDS] -->
+        <Variable Name="[ENUMTYPE_FIELDS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="ET_DEVICENAME"           Value="0x00000001" />
+                <Set Name="ET_MEDIATYPE"            Value="0x00000002" />
+                <Set Name="ET_DITHERMODE"           Value="0x00000004" />
+                <Set Name="ET_RESOLUTION"           Value="0x00000008" />
+                <Set Name="ET_CMMTYPE"              Value="0x00000010" />
+                <Set Name="ET_CLASS"                Value="0x00000020" />
+                <Set Name="ET_DATACOLORSPACE"       Value="0x00000040" />
+                <Set Name="ET_CONNECTIONSPACE"      Value="0x00000080" />
+                <Set Name="ET_SIGNATURE"            Value="0x00000100" />
+                <Set Name="ET_PLATFORM"             Value="0x00000200" />
+                <Set Name="ET_PROFILEFLAGS"         Value="0x00000400" />
+                <Set Name="ET_MANUFACTURER"         Value="0x00000800" />
+                <Set Name="ET_MODEL"                Value="0x00001000" />
+                <Set Name="ET_ATTRIBUTES"           Value="0x00002000" />
+                <Set Name="ET_RENDERINGINTENT"      Value="0x00004000" />
+                <Set Name="ET_CREATOR"              Value="0x00008000" />
+                <Set Name="ET_DEVICECLASS"          Value="0x00010000" />
+            </Flag>
+        </Variable>
+
+        <!-- [PROFILE_CLASS] -->
+        <Variable Name="[PROFILE_CLASS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="CLASS_MONITOR"       Value="0x6d6e7472" />
+                <Set Name="CLASS_PRINTER"       Value="0x70727472" />
+                <Set Name="CLASS_SCANNER"       Value="0x73636e72" />
+                <Set Name="CLASS_LINK"          Value="0x6c696e6b" />
+                <Set Name="CLASS_ABSTRACT"      Value="0x61627374" />
+                <Set Name="CLASS_COLORSPACE"    Value="0x73706163" />
+                <Set Name="CLASS_NAMED"         Value="0x6e6d636c" />
+                <Set Name="CLASS_CAMP"          Value="0x63616d70" />
+                <Set Name="CLASS_GMMP"          Value="0x676d6d70" />
+            </Enum>
+        </Variable>
+
+        <!-- [DEVICE_CLASS] -->
+        <Variable Name="[DEVICE_CLASS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="CLASS_MONITOR"       Value="0x6d6e7472" />
+                <Set Name="CLASS_PRINTER"       Value="0x70727472" />
+                <Set Name="CLASS_SCANNER"       Value="0x73636e72" />
+            </Enum>
+        </Variable>
+
+        <!-- [COLOR_SPACE] -->
+        <Variable Name="[COLOR_SPACE]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="SPACE_XYZ"           Value="0x58595A20" />
+                <Set Name="SPACE_Lab"           Value="0x4C616220" />
+                <Set Name="SPACE_Luv"           Value="0x4C757620" />
+                <Set Name="SPACE_YCbCr"         Value="0x59436272" />
+                <Set Name="SPACE_Yxy"           Value="0x59787920" />
+                <Set Name="SPACE_RGB"           Value="0x52474220" />
+                <Set Name="SPACE_GRAY"          Value="0x47524159" />
+                <Set Name="SPACE_HSV"           Value="0x48535620" />
+                <Set Name="SPACE_HLS"           Value="0x484C5320" />
+                <Set Name="SPACE_CMYK"          Value="0x434D594B" />
+                <Set Name="SPACE_CMY"           Value="0x434D5920" />
+                <Set Name="SPACE_2_CHANNEL"     Value="0x32434C52" />
+                <Set Name="SPACE_3_CHANNEL"     Value="0x33434C52" />
+                <Set Name="SPACE_4_CHANNEL"     Value="0x34434C52" />
+                <Set Name="SPACE_5_CHANNEL"     Value="0x35434C52" />
+                <Set Name="SPACE_6_CHANNEL"     Value="0x36434C52" />
+                <Set Name="SPACE_7_CHANNEL"     Value="0x37434C52" />
+                <Set Name="SPACE_8_CHANNEL"     Value="0x38434C52" />
+            </Enum>
+        </Variable>
+
+        <!-- [CONNECTION_SPACE] -->
+        <Variable Name="[CONNECTION_SPACE]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="SPACE_XYZ"           Value="0x58595A20" />
+                <Set Name="SPACE_Lab"           Value="0x4C616220" />
+            </Enum>
+        </Variable>
+
+        <!-- [PROFILE_FLAG] -->
+        <Variable Name="[PROFILE_FLAG]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="FLAG_EMBEDDEDPROFILE"                Value="0x00000001" />
+                <Set Name="FLAG_DEPENDENTONDATA"                Value="0x00000002" />
+                <Set Name="FLAG_ENABLE_CHROMATIC_ADAPTATION"    Value="0x02000000" />
+            </Flag>
+        </Variable>
+
+        <!-- [PROFILE_ATTRIBUTES] -->
+        <Variable Name="[PROFILE_ATTRIBUTES]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="ATTRIB_TRANSPARENCY"     Value="0x00000001" />
+                <Set Name="ATTRIB_MATTE"            Value="0x00000002" />
+            </Flag>
+        </Variable>
+
+        <!-- [RENDERING_INTENT] -->
+        <Variable Name="[RENDERING_INTENT]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="INTENT_PERCEPTUAL"               Value="0" />
+                <Set Name="INTENT_RELATIVE_COLORIMETRIC"    Value="1" />
+                <Set Name="INTENT_SATURATION"               Value="2" />
+                <Set Name="INTENT_ABSOLUTE_COLORIMETRIC"    Value="3" />
+            </Enum>
+        </Variable>
+        <Variable Name="[RENDERING_INTENT*]" Type="Pointer" Base="[RENDERING_INTENT]">
+            <Display Name="PDWORD" />
+        </Variable>
+
+        <!-- ENUMTYPE -->
+        <Variable Name="ENUMTYPE" Type="Struct">
+            <Field Type="DWORD"                 Name="dwSize" />
+            <Field Type="DWORD"                 Name="dwVersion" />
+            <Field Type="[ENUMTYPE_FIELDS]"     Name="dwFields" />
+            <Field Type="PCTSTR"                Name="pDeviceName" />
+            <Field Type="DWORD"                 Name="dwMediaType" />
+            <Field Type="DWORD"                 Name="dwDitheringMode" />
+            <Field Type="DWORD [2]"             Name="dwResolution" />
+            <Field Type="DWORD"                 Name="dwCMMType" />
+            <Field Type="[PROFILE_CLASS]"       Name="dwClass" />
+            <Field Type="[COLOR_SPACE]"         Name="dwDataColorSpace" />
+            <Field Type="[CONNECTION_SPACE]"    Name="dwConnectionSpace" />
+            <Field Type="DWORD"                 Name="dwSignature" />
+            <Field Type="DWORD"                 Name="dwPlatform" />
+            <Field Type="[PROFILE_FLAG]"        Name="dwProfileFlags" />
+            <Field Type="DWORD"                 Name="dwManufacturer" />
+            <Field Type="DWORD"                 Name="dwModel" />
+            <!-- TODO: dwAttributes are of type [PROFILE_ATTRIBUTES] -->
+            <Field Type="DWORD [2]"             Name="dwAttributes" />
+            <Field Type="[RENDERING_INTENT]"    Name="dwRenderingIntent" />
+            <Field Type="DWORD"                 Name="dwCreator" />
+            <Field Type="[DEVICE_CLASS]"        Name="dwDeviceClass" />
+        </Variable>
+        <Variable Name="PENUMTYPE" Type="Pointer" Base="ENUMTYPE" />
+
+        <!-- ENUMTYPEW -->
+        <Variable Name="ENUMTYPEW" Type="Struct">
+            <Field Type="DWORD"                 Name="dwSize" />
+            <Field Type="DWORD"                 Name="dwVersion" />
+            <Field Type="[ENUMTYPE_FIELDS]"     Name="dwFields" />
+            <Field Type="PCWSTR"                Name="pDeviceName" />
+            <Field Type="DWORD"                 Name="dwMediaType" />
+            <Field Type="DWORD"                 Name="dwDitheringMode" />
+            <Field Type="DWORD [2]"             Name="dwResolution" />
+            <Field Type="DWORD"                 Name="dwCMMType" />
+            <Field Type="[PROFILE_CLASS]"       Name="dwClass" />
+            <Field Type="[COLOR_SPACE]"         Name="dwDataColorSpace" />
+            <Field Type="[CONNECTION_SPACE]"    Name="dwConnectionSpace" />
+            <Field Type="DWORD"                 Name="dwSignature" />
+            <Field Type="DWORD"                 Name="dwPlatform" />
+            <Field Type="[PROFILE_FLAG]"        Name="dwProfileFlags" />
+            <Field Type="DWORD"                 Name="dwManufacturer" />
+            <Field Type="DWORD"                 Name="dwModel" />
+            <!-- TODO: dwAttributes are of type [PROFILE_ATTRIBUTES] -->
+            <Field Type="DWORD [2]"             Name="dwAttributes" />
+            <Field Type="[RENDERING_INTENT]"    Name="dwRenderingIntent" />
+            <Field Type="DWORD"                 Name="dwCreator" />
+            <Field Type="[DEVICE_CLASS]"        Name="dwDeviceClass" />
+        </Variable>
+        <Variable Name="PENUMTYPEW" Type="Pointer" Base="ENUMTYPEW" />
+
+        <!-- [CCT_FLAGS] -->
+        <Variable Name="[CCT_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="PROOF_MODE"                      Value="0x00000001" />
+                <Set Name="NORMAL_MODE"                     Value="0x00000002" />
+                <Set Name="BEST_MODE"                       Value="0x00000003" />
+                <Set Name="ENABLE_GAMUT_CHECKING"           Value="0x00010000" />
+                <Set Name="USE_RELATIVE_COLORIMETRIC"       Value="0x00020000" />
+                <Set Name="FAST_TRANSLATE"                  Value="0x00040000" />
+                <Set Name="PRESERVEBLACK"                   Value="0x00100000" />
+                <Set Name="WCS_ALWAYS"                      Value="0x00200000" />
+                <Set Name="SEQUENTIAL_TRANSFORM"            Value="0x80800000" />
+            </Flag>
+        </Variable>
+
+        <!-- [CMM_INFO] -->
+        <Variable Name="[CMM_INFO]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="CMM_WIN_VERSION"         Value="0" />
+                <Set Name="CMM_IDENT"               Value="1" />
+                <Set Name="CMM_DRIVER_VERSION"      Value="2" />
+                <Set Name="CMM_DLL_VERSION"         Value="3" />
+                <Set Name="CMM_VERSION"             Value="4" />
+                <Set Name="CMM_DESCRIPTION"         Value="5" />
+                <Set Name="CMM_LOGOICON"            Value="6" />
+            </Enum>
+        </Variable>
 
     </Headers>
 </ApiMonitor>

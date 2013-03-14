@@ -59,7 +59,7 @@
         <!-- [WsaIoctl]-->
         <Variable Name="[WsaIoctl]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
-            <Flag>
+            <Enum>
                 <Set Name="SIO_ASSOCIATE_HANDLE"                        Value="0x88000001" />
                 <Set Name="SIO_ENABLE_CIRCULAR_QUEUEING"                Value="0x28000002" />
                 <Set Name="SIO_FIND_ROUTE"                              Value="0x48000003" />
@@ -81,7 +81,7 @@
                 <Set Name="SIO_ADDRESS_LIST_SORT"                       Value="0xc8000019" />
                 <Set Name="SIO_RESERVED_1"                              Value="0x8800001a" />
                 <Set Name="SIO_RESERVED_2"                              Value="0x88000021" />
-            </Flag>
+            </Enum>
         </Variable>
 
         <!-- Windows Sockets 2 -->
@@ -229,7 +229,7 @@
             <Param Type="SOCKET" Name="s" />
             <Param Type="[SocketLevel]" Name="level" />
             <Param Type="[SocketOption]" Name="optname" />
-            <Param Type="[LPVOID_char*]" Name="optval" PostLength="optlen" />
+            <Param Type="[LPVOID|char*]" Name="optval" PostLength="optlen" />
             <Param Type="int*" Name="optlen" />
             <Return Type="[SocketCode-int]" />
             <Success Return="Equal" Value="0" />
@@ -305,7 +305,7 @@
         </Api>
         <Api Name="recv" Ordinal="16">
             <Param Type="SOCKET" Name="s" />
-            <Param Type="[LPVOID_char*]" Name="buf" Length="[Retval]" />
+            <Param Type="[LPVOID|char*]" Name="buf" PostLength="Return" />
             <Param Type="int" Name="len" />
             <Param Type="[SendRecvFlags]" Display="int" Name="flags" />
             <Return Type="[SocketCode-int]" />
@@ -313,7 +313,7 @@
         </Api>
         <Api Name="recvfrom" Ordinal="17">
             <Param Type="SOCKET" Name="s" />
-            <Param Type="[LPVOID_char*]" Name="buf" Length="[Retval]" />
+            <Param Type="[LPVOID|char*]" Name="buf" PostLength="Return" />
             <Param Type="int" Name="len" />
             <Param Type="int" Name="flags" />
             <Param Type="struct sockaddr*" Name="from" />
@@ -481,7 +481,6 @@
         <Api Name="WSACloseEvent" Ordinal="41">
             <Param Type="WSAEVENT" Name="hEvent" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WSAConnect" Ordinal="42">
             <Param Type="SOCKET" Name="s" />
@@ -504,7 +503,6 @@
             <Param Type="const struct timeval*" Name="timeout" />
             <Param Type="LPWSAOVERLAPPED" Name="Reserved" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WSAConnectByName" BothCharset="True" OrdinalA="44" OrdinalW="45">
             <Param Type="SOCKET" Name="s" />
@@ -517,7 +515,6 @@
             <Param Type="const struct timeval*" Name="timeout" />
             <Param Type="LPWSAOVERLAPPED" Name="Reserved" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WSACreateEvent" Ordinal="46">
             <Return Type="WSAEVENT" />
@@ -551,7 +548,7 @@
         </Api>
         <Api Name="WSAEnumProtocols" BothCharset="True" OrdinalA="61" OrdinalW="62">
             <Param Type="LPINT" Name="lpiProtocols" />
-            <Param Type="LPWSAPROTOCOL_INFO" Name="lpProtocolBuffer" PostCount="[Retval]" />
+            <Param Type="LPWSAPROTOCOL_INFO" Name="lpProtocolBuffer" PostCount="Return" />
             <Param Type="LPDWORD" Name="lpdwBufferLength" />
             <Return Type="[SocketCode-int]" />
             <Success Return="NotEqual" Value="-1" />
@@ -574,7 +571,6 @@
             <Param Type="BOOL" Name="fWait" />
             <Param Type="LPDWORD" Name="lpdwFlags" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WSAGetServiceClassInfo" BothCharset="True" OrdinalA="66" OrdinalW="67">
             <Param Type="LPGUID" Name="lpProviderId" />
@@ -680,8 +676,7 @@
         </Api>
         <Api Name="WSARecv" Ordinal="87">
             <Param Type="SOCKET" Name="s" />
-            <!-- TODO: Count below should be PostCount -->
-            <Param Type="LPWSABUF" Name="lpBuffers" Count="dwBufferCount"/>
+            <Param Type="[LPWSABUF_IN]" Name="lpBuffers" Count="dwBufferCount" />
             <Param Type="DWORD" Name="dwBufferCount" />
             <Param Type="LPDWORD" Name="lpNumberOfBytesRecvd" />
             <Param Type="[SendRecvFlags*]" Name="lpFlags" />
@@ -717,7 +712,6 @@
         <Api Name="WSAResetEvent" Ordinal="91">
             <Param Type="WSAEVENT" Name="hEvent" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WSASend" Ordinal="92">
             <Param Type="SOCKET" Name="s" />
@@ -762,7 +756,6 @@
         <Api Name="WSASetEvent" Ordinal="96">
             <Param Type="WSAEVENT" Name="hEvent" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WSASetLastError" Ordinal="112">
             <Param Type="[WSA_ERROR]" Name="iError" />
@@ -810,9 +803,16 @@
         </Api>
         <Api Name="WSAIsBlocking" Ordinal="114">
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
-        
+        <Api Name="GetAddrInfoExCancel">
+            <Param Type="LPHANDLE" Name="lpHandle" />
+            <Return Type="[WSA_ERROR]" />
+        </Api>
+        <Api Name="GetAddrInfoExOverlappedResult">
+            <Param Type="LPOVERLAPPED" Name="lpOverlapped" />
+            <Return Type="[WSA_ERROR]" />
+        </Api>
+
         <!-- Quality of Service (QOS) -->
         <Category Name="Networking/Quality of Service (QOS)" />
         <Api Name="WSAGetQOSByName">
@@ -820,7 +820,6 @@
             <Param Type="LPWSABUF" Name="lpQOSName" />
             <Param Type="LPQOS" Name="lpQOS" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
     </Module>
 </ApiMonitor>

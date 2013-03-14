@@ -1,0 +1,339 @@
+<!--
+    API Monitor Definitions
+    (c) 2012, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+
+    <Include Filename="Headers\windows.h.xml" />
+    
+    <Module Name="WinUsb.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        
+        <!-- Variables -->
+        <Variable Name="WINUSB_INTERFACE_HANDLE"        Type="Alias"    Base="LPVOID" />
+        <Variable Name="PWINUSB_INTERFACE_HANDLE"       Type="Pointer"  Base="WINUSB_INTERFACE_HANDLE" />
+
+        <!-- [USB_DESCRIPTOR_TYPE] -->
+        <Variable Name="[USB_DESCRIPTOR_TYPE]" Type="Alias" Base="UCHAR">
+            <Display Name="UCHAR" />
+            <Enum>
+                <Set Name="USB_DEVICE_DESCRIPTOR_TYPE"                          Value="0x01" />
+                <Set Name="USB_CONFIGURATION_DESCRIPTOR_TYPE"                   Value="0x02" />
+                <Set Name="USB_STRING_DESCRIPTOR_TYPE"                          Value="0x03" />
+                <Set Name="USB_INTERFACE_DESCRIPTOR_TYPE"                       Value="0x04" />
+                <Set Name="USB_ENDPOINT_DESCRIPTOR_TYPE"                        Value="0x05" />
+                <Set Name="USB_DEVICE_QUALIFIER_DESCRIPTOR_TYPE"                Value="0x06" />
+                <Set Name="USB_OTHER_SPEED_CONFIGURATION_DESCRIPTOR_TYPE"       Value="0x07" />
+                <Set Name="USB_INTERFACE_POWER_DESCRIPTOR_TYPE"                 Value="0x08" />
+                <Set Name="USB_OTG_DESCRIPTOR_TYPE"                             Value="0x09" />
+                <Set Name="USB_DEBUG_DESCRIPTOR_TYPE"                           Value="0x0A" />
+                <Set Name="USB_INTERFACE_ASSOCIATION_DESCRIPTOR_TYPE"           Value="0x0B" />
+                <Set Name="USB_BOS_DESCRIPTOR_TYPE"                             Value="0x0F" />
+                <Set Name="USB_DEVICE_CAPABILITY_DESCRIPTOR_TYPE"               Value="0x10" />
+                <Set Name="USB_SUPERSPEED_ENDPOINT_COMPANION_DESCRIPTOR_TYPE"   Value="0x30" />
+            </Enum>
+        </Variable>
+
+        <!-- [USB_PIPE_POLICY_TYPE] -->
+        <Variable Name="[USB_PIPE_POLICY_TYPE]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="SHORT_PACKET_TERMINATE"      Value="0x01" />
+                <Set Name="AUTO_CLEAR_STALL"            Value="0x02" />
+                <Set Name="PIPE_TRANSFER_TIMEOUT"       Value="0x03" />
+                <Set Name="IGNORE_SHORT_PACKETS"        Value="0x04" />
+                <Set Name="ALLOW_PARTIAL_READS"         Value="0x05" />
+                <Set Name="AUTO_FLUSH"                  Value="0x06" />
+                <Set Name="RAW_IO"                      Value="0x07" />
+                <Set Name="MAXIMUM_TRANSFER_SIZE"       Value="0x08" />
+                <Set Name="RESET_PIPE_ON_RESUME"        Value="0x09" />
+            </Enum>
+        </Variable>
+
+        <!-- [USB_POWER_POLICY_TYPE] -->
+        <Variable Name="[USB_POWER_POLICY_TYPE]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="AUTO_SUSPEND"    Value="0x81" />
+                <Set Name="SUSPEND_DELAY"   Value="0x83" />
+            </Enum>
+        </Variable>
+
+        <!-- [USB_INFORMATION_TYPE] -->
+        <Variable Name="[USB_INFORMATION_TYPE]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="DEVICE_SPEED"    Value="0x01" />
+            </Enum>
+        </Variable>
+
+        <!-- [USB_REQUEST] -->
+        <Variable Name="[USB_REQUEST]" Type="Alias" Base="UCHAR">
+            <Display Name="UCHAR" />
+            <Enum>
+                <Set Name="USB_REQUEST_GET_STATUS"              Value="0x00" />
+                <Set Name="USB_REQUEST_CLEAR_FEATURE"           Value="0x01" />
+                <Set Name="USB_REQUEST_SET_FEATURE"             Value="0x03" />
+                <Set Name="USB_REQUEST_SET_ADDRESS"             Value="0x05" />
+                <Set Name="USB_REQUEST_GET_DESCRIPTOR"          Value="0x06" />
+                <Set Name="USB_REQUEST_SET_DESCRIPTOR"          Value="0x07" />
+                <Set Name="USB_REQUEST_GET_CONFIGURATION"       Value="0x08" />
+                <Set Name="USB_REQUEST_SET_CONFIGURATION"       Value="0x09" />
+                <Set Name="USB_REQUEST_GET_INTERFACE"           Value="0x0A" />
+                <Set Name="USB_REQUEST_SET_INTERFACE"           Value="0x0B" />
+                <Set Name="USB_REQUEST_SYNC_FRAME"              Value="0x0C" />
+                <Set Name="USB_REQUEST_SET_SEL"                 Value="0x30" />
+                <Set Name="USB_REQUEST_ISOCH_DELAY"             Value="0x31" />
+            </Enum>
+        </Variable>
+
+        <!-- WINUSB_SETUP_PACKET -->
+        <Variable Name="WINUSB_SETUP_PACKET" Type="Struct" Pack="1">
+            <!-- TODO: RequestType can be decoded as a bit field -->
+            <Field Type="UCHAR"             Name="RequestType" />
+            <Field Type="[USB_REQUEST]"     Name="Request" />
+            <Field Type="USHORT"            Name="Value" />
+            <Field Type="USHORT"            Name="Index" />
+            <Field Type="USHORT"            Name="Length" />
+        </Variable>
+
+        <!-- [USB_DEVICE_CLASS] -->
+        <Variable Name="[USB_DEVICE_CLASS]" Type="Alias" Base="UCHAR">
+            <Display Name="UCHAR" />
+            <Enum>
+                <Set Name="USB_DEVICE_CLASS_RESERVED"                   Value="0x00" />
+                <Set Name="USB_DEVICE_CLASS_AUDIO"                      Value="0x01" />
+                <Set Name="USB_DEVICE_CLASS_COMMUNICATIONS"             Value="0x02" />
+                <Set Name="USB_DEVICE_CLASS_HUMAN_INTERFACE"            Value="0x03" />
+                <Set Name="USB_DEVICE_CLASS_MONITOR"                    Value="0x04" />
+                <Set Name="USB_DEVICE_CLASS_PHYSICAL_INTERFACE"         Value="0x05" />
+                <Set Name="USB_DEVICE_CLASS_POWER"                      Value="0x06" />
+                <Set Name="USB_DEVICE_CLASS_IMAGE"                      Value="0x06" />
+                <Set Name="USB_DEVICE_CLASS_PRINTER"                    Value="0x07" />
+                <Set Name="USB_DEVICE_CLASS_STORAGE"                    Value="0x08" />
+                <Set Name="USB_DEVICE_CLASS_HUB"                        Value="0x09" />
+                <Set Name="USB_DEVICE_CLASS_CDC_DATA"                   Value="0x0A" />
+                <Set Name="USB_DEVICE_CLASS_SMART_CARD"                 Value="0x0B" />
+                <Set Name="USB_DEVICE_CLASS_CONTENT_SECURITY"           Value="0x0D" />
+                <Set Name="USB_DEVICE_CLASS_VIDEO"                      Value="0x0E" />
+                <Set Name="USB_DEVICE_CLASS_PERSONAL_HEALTHCARE"        Value="0x0F" />
+                <Set Name="USB_DEVICE_CLASS_DIAGNOSTIC_DEVICE"          Value="0xDC" />
+                <Set Name="USB_DEVICE_CLASS_WIRELESS_CONTROLLER"        Value="0xE0" />
+                <Set Name="USB_DEVICE_CLASS_MISCELLANEOUS"              Value="0xEF" />
+                <Set Name="USB_DEVICE_CLASS_APPLICATION_SPECIFIC"       Value="0xFE" />
+                <Set Name="USB_DEVICE_CLASS_VENDOR_SPECIFIC"            Value="0xFF" />
+            </Enum>
+        </Variable>
+
+        <!-- USB_INTERFACE_DESCRIPTOR -->
+        <Variable Name="USB_INTERFACE_DESCRIPTOR" Type="Struct" Pack="1">
+            <!-- TODO: Decode All -->
+            <Field Type="UCHAR"                     Name="bLength" />
+            <Field Type="[USB_DESCRIPTOR_TYPE]"     Name="bDescriptorType" />
+            <Field Type="UCHAR"                     Name="bInterfaceNumber" />
+            <Field Type="UCHAR"                     Name="bAlternateSetting" />
+            <Field Type="UCHAR"                     Name="bNumEndpoints" />
+            <Field Type="[USB_DEVICE_CLASS]"        Name="bInterfaceClass" />
+            <Field Type="UCHAR"                     Name="bInterfaceSubClass" />
+            <Field Type="UCHAR"                     Name="bInterfaceProtocol" />
+            <Field Type="UCHAR"                     Name="iInterface" />
+        </Variable>
+        <Variable Name="PUSB_INTERFACE_DESCRIPTOR" Type="Pointer" Base="USB_INTERFACE_DESCRIPTOR" />
+
+        <!-- USBD_PIPE_TYPE -->
+        <Variable Name="USBD_PIPE_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="UsbdPipeTypeControl"    		Value="0" />
+                <Set Name="UsbdPipeTypeIsochronous"    	Value="1" />
+                <Set Name="UsbdPipeTypeBulk"    		Value="2" />
+                <Set Name="UsbdPipeTypeInterrupt"       Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- WINUSB_PIPE_INFORMATION -->
+        <Variable Name="WINUSB_PIPE_INFORMATION" Type="Struct">
+            <Field Type="USBD_PIPE_TYPE"        Name="PipeType" />
+            <Field Type="UCHAR"                 Name="PipeId" />
+            <Field Type="USHORT"                Name="MaximumPacketSize" />
+            <Field Type="UCHAR"                 Name="Interval" />
+        </Variable>
+        <Variable Name="PWINUSB_PIPE_INFORMATION" Type="Pointer" Base="WINUSB_PIPE_INFORMATION" />
+
+        <!-- USB_COMMON_DESCRIPTOR -->
+        <Variable Name="USB_COMMON_DESCRIPTOR" Type="Struct" Pack="1">
+            <Field Type="UCHAR"                     Name="bLength" />
+            <Field Type="[USB_DESCRIPTOR_TYPE]"     Name="bDescriptorType" />
+        </Variable>
+        <Variable Name="PUSB_COMMON_DESCRIPTOR" Type="Pointer" Base="USB_COMMON_DESCRIPTOR" />
+
+        <!-- USB_CONFIGURATION_DESCRIPTOR -->
+        <Variable Name="USB_CONFIGURATION_DESCRIPTOR" Type="Struct" Pack="1">
+            <Field Type="UCHAR"                     Name="bLength" />
+            <Field Type="[USB_DESCRIPTOR_TYPE]"     Name="bDescriptorType" />
+            <Field Type="USHORT"                    Name="wTotalLength" />
+            <Field Type="UCHAR"                     Name="bNumInterfaces" />
+            <Field Type="UCHAR"                     Name="bConfigurationValue" />
+            <Field Type="UCHAR"                     Name="iConfiguration" />
+            <Field Type="UCHAR"                     Name="bmAttributes" />
+            <Field Type="UCHAR"                     Name="MaxPower" />
+        </Variable>
+        <Variable Name="PUSB_CONFIGURATION_DESCRIPTOR" Type="Pointer" Base="USB_CONFIGURATION_DESCRIPTOR" />
+
+        <!-- Universal Serial Bus (USB) Drivers -->
+        <Category Name="Windows Driver Kit/Device and Driver Technologies/Bus and Port Drivers/Universal Serial Bus (USB) Drivers" />
+        <Api Name="WinUsb_AbortPipe">
+            <Param Type="WINUSB_INTERFACE_HANDLE" Name="InterfaceHandle" />
+            <Param Type="UCHAR" Name="PipeID" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WinUsb_ControlTransfer">
+            <Param Type="WINUSB_INTERFACE_HANDLE" Name="InterfaceHandle" />
+            <Param Type="WINUSB_SETUP_PACKET" Name="SetupPacket" />
+            <Param Type="PUCHAR" Name="Buffer" PostLength="LengthTransferred" />
+            <Param Type="ULONG" Name="BufferLength" />
+            <Param Type="PULONG" Name="LengthTransferred" />
+            <Param Type="LPOVERLAPPED" Name="Overlapped" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WinUsb_FlushPipe">
+            <Param Type="WINUSB_INTERFACE_HANDLE" Name="InterfaceHandle" />
+            <Param Type="UCHAR" Name="PipeID" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WinUsb_Free">
+            <Param Type="WINUSB_INTERFACE_HANDLE" Name="InterfaceHandle" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WinUsb_GetAssociatedInterface">
+            <Param Type="WINUSB_INTERFACE_HANDLE" Name="InterfaceHandle" />
+            <Param Type="UCHAR" Name="AssociatedInterfaceIndex" />
+            <Param Type="PWINUSB_INTERFACE_HANDLE" Name="AssociatedInterfaceHandle" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WinUsb_GetCurrentAlternateSetting">
+            <Param Type="WINUSB_INTERFACE_HANDLE" Name="InterfaceHandle" />
+            <Param Type="PUCHAR" Name="AlternateSetting" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WinUsb_GetDescriptor">
+            <Param Type="WINUSB_INTERFACE_HANDLE" Name="InterfaceHandle" />
+            <Param Type="[USB_DESCRIPTOR_TYPE]" Name="DescriptorType" />
+            <Param Type="UCHAR" Name="Index" />
+            <Param Type="USHORT" Name="LanguageID" />
+            <Param Type="PUCHAR" Name="Buffer" PostLength="LengthTransferred" />
+            <Param Type="ULONG" Name="BufferLength" />
+            <Param Type="PULONG" Name="LengthTransferred" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WinUsb_GetOverlappedResult">
+            <Param Type="WINUSB_INTERFACE_HANDLE" Name="InterfaceHandle" />
+            <Param Type="LPOVERLAPPED" Name="lpOverlapped" />
+            <Param Type="LPDWORD" Name="lpNumberOfBytesTransferred" />
+            <Param Type="BOOL" Name="bWait" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WinUsb_GetPipePolicy">
+            <Param Type="WINUSB_INTERFACE_HANDLE" Name="InterfaceHandle" />
+            <Param Type="UCHAR" Name="PipeID" />
+            <Param Type="[USB_PIPE_POLICY_TYPE]" Name="PolicyType" />
+            <Param Type="PULONG" Name="ValueLength" />
+            <Param Type="PVOID" Name="Value" PostLength="ValueLength" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WinUsb_GetPowerPolicy">
+            <Param Type="WINUSB_INTERFACE_HANDLE" Name="InterfaceHandle" />
+            <Param Type="[USB_POWER_POLICY_TYPE]" Name="PolicyType" />
+            <Param Type="PULONG" Name="ValueLength" />
+            <Param Type="PVOID" Name="Value" PostLength="ValueLength" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WinUsb_Initialize">
+            <Param Type="HANDLE" Name="DeviceHandle" />
+            <Param Type="PWINUSB_INTERFACE_HANDLE" Name="InterfaceHandle" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WinUsb_QueryDeviceInformation">
+            <Param Type="WINUSB_INTERFACE_HANDLE" Name="InterfaceHandle" />
+            <Param Type="[USB_INFORMATION_TYPE]" Name="InformationType" />
+            <Param Type="PULONG" Name="BufferLength" />
+            <Param Type="PVOID" Name="Buffer" PostLength="BufferLength" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WinUsb_QueryInterfaceSettings">
+            <Param Type="WINUSB_INTERFACE_HANDLE" Name="InterfaceHandle" />
+            <Param Type="UCHAR" Name="AlternateSettingNumber" />
+            <Param Type="PUSB_INTERFACE_DESCRIPTOR" Name="UsbAltInterfaceDescriptor" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WinUsb_QueryPipe">
+            <Param Type="WINUSB_INTERFACE_HANDLE" Name="InterfaceHandle" />
+            <Param Type="UCHAR" Name="AlternateInterfaceNumber" />
+            <Param Type="UCHAR" Name="PipeIndex" />
+            <Param Type="PWINUSB_PIPE_INFORMATION" Name="PipeInformation" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WinUsb_ReadPipe">
+            <Param Type="WINUSB_INTERFACE_HANDLE" Name="InterfaceHandle" />
+            <Param Type="UCHAR" Name="PipeID" />
+            <Param Type="PUCHAR" Name="Buffer" PostLength="LengthTransferred" />
+            <Param Type="ULONG" Name="BufferLength" />
+            <Param Type="PULONG" Name="LengthTransferred" />
+            <Param Type="LPOVERLAPPED" Name="Overlapped" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WinUsb_ResetPipe">
+            <Param Type="WINUSB_INTERFACE_HANDLE" Name="InterfaceHandle" />
+            <Param Type="UCHAR" Name="PipeID" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WinUsb_SetCurrentAlternateSetting">
+            <Param Type="WINUSB_INTERFACE_HANDLE" Name="InterfaceHandle" />
+            <Param Type="UCHAR" Name="AlternateSetting" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WinUsb_SetPipePolicy">
+            <Param Type="WINUSB_INTERFACE_HANDLE" Name="InterfaceHandle" />
+            <Param Type="UCHAR" Name="PipeID" />
+            <Param Type="[USB_PIPE_POLICY_TYPE]" Name="PolicyType" />
+            <Param Type="ULONG" Name="ValueLength" />
+            <Param Type="PVOID" Name="Value" Length="ValueLength" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WinUsb_SetPowerPolicy">
+            <Param Type="WINUSB_INTERFACE_HANDLE" Name="InterfaceHandle" />
+            <Param Type="[USB_POWER_POLICY_TYPE]" Name="PolicyType" />
+            <Param Type="ULONG" Name="ValueLength" />
+            <Param Type="PVOID" Name="Value" Length="ValueLength" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WinUsb_WritePipe">
+            <Param Type="WINUSB_INTERFACE_HANDLE" Name="InterfaceHandle" />
+            <Param Type="UCHAR" Name="PipeID" />
+            <Param Type="PUCHAR" Name="Buffer" Length="BufferLength" />
+            <Param Type="ULONG" Name="BufferLength" />
+            <Param Type="PULONG" Name="LengthTransferred" />
+            <Param Type="LPOVERLAPPED" Name="Overlapped" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WinUsb_ParseDescriptors">
+            <Param Type="PVOID" Name="DescriptorBuffer" Length="TotalLength" />
+            <Param Type="ULONG" Name="TotalLength" />
+            <Param Type="PVOID" Name="StartPosition" />
+            <Param Type="LONG" Name="DescriptorType" />
+            <Return Type="PUSB_COMMON_DESCRIPTOR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WinUsb_ParseConfigurationDescriptor">
+            <Param Type="PUSB_CONFIGURATION_DESCRIPTOR" Name="ConfigurationDescriptor" />
+            <Param Type="PVOID" Name="StartPosition" />
+            <Param Type="LONG" Name="InterfaceNumber" />
+            <Param Type="LONG" Name="AlternateSetting" />
+            <Param Type="LONG" Name="InterfaceClass" />
+            <Param Type="LONG" Name="InterfaceSubClass" />
+            <Param Type="LONG" Name="InterfaceProtocol" />
+            <Return Type="PUSB_INTERFACE_DESCRIPTOR" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+
+    </Module>
+</ApiMonitor>

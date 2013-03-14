@@ -1,17 +1,35 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
-    <Module Name="Wdsbp.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+    <Module Name="WdsBp.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+
+        <!-- [WDSBP_PK_TYPE] -->
+        <Variable Name="[WDSBP_PK_TYPE]" Type="Alias" Base="BYTE">
+            <Display Name="BYTE" />
+            <Flag>
+                <Set Name="WDSBP_PK_TYPE_DHCP"      Value="1" />
+                <Set Name="WDSBP_PK_TYPE_WDSNBP"    Value="2" />
+                <Set Name="WDSBP_PK_TYPE_BCD"       Value="4" />
+                <Set Name="WDSBP_PK_TYPE_DHCPV6"    Value="8" />
+            </Flag>
+        </Variable>
+        <Variable Name="[WDSBP_PK_TYPE*]" Type="Pointer" Base="[WDSBP_PK_TYPE]">
+            <Display Name="PBYTE" />
+        </Variable>
+        
+        <!-- TODO: Decode uOption in WdsBpAddOption and WdsBpQueryOption
+        Possible values are WdsBp.h - e.g. WDSBP_OPT_ARCHITECTURE? -->
+
         <Category Name="System Administration/Windows Deployment Services (WDS)/Network Boot Program" />
         <Api Name="WdsBpAddOption">
             <Param Type="HANDLE" Name="hHandle" />
             <Param Type="ULONG" Name="uOption" />
             <Param Type="ULONG" Name="uValueLen" />
-            <Param Type="PVOID" Name="pValue" />
+            <Param Type="PVOID" Name="pValue" Length="uValueLen" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="WdsBpCloseHandle">
@@ -21,19 +39,19 @@
         <Api Name="WdsBpGetOptionBuffer">
             <Param Type="HANDLE" Name="hHandle" />
             <Param Type="ULONG" Name="uBufferLen" />
-            <Param Type="PVOID" Name="pBuffer" />
+            <Param Type="PVOID" Name="pBuffer" PostLength="puBytes" />
             <Param Type="PULONG" Name="puBytes" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="WdsBpInitialize">
-            <Param Type="BYTE" Name="bPacketType" />
+            <Param Type="[WDSBP_PK_TYPE]" Name="bPacketType" />
             <Param Type="HANDLE*" Name="phHandle" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="WdsBpParseInitialize">
-            <Param Type="PVOID" Name="pPacket" />
+            <Param Type="PVOID" Name="pPacket" Length="uPacketLen" />
             <Param Type="ULONG" Name="uPacketLen" />
-            <Param Type="PBYTE" Name="pbPacketType" />
+            <Param Type="[WDSBP_PK_TYPE]" Name="pbPacketType" />
             <Param Type="HANDLE*" Name="phHandle" />
             <Return Type="HRESULT" />
         </Api>
@@ -41,8 +59,15 @@
             <Param Type="HANDLE" Name="hHandle" />
             <Param Type="ULONG" Name="uOption" />
             <Param Type="ULONG" Name="uValueLen" />
-            <Param Type="PVOID" Name="pValue" />
+            <Param Type="PVOID" Name="pValue" PostLength="puBytes" />
             <Param Type="PULONG" Name="puBytes" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WdsBpParseInitializev6">
+            <Param Type="PVOID" Name="pPacket" Length="uPacketLen" />
+            <Param Type="ULONG" Name="uPacketLen" />
+            <Param Type="[WDSBP_PK_TYPE]" Name="pbPacketType" />
+            <Param Type="HANDLE*" Name="phHandle" />
             <Return Type="HRESULT" />
         </Api>
     </Module>

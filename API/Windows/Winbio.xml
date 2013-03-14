@@ -27,6 +27,12 @@
         <Variable Name="PWINBIO_VERIFY_CALLBACK"            Type="Alias"    Base="LPVOID" />
         <Variable Name="WINBIO_UUID"                        Type="Alias"    Base="UUID" />
         <Variable Name="WINBIO_BIOMETRIC_SENSOR_SUBTYPE"    Type="Alias"    Base="ULONG" />
+        <Variable Name="WINBIO_FRAMEWORK_HANDLE"            Type="Alias"    Base="WINBIO_SESSION_HANDLE" />
+        <Variable Name="WINBIO_FRAMEWORK_HANDLE*"           Type="Pointer"  Base="WINBIO_FRAMEWORK_HANDLE" />
+        <Variable Name="WINBIO_FRAMEWORK_CHANGE_TYPE"       Type="Alias"    Base="ULONG" />
+        <Variable Name="PWINBIO_ASYNC_COMPLETION_CALLBACK"  Type="Alias"    Base="LPVOID" />
+        
+        <!-- Arrays -->
         <Variable Name="WINBIO_STRING"                      Type="Array"    Base="WCHAR" Count="256" />
         <Variable Name="UCHAR [SECURITY_MAX_SID_SIZE]"      Type="Array"    Base="UCHAR" Count="68" />
 
@@ -324,9 +330,64 @@
         </Variable>
         <Variable Name="WINBIO_CREDENTIAL_STATE*" Type="Pointer" Base="WINBIO_CREDENTIAL_STATE" />
 
+        <!-- WINBIO_ASYNC_NOTIFICATION_METHOD -->
+        <Variable Name="WINBIO_ASYNC_NOTIFICATION_METHOD" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="WINBIO_ASYNC_NOTIFY_NONE"    	Value="0" />
+                <Set Name="WINBIO_ASYNC_NOTIFY_CALLBACK"    Value="1" />
+                <Set Name="WINBIO_ASYNC_NOTIFY_MESSAGE"     Value="2" />
+            </Enum>
+        </Variable>
+
         <!-- APIs -->
         <Category Name="Security and Identity/Windows Biometric Framework" />
         <Api Name="WinBioAcquireFocus">
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WinBioAsyncEnumBiometricUnits">
+            <Param Type="WINBIO_FRAMEWORK_HANDLE" Name="FrameworkHandle" />
+            <Param Type="WINBIO_BIOMETRIC_TYPE" Name="Factor" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WinBioAsyncEnumDatabases">
+            <Param Type="WINBIO_FRAMEWORK_HANDLE" Name="FrameworkHandle" />
+            <Param Type="WINBIO_BIOMETRIC_TYPE" Name="Factor" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WinBioAsyncEnumServiceProviders">
+            <Param Type="WINBIO_FRAMEWORK_HANDLE" Name="FrameworkHandle" />
+            <Param Type="WINBIO_BIOMETRIC_TYPE" Name="Factor" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WinBioAsyncMonitorFrameworkChanges">
+            <Param Type="WINBIO_FRAMEWORK_HANDLE" Name="FrameworkHandle" />
+            <Param Type="WINBIO_FRAMEWORK_CHANGE_TYPE" Name="ChangeTypes" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WinBioAsyncOpenFramework">
+            <Param Type="WINBIO_ASYNC_NOTIFICATION_METHOD" Name="NotificationMethod" />
+            <Param Type="HWND" Name="TargetWindow" />
+            <Param Type="UINT" Name="MessageCode" />
+            <Param Type="PWINBIO_ASYNC_COMPLETION_CALLBACK" Name="CallbackRoutine" />
+            <Param Type="PVOID" Name="UserData" />
+            <Param Type="BOOL" Name="AsynchronousOpen" />
+            <Param Type="WINBIO_FRAMEWORK_HANDLE*" Name="FrameworkHandle" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WinBioAsyncOpenSession">
+            <Param Type="WINBIO_BIOMETRIC_TYPE" Name="Factor" />
+            <Param Type="WINBIO_POOL_TYPE" Name="PoolType" />
+            <Param Type="WINBIO_SESSION_FLAGS" Name="Flags" />
+            <Param Type="WINBIO_UNIT_ID*" Name="UnitArray" />
+            <Param Type="SIZE_T" Name="UnitCount" />
+            <Param Type="GUID*" Name="DatabaseId" />
+            <Param Type="WINBIO_ASYNC_NOTIFICATION_METHOD" Name="NotificationMethod" />
+            <Param Type="HWND" Name="TargetWindow" />
+            <Param Type="UINT" Name="MessageCode" />
+            <Param Type="PWINBIO_ASYNC_COMPLETION_CALLBACK" Name="CallbackRoutine" />
+            <Param Type="PVOID" Name="UserData" />
+            <Param Type="BOOL" Name="AsynchronousOpen" />
+            <Param Type="WINBIO_SESSION_HANDLE*" Name="SessionHandle" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="WinBioCancel">
@@ -349,6 +410,10 @@
             <Param Type="WINBIO_BIR_DATA_FLAGS" Name="Flags" />
             <Param Type="PWINBIO_CAPTURE_CALLBACK" Name="CaptureCallback" />
             <Param Type="PVOID" Name="CaptureCallbackContext" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WinBioCloseFramework">
+            <Param Type="WINBIO_FRAMEWORK_HANDLE" Name="FrameworkHandle" />
             <Return Type="HRESULT" />
         </Api>
         <Api Name="WinBioCloseSession">
@@ -451,7 +516,19 @@
             <Param Type="WINBIO_CREDENTIAL_STATE*" Name="CredentialState" />
             <Return Type="HRESULT" />
         </Api>
+        <!-- TODO: WinBioGetDomainLogonSetting, WinBioGetEnabledSetting and WinBioGetLogonSetting have HRESULT as the
+        return type in MSDN, but have a VOID return type in WinBio.h-->
         <Api Name="WinBioGetDomainLogonSetting">
+            <Param Type="BOOLEAN*" Name="Value" />
+            <Param Type="PWINBIO_SETTING_SOURCE_TYPE" Name="Source" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WinBioGetEnabledSetting">
+            <Param Type="BOOLEAN*" Name="Value" />
+            <Param Type="PWINBIO_SETTING_SOURCE_TYPE" Name="Source" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WinBioGetLogonSetting">
             <Param Type="BOOLEAN*" Name="Value" />
             <Param Type="PWINBIO_SETTING_SOURCE_TYPE" Name="Source" />
             <Return Type="HRESULT" />
@@ -511,14 +588,14 @@
             <Param Type="WINBIO_SESSION_HANDLE*" Name="SessionHandle" />
             <Return Type="HRESULT" />
         </Api>
-        <Api Name="WinBioReleaseFocus">
-            <Return Type="HRESULT" />
-        </Api>
         <Api Name="WinBioRegisterEventMonitor">
             <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
             <Param Type="WINBIO_EVENT_TYPE" Name="EventMask" />
             <Param Type="PWINBIO_EVENT_CALLBACK" Name="EventCallback" />
             <Param Type="PVOID" Name="EventCallbackContext" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="WinBioReleaseFocus">
             <Return Type="HRESULT" />
         </Api>
         <Api Name="WinBioRemoveAllCredentials">
@@ -569,5 +646,6 @@
             <Param Type="WINBIO_SESSION_HANDLE" Name="SessionHandle" />
             <Return Type="HRESULT" />
         </Api>
+
     </Module>
 </ApiMonitor>

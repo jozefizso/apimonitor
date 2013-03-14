@@ -1,0 +1,501 @@
+<!--
+    API Monitor Definitions
+    (c) 2012, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\gdi.h.xml" />
+    <Module Name="Mscms.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+
+        <!-- Variables -->
+        <Variable Name="TAGTYPE"        Type="Alias"        Base="DWORD" />
+        <Variable Name="PTAGTYPE"       Type="Pointer"      Base="TAGTYPE" />
+        <Variable Name="BYTE [44]"      Type="Array"        Base="BYTE"         Count="44" />
+
+        <!-- COLORPROFILETYPE -->
+        <Variable Name="COLORPROFILETYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="CPT_ICC"         Value="0" />
+                <Set Name="CPT_DMP"         Value="1" />
+                <Set Name="CPT_CAMP"        Value="2" />
+                <Set Name="CPT_GMMP"        Value="3" />
+            </Enum>
+        </Variable>
+
+        <!-- COLORPROFILESUBTYPE -->
+        <Variable Name="COLORPROFILESUBTYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="CPST_PERCEPTUAL"                     Value="0" />
+                <Set Name="CPST_RELATIVE_COLORIMETRIC"          Value="1" />
+                <Set Name="CPST_SATURATION"                     Value="2" />
+                <Set Name="CPST_ABSOLUTE_COLORIMETRIC"          Value="3" />
+                <Set Name="CPST_NONE"                           Value="4" />
+                <Set Name="CPST_RGB_WORKING_SPACE"              Value="5" />
+                <Set Name="CPST_CUSTOM_WORKING_SPACE"           Value="6" />
+            </Enum>
+        </Variable>
+
+        <!-- PROFILEHEADER -->
+        <Variable Name="PROFILEHEADER" Type="Struct">
+            <Field Type="DWORD"                 Name="phSize" />
+            <Field Type="DWORD"                 Name="phCMMType" />
+            <Field Type="DWORD"                 Name="phVersion" />
+            <Field Type="[PROFILE_CLASS]"       Name="phClass" />
+            <Field Type="[COLOR_SPACE]"         Name="phDataColorSpace" />
+            <Field Type="[CONNECTION_SPACE]"    Name="phConnectionSpace" />
+            <Field Type="DWORD [3]"             Name="phDateTime" />
+            <Field Type="DWORD"                 Name="phSignature" />
+            <Field Type="DWORD"                 Name="phPlatform" />
+            <Field Type="[PROFILE_FLAG]"        Name="phProfileFlags" />
+            <Field Type="DWORD"                 Name="phManufacturer" />
+            <Field Type="DWORD"                 Name="phModel" />
+            <!-- TODO: dwAttributes are of type [PROFILE_ATTRIBUTES] -->
+            <Field Type="DWORD [2]"             Name="phAttributes" />
+            <Field Type="[RENDERING_INTENT]"    Name="phRenderingIntent" />
+            <Field Type="CIEXYZ"                Name="phIlluminant" />
+            <Field Type="DWORD"                 Name="phCreator" />
+            <Field Type="BYTE [44]"             Name="phReserved" />
+        </Variable>
+        <Variable Name="PPROFILEHEADER" Type="Pointer" Base="PROFILEHEADER" />
+
+        <!-- [PROFILE_TYPE] -->
+        <Variable Name="[PROFILE_TYPE]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="PROFILE_FILENAME"    Value="1" />
+                <Set Name="PROFILE_MEMBUFFER"   Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- PROFILE -->
+        <Variable Name="PROFILE" Type="Struct">
+            <Field Type="[PROFILE_TYPE]"    Name="dwType" />
+            <Field Type="PVOID"             Name="pProfileData" Length="cbDataSize" />
+            <Field Type="DWORD"             Name="cbDataSize" />
+        </Variable>
+        <Variable Name="PPROFILE" Type="Pointer" Base="PROFILE" />
+
+        <!-- [PROFILE_ACCESS] -->
+        <Variable Name="[PROFILE_ACCESS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="PROFILE_READ"        Value="1" />
+                <Set Name="PROFILE_READWRITE"   Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- [WCS_OPEN_PROFILE_FLAG] -->
+        <Variable Name="[WCS_OPEN_PROFILE_FLAG]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="DONT_USE_EMBEDDED_WCS_PROFILES" Value="0x00000001" />
+            </Flag>
+        </Variable>
+
+        <!-- Windows Color System/Advanced -->
+        <Category Name="Graphics and Gaming/Legacy Graphics/Windows Color System/Advanced" />
+        <Api Name="CheckBitmapBits">
+            <Param Type="HTRANSFORM" Name="hColorTransform" />
+            <Param Type="PVOID" Name="pSrcBits" />
+            <Param Type="BMFORMAT" Name="bmInput" />
+            <Param Type="DWORD" Name="dwWidth" />
+            <Param Type="DWORD" Name="dwHeight" />
+            <Param Type="DWORD" Name="dwStride" />
+            <Param Type="PBYTE" Name="paResult" />
+            <Param Type="PBMCALLBACKFN" Name="pfnCallback" />
+            <Param Type="LPARAM" Name="lpCallbackData" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CheckColors">
+            <Param Type="HTRANSFORM" Name="hColorTransform" />
+            <Param Type="PCOLOR" Name="paInputColors" Count="nColors" />
+            <Param Type="DWORD" Name="nColors" />
+            <Param Type="COLORTYPE" Name="ctInput" />
+            <Param Type="PBYTE" Name="paResult" Count="nColors" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="ConvertColorNameToIndex">
+            <Param Type="HPROFILE" Name="hProfile" />
+            <Param Type="PCOLOR_NAME" Name="paColorName" Count="dwCount" />
+            <Param Type="PDWORD" Name="paIndex" Count="dwCount" />
+            <Param Type="DWORD" Name="dwCount" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="ConvertIndexToColorName">
+            <Param Type="HPROFILE" Name="hProfile" />
+            <Param Type="PDWORD" Name="paIndex" Count="dwCount" />
+            <Param Type="PCOLOR_NAME" Name="paColorName" Count="dwCount" />
+            <Param Type="DWORD" Name="dwCount" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CreateColorTransform" BothCharset="True">
+            <Param Type="LPLOGCOLORSPACE" Name="pLogColorSpace" />
+            <Param Type="HPROFILE" Name="hDestProfile" />
+            <Param Type="HPROFILE" Name="hTargetProfile" />
+            <Param Type="[CCT_FLAGS]" Name="dwFlags" />
+            <Return Type="HTRANSFORM" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CreateMultiProfileTransform">
+            <Param Type="PHPROFILE" Name="pahProfiles" Count="nProfiles" />
+            <Param Type="DWORD" Name="nProfiles" />
+            <Param Type="[RENDERING_INTENT*]" Name="padwIntent" Count="nIntents" />
+            <Param Type="DWORD" Name="nIntents" />
+            <Param Type="[CCT_FLAGS]" Name="dwFlags" />
+            <Param Type="DWORD" Name="indexPreferredCMM" />
+            <Return Type="HTRANSFORM" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="DeleteColorTransform">
+            <Param Type="HTRANSFORM" Name="hColorTransform" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="GetCMMInfo">
+            <Param Type="HTRANSFORM" Name="hColorTransform" />
+            <Param Type="[CMM_INFO]" Name="dwInfo" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetNamedProfileInfo">
+            <Param Type="HPROFILE" Name="hProfile" />
+            <Param Type="PNAMED_PROFILE_INFO" Name="pNamedProfileInfo" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="SelectCMM">
+            <Param Type="DWORD" Name="cmmID" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="TranslateBitmapBits">
+            <Param Type="HTRANSFORM" Name="hColorTransform" />
+            <Param Type="PVOID" Name="pSrcBits" />
+            <Param Type="BMFORMAT" Name="bmInput" />
+            <Param Type="DWORD" Name="dwWidth" />
+            <Param Type="DWORD" Name="dwHeight" />
+            <Param Type="DWORD" Name="dwInputStride" />
+            <Param Type="PVOID" Name="pDestBits" />
+            <Param Type="BMFORMAT" Name="bmOutput" />
+            <Param Type="DWORD" Name="dwOutputStride" />
+            <Param Type="PBMCALLBACKFN" Name="pfnCallback" />
+            <Param Type="LPARAM" Name="ulCallbackData" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="TranslateColors">
+            <Param Type="HTRANSFORM" Name="hColorTransform" />
+            <Param Type="PCOLOR" Name="paInputColors" Count="nColors" />
+            <Param Type="DWORD" Name="nColors" />
+            <Param Type="COLORTYPE" Name="ctInput" />
+            <Param Type="PCOLOR" Name="paOutputColors" Count="nColors" />
+            <Param Type="COLORTYPE" Name="ctOutput" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WcsCheckColors">
+            <Param Type="HTRANSFORM" Name="hColorTransform" />
+            <Param Type="DWORD" Name="nColors" />
+            <Param Type="DWORD" Name="nInputChannels" />
+            <Param Type="COLORDATATYPE" Name="cdtInput" />
+            <Param Type="DWORD" Name="cbInput" />
+            <Param Type="PVOID" Name="pInputData" Length="cbInput" />
+            <Param Type="PBYTE" Name="paResult" Count="nColors" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WcsTranslateColors">
+            <Param Type="HTRANSFORM" Name="hColorTransform" />
+            <Param Type="DWORD" Name="nColors" />
+            <Param Type="DWORD" Name="nInputChannels" />
+            <Param Type="COLORDATATYPE" Name="cdtInput" />
+            <Param Type="DWORD" Name="cbInput" />
+            <Param Type="PVOID" Name="pInputData" Length="cbInput" />
+            <Param Type="DWORD" Name="nOutputChannels" />
+            <Param Type="COLORDATATYPE" Name="cdtOutput" />
+            <Param Type="DWORD" Name="cbOutput" />
+            <Param Type="PVOID" Name="pOutputData" PostLength="cbOutput" />
+            <Return Type="BOOL" />
+        </Api>
+        <!-- Device Calibration and Characterization -->
+        <Category Name="Graphics and Gaming/Legacy Graphics/Windows Color System/Device Calibration and Characterization" />
+        <Api Name="CloseColorProfile">
+            <Param Type="HPROFILE" Name="hProfile" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CreateDeviceLinkProfile" BothCharset="True">
+            <Param Type="PHPROFILE" Name="pahProfiles" Count="nProfiles" />
+            <Param Type="DWORD" Name="nProfiles" />
+            <Param Type="[RENDERING_INTENT*]" Name="padwIntent" Count="nIntents" />
+            <Param Type="DWORD" Name="nIntents" />
+            <Param Type="[CCT_FLAGS]" Name="dwFlags" />
+            <Param Type="PBYTE" Name="pProfileData" />
+            <Param Type="DWORD" Name="indexPreferredCMM" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="GetColorProfileElement">
+            <Param Type="HPROFILE" Name="hProfile" />
+            <Param Type="TAGTYPE" Name="tag" />
+            <Param Type="DWORD" Name="dwOffset" />
+            <Param Type="PDWORD" Name="pcbSize" />
+            <Param Type="PVOID" Name="pBuffer" PostLength="pcbSize" />
+            <Param Type="PBOOL" Name="pbReference" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="GetColorProfileElementTag">
+            <Param Type="HPROFILE" Name="hProfile" />
+            <Param Type="DWORD" Name="dwIndex" />
+            <Param Type="PTAGTYPE" Name="pTag" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="GetColorProfileFromHandle">
+            <Param Type="HPROFILE" Name="hProfile" />
+            <Param Type="PBYTE" Name="pBuffer" PostLength="pcbSize" />
+            <Param Type="PDWORD" Name="pcbSize" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="GetColorProfileHeader">
+            <Param Type="HPROFILE" Name="hProfile" />
+            <Param Type="PPROFILEHEADER" Name="pHeader" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="GetCountColorProfileElements">
+            <Param Type="HPROFILE" Name="hProfile" />
+            <Param Type="PDWORD" Name="pnCount" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="GetPS2ColorRenderingDictionary">
+            <Param Type="HPROFILE" Name="hProfile" />
+            <Param Type="[RENDERING_INTENT]" Name="dwIntent" />
+            <Param Type="PBYTE" Name="pBuffer" PostLength="pcbSize" />
+            <Param Type="PDWORD" Name="pcbSize" />
+            <Param Type="PBOOL" Name="pbBinary" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="GetPS2ColorRenderingIntent">
+            <Param Type="HPROFILE" Name="hProfile" />
+            <Param Type="[RENDERING_INTENT]" Name="dwIntent" />
+            <Param Type="PBYTE" Name="pBuffer" PostLength="pcbSize" />
+            <Param Type="PDWORD" Name="pcbSize" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="GetPS2ColorSpaceArray">
+            <Param Type="HPROFILE" Name="hProfile" />
+            <Param Type="[RENDERING_INTENT]" Name="dwIntent" />
+            <Param Type="DWORD" Name="dwCSAType" />
+            <Param Type="PBYTE" Name="pBuffer" PostLength="pcbSize" />
+            <Param Type="PDWORD" Name="pcbSize" />
+            <Param Type="PBOOL" Name="pbBinary" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="IsColorProfileTagPresent">
+            <Param Type="HPROFILE" Name="hProfile" />
+            <Param Type="TAGTYPE" Name="tag" />
+            <Param Type="PBOOL" Name="pbPresent" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="IsColorProfileValid">
+            <Param Type="HPROFILE" Name="hProfile" />
+            <Param Type="PBOOL" Name="pbValid" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="OpenColorProfile" BothCharset="True">
+            <Param Type="PPROFILE" Name="pProfile" />
+            <Param Type="[PROFILE_ACCESS]" Name="dwDesiredAccess" />
+            <Param Type="[FILE_SHARE_MODE]" Name="dwShareMode" />
+            <Param Type="[CreationDisposition]" Name="dwCreationMode" />
+            <Return Type="HPROFILE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="SetColorProfileElement">
+            <Param Type="HPROFILE" Name="hProfile" />
+            <Param Type="TAGTYPE" Name="tag" />
+            <Param Type="DWORD" Name="dwOffset" />
+            <Param Type="PDWORD" Name="pcbSize" />
+            <Param Type="PVOID" Name="pBuffer" Length="pcbSize" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="SetColorProfileElementReference">
+            <Param Type="HPROFILE" Name="hProfile" />
+            <Param Type="TAGTYPE" Name="newTag" />
+            <Param Type="TAGTYPE" Name="refTag" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="SetColorProfileElementSize">
+            <Param Type="HPROFILE" Name="hProfile" />
+            <Param Type="TAGTYPE" Name="tag" />
+            <Param Type="DWORD" Name="cbSize" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="SetColorProfileHeader">
+            <Param Type="HPROFILE" Name="hProfile" />
+            <Param Type="PPROFILEHEADER" Name="pHeader" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WcsGetCalibrationManagementState">
+            <Param Type="BOOL*" Name="pbIsEnabled" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WcsSetCalibrationManagementState">
+            <Param Type="BOOL" Name="bIsEnabled" />
+            <Return Type="BOOL" />
+        </Api>
+        <!-- Profile Management -->
+        <Category Name="Graphics and Gaming/Legacy Graphics/Windows Color System/Profile Management" />
+        <Api Name="AssociateColorProfileWithDevice" BothCharset="True">
+            <Param Type="PCTSTR" Name="pMachineName" />
+            <Param Type="PCTSTR" Name="pProfileName" />
+            <Param Type="PCTSTR" Name="pDeviceName" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CreateProfileFromLogColorSpace" BothCharset="True">
+            <Param Type="LPLOGCOLORSPACE" Name="pLogColorSpace" />
+            <Param Type="PBYTE*" Name="pBuffer" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="DisassociateColorProfileFromDevice" BothCharset="True">
+            <Param Type="PCTSTR" Name="pMachineName" />
+            <Param Type="PCTSTR" Name="pProfileName" />
+            <Param Type="PCTSTR" Name="pDeviceName" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="EnumColorProfiles" BothCharset="True">
+            <Param Type="PCTSTR" Name="pMachineName" />
+            <Param Type="PENUMTYPE" Name="pEnumRecord" />
+            <Param Type="PBYTE" Name="pBuffer" PostLength="pdwSize" />
+            <Param Type="PDWORD" Name="pdwSize" />
+            <Param Type="PDWORD" Name="pnProfiles" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="GetColorDirectory" BothCharset="True">
+            <Param Type="PCTSTR" Name="pMachineName" />
+            <Param Type="PTSTR" Name="pBuffer" PostLength="pdwSize" />
+            <Param Type="PDWORD" Name="pdwSize" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="GetStandardColorSpaceProfile" BothCharset="True">
+            <Param Type="PCTSTR" Name="pMachineName" />
+            <Param Type="[LCSCSTYPE_DWORD]" Name="dwProfileID" />
+            <Param Type="PTSTR" Name="pProfileName" />
+            <Param Type="PDWORD" Name="pdwSize" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="InstallColorProfile" BothCharset="True">
+            <Param Type="PCTSTR" Name="pMachineName" />
+            <Param Type="PCTSTR" Name="pProfileName" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="RegisterCMM" BothCharset="True">
+            <Param Type="PCTSTR" Name="pMachineName" />
+            <Param Type="DWORD" Name="cmmID" />
+            <Param Type="PCTSTR" Name="pCMMdll" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="SetStandardColorSpaceProfile" BothCharset="True">
+            <Param Type="PCTSTR" Name="pMachineName" />
+            <Param Type="[LCSCSTYPE_DWORD]" Name="dwProfileID" />
+            <Param Type="PCSTR" Name="pProfilename" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="UninstallColorProfile" BothCharset="True">
+            <Param Type="PCTSTR" Name="pMachineName" />
+            <Param Type="PCTSTR" Name="pProfileName" />
+            <Param Type="BOOL" Name="bDelete" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="UnregisterCMM" BothCharset="True">
+            <Param Type="PCTSTR" Name="pMachineName" />
+            <Param Type="DWORD" Name="cmmID" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WcsAssociateColorProfileWithDevice" BothCharset="True">
+            <Param Type="WCS_PROFILE_MANAGEMENT_SCOPE" Name="profileManagementScope" />
+            <Param Type="PCWSTR" Name="pProfileName" />
+            <Param Type="PCWSTR" Name="pDeviceName" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WcsCreateIccProfile">
+            <Param Type="HPROFILE" Name="hWcsProfile" />
+            <Param Type="DWORD" Name="dwOptions" />
+            <Return Type="HPROFILE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WcsDisassociateColorProfileFromDevice">
+            <Param Type="WCS_PROFILE_MANAGEMENT_SCOPE" Name="profileManagementScope" />
+            <Param Type="PCWSTR" Name="pProfileName" />
+            <Param Type="PCWSTR" Name="pDeviceName" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WcsEnumColorProfiles">
+            <Param Type="WCS_PROFILE_MANAGEMENT_SCOPE" Name="profileManagementScope" />
+            <Param Type="PENUMTYPEW" Name="pEnumRecord" />
+            <Param Type="PBYTE" Name="pBuffer" />
+            <Param Type="DWORD" Name="dwSize" />
+            <Param Type="PDWORD" Name="pnProfiles" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WcsEnumColorProfilesSize">
+            <Param Type="WCS_PROFILE_MANAGEMENT_SCOPE" Name="profileManagementScope" />
+            <Param Type="PENUMTYPEW" Name="pEnumRecord" />
+            <Param Type="PDWORD" Name="pdwSize" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WcsGetDefaultColorProfile">
+            <Param Type="WCS_PROFILE_MANAGEMENT_SCOPE" Name="profileManagementScope" />
+            <Param Type="PCWSTR" Name="pDeviceName" />
+            <Param Type="COLORPROFILETYPE" Name="cptColorProfileType" />
+            <Param Type="COLORPROFILESUBTYPE" Name="cpstColorProfileSubType" />
+            <Param Type="[LCSCSTYPE_DWORD]" Name="dwProfileID" />
+            <Param Type="DWORD" Name="cbProfileName" />
+            <Param Type="LPWSTR" Name="pProfileName" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WcsGetDefaultColorProfileSize">
+            <Param Type="WCS_PROFILE_MANAGEMENT_SCOPE" Name="profileManagementScope" />
+            <Param Type="PCWSTR" Name="pDeviceName" />
+            <Param Type="COLORPROFILETYPE" Name="cptColorProfileType" />
+            <Param Type="COLORPROFILESUBTYPE" Name="cpstColorProfileSubType" />
+            <Param Type="[LCSCSTYPE_DWORD]" Name="dwProfileID" />
+            <Param Type="PDWORD" Name="pcbProfileName" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WcsGetDefaultRenderingIntent">
+            <Param Type="WCS_PROFILE_MANAGEMENT_SCOPE" Name="scope" />
+            <Param Type="[RENDERING_INTENT*]" Name="pdwRenderingIntent" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WcsGetUsePerUserProfiles">
+            <Param Type="LPCWSTR" Name="pDeviceName" />
+            <Param Type="[DEVICE_CLASS]" Name="dwDeviceClass" />
+            <Param Type="BOOL*" Name="pUsePerUserProfiles" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WcsOpenColorProfile" BothCharset="True">
+            <Param Type="PPROFILE" Name="pCDMPProfile" />
+            <Param Type="PPROFILE" Name="pCAMPProfile" />
+            <Param Type="PPROFILE" Name="pGMMPProfile" />
+            <Param Type="[PROFILE_ACCESS]" Name="dwDesiredAccess" />
+            <Param Type="[FILE_SHARE_MODE]" Name="dwShareMode" />
+            <Param Type="[CreationDisposition]" Name="dwCreationMode" />
+            <Param Type="[WCS_OPEN_PROFILE_FLAG]" Name="dwFlags" />
+            <Return Type="HPROFILE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WcsSetDefaultColorProfile">
+            <Param Type="WCS_PROFILE_MANAGEMENT_SCOPE" Name="profileManagementScope" />
+            <Param Type="PCWSTR" Name="pDeviceName" />
+            <Param Type="COLORPROFILETYPE" Name="cptColorProfileType" />
+            <Param Type="COLORPROFILESUBTYPE" Name="cpstColorProfileSubType" />
+            <Param Type="[LCSCSTYPE_DWORD]" Name="dwProfileID" />
+            <Param Type="LPCWSTR" Name="pProfileName" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WcsSetDefaultRenderingIntent">
+            <Param Type="WCS_PROFILE_MANAGEMENT_SCOPE" Name="scope" />
+            <Param Type="[RENDERING_INTENT]" Name="dwRenderingIntent" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="WcsSetUsePerUserProfiles">
+            <Param Type="LPCWSTR" Name="pDeviceName" />
+            <Param Type="[DEVICE_CLASS]" Name="dwDeviceClass" />
+            <Param Type="BOOL" Name="usePerUserProfiles" />
+            <Return Type="BOOL" />
+        </Api>
+
+    </Module>
+</ApiMonitor>

@@ -7,12 +7,12 @@
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\power.h.xml" />
     <Include Filename="Headers\registry.h.xml" />
-    
+
     <Module Name="PowrProf.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
-        
+
         <!-- Variables -->
-        <Variable Name="PWRSCHEMESENUMPROC"         Type="Alias"    Base="LPVOID" />
-        <Variable Name="BYTE [3]"                   Type="Array"    Base="BYTE"     Count="3" />
+        <Variable Name="PWRSCHEMESENUMPROC"     Type="Alias"    Base="LPVOID" />
+        <Variable Name="BYTE [3]"               Type="Array"    Base="BYTE"     Count="3" />
 
         <!-- [POWER_ACTION] -->
         <Variable Name="[POWER_ACTION]" Type="Alias" Base="DWORD">
@@ -198,7 +198,9 @@
             <Field Type="BYTE"                          Name="ProcessorMinThrottle" />
             <Field Type="BYTE"                          Name="ProcessorMaxThrottle" />
             <Field Type="BOOLEAN"                       Name="FastSystemS4" />
-            <Field Type="BYTE [3]"                      Name="spare2" />
+            <Field Type="BOOLEAN"                       Name="Hiberboot" />
+            <Field Type="BOOLEAN"                       Name="WakeAlarmPresent" />
+            <Field Type="BOOLEAN"                       Name="AoAc" />
             <Field Type="BOOLEAN"                       Name="DiskSpinDown" />
             <Field Type="BYTE [8]"                      Name="spare3" />
             <Field Type="BOOLEAN"                       Name="SystemBatteriesPresent" />
@@ -222,8 +224,26 @@
                 <Set Name="PlatformRoleSOHOServer"          Value="5" />
                 <Set Name="PlatformRoleAppliancePC"         Value="6" />
                 <Set Name="PlatformRolePerformanceServer"   Value="7" />
-                <Set Name="PlatformRoleMaximum"             Value="8" />
+                <Set Name="PlatformRoleSlate"               Value="8" />
             </Enum>
+        </Variable>
+
+        <!-- [POWER_PLATFORM_ROLE_VERSION] -->
+        <Variable Name="[POWER_PLATFORM_ROLE_VERSION]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="POWER_PLATFORM_ROLE_V1"      Value="0x00000001" />
+                <Set Name="POWER_PLATFORM_ROLE_V2"      Value="0x00000002" />
+            </Enum>
+        </Variable>
+
+        <!-- [DEVICEPOWER_FLAGS] -->
+        <Variable Name="[DEVICEPOWER_FLAGS]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="DEVICEPOWER_SET_WAKEENABLED"     Value="0x00000001" />
+                <Set Name="DEVICEPOWER_CLEAR_WAKEENABLED"   Value="0x00000002" />
+            </Flag>
         </Variable>
 
         <!-- Power Management -->
@@ -238,7 +258,6 @@
         </Api>
         <Api Name="DevicePowerClose">
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="DevicePowerEnumDevices">
             <Param Type="ULONG" Name="QueryIndex" />
@@ -247,16 +266,14 @@
             <Param Type="PBYTE" Name="pReturnBuffer" />
             <Param Type="PULONG" Name="pBufferSize" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="DevicePowerOpen">
             <Param Type="ULONG" Name="Flags" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="DevicePowerSetDeviceState">
             <Param Type="LPCWSTR" Name="DeviceDescription" />
-            <Param Type="ULONG" Name="SetFlags" />
+            <Param Type="[DEVICEPOWER_FLAGS]" Name="SetFlags" />
             <Param Type="PCVOID" Name="SetData" />
             <Return Type="DWORD" />
             <Success Return="NotEqual" Value="0" />
@@ -265,44 +282,37 @@
             <Param Type="PGLOBAL_POWER_POLICY" Name="pGlobalPowerPolicy" />
             <Param Type="PPOWER_POLICY" Name="pPowerPolicy" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="PowerCanRestoreIndividualDefaultPowerScheme">
             <Param Type="const GUID*" Name="SchemeGuid" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerCreatePossibleSetting">
             <Param Type="HKEY" Name="RootSystemPowerKey" />
             <Param Type="const GUID*" Name="SubGroupOfPowerSettingsGuid" />
             <Param Type="const GUID*" Name="PowerSettingGuid" />
             <Param Type="ULONG" Name="PossibleSettingIndex" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerCreateSetting">
             <Param Type="HKEY" Name="RootSystemPowerKey" />
             <Param Type="const GUID*" Name="SubGroupOfPowerSettingsGuid" />
             <Param Type="const GUID*" Name="PowerSettingGuid" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerDeleteScheme">
             <Param Type="HKEY" Name="RootPowerKey" />
             <Param Type="const GUID*" Name="SchemeGuid" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerDeterminePlatformRole">
             <Return Type="POWER_PLATFORM_ROLE" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="PowerDuplicateScheme">
             <Param Type="HKEY" Name="RootPowerKey" />
             <Param Type="const GUID*" Name="SourceSchemeGuid" />
             <Param Type="GUID**" Name="DestinationSchemeGuid" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerEnumerate">
             <Param Type="HKEY" Name="RootPowerKey" />
@@ -312,15 +322,18 @@
             <Param Type="ULONG" Name="Index" />
             <Param Type="UCHAR*" Name="Buffer" PostLength="BufferSize" />
             <Param Type="DWORD*" Name="BufferSize" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerImportPowerScheme">
             <Param Type="HKEY" Name="RootPowerKey" />
             <Param Type="LPCWSTR" Name="ImportFileNamePath" />
             <Param Type="GUID**" Name="DestinationSchemeGuid" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PowerIsSettingRangeDefined">
+            <Param Type="const GUID*" Name="SubKeyGuid" />
+            <Param Type="const GUID*" Name="SettingGuid" />
+            <Return Type="BOOLEAN" />
         </Api>
         <Api Name="PowerReadACDefaultIndex">
             <Param Type="HKEY" Name="RootPowerKey" />
@@ -328,8 +341,7 @@
             <Param Type="const GUID*" Name="SubGroupOfPowerSettingsGuid" />
             <Param Type="const GUID*" Name="PowerSettingGuid" />
             <Param Type="LPDWORD" Name="AcDefaultIndex" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerReadACValue">
             <Param Type="HKEY" Name="RootPowerKey" />
@@ -339,8 +351,7 @@
             <Param Type="[RegType-PULONG]" Name="Type" />
             <Param Type="LPBYTE" Name="Buffer" PostLength="BufferSize" />
             <Param Type="LPDWORD" Name="BufferSize" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerReadACValueIndex">
             <Param Type="HKEY" Name="RootPowerKey" />
@@ -348,8 +359,7 @@
             <Param Type="const GUID*" Name="SubGroupOfPowerSettingsGuid" />
             <Param Type="const GUID*" Name="PowerSettingGuid" />
             <Param Type="LPDWORD" Name="AcValueIndex" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerReadDCDefaultIndex">
             <Param Type="HKEY" Name="RootPowerKey" />
@@ -357,8 +367,7 @@
             <Param Type="const GUID*" Name="SubGroupOfPowerSettingsGuid" />
             <Param Type="const GUID*" Name="PowerSettingGuid" />
             <Param Type="LPDWORD" Name="DcDefaultIndex" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerReadDCValue">
             <Param Type="HKEY" Name="RootPowerKey" />
@@ -368,8 +377,7 @@
             <Param Type="[RegType-PULONG]" Name="Type" />
             <Param Type="PUCHAR" Name="Buffer" PostLength="BufferSize" />
             <Param Type="LPDWORD" Name="BufferSize" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerReadDCValueIndex">
             <Param Type="HKEY" Name="RootPowerKey" />
@@ -377,8 +385,7 @@
             <Param Type="const GUID*" Name="SubGroupOfPowerSettingsGuid" />
             <Param Type="const GUID*" Name="PowerSettingGuid" />
             <Param Type="LPDWORD" Name="DcValueIndex" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerReadDescription">
             <Param Type="HKEY" Name="RootPowerKey" />
@@ -387,8 +394,7 @@
             <Param Type="const GUID*" Name="PowerSettingGuid" />
             <Param Type="LPWSTR" Display="PUCHAR" Name="Buffer" />
             <Param Type="LPDWORD" Name="BufferSize" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerReadFriendlyName">
             <Param Type="HKEY" Name="RootPowerKey" />
@@ -397,8 +403,7 @@
             <Param Type="const GUID*" Name="PowerSettingGuid" />
             <Param Type="LPWSTR" Display="PUCHAR" Name="Buffer" />
             <Param Type="LPDWORD" Name="BufferSize" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerReadIconResourceSpecifier">
             <Param Type="HKEY" Name="RootPowerKey" />
@@ -407,8 +412,7 @@
             <Param Type="const GUID*" Name="PowerSettingGuid" />
             <Param Type="PUCHAR" Name="Buffer" PostLength="BufferSize" />
             <Param Type="LPDWORD" Name="BufferSize" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerReadPossibleDescription">
             <Param Type="HKEY" Name="RootPowerKey" />
@@ -417,8 +421,7 @@
             <Param Type="ULONG" Name="PossibleSettingIndex" />
             <Param Type="PUCHAR" Name="Buffer" />
             <Param Type="LPDWORD" Name="BufferSize" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerReadPossibleFriendlyName">
             <Param Type="HKEY" Name="RootPowerKey" />
@@ -427,8 +430,7 @@
             <Param Type="ULONG" Name="PossibleSettingIndex" />
             <Param Type="PUCHAR" Name="Buffer" />
             <Param Type="LPDWORD" Name="BufferSize" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerReadPossibleValue">
             <Param Type="HKEY" Name="RootPowerKey" />
@@ -438,38 +440,33 @@
             <Param Type="ULONG" Name="PossibleSettingIndex" />
             <Param Type="PUCHAR" Name="Buffer" PostLength="BufferSize" />
             <Param Type="LPDWORD" Name="BufferSize" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerReadSettingAttributes">
             <Param Type="const GUID*" Name="SubGroupGuid" />
             <Param Type="const GUID*" Name="PowerSettingGuid" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerReadValueIncrement">
             <Param Type="HKEY" Name="RootPowerKey" />
             <Param Type="const GUID*" Name="SubGroupOfPowerSettingsGuid" />
             <Param Type="const GUID*" Name="PowerSettingGuid" />
             <Param Type="LPDWORD" Name="ValueIncrement" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerReadValueMax">
             <Param Type="HKEY" Name="RootPowerKey" />
             <Param Type="const GUID*" Name="SubGroupOfPowerSettingsGuid" />
             <Param Type="const GUID*" Name="PowerSettingGuid" />
             <Param Type="LPDWORD" Name="ValueMaximum" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerReadValueMin">
             <Param Type="HKEY" Name="RootPowerKey" />
             <Param Type="const GUID*" Name="SubGroupOfPowerSettingsGuid" />
             <Param Type="const GUID*" Name="PowerSettingGuid" />
             <Param Type="LPDWORD" Name="ValueMinimum" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerReadValueUnitsSpecifier">
             <Param Type="HKEY" Name="RootPowerKey" />
@@ -477,39 +474,49 @@
             <Param Type="const GUID*" Name="PowerSettingGuid" />
             <Param Type="LPWSTR" Display="UCHAR*" Name="Buffer" />
             <Param Type="LPDWORD" Name="BufferSize" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerRemovePowerSetting">
             <Param Type="const GUID*" Name="PowerSettingSubKeyGuid" />
             <Param Type="const GUID*" Name="PowerSettingGuid" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerReplaceDefaultPowerSchemes">
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerRestoreDefaultPowerSchemes">
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerRestoreIndividualDefaultPowerScheme">
             <Param Type="const GUID*" Name="SchemeGuid" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerSetActiveScheme">
             <Param Type="HKEY" Name="UserRootPowerKey" />
             <Param Type="const GUID*" Name="SchemeGuid" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerSettingAccessCheck">
             <Param Type="POWER_DATA_ACCESSOR" Name="AccessFlags" />
             <Param Type="const GUID*" Name="PowerGuid" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PowerSettingAccessCheckEx">
+            <Param Type="POWER_DATA_ACCESSOR" Name="AccessFlags" />
+            <Param Type="const GUID*" Name="PowerGuid" />
+            <Param Type="REGSAM" Name="AccessType" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PowerSettingRegisterNotification">
+            <Param Type="LPCGUID" Name="SettingGuid" />
+            <Param Type="DWORD" Name="Flags" />
+            <Param Type="HANDLE" Name="Recipient" />
+            <Param Type="PHPOWERNOTIFY" Name="RegistrationHandle" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PowerSettingUnregisterNotification">
+            <Param Type="HPOWERNOTIFY" Name="RegistrationHandle" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerWriteACDefaultIndex">
             <Param Type="HKEY" Name="RootSystemPowerKey" />
@@ -517,8 +524,7 @@
             <Param Type="const GUID*" Name="SubGroupOfPowerSettingsGuid" />
             <Param Type="const GUID*" Name="PowerSettingGuid" />
             <Param Type="DWORD" Name="DefaultAcIndex" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerWriteACValueIndex">
             <Param Type="HKEY" Name="RootPowerKey" />
@@ -526,8 +532,7 @@
             <Param Type="const GUID*" Name="SubGroupOfPowerSettingsGuid" />
             <Param Type="const GUID*" Name="PowerSettingGuid" />
             <Param Type="DWORD" Name="AcValueIndex" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerWriteDCDefaultIndex">
             <Param Type="HKEY" Name="RootSystemPowerKey" />
@@ -535,8 +540,7 @@
             <Param Type="const GUID*" Name="SubGroupOfPowerSettingsGuid" />
             <Param Type="const GUID*" Name="PowerSettingGuid" />
             <Param Type="DWORD" Name="DefaultDcIndex" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerWriteDCValueIndex">
             <Param Type="HKEY" Name="RootPowerKey" />
@@ -544,8 +548,7 @@
             <Param Type="const GUID*" Name="SubGroupOfPowerSettingsGuid" />
             <Param Type="const GUID*" Name="PowerSettingGuid" />
             <Param Type="DWORD" Name="DcValueIndex" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerWriteDescription">
             <Param Type="HKEY" Name="RootPowerKey" />
@@ -554,8 +557,7 @@
             <Param Type="const GUID*" Name="PowerSettingGuid" />
             <Param Type="UCHAR*" Name="Buffer" />
             <Param Type="DWORD" Name="BufferSize" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerWriteFriendlyName">
             <Param Type="HKEY" Name="RootPowerKey" />
@@ -564,8 +566,7 @@
             <Param Type="const GUID*" Name="PowerSettingGuid" />
             <Param Type="UCHAR*" Name="Buffer" />
             <Param Type="DWORD" Name="BufferSize" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerWriteIconResourceSpecifier">
             <Param Type="HKEY" Name="RootPowerKey" />
@@ -574,8 +575,7 @@
             <Param Type="const GUID*" Name="PowerSettingGuid" />
             <Param Type="UCHAR*" Name="Buffer" />
             <Param Type="DWORD" Name="BufferSize" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerWritePossibleDescription">
             <Param Type="HKEY" Name="RootPowerKey" />
@@ -584,8 +584,7 @@
             <Param Type="ULONG" Name="PossibleSettingIndex" />
             <Param Type="UCHAR*" Name="Buffer" />
             <Param Type="DWORD" Name="BufferSize" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerWritePossibleFriendlyName">
             <Param Type="HKEY" Name="RootPowerKey" />
@@ -594,8 +593,7 @@
             <Param Type="ULONG" Name="PossibleSettingIndex" />
             <Param Type="UCHAR*" Name="Buffer" />
             <Param Type="DWORD" Name="BufferSize" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerWritePossibleValue">
             <Param Type="HKEY" Name="RootPowerKey" />
@@ -605,39 +603,34 @@
             <Param Type="ULONG" Name="PossibleSettingIndex" />
             <Param Type="UCHAR*" Name="Buffer" />
             <Param Type="DWORD" Name="BufferSize" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerWriteSettingAttributes">
             <Param Type="const GUID*" Name="SubGroupGuid" />
             <Param Type="const GUID*" Name="PowerSettingGuid" />
             <Param Type="DWORD" Name="Attributes" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerWriteValueIncrement">
             <Param Type="HKEY" Name="RootPowerKey" />
             <Param Type="const GUID*" Name="SubGroupOfPowerSettingsGuid" />
             <Param Type="const GUID*" Name="PowerSettingGuid" />
             <Param Type="DWORD" Name="ValueIncrement" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerWriteValueMax">
             <Param Type="HKEY" Name="RootPowerKey" />
             <Param Type="const GUID*" Name="SubGroupOfPowerSettingsGuid" />
             <Param Type="const GUID*" Name="PowerSettingGuid" />
             <Param Type="DWORD" Name="ValueMaximum" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerWriteValueMin">
             <Param Type="HKEY" Name="RootPowerKey" />
             <Param Type="const GUID*" Name="SubGroupOfPowerSettingsGuid" />
             <Param Type="const GUID*" Name="PowerSettingGuid" />
             <Param Type="DWORD" Name="ValueMinimum" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PowerWriteValueUnitsSpecifier">
             <Param Type="HKEY" Name="RootPowerKey" />
@@ -645,96 +638,84 @@
             <Param Type="const GUID*" Name="PowerSettingGuid" />
             <Param Type="UCHAR*" Name="Buffer" />
             <Param Type="DWORD" Name="BufferSize" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="CanUserWritePwrScheme">
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="DeletePwrScheme">
             <Param Type="UINT" Name="uiIndex" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="EnumPwrSchemes">
             <Param Type="PWRSCHEMESENUMPROC" Name="lpfnPwrSchemesEnumProc" />
             <Param Type="LPARAM" Name="lParam" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetActivePwrScheme">
             <Param Type="PUINT" Name="puiID" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="PowerGetActiveScheme">
             <Param Type="HKEY" Name="UserRootPowerKey" />
             <Param Type="GUID**" Name="ActivePolicyGuid" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="GetPwrDiskSpindownRange">
             <Param Type="PUINT" Name="RangeMax" />
             <Param Type="PUINT" Name="RangeMin" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="IsPwrHibernateAllowed">
             <Return Type="BOOLEAN" />
+            <Success />
         </Api>
         <Api Name="GetPwrCapabilities">
             <Param Type="PSYSTEM_POWER_CAPABILITIES" Name="lpSystemPowerCapabilities" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="IsPwrShutdownAllowed">
             <Return Type="BOOLEAN" />
+            <Success />
         </Api>
         <Api Name="IsPwrSuspendAllowed">
             <Return Type="BOOLEAN" />
+            <Success />
         </Api>
         <Api Name="ReadGlobalPwrPolicy">
             <Param Type="PGLOBAL_POWER_POLICY" Name="pGlobalPowerPolicy" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="ReadProcessorPwrScheme">
             <Param Type="UINT" Name="uiID" />
             <Param Type="PMACHINE_PROCESSOR_POWER_POLICY" Name="pMachineProcessorPowerPolicy" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="ReadPwrScheme">
             <Param Type="UINT" Name="uiID" />
             <Param Type="PPOWER_POLICY" Name="pPowerPolicy" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SetActivePwrScheme">
             <Param Type="UINT" Name="uiID" />
             <Param Type="PGLOBAL_POWER_POLICY" Name="lpGlobalPowerPolicy" />
             <Param Type="PPOWER_POLICY" Name="lpPowerPolicy" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SetSuspendState">
             <Param Type="BOOLEAN" Name="Hibernate" />
             <Param Type="BOOLEAN" Name="ForceCritical" />
             <Param Type="BOOLEAN" Name="DisableWakeEvent" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WriteGlobalPwrPolicy">
             <Param Type="PGLOBAL_POWER_POLICY" Name="pGlobalPowerPolicy" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WriteProcessorPwrScheme">
             <Param Type="UINT" Name="ID" />
             <Param Type="PMACHINE_PROCESSOR_POWER_POLICY" Name="pMachineProcessorPowerPolicy" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WritePwrScheme">
             <Param Type="PUINT" Name="puiID" />
@@ -742,7 +723,21 @@
             <Param Type="LPWSTR" Name="lpszDescription" />
             <Param Type="PPOWER_POLICY" Name="pPowerPolicy" />
             <Return Type="BOOLEAN" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
+        <Api Name="PowerDeterminePlatformRoleEx">
+            <Param Type="[POWER_PLATFORM_ROLE_VERSION]" Name="Version" />
+            <Return Type="POWER_PLATFORM_ROLE" />
+        </Api>
+        <Api Name="PowerRegisterSuspendResumeNotification">
+            <Param Type="[POWER_NOTIFICATION_FLAGS]" Name="Flags" />
+            <Param Type="HANDLE" Name="Recipient" />
+            <Param Type="PHPOWERNOTIFY" Name="RegistrationHandle" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PowerUnregisterSuspendResumeNotification">
+            <Param Type="HPOWERNOTIFY" Name="RegistrationHandle" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+
     </Module>
 </ApiMonitor>

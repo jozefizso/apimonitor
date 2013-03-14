@@ -6,8 +6,9 @@
 <ApiMonitor>
     <Include Filename="Headers\common.h.xml" />
     <Include Filename="Headers\ntstatus.h.xml" />
+    <Include Filename="Headers\hresult.h.xml" />
     <Include Filename="Internal\internal.h.xml" />
-    
+
     <Headers>
         
         <!-- Variables -->
@@ -17,8 +18,6 @@
         <Variable Name="LPARAM*"                        Type="Pointer"  Base="LPARAM" />
         <Variable Name="LRESULT"                        Type="Alias"    Base="LONG_PTR" />
         <Variable Name="LRESULT*"                       Type="Pointer"  Base="LRESULT" />
-        <Variable Name="LANGID"                         Type="Alias"    Base="WORD" />
-        <Variable Name="LANGID*"                        Type="Pointer"  Base="LANGID" />
         <Variable Name="BSTR"                           Type="Alias"    Base="WCHAR*" />
         <Variable Name="const BSTR"                     Type="Alias"    Base="BSTR" />
         <Variable Name="BSTR*"                          Type="Pointer"  Base="BSTR" />
@@ -28,11 +27,16 @@
         <Variable Name="SID*"                           Type="Alias"    Base="LPVOID" />
         <Variable Name="PSID"                           Type="Alias"    Base="PVOID" />
         <Variable Name="PSID*"                          Type="Pointer"  Base="PSID" />
+        <Variable Name="PSID**"                         Type="Pointer"  Base="PSID*" />
         <Variable Name="PVECTORED_EXCEPTION_HANDLER"    Type="Alias"    Base="LPVOID" />
         <Variable Name="ATOM"                           Type="Alias"    Base="WORD" />
         <Variable Name="PSLIST_ENTRY"                   Type="Alias"    Base="LPVOID" />
         <Variable Name="KAFFINITY"                      Type="Alias"    Base="ULONG_PTR" />
         <Variable Name="STDAPI_(VOID)"                  Type="Alias"    Base="VOID" />
+        <Variable Name="LPTHREAD_START_ROUTINE"         Type="Alias"    Base="LPVOID" />
+        <Variable Name="STDAPI"                         Type="Alias"    Base="HRESULT" />
+        <Variable Name="SCODE"                          Type="Alias"    Base="HRESULT" />
+        <Variable Name="SCODE*"                         Type="Pointer"  Base="SCODE" />
 
         <!-- Arrays -->
         <Variable Name="WCHAR [32]"                                 Type="Array"    Base="WCHAR"        Count="32" />
@@ -42,12 +46,6 @@
         <Variable Name="TCHAR [RAS_MaxEntryName + 1]"               Type="Array"    Base="TCHAR"        Count="257" />
         <Variable Name="ULONG_PTR [EXCEPTION_MAXIMUM_PARAMETERS]"   Type="Array"    Base="ULONG_PTR"    Count="15" />
 
-        <!-- Smart Card Variables  -->
-        <Variable Name="SCARDCONTEXT"                   Type="Alias"    Base="ULONG_PTR" />
-        <Variable Name="LPSCARDCONTEXT"                 Type="Pointer"  Base="SCARDCONTEXT" />
-        <Variable Name="SCARDHANDLE"                    Type="Alias"    Base="ULONG_PTR" />
-        <Variable Name="LPSCARDHANDLE"                  Type="Pointer"  Base="SCARDHANDLE" />
-        
         <!-- MAPI Variables -->
         <Variable Name="IAddrBook"                      Type="Interface" />
         <Variable Name="LPADRBOOK"                      Type="Alias"    Base="IAddrBook*" />
@@ -65,6 +63,15 @@
         <Variable Name="LPUNKNOWN"                      Type="Alias"    Base="IUnknown*" />
         <Variable Name="LPUNKNOWN*"                     Type="Pointer"  Base="LPUNKNOWN" />
         <Variable Name="const IUnknown*"                Type="Alias"    Base="IUnknown*" />
+
+        <!-- LANGID -->
+        <Variable Name="LANGID" Type="Alias" Base="WORD">
+            <Enum>
+                <Set Name="LANG_SYSTEM_DEFAULT"     Value="0x0800" />
+                <Set Name="LANG_USER_DEFAULT"       Value="0x0400" />
+            </Enum>
+        </Variable>
+        <Variable Name="LANGID*" Type="Pointer" Base="LANGID" />
 
         <!-- LCID -->
         <Variable Name="LCID" Type="Alias" Base="DWORD">
@@ -94,6 +101,7 @@
 
         <!-- TODO: Structures - 32/64 Differences -->
         <Variable Name="PCONTEXT"                       Type="Alias"    Base="LPVOID" />
+        <Variable Name="PCONTEXT*"                      Type="Pointer"  Base="PCONTEXT" />
         <Variable Name="const CONTEXT*"                 Type="Alias"    Base="PCONTEXT" />
 
         <!-- POINT -->
@@ -560,31 +568,6 @@
             </Enum>
         </Variable>
 
-        <!-- HRESULT-->
-        <Variable Name="HRESULT" Type="Integer" Size="4">
-            <Enum>
-                <Set Name="S_OK"                Value="0" />
-                <Set Name="S_FALSE"             Value="1" />
-                <Set Name="E_ABORT"             Value="0x80004004" />
-                <Set Name="E_ACCESSDENIED"      Value="0x80070005" />
-                <Set Name="E_FAIL"              Value="0x80004005" />
-                <Set Name="E_HANDLE"            Value="0x80070006" />
-                <Set Name="E_INVALIDARG"        Value="0x80070057" />
-                <Set Name="E_NOINTERFACE"       Value="0x80004002" />
-                <Set Name="E_NOTIMPL"           Value="0x80004001" />
-                <Set Name="E_OUTOFMEMORY"       Value="0x8007000E" />
-                <Set Name="E_POINTER"           Value="0x80004003" />
-                <Set Name="E_UNEXPECTED"        Value="0x8000FFFF" />
-                <Set Name="CO_E_NOTINITIALIZED" Value="0x800401F0" />
-            </Enum>
-            <Success Return="Equal" Value="0" ErrorFunc="HRESULT" />
-        </Variable>
-        <Variable Name="HRESULT*" Type="Pointer" Base="HRESULT" />
-
-        <Variable Name="STDAPI"     Type="Alias"    Base="HRESULT" />
-        <Variable Name="SCODE"      Type="Alias"    Base="HRESULT" />
-        <Variable Name="SCODE*"     Type="Pointer"  Base="SCODE" />
-
         <!-- [LARGE_INTEGER_s] -->
         <Variable Name="[LARGE_INTEGER_s]" Type="Struct">
             <Display Name="struct" />
@@ -621,22 +604,23 @@
             <Field Type="DWORD" Name="dwLowDateTime" />
             <Field Type="DWORD" Name="dwHighDateTime" />
         </Variable>
-        <Variable Name="FILETIME*"              Type="Pointer"  Base="FILETIME"/>
-        <Variable Name="PFILETIME"              Type="Alias"    Base="FILETIME*"/>
+        <Variable Name="FILETIME*"              Type="Pointer"  Base="FILETIME" />
+        <Variable Name="PFILETIME"              Type="Alias"    Base="FILETIME*" />
         <Variable Name="LPFILETIME"             Type="Alias"    Base="FILETIME*" />
-        <Variable Name="const FILETIME*"        Type="Alias"    Base="FILETIME*"/>
+        <Variable Name="const FILETIME*"        Type="Alias"    Base="FILETIME*" />
         <Variable Name="FILETIME const*"        Type="Alias"    Base="FILETIME*" />
 
         <!-- GUID -->
         <Variable Name="GUID"               Type="Guid" />
-        <Variable Name="GUID*"              Type="Pointer"  Base="GUID"/>
-        <Variable Name="PGUID"              Type="Alias"    Base="GUID*"/>
+        <Variable Name="GUID*"              Type="Pointer"  Base="GUID" />
+        <Variable Name="PGUID"              Type="Alias"    Base="GUID*" />
         <Variable Name="GUID**"             Type="Pointer"  Base="GUID*" />
-        <Variable Name="const GUID*"        Type="Alias"    Base="GUID*"/>
+        <Variable Name="const GUID*"        Type="Alias"    Base="GUID*" />
         <Variable Name="LPCGUID"            Type="Alias"    Base="GUID*" />
+        <Variable Name="LPCGUID*"           Type="Pointer"  Base="LPCGUID" />
         <Variable Name="CONST GUID*"        Type="Alias"    Base="GUID*" />
-        <Variable Name="LPGUID"             Type="Pointer"  Base="GUID"/>
-        <Variable Name="const LPGUID"       Type="Alias"    Base="LPGUID"/>
+        <Variable Name="LPGUID"             Type="Pointer"  Base="GUID" />
+        <Variable Name="const LPGUID"       Type="Alias"    Base="LPGUID" />
         <Variable Name="REFGUID"            Type="Alias"    Base="GUID*" />
 
         <!-- CLSID -->
@@ -652,12 +636,12 @@
         <Variable Name="const UUID*"        Type="Alias"    Base="UUID*" />
 
         <!-- IID -->
-        <Variable Name="IID"                Type="Alias"    Base="GUID"/>
-        <Variable Name="IID*"               Type="Pointer"  Base="IID"/>
-        <Variable Name="const IID*"         Type="Alias"    Base="IID*"/>
-        <Variable Name="IID**"              Type="Pointer"  Base="IID*"/>
+        <Variable Name="IID"                Type="Alias"    Base="GUID" />
+        <Variable Name="IID*"               Type="Pointer"  Base="IID" />
+        <Variable Name="const IID*"         Type="Alias"    Base="IID*" />
+        <Variable Name="IID**"              Type="Pointer"  Base="IID*" />
         <Variable Name="REFIID"             Type="Pointer"  Base="IID" />
-        <Variable Name="LPIID"              Type="Pointer"  Base="IID"/>
+        <Variable Name="LPIID"              Type="Pointer"  Base="IID" />
 
         <!-- LUID -->
         <Variable Name="LUID" Type="Struct">
@@ -691,9 +675,19 @@
                 <Set Name="WRITE_DAC"                   Value="0x00040000" />
                 <Set Name="READ_CONTROL"                Value="0x00020000" />
                 <Set Name="DELETE"                      Value="0x00010000" />
+                <Set Name="SPECIFIC_RIGHTS_ALL"         Value="0x0000FFFF" />
             </Flag>
         </Variable>
+        <Variable Name="ACCESS_MASK*" Type="Pointer" Base="ACCESS_MASK" />
         <Variable Name="PACCESS_MASK" Type="Pointer" Base="ACCESS_MASK" />
+
+        <!-- [ACCESS_MASK_DWORD] -->
+        <Variable Name="[ACCESS_MASK_DWORD]" Type="Alias" Base="ACCESS_MASK">
+            <Display Name="DWORD" />
+        </Variable>
+        <Variable Name="[ACCESS_MASK_LPDWORD]" Type="Pointer" Base="[ACCESS_MASK_DWORD]">
+            <Display Name="LPDWORD" />
+        </Variable>
 
         <!-- [THREAD_ACCESS_MASK] -->
         <Variable Name="[THREAD_ACCESS_MASK]" Type="Alias" Base="ACCESS_MASK">
@@ -816,13 +810,6 @@
                 <Set Name="JobObjectSchedulingRankBiasInformation"      Value="22" />
                 <Set Name="JobObjectTimerVirtualizationInformation"     Value="23" />
                 <Set Name="JobObjectCycleTimeNotification"              Value="24" />
-                <Set Name="JobObjectReserved1Information"               Value="18" />
-                <Set Name="JobObjectReserved2Information"               Value="19" />
-                <Set Name="JobObjectReserved3Information"               Value="20" />
-                <Set Name="JobObjectReserved4Information"               Value="21" />
-                <Set Name="JobObjectReserved5Information"               Value="22" />
-                <Set Name="JobObjectReserved6Information"               Value="23" />
-                <Set Name="JobObjectReserved7Information"               Value="24" />
             </Enum>
         </Variable>
 
@@ -947,6 +934,7 @@
         <Variable Name="PUNICODE_STRING"        Type="Pointer" Base="UNICODE_STRING" />
         <Variable Name="PUNICODE_STRING*"       Type="Pointer" Base="PUNICODE_STRING" />
         <Variable Name="PCUNICODE_STRING"       Type="Pointer" Base="UNICODE_STRING" />
+        <Variable Name="PCUNICODE_STRING*"      Type="Pointer" Base="PCUNICODE_STRING" />
         <Variable Name="CONST UNICODE_STRING*"  Type="Pointer" Base="UNICODE_STRING" />
 
         <!-- STRING -->
@@ -972,272 +960,861 @@
         <Variable Name="[WinMsg]" Type="Alias" Base="UINT">
             <Display Name="UINT" />
             <Enum>
-                <Set Name="WM_CREATE"                       Value="0x0001" />
-                <Set Name="WM_DESTROY"                      Value="0x0002" />
-                <Set Name="WM_MOVE"                         Value="0x0003" />
-                <Set Name="WM_SIZE"                         Value="0x0005" />
-                <Set Name="WM_ACTIVATE"                     Value="0x0006" />
-                <Set Name="WM_SETFOCUS"                     Value="0x0007" />
-                <Set Name="WM_KILLFOCUS"                    Value="0x0008" />
-                <Set Name="WM_ENABLE"                       Value="0x000A" />
-                <Set Name="WM_SETREDRAW"                    Value="0x000B" />
-                <Set Name="WM_SETTEXT"                      Value="0x000C" />
-                <Set Name="WM_GETTEXT"                      Value="0x000D" />
-                <Set Name="WM_GETTEXTLENGTH"                Value="0x000E" />
-                <Set Name="WM_PAINT"                        Value="0x000F" />
-                <Set Name="WM_CLOSE"                        Value="0x0010" />
-                <Set Name="WM_QUERYENDSESSION"              Value="0x0011" />
-                <Set Name="WM_QUERYOPEN"                    Value="0x0013" />
-                <Set Name="WM_ENDSESSION"                   Value="0x0016" />
-                <Set Name="WM_QUIT"                         Value="0x0012" />
-                <Set Name="WM_ERASEBKGND"                   Value="0x0014" />
-                <Set Name="WM_SYSCOLORCHANGE"               Value="0x0015" />
-                <Set Name="WM_SHOWWINDOW"                   Value="0x0018" />
-                <Set Name="WM_SETTINGCHANGE"                Value="0x001A" />
-                <Set Name="WM_DEVMODECHANGE"                Value="0x001B" />
-                <Set Name="WM_ACTIVATEAPP"                  Value="0x001C" />
-                <Set Name="WM_FONTCHANGE"                   Value="0x001D" />
-                <Set Name="WM_TIMECHANGE"                   Value="0x001E" />
-                <Set Name="WM_CANCELMODE"                   Value="0x001F" />
-                <Set Name="WM_SETCURSOR"                    Value="0x0020" />
-                <Set Name="WM_MOUSEACTIVATE"                Value="0x0021" />
-                <Set Name="WM_CHILDACTIVATE"                Value="0x0022" />
-                <Set Name="WM_QUEUESYNC"                    Value="0x0023" />
-                <Set Name="WM_GETMINMAXINFO"                Value="0x0024" />
-                <Set Name="WM_PAINTICON"                    Value="0x0026" />
-                <Set Name="WM_ICONERASEBKGND"               Value="0x0027" />
-                <Set Name="WM_NEXTDLGCTL"                   Value="0x0028" />
-                <Set Name="WM_SPOOLERSTATUS"                Value="0x002A" />
-                <Set Name="WM_DRAWITEM"                     Value="0x002B" />
-                <Set Name="WM_MEASUREITEM"                  Value="0x002C" />
-                <Set Name="WM_DELETEITEM"                   Value="0x002D" />
-                <Set Name="WM_VKEYTOITEM"                   Value="0x002E" />
-                <Set Name="WM_CHARTOITEM"                   Value="0x002F" />
-                <Set Name="WM_SETFONT"                      Value="0x0030" />
-                <Set Name="WM_GETFONT"                      Value="0x0031" />
-                <Set Name="WM_SETHOTKEY"                    Value="0x0032" />
-                <Set Name="WM_GETHOTKEY"                    Value="0x0033" />
-                <Set Name="WM_QUERYDRAGICON"                Value="0x0037" />
-                <Set Name="WM_COMPAREITEM"                  Value="0x0039" />
-                <Set Name="WM_GETOBJECT"                    Value="0x003D" />
-                <Set Name="WM_COMPACTING"                   Value="0x0041" />
-                <Set Name="WM_COMMNOTIFY"                   Value="0x0044" />
-                <Set Name="WM_WINDOWPOSCHANGING"            Value="0x0046" />
-                <Set Name="WM_WINDOWPOSCHANGED"             Value="0x0047" />
-                <Set Name="WM_POWER"                        Value="0x0048" />
-                <Set Name="WM_COPYDATA"                     Value="0x004A" />
-                <Set Name="WM_CANCELJOURNAL"                Value="0x004B" />
-                <Set Name="WM_NOTIFY"                       Value="0x004E" />
-                <Set Name="WM_INPUTLANGCHANGEREQUEST"       Value="0x0050" />
-                <Set Name="WM_INPUTLANGCHANGE"              Value="0x0051" />
-                <Set Name="WM_TCARD"                        Value="0x0052" />
-                <Set Name="WM_HELP"                         Value="0x0053" />
-                <Set Name="WM_USERCHANGED"                  Value="0x0054" />
-                <Set Name="WM_NOTIFYFORMAT"                 Value="0x0055" />
-                <Set Name="WM_CONTEXTMENU"                  Value="0x007B" />
-                <Set Name="WM_STYLECHANGING"                Value="0x007C" />
-                <Set Name="WM_STYLECHANGED"                 Value="0x007D" />
-                <Set Name="WM_DISPLAYCHANGE"                Value="0x007E" />
-                <Set Name="WM_GETICON"                      Value="0x007F" />
-                <Set Name="WM_SETICON"                      Value="0x0080" />
-                <Set Name="WM_NCCREATE"                     Value="0x0081" />
-                <Set Name="WM_NCDESTROY"                    Value="0x0082" />
-                <Set Name="WM_NCCALCSIZE"                   Value="0x0083" />
-                <Set Name="WM_NCHITTEST"                    Value="0x0084" />
-                <Set Name="WM_NCPAINT"                      Value="0x0085" />
-                <Set Name="WM_NCACTIVATE"                   Value="0x0086" />
-                <Set Name="WM_GETDLGCODE"                   Value="0x0087" />
-                <Set Name="WM_SYNCPAINT"                    Value="0x0088" />
-                <Set Name="WM_NCMOUSEMOVE"                  Value="0x00A0" />
-                <Set Name="WM_NCLBUTTONDOWN"                Value="0x00A1" />
-                <Set Name="WM_NCLBUTTONUP"                  Value="0x00A2" />
-                <Set Name="WM_NCLBUTTONDBLCLK"              Value="0x00A3" />
-                <Set Name="WM_NCRBUTTONDOWN"                Value="0x00A4" />
-                <Set Name="WM_NCRBUTTONUP"                  Value="0x00A5" />
-                <Set Name="WM_NCRBUTTONDBLCLK"              Value="0x00A6" />
-                <Set Name="WM_NCMBUTTONDOWN"                Value="0x00A7" />
-                <Set Name="WM_NCMBUTTONUP"                  Value="0x00A8" />
-                <Set Name="WM_NCMBUTTONDBLCLK"              Value="0x00A9" />
-                <Set Name="WM_NCXBUTTONDOWN"                Value="0x00AB" />
-                <Set Name="WM_NCXBUTTONUP"                  Value="0x00AC" />
-                <Set Name="WM_NCXBUTTONDBLCLK"              Value="0x00AD" />
-                <Set Name="WM_INPUT_DEVICE_CHANGE"          Value="0x00FE" />
-                <Set Name="WM_INPUT"                        Value="0x00FF" />
-                <Set Name="WM_KEYDOWN"                      Value="0x0100" />
-                <Set Name="WM_KEYUP"                        Value="0x0101" />
-                <Set Name="WM_CHAR"                         Value="0x0102" />
-                <Set Name="WM_DEADCHAR"                     Value="0x0103" />
-                <Set Name="WM_SYSKEYDOWN"                   Value="0x0104" />
-                <Set Name="WM_SYSKEYUP"                     Value="0x0105" />
-                <Set Name="WM_SYSCHAR"                      Value="0x0106" />
-                <Set Name="WM_SYSDEADCHAR"                  Value="0x0107" />
-                <Set Name="WM_UNICHAR"                      Value="0x0109" />
-                <Set Name="WM_IME_STARTCOMPOSITION"         Value="0x010D" />
-                <Set Name="WM_IME_ENDCOMPOSITION"           Value="0x010E" />
-                <Set Name="WM_IME_COMPOSITION"              Value="0x010F" />
-                <Set Name="WM_IME_KEYLAST"                  Value="0x010F" />
-                <Set Name="WM_INITDIALOG"                   Value="0x0110" />
-                <Set Name="WM_COMMAND"                      Value="0x0111" />
-                <Set Name="WM_SYSCOMMAND"                   Value="0x0112" />
-                <Set Name="WM_TIMER"                        Value="0x0113" />
-                <Set Name="WM_HSCROLL"                      Value="0x0114" />
-                <Set Name="WM_VSCROLL"                      Value="0x0115" />
-                <Set Name="WM_INITMENU"                     Value="0x0116" />
-                <Set Name="WM_INITMENUPOPUP"                Value="0x0117" />
-                <Set Name="WM_MENUSELECT"                   Value="0x011F" />
-                <Set Name="WM_MENUCHAR"                     Value="0x0120" />
-                <Set Name="WM_ENTERIDLE"                    Value="0x0121" />
-                <Set Name="WM_MENURBUTTONUP"                Value="0x0122" />
-                <Set Name="WM_MENUDRAG"                     Value="0x0123" />
-                <Set Name="WM_MENUGETOBJECT"                Value="0x0124" />
-                <Set Name="WM_UNINITMENUPOPUP"              Value="0x0125" />
-                <Set Name="WM_MENUCOMMAND"                  Value="0x0126" />
-                <Set Name="WM_CHANGEUISTATE"                Value="0x0127" />
-                <Set Name="WM_UPDATEUISTATE"                Value="0x0128" />
-                <Set Name="WM_QUERYUISTATE"                 Value="0x0129" />
-                <Set Name="WM_CTLCOLORMSGBOX"               Value="0x0132" />
-                <Set Name="WM_CTLCOLOREDIT"                 Value="0x0133" />
-                <Set Name="WM_CTLCOLORLISTBOX"              Value="0x0134" />
-                <Set Name="WM_CTLCOLORBTN"                  Value="0x0135" />
-                <Set Name="WM_CTLCOLORDLG"                  Value="0x0136" />
-                <Set Name="WM_CTLCOLORSCROLLBAR"            Value="0x0137" />
-                <Set Name="WM_CTLCOLORSTATIC"               Value="0x0138" />
-                <Set Name="MN_GETHMENU"                     Value="0x01E1" />
-                <Set Name="WM_MOUSEMOVE"                    Value="0x0200" />
-                <Set Name="WM_LBUTTONDOWN"                  Value="0x0201" />
-                <Set Name="WM_LBUTTONUP"                    Value="0x0202" />
-                <Set Name="WM_LBUTTONDBLCLK"                Value="0x0203" />
-                <Set Name="WM_RBUTTONDOWN"                  Value="0x0204" />
-                <Set Name="WM_RBUTTONUP"                    Value="0x0205" />
-                <Set Name="WM_RBUTTONDBLCLK"                Value="0x0206" />
-                <Set Name="WM_MBUTTONDOWN"                  Value="0x0207" />
-                <Set Name="WM_MBUTTONUP"                    Value="0x0208" />
-                <Set Name="WM_MBUTTONDBLCLK"                Value="0x0209" />
-                <Set Name="WM_MOUSEWHEEL"                   Value="0x020A" />
-                <Set Name="WM_XBUTTONDOWN"                  Value="0x020B" />
-                <Set Name="WM_XBUTTONUP"                    Value="0x020C" />
-                <Set Name="WM_XBUTTONDBLCLK"                Value="0x020D" />
-                <Set Name="WM_MOUSEHWHEEL"                  Value="0x020E" />
-                <Set Name="WM_PARENTNOTIFY"                 Value="0x0210" />
-                <Set Name="WM_ENTERMENULOOP"                Value="0x0211" />
-                <Set Name="WM_EXITMENULOOP"                 Value="0x0212" />
-                <Set Name="WM_NEXTMENU"                     Value="0x0213" />
-                <Set Name="WM_SIZING"                       Value="0x0214" />
-                <Set Name="WM_CAPTURECHANGED"               Value="0x0215" />
-                <Set Name="WM_MOVING"                       Value="0x0216" />
-                <Set Name="WM_POWERBROADCAST"               Value="0x0218" />
-                <Set Name="WM_DEVICECHANGE"                 Value="0x0219" />
-                <Set Name="WM_MDICREATE"                    Value="0x0220" />
-                <Set Name="WM_MDIDESTROY"                   Value="0x0221" />
-                <Set Name="WM_MDIACTIVATE"                  Value="0x0222" />
-                <Set Name="WM_MDIRESTORE"                   Value="0x0223" />
-                <Set Name="WM_MDINEXT"                      Value="0x0224" />
-                <Set Name="WM_MDIMAXIMIZE"                  Value="0x0225" />
-                <Set Name="WM_MDITILE"                      Value="0x0226" />
-                <Set Name="WM_MDICASCADE"                   Value="0x0227" />
-                <Set Name="WM_MDIICONARRANGE"               Value="0x0228" />
-                <Set Name="WM_MDIGETACTIVE"                 Value="0x0229" />
-                <Set Name="WM_MDISETMENU"                   Value="0x0230" />
-                <Set Name="WM_ENTERSIZEMOVE"                Value="0x0231" />
-                <Set Name="WM_EXITSIZEMOVE"                 Value="0x0232" />
-                <Set Name="WM_DROPFILES"                    Value="0x0233" />
-                <Set Name="WM_MDIREFRESHMENU"               Value="0x0234" />
-                <Set Name="WM_IME_SETCONTEXT"               Value="0x0281" />
-                <Set Name="WM_IME_NOTIFY"                   Value="0x0282" />
-                <Set Name="WM_IME_CONTROL"                  Value="0x0283" />
-                <Set Name="WM_IME_COMPOSITIONFULL"          Value="0x0284" />
-                <Set Name="WM_IME_SELECT"                   Value="0x0285" />
-                <Set Name="WM_IME_CHAR"                     Value="0x0286" />
-                <Set Name="WM_IME_REQUEST"                  Value="0x0288" />
-                <Set Name="WM_IME_KEYDOWN"                  Value="0x0290" />
-                <Set Name="WM_IME_KEYUP"                    Value="0x0291" />
-                <Set Name="WM_MOUSEHOVER"                   Value="0x02A1" />
-                <Set Name="WM_MOUSELEAVE"                   Value="0x02A3" />
-                <Set Name="WM_NCMOUSEHOVER"                 Value="0x02A0" />
-                <Set Name="WM_NCMOUSELEAVE"                 Value="0x02A2" />
-                <Set Name="WM_WTSSESSION_CHANGE"            Value="0x02B1" />
-                <Set Name="WM_TABLET_ADDED"                 Value="0x02c8" />
-                <Set Name="WM_TABLET_DELETED"               Value="0x02c9" />
-                <Set Name="WM_TABLET_FLICK"                 Value="0x02cb" />
+                <Set Name="WM_NULL"                             Value="0x0000" />
+                <Set Name="WM_CREATE"                           Value="0x0001" />
+                <Set Name="WM_DESTROY"                          Value="0x0002" />
+                <Set Name="WM_MOVE"                             Value="0x0003" />
+                <Set Name="WM_SIZEWAIT"                         Value="0x0004" />
+                <Set Name="WM_SIZE"                             Value="0x0005" />
+                <Set Name="WM_ACTIVATE"                         Value="0x0006" />
+                <Set Name="WM_SETFOCUS"                         Value="0x0007" />
+                <Set Name="WM_KILLFOCUS"                        Value="0x0008" />
+                <Set Name="WM_SETVISIBLE"                       Value="0x0009" />
+                <Set Name="WM_ENABLE"                           Value="0x000A" />
+                <Set Name="WM_SETREDRAW"                        Value="0x000B" />
+                <Set Name="WM_SETTEXT"                          Value="0x000C" />
+                <Set Name="WM_GETTEXT"                          Value="0x000D" />
+                <Set Name="WM_GETTEXTLENGTH"                    Value="0x000E" />
+                <Set Name="WM_PAINT"                            Value="0x000F" />
+                <Set Name="WM_CLOSE"                            Value="0x0010" />
+                <Set Name="WM_QUERYENDSESSION"                  Value="0x0011" />
+                <Set Name="WM_QUIT"                             Value="0x0012" />
+                <Set Name="WM_QUERYOPEN"                        Value="0x0013" />
+                <Set Name="WM_ERASEBKGND"                       Value="0x0014" />
+                <Set Name="WM_SYSCOLORCHANGE"                   Value="0x0015" />
+                <Set Name="WM_ENDSESSION"                       Value="0x0016" />
+                <Set Name="WM_SYSTEMERROR"                      Value="0x0017" />
+                <Set Name="WM_SHOWWINDOW"                       Value="0x0018" />
+                <Set Name="WM_CTLCOLOR"                         Value="0x0019" />
+                <Set Name="WM_SETTINGCHANGE"                    Value="0x001A" />
+                <Set Name="WM_DEVMODECHANGE"                    Value="0x001B" />
+                <Set Name="WM_ACTIVATEAPP"                      Value="0x001C" />
+                <Set Name="WM_FONTCHANGE"                       Value="0x001D" />
+                <Set Name="WM_TIMECHANGE"                       Value="0x001E" />
+                <Set Name="WM_CANCELMODE"                       Value="0x001F" />
+                <Set Name="WM_SETCURSOR"                        Value="0x0020" />
+                <Set Name="WM_MOUSEACTIVATE"                    Value="0x0021" />
+                <Set Name="WM_CHILDACTIVATE"                    Value="0x0022" />
+                <Set Name="WM_QUEUESYNC"                        Value="0x0023" />
+                <Set Name="WM_GETMINMAXINFO"                    Value="0x0024" />
+                <Set Name="WM_PAINTICON"                        Value="0x0026" />
+                <Set Name="WM_ICONERASEBKGND"                   Value="0x0027" />
+                <Set Name="WM_NEXTDLGCTL"                       Value="0x0028" />
+                <Set Name="WM_ALTTABACTIVE"                     Value="0x0029" />
+                <Set Name="WM_SPOOLERSTATUS"                    Value="0x002A" />
+                <Set Name="WM_DRAWITEM"                         Value="0x002B" />
+                <Set Name="WM_MEASUREITEM"                      Value="0x002C" />
+                <Set Name="WM_DELETEITEM"                       Value="0x002D" />
+                <Set Name="WM_VKEYTOITEM"                       Value="0x002E" />
+                <Set Name="WM_CHARTOITEM"                       Value="0x002F" />
+                <Set Name="WM_SETFONT"                          Value="0x0030" />
+                <Set Name="WM_GETFONT"                          Value="0x0031" />
+                <Set Name="WM_SETHOTKEY"                        Value="0x0032" />
+                <Set Name="WM_GETHOTKEY"                        Value="0x0033" />
+                <Set Name="WM_FILESYSCHANGE"                    Value="0x0034" />
+                <Set Name="WM_ISACTIVEICON"                     Value="0x0035" />
+                <Set Name="WM_QUERYPARKICON"                    Value="0x0036" />
+                <Set Name="WM_QUERYDRAGICON"                    Value="0x0037" />
+                <Set Name="WM_QUERYSAVESTATE"                   Value="0x0038" />
+                <Set Name="WM_COMPAREITEM"                      Value="0x0039" />
+                <Set Name="WM_TESTING"                          Value="0x003A" />
+                <Set Name="WM_GETOBJECT"                        Value="0x003D" />
+                <Set Name="WM_ACTIVATESHELLWINDOW"              Value="0x003E" />
+                <Set Name="WM_COMPACTING"                       Value="0x0041" />
+                <Set Name="WM_COMMNOTIFY"                       Value="0x0044" />
+                <Set Name="WM_WINDOWPOSCHANGING"                Value="0x0046" />
+                <Set Name="WM_WINDOWPOSCHANGED"                 Value="0x0047" />
+                <Set Name="WM_POWER"                            Value="0x0048" />
+                <Set Name="WM_COPYDATA"                         Value="0x004A" />
+                <Set Name="WM_CANCELJOURNAL"                    Value="0x004B" />
+                <Set Name="WM_NOTIFY"                           Value="0x004E" />
+                <Set Name="WM_INPUTLANGCHANGEREQUEST"           Value="0x0050" />
+                <Set Name="WM_INPUTLANGCHANGE"                  Value="0x0051" />
+                <Set Name="WM_TCARD"                            Value="0x0052" />
+                <Set Name="WM_HELP"                             Value="0x0053" />
+                <Set Name="WM_USERCHANGED"                      Value="0x0054" />
+                <Set Name="WM_NOTIFYFORMAT"                     Value="0x0055" />
+                <Set Name="WM_CONTEXTMENU"                      Value="0x007B" />
+                <Set Name="WM_STYLECHANGING"                    Value="0x007C" />
+                <Set Name="WM_STYLECHANGED"                     Value="0x007D" />
+                <Set Name="WM_DISPLAYCHANGE"                    Value="0x007E" />
+                <Set Name="WM_GETICON"                          Value="0x007F" />
+                <Set Name="WM_SETICON"                          Value="0x0080" />
+                <Set Name="WM_NCCREATE"                         Value="0x0081" />
+                <Set Name="WM_NCDESTROY"                        Value="0x0082" />
+                <Set Name="WM_NCCALCSIZE"                       Value="0x0083" />
+                <Set Name="WM_NCHITTEST"                        Value="0x0084" />
+                <Set Name="WM_NCPAINT"                          Value="0x0085" />
+                <Set Name="WM_NCACTIVATE"                       Value="0x0086" />
+                <Set Name="WM_GETDLGCODE"                       Value="0x0087" />
+                <Set Name="WM_SYNCPAINT"                        Value="0x0088" />
+                <Set Name="WM_SYNCTASK"                         Value="0x0089" />
+                <Set Name="WM_NCMOUSEMOVE"                      Value="0x00A0" />
+                <Set Name="WM_NCLBUTTONDOWN"                    Value="0x00A1" />
+                <Set Name="WM_NCLBUTTONUP"                      Value="0x00A2" />
+                <Set Name="WM_NCLBUTTONDBLCLK"                  Value="0x00A3" />
+                <Set Name="WM_NCRBUTTONDOWN"                    Value="0x00A4" />
+                <Set Name="WM_NCRBUTTONUP"                      Value="0x00A5" />
+                <Set Name="WM_NCRBUTTONDBLCLK"                  Value="0x00A6" />
+                <Set Name="WM_NCMBUTTONDOWN"                    Value="0x00A7" />
+                <Set Name="WM_NCMBUTTONUP"                      Value="0x00A8" />
+                <Set Name="WM_NCMBUTTONDBLCLK"                  Value="0x00A9" />
+                <Set Name="WM_NCXBUTTONDOWN"                    Value="0x00AB" />
+                <Set Name="WM_NCXBUTTONUP"                      Value="0x00AC" />
+                <Set Name="WM_NCXBUTTONDBLCLK"                  Value="0x00AD" />
+                <Set Name="WM_INPUT_DEVICE_CHANGE"              Value="0x00FE" />
+                <Set Name="WM_INPUT"                            Value="0x00FF" />
+                <Set Name="WM_KEYDOWN"                          Value="0x0100" />
+                <Set Name="WM_KEYUP"                            Value="0x0101" />
+                <Set Name="WM_CHAR"                             Value="0x0102" />
+                <Set Name="WM_DEADCHAR"                         Value="0x0103" />
+                <Set Name="WM_SYSKEYDOWN"                       Value="0x0104" />
+                <Set Name="WM_SYSKEYUP"                         Value="0x0105" />
+                <Set Name="WM_SYSCHAR"                          Value="0x0106" />
+                <Set Name="WM_SYSDEADCHAR"                      Value="0x0107" />
+                <Set Name="WM_UNICHAR"                          Value="0x0109" />
+                <Set Name="WM_IME_STARTCOMPOSITION"             Value="0x010D" />
+                <Set Name="WM_IME_ENDCOMPOSITION"               Value="0x010E" />
+                <Set Name="WM_IME_COMPOSITION"                  Value="0x010F" />
+                <Set Name="WM_INITDIALOG"                       Value="0x0110" />
+                <Set Name="WM_COMMAND"                          Value="0x0111" />
+                <Set Name="WM_SYSCOMMAND"                       Value="0x0112" />
+                <Set Name="WM_TIMER"                            Value="0x0113" />
+                <Set Name="WM_HSCROLL"                          Value="0x0114" />
+                <Set Name="WM_VSCROLL"                          Value="0x0115" />
+                <Set Name="WM_INITMENU"                         Value="0x0116" />
+                <Set Name="WM_INITMENUPOPUP"                    Value="0x0117" />
+                <Set Name="WM_SYSTIMER"                         Value="0x0118" />
+                <Set Name="WM_GESTURE"                          Value="0x0119" />
+                <Set Name="WM_GESTURENOTIFY"                    Value="0x011A" />
+                <Set Name="WM_MENUSELECT"                       Value="0x011F" />
+                <Set Name="WM_MENUCHAR"                         Value="0x0120" />
+                <Set Name="WM_ENTERIDLE"                        Value="0x0121" />
+                <Set Name="WM_MENURBUTTONUP"                    Value="0x0122" />
+                <Set Name="WM_MENUDRAG"                         Value="0x0123" />
+                <Set Name="WM_MENUGETOBJECT"                    Value="0x0124" />
+                <Set Name="WM_UNINITMENUPOPUP"                  Value="0x0125" />
+                <Set Name="WM_MENUCOMMAND"                      Value="0x0126" />
+                <Set Name="WM_CHANGEUISTATE"                    Value="0x0127" />
+                <Set Name="WM_UPDATEUISTATE"                    Value="0x0128" />
+                <Set Name="WM_QUERYUISTATE"                     Value="0x0129" />
+                <Set Name="WM_LBTRACKPOINT"                     Value="0x0131" />
+                <Set Name="WM_CTLCOLORMSGBOX"                   Value="0x0132" />
+                <Set Name="WM_CTLCOLOREDIT"                     Value="0x0133" />
+                <Set Name="WM_CTLCOLORLISTBOX"                  Value="0x0134" />
+                <Set Name="WM_CTLCOLORBTN"                      Value="0x0135" />
+                <Set Name="WM_CTLCOLORDLG"                      Value="0x0136" />
+                <Set Name="WM_CTLCOLORSCROLLBAR"                Value="0x0137" />
+                <Set Name="WM_CTLCOLORSTATIC"                   Value="0x0138" />
+                <Set Name="MN_GETHMENU"                         Value="0x01E1" />
+                <Set Name="WM_MOUSEMOVE"                        Value="0x0200" />
+                <Set Name="WM_LBUTTONDOWN"                      Value="0x0201" />
+                <Set Name="WM_LBUTTONUP"                        Value="0x0202" />
+                <Set Name="WM_LBUTTONDBLCLK"                    Value="0x0203" />
+                <Set Name="WM_RBUTTONDOWN"                      Value="0x0204" />
+                <Set Name="WM_RBUTTONUP"                        Value="0x0205" />
+                <Set Name="WM_RBUTTONDBLCLK"                    Value="0x0206" />
+                <Set Name="WM_MBUTTONDOWN"                      Value="0x0207" />
+                <Set Name="WM_MBUTTONUP"                        Value="0x0208" />
+                <Set Name="WM_MBUTTONDBLCLK"                    Value="0x0209" />
+                <Set Name="WM_MOUSEWHEEL"                       Value="0x020A" />
+                <Set Name="WM_XBUTTONDOWN"                      Value="0x020B" />
+                <Set Name="WM_XBUTTONUP"                        Value="0x020C" />
+                <Set Name="WM_XBUTTONDBLCLK"                    Value="0x020D" />
+                <Set Name="WM_MOUSEHWHEEL"                      Value="0x020E" />
+                <Set Name="WM_PARENTNOTIFY"                     Value="0x0210" />
+                <Set Name="WM_ENTERMENULOOP"                    Value="0x0211" />
+                <Set Name="WM_EXITMENULOOP"                     Value="0x0212" />
+                <Set Name="WM_NEXTMENU"                         Value="0x0213" />
+                <Set Name="WM_SIZING"                           Value="0x0214" />
+                <Set Name="WM_CAPTURECHANGED"                   Value="0x0215" />
+                <Set Name="WM_MOVING"                           Value="0x0216" />
+                <Set Name="WM_POWERBROADCAST"                   Value="0x0218" />
+                <Set Name="WM_DEVICECHANGE"                     Value="0x0219" />
+                <Set Name="WM_MDICREATE"                        Value="0x0220" />
+                <Set Name="WM_MDIDESTROY"                       Value="0x0221" />
+                <Set Name="WM_MDIACTIVATE"                      Value="0x0222" />
+                <Set Name="WM_MDIRESTORE"                       Value="0x0223" />
+                <Set Name="WM_MDINEXT"                          Value="0x0224" />
+                <Set Name="WM_MDIMAXIMIZE"                      Value="0x0225" />
+                <Set Name="WM_MDITILE"                          Value="0x0226" />
+                <Set Name="WM_MDICASCADE"                       Value="0x0227" />
+                <Set Name="WM_MDIICONARRANGE"                   Value="0x0228" />
+                <Set Name="WM_MDIGETACTIVE"                     Value="0x0229" />
+                <Set Name="WM_DROPOBJECT"                       Value="0x022A" />
+                <Set Name="WM_QUERYDROPOBJECT"                  Value="0x022B" />
+                <Set Name="WM_BEGINDRAG"                        Value="0x022C" />
+                <Set Name="WM_DRAGLOOP"                         Value="0x022D" />
+                <Set Name="WM_DRAGSELECT"                       Value="0x022E" />
+                <Set Name="WM_DRAGMOVE"                         Value="0x022F" />
+                <Set Name="WM_MDISETMENU"                       Value="0x0230" />
+                <Set Name="WM_ENTERSIZEMOVE"                    Value="0x0231" />
+                <Set Name="WM_EXITSIZEMOVE"                     Value="0x0232" />
+                <Set Name="WM_DROPFILES"                        Value="0x0233" />
+                <Set Name="WM_MDIREFRESHMENU"                   Value="0x0234" />
+                <Set Name="WM_POINTERDEVICECHANGE"              Value="0x0238" />
+                <Set Name="WM_POINTERDEVICEINRANGE"             Value="0x0239" />
+                <Set Name="WM_POINTERDEVICEOUTOFRANGE"          Value="0x023A" />
+                <Set Name="WM_TOUCH"                            Value="0x0240" />
+                <Set Name="WM_NCPOINTERUPDATE"                  Value="0x0241" />
+                <Set Name="WM_NCPOINTERDOWN"                    Value="0x0242" />
+                <Set Name="WM_NCPOINTERUP"                      Value="0x0243" />
+                <Set Name="WM_POINTERUPDATE"                    Value="0x0245" />
+                <Set Name="WM_POINTERDOWN"                      Value="0x0246" />
+                <Set Name="WM_POINTERUP"                        Value="0x0247" />
+                <Set Name="WM_POINTERENTER"                     Value="0x0249" />
+                <Set Name="WM_POINTERLEAVE"                     Value="0x024A" />
+                <Set Name="WM_POINTERACTIVATE"                  Value="0x024B" />
+                <Set Name="WM_POINTERCAPTURECHANGED"            Value="0x024C" />
+                <Set Name="WM_TOUCHHITTESTING"                  Value="0x024D" />
+                <Set Name="WM_POINTERWHEEL"                     Value="0x024E" />
+                <Set Name="WM_POINTERHWHEEL"                    Value="0x024F" />
+                
+                <!-- IME -->
+                <Set Name="WM_IME_REPORT"                       Value="0x0280" />
+                <Set Name="WM_IME_SETCONTEXT"                   Value="0x0281" />
+                <Set Name="WM_IME_NOTIFY"                       Value="0x0282" />
+                <Set Name="WM_IME_CONTROL"                      Value="0x0283" />
+                <Set Name="WM_IME_COMPOSITIONFULL"              Value="0x0284" />
+                <Set Name="WM_IME_SELECT"                       Value="0x0285" />
+                <Set Name="WM_IME_CHAR"                         Value="0x0286" />
+                <Set Name="WM_IME_REQUEST"                      Value="0x0288" />
+                <Set Name="WM_IME_KEYDOWN"                      Value="0x0290" />
+                <Set Name="WM_IME_KEYUP"                        Value="0x0291" />
+                
+                <Set Name="WM_MOUSEHOVER"                       Value="0x02A1" />
+                <Set Name="WM_MOUSELEAVE"                       Value="0x02A3" />
+                <Set Name="WM_NCMOUSEHOVER"                     Value="0x02A0" />
+                <Set Name="WM_NCMOUSELEAVE"                     Value="0x02A2" />
+                <Set Name="WM_WTSSESSION_CHANGE"                Value="0x02B1" />
+                <Set Name="WM_TABLET_ADDED"                     Value="0x02c8" />
+                <Set Name="WM_TABLET_DELETED"                   Value="0x02c9" />
+                <Set Name="WM_TABLET_FLICK"                     Value="0x02cb" />
                 <Set Name="WM_TABLET_QUERYSYSTEMGESTURESTATUS"  Value="0x02cc" />
-                <Set Name="WM_CUT"                          Value="0x0300" />
-                <Set Name="WM_COPY"                         Value="0x0301" />
-                <Set Name="WM_PASTE"                        Value="0x0302" />
-                <Set Name="WM_CLEAR"                        Value="0x0303" />
-                <Set Name="WM_UNDO"                         Value="0x0304" />
-                <Set Name="WM_RENDERFORMAT"                 Value="0x0305" />
-                <Set Name="WM_RENDERALLFORMATS"             Value="0x0306" />
-                <Set Name="WM_DESTROYCLIPBOARD"             Value="0x0307" />
-                <Set Name="WM_DRAWCLIPBOARD"                Value="0x0308" />
-                <Set Name="WM_PAINTCLIPBOARD"               Value="0x0309" />
-                <Set Name="WM_VSCROLLCLIPBOARD"             Value="0x030A" />
-                <Set Name="WM_SIZECLIPBOARD"                Value="0x030B" />
-                <Set Name="WM_ASKCBFORMATNAME"              Value="0x030C" />
-                <Set Name="WM_CHANGECBCHAIN"                Value="0x030D" />
-                <Set Name="WM_HSCROLLCLIPBOARD"             Value="0x030E" />
-                <Set Name="WM_QUERYNEWPALETTE"              Value="0x030F" />
-                <Set Name="WM_PALETTEISCHANGING"            Value="0x0310" />
-                <Set Name="WM_PALETTECHANGED"               Value="0x0311" />
-                <Set Name="WM_HOTKEY"                       Value="0x0312" />
-                <Set Name="WM_PRINT"                        Value="0x0317" />
-                <Set Name="WM_PRINTCLIENT"                  Value="0x0318" />
-                <Set Name="WM_APPCOMMAND"                   Value="0x0319" />
-                <Set Name="WM_THEMECHANGED"                 Value="0x031A" />
-                <Set Name="WM_CLIPBOARDUPDATE"              Value="0x031D" />
-                <Set Name="WM_DWMCOMPOSITIONCHANGED"        Value="0x031E" />
-                <Set Name="WM_DWMNCRENDERINGCHANGED"        Value="0x031F" />
-                <Set Name="WM_DWMCOLORIZATIONCOLORCHANGED"  Value="0x0320" />
-                <Set Name="WM_DWMWINDOWMAXIMIZEDCHANGE"     Value="0x0321" />
-                <Set Name="WM_GETTITLEBARINFOEX"            Value="0x033F" />
-                <Set Name="WM_USER"                         Value="0x0400" />
-                <Set Name="EM_GETSEL"                       Value="0x00B0" />
-                <Set Name="EM_SETSEL"                       Value="0x00B1" />
-                <Set Name="EM_GETRECT"                      Value="0x00B2" />
-                <Set Name="EM_SETRECT"                      Value="0x00B3" />
-                <Set Name="EM_SETRECTNP"                    Value="0x00B4" />
-                <Set Name="EM_SCROLL"                       Value="0x00B5" />
-                <Set Name="EM_LINESCROLL"                   Value="0x00B6" />
-                <Set Name="EM_SCROLLCARET"                  Value="0x00B7" />
-                <Set Name="EM_GETMODIFY"                    Value="0x00B8" />
-                <Set Name="EM_SETMODIFY"                    Value="0x00B9" />
-                <Set Name="EM_GETLINECOUNT"                 Value="0x00BA" />
-                <Set Name="EM_LINEINDEX"                    Value="0x00BB" />
-                <Set Name="EM_SETHANDLE"                    Value="0x00BC" />
-                <Set Name="EM_GETHANDLE"                    Value="0x00BD" />
-                <Set Name="EM_GETTHUMB"                     Value="0x00BE" />
-                <Set Name="EM_LINELENGTH"                   Value="0x00C1" />
-                <Set Name="EM_REPLACESEL"                   Value="0x00C2" />
-                <Set Name="EM_GETLINE"                      Value="0x00C4" />
-                <Set Name="EM_LIMITTEXT"                    Value="0x00C5" />
-                <Set Name="EM_CANUNDO"                      Value="0x00C6" />
-                <Set Name="EM_UNDO"                         Value="0x00C7" />
-                <Set Name="EM_FMTLINES"                     Value="0x00C8" />
-                <Set Name="EM_LINEFROMCHAR"                 Value="0x00C9" />
-                <Set Name="EM_SETTABSTOPS"                  Value="0x00CB" />
-                <Set Name="EM_SETPASSWORDCHAR"              Value="0x00CC" />
-                <Set Name="EM_EMPTYUNDOBUFFER"              Value="0x00CD" />
-                <Set Name="EM_GETFIRSTVISIBLELINE"          Value="0x00CE" />
-                <Set Name="EM_SETREADONLY"                  Value="0x00CF" />
-                <Set Name="EM_SETWORDBREAKPROC"             Value="0x00D0" />
-                <Set Name="EM_GETWORDBREAKPROC"             Value="0x00D1" />
-                <Set Name="EM_GETPASSWORDCHAR"              Value="0x00D2" />
-                <Set Name="EM_SETMARGINS"                   Value="0x00D3" />
-                <Set Name="EM_GETMARGINS"                   Value="0x00D4" />
-                <Set Name="EM_SETLIMITTEXT"                 Value="0x00C5" />
-                <Set Name="EM_GETLIMITTEXT"                 Value="0x00D5" />
-                <Set Name="EM_POSFROMCHAR"                  Value="0x00D6" />
-                <Set Name="EM_CHARFROMPOS"                  Value="0x00D7" />
-                <Set Name="EM_SETIMESTATUS"                 Value="0x00D8" />
-                <Set Name="EM_GETIMESTATUS"                 Value="0x00D9" />
-                <Set Name="BM_GETCHECK"                     Value="0x00F0" />
-                <Set Name="BM_SETCHECK"                     Value="0x00F1" />
-                <Set Name="BM_GETSTATE"                     Value="0x00F2" />
-                <Set Name="BM_SETSTATE"                     Value="0x00F3" />
-                <Set Name="BM_SETSTYLE"                     Value="0x00F4" />
-                <Set Name="BM_CLICK"                        Value="0x00F5" />
-                <Set Name="BM_GETIMAGE"                     Value="0x00F6" />
-                <Set Name="BM_SETIMAGE"                     Value="0x00F7" />
-                <Set Name="BM_SETDONTCLICK"                 Value="0x00F8" />
+                <Set Name="WM_CUT"                              Value="0x0300" />
+                <Set Name="WM_COPY"                             Value="0x0301" />
+                <Set Name="WM_PASTE"                            Value="0x0302" />
+                <Set Name="WM_CLEAR"                            Value="0x0303" />
+                <Set Name="WM_UNDO"                             Value="0x0304" />
+                <Set Name="WM_RENDERFORMAT"                     Value="0x0305" />
+                <Set Name="WM_RENDERALLFORMATS"                 Value="0x0306" />
+                <Set Name="WM_DESTROYCLIPBOARD"                 Value="0x0307" />
+                <Set Name="WM_DRAWCLIPBOARD"                    Value="0x0308" />
+                <Set Name="WM_PAINTCLIPBOARD"                   Value="0x0309" />
+                <Set Name="WM_VSCROLLCLIPBOARD"                 Value="0x030A" />
+                <Set Name="WM_SIZECLIPBOARD"                    Value="0x030B" />
+                <Set Name="WM_ASKCBFORMATNAME"                  Value="0x030C" />
+                <Set Name="WM_CHANGECBCHAIN"                    Value="0x030D" />
+                <Set Name="WM_HSCROLLCLIPBOARD"                 Value="0x030E" />
+                <Set Name="WM_QUERYNEWPALETTE"                  Value="0x030F" />
+                <Set Name="WM_PALETTEISCHANGING"                Value="0x0310" />
+                <Set Name="WM_PALETTECHANGED"                   Value="0x0311" />
+                <Set Name="WM_HOTKEY"                           Value="0x0312" />
+                <Set Name="WM_PRINT"                            Value="0x0317" />
+                <Set Name="WM_PRINTCLIENT"                      Value="0x0318" />
+                <Set Name="WM_APPCOMMAND"                       Value="0x0319" />
+                <Set Name="WM_THEMECHANGED"                     Value="0x031A" />
+                <Set Name="WM_CLIPBOARDUPDATE"                  Value="0x031D" />
+                <Set Name="WM_DWMCOMPOSITIONCHANGED"            Value="0x031E" />
+                <Set Name="WM_DWMNCRENDERINGCHANGED"            Value="0x031F" />
+                <Set Name="WM_DWMCOLORIZATIONCOLORCHANGED"      Value="0x0320" />
+                <Set Name="WM_DWMWINDOWMAXIMIZEDCHANGE"         Value="0x0321" />
+                <Set Name="WM_GETTITLEBARINFOEX"                Value="0x033F" />
+                <Set Name="WM_QUERYAFXWNDPROC"                  Value="0x0360" />
+                <Set Name="WM_SIZEPARENT"                       Value="0x0361" />
+                <Set Name="WM_SETMESSAGESTRING"                 Value="0x0362" />
+                <Set Name="WM_IDLEUPDATECMDUI"                  Value="0x0363" />
+                <Set Name="WM_INITIALUPDATE"                    Value="0x0364" />
+                <Set Name="WM_COMMANDHELP"                      Value="0x0365" />
+                <Set Name="WM_HELPHITTEST"                      Value="0x0366" />
+                <Set Name="WM_EXITHELPMODE"                     Value="0x0367" />
+                <Set Name="WM_RECALCPARENT"                     Value="0x0368" />
+                <Set Name="WM_SIZECHILD"                        Value="0x0369" />
+                <Set Name="WM_KICKIDLE"                         Value="0x036A" />
+                <Set Name="WM_QUERYCENTERWND"                   Value="0x036B" />
+                <Set Name="WM_DISABLEMODAL"                     Value="0x036C" />
+                <Set Name="WM_FLOATSTATUS"                      Value="0x036D" />
+                <Set Name="WM_ACTIVATETOPLEVEL"                 Value="0x036E" />
+                <Set Name="WM_QUERY3DCONTROLS"                  Value="0x036F" />
+                <Set Name="WM_SOCKET_NOTIFY"                    Value="0x0373" />
+                <Set Name="WM_SOCKET_DEAD"                      Value="0x0374" />
+                <Set Name="WM_POPMESSAGESTRING"                 Value="0x0375" />
+                <Set Name="WM_HELPPROMPTADDR"                   Value="0x0376" />
+                <!-- WM_OCC_xxx are not real messages -->
+                <Set Name="WM_QUEUE_SENTINEL"                   Value="0x0379" />
+                <Set Name="WM_RESERVED_037C"                    Value="0x037C" />
+                <Set Name="WM_RESERVED_037D"                    Value="0x037D" />
+                <Set Name="WM_RESERVED_037E"                    Value="0x037E" />
+                <Set Name="WM_FORWARDMSG"                       Value="0x037F" />
+                <Set Name="WM_USER"                             Value="0x0400" />
+
+                <!-- Edit -->
+                <Set Name="EM_GETSEL"                           Value="0x00B0" />
+                <Set Name="EM_SETSEL"                           Value="0x00B1" />
+                <Set Name="EM_GETRECT"                          Value="0x00B2" />
+                <Set Name="EM_SETRECT"                          Value="0x00B3" />
+                <Set Name="EM_SETRECTNP"                        Value="0x00B4" />
+                <Set Name="EM_SCROLL"                           Value="0x00B5" />
+                <Set Name="EM_LINESCROLL"                       Value="0x00B6" />
+                <Set Name="EM_SCROLLCARET"                      Value="0x00B7" />
+                <Set Name="EM_GETMODIFY"                        Value="0x00B8" />
+                <Set Name="EM_SETMODIFY"                        Value="0x00B9" />
+                <Set Name="EM_GETLINECOUNT"                     Value="0x00BA" />
+                <Set Name="EM_LINEINDEX"                        Value="0x00BB" />
+                <Set Name="EM_SETHANDLE"                        Value="0x00BC" />
+                <Set Name="EM_GETHANDLE"                        Value="0x00BD" />
+                <Set Name="EM_GETTHUMB"                         Value="0x00BE" />
+                <Set Name="EM_LINELENGTH"                       Value="0x00C1" />
+                <Set Name="EM_REPLACESEL"                       Value="0x00C2" />
+                <Set Name="EM_GETLINE"                          Value="0x00C4" />
+                <Set Name="EM_SETLIMITTEXT"                     Value="0x00C5" />
+                <Set Name="EM_CANUNDO"                          Value="0x00C6" />
+                <Set Name="EM_UNDO"                             Value="0x00C7" />
+                <Set Name="EM_FMTLINES"                         Value="0x00C8" />
+                <Set Name="EM_LINEFROMCHAR"                     Value="0x00C9" />
+                <Set Name="EM_SETTABSTOPS"                      Value="0x00CB" />
+                <Set Name="EM_SETPASSWORDCHAR"                  Value="0x00CC" />
+                <Set Name="EM_EMPTYUNDOBUFFER"                  Value="0x00CD" />
+                <Set Name="EM_GETFIRSTVISIBLELINE"              Value="0x00CE" />
+                <Set Name="EM_SETREADONLY"                      Value="0x00CF" />
+                <Set Name="EM_SETWORDBREAKPROC"                 Value="0x00D0" />
+                <Set Name="EM_GETWORDBREAKPROC"                 Value="0x00D1" />
+                <Set Name="EM_GETPASSWORDCHAR"                  Value="0x00D2" />
+                <Set Name="EM_SETMARGINS"                       Value="0x00D3" />
+                <Set Name="EM_GETMARGINS"                       Value="0x00D4" />
+                <Set Name="EM_GETLIMITTEXT"                     Value="0x00D5" />
+                <Set Name="EM_POSFROMCHAR"                      Value="0x00D6" />
+                <Set Name="EM_CHARFROMPOS"                      Value="0x00D7" />
+                <Set Name="EM_SETIMESTATUS"                     Value="0x00D8" />
+                <Set Name="EM_GETIMESTATUS"                     Value="0x00D9" />
+                
+                <!-- Button -->
+                <Set Name="BM_GETCHECK"                         Value="0x00F0" />
+                <Set Name="BM_SETCHECK"                         Value="0x00F1" />
+                <Set Name="BM_GETSTATE"                         Value="0x00F2" />
+                <Set Name="BM_SETSTATE"                         Value="0x00F3" />
+                <Set Name="BM_SETSTYLE"                         Value="0x00F4" />
+                <Set Name="BM_CLICK"                            Value="0x00F5" />
+                <Set Name="BM_GETIMAGE"                         Value="0x00F6" />
+                <Set Name="BM_SETIMAGE"                         Value="0x00F7" />
+                <Set Name="BM_SETDONTCLICK"                     Value="0x00F8" />
+                
+                <!-- Combo Box -->
+                <Set Name="CB_GETEDITSEL"                       Value="0x0140" />
+                <Set Name="CB_LIMITTEXT"                        Value="0x0141" />
+                <Set Name="CB_SETEDITSEL"                       Value="0x0142" />
+                <Set Name="CB_ADDSTRING"                        Value="0x0143" />
+                <Set Name="CB_DELETESTRING"                     Value="0x0144" />
+                <Set Name="CB_DIR"                              Value="0x0145" />
+                <Set Name="CB_GETCOUNT"                         Value="0x0146" />
+                <Set Name="CB_GETCURSEL"                        Value="0x0147" />
+                <Set Name="CB_GETLBTEXT"                        Value="0x0148" />
+                <Set Name="CB_GETLBTEXTLEN"                     Value="0x0149" />
+                <Set Name="CB_INSERTSTRING"                     Value="0x014A" />
+                <Set Name="CB_RESETCONTENT"                     Value="0x014B" />
+                <Set Name="CB_FINDSTRING"                       Value="0x014C" />
+                <Set Name="CB_SELECTSTRING"                     Value="0x014D" />
+                <Set Name="CB_SETCURSEL"                        Value="0x014E" />
+                <Set Name="CB_SHOWDROPDOWN"                     Value="0x014F" />
+                <Set Name="CB_GETITEMDATA"                      Value="0x0150" />
+                <Set Name="CB_SETITEMDATA"                      Value="0x0151" />
+                <Set Name="CB_GETDROPPEDCONTROLRECT"            Value="0x0152" />
+                <Set Name="CB_SETITEMHEIGHT"                    Value="0x0153" />
+                <Set Name="CB_GETITEMHEIGHT"                    Value="0x0154" />
+                <Set Name="CB_SETEXTENDEDUI"                    Value="0x0155" />
+                <Set Name="CB_GETEXTENDEDUI"                    Value="0x0156" />
+                <Set Name="CB_GETDROPPEDSTATE"                  Value="0x0157" />
+                <Set Name="CB_FINDSTRINGEXACT"                  Value="0x0158" />
+                <Set Name="CB_SETLOCALE"                        Value="0x0159" />
+                <Set Name="CB_GETLOCALE"                        Value="0x015A" />
+                <Set Name="CB_GETTOPINDEX"                      Value="0x015b" />
+                <Set Name="CB_SETTOPINDEX"                      Value="0x015c" />
+                <Set Name="CB_GETHORIZONTALEXTENT"              Value="0x015d" />
+                <Set Name="CB_SETHORIZONTALEXTENT"              Value="0x015e" />
+                <Set Name="CB_GETDROPPEDWIDTH"                  Value="0x015f" />
+                <Set Name="CB_SETDROPPEDWIDTH"                  Value="0x0160" />
+                <Set Name="CB_INITSTORAGE"                      Value="0x0161" />
+                <Set Name="CB_MULTIPLEADDSTRING"                Value="0x0163" />
+                <Set Name="CB_GETCOMBOBOXINFO"                  Value="0x0164" />
+
+                <!-- List Box -->
+                <Set Name="LB_ADDSTRING"                        Value="0x0180" />
+                <Set Name="LB_INSERTSTRING"                     Value="0x0181" />
+                <Set Name="LB_DELETESTRING"                     Value="0x0182" />
+                <Set Name="LB_SELITEMRANGEEX"                   Value="0x0183" />
+                <Set Name="LB_RESETCONTENT"                     Value="0x0184" />
+                <Set Name="LB_SETSEL"                           Value="0x0185" />
+                <Set Name="LB_SETCURSEL"                        Value="0x0186" />
+                <Set Name="LB_GETSEL"                           Value="0x0187" />
+                <Set Name="LB_GETCURSEL"                        Value="0x0188" />
+                <Set Name="LB_GETTEXT"                          Value="0x0189" />
+                <Set Name="LB_GETTEXTLEN"                       Value="0x018A" />
+                <Set Name="LB_GETCOUNT"                         Value="0x018B" />
+                <Set Name="LB_SELECTSTRING"                     Value="0x018C" />
+                <Set Name="LB_DIR"                              Value="0x018D" />
+                <Set Name="LB_GETTOPINDEX"                      Value="0x018E" />
+                <Set Name="LB_FINDSTRING"                       Value="0x018F" />
+                <Set Name="LB_GETSELCOUNT"                      Value="0x0190" />
+                <Set Name="LB_GETSELITEMS"                      Value="0x0191" />
+                <Set Name="LB_SETTABSTOPS"                      Value="0x0192" />
+                <Set Name="LB_GETHORIZONTALEXTENT"              Value="0x0193" />
+                <Set Name="LB_SETHORIZONTALEXTENT"              Value="0x0194" />
+                <Set Name="LB_SETCOLUMNWIDTH"                   Value="0x0195" />
+                <Set Name="LB_ADDFILE"                          Value="0x0196" />
+                <Set Name="LB_SETTOPINDEX"                      Value="0x0197" />
+                <Set Name="LB_GETITEMRECT"                      Value="0x0198" />
+                <Set Name="LB_GETITEMDATA"                      Value="0x0199" />
+                <Set Name="LB_SETITEMDATA"                      Value="0x019A" />
+                <Set Name="LB_SELITEMRANGE"                     Value="0x019B" />
+                <Set Name="LB_SETANCHORINDEX"                   Value="0x019C" />
+                <Set Name="LB_GETANCHORINDEX"                   Value="0x019D" />
+                <Set Name="LB_SETCARETINDEX"                    Value="0x019E" />
+                <Set Name="LB_GETCARETINDEX"                    Value="0x019F" />
+                <Set Name="LB_SETITEMHEIGHT"                    Value="0x01A0" />
+                <Set Name="LB_GETITEMHEIGHT"                    Value="0x01A1" />
+                <Set Name="LB_FINDSTRINGEXACT"                  Value="0x01A2" />
+                <Set Name="LB_CARETON"                          Value="0x01A3" />
+                <Set Name="LB_CARETOFF"                         Value="0x01A4" />
+                <Set Name="LB_SETLOCALE"                        Value="0x01A5" />
+                <Set Name="LB_GETLOCALE"                        Value="0x01A6" />
+                <Set Name="LB_SETCOUNT"                         Value="0x01A7" />
+                <Set Name="LB_INITSTORAGE"                      Value="0x01A8" />
+                <Set Name="LB_ITEMFROMPOINT"                    Value="0x01A9" />
+                <Set Name="LB_MULTIPLEADDSTRING"                Value="0x01B1" />
+                <Set Name="LB_GETLISTBOXINFO"                   Value="0x01B2" />
+
+                <!-- Scroll Bar -->
+                <Set Name="SBM_SETPOS"                          Value="0x00E0" />
+                <Set Name="SBM_GETPOS"                          Value="0x00E1" />
+                <Set Name="SBM_SETRANGE"                        Value="0x00E2" />
+                <Set Name="SBM_GETRANGE"                        Value="0x00E3" />
+                <Set Name="SBM_ENABLE_ARROWS"                   Value="0x00E4" />
+                <Set Name="SBM_SETRANGEREDRAW"                  Value="0x00E6" />
+                <Set Name="SBM_SETSCROLLINFO"                   Value="0x00E9" />
+                <Set Name="SBM_GETSCROLLINFO"                   Value="0x00EA" />
+                <Set Name="SBM_GETSCROLLBARINFO"                Value="0x00EB" />
+
+                <!-- Static -->
+                <Set Name="STM_SETICON"                         Value="0x0170" />
+                <Set Name="STM_GETICON"                         Value="0x0171" />
+                <Set Name="STM_SETIMAGE"                        Value="0x0172" />
+                <Set Name="STM_GETIMAGE"                        Value="0x0173" />
+
+                <!-- User -->
+                <Set Name="WM_USER+1"                           Value="0x0401" />
+                <Set Name="WM_USER+2"                           Value="0x0402" />
+                <Set Name="WM_USER+3"                           Value="0x0403" />
+                <Set Name="WM_USER+4"                           Value="0x0404" />
+                <Set Name="WM_USER+5"                           Value="0x0405" />
+                <Set Name="WM_USER+6"                           Value="0x0406" />
+                <Set Name="WM_USER+7"                           Value="0x0407" />
+                <Set Name="WM_USER+8"                           Value="0x0408" />
+                <Set Name="WM_USER+9"                           Value="0x0409" />
+                <Set Name="WM_USER+10"                          Value="0x040a" />
+                <Set Name="WM_USER+11"                          Value="0x040b" />
+                <Set Name="WM_USER+12"                          Value="0x040c" />
+                <Set Name="WM_USER+13"                          Value="0x040d" />
+                <Set Name="WM_USER+14"                          Value="0x040e" />
+                <Set Name="WM_USER+15"                          Value="0x040f" />
+                <Set Name="WM_USER+16"                          Value="0x0410" />
+                <Set Name="WM_USER+17"                          Value="0x0411" />
+                <Set Name="WM_USER+18"                          Value="0x0412" />
+                <Set Name="WM_USER+19"                          Value="0x0413" />
+                <Set Name="WM_USER+20"                          Value="0x0414" />
+                <Set Name="WM_USER+21"                          Value="0x0415" />
+                <Set Name="WM_USER+22"                          Value="0x0416" />
+                <Set Name="WM_USER+23"                          Value="0x0417" />
+                <Set Name="WM_USER+24"                          Value="0x0418" />
+                <Set Name="WM_USER+25"                          Value="0x0419" />
+                <Set Name="WM_USER+26"                          Value="0x041a" />
+                <Set Name="WM_USER+27"                          Value="0x041b" />
+                <Set Name="WM_USER+28"                          Value="0x041c" />
+                <Set Name="WM_USER+29"                          Value="0x041d" />
+                <Set Name="WM_USER+30"                          Value="0x041e" />
+                <Set Name="WM_USER+31"                          Value="0x041f" />
+                <Set Name="WM_USER+32"                          Value="0x0420" />
+                <Set Name="WM_USER+33"                          Value="0x0421" />
+                <Set Name="WM_USER+34"                          Value="0x0422" />
+                <Set Name="WM_USER+35"                          Value="0x0423" />
+                <Set Name="WM_USER+36"                          Value="0x0424" />
+                <Set Name="WM_USER+37"                          Value="0x0425" />
+                <Set Name="WM_USER+38"                          Value="0x0426" />
+                <Set Name="WM_USER+39"                          Value="0x0427" />
+                <Set Name="WM_USER+40"                          Value="0x0428" />
+                <Set Name="WM_USER+41"                          Value="0x0429" />
+                <Set Name="WM_USER+42"                          Value="0x042a" />
+                <Set Name="WM_USER+43"                          Value="0x042b" />
+                <Set Name="WM_USER+44"                          Value="0x042c" />
+                <Set Name="WM_USER+45"                          Value="0x042d" />
+                <Set Name="WM_USER+46"                          Value="0x042e" />
+                <Set Name="WM_USER+47"                          Value="0x042f" />
+                <Set Name="WM_USER+48"                          Value="0x0430" />
+                <Set Name="WM_USER+49"                          Value="0x0431" />
+                <Set Name="WM_USER+50"                          Value="0x0432" />
+                <Set Name="WM_USER+51"                          Value="0x0433" />
+                <Set Name="WM_USER+52"                          Value="0x0434" />
+                <Set Name="WM_USER+53"                          Value="0x0435" />
+                <Set Name="WM_USER+54"                          Value="0x0436" />
+                <Set Name="WM_USER+55"                          Value="0x0437" />
+                <Set Name="WM_USER+56"                          Value="0x0438" />
+                <Set Name="WM_USER+57"                          Value="0x0439" />
+                <Set Name="WM_USER+58"                          Value="0x043a" />
+                <Set Name="WM_USER+59"                          Value="0x043b" />
+                <Set Name="WM_USER+60"                          Value="0x043c" />
+                <Set Name="WM_USER+61"                          Value="0x043d" />
+                <Set Name="WM_USER+62"                          Value="0x043e" />
+                <Set Name="WM_USER+63"                          Value="0x043f" />
+                <Set Name="WM_USER+64"                          Value="0x0440" />
+                <Set Name="WM_USER+65"                          Value="0x0441" />
+                <Set Name="WM_USER+66"                          Value="0x0442" />
+                <Set Name="WM_USER+67"                          Value="0x0443" />
+                <Set Name="WM_USER+68"                          Value="0x0444" />
+                <Set Name="WM_USER+69"                          Value="0x0445" />
+                <Set Name="WM_USER+70"                          Value="0x0446" />
+                <Set Name="WM_USER+71"                          Value="0x0447" />
+                <Set Name="WM_USER+72"                          Value="0x0448" />
+                <Set Name="WM_USER+73"                          Value="0x0449" />
+                <Set Name="WM_USER+74"                          Value="0x044a" />
+                <Set Name="WM_USER+75"                          Value="0x044b" />
+                <Set Name="WM_USER+76"                          Value="0x044c" />
+                <Set Name="WM_USER+77"                          Value="0x044d" />
+                <Set Name="WM_USER+78"                          Value="0x044e" />
+                <Set Name="WM_USER+79"                          Value="0x044f" />
+                <Set Name="WM_USER+80"                          Value="0x0450" />
+                <Set Name="WM_USER+81"                          Value="0x0451" />
+                <Set Name="WM_USER+82"                          Value="0x0452" />
+                <Set Name="WM_USER+83"                          Value="0x0453" />
+                <Set Name="WM_USER+84"                          Value="0x0454" />
+                <Set Name="WM_USER+85"                          Value="0x0455" />
+                <Set Name="WM_USER+86"                          Value="0x0456" />
+                <Set Name="WM_USER+87"                          Value="0x0457" />
+                <Set Name="WM_USER+88"                          Value="0x0458" />
+                <Set Name="WM_USER+89"                          Value="0x0459" />
+                <Set Name="WM_USER+90"                          Value="0x045a" />
+                <Set Name="WM_USER+91"                          Value="0x045b" />
+                <Set Name="WM_USER+92"                          Value="0x045c" />
+                <Set Name="WM_USER+93"                          Value="0x045d" />
+                <Set Name="WM_USER+94"                          Value="0x045e" />
+                <Set Name="WM_USER+95"                          Value="0x045f" />
+                <Set Name="WM_USER+96"                          Value="0x0460" />
+                <Set Name="WM_USER+97"                          Value="0x0461" />
+                <Set Name="WM_USER+98"                          Value="0x0462" />
+                <Set Name="WM_USER+99"                          Value="0x0463" />
+                <Set Name="WM_USER+100"                         Value="0x0464" />
+
+                <!-- List View -->
+                <!-- TODO: Conflicts Date and Time Picker and Month Calendar Control -->
+                <Set Name="LVM_GETBKCOLOR"                      Value="0x00001000" />
+                <Set Name="LVM_SETBKCOLOR"                      Value="0x00001001" />
+                <Set Name="LVM_GETIMAGELIST"                    Value="0x00001002" />
+                <Set Name="LVM_SETIMAGELIST"                    Value="0x00001003" />
+                <Set Name="LVM_GETITEMCOUNT"                    Value="0x00001004" />
+                <Set Name="LVM_GETITEMA"                        Value="0x00001005" />
+                <Set Name="LVM_GETITEMW"                        Value="0x0000104b" />
+                <Set Name="LVM_SETITEMA"                        Value="0x00001006" />
+                <Set Name="LVM_SETITEMW"                        Value="0x0000104c" />
+                <Set Name="LVM_INSERTITEMA"                     Value="0x00001007" />
+                <Set Name="LVM_INSERTITEMW"                     Value="0x0000104d" />
+                <Set Name="LVM_DELETEITEM"                      Value="0x00001008" />
+                <Set Name="LVM_DELETEALLITEMS"                  Value="0x00001009" />
+                <Set Name="LVM_GETCALLBACKMASK"                 Value="0x0000100a" />
+                <Set Name="LVM_SETCALLBACKMASK"                 Value="0x0000100b" />
+                <Set Name="LVM_GETNEXTITEM"                     Value="0x0000100c" />
+                <Set Name="LVM_FINDITEMA"                       Value="0x0000100d" />
+                <Set Name="LVM_FINDITEMW"                       Value="0x00001053" />
+                <Set Name="LVM_GETITEMRECT"                     Value="0x0000100e" />
+                <Set Name="LVM_SETITEMPOSITION"                 Value="0x0000100f" />
+                <Set Name="LVM_GETITEMPOSITION"                 Value="0x00001010" />
+                <Set Name="LVM_GETSTRINGWIDTHA"                 Value="0x00001011" />
+                <Set Name="LVM_GETSTRINGWIDTHW"                 Value="0x00001057" />
+                <Set Name="LVM_HITTEST"                         Value="0x00001012" />
+                <Set Name="LVM_ENSUREVISIBLE"                   Value="0x00001013" />
+                <Set Name="LVM_SCROLL"                          Value="0x00001014" />
+                <Set Name="LVM_REDRAWITEMS"                     Value="0x00001015" />
+                <Set Name="LVM_ARRANGE"                         Value="0x00001016" />
+                <Set Name="LVM_EDITLABELA"                      Value="0x00001017" />
+                <Set Name="LVM_EDITLABELW"                      Value="0x00001076" />
+                <Set Name="LVM_GETEDITCONTROL"                  Value="0x00001018" />
+                <Set Name="LVM_GETCOLUMNA"                      Value="0x00001019" />
+                <Set Name="LVM_GETCOLUMNW"                      Value="0x0000105f" />
+                <Set Name="LVM_SETCOLUMNA"                      Value="0x0000101a" />
+                <Set Name="LVM_SETCOLUMNW"                      Value="0x00001060" />
+                <Set Name="LVM_INSERTCOLUMNA"                   Value="0x0000101b" />
+                <Set Name="LVM_INSERTCOLUMNW"                   Value="0x00001061" />
+                <Set Name="LVM_DELETECOLUMN"                    Value="0x0000101c" />
+                <Set Name="LVM_GETCOLUMNWIDTH"                  Value="0x0000101d" />
+                <Set Name="LVM_SETCOLUMNWIDTH"                  Value="0x0000101e" />
+                <Set Name="LVM_GETHEADER"                       Value="0x0000101f" />
+                <Set Name="LVM_CREATEDRAGIMAGE"                 Value="0x00001021" />
+                <Set Name="LVM_GETVIEWRECT"                     Value="0x00001022" />
+                <Set Name="LVM_GETTEXTCOLOR"                    Value="0x00001023" />
+                <Set Name="LVM_SETTEXTCOLOR"                    Value="0x00001024" />
+                <Set Name="LVM_GETTEXTBKCOLOR"                  Value="0x00001025" />
+                <Set Name="LVM_SETTEXTBKCOLOR"                  Value="0x00001026" />
+                <Set Name="LVM_GETTOPINDEX"                     Value="0x00001027" />
+                <Set Name="LVM_GETCOUNTPERPAGE"                 Value="0x00001028" />
+                <Set Name="LVM_GETORIGIN"                       Value="0x00001029" />
+                <Set Name="LVM_UPDATE"                          Value="0x0000102a" />
+                <Set Name="LVM_SETITEMSTATE"                    Value="0x0000102b" />
+                <Set Name="LVM_GETITEMSTATE"                    Value="0x0000102c" />
+                <Set Name="LVM_GETITEMTEXTA"                    Value="0x0000102d" />
+                <Set Name="LVM_GETITEMTEXTW"                    Value="0x00001073" />
+                <Set Name="LVM_SETITEMTEXTA"                    Value="0x0000102e" />
+                <Set Name="LVM_SETITEMTEXTW"                    Value="0x00001074" />
+                <Set Name="LVM_SETITEMCOUNT"                    Value="0x0000102f" />
+                <Set Name="LVM_SORTITEMS"                       Value="0x00001030" />
+                <Set Name="LVM_SETITEMPOSITION32"               Value="0x00001031" />
+                <Set Name="LVM_GETSELECTEDCOUNT"                Value="0x00001032" />
+                <Set Name="LVM_GETITEMSPACING"                  Value="0x00001033" />
+                <Set Name="LVM_GETISEARCHSTRINGA"               Value="0x00001034" />
+                <Set Name="LVM_GETISEARCHSTRINGW"               Value="0x00001075" />
+                <Set Name="LVM_SETICONSPACING"                  Value="0x00001035" />
+                <Set Name="LVM_SETEXTENDEDLISTVIEWSTYLE"        Value="0x00001036" />
+                <Set Name="LVM_GETEXTENDEDLISTVIEWSTYLE"        Value="0x00001037" />
+                <Set Name="LVM_GETSUBITEMRECT"                  Value="0x00001038" />
+                <Set Name="LVM_SUBITEMHITTEST"                  Value="0x00001039" />
+                <Set Name="LVM_SETCOLUMNORDERARRAY"             Value="0x0000103a" />
+                <Set Name="LVM_GETCOLUMNORDERARRAY"             Value="0x0000103b" />
+                <Set Name="LVM_SETHOTITEM"                      Value="0x0000103c" />
+                <Set Name="LVM_GETHOTITEM"                      Value="0x0000103d" />
+                <Set Name="LVM_SETHOTCURSOR"                    Value="0x0000103e" />
+                <Set Name="LVM_GETHOTCURSOR"                    Value="0x0000103f" />
+                <Set Name="LVM_APPROXIMATEVIEWRECT"             Value="0x00001040" />
+                <Set Name="LVM_SETWORKAREAS"                    Value="0x00001041" />
+                <Set Name="LVM_GETWORKAREAS"                    Value="0x00001046" />
+                <Set Name="LVM_GETNUMBEROFWORKAREAS"            Value="0x00001049" />
+                <Set Name="LVM_GETSELECTIONMARK"                Value="0x00001042" />
+                <Set Name="LVM_SETSELECTIONMARK"                Value="0x00001043" />
+                <Set Name="LVM_SETHOVERTIME"                    Value="0x00001047" />
+                <Set Name="LVM_GETHOVERTIME"                    Value="0x00001048" />
+                <Set Name="LVM_SETTOOLTIPS"                     Value="0x0000104a" />
+                <Set Name="LVM_GETTOOLTIPS"                     Value="0x0000104e" />
+                <Set Name="LVM_SORTITEMSEX"                     Value="0x00001051" />
+                <Set Name="LVM_SETBKIMAGEA"                     Value="0x00001044" />
+                <Set Name="LVM_SETBKIMAGEW"                     Value="0x0000108a" />
+                <Set Name="LVM_GETBKIMAGEA"                     Value="0x00001045" />
+                <Set Name="LVM_GETBKIMAGEW"                     Value="0x0000108b" />
+                <Set Name="LVM_SETSELECTEDCOLUMN"               Value="0x0000108c" />
+                <Set Name="LVM_SETVIEW"                         Value="0x0000108e" />
+                <Set Name="LVM_GETVIEW"                         Value="0x0000108f" />
+                <Set Name="LVM_INSERTGROUP"                     Value="0x00001091" />
+                <Set Name="LVM_SETGROUPINFO"                    Value="0x00001093" />
+                <Set Name="LVM_GETGROUPINFO"                    Value="0x00001095" />
+                <Set Name="LVM_REMOVEGROUP"                     Value="0x00001096" />
+                <Set Name="LVM_MOVEGROUP"                       Value="0x00001097" />
+                <Set Name="LVM_GETGROUPCOUNT"                   Value="0x00001098" />
+                <Set Name="LVM_GETGROUPINFOBYINDEX"             Value="0x00001099" />
+                <Set Name="LVM_MOVEITEMTOGROUP"                 Value="0x0000109a" />
+                <Set Name="LVM_GETGROUPRECT"                    Value="0x00001062" />
+                <Set Name="LVM_SETGROUPMETRICS"                 Value="0x0000109b" />
+                <Set Name="LVM_GETGROUPMETRICS"                 Value="0x0000109c" />
+                <Set Name="LVM_ENABLEGROUPVIEW"                 Value="0x0000109d" />
+                <Set Name="LVM_SORTGROUPS"                      Value="0x0000109e" />
+                <Set Name="LVM_INSERTGROUPSORTED"               Value="0x0000109f" />
+                <Set Name="LVM_REMOVEALLGROUPS"                 Value="0x000010a0" />
+                <Set Name="LVM_HASGROUP"                        Value="0x000010a1" />
+                <Set Name="LVM_GETGROUPSTATE"                   Value="0x0000105c" />
+                <Set Name="LVM_GETFOCUSEDGROUP"                 Value="0x0000105d" />
+                <Set Name="LVM_SETTILEVIEWINFO"                 Value="0x000010a2" />
+                <Set Name="LVM_GETTILEVIEWINFO"                 Value="0x000010a3" />
+                <Set Name="LVM_SETTILEINFO"                     Value="0x000010a4" />
+                <Set Name="LVM_GETTILEINFO"                     Value="0x000010a5" />
+                <Set Name="LVM_SETINSERTMARK"                   Value="0x000010a6" />
+                <Set Name="LVM_GETINSERTMARK"                   Value="0x000010a7" />
+                <Set Name="LVM_INSERTMARKHITTEST"               Value="0x000010a8" />
+                <Set Name="LVM_GETINSERTMARKRECT"               Value="0x000010a9" />
+                <Set Name="LVM_SETINSERTMARKCOLOR"              Value="0x000010aa" />
+                <Set Name="LVM_GETINSERTMARKCOLOR"              Value="0x000010ab" />
+                <Set Name="LVM_SETINFOTIP"                      Value="0x000010ad" />
+                <Set Name="LVM_GETSELECTEDCOLUMN"               Value="0x000010ae" />
+                <Set Name="LVM_ISGROUPVIEWENABLED"              Value="0x000010af" />
+                <Set Name="LVM_GETOUTLINECOLOR"                 Value="0x000010b0" />
+                <Set Name="LVM_SETOUTLINECOLOR"                 Value="0x000010b1" />
+                <Set Name="LVM_CANCELEDITLABEL"                 Value="0x000010b3" />
+                <Set Name="LVM_MAPINDEXTOID"                    Value="0x000010b4" />
+                <Set Name="LVM_MAPIDTOINDEX"                    Value="0x000010b5" />
+                <Set Name="LVM_ISITEMVISIBLE"                   Value="0x000010b6" />
+                <Set Name="LVM_GETEMPTYTEXT"                    Value="0x000010cc" />
+                <Set Name="LVM_GETFOOTERRECT"                   Value="0x000010cd" />
+                <Set Name="LVM_GETFOOTERINFO"                   Value="0x000010ce" />
+                <Set Name="LVM_GETFOOTERITEMRECT"               Value="0x000010cf" />
+                <Set Name="LVM_GETFOOTERITEM"                   Value="0x000010d0" />
+                <Set Name="LVM_GETITEMINDEXRECT"                Value="0x000010d1" />
+                <Set Name="LVM_SETITEMINDEXSTATE"               Value="0x000010d2" />
+                <Set Name="LVM_GETNEXTITEMINDEX"                Value="0x000010d3" />
+                
+                <!-- Tree View -->
+                <Set Name="TVM_INSERTITEMA"                     Value="0x00001100" />
+                <Set Name="TVM_INSERTITEMW"                     Value="0x00001132" />
+                <Set Name="TVM_DELETEITEM"                      Value="0x00001101" />
+                <Set Name="TVM_EXPAND"                          Value="0x00001102" />
+                <Set Name="TVM_GETITEMRECT"                     Value="0x00001104" />
+                <Set Name="TVM_GETCOUNT"                        Value="0x00001105" />
+                <Set Name="TVM_GETINDENT"                       Value="0x00001106" />
+                <Set Name="TVM_SETINDENT"                       Value="0x00001107" />
+                <Set Name="TVM_GETIMAGELIST"                    Value="0x00001108" />
+                <Set Name="TVM_SETIMAGELIST"                    Value="0x00001109" />
+                <Set Name="TVM_GETNEXTITEM"                     Value="0x0000110a" />
+                <Set Name="TVM_SELECTITEM"                      Value="0x0000110b" />
+                <Set Name="TVM_GETITEMA"                        Value="0x0000110c" />
+                <Set Name="TVM_GETITEMW"                        Value="0x0000113e" />
+                <Set Name="TVM_SETITEMA"                        Value="0x0000110d" />
+                <Set Name="TVM_SETITEMW"                        Value="0x0000113f" />
+                <Set Name="TVM_EDITLABELA"                      Value="0x0000110e" />
+                <Set Name="TVM_EDITLABELW"                      Value="0x00001141" />
+                <Set Name="TVM_GETEDITCONTROL"                  Value="0x0000110f" />
+                <Set Name="TVM_GETVISIBLECOUNT"                 Value="0x00001110" />
+                <Set Name="TVM_HITTEST"                         Value="0x00001111" />
+                <Set Name="TVM_CREATEDRAGIMAGE"                 Value="0x00001112" />
+                <Set Name="TVM_SORTCHILDREN"                    Value="0x00001113" />
+                <Set Name="TVM_ENSUREVISIBLE"                   Value="0x00001114" />
+                <Set Name="TVM_SORTCHILDRENCB"                  Value="0x00001115" />
+                <Set Name="TVM_ENDEDITLABELNOW"                 Value="0x00001116" />
+                <Set Name="TVM_GETISEARCHSTRINGA"               Value="0x00001117" />
+                <Set Name="TVM_GETISEARCHSTRINGW"               Value="0x00001140" />
+                <Set Name="TVM_SETTOOLTIPS"                     Value="0x00001118" />
+                <Set Name="TVM_GETTOOLTIPS"                     Value="0x00001119" />
+                <Set Name="TVM_SETINSERTMARK"                   Value="0x0000111a" />
+                <Set Name="TVM_SETITEMHEIGHT"                   Value="0x0000111b" />
+                <Set Name="TVM_GETITEMHEIGHT"                   Value="0x0000111c" />
+                <Set Name="TVM_SETBKCOLOR"                      Value="0x0000111d" />
+                <Set Name="TVM_SETTEXTCOLOR"                    Value="0x0000111e" />
+                <Set Name="TVM_GETBKCOLOR"                      Value="0x0000111f" />
+                <Set Name="TVM_GETTEXTCOLOR"                    Value="0x00001120" />
+                <Set Name="TVM_SETSCROLLTIME"                   Value="0x00001121" />
+                <Set Name="TVM_GETSCROLLTIME"                   Value="0x00001122" />
+                <Set Name="TVM_SETINSERTMARKCOLOR"              Value="0x00001125" />
+                <Set Name="TVM_GETINSERTMARKCOLOR"              Value="0x00001126" />
+                <Set Name="TVM_GETITEMSTATE"                    Value="0x00001127" />
+                <Set Name="TVM_SETLINECOLOR"                    Value="0x00001128" />
+                <Set Name="TVM_GETLINECOLOR"                    Value="0x00001129" />
+                <Set Name="TVM_MAPACCIDTOHTREEITEM"             Value="0x0000112a" />
+                <Set Name="TVM_MAPHTREEITEMTOACCID"             Value="0x0000112b" />
+                <Set Name="TVM_SETEXTENDEDSTYLE"                Value="0x0000112c" />
+                <Set Name="TVM_GETEXTENDEDSTYLE"                Value="0x0000112d" />
+                <Set Name="TVM_SETAUTOSCROLLINFO"               Value="0x0000113b" />
+                <Set Name="TVM_GETSELECTEDCOUNT"                Value="0x00001146" />
+                <Set Name="TVM_SHOWINFOTIP"                     Value="0x00001147" />
+                <Set Name="TVM_GETITEMPARTRECT"                 Value="0x00001148" />
+                
+                <!-- Header Control -->
+                <Set Name="HDM_GETITEMCOUNT"                    Value="0x00001200" />
+                <Set Name="HDM_INSERTITEMA"                     Value="0x00001201" />
+                <Set Name="HDM_INSERTITEMW"                     Value="0x0000120a" />
+                <Set Name="HDM_DELETEITEM"                      Value="0x00001202" />
+                <Set Name="HDM_GETITEMA"                        Value="0x00001203" />
+                <Set Name="HDM_GETITEMW"                        Value="0x0000120b" />
+                <Set Name="HDM_SETITEMA"                        Value="0x00001204" />
+                <Set Name="HDM_SETITEMW"                        Value="0x0000120c" />
+                <Set Name="HDM_LAYOUT"                          Value="0x00001205" />
+                <Set Name="HDM_HITTEST"                         Value="0x00001206" />
+                <Set Name="HDM_GETITEMRECT"                     Value="0x00001207" />
+                <Set Name="HDM_SETIMAGELIST"                    Value="0x00001208" />
+                <Set Name="HDM_GETIMAGELIST"                    Value="0x00001209" />
+                <Set Name="HDM_ORDERTOINDEX"                    Value="0x0000120f" />
+                <Set Name="HDM_CREATEDRAGIMAGE"                 Value="0x00001210" />
+                <Set Name="HDM_GETORDERARRAY"                   Value="0x00001211" />
+                <Set Name="HDM_SETORDERARRAY"                   Value="0x00001212" />
+                <Set Name="HDM_SETHOTDIVIDER"                   Value="0x00001213" />
+                <Set Name="HDM_SETBITMAPMARGIN"                 Value="0x00001214" />
+                <Set Name="HDM_GETBITMAPMARGIN"                 Value="0x00001215" />
+                <Set Name="HDM_SETFILTERCHANGETIMEOUT"          Value="0x00001216" />
+                <Set Name="HDM_EDITFILTER"                      Value="0x00001217" />
+                <Set Name="HDM_CLEARFILTER"                     Value="0x00001218" />
+                <Set Name="HDM_GETITEMDROPDOWNRECT"             Value="0x00001219" />
+                <Set Name="HDM_GETOVERFLOWRECT"                 Value="0x0000121a" />
+                <Set Name="HDM_GETFOCUSEDITEM"                  Value="0x0000121b" />
+                <Set Name="HDM_SETFOCUSEDITEM"                  Value="0x0000121c" />
+                
+                <!-- Tab Control -->
+                <Set Name="TCM_GETIMAGELIST"                    Value="0x00001302" />
+                <Set Name="TCM_SETIMAGELIST"                    Value="0x00001303" />
+                <Set Name="TCM_GETITEMCOUNT"                    Value="0x00001304" />
+                <Set Name="TCM_GETITEMA"                        Value="0x00001305" />
+                <Set Name="TCM_GETITEMW"                        Value="0x0000133c" />
+                <Set Name="TCM_SETITEMA"                        Value="0x00001306" />
+                <Set Name="TCM_SETITEMW"                        Value="0x0000133d" />
+                <Set Name="TCM_INSERTITEMA"                     Value="0x00001307" />
+                <Set Name="TCM_INSERTITEMW"                     Value="0x0000133e" />
+                <Set Name="TCM_DELETEITEM"                      Value="0x00001308" />
+                <Set Name="TCM_DELETEALLITEMS"                  Value="0x00001309" />
+                <Set Name="TCM_GETITEMRECT"                     Value="0x0000130a" />
+                <Set Name="TCM_GETCURSEL"                       Value="0x0000130b" />
+                <Set Name="TCM_SETCURSEL"                       Value="0x0000130c" />
+                <Set Name="TCM_HITTEST"                         Value="0x0000130d" />
+                <Set Name="TCM_SETITEMEXTRA"                    Value="0x0000130e" />
+                <Set Name="TCM_ADJUSTRECT"                      Value="0x00001328" />
+                <Set Name="TCM_SETITEMSIZE"                     Value="0x00001329" />
+                <Set Name="TCM_REMOVEIMAGE"                     Value="0x0000132a" />
+                <Set Name="TCM_SETPADDING"                      Value="0x0000132b" />
+                <Set Name="TCM_GETROWCOUNT"                     Value="0x0000132c" />
+                <Set Name="TCM_GETTOOLTIPS"                     Value="0x0000132d" />
+                <Set Name="TCM_SETTOOLTIPS"                     Value="0x0000132e" />
+                <Set Name="TCM_GETCURFOCUS"                     Value="0x0000132f" />
+                <Set Name="TCM_SETCURFOCUS"                     Value="0x00001330" />
+                <Set Name="TCM_SETMINTABWIDTH"                  Value="0x00001331" />
+                <Set Name="TCM_DESELECTALL"                     Value="0x00001332" />
+                <Set Name="TCM_HIGHLIGHTITEM"                   Value="0x00001333" />
+                <Set Name="TCM_SETEXTENDEDSTYLE"                Value="0x00001334" />
+                <Set Name="TCM_GETEXTENDEDSTYLE"                Value="0x00001335" />
+                
+                <!-- Pager Control -->
+                <Set Name="PGM_SETCHILD"                        Value="0x00001401" />
+                <Set Name="PGM_RECALCSIZE"                      Value="0x00001402" />
+                <Set Name="PGM_FORWARDMOUSE"                    Value="0x00001403" />
+                <Set Name="PGM_SETBKCOLOR"                      Value="0x00001404" />
+                <Set Name="PGM_GETBKCOLOR"                      Value="0x00001405" />
+                <Set Name="PGM_SETBORDER"                       Value="0x00001406" />
+                <Set Name="PGM_GETBORDER"                       Value="0x00001407" />
+                <Set Name="PGM_SETPOS"                          Value="0x00001408" />
+                <Set Name="PGM_GETPOS"                          Value="0x00001409" />
+                <Set Name="PGM_SETBUTTONSIZE"                   Value="0x0000140a" />
+                <Set Name="PGM_GETBUTTONSIZE"                   Value="0x0000140b" />
+                <Set Name="PGM_GETBUTTONSTATE"                  Value="0x0000140c" />
+
+                <!-- Edit Control -->
+                <Set Name="EM_SETCUEBANNER"                     Value="0x00001501" />
+                <Set Name="EM_GETCUEBANNER"                     Value="0x00001502" />
+                <Set Name="EM_SHOWBALLOONTIP"                   Value="0x00001503" />
+                <Set Name="EM_HIDEBALLOONTIP"                   Value="0x00001504" />
+                <Set Name="EM_SETHILITE"                        Value="0x00001505" />
+                <Set Name="EM_GETHILITE"                        Value="0x00001506" />
+                
+                <!-- Button Control -->
+                <Set Name="BCM_GETIDEALSIZE"                    Value="0x00001601" />
+                <Set Name="BCM_SETIMAGELIST"                    Value="0x00001602" />
+                <Set Name="BCM_GETIMAGELIST"                    Value="0x00001603" />
+                <Set Name="BCM_SETTEXTMARGIN"                   Value="0x00001604" />
+                <Set Name="BCM_GETTEXTMARGIN"                   Value="0x00001605" />
+                <Set Name="BCM_SETDROPDOWNSTATE"                Value="0x00001606" />
+                <Set Name="BCM_SETSPLITINFO"                    Value="0x00001607" />
+                <Set Name="BCM_GETSPLITINFO"                    Value="0x00001608" />
+                <Set Name="BCM_SETNOTE"                         Value="0x00001609" />
+                <Set Name="BCM_GETNOTE"                         Value="0x0000160a" />
+                <Set Name="BCM_GETNOTELENGTH"                   Value="0x0000160b" />
+                <Set Name="BCM_SETSHIELD"                       Value="0x0000160c" />
+                
+                <!-- Combobox Control -->
+                <Set Name="CB_SETMINVISIBLE"                    Value="0x00001701" />
+                <Set Name="CB_GETMINVISIBLE"                    Value="0x00001702" />
+                <Set Name="CB_SETCUEBANNER"                     Value="0x00001703" />
+                <Set Name="CB_GETCUEBANNER"                     Value="0x00001704" />
+
+                <!-- Common Control Shared -->
+                <Set Name="CCM_SETBKCOLOR"                      Value="0x00002001" />
+                <Set Name="CCM_SETCOLORSCHEME"                  Value="0x00002002" />
+                <Set Name="CCM_GETCOLORSCHEME"                  Value="0x00002003" />
+                <Set Name="CCM_GETDROPTARGET"                   Value="0x00002004" />
+                <Set Name="CCM_SETUNICODEFORMAT"                Value="0x00002005" />
+                <Set Name="CCM_GETUNICODEFORMAT"                Value="0x00002006" />
+                <Set Name="CCM_SETVERSION"                      Value="0x00002007" />
+                <Set Name="CCM_GETVERSION"                      Value="0x00002008" />
+                <Set Name="CCM_SETNOTIFYWINDOW"                 Value="0x00002009" />
+                <Set Name="CCM_SETWINDOWTHEME"                  Value="0x0000200b" />
+                <Set Name="CCM_DPISCALE"                        Value="0x0000200c" />
+
+                <Set Name="WM_RASDIALEVENT"                     Value="0x0000cccd" />
+
             </Enum>
         </Variable>
 
@@ -1250,9 +1827,9 @@
             <Field Type="DWORD"     Name="time" />
             <Field Type="POINT"     Name="pt" />
         </Variable>
-        <Variable Name="MSG*"       Type="Pointer"  Base="MSG" />
-        <Variable Name="const MSG*" Type="Alias"    Base="MSG*" />
-        <Variable Name="LPMSG"      Type="Alias"    Base="MSG*" />
+        <Variable Name="MSG*"       Type="Pointer" Base="MSG" />
+        <Variable Name="const MSG*" Type="Pointer" Base="MSG" />
+        <Variable Name="LPMSG"      Type="Pointer" Base="MSG" />
 
         <!-- [ImageType] -->
         <Variable Name="[ImageType]" Type="Alias" Base="UINT">
@@ -1489,6 +2066,11 @@
             </Enum>
         </Variable>
 
+        <!-- [CODE_PAGE|int] -->
+        <Variable Name="[CODE_PAGE|int]" Type="Alias" Base="[CodePageEnum]">
+            <Display Name="int" />
+        </Variable>
+
         <!-- [EXCEPTION_FLAGS] -->
         <Variable Name="[EXCEPTION_FLAGS]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
@@ -1691,6 +2273,8 @@
                 <Set Name="IO_REPARSE_TAG_DFS"              Value="0x8000000A" />
                 <Set Name="IO_REPARSE_TAG_SYMLINK"          Value="0xA000000C" />
                 <Set Name="IO_REPARSE_TAG_DFSR"             Value="0x80000012" />
+                <Set Name="IO_REPARSE_TAG_DEDUP"            Value="0x80000013" />
+                <Set Name="IO_REPARSE_TAG_NFS"              Value="0x80000014" />
             </Enum>
         </Variable>
 
@@ -1713,6 +2297,7 @@
                 <Set Name="FILE_ATTRIBUTE_NOT_CONTENT_INDEXED"  Value="0x00002000" />
                 <Set Name="FILE_ATTRIBUTE_ENCRYPTED"            Value="0x00004000" />
                 <Set Name="FILE_ATTRIBUTE_VIRTUAL"              Value="0x00010000" />
+                <Set Name="FILE_ATTRIBUTE_NO_SCRUB_DATA"        Value="0x00020000" />
                 <Set Name="INVALID_FILE_ATTRIBUTES"             Value="-1" />
             </Flag>
         </Variable>
@@ -1801,26 +2386,28 @@
         <!-- MINIDUMP_TYPE -->
         <Variable Name="MINIDUMP_TYPE" Type="Alias" Base="DWORD">
             <Flag>
-                <Set Name="MiniDumpNormal"                          Value="0x00000000"/>
-                <Set Name="MiniDumpWithDataSegs"                    Value="0x00000001"/>
-                <Set Name="MiniDumpWithFullMemory"                  Value="0x00000002"/>
-                <Set Name="MiniDumpWithHandleData"                  Value="0x00000004"/>
-                <Set Name="MiniDumpFilterMemory"                    Value="0x00000008"/>
-                <Set Name="MiniDumpScanMemory"                      Value="0x00000010"/>
-                <Set Name="MiniDumpWithUnloadedModules"             Value="0x00000020"/>
-                <Set Name="MiniDumpWithIndirectlyReferencedMemory"  Value="0x00000040"/>
-                <Set Name="MiniDumpFilterModulePaths"               Value="0x00000080"/>
-                <Set Name="MiniDumpWithProcessThreadData"           Value="0x00000100"/>
-                <Set Name="MiniDumpWithPrivateReadWriteMemory"      Value="0x00000200"/>
-                <Set Name="MiniDumpWithoutOptionalData"             Value="0x00000400"/>
-                <Set Name="MiniDumpWithFullMemoryInfo"              Value="0x00000800"/>
-                <Set Name="MiniDumpWithThreadInfo"                  Value="0x00001000"/>
-                <Set Name="MiniDumpWithCodeSegs"                    Value="0x00002000"/>
-                <Set Name="MiniDumpWithoutAuxiliaryState"           Value="0x00004000"/>
-                <Set Name="MiniDumpWithFullAuxiliaryState"          Value="0x00008000"/>
+                <Set Name="MiniDumpNormal"                          Value="0x00000000" />
+                <Set Name="MiniDumpWithDataSegs"                    Value="0x00000001" />
+                <Set Name="MiniDumpWithFullMemory"                  Value="0x00000002" />
+                <Set Name="MiniDumpWithHandleData"                  Value="0x00000004" />
+                <Set Name="MiniDumpFilterMemory"                    Value="0x00000008" />
+                <Set Name="MiniDumpScanMemory"                      Value="0x00000010" />
+                <Set Name="MiniDumpWithUnloadedModules"             Value="0x00000020" />
+                <Set Name="MiniDumpWithIndirectlyReferencedMemory"  Value="0x00000040" />
+                <Set Name="MiniDumpFilterModulePaths"               Value="0x00000080" />
+                <Set Name="MiniDumpWithProcessThreadData"           Value="0x00000100" />
+                <Set Name="MiniDumpWithPrivateReadWriteMemory"      Value="0x00000200" />
+                <Set Name="MiniDumpWithoutOptionalData"             Value="0x00000400" />
+                <Set Name="MiniDumpWithFullMemoryInfo"              Value="0x00000800" />
+                <Set Name="MiniDumpWithThreadInfo"                  Value="0x00001000" />
+                <Set Name="MiniDumpWithCodeSegs"                    Value="0x00002000" />
+                <Set Name="MiniDumpWithoutAuxiliaryState"           Value="0x00004000" />
+                <Set Name="MiniDumpWithFullAuxiliaryState"          Value="0x00008000" />
                 <Set Name="MiniDumpWithPrivateWriteCopyMemory"      Value="0x00010000" />
                 <Set Name="MiniDumpIgnoreInaccessibleMemory"        Value="0x00020000" />
                 <Set Name="MiniDumpWithTokenInformation"            Value="0x00040000" />
+                <Set Name="MiniDumpWithModuleHeaders"               Value="0x00080000" />
+                <Set Name="MiniDumpFilterTriage"                    Value="0x00100000" />
             </Flag>
         </Variable>
 
@@ -2029,7 +2616,7 @@
             <Field Type="DWORD"             Name="dwMinorVersion" />
             <Field Type="DWORD"             Name="dwBuildNumber" />
             <Field Type="[VER_PLATFORM]"    Name="dwPlatformId" />
-            <Field Type="TCHAR [128]"       Name="szCSDVersion"  />
+            <Field Type="TCHAR [128]"       Name="szCSDVersion" />
         </Variable>
         <Variable Name="LPOSVERSIONINFO" Type="Pointer" Base="OSVERSIONINFO" />
 
@@ -2041,7 +2628,7 @@
             <Field Type="DWORD"             Name="dwMinorVersion" />
             <Field Type="DWORD"             Name="dwBuildNumber" />
             <Field Type="[VER_PLATFORM]"    Name="dwPlatformId" />
-            <Field Type="WCHAR [128]"       Name="szCSDVersion"  />
+            <Field Type="WCHAR [128]"       Name="szCSDVersion" />
         </Variable>
         <Variable Name="PRTL_OSVERSIONINFOW" Type="Pointer" Base="RTL_OSVERSIONINFOW" />
 
@@ -2085,7 +2672,7 @@
             <Field Type="DWORD"         Name="dwMinorVersion" />
             <Field Type="DWORD"         Name="dwBuildNumber" />
             <Field Type="DWORD"         Name="dwPlatformId" />
-            <Field Type="TCHAR [128]"   Name="szCSDVersion"  />
+            <Field Type="TCHAR [128]"   Name="szCSDVersion" />
             <Field Type="WORD"          Name="wServicePackMajor" />
             <Field Type="WORD"          Name="wServicePackMinor" />
             <Field Type="[VER_SUITE]"   Name="wSuiteMask" />
@@ -2102,7 +2689,7 @@
             <Field Type="DWORD"         Name="dwMinorVersion" />
             <Field Type="DWORD"         Name="dwBuildNumber" />
             <Field Type="DWORD"         Name="dwPlatformId" />
-            <Field Type="WCHAR [128]"   Name="szCSDVersion"  />
+            <Field Type="WCHAR [128]"   Name="szCSDVersion" />
             <Field Type="WORD"          Name="wServicePackMajor" />
             <Field Type="WORD"          Name="wServicePackMinor" />
             <Field Type="[VER_SUITE]"   Name="wSuiteMask" />
@@ -2145,6 +2732,7 @@
                 <Set Name="SymTagCustomType"            Value="28" />
                 <Set Name="SymTagManagedType"           Value="29" />
                 <Set Name="SymTagDimension"             Value="30" />
+                <Set Name="SymTagCallSite"              Value="31" />
             </Enum>
         </Variable>
         <Variable Name="[SymTagEnum_ULONG]" Type="Alias" Base="SymTagEnum">
@@ -2189,6 +2777,27 @@
             </Enum>
         </Variable>
 
+        <!-- [IMAGE_SUBSYSTEM_ULONG] -->
+        <Variable Name="[IMAGE_SUBSYSTEM_ULONG]" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Enum>
+                <Set Name="IMAGE_SUBSYSTEM_UNKNOWN"                         Value="0" />
+                <Set Name="IMAGE_SUBSYSTEM_NATIVE"                          Value="1" />
+                <Set Name="IMAGE_SUBSYSTEM_WINDOWS_GUI"                     Value="2" />
+                <Set Name="IMAGE_SUBSYSTEM_WINDOWS_CUI"                     Value="3" />
+                <Set Name="IMAGE_SUBSYSTEM_OS2_CUI"                         Value="5" />
+                <Set Name="IMAGE_SUBSYSTEM_POSIX_CUI"                       Value="7" />
+                <Set Name="IMAGE_SUBSYSTEM_NATIVE_WINDOWS"                  Value="8" />
+                <Set Name="IMAGE_SUBSYSTEM_WINDOWS_CE_GUI"                  Value="9" />
+                <Set Name="IMAGE_SUBSYSTEM_EFI_APPLICATION"                 Value="10" />
+                <Set Name="IMAGE_SUBSYSTEM_EFI_BOOT_SERVICE_DRIVER"         Value="11" />
+                <Set Name="IMAGE_SUBSYSTEM_EFI_RUNTIME_DRIVER"              Value="12" />
+                <Set Name="IMAGE_SUBSYSTEM_EFI_ROM"                         Value="13" />
+                <Set Name="IMAGE_SUBSYSTEM_XBOX"                            Value="14" />
+                <Set Name="IMAGE_SUBSYSTEM_WINDOWS_BOOT_APPLICATION"        Value="16" />
+            </Enum>
+        </Variable>
+
         <!-- [IMAGE_DLLCHARACTERISTICS] -->
         <Variable Name="[IMAGE_DLLCHARACTERISTICS]" Type="Alias" Base="WORD">
             <Display Name="WORD" />
@@ -2197,12 +2806,14 @@
                 <Set Name="IMAGE_LIBRARY_PROCESS_TERM"                          Value="0x0002" />
                 <Set Name="IMAGE_LIBRARY_THREAD_INIT"                           Value="0x0004" />
                 <Set Name="IMAGE_LIBRARY_THREAD_TERM"                           Value="0x0008" />
+                <Set Name="IMAGE_DLLCHARACTERISTICS_HIGH_ENTROPY_VA"            Value="0x0020" />
                 <Set Name="IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE"               Value="0x0040" />
                 <Set Name="IMAGE_DLLCHARACTERISTICS_FORCE_INTEGRITY"            Value="0x0080" />
                 <Set Name="IMAGE_DLLCHARACTERISTICS_NX_COMPAT"                  Value="0x0100" />
                 <Set Name="IMAGE_DLLCHARACTERISTICS_NO_ISOLATION"               Value="0x0200" />
                 <Set Name="IMAGE_DLLCHARACTERISTICS_NO_SEH"                     Value="0x0400" />
                 <Set Name="IMAGE_DLLCHARACTERISTICS_NO_BIND"                    Value="0x0800" />
+                <Set Name="IMAGE_DLLCHARACTERISTICS_APPCONTAINER"               Value="0x1000" />
                 <Set Name="IMAGE_DLLCHARACTERISTICS_WDM_DRIVER"                 Value="0x2000" />
                 <Set Name="IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE"      Value="0x8000" />
             </Flag>
@@ -2364,6 +2975,9 @@
                 <Set Name="DWMWA_HAS_ICONIC_BITMAP"             Value="10" />
                 <Set Name="DWMWA_DISALLOW_PEEK"                 Value="11" />
                 <Set Name="DWMWA_EXCLUDED_FROM_PEEK"            Value="12" />
+                <Set Name="DWMWA_CLOAK"                         Value="13" />
+                <Set Name="DWMWA_CLOAKED"                       Value="14" />
+                <Set Name="DWMWA_FREEZE_REPRESENTATION"         Value="15" />
             </Enum>
         </Variable>
 
@@ -2523,6 +3137,7 @@
                 <Set Name="ACTIVATION_CONTEXT_SECTION_GLOBAL_OBJECT_RENAME_TABLE"   Value="8" />
                 <Set Name="ACTIVATION_CONTEXT_SECTION_CLR_SURROGATES"               Value="9" />
                 <Set Name="ACTIVATION_CONTEXT_SECTION_APPLICATION_SETTINGS"         Value="10" />
+                <Set Name="ACTIVATION_CONTEXT_SECTION_COMPATIBILITY_INFO"           Value="11" />
             </Enum>
         </Variable>
 
@@ -2557,6 +3172,182 @@
         </Variable>
         <Variable Name="PPROCESSOR_NUMBER" Type="Pointer" Base="PROCESSOR_NUMBER" />
 
-    </Headers>
+        <!-- ISOLEVEL -->
+        <Variable Name="ISOLEVEL" Type="Alias" Base="ULONG">
+            <Flag>
+                <Set Name="ISOLATIONLEVEL_UNSPECIFIED"          Value="0xffffffff" />
+                <Set Name="ISOLATIONLEVEL_CHAOS"                Value="0x10" />
+                <Set Name="ISOLATIONLEVEL_BROWSE"               Value="0x100" />
+                <Set Name="ISOLATIONLEVEL_CURSORSTABILITY"      Value="0x1000" />
+                <Set Name="ISOLATIONLEVEL_REPEATABLEREAD"       Value="0x10000" />
+                <Set Name="ISOLATIONLEVEL_ISOLATED"             Value="0x100000" />
+            </Flag>
+        </Variable>
 
+        <!-- ISOFLAG -->
+        <Variable Name="ISOFLAG" Type="Alias" Base="ULONG">
+            <Display Name="ULONG" />
+            <Flag>
+                <Set Name="ISOFLAG_RETAIN_COMMIT_DC"        Value="1" />
+                <Set Name="ISOFLAG_RETAIN_COMMIT"           Value="2" />
+                <Set Name="ISOFLAG_RETAIN_COMMIT_NO"        Value="3" />
+                <Set Name="ISOFLAG_RETAIN_ABORT_DC"         Value="4" />
+                <Set Name="ISOFLAG_RETAIN_ABORT"            Value="8" />
+                <Set Name="ISOFLAG_RETAIN_ABORT_NO"         Value="12" />
+                <Set Name="ISOFLAG_RETAIN_DONTCARE"         Value="5" />
+                <Set Name="ISOFLAG_RETAIN_BOTH"             Value="10" />
+                <Set Name="ISOFLAG_RETAIN_NONE"             Value="15" />
+                <Set Name="ISOFLAG_OPTIMISTIC"              Value="16" />
+                <Set Name="ISOFLAG_READONLY"                Value="32" />
+            </Flag>
+        </Variable>
+
+        <!-- [SHTDN_REASON] -->
+        <Variable Name="[SHTDN_REASON]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="SHTDN_REASON_FLAG_COMMENT_REQUIRED"              Value="0x01000000" />
+                <Set Name="SHTDN_REASON_FLAG_DIRTY_PROBLEM_ID_REQUIRED"     Value="0x02000000" />
+                <Set Name="SHTDN_REASON_FLAG_CLEAN_UI"                      Value="0x04000000" />
+                <Set Name="SHTDN_REASON_FLAG_DIRTY_UI"                      Value="0x08000000" />
+
+                <Set Name="SHTDN_REASON_FLAG_USER_DEFINED"                  Value="0x40000000" />
+                <Set Name="SHTDN_REASON_FLAG_PLANNED"                       Value="0x80000000" />
+
+                <Set Name="SHTDN_REASON_MAJOR_HARDWARE"                     Value="0x00010000" />
+                <Set Name="SHTDN_REASON_MAJOR_OPERATINGSYSTEM"              Value="0x00020000" />
+                <Set Name="SHTDN_REASON_MAJOR_SOFTWARE"                     Value="0x00030000" />
+                <Set Name="SHTDN_REASON_MAJOR_APPLICATION"                  Value="0x00040000" />
+                <Set Name="SHTDN_REASON_MAJOR_SYSTEM"                       Value="0x00050000" />
+                <Set Name="SHTDN_REASON_MAJOR_POWER"                        Value="0x00060000" />
+                <Set Name="SHTDN_REASON_MAJOR_LEGACY_API"                   Value="0x00070000" />
+
+                <Set Name="SHTDN_REASON_MINOR_NONE"                         Value="0x000000ff" />
+                <Set Name="SHTDN_REASON_MINOR_MAINTENANCE"                  Value="0x00000001" />
+                <Set Name="SHTDN_REASON_MINOR_INSTALLATION"                 Value="0x00000002" />
+                <Set Name="SHTDN_REASON_MINOR_UPGRADE"                      Value="0x00000003" />
+                <Set Name="SHTDN_REASON_MINOR_RECONFIG"                     Value="0x00000004" />
+                <Set Name="SHTDN_REASON_MINOR_HUNG"                         Value="0x00000005" />
+                <Set Name="SHTDN_REASON_MINOR_UNSTABLE"                     Value="0x00000006" />
+                <Set Name="SHTDN_REASON_MINOR_DISK"                         Value="0x00000007" />
+                <Set Name="SHTDN_REASON_MINOR_PROCESSOR"                    Value="0x00000008" />
+                <Set Name="SHTDN_REASON_MINOR_NETWORKCARD"                  Value="0x00000009" />
+                <Set Name="SHTDN_REASON_MINOR_POWER_SUPPLY"                 Value="0x0000000a" />
+                <Set Name="SHTDN_REASON_MINOR_CORDUNPLUGGED"                Value="0x0000000b" />
+                <Set Name="SHTDN_REASON_MINOR_ENVIRONMENT"                  Value="0x0000000c" />
+                <Set Name="SHTDN_REASON_MINOR_HARDWARE_DRIVER"              Value="0x0000000d" />
+                <Set Name="SHTDN_REASON_MINOR_OTHERDRIVER"                  Value="0x0000000e" />
+                <Set Name="SHTDN_REASON_MINOR_BLUESCREEN"                   Value="0x0000000F" />
+                <Set Name="SHTDN_REASON_MINOR_SERVICEPACK"                  Value="0x00000010" />
+                <Set Name="SHTDN_REASON_MINOR_HOTFIX"                       Value="0x00000011" />
+                <Set Name="SHTDN_REASON_MINOR_SECURITYFIX"                  Value="0x00000012" />
+                <Set Name="SHTDN_REASON_MINOR_SECURITY"                     Value="0x00000013" />
+                <Set Name="SHTDN_REASON_MINOR_NETWORK_CONNECTIVITY"         Value="0x00000014" />
+                <Set Name="SHTDN_REASON_MINOR_WMI"                          Value="0x00000015" />
+                <Set Name="SHTDN_REASON_MINOR_SERVICEPACK_UNINSTALL"        Value="0x00000016" />
+                <Set Name="SHTDN_REASON_MINOR_HOTFIX_UNINSTALL"             Value="0x00000017" />
+                <Set Name="SHTDN_REASON_MINOR_SECURITYFIX_UNINSTALL"        Value="0x00000018" />
+                <Set Name="SHTDN_REASON_MINOR_MMC"                          Value="0x00000019" />
+                <Set Name="SHTDN_REASON_MINOR_SYSTEMRESTORE"                Value="0x0000001a" />
+                <Set Name="SHTDN_REASON_MINOR_TERMSRV"                      Value="0x00000020" />
+                <Set Name="SHTDN_REASON_MINOR_DC_PROMOTION"                 Value="0x00000021" />
+                <Set Name="SHTDN_REASON_MINOR_DC_DEMOTION"                  Value="0x00000022" />
+
+                <Set Name="SHTDN_REASON_LEGACY_API"                         Value="0x80070000" />
+            </Flag>
+        </Variable>
+
+        <!-- [EWX_FLAGS] -->
+        <Variable Name="[EWX_FLAGS]" Type="Alias" Base="UINT">
+            <Display Name="UINT" />
+            <Enum>
+                <Set Name="EWX_LOGOFF"              Value="0x00000000" />
+                <Set Name="EWX_SHUTDOWN"            Value="0x00000001" />
+                <Set Name="EWX_REBOOT"              Value="0x00000002" />
+                <Set Name="EWX_FORCE"               Value="0x00000004" />
+                <Set Name="EWX_POWEROFF"            Value="0x00000008" />
+                <Set Name="EWX_FORCEIFHUNG"         Value="0x00000010" />
+                <Set Name="EWX_QUICKRESOLVE"        Value="0x00000020" />
+                <Set Name="EWX_RESTARTAPPS"         Value="0x00000040" />
+                <Set Name="EWX_HYBRID_SHUTDOWN"     Value="0x00400000" />
+                <Set Name="EWX_BOOTOPTIONS"         Value="0x01000000" />
+            </Enum>
+        </Variable>
+
+        <!-- URLZONE -->
+        <Variable Name="URLZONE" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="URLZONE_LOCAL_MACHINE"   Value="0" />
+                <Set Name="URLZONE_INTRANET"        Value="1" />
+                <Set Name="URLZONE_TRUSTED"         Value="2" />
+                <Set Name="URLZONE_INTERNET"        Value="3" />
+                <Set Name="URLZONE_UNTRUSTED"       Value="4" />
+            </Enum>
+        </Variable>
+
+        <!-- [THREAD_PRIORITY] -->
+        <Variable Name="[THREAD_PRIORITY]" Type="Alias" Base="int">
+            <Display Name="int" />
+            <Enum>
+                <Set Name="THREAD_PRIORITY_LOWEST"              Value="-2" />
+                <Set Name="THREAD_PRIORITY_BELOW_NORMAL"        Value="-1" />
+                <Set Name="THREAD_PRIORITY_NORMAL"              Value="0" />
+                <Set Name="THREAD_PRIORITY_HIGHEST"             Value="2" />
+                <Set Name="THREAD_PRIORITY_ABOVE_NORMAL"        Value="1" />
+                <Set Name="THREAD_PRIORITY_TIME_CRITICAL"       Value="15" />
+                <Set Name="THREAD_PRIORITY_IDLE"                Value="-15" />
+                <Set Name="THREAD_PRIORITY_ERROR_RETURN"        Value="0x7FFFFFFF" />
+            </Enum>
+        </Variable>
+
+        <!-- [THREAD_PRIORITY|LONG] -->
+        <Variable Name="[THREAD_PRIORITY|LONG]" Type="Alias" Base="[THREAD_PRIORITY]">
+            <Display Name="LONG" />
+        </Variable>
+        <Variable Name="[THREAD_PRIORITY*|LONG*]" Type="Pointer" Base="[THREAD_PRIORITY|LONG]">
+            <Display Name="LONG*" />
+        </Variable>
+
+        <!-- [MoveMethodEnum] -->
+        <Variable Name="[MoveMethodEnum]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="FILE_BEGIN"      Value="0" />
+                <Set Name="FILE_CURRENT"    Value="1" />
+                <Set Name="FILE_END"        Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- [XSTATE_FEATURE_64] -->
+        <Variable Name="[XSTATE_FEATURE_64]" Type="Alias" Base="DWORD64">
+            <Display Name="DWORD64" />
+            <Flag>
+                <Set Name="XSTATE_LEGACY_FLOATING_POINT"    Value="0" />
+                <Set Name="XSTATE_LEGACY_SSE"               Value="1" />
+                <Set Name="XSTATE_AVX"                      Value="2" />
+                <!-- TODO: Duplicate
+                <Set Name="XSTATE_GSSE"                     Value="2" />
+                -->
+            </Flag>
+        </Variable>
+
+        <!-- [XSTATE_MASK] -->
+        <Variable Name="[XSTATE_MASK]" Type="Alias" Base="DWORD64">
+            <Display Name="DWORD64" />
+            <Flag>
+                <Set Name="XSTATE_MASK_LEGACY_FLOATING_POINT"                       Value="0x1" />
+                <Set Name="XSTATE_MASK_LEGACY_SSE"                                  Value="0x2" />
+                <Set Name="XSTATE_MASK_LEGACY"                                      Value="0x3" />
+                <Set Name="XSTATE_MASK_AVX"                                         Value="0x4" />
+                <!-- TODO: Duplicate
+                <Set Name="XSTATE_MASK_GSSE"                                        Value="0x4" />
+                -->
+            </Flag>
+        </Variable>
+        <Variable Name="[XSTATE_MASK*]" Type="Pointer" Base="[XSTATE_MASK]">
+            <Display Name="PDWORD64" />
+        </Variable>
+
+    </Headers>
 </ApiMonitor>

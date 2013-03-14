@@ -7,7 +7,7 @@ TODO: DnsWriteQuestionToBuffer_UTF8?
 TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
 -->
 <ApiMonitor>
-    <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\sockets.h.xml" />
     <Module Name="Dnsapi.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
         
         <!-- TODO: Structures (Bitfields) -->
@@ -20,6 +20,16 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
         <!-- Variables -->
         <Variable Name="DNS_STATUS"                     Type="Alias"    Base="[ERROR_CODE]" />
         <Variable Name="DNS_PROXY_COMPLETION_ROUTINE"   Type="Alias"    Base="LPVOID" />
+        <Variable Name="PDNS_QUERY_COMPLETION_ROUTINE"  Type="Alias"    Base="LPVOID" />
+        
+        <!-- Arrays -->
+        <Variable Name="DWORD [8]"                              Type="Array"    Base="DWORD"    Count="8" />
+        <Variable Name="CHAR [DNS_ADDR_MAX_SOCKADDR_LENGTH]"    Type="Array"    Base="CHAR"     Count="32" />
+
+        <!-- [ADDRESS_FAMILY_WORD] -->
+        <Variable Name="[ADDRESS_FAMILY_WORD]" Type="Alias" Base="ADDRESS_FAMILY">
+            <Display Name="WORD" />
+        </Variable>
 
         <!-- DNS_PROXY_INFORMATION_TYPE -->
         <Variable Name="DNS_PROXY_INFORMATION_TYPE" Type="Alias" Base="UINT">
@@ -130,11 +140,46 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
                 <Set Name="DNS_QUERY_MULTICAST_ONLY"                Value="0x00000400" />
                 <Set Name="DNS_QUERY_NO_MULTICAST"                  Value="0x00000800" />
                 <Set Name="DNS_QUERY_TREAT_AS_FQDN"                 Value="0x00001000" />
+                <Set Name="DNS_QUERY_ADDRCONFIG"                    Value="0x00002000" />
+                <Set Name="DNS_QUERY_DUAL_ADDR"                     Value="0x00004000" />
                 <Set Name="DNS_QUERY_DONT_RESET_TTL_VALUES"         Value="0x00100000" />
-                <Set Name="DNS_QUERY_RESERVED"                      Value="0xff000000" />
+                <Set Name="DNS_QUERY_DISABLE_IDN_ENCODING"          Value="0x00200000" />
+                <Set Name="DNS_QUERY_APPEND_MULTILABEL"             Value="0x00800000" />
+                <Set Name="DNS_QUERY_DNSSEC_OK"                     Value="0x01000000" />
+                <Set Name="DNS_QUERY_DNSSEC_CHECKING_DISABLED"      Value="0x02000000" />
+                <Set Name="DNS_QUERY_RESERVED"                      Value="0xf0000000" />
             </Flag>
         </Variable>
 
+        <!-- [DNS_QUERY_OPTIONS_64] -->
+        <Variable Name="[DNS_QUERY_OPTIONS_64]" Type="Alias" Base="ULONG64">
+            <Display Name="ULONG64" />
+            <Flag>
+                <Set Name="DNS_QUERY_STANDARD"                      Value="0x00000000" />
+                <Set Name="DNS_QUERY_ACCEPT_TRUNCATED_RESPONSE"     Value="0x00000001" />
+                <Set Name="DNS_QUERY_USE_TCP_ONLY"                  Value="0x00000002" />
+                <Set Name="DNS_QUERY_NO_RECURSION"                  Value="0x00000004" />
+                <Set Name="DNS_QUERY_BYPASS_CACHE"                  Value="0x00000008" />
+                <Set Name="DNS_QUERY_NO_WIRE_QUERY"                 Value="0x00000010" />
+                <Set Name="DNS_QUERY_NO_LOCAL_NAME"                 Value="0x00000020" />
+                <Set Name="DNS_QUERY_NO_HOSTS_FILE"                 Value="0x00000040" />
+                <Set Name="DNS_QUERY_NO_NETBT"                      Value="0x00000080" />
+                <Set Name="DNS_QUERY_WIRE_ONLY"                     Value="0x00000100" />
+                <Set Name="DNS_QUERY_RETURN_MESSAGE"                Value="0x00000200" />
+                <Set Name="DNS_QUERY_MULTICAST_ONLY"                Value="0x00000400" />
+                <Set Name="DNS_QUERY_NO_MULTICAST"                  Value="0x00000800" />
+                <Set Name="DNS_QUERY_TREAT_AS_FQDN"                 Value="0x00001000" />
+                <Set Name="DNS_QUERY_ADDRCONFIG"                    Value="0x00002000" />
+                <Set Name="DNS_QUERY_DUAL_ADDR"                     Value="0x00004000" />
+                <Set Name="DNS_QUERY_DONT_RESET_TTL_VALUES"         Value="0x00100000" />
+                <Set Name="DNS_QUERY_DISABLE_IDN_ENCODING"          Value="0x00200000" />
+                <Set Name="DNS_QUERY_APPEND_MULTILABEL"             Value="0x00800000" />
+                <Set Name="DNS_QUERY_DNSSEC_OK"                     Value="0x01000000" />
+                <Set Name="DNS_QUERY_DNSSEC_CHECKING_DISABLED"      Value="0x02000000" />
+                <Set Name="DNS_QUERY_RESERVED"                      Value="0xf0000000" />
+            </Flag>
+        </Variable>
+        
         <!-- DNS_NAME_FORMAT -->
         <Variable Name="DNS_NAME_FORMAT" Type="Alias" Base="UINT">
             <Enum>
@@ -208,6 +253,57 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
             </Enum>
         </Variable>
 
+        <!-- DNS_ADDR -->
+        <Variable Name="DNS_ADDR" Type="Struct" Pack="1">
+            <Field Type="CHAR [DNS_ADDR_MAX_SOCKADDR_LENGTH]"   Name="MaxSa" />
+            <Field Type="DWORD [8]"                             Name="DnsAddrUserDword" />
+        </Variable>
+        <Variable Name="DNS_ADDR []" Type="Array" Base="DNS_ADDR" Count="1" />
+
+        <!-- DNS_ADDR_ARRAY -->
+        <Variable Name="DNS_ADDR_ARRAY" Type="Struct" Pack="1">
+            <Field Type="DWORD"                     Name="MaxCount" />
+            <Field Type="DWORD"                     Name="AddrCount" />
+            <Field Type="DWORD"                     Name="Tag" />
+            <Field Type="[ADDRESS_FAMILY_WORD]"     Name="Family" />
+            <Field Type="WORD"                      Name="WordReserved" />
+            <Field Type="DWORD"                     Name="Flags" />
+            <Field Type="DWORD"                     Name="MatchFlag" />
+            <Field Type="DWORD"                     Name="Reserved1" />
+            <Field Type="DWORD"                     Name="Reserved2" />
+            <Field Type="DNS_ADDR []"               Name="AddrArray" Count="AddrCount" />
+        </Variable>
+        <Variable Name="PDNS_ADDR_ARRAY" Type="Pointer" Base="DNS_ADDR_ARRAY" />
+
+        <!-- DNS_QUERY_REQUEST -->
+        <Variable Name="DNS_QUERY_REQUEST" Type="Struct">
+            <Field Type="ULONG"                             Name="Version" />
+            <Field Type="PCWSTR"                            Name="QueryName" />
+            <Field Type="[DnsRecordType]"                   Name="QueryType" />
+            <Field Type="[DNS_QUERY_OPTIONS_64]"            Name="QueryOptions" />
+            <Field Type="PDNS_ADDR_ARRAY"                   Name="pDnsServerList" />
+            <Field Type="ULONG"                             Name="InterfaceIndex" />
+            <Field Type="PDNS_QUERY_COMPLETION_ROUTINE"     Name="pQueryCompletionCallback" />
+            <Field Type="PVOID"                             Name="pQueryContext" />
+        </Variable>
+        <Variable Name="PDNS_QUERY_REQUEST" Type="Pointer" Base="DNS_QUERY_REQUEST" />
+
+        <!-- DNS_QUERY_RESULT -->
+        <Variable Name="DNS_QUERY_RESULT" Type="Struct">
+            <Field Type="ULONG"                     Name="Version" />
+            <Field Type="DNS_STATUS"                Name="QueryStatus" />
+            <Field Type="[DNS_QUERY_OPTIONS_64]"    Name="QueryOptions" />
+            <Field Type="PDNS_RECORD"               Name="pQueryRecords" />
+            <Field Type="PVOID"                     Name="Reserved" />
+        </Variable>
+        <Variable Name="PDNS_QUERY_RESULT" Type="Pointer" Base="DNS_QUERY_RESULT" />
+
+        <!-- DNS_QUERY_CANCEL -->
+        <Variable Name="DNS_QUERY_CANCEL" Type="Struct">
+            <Field Type="CHAR [32]" Name="Reserved" />
+        </Variable>
+        <Variable Name="PDNS_QUERY_CANCEL" Type="Pointer" Base="DNS_QUERY_CANCEL" />
+
         <!-- Domain Name System (DNS) -->
         <Category Name="Networking/Domain Name System (DNS)" />
         <Api Name="DnsAcquireContextHandle_" BothCharset="True">
@@ -252,6 +348,7 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
             <Param Type="PCTSTR" Name="pName1" />
             <Param Type="PCTSTR" Name="pName2" />
             <Return Type="BOOL" />
+            <Success />
         </Api>
         <Api Name="DnsQuery_" BothCharset="True">
             <Param Type="PCTSTR" Name="lpstrName" />
@@ -275,7 +372,6 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
             <Param Type="PDNS_RECORD" Name="pRecord1" />
             <Param Type="PDNS_RECORD" Name="pRecord2" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="DnsRecordCopyEx">
             <Param Type="PDNS_RECORD" Name="pRecord" />
@@ -295,7 +391,6 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
             <Param Type="PDNS_RECORD*" Name="ppDiff1" />
             <Param Type="PDNS_RECORD*" Name="ppDiff2" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="DnsRecordSetCopyEx">
             <Param Type="PDNS_RECORD" Name="pRecordSet" />
@@ -334,7 +429,17 @@ TODO: DnsReplaceRecordSetUTF8? - UTF8 for all versions?
             <Param Type="WORD" Name="Xid" />
             <Param Type="BOOL" Name="fRecursionDesired" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
+        <Api Name="DnsCancelQuery">
+            <Param Type="PDNS_QUERY_CANCEL" Name="pCancelHandle" />
+            <Return Type="DNS_STATUS" />
+        </Api>
+        <Api Name="DnsQueryEx">
+            <Param Type="PDNS_QUERY_REQUEST" Name="pQueryRequest" />
+            <Param Type="PDNS_QUERY_RESULT" Name="pQueryResults" />
+            <Param Type="PDNS_QUERY_CANCEL" Name="pCancelHandle" />
+            <Return Type="DNS_STATUS" />
+        </Api>
+
     </Module>
 </ApiMonitor>

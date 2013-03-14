@@ -10,7 +10,7 @@
     
     <Module Name="Iphlpapi.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
 
-        <!-- TODO: Structures (OS Version Differences)  -->
+        <!-- TODO: Structures (OS Version Differences) -->
         <Variable Name="PIP_ADAPTER_ADDRESSES"                      Type="Alias"    Base="LPVOID" />
 
         <!-- Variables -->
@@ -27,26 +27,28 @@
         <Variable Name="NET_IF_NETWORK_GUID"                        Type="Alias"    Base="GUID" />
         <Variable Name="NETIO_STATUS"                               Type="Alias"    Base="[ERROR_CODE]" />
         <Variable Name="NETIOAPI_API"                               Type="Alias"    Base="NETIO_STATUS" />
+        <Variable Name="IP_STATUS"                                  Type="Alias"    Base="ULONG" />
 
         <!-- Arrays -->
-        <Variable Name="BYTE [MAX_ADAPTER_ADDRESS_LENGTH]"          Type="Array"    Base="BYTE"         Count="8" />
-        <Variable Name="CHAR [8]"                                   Type="Array"    Base="CHAR"         Count="8" />
         <Variable Name="char [16]"                                  Type="Array"    Base="char"         Count="16" />
         <Variable Name="char [MAX_HOSTNAME_LEN + 4]"                Type="Array"    Base="char"         Count="132" />
         <Variable Name="char [MAX_DOMAIN_NAME_LEN + 4]"             Type="Array"    Base="char"         Count="132" />
         <Variable Name="char [MAX_SCOPE_ID_LEN + 4]"                Type="Array"    Base="char"         Count="260" />
         <Variable Name="char [MAX_ADAPTER_NAME_LENGTH + 4]"         Type="Array"    Base="char"         Count="260" />
         <Variable Name="char [MAX_ADAPTER_DESCRIPTION_LENGTH + 4]"  Type="Array"    Base="char"         Count="132" />
+        <Variable Name="CHAR [8]"                                   Type="Array"    Base="CHAR"         Count="8" />
         <Variable Name="WCHAR [6]"                                  Type="Array"    Base="WCHAR"        Count="6" />
         <Variable Name="WCHAR [MAX_ADAPTER_NAME]"                   Type="Array"    Base="WCHAR"        Count="128" />
         <Variable Name="WCHAR [IF_MAX_STRING_SIZE + 1]"             Type="Array"    Base="WCHAR"        Count="257" />
         <Variable Name="WCHAR [DNS_MAX_NAME_BUFFER_LENGTH]"         Type="Array"    Base="WCHAR"        Count="256" />
         <Variable Name="WCHAR [MAX_INTERFACE_NAME_LEN]"             Type="Array"    Base="WCHAR"        Count="256" />
-        <Variable Name="ULONGLONG [TCPIP_OWNING_MODULE_SIZE]"       Type="Array"    Base="ULONGLONG"    Count="16" />
         <Variable Name="UCHAR [MAXLEN_PHYSADDR]"                    Type="Array"    Base="UCHAR"        Count="8" />
         <Variable Name="UCHAR [MAXLEN_IFDESCR]"                     Type="Array"    Base="UCHAR"        Count="256" />
         <Variable Name="UCHAR [IF_MAX_PHYS_ADDRESS_LENGTH]"         Type="Array"    Base="UCHAR"        Count="32" />
+        <Variable Name="BYTE [MAX_ADAPTER_ADDRESS_LENGTH]"          Type="Array"    Base="BYTE"         Count="8" />
         <Variable Name="ULONG [ScopeLevelCount]"                    Type="Array"    Base="ULONG"        Count="16" />
+        <Variable Name="DWORD [256]"                                Type="Array"    Base="DWORD"        Count="256" />
+        <Variable Name="ULONGLONG [TCPIP_OWNING_MODULE_SIZE]"       Type="Array"    Base="ULONGLONG"    Count="16" />
 
         <!-- IFTYPE -->
         <Variable Name="IFTYPE" Type="Alias" Base="ULONG">
@@ -1217,7 +1219,7 @@
 
         <!-- FIXED_INFO -->
         <Variable Name="FIXED_INFO" Type="Struct">
-            <Field Type="char [MAX_HOSTNAME_LEN + 4]"       Name="HostName"  />
+            <Field Type="char [MAX_HOSTNAME_LEN + 4]"       Name="HostName" />
             <Field Type="char [MAX_DOMAIN_NAME_LEN + 4]"    Name="DomainName" />
             <Field Type="PIP_ADDR_STRING"                   Name="CurrentDnsServer" />
             <Field Type="IP_ADDR_STRING"                    Name="DnsServerList" />
@@ -1502,6 +1504,54 @@
             </Flag>
         </Variable>
 
+        <!-- NL_BANDWIDTH_INFORMATION -->
+        <Variable Name="NL_BANDWIDTH_INFORMATION" Type="Struct">
+            <Field Type="ULONG64"       Name="Bandwidth" />
+            <Field Type="ULONG64"       Name="Instability" />
+            <Field Type="BOOLEAN"       Name="BandwidthPeaked" />
+        </Variable>
+
+        <!-- MIB_IP_NETWORK_CONNECTION_BANDWIDTH_ESTIMATES -->
+        <Variable Name="MIB_IP_NETWORK_CONNECTION_BANDWIDTH_ESTIMATES" Type="Struct">
+            <Field Type="NL_BANDWIDTH_INFORMATION"      Name="InboundBandwidthInformation" />
+            <Field Type="NL_BANDWIDTH_INFORMATION"      Name="OutboundBandwidthInformation" />
+        </Variable>
+        <Variable Name="PMIB_IP_NETWORK_CONNECTION_BANDWIDTH_ESTIMATES" Type="Pointer" Base="MIB_IP_NETWORK_CONNECTION_BANDWIDTH_ESTIMATES" />
+
+        <!-- IP_ADAPTER_ORDER_MAP -->
+        <Variable Name="IP_ADAPTER_ORDER_MAP" Type="Struct">
+            <Field Type="ULONG"         Name="NumAdapters" />
+            <Field Type="ULONG [1]"     Name="AdapterOrder" Count="NumAdapters" />
+        </Variable>
+        <Variable Name="PIP_ADAPTER_ORDER_MAP" Type="Pointer" Base="IP_ADAPTER_ORDER_MAP" />
+
+        <!-- IP_INTERFACE_NAME_INFO -->
+        <!-- TODO: Decode Values -->
+        <Variable Name="IP_INTERFACE_NAME_INFO" Type="Struct">
+            <Field Type="ULONG"     Name="Index" />
+            <Field Type="ULONG"     Name="MediaType" />
+            <Field Type="UCHAR"     Name="ConnectionType" />
+            <Field Type="UCHAR"     Name="AccessType" />
+            <Field Type="GUID"      Name="DeviceGuid" />
+            <Field Type="GUID"      Name="InterfaceGuid" />
+        </Variable>
+        <Variable Name="IP_INTERFACE_NAME_INFO*"    Type="Pointer" Base="IP_INTERFACE_NAME_INFO" />
+        <Variable Name="IP_INTERFACE_NAME_INFO**"   Type="Pointer" Base="IP_INTERFACE_NAME_INFO*" />
+
+        <!-- MIBICMPSTATS_EX -->
+        <Variable Name="MIBICMPSTATS_EX" Type="Struct">
+            <Field Type="DWORD"         Name="dwMsgs" />
+            <Field Type="DWORD"         Name="dwErrors" />
+            <Field Type="DWORD [256]"   Name="rgdwTypeCount" />
+        </Variable>
+
+        <!-- MIB_ICMP_EX -->
+        <Variable Name="MIB_ICMP_EX" Type="Struct">
+            <Field Type="MIBICMPSTATS_EX"   Name="icmpInStats" />
+            <Field Type="MIBICMPSTATS_EX"   Name="icmpOutStats" />
+        </Variable>
+        <Variable Name="PMIB_ICMP_EX" Type="Pointer" Base="MIB_ICMP_EX" />
+
         <!-- IP Helper -->
         <Category Name="Networking/IP Helper" />
         <Api Name="GetAdapterIndex">
@@ -1715,7 +1765,7 @@
             <Return Type="[FILE_HANDLE]" />
         </Api>
         <Api Name="Icmp6ParseReplies">
-            <Param Type="LPVOID" Name="ReplyBuffer" />
+            <Param Type="LPVOID" Name="ReplyBuffer" Length="ReplySize" />
             <Param Type="DWORD" Name="ReplySize" />
             <Return Type="[ERROR_CODE]" />
         </Api>
@@ -1726,10 +1776,10 @@
             <Param Type="PVOID" Name="ApcContext" />
             <Param Type="struct sockaddr_in6*" Name="SourceAddress" />
             <Param Type="struct sockaddr_in6*" Name="DestinationAddress" />
-            <Param Type="LPVOID" Name="RequestData" />
+            <Param Type="LPVOID" Name="RequestData" Length="RequestSize" />
             <Param Type="WORD" Name="RequestSize" />
             <Param Type="PIP_OPTION_INFORMATION" Name="RequestOptions" />
-            <Param Type="LPVOID" Name="ReplyBuffer" />
+            <Param Type="LPVOID" Name="ReplyBuffer" PostLength="ReplySize" />
             <Param Type="DWORD" Name="ReplySize" />
             <Param Type="DWORD" Name="Timeout" />
             <Return Type="[ERROR_CODE]" />
@@ -1744,7 +1794,7 @@
             <Param Type="LPVOID" Name="RequestData" Length="RequestSize" />
             <Param Type="WORD" Name="RequestSize" />
             <Param Type="PIP_OPTION_INFORMATION" Name="RequestOptions" />
-            <Param Type="LPVOID" Name="ReplyBuffer" />
+            <Param Type="LPVOID" Name="ReplyBuffer" PostLength="ReplySize" />
             <Param Type="DWORD" Name="ReplySize" />
             <Param Type="DWORD" Name="Timeout" />
             <Return Type="[ERROR_CODE]" />
@@ -1956,7 +2006,6 @@
             <Param Type="ULONG" Name="MaxHops" />
             <Param Type="PULONG" Name="RTT" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="InitializeIpForwardEntry">
             <Param Type="PMIB_IPFORWARD_ROW2" Name="Row" />
@@ -2062,7 +2111,6 @@
         <Api Name="CancelSecurityHealthChangeNotify">
             <Param Type="LPOVERLAPPED" Name="notifyOverlapped" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="NotifySecurityHealthChange">
             <Param Type="PHANDLE" Name="pHandle" />
@@ -2251,13 +2299,12 @@
         <Api Name="IcmpCloseHandle">
             <Param Type="HANDLE" Name="IcmpHandle" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="IcmpCreateFile">
             <Return Type="[FILE_HANDLE]" />
         </Api>
         <Api Name="IcmpParseReplies">
-            <Param Type="LPVOID" Name="ReplyBuffer" />
+            <Param Type="LPVOID" Name="ReplyBuffer" Length="ReplySize" />
             <Param Type="DWORD" Name="ReplySize" />
             <Return Type="DWORD" />
             <Success Return="NotEqual" Value="0" />
@@ -2265,10 +2312,10 @@
         <Api Name="IcmpSendEcho">
             <Param Type="HANDLE" Name="IcmpHandle" />
             <Param Type="IPAddr" Name="DestinationAddress" />
-            <Param Type="LPVOID" Name="RequestData" />
+            <Param Type="LPVOID" Name="RequestData" Length="RequestSize" />
             <Param Type="WORD" Name="RequestSize" />
             <Param Type="PIP_OPTION_INFORMATION" Name="RequestOptions" />
-            <Param Type="LPVOID" Name="ReplyBuffer" />
+            <Param Type="LPVOID" Name="ReplyBuffer" PostLength="ReplySize" />
             <Param Type="DWORD" Name="ReplySize" />
             <Param Type="DWORD" Name="Timeout" />
             <Return Type="[ERROR_CODE]" />
@@ -2279,13 +2326,96 @@
             <Param Type="PIO_APC_ROUTINE" Name="ApcRoutine" />
             <Param Type="PVOID" Name="ApcContext" />
             <Param Type="IPAddr" Name="DestinationAddress" />
-            <Param Type="LPVOID" Name="RequestData" />
+            <Param Type="LPVOID" Name="RequestData" Length="RequestSize" />
             <Param Type="WORD" Name="RequestSize" />
             <Param Type="PIP_OPTION_INFORMATION" Name="RequestOptions" />
-            <Param Type="LPVOID" Name="ReplyBuffer" />
+            <Param Type="LPVOID" Name="ReplyBuffer" PostLength="ReplySize" />
             <Param Type="DWORD" Name="ReplySize" />
             <Param Type="DWORD" Name="Timeout" />
             <Return Type="[ERROR_CODE]" />
         </Api>
+        <Api Name="GetIpNetworkConnectionBandwidthEstimates">
+            <Param Type="NET_IFINDEX" Name="InterfaceIndex" />
+            <Param Type="ADDRESS_FAMILY" Name="AddressFamily" />
+            <Param Type="PMIB_IP_NETWORK_CONNECTION_BANDWIDTH_ESTIMATES" Name="BandwidthEstimates" />
+            <Return Type="NETIOAPI_API" />
+        </Api>
+        <Api Name="CancelIPChangeNotify">
+            <Param Type="LPOVERLAPPED" Name="notifyOverlapped" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CreatePersistentTcpPortReservation">
+            <Param Type="USHORT" Name="StartPort" />
+            <Param Type="USHORT" Name="NumberOfPorts" />
+            <Param Type="PULONG64" Name="Token" />
+            <Return Type="[ERROR_CODE_ULONG]" />
+        </Api>
+        <Api Name="CreatePersistentUdpPortReservation">
+            <Param Type="USHORT" Name="StartPort" />
+            <Param Type="USHORT" Name="NumberOfPorts" />
+            <Param Type="PULONG64" Name="Token" />
+            <Return Type="[ERROR_CODE_ULONG]" />
+        </Api>
+        <Api Name="DeletePersistentTcpPortReservation">
+            <Param Type="USHORT" Name="StartPort" />
+            <Param Type="USHORT" Name="NumberOfPorts" />
+            <Return Type="[ERROR_CODE_ULONG]" />
+        </Api>
+        <Api Name="DeletePersistentUdpPortReservation">
+            <Param Type="USHORT" Name="StartPort" />
+            <Param Type="USHORT" Name="NumberOfPorts" />
+            <Return Type="[ERROR_CODE_ULONG]" />
+        </Api>
+        <Api Name="DisableMediaSense">
+            <Param Type="HANDLE*" Name="pHandle" />
+            <Param Type="OVERLAPPED*" Name="pOverlapped" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="GetAdapterOrderMap">
+            <Return Type="PIP_ADAPTER_ORDER_MAP" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="GetIcmpStatisticsEx">
+            <Param Type="PMIB_ICMP_EX" Name="pStats" />
+            <Param Type="DWORD" Name="dwFamily" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="GetIpErrorString">
+            <Param Type="IP_STATUS" Name="ErrorCode" />
+            <Param Type="PWCHAR" Name="Buffer" />
+            <Param Type="PDWORD" Name="Size" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="GetIpStatisticsEx">
+            <Param Type="PMIB_IPSTATS" Name="pStats" />
+            <Param Type="DWORD" Name="dwFamily" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="LookupPersistentTcpPortReservation">
+            <Param Type="USHORT" Name="StartPort" />
+            <Param Type="USHORT" Name="NumberOfPorts" />
+            <Param Type="PULONG64" Name="Token" />
+            <Return Type="[ERROR_CODE_ULONG]" />
+        </Api>
+        <Api Name="LookupPersistentUdpPortReservation">
+            <Param Type="USHORT" Name="StartPort" />
+            <Param Type="USHORT" Name="NumberOfPorts" />
+            <Param Type="PULONG64" Name="Token" />
+            <Return Type="[ERROR_CODE_ULONG]" />
+        </Api>
+        <Api Name="NhpAllocateAndGetInterfaceInfoFromStack">
+            <Param Type="IP_INTERFACE_NAME_INFO**" Name="ppTable" />
+            <Param Type="PDWORD" Name="pdwCount" />
+            <Param Type="BOOL" Name="bOrder" />
+            <Param Type="HANDLE" Name="hHeap" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="RestoreMediaSense">
+            <Param Type="OVERLAPPED*" Name="pOverlapped" />
+            <Param Type="LPDWORD" Name="lpdwEnableCount" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+
     </Module>
 </ApiMonitor>

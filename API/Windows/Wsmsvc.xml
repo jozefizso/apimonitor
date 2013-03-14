@@ -1,0 +1,423 @@
+<!--
+    API Monitor Definitions
+    (c) 2012, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="Wsmsvc.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        
+        <!-- Variables -->
+        <Variable Name="WSMAN_SHELL_COMPLETION_FUNCTION"    Type="Alias"        Base="LPVOID" />
+        <Variable Name="WSMAN_SESSION_HANDLE"               Type="Alias"        Base="LPVOID" />
+        <Variable Name="WSMAN_SESSION_HANDLE*"              Type="Pointer"      Base="WSMAN_SESSION_HANDLE" />
+        <Variable Name="WSMAN_SHELL_HANDLE"                 Type="Alias"        Base="LPVOID" />
+        <Variable Name="WSMAN_SHELL_HANDLE*"                Type="Pointer"      Base="WSMAN_SHELL_HANDLE" />
+        <Variable Name="WSMAN_COMMAND_HANDLE"               Type="Alias"        Base="LPVOID" />
+        <Variable Name="WSMAN_COMMAND_HANDLE*"              Type="Pointer"      Base="WSMAN_COMMAND_HANDLE" />
+        <Variable Name="WSMAN_OPERATION_HANDLE"             Type="Alias"        Base="LPVOID" />
+        <Variable Name="WSMAN_OPERATION_HANDLE*"            Type="Pointer"      Base="WSMAN_OPERATION_HANDLE" />
+        <Variable Name="WSMAN_API_HANDLE"                   Type="Alias"        Base="LPVOID" />
+        <Variable Name="WSMAN_API_HANDLE*"                  Type="Pointer"      Base="WSMAN_API_HANDLE" />
+
+        <!-- WSManShellFlag -->
+        <Variable Name="WSManShellFlag" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="WSMAN_FLAG_NO_COMPRESSION"                   Value="0x1" />
+                <Set Name="WSMAN_FLAG_DELETE_SERVER_SESSION"            Value="0x2" />
+                <Set Name="WSMAN_FLAG_SERVER_BUFFERING_MODE_DROP"       Value="0x4" />
+                <Set Name="WSMAN_FLAG_SERVER_BUFFERING_MODE_BLOCK"      Value="0x8" />
+                <Set Name="WSMAN_FLAG_RECEIVE_DELAY_OUTPUT_STREAM"      Value="0X10" />
+            </Enum>
+        </Variable>
+
+        <!-- [WSMAN_FLAG_REQUESTED_API_VERSION] -->
+        <Variable Name="[WSMAN_FLAG_REQUESTED_API_VERSION]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="WSMAN_FLAG_REQUESTED_API_VERSION_1_0"    Value="0x0" />
+                <Set Name="WSMAN_FLAG_REQUESTED_API_VERSION_1_1"    Value="0x1" />
+            </Enum>
+        </Variable>
+
+        <!-- WSMAN_SHELL_ASYNC -->
+        <Variable Name="WSMAN_SHELL_ASYNC" Type="Struct">
+            <Field Type="PVOID"                             Name="operationContext" />
+            <Field Type="WSMAN_SHELL_COMPLETION_FUNCTION"   Name="completionFunction" />
+        </Variable>
+        <Variable Name="WSMAN_SHELL_ASYNC*" Type="Pointer" Base="WSMAN_SHELL_ASYNC" />
+
+        <!-- WSMAN_USERNAME_PASSWORD_CREDS -->
+        <Variable Name="WSMAN_USERNAME_PASSWORD_CREDS" Type="Struct">
+            <Field Type="PCWSTR"    Name="username" />
+            <Field Type="PCWSTR"    Name="password" />
+        </Variable>
+
+        <!-- WSManAuthenticationFlags -->
+        <Variable Name="WSManAuthenticationFlags" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="WSMAN_FLAG_DEFAULT_AUTHENTICATION"       Value="0x0" />
+                <Set Name="WSMAN_FLAG_NO_AUTHENTICATION"            Value="0x1" />
+                <Set Name="WSMAN_FLAG_AUTH_DIGEST"                  Value="0x2" />
+                <Set Name="WSMAN_FLAG_AUTH_NEGOTIATE"               Value="0x4" />
+                <Set Name="WSMAN_FLAG_AUTH_BASIC"                   Value="0x8" />
+                <Set Name="WSMAN_FLAG_AUTH_KERBEROS"                Value="0x10" />
+                <Set Name="WSMAN_FLAG_AUTH_CREDSSP"                 Value="0x80" />
+                <Set Name="WSMAN_FLAG_AUTH_CLIENT_CERTIFICATE"      Value="0x20" />
+            </Enum>
+        </Variable>
+
+        <!-- [WSMAN_AUTHENTICATION_CREDENTIALS_u] -->
+        <Variable Name="[WSMAN_AUTHENTICATION_CREDENTIALS_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="WSMAN_USERNAME_PASSWORD_CREDS"     Name="userAccount" />
+            <Field Type="PCWSTR"                            Name="certificateThumbprint" />
+        </Variable>
+
+        <!-- WSMAN_AUTHENTICATION_CREDENTIALS -->
+        <Variable Name="WSMAN_AUTHENTICATION_CREDENTIALS" Type="Struct">
+            <Field Type="WSManAuthenticationFlags"                  Name="authenticationMechanism" />
+            <Field Type="[WSMAN_AUTHENTICATION_CREDENTIALS_u]"      Name="" />
+        </Variable>
+        <Variable Name="WSMAN_AUTHENTICATION_CREDENTIALS*" Type="Pointer" Base="WSMAN_AUTHENTICATION_CREDENTIALS" />
+
+        <!-- WSManSessionOption -->
+        <Variable Name="WSManSessionOption" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="WSMAN_OPTION_DEFAULT_OPERATION_TIMEOUTMS"                Value="1" />
+                <Set Name="WSMAN_OPTION_MAX_RETRY_TIME"                             Value="11" />
+                <Set Name="WSMAN_OPTION_TIMEOUTMS_CREATE_SHELL"                     Value="12" />
+                <Set Name="WSMAN_OPTION_TIMEOUTMS_RUN_SHELL_COMMAND"                Value="13" />
+                <Set Name="WSMAN_OPTION_TIMEOUTMS_RECEIVE_SHELL_OUTPUT"             Value="14" />
+                <Set Name="WSMAN_OPTION_TIMEOUTMS_SEND_SHELL_INPUT"                 Value="15" />
+                <Set Name="WSMAN_OPTION_TIMEOUTMS_SIGNAL_SHELL"                     Value="16" />
+                <Set Name="WSMAN_OPTION_TIMEOUTMS_CLOSE_SHELL"                      Value="17" />
+                <Set Name="WSMAN_OPTION_SKIP_CA_CHECK"                              Value="18" />
+                <Set Name="WSMAN_OPTION_SKIP_CN_CHECK"                              Value="19" />
+                <Set Name="WSMAN_OPTION_UNENCRYPTED_MESSAGES"                       Value="20" />
+                <Set Name="WSMAN_OPTION_UTF16"                                      Value="21" />
+                <Set Name="WSMAN_OPTION_ENABLE_SPN_SERVER_PORT"                     Value="22" />
+                <Set Name="WSMAN_OPTION_MACHINE_ID"                                 Value="23" />
+                <Set Name="WSMAN_OPTION_LOCALE"                                     Value="25" />
+                <Set Name="WSMAN_OPTION_UI_LANGUAGE"                                Value="26" />
+                <Set Name="WSMAN_OPTION_MAX_ENVELOPE_SIZE_KB"                       Value="28" />
+                <Set Name="WSMAN_OPTION_SHELL_MAX_DATA_SIZE_PER_MESSAGE_KB"         Value="29" />
+                <Set Name="WSMAN_OPTION_REDIRECT_LOCATION"                          Value="30" />
+                <Set Name="WSMAN_OPTION_SKIP_REVOCATION_CHECK"                      Value="31" />
+                <Set Name="WSMAN_OPTION_ALLOW_NEGOTIATE_IMPLICIT_CREDENTIALS"       Value="32" />
+                <Set Name="WSMAN_OPTION_USE_SSL"                                    Value="33" />
+                <Set Name="WSMAN_OPTION_USE_INTEARACTIVE_TOKEN"                     Value="34" />
+            </Enum>
+        </Variable>
+
+        <!-- WSMAN_STREAM_ID_SET -->
+        <Variable Name="WSMAN_STREAM_ID_SET" Type="Struct">
+            <Field Type="DWORD"     Name="streamIDsCount" />
+            <Field Type="PCWSTR*"   Name="streamIDs" Count="streamIDsCount" />
+        </Variable>
+        <Variable Name="WSMAN_STREAM_ID_SET*" Type="Pointer" Base="WSMAN_STREAM_ID_SET" />
+
+        <!-- WSMAN_COMMAND_ARG_SET -->
+        <Variable Name="WSMAN_COMMAND_ARG_SET" Type="Struct">
+            <Field Type="DWORD"     Name="argsCount" />
+            <Field Type="PCWSTR*"   Name="args" Count="argsCount" />
+        </Variable>
+        <Variable Name="WSMAN_COMMAND_ARG_SET*" Type="Pointer" Base="WSMAN_COMMAND_ARG_SET" />
+
+        <!-- WSManDataType -->
+        <Variable Name="WSManDataType" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="WSMAN_DATA_NONE"             Value="0" />
+                <Set Name="WSMAN_DATA_TYPE_TEXT"        Value="1" />
+                <Set Name="WSMAN_DATA_TYPE_BINARY"      Value="2" />
+                <Set Name="WSMAN_DATA_TYPE_DWORD"       Value="4" />
+            </Enum>
+        </Variable>
+
+        <!-- WSMAN_DATA_TEXT -->
+        <Variable Name="WSMAN_DATA_TEXT" Type="Struct">
+            <Field Type="DWORD"     Name="bufferLength" />
+            <Field Type="PCWSTR"    Name="buffer" />
+        </Variable>
+
+        <!-- WSMAN_DATA_BINARY -->
+        <Variable Name="WSMAN_DATA_BINARY" Type="Struct">
+            <Field Type="DWORD"     Name="dataLength" />
+            <Field Type="BYTE*"     Name="data" Length="dataLength" />
+        </Variable>
+
+        <!-- [WSMAN_DATA_u] -->
+        <Variable Name="[WSMAN_DATA_u]" Type="Union">
+            <Display Name="union" />
+            <Field Type="WSMAN_DATA_TEXT"       Name="text" />
+            <Field Type="WSMAN_DATA_BINARY"     Name="binaryData" />
+            <Field Type="DWORD"                 Name="number" />
+        </Variable>
+
+        <!-- WSMAN_DATA -->
+        <Variable Name="WSMAN_DATA" Type="Struct">
+            <Field Type="WSManDataType"     Name="type" />
+            <Field Type="[WSMAN_DATA_u]"    Name="" />
+        </Variable>
+        <Variable Name="WSMAN_DATA*" Type="Pointer" Base="WSMAN_DATA" />
+
+        <!-- WSMAN_ENVIRONMENT_VARIABLE -->
+        <Variable Name="WSMAN_ENVIRONMENT_VARIABLE" Type="Struct">
+            <Field Type="PCWSTR"    Name="name" />
+            <Field Type="PCWSTR"    Name="value" />
+        </Variable>
+        <Variable Name="WSMAN_ENVIRONMENT_VARIABLE*" Type="Pointer" Base="WSMAN_ENVIRONMENT_VARIABLE" />
+
+        <!-- WSMAN_ENVIRONMENT_VARIABLE_SET -->
+        <Variable Name="WSMAN_ENVIRONMENT_VARIABLE_SET" Type="Struct">
+            <Field Type="DWORD"                         Name="varsCount" />
+            <Field Type="WSMAN_ENVIRONMENT_VARIABLE*"   Name="vars" Count="varsCount" />
+        </Variable>
+        <Variable Name="WSMAN_ENVIRONMENT_VARIABLE_SET*" Type="Pointer" Base="WSMAN_ENVIRONMENT_VARIABLE_SET" />
+
+        <!-- WSMAN_SHELL_STARTUP_INFO -->
+        <Variable Name="WSMAN_SHELL_STARTUP_INFO" Type="Struct">
+            <Field Type="WSMAN_STREAM_ID_SET*"              Name="inputStreamSet" />
+            <Field Type="WSMAN_STREAM_ID_SET*"              Name="outputStreamSet" />
+            <Field Type="DWORD"                             Name="idleTimeoutMs" />
+            <Field Type="PCWSTR"                            Name="workingDirectory" />
+            <Field Type="WSMAN_ENVIRONMENT_VARIABLE_SET*"   Name="variableSet" />
+            <Field Type="PCWSTR"                            Name="name" />
+        </Variable>
+        <Variable Name="WSMAN_SHELL_STARTUP_INFO*" Type="Pointer" Base="WSMAN_SHELL_STARTUP_INFO" />
+
+        <!-- WSMAN_OPTION -->
+        <Variable Name="WSMAN_OPTION" Type="Struct">
+            <Field Type="PCWSTR"    Name="name" />
+            <Field Type="PCWSTR"    Name="value" />
+            <Field Type="BOOL"      Name="mustComply" />
+        </Variable>
+        <Variable Name="WSMAN_OPTION*" Type="Pointer" Base="WSMAN_OPTION" />
+
+        <!-- WSMAN_OPTION_SET -->
+        <Variable Name="WSMAN_OPTION_SET" Type="Struct">
+            <Field Type="DWORD"             Name="optionsCount" />
+            <Field Type="WSMAN_OPTION*"     Name="options" Count="optionsCount" />
+            <Field Type="BOOL"              Name="optionsMustUnderstand" />
+        </Variable>
+        <Variable Name="WSMAN_OPTION_SET*" Type="Pointer" Base="WSMAN_OPTION_SET" />
+
+        <!-- WSManProxyAccessType -->
+        <Variable Name="WSManProxyAccessType" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="WSMAN_OPTION_PROXY_IE_PROXY_CONFIG"          Value="1" />
+                <Set Name="WSMAN_OPTION_PROXY_WINHTTP_PROXY_CONFIG"     Value="2" />
+                <Set Name="WSMAN_OPTION_PROXY_AUTO_DETECT"              Value="4" />
+                <Set Name="WSMAN_OPTION_PROXY_NO_PROXY_SERVER"          Value="8" />
+            </Enum>
+        </Variable>
+
+        <!-- WSMAN_PROXY_INFO -->
+        <Variable Name="WSMAN_PROXY_INFO" Type="Struct">
+            <Field Type="WSManProxyAccessType"              Name="accessType" />
+            <Field Type="WSMAN_AUTHENTICATION_CREDENTIALS"  Name="authenticationCredentials" />
+        </Variable>
+        <Variable Name="WSMAN_PROXY_INFO*" Type="Pointer" Base="WSMAN_PROXY_INFO" />
+
+        <!-- WSMAN_SHELL_DISCONNECT_INFO -->
+        <Variable Name="WSMAN_SHELL_DISCONNECT_INFO" Type="Struct">
+            <Field Type="DWORD" Name="idleTimeoutMs" />
+        </Variable>
+        <Variable Name="WSMAN_SHELL_DISCONNECT_INFO*" Type="Pointer" Base="WSMAN_SHELL_DISCONNECT_INFO" />
+
+        <!-- Windows Remote Management -->
+        <!-- Core -->
+        <Category Name="System Administration/Windows Remote Management/WinRM Client Shell/Core" />
+        <Api Name="WSManCloseCommand">
+            <Param Type="WSMAN_COMMAND_HANDLE" Name="commandHandle" />
+            <Param Type="DWORD" Name="flags" />
+            <Param Type="WSMAN_SHELL_ASYNC*" Name="async" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="WSManCloseOperation">
+            <Param Type="WSMAN_OPERATION_HANDLE" Name="operationHandle" />
+            <Param Type="DWORD" Name="flags" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="WSManCloseSession">
+            <Param Type="WSMAN_SESSION_HANDLE" Name="session" />
+            <Param Type="DWORD" Name="flags" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="WSManCloseShell">
+            <Param Type="WSMAN_SHELL_HANDLE" Name="shellHandle" />
+            <Param Type="DWORD" Name="flags" />
+            <Param Type="WSMAN_SHELL_ASYNC*" Name="async" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="WSManConnectShell">
+            <Param Type="WSMAN_SESSION_HANDLE" Name="session" />
+            <Param Type="DWORD" Name="flags" />
+            <Param Type="PCWSTR" Name="resourceUri" />
+            <Param Type="PCWSTR" Name="shellID" />
+            <Param Type="WSMAN_OPTION_SET*" Name="options" />
+            <Param Type="WSMAN_DATA*" Name="connectXml" />
+            <Param Type="WSMAN_SHELL_ASYNC*" Name="async" />
+            <Param Type="WSMAN_SHELL_HANDLE*" Name="shell" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="WSManConnectShellCommand">
+            <Param Type="WSMAN_SHELL_HANDLE" Name="shell" />
+            <Param Type="DWORD" Name="flags" />
+            <Param Type="PCWSTR" Name="commandID" />
+            <Param Type="WSMAN_OPTION_SET*" Name="options" />
+            <Param Type="WSMAN_DATA*" Name="connectXml" />
+            <Param Type="WSMAN_SHELL_ASYNC*" Name="async" />
+            <Param Type="WSMAN_SHELL_HANDLE*" Name="command" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="WSManCreateSession">
+            <Param Type="WSMAN_API_HANDLE" Name="apiHandle" />
+            <Param Type="PCWSTR" Name="connection" />
+            <Param Type="DWORD" Name="flags" />
+            <Param Type="WSMAN_AUTHENTICATION_CREDENTIALS*" Name="serverAuthenticationCredentials" />
+            <Param Type="WSMAN_PROXY_INFO*" Name="proxyInfo" />
+            <Param Type="WSMAN_SESSION_HANDLE*" Name="session" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="WSManCreateShell">
+            <Param Type="WSMAN_SESSION_HANDLE" Name="session" />
+            <Param Type="DWORD" Name="flags" />
+            <Param Type="PCWSTR" Name="resourceUri" />
+            <Param Type="WSMAN_SHELL_STARTUP_INFO*" Name="startupInfo" />
+            <Param Type="WSMAN_OPTION_SET*" Name="options" />
+            <Param Type="WSMAN_DATA*" Name="createXml" />
+            <Param Type="WSMAN_SHELL_ASYNC*" Name="async" />
+            <Param Type="WSMAN_SHELL_HANDLE*" Name="shell" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="WSManCreateShellEx">
+            <Param Type="WSMAN_SESSION_HANDLE" Name="session" />
+            <Param Type="DWORD" Name="flags" />
+            <Param Type="PCWSTR" Name="resourceUri" />
+            <Param Type="PCWSTR" Name="ShellID" />
+            <Param Type="WSMAN_SHELL_STARTUP_INFO*" Name="startupInfo" />
+            <Param Type="WSMAN_OPTION_SET*" Name="options" />
+            <Param Type="WSMAN_DATA*" Name="createXml" />
+            <Param Type="WSMAN_SHELL_ASYNC*" Name="async" />
+            <Param Type="WSMAN_SHELL_HANDLE*" Name="shell" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="WSManDeinitialize">
+            <Param Type="WSMAN_API_HANDLE" Name="apiHandle" />
+            <Param Type="DWORD" Name="flags" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="WSManDisconnectShell">
+            <Param Type="WSMAN_SHELL_HANDLE" Name="shell" />
+            <Param Type="WSManShellFlag" Name="flags" />
+            <Param Type="WSMAN_SHELL_DISCONNECT_INFO*" Name="disconnectInfo" />
+            <Param Type="WSMAN_SHELL_ASYNC*" Name="async" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="WSManInitialize">
+            <Param Type="[WSMAN_FLAG_REQUESTED_API_VERSION]" Name="flags" />
+            <Param Type="WSMAN_API_HANDLE*" Name="apiHandle" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="WSManReceiveShellOutput">
+            <Param Type="WSMAN_SHELL_HANDLE" Name="shell" />
+            <Param Type="WSMAN_COMMAND_HANDLE" Name="command" />
+            <Param Type="DWORD" Name="flags" />
+            <Param Type="WSMAN_STREAM_ID_SET*" Name="desiredStreamSet" />
+            <Param Type="WSMAN_SHELL_ASYNC*" Name="async" />
+            <Param Type="WSMAN_OPERATION_HANDLE*" Name="receiveOperation" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="WSManReconnectShell">
+            <Param Type="WSMAN_SHELL_HANDLE" Name="shell" />
+            <Param Type="DWORD" Name="flags" />
+            <Param Type="WSMAN_SHELL_ASYNC*" Name="async" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="WSManReconnectShellCommand">
+            <Param Type="WSMAN_COMMAND_HANDLE" Name="commandHandle" />
+            <Param Type="DWORD" Name="flags" />
+            <Param Type="WSMAN_SHELL_ASYNC*" Name="async" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="WSManRunShellCommand">
+            <Param Type="WSMAN_SHELL_HANDLE" Name="shell" />
+            <Param Type="DWORD" Name="flags" />
+            <Param Type="PCWSTR" Name="commandLine" />
+            <Param Type="WSMAN_COMMAND_ARG_SET*" Name="args" />
+            <Param Type="WSMAN_OPTION_SET*" Name="options" />
+            <Param Type="WSMAN_SHELL_ASYNC*" Name="async" />
+            <Param Type="WSMAN_COMMAND_HANDLE*" Name="command" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="WSManRunShellCommandEx">
+            <Param Type="WSMAN_SHELL_HANDLE" Name="shell" />
+            <Param Type="DWORD" Name="flags" />
+            <Param Type="PCWSTR" Name="commandID" />
+            <Param Type="PCWSTR" Name="commandLine" />
+            <Param Type="WSMAN_COMMAND_ARG_SET*" Name="args" />
+            <Param Type="WSMAN_OPTION_SET*" Name="options" />
+            <Param Type="WSMAN_SHELL_ASYNC*" Name="async" />
+            <Param Type="WSMAN_COMMAND_HANDLE*" Name="command" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="WSManSendShellInput">
+            <Param Type="WSMAN_SHELL_HANDLE" Name="shell" />
+            <Param Type="WSMAN_COMMAND_HANDLE" Name="command" />
+            <Param Type="DWORD" Name="flags" />
+            <Param Type="PCWSTR" Name="streamId" />
+            <Param Type="WSMAN_DATA*" Name="streamData" />
+            <Param Type="BOOL" Name="endOfStream" />
+            <Param Type="WSMAN_SHELL_ASYNC*" Name="async" />
+            <Param Type="WSMAN_OPERATION_HANDLE*" Name="sendOperation" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="WSManSignalShell">
+            <Param Type="WSMAN_SHELL_HANDLE" Name="shell" />
+            <Param Type="WSMAN_COMMAND_HANDLE" Name="command" />
+            <Param Type="DWORD" Name="flags" />
+            <Param Type="PCWSTR" Name="code" />
+            <Param Type="WSMAN_SHELL_ASYNC*" Name="async" />
+            <Param Type="WSMAN_OPERATION_HANDLE*" Name="signalOperation" />
+            <Return Type="void" />
+        </Api>
+
+        <!-- Additional -->
+        <Category Name="System Administration/Windows Remote Management/WinRM Client Shell/Additional" />
+        <Api Name="WSManGetErrorMessage">
+            <Param Type="WSMAN_API_HANDLE" Name="apiHandle" />
+            <Param Type="DWORD" Name="flags" />
+            <Param Type="PCWSTR" Name="languageCode" />
+            <Param Type="DWORD" Name="errorCode" />
+            <Param Type="DWORD" Name="messageLength" />
+            <Param Type="PWSTR" Name="message" />
+            <Param Type="DWORD*" Name="messageLengthUsed" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="WSManGetSessionOptionAsDword">
+            <Param Type="WSMAN_SESSION_HANDLE" Name="session" />
+            <Param Type="WSManSessionOption" Name="option" />
+            <Param Type="DWORD*" Name="value" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="WSManGetSessionOptionAsString">
+            <Param Type="WSMAN_SESSION_HANDLE" Name="session" />
+            <Param Type="WSManSessionOption" Name="option" />
+            <Param Type="DWORD" Name="stringLength" />
+            <Param Type="PWSTR" Name="string" />
+            <Param Type="DWORD*" Name="stringLengthUsed" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="WSManSetSessionOption">
+            <Param Type="WSMAN_SESSION_HANDLE" Name="session" />
+            <Param Type="WSManSessionOption" Name="option" />
+            <Param Type="WSMAN_DATA*" Name="data" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+
+    </Module>
+</ApiMonitor>

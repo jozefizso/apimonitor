@@ -7,9 +7,70 @@
     <Include Filename="Headers\windows.h.xml" />
     <Module Name="version.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
 
-        <!-- Aliases - Windows 8 -->
-        <ModuleAlias Name="api-ms-win-core-version-l1-1-0.dll" />
-        <ModuleAlias Name="api-ms-win-core-versionansi-l1-1-0.dll" />
+        <!-- [VFF_FLAGS] -->
+        <Variable Name="[VFF_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="VFFF_ISSHAREDFILE" Value="0x0001" />
+            </Flag>
+        </Variable>
+
+        <!-- [VFF_RESULT] -->
+        <Variable Name="[VFF_RESULT]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="VFF_CURNEDEST"       Value="0x0001" />
+                <Set Name="VFF_FILEINUSE"       Value="0x0002" />
+                <Set Name="VFF_BUFFTOOSMALL"    Value="0x0004" />
+            </Flag>
+        </Variable>
+
+        <!-- [VIF_FLAGS] -->
+        <Variable Name="[VIF_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="VIFF_FORCEINSTALL"   Value="0x0001" />
+                <Set Name="VIFF_DONTDELETEOLD"  Value="0x0002" />
+            </Flag>
+        </Variable>
+
+        <!-- [VIF_RESULT] -->
+        <Variable Name="[VIF_RESULT]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="VIF_TEMPFILE"                Value="0x00000001" />
+                <Set Name="VIF_MISMATCH"                Value="0x00000002" />
+                <Set Name="VIF_SRCOLD"                  Value="0x00000004" />
+                <Set Name="VIF_DIFFLANG"                Value="0x00000008" />
+                <Set Name="VIF_DIFFCODEPG"              Value="0x00000010" />
+                <Set Name="VIF_DIFFTYPE"                Value="0x00000020" />
+                <Set Name="VIF_WRITEPROT"               Value="0x00000040" />
+                <Set Name="VIF_FILEINUSE"               Value="0x00000080" />
+                <Set Name="VIF_OUTOFSPACE"              Value="0x00000100" />
+                <Set Name="VIF_ACCESSVIOLATION"         Value="0x00000200" />
+                <Set Name="VIF_SHARINGVIOLATION"        Value="0x00000400" />
+                <Set Name="VIF_CANNOTCREATE"            Value="0x00000800" />
+                <Set Name="VIF_CANNOTDELETE"            Value="0x00001000" />
+                <Set Name="VIF_CANNOTRENAME"            Value="0x00002000" />
+                <Set Name="VIF_CANNOTDELETECUR"         Value="0x00004000" />
+                <Set Name="VIF_OUTOFMEMORY"             Value="0x00008000" />
+                <Set Name="VIF_CANNOTREADSRC"           Value="0x00010000" />
+                <Set Name="VIF_CANNOTREADDST"           Value="0x00020000" />
+                <Set Name="VIF_BUFFTOOSMALL"            Value="0x00040000" />
+                <Set Name="VIF_CANNOTLOADLZ32"          Value="0x00080000" />
+                <Set Name="VIF_CANNOTLOADCABINET"       Value="0x00100000" />
+            </Flag>
+        </Variable>
+
+        <!-- [FILE_VER_GET_FLAGS] -->
+        <Variable Name="[FILE_VER_GET_FLAGS]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Flag>
+                <Set Name="FILE_VER_GET_LOCALISED"      Value="0x01" />
+                <Set Name="FILE_VER_GET_NEUTRAL"        Value="0x02" />
+                <Set Name="FILE_VER_GET_PREFETCHED"     Value="0x04" />
+            </Flag>
+        </Variable>
 
         <!-- Version Information -->
         <Category Name="Windows Application UI Development/Menus and Other Resources/Version Information" />
@@ -17,18 +78,16 @@
             <Param Type="LPCTSTR" Name="lptstrFilename" />
             <Param Type="DWORD" Name="dwHandle" />
             <Param Type="DWORD" Name="dwLen" />
-            <Param Type="LPVOID" Name="lpData" Length="dwLen" />
+            <Param Type="LPVOID" Name="lpData" PostLength="dwLen" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetFileVersionInfoExW">
-            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="[FILE_VER_GET_FLAGS]" Name="dwFlags" />
             <Param Type="LPCWSTR" Name="lptstrFilename" />
             <Param Type="DWORD" Name="dwHandle" />
             <Param Type="DWORD" Name="dwLen" />
-            <Param Type="LPVOID" Name="lpData" Length="dwLen" />
+            <Param Type="LPVOID" Name="lpData" PostLength="dwLen" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetFileVersionInfoSize" BothCharset="True">
             <Param Type="LPCTSTR" Name="lptstrFilename" />
@@ -37,43 +96,49 @@
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="GetFileVersionInfoSizeExW">
-            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="[FILE_VER_GET_FLAGS]" Name="dwFlags" />
             <Param Type="LPCTSTR" Name="lptstrFilename" />
             <Param Type="LPDWORD" Name="lpdwHandle" />
             <Return Type="DWORD" />
             <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="VerFindFile" BothCharset="True">
-            <Param Type="DWORD" Name="dwFlags" />
+            <Param Type="[VFF_FLAGS]" Name="dwFlags" />
             <Param Type="LPCTSTR" Name="szFileName" />
             <Param Type="LPCTSTR" Name="szWinDir" />
             <Param Type="LPCTSTR" Name="szAppDir" />
             <Param Type="LPCSTR" Name="szCurDir" />
             <Param Type="PUINT" Name="lpuCurDirLen" />
-            <Param Type="LPTSTR" Name="szDestDir" />
+            <Param Type="LPTSTR" Name="szDestDir" OutputOnly="True" />
             <Param Type="PUINT" Name="lpuDestDirLen" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[VFF_RESULT]" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="VerInstallFile" BothCharset="True">
-            <Param Type="DWORD" Name="uFlags" />
+            <Param Type="[VIF_FLAGS]" Name="uFlags" />
             <Param Type="LPCTSTR" Name="szSrcFileName" />
             <Param Type="LPCTSTR" Name="szDestFileName" />
             <Param Type="LPCTSTR" Name="szSrcDir" />
             <Param Type="LPCTSTR" Name="szDestDir" />
             <Param Type="LPCTSTR" Name="szCurDir" />
-            <Param Type="LPTSTR" Name="szTmpFile" />
+            <Param Type="LPTSTR" Name="szTmpFile" OutputOnly="True" />
             <Param Type="PUINT" Name="lpuTmpFileLen" />
-            <Return Type="DWORD" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[VIF_RESULT]" />
+            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="VerQueryValue" BothCharset="True">
             <Param Type="LPCVOID" Name="pBlock" />
             <Param Type="LPCTSTR" Name="lpSubBlock" />
-            <Param Type="LPVOID*" Name="lplpBuffer" />
+            <Param Type="LPVOID*" Name="lplpBuffer" PostLength="puLen" />
             <Param Type="PUINT" Name="puLen" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
+
+        <!-- Kernel32.dll -->
+        <SourceModule Name="Kernel32.dll" Include="Windows\Kernel32.xml">
+            <Api Name="VerLanguageNameA" />
+            <Api Name="VerLanguageNameW" />
+        </SourceModule>
+
     </Module>
 </ApiMonitor>

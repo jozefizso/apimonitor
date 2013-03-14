@@ -1,0 +1,210 @@
+<!--
+    API Monitor Definitions
+    (c) 2012, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\gdi.h.xml" />
+    <Module Name="Icm32.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        
+        <!-- Variables -->
+        <Variable Name="HCMTRANSFORM"               Type="Alias"    Base="HANDLE" />
+        <Variable Name="LPDEVCHARACTER"             Type="Alias"    Base="PVOID" />
+
+        <!-- COLORTYPE -->
+        <Variable Name="COLORTYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="COLOR_GRAY"          Value="1" />
+                <Set Name="COLOR_RGB"           Value="2" />
+                <Set Name="COLOR_XYZ"           Value="3" />
+                <Set Name="COLOR_Yxy"           Value="4" />
+                <Set Name="COLOR_Lab"           Value="5" />
+                <Set Name="COLOR_3_CHANNEL"     Value="6" />
+                <Set Name="COLOR_CMYK"          Value="7" />
+                <Set Name="COLOR_5_CHANNEL"     Value="8" />
+                <Set Name="COLOR_6_CHANNEL"     Value="9" />
+                <Set Name="COLOR_7_CHANNEL"     Value="10" />
+                <Set Name="COLOR_8_CHANNEL"     Value="11" />
+                <Set Name="COLOR_NAMED"         Value="12" />
+            </Enum>
+        </Variable>
+
+        <!-- RGBTRIPLE -->
+        <Variable Name="RGBTRIPLE" Type="Struct" Pack="1">
+            <Field Type="BYTE"      Name="rgbtBlue" />
+            <Field Type="BYTE"      Name="rgbtGreen" />
+            <Field Type="BYTE"      Name="rgbtRed" />
+        </Variable>
+        <Variable Name="RGBTRIPLE*" Type="Pointer" Base="RGBTRIPLE" />
+
+        <!-- [CMS_DIRECTION] -->
+        <Variable Name="[CMS_DIRECTION]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="CMS_FORWARD"     Value="0" />
+                <Set Name="CMS_BACKWARD"    Value="1" />
+            </Enum>
+        </Variable>
+
+        <!-- Color Management Modules (CMMs) -->
+        <Category Name="Graphics and Gaming/Legacy Graphics/Windows Color System/Color Management Modules (CMMs)" />
+        <Api Name="CMCheckColors">
+            <Param Type="HCMTRANSFORM" Name="hcmTransform" />
+            <Param Type="LPCOLOR" Name="lpaInputColors" Count="nColors" />
+            <Param Type="DWORD" Name="nColors" />
+            <Param Type="COLORTYPE" Name="ctInput" />
+            <Param Type="LPBYTE" Name="lpaResult" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CMCheckColorsInGamut">
+            <Param Type="HCMTRANSFORM" Name="hcmTransform" />
+            <Param Type="RGBTRIPLE*" Name="lpaRGBTriple" Count="nCount" />
+            <Param Type="LPBYTE" Name="lpaResult" Count="nCount" />
+            <Param Type="UINT" Name="nCount" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CMCheckRGBs">
+            <Param Type="HCMTRANSFORM" Name="hcmTransform" />
+            <Param Type="LPVOID" Name="lpSrcBits" />
+            <Param Type="BMFORMAT" Name="bmInput" />
+            <Param Type="DWORD" Name="dwWidth" />
+            <Param Type="DWORD" Name="dwHeight" />
+            <Param Type="DWORD" Name="dwStride" />
+            <Param Type="LPBYTE" Name="lpaResult" />
+            <Param Type="PBMCALLBACKFN" Name="pfnCallback" />
+            <Param Type="ULONG" Name="ulCallbackData" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CMConvertColorNameToIndex">
+            <Param Type="HPROFILE" Name="hProfile" />
+            <Param Type="PCOLOR_NAME" Name="paColorName" Count="dwCount" />
+            <Param Type="PDWORD" Name="paIndex" Count="dwCount" />
+            <Param Type="DWORD" Name="dwCount" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CMConvertIndexToColorName">
+            <Param Type="HPROFILE" Name="hProfile" />
+            <Param Type="PDWORD" Name="paIndex" Count="dwCount" />
+            <Param Type="PCOLOR_NAME" Name="paColorName" Count="dwCount" />
+            <Param Type="DWORD" Name="dwCount" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CMCreateDeviceLinkProfile">
+            <Param Type="PHPROFILE" Name="lpahProfiles" Count="nProfiles" />
+            <Param Type="DWORD" Name="nProfiles" />
+            <Param Type="[RENDERING_INTENT*]" Name="padwIntents" Count="nIntents" />
+            <Param Type="DWORD" Name="nIntents" />
+            <Param Type="[CCT_FLAGS]" Name="dwFlags" />
+            <Param Type="LPBYTE*" Name="lpProfileData" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CMCreateMultiProfileTransform">
+            <Param Type="PHPROFILE" Name="lpahProfiles" Count="nProfiles" />
+            <Param Type="DWORD" Name="nProfiles" />
+            <Param Type="[RENDERING_INTENT*]" Name="padwIntents" Count="nIntents" />
+            <Param Type="DWORD" Name="nIntents" />
+            <Param Type="[CCT_FLAGS]" Name="dwFlags" />
+            <Return Type="HCMTRANSFORM" />
+            <Success Return="Greater" Value="255" />
+        </Api>
+        <Api Name="CMCreateProfile" SuffixA="" BothCharset="True">
+            <Param Type="LPLOGCOLORSPACE" Name="lpColorSpace" />
+            <Param Type="LPBYTE*" Name="lpProfileData" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CMCreateTransformExt" SuffixA="" BothCharset="True">
+            <Param Type="LPLOGCOLORSPACE" Name="lpColorSpace" />
+            <Param Type="LPDEVCHARACTER" Name="lpDevCharacter" />
+            <Param Type="LPDEVCHARACTER" Name="lpTargetDevCharacter" />
+            <Param Type="[CCT_FLAGS]" Name="dwFlags" />
+            <Return Type="HCMTRANSFORM" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CMDeleteTransform">
+            <Param Type="HCMTRANSFORM" Name="hcmTransform" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CMGetInfo">
+            <Param Type="[CMM_INFO]" Name="dwInfo" />
+            <Return Type="DWORD" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="CMGetNamedProfileInfo">
+            <Param Type="HPROFILE" Name="hProfile" />
+            <Param Type="PNAMED_PROFILE_INFO" Name="pNamedProfileInfo" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CMGetPS2ColorRenderingDictionary">
+            <Param Type="HPROFILE" Name="hProfile" />
+            <Param Type="[RENDERING_INTENT]" Name="dwIntent" />
+            <Param Type="LPBYTE" Name="lpBuffer" PostLength="lpcbSize" />
+            <Param Type="LPDWORD" Name="lpcbSize" />
+            <Param Type="LPBOOL" Name="lpbBinary" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CMGetPS2ColorRenderingIntent">
+            <Param Type="HPROFILE" Name="hProfile" />
+            <Param Type="[RENDERING_INTENT]" Name="dwIntent" />
+            <Param Type="LPBYTE" Name="lpBuffer" PostLength="lpcbSize" />
+            <Param Type="LPDWORD" Name="lpcbSize" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CMGetPS2ColorSpaceArray">
+            <Param Type="HPROFILE" Name="hProfile" />
+            <Param Type="[RENDERING_INTENT]" Name="dwIntent" />
+            <Param Type="DWORD" Name="dwCSAType" />
+            <Param Type="LPBYTE" Name="lpBuffer" PostLength="lpcbSize" />
+            <Param Type="LPDWORD" Name="lpcbSize" />
+            <Param Type="LPBOOL" Name="lpbBinary" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CMIsProfileValid">
+            <Param Type="HPROFILE" Name="hProfile" />
+            <Param Type="LPBOOL" Name="lpbValid" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CMTranslateColors">
+            <Param Type="HCMTRANSFORM" Name="hcmTransform" />
+            <Param Type="LPCOLOR" Name="lpaInputColors" Count="nColors" />
+            <Param Type="DWORD" Name="nColors" />
+            <Param Type="COLORTYPE" Name="ctInput" />
+            <Param Type="LPCOLOR" Name="lpaOutputColors" Count="nColors" />
+            <Param Type="COLORTYPE" Name="ctOutput" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CMTranslateRGB">
+            <Param Type="HCMTRANSFORM" Name="hcmTransform" />
+            <Param Type="COLORREF" Name="ColorRef" />
+            <Param Type="LPCOLORREF" Name="lpColorRef" />
+            <Param Type="[CMS_DIRECTION]" Name="dwFlags" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CMTranslateRGBs">
+            <Param Type="HCMTRANSFORM" Name="hcmTransform" />
+            <Param Type="LPVOID" Name="lpSrcBits" />
+            <Param Type="BMFORMAT" Name="bmInput" />
+            <Param Type="DWORD" Name="dwWidth" />
+            <Param Type="DWORD" Name="dwHeight" />
+            <Param Type="DWORD" Name="dwStride" />
+            <Param Type="LPVOID" Name="lpDestBits" />
+            <Param Type="BMFORMAT" Name="bmOutput" />
+            <Param Type="[CMS_DIRECTION]" Name="dwTranslateDirection" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="CMTranslateRGBsExt">
+            <Param Type="HCMTRANSFORM" Name="hcmTransform" />
+            <Param Type="LPVOID" Name="lpSrcBits" />
+            <Param Type="BMFORMAT" Name="bmInput" />
+            <Param Type="DWORD" Name="dwWidth" />
+            <Param Type="DWORD" Name="dwHeight" />
+            <Param Type="DWORD" Name="dwInputStride" />
+            <Param Type="LPVOID" Name="lpDestBits" />
+            <Param Type="BMFORMAT" Name="bmOutput" />
+            <Param Type="DWORD" Name="dwOutputStride" />
+            <Param Type="LPBMCALLBACKFN" Name="lpfnCallback" />
+            <Param Type="ULONG" Name="ulCallbackData" />
+            <Return Type="BOOL" />
+        </Api>
+    </Module>
+</ApiMonitor>

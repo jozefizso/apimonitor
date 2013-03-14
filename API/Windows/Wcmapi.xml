@@ -1,0 +1,92 @@
+<!--
+    API Monitor Definitions
+    (c) 2012, Rohitab Batra <rohitab@rohitab.com>
+    http://www.rohitab.com/apimonitor/
+-->
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+    <Module Name="Wcmapi.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+        
+        <!-- Arrays -->
+        <Variable Name="WCHAR [WCM_MAX_PROFILE_NAME]" Type="Array" Base="WCHAR" Count="256" />
+
+        <!-- WCM_PROPERTY -->
+        <Variable Name="WCM_PROPERTY" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="wcm_global_property_domain_policy"               Value="0" />
+                <Set Name="wcm_global_property_minimize_policy"             Value="1" />
+                <Set Name="wcm_global_property_roaming_policy"              Value="2" />
+                <Set Name="wcm_global_property_powermanagement_policy"      Value="3" />
+                <Set Name="wcm_intf_property_connection_cost"               Value="4" />
+                <Set Name="wcm_intf_property_dataplan_status"               Value="5" />
+                <Set Name="wcm_intf_property_hotspot_profile"               Value="6" />
+            </Enum>
+        </Variable>
+
+        <!-- WCM_MEDIA_TYPE -->
+        <Variable Name="WCM_MEDIA_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="wcm_media_unknown"       Value="0" />
+                <Set Name="wcm_media_ethernet"      Value="1" />
+                <Set Name="wcm_media_wlan"          Value="2" />
+                <Set Name="wcm_media_mbn"           Value="3" />
+                <Set Name="wcm_media_invalid"       Value="4" />
+            </Enum>
+        </Variable>
+
+        <!-- WCM_PROFILE_INFO -->
+        <Variable Name="WCM_PROFILE_INFO" Type="Struct">
+            <Field Type="WCHAR [WCM_MAX_PROFILE_NAME]"      Name="strProfileName" />
+            <Field Type="GUID"                              Name="AdapterGUID" />
+            <Field Type="WCM_MEDIA_TYPE"                    Name="Media" />
+        </Variable>
+        <Variable Name="WCM_PROFILE_INFO [1]" Type="Array" Base="WCM_PROFILE_INFO" Count="1" />
+
+        <!-- WCM_PROFILE_INFO_LIST -->
+        <Variable Name="WCM_PROFILE_INFO_LIST" Type="Struct">
+            <Field Type="DWORD"            	    Name="dwNumberOfItems" />
+            <Field Type="WCM_PROFILE_INFO [1]"	Name="ProfileInfo" Count="dwNumberOfItems" />
+        </Variable>
+        <Variable Name="WCM_PROFILE_INFO_LIST*"     Type="Pointer" Base="WCM_PROFILE_INFO_LIST" />
+        <Variable Name="PWCM_PROFILE_INFO_LIST"     Type="Pointer" Base="WCM_PROFILE_INFO_LIST" />
+        <Variable Name="PWCM_PROFILE_INFO_LIST*"    Type="Pointer" Base="PWCM_PROFILE_INFO_LIST" />
+
+        <!-- Windows Connection Manager -->
+        <Category Name="Wireless Networking/Windows Connection Manager" />
+        <Api Name="WcmFreeMemory">
+            <Param Type="PVOID" Name="pMemory" />
+            <Return Type="VOID" />
+        </Api>
+        <Api Name="WcmGetProfileList">
+            <Param Type="PVOID" Name="pReserved" />
+            <Param Type="PWCM_PROFILE_INFO_LIST*" Name="ppProfileList" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="WcmQueryProperty">
+            <Param Type="const GUID*" Name="pInterface" />
+            <Param Type="LPCWSTR" Name="strProfileName" />
+            <Param Type="WCM_PROPERTY" Name="Property" />
+            <Param Type="PVOID" Name="pReserved" />
+            <Param Type="PDWORD" Name="pdwDataSize" />
+            <Param Type="PBYTE*" Name="ppData" PostLength="pdwDataSize" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="WcmSetProfileList">
+            <Param Type="WCM_PROFILE_INFO_LIST*" Name="pProfileList" />
+            <Param Type="DWORD" Name="dwPosition" />
+            <Param Type="BOOL" Name="fIgnoreUnknownProfiles" />
+            <Param Type="PVOID" Name="pReserved" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="WcmSetProperty">
+            <Param Type="const GUID*" Name="pInterface" />
+            <Param Type="LPCWSTR" Name="strProfileName" />
+            <Param Type="WCM_PROPERTY" Name="Property" />
+            <Param Type="PVOID" Name="pReserved" />
+            <Param Type="DWORD" Name="dwDataSize" />
+            <Param Type="const BYTE*" Name="pbData" Length="dwDataSize" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+
+    </Module>
+</ApiMonitor>

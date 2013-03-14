@@ -5,11 +5,13 @@
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\runtime.h.xml" />
 
     <Module Name="*" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
 
         <!-- TODO: External Interfaces -->
-        <Variable Name="IOrpcDebugNotify" Type="Interface" />
+        <Variable Name="IOrpcDebugNotify"       Type="Interface" />
+        <Variable Name="IActivationFactory"     Type="Interface" />
 
         <!-- [DLLMAIN_REASON] -->
         <Variable Name="[DLLMAIN_REASON]" Type="Alias" Base="DWORD">
@@ -74,7 +76,6 @@
             <Param Type="[DLLMAIN_REASON]" Name="fdwReason" />
             <Param Type="LPVOID" Name="lpvReserved" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
 
         <!-- Component Object Model (COM) -->
@@ -98,7 +99,6 @@
             <Param Type="BOOL" Name="fTrace" />
             <Param Type="LPORPC_INIT_ARGS" Name="lpOrpcInitArgs" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
 
         <!-- Shell -->
@@ -121,6 +121,44 @@
             <Param Type="BOOL" Name="bInstall" />
             <Param Type="PCWSTR" Name="pszCmdLine" />
             <Return Type="HRESULT" />
+        </Api>
+
+        <!-- Windows Runtime C++ -->
+        <Category Name="Additional Resources/Windows Runtime C++" />
+        <Api Name="DllGetActivationFactory">
+            <Param Type="HSTRING" Name="activatableClassId" />
+            <Param Type="IActivationFactory**" Name="factory" />
+            <Return Type="HRESULT" />
+        </Api>
+
+        <!-- Microsoft .NET -->
+        <Category Name="Microsoft .NET/Unmanaged/Hosting" />
+        <Api Name="_CorDllMain">
+            <Param Type="HINSTANCE" Name="hInst" />
+            <Param Type="DWORD" Name="dwReason" />
+            <Param Type="LPVOID" Name="lpReserved" />
+            <Return Type="BOOL" />
+        </Api>
+        <Api Name="_CorExeMain">
+            <Return Type="__int32" />
+        </Api>
+        <Api Name="_CorExeMain2">
+            <Param Type="PBYTE" Name="pUnmappedPE" />
+            <Param Type="DWORD" Name="cUnmappedPE" />
+            <Param Type="LPWSTR" Name="pImageNameIn" />
+            <Param Type="LPWSTR" Name="pLoadersFileName" />
+            <Param Type="LPWSTR" Name="pCmdLine" />
+            <Return Type="__int32" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="_CorImageUnloading">
+            <Param Type="PVOID*" Name="ImageBase" />
+            <Return Type="STDAPI_(VOID)" />
+        </Api>
+        <Api Name="_CorValidateImage">
+            <Param Type="PVOID*" Name="ImageBase" />
+            <Param Type="LPCWSTR" Name="FileName" />
+            <Return Type="STDAPI" />
         </Api>
 
     </Module>

@@ -1,34 +1,40 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
-    <Include Filename="Headers\windows.h.xml" />
+    <Include Filename="Headers\security.h.xml" />
     <Module Name="Schannel.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         <!-- TOOO: Structures -->
         <Variable Name="PX509Certificate"   Type="Alias"    Base="LPVOID" />
         <Variable Name="PX509Certificate*"  Type="Pointer"  Base="PX509Certificate" />
 
         <!-- Authentication -->
-        <Category Name="Security and Identity/Authentication" />
+        <Category Name="Security and Identity/Authentication/SSP-AP Security Packages" />
         <Api Name="SslCrackCertificate">
             <Param Type="PUCHAR" Name="pbCertificate" Length="dwCertificate" />
             <Param Type="DWORD" Name="dwCertificate" />
             <Param Type="DWORD" Name="dwFlags" />
             <Param Type="PX509Certificate*" Name="ppCertificate" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SslEmptyCache" BothCharset="True">
             <Param Type="LPSTR" Name="pszTargetName" />
             <Param Type="DWORD" Name="dwFlags" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="SslFreeCertificate">
             <Param Type="PX509Certificate" Name="pCertificate" />
             <Return Type="void" />
+        </Api>
+        <Api Name="SslGetServerIdentity">
+            <Param Type="PBYTE" Name="ClientHello" Length="ClientHelloSize" />
+            <Param Type="DWORD" Name="ClientHelloSize" />
+            <Param Type="PBYTE*" Name="ServerIdentity" />
+            <Param Type="PDWORD" Name="ServerIdentitySize" />
+            <Param Type="DWORD" Name="Flags" />
+            <Return Type="SECURITY_STATUS" />
         </Api>
     </Module>
 </ApiMonitor>

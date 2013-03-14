@@ -7,7 +7,7 @@
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\internet.h.xml" />
     <Module Name="Winhttp.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
-
+        
         <!-- CallbackNotificationFlags -->
         <Variable Name="[CallbackNotificationFlags]" Type="Alias" Base="DWORD">
             <Display Name="DWORD" />
@@ -223,6 +223,57 @@
             </Flag>
         </Variable>
 
+        <!-- WINHTTP_PROXY_RESULT_ENTRY -->
+        <Variable Name="WINHTTP_PROXY_RESULT_ENTRY" Type="Struct">
+            <Field Type="BOOL"                  Name="fProxy" />
+            <Field Type="BOOL"                  Name="fBypass" />
+            <Field Type="INTERNET_SCHEME"       Name="ProxyScheme" />
+            <Field Type="PWSTR"                 Name="pwszProxy" />
+            <Field Type="INTERNET_PORT"         Name="ProxyPort" />
+        </Variable>
+        <Variable Name="WINHTTP_PROXY_RESULT_ENTRY*" Type="Pointer" Base="WINHTTP_PROXY_RESULT_ENTRY" />
+
+        <!-- WINHTTP_PROXY_RESULT -->
+        <Variable Name="WINHTTP_PROXY_RESULT" Type="Struct">
+            <Field Type="DWORD"                         Name="cEntries" />
+            <Field Type="WINHTTP_PROXY_RESULT_ENTRY*"   Name="pEntries" Count="cEntries" />
+        </Variable>
+        <Variable Name="WINHTTP_PROXY_RESULT*" Type="Pointer" Base="WINHTTP_PROXY_RESULT" />
+
+        <!-- WINHTTP_WEB_SOCKET_BUFFER_TYPE -->
+        <Variable Name="WINHTTP_WEB_SOCKET_BUFFER_TYPE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="WINHTTP_WEB_SOCKET_BINARY_MESSAGE_BUFFER_TYPE"       Value="0" />
+                <Set Name="WINHTTP_WEB_SOCKET_BINARY_FRAGMENT_BUFFER_TYPE"      Value="1" />
+                <Set Name="WINHTTP_WEB_SOCKET_UTF8_MESSAGE_BUFFER_TYPE"         Value="2" />
+                <Set Name="WINHTTP_WEB_SOCKET_UTF8_FRAGMENT_BUFFER_TYPE"        Value="3" />
+                <Set Name="WINHTTP_WEB_SOCKET_CLOSE_BUFFER_TYPE"                Value="4" />
+            </Enum>
+        </Variable>
+        <Variable Name="WINHTTP_WEB_SOCKET_BUFFER_TYPE*" Type="Pointer" Base="WINHTTP_WEB_SOCKET_BUFFER_TYPE" />
+
+        <!-- WINHTTP_WEB_SOCKET_CLOSE_STATUS -->
+        <Variable Name="WINHTTP_WEB_SOCKET_CLOSE_STATUS" Type="Alias" Base="USHORT">
+            <Display Name="USHORT" />
+            <Enum>
+                <Set Name="WINHTTP_WEB_SOCKET_SUCCESS_CLOSE_STATUS"                    	Value="1000" />
+                <Set Name="WINHTTP_WEB_SOCKET_ENDPOINT_TERMINATED_CLOSE_STATUS"        	Value="1001" />
+                <Set Name="WINHTTP_WEB_SOCKET_PROTOCOL_ERROR_CLOSE_STATUS"             	Value="1002" />
+                <Set Name="WINHTTP_WEB_SOCKET_INVALID_DATA_TYPE_CLOSE_STATUS"          	Value="1003" />
+                <Set Name="WINHTTP_WEB_SOCKET_EMPTY_CLOSE_STATUS"                      	Value="1005" />
+                <Set Name="WINHTTP_WEB_SOCKET_ABORTED_CLOSE_STATUS"                    	Value="1006" />
+                <Set Name="WINHTTP_WEB_SOCKET_INVALID_PAYLOAD_CLOSE_STATUS"            	Value="1007" />
+                <Set Name="WINHTTP_WEB_SOCKET_POLICY_VIOLATION_CLOSE_STATUS"           	Value="1008" />
+                <Set Name="WINHTTP_WEB_SOCKET_MESSAGE_TOO_BIG_CLOSE_STATUS"            	Value="1009" />
+                <Set Name="WINHTTP_WEB_SOCKET_UNSUPPORTED_EXTENSIONS_CLOSE_STATUS"     	Value="1010" />
+                <Set Name="WINHTTP_WEB_SOCKET_SERVER_ERROR_CLOSE_STATUS"               	Value="1011" />
+                <Set Name="WINHTTP_WEB_SOCKET_SECURE_HANDSHAKE_ERROR_CLOSE_STATUS"      Value="1015" />
+            </Enum>
+        </Variable>
+        <Variable Name="WINHTTP_WEB_SOCKET_CLOSE_STATUS*" Type="Pointer" Base="WINHTTP_WEB_SOCKET_CLOSE_STATUS">
+            <Display Name="USHORT*" />
+        </Variable>
+
         <!-- Windows HTTP Services (WinHTTP) -->
         <Category Name="Internet/Windows HTTP Services (WinHTTP)" />
         <Api Name="WinHttpAddRequestHeaders">
@@ -231,16 +282,13 @@
             <Param Type="DWORD" Name="dwHeadersLength" />
             <Param Type="[WinHttpAddReqFlag]" Name="dwModifiers" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WinHttpCheckPlatform">
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WinHttpCloseHandle">
             <Param Type="HINTERNET" Name="hInternet" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WinHttpConnect">
             <Param Type="HINTERNET" Name="hSession" />
@@ -248,7 +296,6 @@
             <Param Type="INTERNET_PORT" Name="nServerPort" />
             <Param Type="DWORD" Name="dwReserved" />
             <Return Type="HINTERNET" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WinHttpCrackUrl">
             <Param Type="LPCWSTR" Name="pwszUrl" />
@@ -256,7 +303,11 @@
             <Param Type="[InternetCrackUrlFlags]" Name="dwFlags" />
             <Param Type="LPURL_COMPONENTSW" Name="lpUrlComponents" OutputOnly="True" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WinHttpCreateProxyResolver">
+            <Param Type="HINTERNET" Name="hSession" />
+            <Param Type="HINTERNET*" Name="phResolver" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="WinHttpCreateUrl">
             <Param Type="LPURL_COMPONENTSW" Name="lpUrlComponents" />
@@ -264,23 +315,23 @@
             <Param Type="LPWSTR" Name="pwszUrl" />
             <Param Type="LPDWORD" Name="lpdwUrlLength" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WinHttpDetectAutoProxyConfigUrl">
             <Param Type="DWORD" Name="dwAutoDetectFlags" />
             <Param Type="LPWSTR*" Name="ppwszAutoConfigUrl" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WinHttpFreeProxyResult">
+            <Param Type="WINHTTP_PROXY_RESULT*" Name="pProxyResult" />
+            <Return Type="VOID" />
         </Api>
         <Api Name="WinHttpGetDefaultProxyConfiguration">
             <Param Type="WINHTTP_PROXY_INFO*" Name="pProxyInfo" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WinHttpGetIEProxyConfigForCurrentUser">
             <Param Type="WINHTTP_CURRENT_USER_IE_PROXY_CONFIG*" Name="pProxyConfig" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WinHttpGetProxyForUrl">
             <Param Type="HINTERNET" Name="hSession" />
@@ -288,7 +339,18 @@
             <Param Type="WINHTTP_AUTOPROXY_OPTIONS*" Name="pAutoProxyOptions" />
             <Param Type="WINHTTP_PROXY_INFO*" Name="pProxyInfo" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WinHttpGetProxyForUrlEx">
+            <Param Type="HINTERNET" Name="hResolver" />
+            <Param Type="PCWSTR" Name="pcwszUrl" />
+            <Param Type="WINHTTP_AUTOPROXY_OPTIONS*" Name="pAutoProxyOptions" />
+            <Param Type="DWORD_PTR" Name="pContext" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="WinHttpGetProxyResult">
+            <Param Type="HINTERNET" Name="hResolver" />
+            <Param Type="WINHTTP_PROXY_RESULT*" Name="pProxyResult" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="WinHttpOpen">
             <Param Type="LPCWSTR" Name="pwszUserAgent" />
@@ -297,7 +359,6 @@
             <Param Type="LPCWSTR" Name="pwszProxyBypass" />
             <Param Type="[WinHttpOpenFlags]" Name="dwFlags" />
             <Return Type="HINTERNET" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WinHttpOpenRequest">
             <Param Type="HINTERNET" Name="hConnect" />
@@ -308,7 +369,6 @@
             <Param Type="LPCWSTR*" Name="ppwszAcceptTypes" />
             <Param Type="[WinHttpOpenRequestFlags]" Name="dwFlags" />
             <Return Type="HINTERNET" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WinHttpQueryAuthSchemes">
             <Param Type="HINTERNET" Name="hRequest" />
@@ -316,21 +376,11 @@
             <Param Type="LPDWORD" Name="lpdwFirstScheme" />
             <Param Type="LPDWORD" Name="pdwAuthTarget" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WinHttpQueryDataAvailable">
             <Param Type="HINTERNET" Name="hRequest" />
             <Param Type="LPDWORD" Name="lpdwNumberOfBytesAvailable" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
-        </Api>
-        <Api Name="WinHttpReadData">
-            <Param Type="HINTERNET" Name="hRequest" />
-            <Param Type="LPVOID" Name="lpBuffer" PostLength="lpdwNumberOfBytesRead" />
-            <Param Type="DWORD" Name="dwNumberOfBytesToRead" />
-            <Param Type="LPDWORD" Name="lpdwNumberOfBytesRead" />
-            <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WinHttpQueryHeaders">
             <Param Type="HINTERNET" Name="hRequest" />
@@ -340,7 +390,6 @@
             <Param Type="LPDWORD" Name="lpdwBufferLength" />
             <Param Type="LPDWORD" Name="lpdwIndex" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WinHttpQueryOption">
             <Param Type="HINTERNET" Name="hInternet" />
@@ -348,13 +397,23 @@
             <Param Type="LPVOID" Name="lpBuffer" PostLength="lpdwBufferLength" />
             <Param Type="LPDWORD" Name="lpdwBufferLength" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WinHttpReadData">
+            <Param Type="HINTERNET" Name="hRequest" />
+            <Param Type="LPVOID" Name="lpBuffer" PostLength="lpdwNumberOfBytesRead" />
+            <Param Type="DWORD" Name="dwNumberOfBytesToRead" />
+            <Param Type="LPDWORD" Name="lpdwNumberOfBytesRead" />
+            <Return Type="BOOL" />
         </Api>
         <Api Name="WinHttpReceiveResponse">
             <Param Type="HINTERNET" Name="hRequest" />
             <Param Type="LPVOID" Name="lpReserved" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="WinHttpResetAutoProxy">
+            <Param Type="HINTERNET" Name="hSession" />
+            <Param Type="DWORD" Name="dwFlags" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="WinHttpSendRequest">
             <Param Type="HINTERNET" Name="hRequest" />
@@ -365,7 +424,6 @@
             <Param Type="DWORD" Name="dwTotalLength" />
             <Param Type="DWORD_PTR" Name="dwContext" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WinHttpSetCredentials">
             <Param Type="HINTERNET" Name="hRequest" />
@@ -375,12 +433,10 @@
             <Param Type="LPCWSTR" Name="pwszPassword" />
             <Param Type="LPVOID" Name="pAuthParams" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WinHttpSetDefaultProxyConfiguration">
             <Param Type="WINHTTP_PROXY_INFO*" Name="pProxyInfo" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WinHttpSetOption">
             <Param Type="HINTERNET" Name="hInternet" />
@@ -388,7 +444,6 @@
             <Param Type="LPVOID" Name="lpBuffer" Length="dwBufferLength" />
             <Param Type="DWORD" Name="dwBufferLength" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WinHttpSetStatusCallback">
             <Param Type="HINTERNET" Name="hInternet" />
@@ -405,27 +460,69 @@
             <Param Type="int" Name="dwSendTimeout" />
             <Param Type="int" Name="dwReceiveTimeout" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WinHttpTimeFromSystemTime">
             <Param Type="SYSTEMTIME*" Name="pst" />
             <Param Type="LPWSTR" Name="pwszTime" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WinHttpTimeToSystemTime">
             <Param Type="LPCWSTR" Name="pwszTime" />
             <Param Type="SYSTEMTIME*" Name="pst" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="WinHttpWriteData">
             <Param Type="HINTERNET" Name="hRequest" />
-            <Param Type="LPCVOID" Name="lpBuffer" />
+            <Param Type="LPCVOID" Name="lpBuffer" Length="dwNumberOfBytesToWrite" />
             <Param Type="DWORD" Name="dwNumberOfBytesToWrite" />
             <Param Type="LPDWORD" Name="lpdwNumberOfBytesWritten" />
             <Return Type="BOOL" />
-            <Success Return="NotEqual" Value="0" />
         </Api>
+
+        <!-- WebSocket -->
+        <Category Name="Internet/Windows HTTP Services (WinHTTP)/WebSocket" />
+        <Api Name="WinHttpWebSocketClose">
+            <Param Type="HINTERNET" Name="hWebSocket" />
+            <Param Type="WINHTTP_WEB_SOCKET_CLOSE_STATUS" Name="usStatus" />
+            <Param Type="PVOID" Name="pvReason" Length="dwReasonLength" />
+            <Param Type="DWORD" Name="dwReasonLength" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="WinHttpWebSocketCompleteUpgrade">
+            <Param Type="HINTERNET" Name="hRequest" />
+            <Param Type="DWORD_PTR" Name="pContext" />
+            <Return Type="HINTERNET" />
+        </Api>
+        <Api Name="WinHttpWebSocketQueryCloseStatus">
+            <Param Type="HINTERNET" Name="hWebSocket" />
+            <Param Type="WINHTTP_WEB_SOCKET_CLOSE_STATUS*" Name="pusStatus" />
+            <Param Type="PVOID" Name="pvReason" PostLength="pdwReasonLengthConsumed" />
+            <Param Type="DWORD" Name="dwReasonLength" />
+            <Param Type="DWORD*" Name="pdwReasonLengthConsumed" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="WinHttpWebSocketReceive">
+            <Param Type="HINTERNET" Name="hWebSocket" />
+            <Param Type="PVOID" Name="pvBuffer" PostLength="pdwBytesRead" />
+            <Param Type="DWORD" Name="dwBufferLength" />
+            <Param Type="DWORD*" Name="pdwBytesRead" />
+            <Param Type="WINHTTP_WEB_SOCKET_BUFFER_TYPE*" Name="peBufferType" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="WinHttpWebSocketSend">
+            <Param Type="HINTERNET" Name="hWebSocket" />
+            <Param Type="WINHTTP_WEB_SOCKET_BUFFER_TYPE" Name="eBufferType" />
+            <Param Type="PVOID" Name="pvBuffer" Length="dwBufferLength" />
+            <Param Type="DWORD" Name="dwBufferLength" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="WinHttpWebSocketShutdown">
+            <Param Type="HINTERNET" Name="hWebSocket" />
+            <Param Type="WINHTTP_WEB_SOCKET_CLOSE_STATUS" Name="usStatus" />
+            <Param Type="PVOID" Name="pvReason" Length="dwReasonLength" />
+            <Param Type="DWORD" Name="dwReasonLength" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+
     </Module>
 </ApiMonitor>

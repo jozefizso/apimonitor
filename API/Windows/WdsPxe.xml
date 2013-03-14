@@ -1,6 +1,6 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
@@ -102,67 +102,149 @@
             </Enum>
         </Variable>
 
+        <!-- PXE_DHCPV6_OPTION -->
+        <Variable Name="PXE_DHCPV6_OPTION" Type="Struct" Pack="1">
+            <Field Type="WORD"          Name="OptionCode" />
+            <Field Type="WORD"          Name="DataLength" />
+            <Field Type="BYTE [1]"      Name="Data" Count="DataLength" />
+        </Variable>
+        <Variable Name="PXE_DHCPV6_OPTION [1]" Type="Array" Base="PXE_DHCPV6_OPTION" Count="1" />
+
+        <!-- PXE_DHCPV6_RELAY_MESSAGE -->
+        <Variable Name="PXE_DHCPV6_RELAY_MESSAGE" Type="Struct" Pack="1">
+            <Field Type="BYTE"                      Name="MessageType" />
+            <Field Type="BYTE"                      Name="HopCount" />
+            <Field Type="BYTE [16]"                 Name="LinkAddress" />
+            <Field Type="BYTE [16]"                 Name="PeerAddress" />
+            <Field Type="PXE_DHCPV6_OPTION [1]"     Name="Options" />
+        </Variable>
+        <Variable Name="PPXE_DHCPV6_RELAY_MESSAGE" Type="Pointer" Base="PXE_DHCPV6_RELAY_MESSAGE" />
+
+        <!-- PXE_DHCPV6_NESTED_RELAY_MESSAGE -->
+        <Variable Name="PXE_DHCPV6_NESTED_RELAY_MESSAGE" Type="Struct">
+            <Field Type="PPXE_DHCPV6_RELAY_MESSAGE"     Name="pRelayMessage" Length="cbRelayMessage" />
+            <Field Type="ULONG"                         Name="cbRelayMessage" />
+            <Field Type="PVOID"                         Name="pInterfaceIdOption" Length="cbInterfaceIdOption" />
+            <Field Type="WORD"                          Name="cbInterfaceIdOption" />
+        </Variable>
+        <Variable Name="PPXE_DHCPV6_NESTED_RELAY_MESSAGE" Type="Pointer" Base="PXE_DHCPV6_NESTED_RELAY_MESSAGE" />
+
         <!-- Windows Deployment Services -->
         <Category Name="System Administration/Windows Deployment Services (WDS)/Server" />
         <Api Name="PxeAsyncRecvDone">
             <Param Type="HANDLE" Name="hClientRequest" />
             <Param Type="PXE_BOOT_ACTION" Name="Action" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PxeDhcpAppendOption">
-            <Param Type="PVOID" Name="pReplyPacket" />
+            <Param Type="PVOID" Name="pReplyPacket" PostLength="puReplyPacketLen" />
             <Param Type="ULONG" Name="uMaxReplyPacketLen" />
             <Param Type="PULONG" Name="puReplyPacketLen" />
             <Param Type="BYTE" Name="bOption" />
             <Param Type="BYTE" Name="bOptionLen" />
-            <Param Type="PVOID" Name="pValue" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Param Type="PVOID" Name="pValue" Length="bOptionLen" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PxeDhcpv6AppendOption">
+            <Param Type="PVOID" Name="pReply" PostLength="pcbReplyUsed" />
+            <Param Type="ULONG" Name="cbReply" />
+            <Param Type="PULONG" Name="pcbReplyUsed" />
+            <Param Type="WORD" Name="wOptionType" />
+            <Param Type="WORD" Name="cbOption" />
+            <Param Type="PVOID" Name="pOption" Length="cbOption" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PxeDhcpv6AppendOptionRaw">
+            <Param Type="PVOID" Name="pReply" PostLength="pcbReplyUsed" />
+            <Param Type="ULONG" Name="cbReply" />
+            <Param Type="PULONG" Name="pcbReplyUsed" />
+            <Param Type="USHORT" Name="cbBuffer" />
+            <Param Type="PVOID" Name="pBuffer" Length="cbBuffer" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PxeDhcpGetOptionValue">
-            <Param Type="PVOID" Name="pPacket" />
+            <Param Type="PVOID" Name="pPacket" Length="uPacketLen" />
             <Param Type="ULONG" Name="uPacketLen" />
             <Param Type="ULONG" Name="uInstance" />
             <Param Type="BYTE" Name="bOption" />
+            <!-- TODO: pbOptionLen -->
             <Param Type="PBYTE" Name="pbOptionLen" />
             <Param Type="PVOID*" Name="ppOptionValue" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PxeDhcpv6GetOptionValue">
+            <Param Type="PVOID" Name="pPacket" Length="uPacketLen" />
+            <Param Type="ULONG" Name="uPacketLen" />
+            <Param Type="ULONG" Name="uInstance" />
+            <Param Type="WORD" Name="wOption" />
+            <!-- TODO: pbOptionLen -->
+            <Param Type="PWORD" Name="pwOptionLen" />
+            <Param Type="PVOID*" Name="ppOptionValue" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PxeDhcpGetVendorOptionValue">
-            <Param Type="PVOID" Name="pPacket" />
+            <Param Type="PVOID" Name="pPacket" Length="uPacketLen" />
             <Param Type="ULONG" Name="uPacketLen" />
             <Param Type="BYTE" Name="bOption" />
             <Param Type="ULONG" Name="uInstance" />
+            <!-- TODO: pbOptionLen -->
             <Param Type="PBYTE" Name="pbOptionLen" />
             <Param Type="PVOID*" Name="ppOptionValue" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PxeDhcpv6GetVendorOptionValue">
+            <Param Type="PVOID" Name="pPacket" Length="uPacketLen" />
+            <Param Type="ULONG" Name="uPacketLen" />
+            <Param Type="DWORD" Name="dwEnterpriseNumber" />
+            <Param Type="WORD" Name="wOption" />
+            <Param Type="ULONG" Name="uInstance" />
+            <!-- TODO: pbOptionLen -->
+            <Param Type="PWORD" Name="pwOptionLen" />
+            <Param Type="PVOID*" Name="ppOptionValue" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PxeDhcpInitialize">
-            <Param Type="PVOID" Name="pRecvPacket" />
+            <Param Type="PVOID" Name="pRecvPacket" Length="uRecvPacketLen" />
             <Param Type="ULONG" Name="uRecvPacketLen" />
-            <Param Type="PVOID" Name="pReplyPacket" />
+            <Param Type="PVOID" Name="pReplyPacket" PostLength="puReplyPacketLen" />
             <Param Type="ULONG" Name="uMaxReplyPacketLen" />
             <Param Type="PULONG" Name="puReplyPacketLen" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PxeDhcpv6Initialize">
+            <Param Type="PVOID" Name="pRequest" Length="cbRequest" />
+            <Param Type="ULONG" Name="cbRequest" />
+            <Param Type="PVOID" Name="pReply" PostLength="pcbReplyUsed" />
+            <Param Type="ULONG" Name="cbReply" />
+            <Param Type="PULONG" Name="pcbReplyUsed" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PxeDhcpIsValid">
-            <Param Type="PVOID" Name="pPacket" />
+            <Param Type="PVOID" Name="pPacket" Length="uPacketLen" />
             <Param Type="ULONG" Name="uPacketLen" />
             <Param Type="BOOL" Name="bRequestPacket" />
             <Param Type="PBOOL" Name="pbPxeOptionPresent" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PxeDhcpv6IsValid">
+            <Param Type="PVOID" Name="pPacket" Length="uPacketLen" />
+            <Param Type="ULONG" Name="uPacketLen" />
+            <Param Type="BOOL" Name="bRequestPacket" />
+            <Param Type="PBOOL" Name="pbPxeOptionPresent" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PxeGetServerInfo">
             <Param Type="PXE_GSI_TYPE" Name="uInfoType" />
-            <Param Type="PVOID" Name="pBuffer" />
+            <Param Type="PVOID" Name="pBuffer" Length="uBufferLen" />
             <Param Type="ULONG" Name="uBufferLen" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PxeGetServerInfoEx">
+            <Param Type="PXE_GSI_TYPE" Name="uInfoType" />
+            <Param Type="PVOID" Name="pBuffer" PostLength="puBufferUsed" />
+            <Param Type="ULONG" Name="uBufferLen" />
+            <Param Type="PULONG" Name="puBufferUsed" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PxePacketAllocate">
             <Param Type="HANDLE" Name="hProvider" />
@@ -171,84 +253,96 @@
             <Return Type="PVOID" />
             <Success Return="NotEqual" Value="0" />
         </Api>
-        <Api Name="PxeSendReply">
-            <Param Type="HANDLE" Name="hClientRequest" />
-            <Param Type="PVOID" Name="pPacket" />
-            <Param Type="ULONG" Name="uPacketLen" />
-            <Param Type="PXE_ADDRESS*" Name="pAddress" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
-        </Api>
         <Api Name="PxePacketFree">
             <Param Type="HANDLE" Name="hProvider" />
             <Param Type="HANDLE" Name="hClientRequest" />
             <Param Type="PVOID" Name="pPacket" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PxeProviderEnumClose">
             <Param Type="HANDLE" Name="hEnum" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PxeProviderEnumFirst">
             <Param Type="HANDLE*" Name="phEnum" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PxeProviderEnumNext">
             <Param Type="HANDLE" Name="hEnum" />
             <Param Type="PPXE_PROVIDER*" Name="ppProvider" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PxeProviderFreeInfo">
             <Param Type="PPXE_PROVIDER" Name="pProvider" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PxeProviderQueryIndex">
             <Param Type="LPCWSTR" Name="pszProviderName" />
             <Param Type="PULONG" Name="puIndex" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
+        <!-- PxeProviderRecvRequest is a callback function -->
         <Api Name="PxeProviderRegister">
             <Param Type="LPCWSTR" Name="pszProviderName" />
             <Param Type="LPCWSTR" Name="pszModulePath" />
             <Param Type="PXE_REG_INDEX" Name="Index" />
             <Param Type="BOOL" Name="bIsCritical" />
             <Param Type="PHKEY" Name="phProviderKey" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
+        <!-- PxeProviderServiceControl is a callback function -->
         <Api Name="PxeProviderSetAttribute">
             <Param Type="HANDLE" Name="hProvider" />
             <Param Type="PXE_PROVIDER_ATTRIBUTE" Name="Attribute" />
             <Param Type="PVOID" Name="pParameterBuffer" Length="uParamLen" />
             <Param Type="ULONG" Name="uParamLen" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
+        <!-- PxeProviderShutdown is a callback function -->
         <Api Name="PxeProviderUnRegister">
             <Param Type="LPCWSTR" Name="pszProviderName" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PxeRegisterCallback">
             <Param Type="HANDLE" Name="hProvider" />
             <Param Type="PXE_CALLBACK_TYPE" Name="CallbackType" />
             <Param Type="PVOID" Name="pCallbackFunction" />
             <Param Type="PVOID" Name="pContext" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PxeSendReply">
+            <Param Type="HANDLE" Name="hClientRequest" />
+            <Param Type="PVOID" Name="pPacket" Length="uPacketLen" />
+            <Param Type="ULONG" Name="uPacketLen" />
+            <Param Type="PXE_ADDRESS*" Name="pAddress" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
         <Api Name="PxeTrace" VarArgs="True">
             <Param Type="HANDLE" Name="hProvider" />
             <Param Type="PXE_SEVERITY" Name="Severity" />
             <Param Type="LPCWSTR" Name="pszFormat" />
-            <Return Type="DWORD" />
-            <Success Return="Equal" Value="0" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PxeDhcpv6ParseRelayForw">
+            <Param Type="PVOID" Name="pRelayForwPacket" />
+            <Param Type="ULONG" Name="uRelayForwPacketLen" />
+            <Param Type="PPXE_DHCPV6_NESTED_RELAY_MESSAGE" Name="pRelayMessages" PostCount="pnRelayMessages" />
+            <Param Type="ULONG" Name="nRelayMessages" />
+            <Param Type="PULONG" Name="pnRelayMessages" />
+            <Param Type="PBYTE*" Name="ppInnerPacket" />
+            <!-- TODO: pcbInnerPacket -->
+            <Param Type="PULONG" Name="pcbInnerPacket" />
+            <Return Type="[ERROR_CODE]" />
+        </Api>
+        <Api Name="PxeDhcpv6CreateRelayRepl">
+            <Param Type="PPXE_DHCPV6_NESTED_RELAY_MESSAGE" Name="pRelayMessages" Count="nRelayMessages" />
+            <Param Type="ULONG" Name="nRelayMessages" />
+            <Param Type="PBYTE" Name="pInnerPacket" Length="cbInnerPacket" />
+            <Param Type="ULONG" Name="cbInnerPacket" />
+            <Param Type="PVOID" Name="pReplyBuffer" PostLength="pcbReplyBuffer" />
+            <Param Type="ULONG" Name="cbReplyBuffer" />
+            <Param Type="PULONG" Name="pcbReplyBuffer" />
+            <Return Type="[ERROR_CODE]" />
         </Api>
     </Module>
 </ApiMonitor>

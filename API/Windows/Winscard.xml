@@ -1,14 +1,14 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
-    <Include Filename="Headers\windows.h.xml" />
-    <Module Name="Winscard.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
+    <Include Filename="Headers\scard.h.xml" />
+    <Module Name="WinSCard.dll" CallingConvention="STDCALL" ErrorFunc="GetLastError" OnlineHelp="MSDN">
         
         <!-- Variables -->
-        <Variable Name="BYTE [36]" Type="Array" Base="BYTE" Count="36"/>
+        <Variable Name="BYTE [36]" Type="Array" Base="BYTE" Count="36" />
 
         <!-- [SCARD_STATE] -->
         <Variable Name="[SCARD_STATE]" Type="Alias" Base="DWORD">
@@ -65,7 +65,16 @@
                 <Set Name="SCARD_SCOPE_SYSTEM"          Value="2" />
             </Enum>
         </Variable>
-        
+
+        <!-- [SCARD_AUDIT_CHV] -->
+        <Variable Name="[SCARD_AUDIT_CHV]" Type="Alias" Base="DWORD">
+            <Display Name="DWORD" />
+            <Enum>
+                <Set Name="SCARD_AUDIT_CHV_FAILURE"     Value="0x0" />
+                <Set Name="SCARD_AUDIT_CHV_SUCCESS"     Value="0x1" />
+            </Enum>
+        </Variable>
+
         <!-- Authentication -->
         <Category Name="Security and Identity/Authentication/Smart Card" />
         <Api Name="SCardAccessStartedEvent">
@@ -76,19 +85,22 @@
             <Param Type="SCARDCONTEXT" Name="hContext" />
             <Param Type="LPCTSTR" Name="szReaderName" />
             <Param Type="LPCTSTR" Name="szGroupName" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
+        </Api>
+        <Api Name="SCardAudit">
+            <Param Type="SCARDCONTEXT" Name="hContext" />
+            <Param Type="[SCARD_AUDIT_CHV]" Name="dwEvent" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardBeginTransaction">
             <Param Type="SCARDHANDLE" Name="hCard" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardCancel">
             <Param Type="SCARDCONTEXT" Name="hContext" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
+        <!-- TODO: Decode dwShareMode, dwPreferredProtocols etc. Look at other API's too -->
         <Api Name="SCardConnect" BothCharset="True">
             <Param Type="SCARDCONTEXT" Name="hContext" />
             <Param Type="LPCTSTR" Name="szReader" />
@@ -96,8 +108,7 @@
             <Param Type="DWORD" Name="dwPreferredProtocols" />
             <Param Type="LPSCARDHANDLE" Name="phCard" />
             <Param Type="LPDWORD" Name="pdwActiveProtocol" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardControl">
             <Param Type="SCARDHANDLE" Name="hCard" />
@@ -107,60 +118,51 @@
             <Param Type="LPVOID" Name="lpOutBuffer" />
             <Param Type="DWORD" Name="nOutBufferSize" />
             <Param Type="LPDWORD" Name="lpBytesReturned" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardDisconnect">
             <Param Type="SCARDHANDLE" Name="hCard" />
             <Param Type="DWORD" Name="dwDisposition" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardEndTransaction">
             <Param Type="SCARDHANDLE" Name="hCard" />
             <Param Type="DWORD" Name="dwDisposition" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardEstablishContext">
             <Param Type="[SCardScope]" Name="dwScope" />
             <Param Type="LPCVOID" Name="pvReserved1" />
             <Param Type="LPCVOID" Name="pvReserved2" />
             <Param Type="LPSCARDCONTEXT" Name="phContext" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardForgetCardType" BothCharset="True">
             <Param Type="SCARDCONTEXT" Name="hContext" />
             <Param Type="LPCTSTR" Name="szCardName" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardForgetReader" BothCharset="True">
             <Param Type="SCARDCONTEXT" Name="hContext" />
             <Param Type="LPCTSTR" Name="szReaderName" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardForgetReaderGroup" BothCharset="True">
             <Param Type="SCARDCONTEXT" Name="hContext" />
             <Param Type="LPCTSTR" Name="szGroupName" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardFreeMemory">
             <Param Type="SCARDCONTEXT" Name="hContext" />
             <Param Type="LPCVOID" Name="pvMem" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardGetAttrib">
             <Param Type="SCARDHANDLE" Name="hCard" />
             <Param Type="DWORD" Name="dwAttrId" />
             <Param Type="LPBYTE" Name="pbAttr" />
             <Param Type="LPDWORD" Name="pcbAttrLen" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardGetCardTypeProviderName" BothCharset="True">
             <Param Type="SCARDCONTEXT" Name="hContext" />
@@ -168,109 +170,122 @@
             <Param Type="DWORD" Name="dwProviderId" />
             <Param Type="LPTSTR" Name="szProvider" />
             <Param Type="LPDWORD*" Name="pcchProvider" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
+        </Api>
+        <Api Name="SCardGetDeviceTypeId" BothCharset="True">
+            <Param Type="SCARDCONTEXT" Name="hContext" />
+            <Param Type="LPCTSTR" Name="szReaderName" />
+            <Param Type="LPDWORD" Name="pdwDeviceTypeId" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardGetProviderId" BothCharset="True">
             <Param Type="SCARDCONTEXT" Name="hContext" />
             <Param Type="LPCTSTR" Name="szCard" />
             <Param Type="LPGUID" Name="pguidProviderId" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
+        </Api>
+        <Api Name="SCardGetReaderDeviceInstanceId" BothCharset="True">
+            <Param Type="SCARDCONTEXT" Name="hContext" />
+            <Param Type="LPCTSTR" Name="szReaderName" />
+            <Param Type="LPTSTR" Name="szDeviceInstanceId" />
+            <Param Type="LPDWORD" Name="cchDeviceInstanceId" />
+            <Return Type="[SCARD_ERROR]" />
+        </Api>
+        <Api Name="SCardGetReaderIcon" BothCharset="True">
+            <Param Type="SCARDCONTEXT" Name="hContext" />
+            <Param Type="LPCTSTR" Name="szReaderName" />
+            <Param Type="LPBYTE" Name="pbIcon" />
+            <Param Type="LPDWORD" Name="pcbIcon" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardGetStatusChange" BothCharset="True">
             <Param Type="SCARDCONTEXT" Name="hContext" />
             <Param Type="DWORD" Name="dwTimeout" />
-            <Param Type="LPSCARD_READERSTATE" Name="rgReaderStates" />
+            <Param Type="LPSCARD_READERSTATE" Name="rgReaderStates" Count="cReaders" />
             <Param Type="DWORD" Name="cReaders" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardGetTransmitCount">
             <Param Type="SCARDHANDLE" Name="hCard" />
             <Param Type="LPDWORD" Name="pcTransmitCount" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardIntroduceCardType" BothCharset="True">
             <Param Type="SCARDCONTEXT" Name="hContext" />
             <Param Type="LPCTSTR" Name="szCardName" />
             <Param Type="LPCGUID" Name="pguidPrimaryProvider" />
-            <Param Type="LPCGUID" Name="rgguidInterfaces" />
+            <Param Type="LPCGUID" Name="rgguidInterfaces" Count="dwInterfaceCount" />
             <Param Type="DWORD" Name="dwInterfaceCount" />
             <Param Type="LPCBYTE" Name="pbAtr" />
             <Param Type="LPCBYTE" Name="pbAtrMask" />
             <Param Type="DWORD" Name="cbAtrLen" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardIntroduceReader" BothCharset="True">
             <Param Type="SCARDCONTEXT" Name="hContext" />
             <Param Type="LPCTSTR" Name="szReaderName" />
             <Param Type="LPCTSTR" Name="szDeviceName" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardIntroduceReaderGroup" BothCharset="True">
             <Param Type="SCARDCONTEXT" Name="hContext" />
             <Param Type="LPCTSTR" Name="szGroupName" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardIsValidContext">
             <Param Type="SCARDCONTEXT" Name="hContext" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardListCards" BothCharset="True">
             <Param Type="SCARDCONTEXT" Name="hContext" />
             <Param Type="LPCBYTE" Name="pbAtr" />
-            <Param Type="LPCGUID" Name="rgguidInterfaces" />
+            <Param Type="LPCGUID" Name="rgguidInterfaces" Count="cguidInterfaceCount" />
             <Param Type="DWORD" Name="cguidInterfaceCount" />
             <Param Type="LPTSTR" Name="mszCards" />
             <Param Type="LPDWORD" Name="pcchCards" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardListInterfaces" BothCharset="True">
             <Param Type="SCARDCONTEXT" Name="hContext" />
             <Param Type="LPCTSTR" Name="szCard" />
             <Param Type="LPGUID" Name="pguidInterfaces" />
             <Param Type="LPDWORD" Name="pcguidInterfaces" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardListReaderGroups" BothCharset="True">
             <Param Type="SCARDCONTEXT" Name="hContext" />
             <Param Type="LPTSTR" Name="mszGroups" />
             <Param Type="LPDWORD" Name="pcchGroups" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardListReaders" BothCharset="True">
             <Param Type="SCARDCONTEXT" Name="hContext" />
             <Param Type="LPCTSTR" Name="mszGroups" />
             <Param Type="LPTSTR" Name="mszReaders" />
             <Param Type="LPDWORD" Name="pcchReaders" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
+        </Api>
+        <Api Name="SCardListReadersWithDeviceInstanceId" BothCharset="True">
+            <Param Type="SCARDCONTEXT" Name="hContext" />
+            <Param Type="LPCTSTR" Name="szDeviceInstanceId" />
+            <Param Type="LPTSTR" Name="mszReaders" />
+            <Param Type="LPDWORD" Name="pcchReaders" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardLocateCards" BothCharset="True">
             <Param Type="SCARDCONTEXT" Name="hContext" />
             <Param Type="LPCTSTR" Name="mszCards" />
-            <Param Type="LPSCARD_READERSTATE" Name="rgReaderStates" />
+            <Param Type="LPSCARD_READERSTATE" Name="rgReaderStates" Count="cReaders" />
             <Param Type="DWORD" Name="cReaders" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardLocateCardsByATR" BothCharset="True">
             <Param Type="SCARDCONTEXT" Name="hContext" />
-            <Param Type="LPSCARD_ATRMASK" Name="rgAtrMasks" />
+            <Param Type="LPSCARD_ATRMASK" Name="rgAtrMasks" Count="cAtrs" />
             <Param Type="DWORD" Name="cAtrs" />
-            <Param Type="LPSCARD_READERSTATE" Name="rgReaderStates" />
+            <Param Type="LPSCARD_READERSTATE" Name="rgReaderStates" Count="cReaders" />
             <Param Type="DWORD" Name="cReaders" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardReadCache" BothCharset="True">
             <Param Type="SCARDCONTEXT" Name="hContext" />
@@ -279,8 +294,7 @@
             <Param Type="LPTSTR" Name="LookupName" />
             <Param Type="PBYTE" Name="Data" />
             <Param Type="DWORD*" Name="DataLen" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardReconnect">
             <Param Type="SCARDHANDLE" Name="hCard" />
@@ -288,13 +302,11 @@
             <Param Type="DWORD" Name="dwPreferredProtocols" />
             <Param Type="DWORD" Name="dwInitialization" />
             <Param Type="LPDWORD" Name="pdwActiveProtocol" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardReleaseContext">
             <Param Type="SCARDCONTEXT" Name="hContext" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardReleaseStartedEvent">
             <Return Type="void" />
@@ -303,24 +315,29 @@
             <Param Type="SCARDCONTEXT" Name="hContext" />
             <Param Type="LPCTSTR" Name="szReaderName" />
             <Param Type="LPCTSTR" Name="szGroupName" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardSetAttrib">
             <Param Type="SCARDHANDLE" Name="hCard" />
             <Param Type="DWORD" Name="dwAttrId" />
             <Param Type="LPCBYTE" Name="pbAttr" />
             <Param Type="DWORD" Name="cbAttrLen" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardSetCardTypeProviderName" BothCharset="True">
             <Param Type="SCARDCONTEXT" Name="hContext" />
             <Param Type="LPCTSTR" Name="szCardName" />
             <Param Type="DWORD" Name="dwProviderId" />
             <Param Type="LPCTSTR" Name="szProvider" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
+        </Api>
+        <Api Name="SCardState">
+            <Param Type="SCARDHANDLE" Name="hCard" />
+            <Param Type="LPDWORD" Name="pdwState" />
+            <Param Type="LPDWORD" Name="pdwProtocol" />
+            <Param Type="LPBYTE" Name="pbAtr" />
+            <Param Type="LPDWORD" Name="pcbAtrLen" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardStatus" BothCharset="True">
             <Param Type="SCARDHANDLE" Name="hCard" />
@@ -330,8 +347,7 @@
             <Param Type="LPDWORD" Name="pdwProtocol" />
             <Param Type="LPBYTE" Name="pbAtr" />
             <Param Type="LPDWORD" Name="pcbAtrLen" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardTransmit">
             <Param Type="SCARDHANDLE" Name="hCard" />
@@ -341,8 +357,7 @@
             <Param Type="LPSCARD_IO_REQUEST" Name="pioRecvPci" />
             <Param Type="LPBYTE" Name="pbRecvBuffer" />
             <Param Type="LPDWORD" Name="pcbRecvLength" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
         <Api Name="SCardWriteCache" BothCharset="True">
             <Param Type="SCARDCONTEXT" Name="hContext" />
@@ -351,8 +366,7 @@
             <Param Type="LPTSTR" Name="LookupName" />
             <Param Type="PBYTE" Name="Data" />
             <Param Type="DWORD" Name="DataLen" />
-            <Return Type="LONG" />
-            <Success Return="NotEqual" Value="0" />
+            <Return Type="[SCARD_ERROR]" />
         </Api>
     </Module>
 </ApiMonitor>

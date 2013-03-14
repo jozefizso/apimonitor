@@ -1,23 +1,56 @@
 <!--
     API Monitor Definitions
-    (c) 2010-2011, Rohitab Batra <rohitab@rohitab.com>
+    (c) 2010-2012, Rohitab Batra <rohitab@rohitab.com>
     http://www.rohitab.com/apimonitor/
 -->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
     <Include Filename="Headers\cryptography.h.xml" />
     <Include Filename="Headers\rpc.h.xml" />
-    <Module Name="Rpcrt4.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
+    <Module Name="RpcRT4.dll" CallingConvention="STDCALL" ErrorFunc="HRESULT" OnlineHelp="MSDN">
         
         <!-- Variables -->
-        <Variable Name="handle_t"                   Type="Alias"    Base="LPVOID" />
-        <Variable Name="handle_t*"                  Type="Pointer"  Base="handle_t" />
-        <Variable Name="MIDL_ES_READ"               Type="Alias"    Base="LPVOID" />
-        <Variable Name="MIDL_ES_ALLOC"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="MIDL_ES_WRITE"              Type="Alias"    Base="LPVOID" />
-        <Variable Name="ULONG_PTR [5]"              Type="Array"    Base="ULONG_PTR" Count="5" />
+        <Variable Name="handle_t"                               Type="Alias"    Base="LPVOID" />
+        <Variable Name="handle_t*"                              Type="Pointer"  Base="handle_t" />
+        <Variable Name="MIDL_ES_READ"                           Type="Alias"    Base="LPVOID" />
+        <Variable Name="MIDL_ES_ALLOC"                          Type="Alias"    Base="LPVOID" />
+        <Variable Name="MIDL_ES_WRITE"                          Type="Alias"    Base="LPVOID" />
+        <Variable Name="RPC_INTERFACE_GROUP"                    Type="Alias"    Base="LPVOID" />
+        <Variable Name="PRPC_INTERFACE_GROUP"                   Type="Pointer"  Base="RPC_INTERFACE_GROUP" />
+        <Variable Name="RPC_INTERFACE_GROUP_IDLE_CALLBACK_FN"   Type="Alias"    Base="LPVOID" />
+        <Variable Name="const IPSFactoryBufferVtbl*"            Type="Alias"    Base="LPVOID" />
+        <Variable Name="const PCInterfaceProxyVtblList*"        Type="Alias"    Base="LPVOID" />
+        <Variable Name="const PCInterfaceStubVtblList*"         Type="Alias"    Base="LPVOID" />
+        <Variable Name="const PCInterfaceName*"                 Type="Alias"    Base="const char*" />
+        <Variable Name="const PIIDLookup"                       Type="Alias"    Base="LPVOID" />
+        <Variable Name="const IID**"                            Type="Alias"    Base="IID**" />
+        <Variable Name="PFORMAT_STRING"                         Type="Alias"    Base="LPBYTE" />
+        <Variable Name="NDR_RUNDOWN"                            Type="Alias"    Base="LPVOID" />
+        <Variable Name="NDR_CCONTEXT"                           Type="Alias"    Base="LPVOID" />
+        <Variable Name="NDR_CCONTEXT*"                          Type="Pointer"  Base="NDR_CCONTEXT" />
+        <Variable Name="RPC_FORWARD_FUNCTION*"                  Type="Alias"    Base="LPVOID" />
+        <Variable Name="RPC_ADDRESS_CHANGE_FN*"                 Type="Alias"    Base="LPVOID" />
+        <Variable Name="RPC_DISPATCH_FUNCTION*"                 Type="Alias"    Base="LPVOID" />
+        <Variable Name="I_RPC_MUTEX"                            Type="Alias"    Base="LPVOID" />
+        <Variable Name="I_RPC_MUTEX*"                           Type="Pointer"  Base="I_RPC_MUTEX" />
 
-        <Variable Name="[BOOL_int]" Type="Alias" Base="BOOL">
+        <!-- External Interfaces -->
+        <Variable Name="IRpcStubBuffer"                         Type="Interface" />
+        <Variable Name="IPSFactoryBuffer"                       Type="Interface" />
+
+        <!-- TODO: Structures (Complex) -->
+        <Variable Name="MIDL_STUB_MESSAGE*"                     Type="Alias"    Base="LPVOID" />
+        <Variable Name="PMIDL_STUB_MESSAGE"                     Type="Alias"    Base="LPVOID" />
+        <Variable Name="PMIDL_STUB_DESC"                        Type="Alias"    Base="LPVOID" />
+        <Variable Name="const MIDL_STUB_DESC*"                  Type="Alias"    Base="LPVOID" />
+        
+        <!-- Arrays -->
+        <Variable Name="void* [2]"                              Type="Array"    Base="void*"        Count="2" />
+        <Variable Name="UINT_PTR [3]"                           Type="Array"    Base="UINT_PTR"     Count="3" />
+        <Variable Name="ULONG_PTR [5]"                          Type="Array"    Base="ULONG_PTR"    Count="5" />
+
+        <!-- [BOOL|int] -->
+        <Variable Name="[BOOL|int]" Type="Alias" Base="BOOL">
             <Display Name="int" />
         </Variable>
 
@@ -44,6 +77,7 @@
         </Variable>
         <Variable Name="NDR_USER_MARSHAL_INFO*" Type="Pointer" Base="NDR_USER_MARSHAL_INFO" />
 
+        <!-- [BindingOptions] -->
         <Variable Name="[BindingOptions]" Type="Alias" Base="unsigned long">
             <Display Name="unsigned long" />
             <Enum>
@@ -57,7 +91,8 @@
                 <Set Name="RPC_C_OPT_UNIQUE_BINDING"        Value="11" />
             </Enum>
         </Variable>
-        
+
+        <!-- [InterfaceRegistrationFlags] -->
         <Variable Name="[InterfaceRegistrationFlags]" Type="Alias" Base="unsigned int">
             <Display Name="unsigned int" />
             <Flag>
@@ -72,7 +107,8 @@
                 <Set Name="RPC_IF_ASYNC_CALLBACK"               Value="0x0100" />
             </Flag>
         </Variable>
-        
+
+        <!-- MIDL_ES_CODE -->
         <Variable Name="MIDL_ES_CODE" Type="Alias" Base="UINT">
             <Enum>
                 <Set Name="MES_ENCODE"          Value="0" />
@@ -80,7 +116,8 @@
                 <Set Name="MES_ENCODE_NDR64"    Value="2" />
             </Enum>
         </Variable>
-        
+
+        <!-- MIDL_ES_HANDLE_STYLE -->
         <Variable Name="MIDL_ES_HANDLE_STYLE" Type="Alias" Base="unsigned long">
             <Display Name="unsigned long" />
             <Enum>
@@ -89,14 +126,255 @@
                 <Set Name="MES_DYNAMIC_BUFFER_HANDLE"   Value="2" />
             </Enum>
         </Variable>
-        
+
+        <!-- RPC_INTERFACE_TEMPLATE -->
+        <Variable Name="RPC_INTERFACE_TEMPLATE" Type="Struct">
+            <Field Type="unsigned long"         Name="Version" />
+            <Field Type="RPC_IF_HANDLE"         Name="IfSpec" />
+            <Field Type="UUID*"                 Name="MgrTypeUuid" />
+            <Field Type="RPC_MGR_EPV*"          Name="MgrEpv" />
+            <Field Type="unsigned int"          Name="Flags" />
+            <Field Type="unsigned int"          Name="MaxCalls" />
+            <Field Type="unsigned int"          Name="MaxRpcSize" />
+            <Field Type="RPC_IF_CALLBACK_FN*"   Name="IfCallback" />
+            <Field Type="UUID_VECTOR*"          Name="UuidVector" />
+            <Field Type="RPC_TSTR"              Name="Annotation" />
+            <Field Type="void*"                 Name="SecurityDescriptor" />
+        </Variable>
+        <Variable Name="RPC_INTERFACE_TEMPLATE*" Type="Pointer" Base="RPC_INTERFACE_TEMPLATE" />
+
+        <!-- RPC_ENDPOINT_TEMPLATE -->
+        <Variable Name="RPC_ENDPOINT_TEMPLATE" Type="Struct">
+            <Field Type="unsigned long"     Name="Version" />
+            <Field Type="RPC_TSTR"          Name="ProtSeq" />
+            <Field Type="RPC_TSTR"          Name="Endpoint" />
+            <Field Type="void*"             Name="SecurityDescriptor" />
+            <Field Type="unsigned long"     Name="Backlog" />
+        </Variable>
+        <Variable Name="RPC_ENDPOINT_TEMPLATE*" Type="Pointer" Base="RPC_ENDPOINT_TEMPLATE" />
+
+        <!-- CLIENT_CALL_RETURN -->
+        <Variable Name="CLIENT_CALL_RETURN" Type="Union">
+            <Field Type="void*"     Name="Pointer" />
+            <Field Type="LONG_PTR"  Name="Simple" />
+        </Variable>
+
+        <!-- ProxyFileInfo -->
+        <Variable Name="ProxyFileInfo" Type="Struct">
+            <Field Type="const PCInterfaceProxyVtblList*"       Name="pProxyVtblList" />
+            <Field Type="const PCInterfaceStubVtblList*"        Name="pStubVtblList" />
+            <Field Type="const PCInterfaceName*"                Name="pNamesArray" />
+            <Field Type="const IID**"                           Name="pDelegatedIIDs" />
+            <Field Type="const PIIDLookup"                      Name="pIIDLookupRtn" />
+            <Field Type="unsigned short"                        Name="TableSize" />
+            <Field Type="unsigned short"                        Name="TableVersion" />
+            <Field Type="const IID**"                           Name="pAsyncIIDLookup" />
+            <Field Type="LONG_PTR"                              Name="Filler2" />
+            <Field Type="LONG_PTR"                              Name="Filler3" />
+            <Field Type="LONG_PTR"                              Name="Filler4" />
+        </Variable>
+        <Variable Name="ProxyFileInfo*"         Type="Pointer" Base="ProxyFileInfo" />
+        <Variable Name="const ProxyFileInfo**"  Type="Pointer" Base="ProxyFileInfo*" />
+
+        <!-- CStdPSFactoryBuffer -->
+        <Variable Name="CStdPSFactoryBuffer" Type="Struct">
+            <Field Type="const IPSFactoryBufferVtbl*"   Name="lpVtbl" />
+            <Field Type="long"                          Name="RefCount" />
+            <Field Type="const ProxyFileInfo**"         Name="pProxyFileList" />
+            <Field Type="long"                          Name="Filler1" />
+        </Variable>
+        <Variable Name="CStdPSFactoryBuffer*" Type="Pointer" Base="CStdPSFactoryBuffer" />
+
+        <!-- [NDR_SCONTEXT_s] -->
+        <Variable Name="[NDR_SCONTEXT_s]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="void* [2]"     Name="pad" />
+            <Field Type="void*"         Name="userContext" />
+        </Variable>
+        <Variable Name="NDR_SCONTEXT" Type="Pointer" Base="[NDR_SCONTEXT_s]" />
+
+        <!-- RPC_MESSAGE -->
+        <Variable Name="RPC_MESSAGE" Type="Struct">
+            <Field Type="RPC_BINDING_HANDLE"        Name="Handle" />
+            <Field Type="unsigned long"             Name="DataRepresentation" />
+            <Field Type="void*"                     Name="Buffer" Length="BufferLength" />
+            <Field Type="unsigned int"              Name="BufferLength" />
+            <Field Type="unsigned int"              Name="ProcNum" />
+            <Field Type="PRPC_SYNTAX_IDENTIFIER"    Name="TransferSyntax" />
+            <Field Type="void*"                     Name="RpcInterfaceInformation" />
+            <Field Type="void*"                     Name="ReservedForRuntime" />
+            <Field Type="RPC_MGR_EPV*"              Name="ManagerEpv" />
+            <Field Type="void*"                     Name="ImportContext" />
+            <Field Type="unsigned long"             Name="RpcFlags" />
+        </Variable>
+        <Variable Name="RPC_MESSAGE*" Type="Pointer" Base="RPC_MESSAGE" />
+        <Variable Name="PRPC_MESSAGE" Type="Pointer" Base="RPC_MESSAGE" />
+
+        <!-- RPC_TRANSFER_SYNTAX -->
+        <Variable Name="RPC_TRANSFER_SYNTAX" Type="Struct">
+            <Field Type="UUID"              Name="Uuid" />
+            <Field Type="unsigned short"    Name="VersMajor" />
+            <Field Type="unsigned short"    Name="VersMinor" />
+        </Variable>
+        <Variable Name="RPC_TRANSFER_SYNTAX*" Type="Pointer" Base="RPC_TRANSFER_SYNTAX" />
+
+        <!-- RPC_DISPATCH_TABLE -->
+        <Variable Name="RPC_DISPATCH_TABLE" Type="Struct">
+            <Field Type="unsigned int"              Name="DispatchTableCount" />
+            <Field Type="RPC_DISPATCH_FUNCTION*"    Name="DispatchTable" Count="DispatchTableCount" />
+            <Field Type="LONG_PTR"                  Name="Reserved" />
+        </Variable>
+        <Variable Name="RPC_DISPATCH_TABLE*" Type="Pointer" Base="RPC_DISPATCH_TABLE" />
+        <Variable Name="PRPC_DISPATCH_TABLE" Type="Pointer" Base="RPC_DISPATCH_TABLE" />
+
+        <!-- RPC_PROTSEQ_ENDPOINT -->
+        <Variable Name="RPC_PROTSEQ_ENDPOINT" Type="Struct">
+            <Field Type="unsigned char*"    Name="RpcProtocolSequence" />
+            <Field Type="unsigned char*"    Name="Endpoint" />
+        </Variable>
+        <Variable Name="PRPC_PROTSEQ_ENDPOINT" Type="Pointer" Base="RPC_PROTSEQ_ENDPOINT" />
+
+        <!-- RPC_SERVER_INTERFACE -->
+        <Variable Name="RPC_SERVER_INTERFACE" Type="Struct">
+            <Field Type="unsigned int"              Name="Length" />
+            <Field Type="RPC_SYNTAX_IDENTIFIER"     Name="InterfaceId" />
+            <Field Type="RPC_SYNTAX_IDENTIFIER"     Name="TransferSyntax" />
+            <Field Type="PRPC_DISPATCH_TABLE"       Name="DispatchTable" />
+            <Field Type="unsigned int"              Name="RpcProtseqEndpointCount" />
+            <Field Type="PRPC_PROTSEQ_ENDPOINT"     Name="RpcProtseqEndpoint" Count="RpcProtseqEndpointCount" />
+            <Field Type="RPC_MGR_EPV*"              Name="DefaultManagerEpv" />
+            <Field Type="void const*"               Name="InterpreterInfo" />
+            <Field Type="unsigned int"              Name="Flags" />
+        </Variable>
+        <Variable Name="RPC_SERVER_INTERFACE*" Type="Pointer" Base="RPC_SERVER_INTERFACE" />
+
+        <!-- RPC_HTTP_REDIRECTOR_STAGE -->
+        <Variable Name="RPC_HTTP_REDIRECTOR_STAGE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="RPCHTTP_RS_REDIRECT"     Value="1" />
+                <Set Name="RPCHTTP_RS_ACCESS_1"     Value="2" />
+                <Set Name="RPCHTTP_RS_SESSION"      Value="3" />
+                <Set Name="RPCHTTP_RS_ACCESS_2"     Value="4" />
+                <Set Name="RPCHTTP_RS_INTERFACE"    Value="5" />
+            </Enum>
+        </Variable>
+
+        <!-- RDR_CALLOUT_STATE -->
+        <Variable Name="RDR_CALLOUT_STATE" Type="Struct">
+            <Field Type="RPC_STATUS"                    Name="LastError" />
+            <Field Type="void*"                         Name="LastEEInfo" />
+            <Field Type="RPC_HTTP_REDIRECTOR_STAGE"     Name="LastCalledStage" />
+            <Field Type="unsigned short*"               Name="ServerName" />
+            <Field Type="unsigned short*"               Name="ServerPort" />
+            <Field Type="unsigned short*"               Name="RemoteUser" />
+            <Field Type="unsigned short*"               Name="AuthType" />
+            <Field Type="unsigned char"                 Name="ResourceTypePresent" />
+            <Field Type="unsigned char"                 Name="SessionIdPresent" />
+            <Field Type="unsigned char"                 Name="InterfacePresent" />
+            <Field Type="UUID"                          Name="ResourceType" />
+            <Field Type="UUID"                          Name="SessionId" />
+            <Field Type="RPC_SYNTAX_IDENTIFIER"         Name="Interface" />
+            <Field Type="void*"                         Name="CertContext" />
+        </Variable>
+        <Variable Name="RDR_CALLOUT_STATE*" Type="Pointer" Base="RDR_CALLOUT_STATE" />
+
+        <!-- MIDL_TYPE_PICKLING_INFO -->
+        <Variable Name="MIDL_TYPE_PICKLING_INFO" Type="Struct">
+            <Field Type="unsigned long"     Name="Version" />
+            <Field Type="unsigned long"     Name="Flags" />
+            <Field Type="UINT_PTR [3]"      Name="Reserved" />
+        </Variable>
+        <Variable Name="const MIDL_TYPE_PICKLING_INFO*" Type="Pointer" Base="MIDL_TYPE_PICKLING_INFO" />
+
+        <!-- [RPC_TRANSPORT_TYPE] -->
+        <Variable Name="[RPC_TRANSPORT_TYPE]" Type="Alias" Base="unsigned int">
+            <Display Name="unsigned int" />
+            <Enum>
+                <Set Name="TRANSPORT_TYPE_CN"       Value="0x01" />
+                <Set Name="TRANSPORT_TYPE_DG"       Value="0x02" />
+                <Set Name="TRANSPORT_TYPE_LPC"      Value="0x04" />
+                <Set Name="TRANSPORT_TYPE_WMSG"     Value="0x08" />
+            </Enum>
+        </Variable>
+        <Variable Name="[RPC_TRANSPORT_TYPE*]" Type="Pointer" Base="[RPC_TRANSPORT_TYPE]">
+            <Display Name="unsigned int*" />
+        </Variable>
+
+        <!-- MIDL_SYNTAX_INFO -->
+        <Variable Name="MIDL_SYNTAX_INFO" Type="Struct">
+            <Field Type="RPC_SYNTAX_IDENTIFIER"     Name="TransferSyntax" />
+            <Field Type="RPC_DISPATCH_TABLE*"       Name="DispatchTable" />
+            <Field Type="PFORMAT_STRING"            Name="ProcString" />
+            <Field Type="const unsigned short*"     Name="FmtStringOffset" />
+            <Field Type="PFORMAT_STRING"            Name="TypeString" />
+            <Field Type="const void*"               Name="aUserMarshalQuadruple" />
+            <Field Type="ULONG_PTR"                 Name="pReserved1" />
+            <Field Type="ULONG_PTR"                 Name="pReserved2" />
+        </Variable>
+        <Variable Name="PMIDL_SYNTAX_INFO" Type="Pointer" Base="MIDL_SYNTAX_INFO" />
+
+        <!-- MIDL_STUBLESS_PROXY_INFO -->
+        <Variable Name="MIDL_STUBLESS_PROXY_INFO" Type="Struct">
+            <Field Type="PMIDL_STUB_DESC"           Name="pStubDesc" />
+            <Field Type="PFORMAT_STRING"            Name="ProcFormatString" />
+            <Field Type="const unsigned short*"     Name="FormatStringOffset" />
+            <Field Type="PRPC_SYNTAX_IDENTIFIER"    Name="pTransferSyntax" />
+            <Field Type="ULONG_PTR"                 Name="nCount" />
+            <Field Type="PMIDL_SYNTAX_INFO"         Name="pSyntaxInfo" Count="nCount" />
+        </Variable>
+        <Variable Name="MIDL_STUBLESS_PROXY_INFO*" Type="Pointer" Base="MIDL_STUBLESS_PROXY_INFO" />
+
+        <!-- FULL_PTR_TO_REFID_ELEMENT -->
+        <!-- TODO: Self-Referencing -->
+        <Variable Name="FULL_PTR_TO_REFID_ELEMENT" Type="Struct">
+            <Field Type="LPVOID" Display="FULL_PTR_TO_REFID_ELEMENT*"   Name="Next" />
+            <Field Type="void*"                                         Name="Pointer" />
+            <Field Type="unsigned long"                                 Name="RefId" />
+            <Field Type="unsigned char"                                 Name="State" />
+        </Variable>
+        <Variable Name="PFULL_PTR_TO_REFID_ELEMENT"  Type="Pointer" Base="FULL_PTR_TO_REFID_ELEMENT" />
+        <Variable Name="PFULL_PTR_TO_REFID_ELEMENT*" Type="Pointer" Base="PFULL_PTR_TO_REFID_ELEMENT" />
+
+        <!-- XLAT_SIDE -->
+        <Variable Name="XLAT_SIDE" Type="Alias" Base="UINT">
+            <Enum>
+                <Set Name="XLAT_SERVER"     Value="1" />
+                <Set Name="XLAT_CLIENT"     Value="2" />
+            </Enum>
+        </Variable>
+
+        <!-- [FULL_PTR_XLAT_TABLES_s1] -->
+        <Variable Name="[FULL_PTR_XLAT_TABLES_s1]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="void**"            Name="XlatTable" />
+            <Field Type="unsigned char*"    Name="StateTable" />
+            <Field Type="unsigned long"     Name="NumberOfEntries" />
+        </Variable>
+
+        <!-- [FULL_PTR_XLAT_TABLES_s2] -->
+        <Variable Name="[FULL_PTR_XLAT_TABLES_s2]" Type="Struct">
+            <Display Name="struct" />
+            <Field Type="PFULL_PTR_TO_REFID_ELEMENT*"   Name="XlatTable" />
+            <Field Type="unsigned long"                 Name="NumberOfBuckets" />
+            <Field Type="unsigned long"                 Name="HashMask" />
+        </Variable>
+
+        <!-- FULL_PTR_XLAT_TABLES -->
+        <!-- TODO: FIXME: BUG: The first two fields are defined as pointers in rpcndr.h, but are defined as structures elsewhere -->
+        <Variable Name="FULL_PTR_XLAT_TABLES" Type="Struct">
+            <Field Type="[FULL_PTR_XLAT_TABLES_s1]"     Name="RefIdToPointer" />
+            <Field Type="[FULL_PTR_XLAT_TABLES_s2]"     Name="PointerToRefId" />
+            <Field Type="unsigned long"                 Name="NextRefId" />
+            <Field Type="XLAT_SIDE"                     Name="XlatSide" />
+        </Variable>
+        <Variable Name="PFULL_PTR_XLAT_TABLES" Type="Pointer" Base="FULL_PTR_XLAT_TABLES" />
+
         <!-- Remote Procedure Call (RPC) -->
         <Category Name="Networking/Remote Procedure Call (RPC)" />
         <Api Name="DceErrorInqText" BothCharset="True">
             <Param Type="unsigned long" Name="StatusToConvert" />
             <Param Type="RPC_TSTR" Name="ErrorText" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MesBufferHandleReset">
             <Param Type="handle_t" Name="Handle" />
@@ -106,36 +384,31 @@
             <Param Type="unsigned long" Name="BufferSize" />
             <Param Type="unsigned long*" Name="pEncodedSize" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MesDecodeBufferHandleCreate">
-            <Param Type="[LPVOID_char*]" Name="Buffer" Length="BufferSize" />
+            <Param Type="[LPVOID|char*]" Name="Buffer" Length="BufferSize" />
             <Param Type="unsigned long" Name="BufferSize" />
             <Param Type="handle_t*" Name="pHandle" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MesDecodeIncrementalHandleCreate">
             <Param Type="void*" Name="UserState" />
             <Param Type="MIDL_ES_READ" Name="ReadFn" />
             <Param Type="handle_t*" Name="pHandle" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MesEncodeDynBufferHandleCreate">
             <Param Type="char**" Name="ppBuffer" />
             <Param Type="unsigned long*" Name="pEncodedSize" />
             <Param Type="handle_t*" Name="pHandle" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MesEncodeFixedBufferHandleCreate">
-            <Param Type="[LPVOID_char*]" Name="Buffer" Length="BufferSize" />
+            <Param Type="[LPVOID|char*]" Name="Buffer" Length="BufferSize" />
             <Param Type="unsigned long" Name="BufferSize" />
             <Param Type="unsigned long*" Name="pEncodedSize" />
             <Param Type="handle_t*" Name="pHandle" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MesEncodeIncrementalHandleCreate">
             <Param Type="void*" Name="UserState" />
@@ -143,12 +416,10 @@
             <Param Type="MIDL_ES_WRITE" Name="WriteFn" />
             <Param Type="handle_t*" Name="pHandle" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MesHandleFree">
             <Param Type="handle_t" Name="Handle" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MesIncrementalHandleReset">
             <Param Type="handle_t" Name="Handle" />
@@ -158,50 +429,36 @@
             <Param Type="MIDL_ES_READ" Name="ReadFn" />
             <Param Type="MIDL_ES_CODE" Name="OpCode" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="MesInqProcEncodingId">
             <Param Type="handle_t" Name="Handle" />
             <Param Type="PRPC_SYNTAX_IDENTIFIER" Name="pInterfaceId" />
             <Param Type="unsigned long*" Name="pProcNum" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
-        </Api>
-        <Api Name="NdrGetUserMarshalInfo">
-            <Param Type="unsigned long*" Name="pFlags" />
-            <Param Type="unsigned long" Name="InformationLevel" />
-            <Param Type="NDR_USER_MARSHAL_INFO*" Name="pMarshalInfo" />
-            <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcAsyncAbortCall">
             <Param Type="PRPC_ASYNC_STATE" Name="pAsync" />
             <Param Type="unsigned long" Name="ExceptionCode" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcAsyncCancelCall">
             <Param Type="PRPC_ASYNC_STATE" Name="pAsync" />
             <Param Type="BOOL" Name="fAbortCall" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcAsyncCompleteCall">
             <Param Type="PRPC_ASYNC_STATE" Name="pAsync" />
             <Param Type="PVOID" Name="Reply" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcAsyncGetCallStatus">
             <Param Type="PRPC_ASYNC_STATE" Name="pAsync" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcAsyncInitializeHandle">
             <Param Type="PRPC_ASYNC_STATE" Name="pAsync" />
             <Param Type="unsigned int" Name="Size" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcAsyncRegisterInfo">
             <Return Type="void" />
@@ -211,13 +468,11 @@
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
             <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcBindingCopy">
             <Param Type="RPC_BINDING_HANDLE" Name="SourceBinding" />
             <Param Type="RPC_BINDING_HANDLE*" Name="DestinationBinding" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcBindingCreate" BothCharset="True">
             <Param Type="RPC_BINDING_HANDLE_TEMPLATE_V1*" Name="Template" />
@@ -225,18 +480,15 @@
             <Param Type="RPC_BINDING_HANDLE_OPTIONS_V1*" Name="Options" />
             <Param Type="RPC_BINDING_HANDLE*" Name="Binding" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcBindingFree">
             <Param Type="RPC_BINDING_HANDLE*" Name="Binding" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcBindingFromStringBinding" BothCharset="True">
             <Param Type="RPC_TSTR" Name="StringBinding" />
             <Param Type="RPC_BINDING_HANDLE*" Name="Binding" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcBindingInqAuthClient" BothCharset="True">
             <Param Type="RPC_BINDING_HANDLE" Name="ClientBinding" />
@@ -246,7 +498,6 @@
             <Param Type="[RPC_C_AUTHN_SVC*]" Name="AuthnSvc" />
             <Param Type="[RPC_C_AUTHZ*]" Name="AuthzSvc" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcBindingInqAuthClientEx" BothCharset="True">
             <Param Type="RPC_BINDING_HANDLE" Name="ClientBinding" />
@@ -257,7 +508,6 @@
             <Param Type="[RPC_C_AUTHZ*]" Name="AuthzSvc" />
             <Param Type="unsigned long" Name="flags" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcBindingInqAuthInfo" BothCharset="True">
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
@@ -267,7 +517,6 @@
             <Param Type="RPC_AUTH_IDENTITY_HANDLE*" Name="AuthIdentity" />
             <Param Type="[RPC_C_AUTHZ*]" Name="AuthzSvc" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcBindingInqAuthInfoEx" BothCharset="True">
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
@@ -279,31 +528,26 @@
             <Param Type="unsigned long" Name="RpcQosVersion" />
             <Param Type="RPC_SECURITY_QOS*" Name="SecurityQos" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcBindingInqObject">
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
             <Param Type="UUID*" Name="ObjectUuid" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcBindingInqOption">
             <Param Type="RPC_BINDING_HANDLE" Name="hBinding" />
             <Param Type="unsigned long" Name="Option" />
             <Param Type="unsigned long*" Name="pOptionValue" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcBindingReset">
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcBindingServerFromClient">
             <Param Type="RPC_BINDING_HANDLE" Name="ClientBinding" />
             <Param Type="RPC_BINDING_HANDLE*" Name="ServerBinding" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcBindingSetAuthInfo" BothCharset="True">
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
@@ -313,7 +557,6 @@
             <Param Type="RPC_AUTH_IDENTITY_HANDLE" Name="AuthIdentity" />
             <Param Type="unsigned long" Name="AuthzService" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcBindingSetAuthInfoEx" BothCharset="True">
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
@@ -324,47 +567,39 @@
             <Param Type="[RPC_C_AUTHZ]" Name="AuthzSvc" />
             <Param Type="RPC_SECURITY_QOS*" Name="SecurityQOS" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcBindingSetObject">
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
             <Param Type="UUID*" Name="ObjectUuid" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcBindingSetOption">
             <Param Type="RPC_BINDING_HANDLE" Name="hBinding" />
             <Param Type="[BindingOptions]" Name="Option" />
             <Param Type="unsigned long" Name="OptionValue" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcBindingToStringBinding" BothCharset="True">
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
             <Param Type="RPC_TSTR*" Name="StringBinding" OutputOnly="True" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcBindingUnbind">
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcBindingVectorFree">
             <Param Type="RPC_BINDING_VECTOR**" Name="BindingVector" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcCancelThread">
             <Param Type="HANDLE" Name="ThreadHandle" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcCancelThreadEx">
             <Param Type="HANDLE" Name="ThreadHandle" />
             <Param Type="LONG" Name="Timeout" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcCertGeneratePrincipalName" BothCharset="True">
             <Param Type="PCCERT_CONTEXT" Name="Context" />
@@ -378,7 +613,6 @@
             <Param Type="UUID_VECTOR*" Name="UuidVector" />
             <Param Type="RPC_TSTR" Name="Annotation" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcEpRegisterNoReplace" BothCharset="True">
             <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
@@ -386,25 +620,21 @@
             <Param Type="UUID_VECTOR*" Name="UuidVector" />
             <Param Type="RPC_TSTR" Name="Annotation" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcEpResolveBinding">
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
             <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcEpUnregister">
             <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
             <Param Type="RPC_BINDING_VECTOR*" Name="BindingVector" />
             <Param Type="UUID_VECTOR*" Name="UuidVector" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcErrorAddRecord">
             <Param Type="RPC_EXTENDED_ERROR_INFO*" Name="ErrorInfo" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcErrorClearInformation">
             <Return Type="void" />
@@ -412,64 +642,53 @@
         <Api Name="RpcErrorEndEnumeration">
             <Param Type="RPC_ERROR_ENUM_HANDLE*" Name="EnumHandle" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcErrorGetNextRecord">
             <Param Type="RPC_ERROR_ENUM_HANDLE*" Name="EnumHandle" />
             <Param Type="BOOL" Name="CopyStrings" />
             <Param Type="RPC_EXTENDED_ERROR_INFO*" Name="ErrorInfo" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcErrorGetNumberOfRecords">
             <Param Type="RPC_ERROR_ENUM_HANDLE*" Name="EnumHandle" />
             <Param Type="int*" Name="Records" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcErrorLoadErrorInfo">
             <Param Type="PVOID" Name="ErrorBlob" />
             <Param Type="size_t" Name="BlobSize" />
             <Param Type="RPC_ERROR_ENUM_HANDLE*" Name="EnumHandle" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcErrorResetEnumeration">
             <Param Type="RPC_ERROR_ENUM_HANDLE*" Name="EnumHandle" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcErrorSaveErrorInfo">
             <Param Type="RPC_ERROR_ENUM_HANDLE*" Name="EnumHandle" />
             <Param Type="PVOID*" Name="ErrorBlob" />
             <Param Type="size_t*" Name="BlobSize" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcErrorStartEnumeration">
             <Param Type="RPC_ERROR_ENUM_HANDLE*" Name="EnumHandle" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcIfIdVectorFree">
             <Param Type="RPC_IF_ID_VECTOR**" Name="IfIdVec" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcIfInqId">
             <Param Type="RPC_IF_HANDLE" Name="RpcIfHandle" />
             <Param Type="RPC_IF_ID*" Name="RpcIfId" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcImpersonateClient">
             <Param Type="RPC_BINDING_HANDLE" Name="BindingHandle" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcMgmtEnableIdleCleanup">
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcMgmtEpEltInqBegin">
             <Param Type="RPC_BINDING_HANDLE" Name="EpBinding" />
@@ -479,12 +698,10 @@
             <Param Type="UUID*" Name="ObjectUuid" />
             <Param Type="RPC_EP_INQ_HANDLE*" Name="InquiryContext" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcMgmtEpEltInqDone">
             <Param Type="RPC_EP_INQ_HANDLE*" Name="InquiryContext" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcMgmtEpEltInqNext" BothCharset="True">
             <Param Type="RPC_EP_INQ_HANDLE" Name="InquiryContext" />
@@ -493,7 +710,6 @@
             <Param Type="UUID*" Name="ObjectUuid" />
             <Param Type="RPC_TSTR*" Name="Annotation" OutputOnly="True" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcMgmtEpUnregister">
             <Param Type="RPC_BINDING_HANDLE" Name="EpBinding" />
@@ -501,117 +717,96 @@
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
             <Param Type="UUID*" Name="ObjectUuid" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcMgmtInqComTimeout">
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
             <Param Type="unsigned int*" Name="Timeout" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcMgmtInqDefaultProtectLevel">
             <Param Type="[RPC_C_AUTHN_SVC]" Display="unsigned int" Name="AuthnSvc" />
             <Param Type="[RPC_C_AUTHN_LEVEL-unsigned-int*]" Name="AuthnLevel" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcMgmtInqIfIds">
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
             <Param Type="RPC_IF_ID_VECTOR**" Name="IfIdVector" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcMgmtInqServerPrincName" BothCharset="True">
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
             <Param Type="[RPC_C_AUTHN_SVC]" Display="unsigned int" Name="AuthnSvc" />
             <Param Type="RPC_TSTR*" Name="ServerPrincName" OutputOnly="True" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcMgmtInqStats">
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
             <Param Type="RPC_STATS_VECTOR**" Name="Statistics" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcMgmtIsServerListening">
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcMgmtSetAuthorizationFn">
             <Param Type="RPC_MGMT_AUTHORIZATION_FN" Name="AuthorizationFn" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcMgmtSetCancelTimeout">
             <Param Type="signed int" Name="Seconds" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcMgmtSetComTimeout">
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
             <Param Type="unsigned int" Name="Timeout" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcMgmtSetServerStackSize">
             <Param Type="unsigned int" Name="ThreadStackSize" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcMgmtStatsVectorFree">
             <Param Type="RPC_STATS_VECTOR**" Name="StatsVector" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcMgmtStopServerListening">
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcMgmtWaitServerListen">
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcNetworkInqProtseqs" BothCharset="True">
             <Param Type="RPC_PROTSEQ_VECTOR**" Name="ProtSeqVector" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcNetworkIsProtseqValid" BothCharset="True">
             <Param Type="RPC_TSTR" Name="Protseq" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcNsBindingInqEntryName" BothCharset="True">
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
             <Param Type="unsigned long" Name="EntryNameSyntax" />
             <Param Type="RPC_TSTR*" Name="EntryName" OutputOnly="True" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcObjectInqType">
             <Param Type="UUID*" Name="ObjUuid" />
             <Param Type="UUID*" Name="TypeUuid" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcObjectSetInqFn">
             <Param Type="RPC_OBJECT_INQ_FN" Name="InquiryFn" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcObjectSetType">
             <Param Type="UUID*" Name="ObjUuid" />
             <Param Type="UUID*" Name="TypeUuid" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcProtseqVectorFree" BothCharset="True">
             <Param Type="RPC_PROTSEQ_VECTOR**" Name="ProtSeqVector" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <!-- Currrent disabled due to crash on x64
         <Api Name="RpcRaiseException">
@@ -621,48 +816,40 @@
         -->
         <Api Name="RpcRevertToSelf">
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcRevertToSelfEx">
             <Param Type="RPC_BINDING_HANDLE" Name="BindingHandle" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerInqBindings">
             <Param Type="RPC_BINDING_VECTOR**" Name="BindingVector" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerInqCallAttributes" BothCharset="True">
             <Param Type="RPC_BINDING_HANDLE" Name="ClientBinding" />
             <Param Type="void*" Name="RpcCallAttributes" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerInqDefaultPrincName" BothCharset="True">
             <Param Type="[RPC_C_AUTHN_SVC]" Name="AuthnSvc" />
             <Param Type="RPC_TSTR*" Name="PrincName" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerInqBindingHandle">
             <Param Type="RPC_BINDING_HANDLE*" Name="Binding" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerInqIf">
             <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
             <Param Type="UUID*" Name="MgrTypeUuid" />
             <Param Type="RPC_MGR_EPV**" Name="MgrEpv" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerListen">
             <Param Type="unsigned int" Name="MinimumCallThreads" />
             <Param Type="unsigned int" Name="MaxCalls" />
             <Param Type="unsigned int" Name="DontWait" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerRegisterAuthInfo" BothCharset="True">
             <Param Type="RPC_TSTR" Name="ServerPrincName" />
@@ -670,14 +857,12 @@
             <Param Type="RPC_AUTH_KEY_RETRIEVAL_FN" Name="GetKeyFn" />
             <Param Type="void*" Name="Arg" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerRegisterIf">
             <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
             <Param Type="UUID*" Name="MgrTypeUuid" />
             <Param Type="RPC_MGR_EPV*" Name="MgrEpv" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerRegisterIf2">
             <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
@@ -688,7 +873,6 @@
             <Param Type="unsigned int" Name="MaxRpcSize" />
             <Param Type="RPC_IF_CALLBACK_FN*" Name="IfCallbackFn" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerRegisterIfEx">
             <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
@@ -698,7 +882,6 @@
             <Param Type="unsigned int" Name="MaxCalls" />
             <Param Type="RPC_IF_CALLBACK_FN*" Name="IfCallback" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerSubscribeForNotification">
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
@@ -706,53 +889,45 @@
             <Param Type="RPC_NOTIFICATION_TYPES" Name="NotificationType" />
             <Param Type="RPC_ASYNC_NOTIFICATION_INFO*" Name="NotificationInfo" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerTestCancel">
             <Param Type="RPC_BINDING_HANDLE" Name="BindingHandle" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerUnregisterIf">
             <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
             <Param Type="UUID*" Name="MgrTypeUuid" />
             <Param Type="unsigned int" Name="WaitForCallsToComplete" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerUnregisterIfEx">
             <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
             <Param Type="UUID*" Name="MgrTypeUuid" />
             <Param Type="int" Name="RundownContextHandles" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerUnsubscribeForNotification">
             <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
             <Param Type="RPC_NOTIFICATIONS" Name="Notification" />
             <Param Type="unsigned long*" Name="NotificationsQueued" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerUseAllProtseqs">
             <Param Type="unsigned int" Name="MaxCalls" />
             <Param Type="void*" Name="SecurityDescriptor" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerUseAllProtseqsEx">
             <Param Type="unsigned int" Name="MaxCalls" />
             <Param Type="void*" Name="SecurityDescriptor" />
             <Param Type="PRPC_POLICY" Name="Policy" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerUseAllProtseqsIf">
             <Param Type="unsigned int" Name="MaxCalls" />
             <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
             <Param Type="void*" Name="SecurityDescriptor" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerUseAllProtseqsIfEx">
             <Param Type="unsigned int" Name="MaxCalls" />
@@ -760,14 +935,12 @@
             <Param Type="void*" Name="SecurityDescriptor" />
             <Param Type="PRPC_POLICY" Name="Policy" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerUseProtseq" BothCharset="True">
             <Param Type="RPC_TSTR" Name="ProtSeq" />
             <Param Type="unsigned int" Name="MaxCalls" />
             <Param Type="void*" Name="SecurityDescriptor" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerUseProtseqEx" BothCharset="True">
             <Param Type="RPC_TSTR" Name="ProtSeq" />
@@ -775,7 +948,6 @@
             <Param Type="void*" Name="SecurityDescriptor" />
             <Param Type="PRPC_POLICY" Name="Policy" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerUseProtseqEp" BothCharset="True">
             <Param Type="RPC_TSTR" Name="Protseq" />
@@ -783,7 +955,6 @@
             <Param Type="RPC_TSTR" Name="Endpoint" />
             <Param Type="void*" Name="SecurityDescriptor" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerUseProtseqEpEx" BothCharset="True">
             <Param Type="RPC_TSTR" Name="Protseq" />
@@ -792,7 +963,6 @@
             <Param Type="void*" Name="SecurityDescriptor" />
             <Param Type="PRPC_POLICY" Name="Policy" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerUseProtseqIf" BothCharset="True">
             <Param Type="RPC_TSTR" Name="Protseq" />
@@ -800,7 +970,6 @@
             <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
             <Param Type="void*" Name="SecurityDescriptor" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcServerUseProtseqIfEx" BothCharset="True">
             <Param Type="RPC_TSTR" Name="Protseq" />
@@ -809,52 +978,44 @@
             <Param Type="void*" Name="SecurityDescriptor" />
             <Param Type="PRPC_POLICY" Name="Policy" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcSmAllocate">
             <Param Type="size_t" Name="Size" />
             <Param Type="RPC_STATUS*" Name="pStatus" />
             <Return Type="void*" />
-            <Success Return="Equal" Value="0" />
+            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="RpcSmClientFree">
             <Param Type="void*" Name="NodeToFree" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcSmDestroyClientContext">
             <Param Type="void**" Name="ContextHandle" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcSmDisableAllocate">
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcSmEnableAllocate">
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcSmFree">
             <Param Type="void*" Name="NodeToFree" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcSmGetThreadHandle">
             <Param Type="RPC_STATUS*" Name="pStatus" />
             <Return Type="RPC_SS_THREAD_HANDLE" />
-            <Success Return="Equal" Value="0" />
+            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="RpcSmSetClientAllocFree">
             <Param Type="RPC_CLIENT_ALLOC*" Name="pfnAllocate" />
             <Param Type="RPC_CLIENT_FREE*" Name="pfnFree" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcSmSetThreadHandle">
             <Param Type="RPC_SS_THREAD_HANDLE" Name="Handle" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcSmSwapClientAllocFree">
             <Param Type="RPC_CLIENT_ALLOC*" Name="pfnAllocate" />
@@ -862,24 +1023,21 @@
             <Param Type="RPC_CLIENT_ALLOC**" Name="pfnOldAllocate" />
             <Param Type="RPC_CLIENT_FREE**" Name="pfnOldFree" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcSsAllocate">
             <Param Type="size_t" Name="Size" />
             <Return Type="void*" />
-            <Success Return="Equal" Value="0" />
+            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="RpcSsContextLockExclusive">
             <Param Type="RPC_BINDING_HANDLE" Name="ServerBindingHandle" />
             <Param Type="PVOID" Name="UserContext" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcSsContextLockShared">
             <Param Type="RPC_BINDING_HANDLE" Name="ServerBindingHandle" />
             <Param Type="PVOID" Name="UserContext" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcSsDestroyClientContext">
             <Param Type="void**" Name="ContextHandle" />
@@ -900,7 +1058,7 @@
         </Api>
         <Api Name="RpcSsGetThreadHandle">
             <Return Type="RPC_SS_THREAD_HANDLE" />
-            <Success Return="Equal" Value="0" />
+            <Success Return="NotEqual" Value="0" />
         </Api>
         <Api Name="RpcSsSetClientAllocFree">
             <Param Type="RPC_CLIENT_ALLOC*" Name="pfnAllocate" />
@@ -926,7 +1084,6 @@
             <Param Type="TCHAR*" Name="Options" />
             <Param Type="TCHAR**" Name="StringBinding" OutputOnly="True" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcStringBindingParse" BothCharset="True">
             <Param Type="TCHAR*" Name="StringBinding" />
@@ -936,67 +1093,1756 @@
             <Param Type="TCHAR**" Name="EndPoint" OutputOnly="True" />
             <Param Type="TCHAR**" Name="NetworkOptions" OutputOnly="True" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcStringFree" BothCharset="True">
             <Param Type="RPC_TSTR*" Name="String" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="RpcTestCancel">
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
+        <Api Name="I_RpcBindingInqLocalClientPID">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="unsigned long*" Name="Pid" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <!-- TODO: Enable after testing
+        <Api Name="RpcExceptionFilter">
+            <Param Type="unsigned long" Name="ExceptionCode" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        -->
+        <Api Name="RpcFreeAuthorizationContext">
+            <Param Type="PVOID*" Name="pAuthzClientContext" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="RpcGetAuthorizationContextForClient">
+            <Param Type="RPC_BINDING_HANDLE" Name="ClientBinding" />
+            <Param Type="BOOL" Name="ImpersonateOnReturn" />
+            <Param Type="PVOID" Name="Reserved1" />
+            <Param Type="PLARGE_INTEGER" Name="pExpirationTime" />
+            <Param Type="LUID" Name="Reserved2" />
+            <Param Type="DWORD" Name="Reserved3" />
+            <Param Type="PVOID" Name="Reserved4" />
+            <Param Type="PVOID*" Name="pAuthzClientContext" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="RpcServerInterfaceGroupActivate">
+            <Param Type="RPC_INTERFACE_GROUP" Name="IfGroup" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="RpcServerInterfaceGroupClose">
+            <Param Type="RPC_INTERFACE_GROUP" Name="IfGroup" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="RpcServerInterfaceGroupCreate" BothCharset="True">
+            <Param Type="RPC_INTERFACE_TEMPLATE*" Name="Interfaces" Count="NumIfs" />
+            <Param Type="unsigned long" Name="NumIfs" />
+            <Param Type="RPC_ENDPOINT_TEMPLATE*" Name="Endpoints" Count="NumEndpoints" />
+            <Param Type="unsigned long" Name="NumEndpoints" />
+            <Param Type="unsigned long" Name="IdlePeriod" />
+            <Param Type="RPC_INTERFACE_GROUP_IDLE_CALLBACK_FN" Name="IdleCallbackFn" />
+            <Param Type="void*" Name="IdleCallbackContext" />
+            <Param Type="PRPC_INTERFACE_GROUP" Name="IfGroup" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="RpcServerInterfaceGroupDeactivate">
+            <Param Type="RPC_INTERFACE_GROUP" Name="IfGroup" />
+            <Param Type="unsigned long" Name="ForceDeactivation" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="RpcServerInterfaceGroupInqBindings">
+            <Param Type="RPC_INTERFACE_GROUP" Name="IfGroup" />
+            <Param Type="RPC_BINDING_VECTOR**" Name="BindingVector" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="RpcServerRegisterIf3">
+            <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
+            <Param Type="UUID*" Name="MgrTypeUuid" />
+            <Param Type="RPC_MGR_EPV*" Name="MgrEpv" />
+            <Param Type="[InterfaceRegistrationFlags]" Name="Flags" />
+            <Param Type="unsigned int" Name="MaxCalls" />
+            <Param Type="unsigned int" Name="MaxRpcSize" />
+            <Param Type="RPC_IF_CALLBACK_FN*" Name="IfCallback" />
+            <Param Type="void*" Name="SecurityDescriptor" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcAllocate">
+            <Param Type="unsigned int" Name="Size" />
+            <Return Type="void*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="I_RpcAsyncAbortCall">
+            <Param Type="PRPC_ASYNC_STATE" Name="pAsync" />
+            <Param Type="unsigned long" Name="ExceptionCode" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcAsyncSetHandle">
+            <Param Type="PRPC_MESSAGE" Name="Message" />
+            <Param Type="PRPC_ASYNC_STATE" Name="pAsync" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcBindingCopy">
+            <Param Type="RPC_BINDING_HANDLE" Name="SourceBinding" />
+            <Param Type="RPC_BINDING_HANDLE*" Name="DestinationBinding" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcBindingCreateNP">
+            <Param Type="RPC_WSTR" Name="ServerName" />
+            <Param Type="RPC_WSTR" Name="ServiceName" />
+            <Param Type="RPC_WSTR" Name="NetworkOptions" />
+            <Param Type="RPC_BINDING_HANDLE*" Name="Binding" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcBindingHandleToAsyncHandle">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="void**" Name="AsyncHandle" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcBindingInqDynamicEndpoint">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="RPC_CSTR*" Name="DynamicEndpoint" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcBindingInqDynamicEndpoint" BothCharset="True">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="RPC_TSTR*" Name="DynamicEndpoint" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcBindingInqMarshalledTargetInfo">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="unsigned long*" Name="MarshalledTargetInfoSize" />
+            <Param Type="RPC_CSTR*" Name="MarshalledTargetInfo" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcBindingInqSecurityContext">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="void**" Name="SecurityContextHandle" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcBindingInqSecurityContextKeyInfo">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="void*" Name="KeyInfo" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcBindingInqTransportType">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="[RPC_TRANSPORT_TYPE*]" Name="Type" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcBindingInqWireIdForSnego">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="unsigned char*" Name="WireId" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcBindingIsClientLocal">
+            <Param Type="RPC_BINDING_HANDLE" Name="BindingHandle" />
+            <Param Type="unsigned int*" Name="ClientLocalFlag" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcBindingToStaticStringBindingW">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="unsigned short**" Name="StringBinding" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcClearMutex">
+            <Param Type="I_RPC_MUTEX" Name="Mutex" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="I_RpcConnectionInqSockBuffSize">
+            <Param Type="unsigned long*" Name="RecvBuffSize" />
+            <Param Type="unsigned long*" Name="SendBuffSize" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcConnectionSetSockBuffSize">
+            <Param Type="unsigned long" Name="RecvBuffSize" />
+            <Param Type="unsigned long" Name="SendBuffSize" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcDeleteMutex">
+            <Param Type="I_RPC_MUTEX" Name="Mutex" />
+            <Return Type="void" />
+        </Api>
+        <!-- TODO: Enable after testing
+        <Api Name="I_RpcExceptionFilter">
+            <Param Type="unsigned long" Name="ExceptionCode" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        -->
+        <Api Name="I_RpcFree">
+            <Param Type="void*" Name="Object" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="I_RpcFreeBuffer">
+            <Param Type="RPC_MESSAGE*" Name="Message" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcFreePipeBuffer">
+            <Param Type="RPC_MESSAGE*" Name="Message" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcGetBuffer">
+            <Param Type="RPC_MESSAGE*" Name="Message" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcGetBufferWithObject">
+            <Param Type="RPC_MESSAGE*" Name="Message" />
+            <Param Type="UUID*" Name="ObjectUuid" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcGetCurrentCallHandle">
+            <Return Type="RPC_BINDING_HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="I_RpcGetExtendedError">
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcIfInqTransferSyntaxes">
+            <Param Type="RPC_IF_HANDLE" Name="RpcIfHandle" />
+            <Param Type="RPC_TRANSFER_SYNTAX*" Name="TransferSyntaxes" PostCount="TransferSyntaxCount" />
+            <Param Type="unsigned int" Name="TransferSyntaxSize" />
+            <Param Type="unsigned int*" Name="TransferSyntaxCount" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcMapWin32Status">
+            <Param Type="RPC_STATUS" Name="Status" />
+            <Return Type="long" />
+        </Api>
+        <Api Name="I_RpcMgmtEnableDedicatedThreadPool">
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcNegotiateTransferSyntax">
+            <Param Type="RPC_MESSAGE*" Name="Message" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcNsBindingSetEntryName">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="unsigned long" Name="EntryNameSyntax" />
+            <Param Type="RPC_CSTR" Name="EntryName" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcNsBindingSetEntryName" BothCharset="True">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="unsigned long" Name="EntryNameSyntax" />
+            <Param Type="RPC_TSTR" Name="EntryName" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcNsInterfaceExported">
+            <Param Type="unsigned long" Name="EntryNameSyntax" />
+            <Param Type="unsigned short*" Name="EntryName" />
+            <Param Type="RPC_SERVER_INTERFACE*" Name="RpcInterfaceInformation" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcNsInterfaceUnexported">
+            <Param Type="unsigned long" Name="EntryNameSyntax" />
+            <Param Type="unsigned short*" Name="EntryName" />
+            <Param Type="RPC_SERVER_INTERFACE*" Name="RpcInterfaceInformation" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcOpenClientProcess">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="unsigned long" Name="DesiredAccess" />
+            <Param Type="void**" Name="ClientProcess" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcPauseExecution">
+            <Param Type="unsigned long" Name="Milliseconds" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="I_RpcReallocPipeBuffer">
+            <Param Type="PRPC_MESSAGE" Name="Message" />
+            <Param Type="unsigned int" Name="NewSize" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcReceive">
+            <Param Type="PRPC_MESSAGE" Name="Message" />
+            <Param Type="unsigned int" Name="Size" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcRecordCalloutFailure">
+            <Param Type="RPC_STATUS" Name="RpcStatus" />
+            <Param Type="RDR_CALLOUT_STATE*" Name="CallOutState" />
+            <Param Type="unsigned short*" Name="DllName" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="I_RpcRequestMutex">
+            <Param Type="I_RPC_MUTEX*" Name="Mutex" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="I_RpcSend">
+            <Param Type="PRPC_MESSAGE" Name="Message" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcSendReceive">
+            <Param Type="RPC_MESSAGE*" Name="Message" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcServerCheckClientRestriction">
+            <Param Type="RPC_BINDING_HANDLE" Name="Context" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcServerInqAddressChangeFn">
+            <Return Type="RPC_ADDRESS_CHANGE_FN*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="I_RpcServerInqLocalConnAddress">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="void*" Name="Buffer" />
+            <Param Type="unsigned long*" Name="BufferSize" />
+            <Param Type="unsigned long*" Name="AddressFormat" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcServerInqRemoteConnAddress">
+            <Param Type="RPC_BINDING_HANDLE" Name="Binding" />
+            <Param Type="void*" Name="Buffer" />
+            <Param Type="unsigned long*" Name="BufferSize" />
+            <Param Type="unsigned long*" Name="AddressFormat" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcServerInqTransportType">
+            <Param Type="[RPC_TRANSPORT_TYPE*]" Name="Type" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcServerRegisterForwardFunction">
+            <Param Type="RPC_FORWARD_FUNCTION*" Name="pForwardFunction" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcServerSetAddressChangeFn">
+            <Param Type="RPC_ADDRESS_CHANGE_FN*" Name="pAddressChangeFn" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcServerStartService">
+            <Param Type="RPC_WSTR" Name="Protseq" />
+            <Param Type="RPC_WSTR" Name="Endpoint" />
+            <Param Type="RPC_IF_HANDLE" Name="IfSpec" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcServerUseProtseq2" BothCharset="True">
+            <Param Type="RPC_TSTR" Name="NetworkAddress" />
+            <Param Type="RPC_TSTR" Name="Protseq" />
+            <Param Type="unsigned int" Name="MaxCalls" />
+            <Param Type="void*" Name="SecurityDescriptor" />
+            <Param Type="void*" Name="Policy" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcServerUseProtseqEp2" BothCharset="True">
+            <Param Type="RPC_TSTR" Name="NetworkAddress" />
+            <Param Type="RPC_TSTR" Name="Protseq" />
+            <Param Type="unsigned int" Name="MaxCalls" />
+            <Param Type="RPC_TSTR" Name="Endpoint" />
+            <Param Type="void*" Name="SecurityDescriptor" />
+            <Param Type="void*" Name="Policy" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_RpcSessionStrictContextHandle">
+            <Return Type="void" />
+        </Api>
+        <Api Name="I_RpcSsDontSerializeContext">
+            <Return Type="void" />
+        </Api>
+        <Api Name="I_RpcTurnOnEEInfoPropagation">
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="I_UuidCreate">
+            <Param Type="UUID*" Name="Uuid" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="RpcServerCompleteSecurityCallback">
+            <Param Type="RPC_BINDING_HANDLE" Name="BindingHandle" />
+            <Param Type="RPC_STATUS" Name="Status" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="RpcServerYield">
+            <Return Type="void" />
+        </Api>
+        <Api Name="RpcSsGetContextBinding">
+            <Param Type="void*" Name="ContextHandle" />
+            <Param Type="RPC_BINDING_HANDLE*" Name="Binding" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="RpcUserFree">
+            <Param Type="handle_t" Name="AsyncHandle" />
+            <Param Type="void*" Name="pBuffer" />
+            <Return Type="void" />
+        </Api>
+
+        <!-- Universally Unique Identifier (UUID) -->
+        <Category Name="Networking/Remote Procedure Call (RPC)/Universally Unique Identifier (UUID)" />
         <Api Name="UuidCompare">
             <Param Type="UUID*" Name="Uuid1" />
             <Param Type="UUID*" Name="Uuid2" />
             <Param Type="RPC_STATUS*" Name="Status" />
             <Return Type="signed int" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="UuidCreate">
             <Param Type="UUID*" Name="Uuid" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="UuidCreateSequential">
             <Param Type="UUID*" Name="Uuid" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="UuidCreateNil">
             <Param Type="UUID*" Name="Nil_Uuid" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="UuidEqual">
             <Param Type="UUID*" Name="Uuid1" />
             <Param Type="UUID*" Name="Uuid2" />
             <Param Type="RPC_STATUS*" Name="Status" />
-            <Return Type="[BOOL_int]" />
+            <Return Type="[BOOL|int]" />
+            <Success />
         </Api>
         <Api Name="UuidFromString" BothCharset="True">
-            <Param Type="RPC_TSTR"n Name="StringUuid" />
+            <Param Type="RPC_TSTR" Name="StringUuid" />
             <Param Type="UUID*" Name="Uuid" />
             <Return Type="RPC_STATUS" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="UuidHash">
             <Param Type="UUID*" Name="Uuid" />
             <Param Type="RPC_STATUS*" Name="Status" />
             <Return Type="unsigned short" />
-            <Success Return="Equal" Value="0" />
         </Api>
         <Api Name="UuidIsNil">
             <Param Type="UUID*" Name="Uuid" />
             <Param Type="RPC_STATUS*" Name="Status" />
-            <Return Type="[BOOL_int]" />
+            <Return Type="[BOOL|int]" />
+            <Success />
         </Api>
         <Api Name="UuidToString" BothCharset="True">
             <Param Type="UUID*" Name="Uuid" />
             <Param Type="RPC_TSTR*" Name="StringUuid" OutputOnly="True" />
             <Return Type="RPC_STATUS" />
+        </Api>
+
+        <!-- RPC NDR Interface -->
+        <Category Name="Networking/Remote Procedure Call (RPC)/RPC NDR Interface" />
+        <Api Name="CStdStubBuffer_AddRef">
+            <Param Type="IRpcStubBuffer*" Name="This" />
+            <Return Type="ULONG" />
+        </Api>
+        <Api Name="CStdStubBuffer_Connect">
+            <Param Type="IRpcStubBuffer*" Name="This" />
+            <Param Type="IUnknown*" Name="pUnkServer" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="CStdStubBuffer_CountRefs">
+            <Param Type="IRpcStubBuffer*" Name="This" />
+            <Return Type="ULONG" />
+        </Api>
+        <Api Name="CStdStubBuffer_DebugServerQueryInterface">
+            <Param Type="IRpcStubBuffer*" Name="This" />
+            <Param Type="void**" Name="ppv" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="CStdStubBuffer_DebugServerRelease">
+            <Param Type="IRpcStubBuffer*" Name="This" />
+            <Param Type="void*" Name="pv" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="CStdStubBuffer_Disconnect">
+            <Param Type="IRpcStubBuffer*" Name="This" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="CStdStubBuffer_Invoke">
+            <Param Type="IRpcStubBuffer*" Name="This" />
+            <Param Type="RPCOLEMESSAGE*" Name="pRpcMsg" />
+            <Param Type="IRpcChannelBuffer*" Name="pRpcChannelBuffer" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="CStdStubBuffer_IsIIDSupported">
+            <Param Type="IRpcStubBuffer*" Name="This" />
+            <Param Type="REFIID" Name="riid" />
+            <Return Type="IRpcStubBuffer*" />
+        </Api>
+        <Api Name="CStdStubBuffer_QueryInterface">
+            <Param Type="IRpcStubBuffer*" Name="This" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppvObject" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="IUnknown_AddRef_Proxy">
+            <Param Type="IUnknown*" Name="This" />
+            <Return Type="ULONG" />
+        </Api>
+        <Api Name="IUnknown_QueryInterface_Proxy">
+            <Param Type="IUnknown*" Name="This" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppvObject" InterfaceId="riid" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="IUnknown_Release_Proxy">
+            <Param Type="IUnknown*" Name="This" />
+            <Return Type="ULONG" />
+        </Api>
+        <Api Name="NdrClearOutParameters">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Param Type="void*" Name="ArgAddr" />
+            <Return Type="void" />
+        </Api>
+        <!-- TODO: NdrContextHandleInitialize - pFormat is an array of 2 elements? -->
+        <Api Name="NdrContextHandleInitialize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="NDR_SCONTEXT" />
+        </Api>
+        <Api Name="NdrContextHandleSize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrContextHandleMemorySize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned long" />
+        </Api>
+        <Api Name="NdrConvert">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrCStdStubBuffer_Release">
+            <Param Type="IRpcStubBuffer*" Name="This" />
+            <Param Type="IPSFactoryBuffer*" Name="pPSF" />
+            <Return Type="ULONG" />
+        </Api>
+        <Api Name="NdrCStdStubBuffer2_Release">
+            <Param Type="IRpcStubBuffer*" Name="This" />
+            <Param Type="IPSFactoryBuffer*" Name="pPSF" />
+            <Return Type="ULONG" />
+        </Api>
+        <Api Name="NdrDllCanUnloadNow">
+            <Param Type="CStdPSFactoryBuffer*" Name="pPSFactoryBuffer" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="NdrDllGetClassObject">
+            <Param Type="REFCLSID" Name="rclsid" />
+            <Param Type="REFIID" Name="riid" />
+            <Param Type="void**" Name="ppv" InterfaceId="riid" />
+            <Param Type="const ProxyFileInfo**" Name="pProxyFileList" />
+            <Param Type="const CLSID*" Name="pclsid" />
+            <Param Type="CStdPSFactoryBuffer*" Name="pPSFactoryBuffer" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="NdrDllRegisterProxy">
+            <Param Type="HMODULE" Name="hDll" />
+            <Param Type="const ProxyFileInfo**" Name="pProxyFileList" />
+            <Param Type="const CLSID*" Name="pclsid" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="NdrDllUnregisterProxy">
+            <Param Type="HMODULE" Name="hDll" />
+            <Param Type="const ProxyFileInfo**" Name="pProxyFileList" />
+            <Param Type="const CLSID*" Name="pclsid" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="NdrOleAllocate">
+            <Param Type="size_t" Name="size" />
+            <Return Type="void*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="NdrOleFree">
+            <Param Type="void*" Name="NodeToFree" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrPointerBufferSize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrPointerFree">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrPointerMarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned char*" />
             <Success Return="Equal" Value="0" />
         </Api>
+        <Api Name="NdrPointerUnmarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char**" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Param Type="unsigned char" Name="fSkipRefCheck" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrProxyErrorHandler">
+            <Param Type="DWORD" Name="dwExceptionCode" />
+            <Return Type="HRESULT" />
+        </Api>
+        <Api Name="NdrProxyFreeBuffer">
+            <Param Type="void*" Name="This" />
+            <Param Type="MIDL_STUB_MESSAGE*" Name="pStubMsg" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrProxyGetBuffer">
+            <Param Type="void*" Name="This" />
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrProxyInitialize">
+            <Param Type="void*" Name="This" />
+            <Param Type="PRPC_MESSAGE" Name="pRpcMsg" />
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PMIDL_STUB_DESC" Name="pStubDescriptor" />
+            <Param Type="unsigned int" Name="ProcNum" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrProxySendReceive">
+            <Param Type="void*" Name="This" />
+            <Param Type="MIDL_STUB_MESSAGE*" Name="pStubMsg" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrSimpleTypeMarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="unsigned char" Name="FormatChar" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrSimpleTypeUnmarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="unsigned char" Name="FormatChar" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrStubForwardingFunction">
+            <Param Type="IRpcStubBuffer*" Name="pThis" />
+            <Param Type="IRpcChannelBuffer*" Name="pChannel" />
+            <Param Type="PRPC_MESSAGE" Name="pMsg" />
+            <Param Type="DWORD*" Name="pdwStubPhase" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrStubGetBuffer">
+            <Param Type="IRpcStubBuffer*" Name="This" />
+            <Param Type="IRpcChannelBuffer*" Name="pRpcChannelBuffer" />
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrStubInitialize">
+            <Param Type="PRPC_MESSAGE" Name="pRpcMsg" />
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PMIDL_STUB_DESC" Name="pStubDescriptor" />
+            <Param Type="IRpcChannelBuffer*" Name="pRpcChannelBuffer" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrAllocate">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="size_t" Name="Len" />
+            <Return Type="void*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="NdrClientContextMarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="NDR_CCONTEXT" Name="ContextHandle" />
+            <Param Type="int" Name="fCheck" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrClientContextUnmarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="NDR_CCONTEXT*" Name="pContextHandle" />
+            <Param Type="RPC_BINDING_HANDLE" Name="BindHandle" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrConvert2">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Param Type="long" Name="NumberParams" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrCorrelationFree">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrCorrelationInitialize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="void*" Name="pMemory" />
+            <Param Type="unsigned long" Name="CacheSize" />
+            <Param Type="unsigned long" Name="flags" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrCorrelationPass">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrCreateServerInterfaceFromStub">
+            <Param Type="IRpcStubBuffer*" Name="pStub" />
+            <Param Type="RPC_SERVER_INTERFACE*" Name="pServerIf" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="NdrMapCommAndFaultStatus">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned long*" Name="pCommStatus" />
+            <Param Type="unsigned long*" Name="pFaultStatus" />
+            <Param Type="RPC_STATUS" Name="Status" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="NdrMesProcEncodeDecode" VarArgs="True">
+            <Param Type="handle_t" Name="Handle" />
+            <Param Type="const MIDL_STUB_DESC*" Name="pStubDesc" />
+            <Param Type="PFORMAT_STRING" Name="pFormatString" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrMesProcEncodeDecode2" VarArgs="True">
+            <Param Type="handle_t" Name="Handle" />
+            <Param Type="const MIDL_STUB_DESC*" Name="pStubDesc" />
+            <Param Type="PFORMAT_STRING" Name="pFormatString" />
+            <Return Type="CLIENT_CALL_RETURN" />
+        </Api>
+        <Api Name="NdrMesSimpleTypeAlignSize">
+            <Param Type="handle_t" Name="Handle" />
+            <Return Type="size_t" />
+        </Api>
+        <Api Name="NdrMesSimpleTypeDecode">
+            <Param Type="handle_t" Name="Handle" />
+            <Param Type="void*" Name="pObject" />
+            <Param Type="short" Name="Size" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrMesSimpleTypeEncode">
+            <Param Type="handle_t" Name="Handle" />
+            <Param Type="const MIDL_STUB_DESC*" Name="pStubDesc" />
+            <Param Type="const void*" Name="pObject" />
+            <Param Type="short" Name="Size" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrMesTypeAlignSize">
+            <Param Type="handle_t" Name="Handle" />
+            <Param Type="const MIDL_STUB_DESC*" Name="pStubDesc" />
+            <Param Type="PFORMAT_STRING" Name="pFormatString" />
+            <Param Type="const void*" Name="pObject" />
+            <Return Type="size_t" />
+        </Api>
+        <Api Name="NdrMesTypeAlignSize2">
+            <Param Type="handle_t" Name="Handle" />
+            <Param Type="const MIDL_TYPE_PICKLING_INFO*" Name="pPicklingInfo" />
+            <Param Type="const MIDL_STUB_DESC*" Name="pStubDesc" />
+            <Param Type="PFORMAT_STRING" Name="pFormatString" />
+            <Param Type="const void*" Name="pObject" />
+            <Return Type="size_t" />
+        </Api>
+        <Api Name="NdrMesTypeDecode">
+            <Param Type="handle_t" Name="Handle" />
+            <Param Type="const MIDL_STUB_DESC*" Name="pStubDesc" />
+            <Param Type="PFORMAT_STRING" Name="pFormatString" />
+            <Param Type="void*" Name="pObject" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrMesTypeDecode2">
+            <Param Type="handle_t" Name="Handle" />
+            <Param Type="const MIDL_TYPE_PICKLING_INFO*" Name="pPicklingInfo" />
+            <Param Type="const MIDL_STUB_DESC*" Name="pStubDesc" />
+            <Param Type="PFORMAT_STRING" Name="pFormatString" />
+            <Param Type="void*" Name="pObject" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrMesTypeEncode">
+            <Param Type="handle_t" Name="Handle" />
+            <Param Type="const MIDL_STUB_DESC*" Name="pStubDesc" />
+            <Param Type="PFORMAT_STRING" Name="pFormatString" />
+            <Param Type="const void*" Name="pObject" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrMesTypeEncode2">
+            <Param Type="handle_t" Name="Handle" />
+            <Param Type="const MIDL_TYPE_PICKLING_INFO*" Name="pPicklingInfo" />
+            <Param Type="const MIDL_STUB_DESC*" Name="pStubDesc" />
+            <Param Type="PFORMAT_STRING" Name="pFormatString" />
+            <Param Type="const void*" Name="pObject" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrMesTypeFree2">
+            <Param Type="handle_t" Name="Handle" />
+            <Param Type="const MIDL_TYPE_PICKLING_INFO*" Name="pPicklingInfo" />
+            <Param Type="const MIDL_STUB_DESC*" Name="pStubDesc" />
+            <Param Type="PFORMAT_STRING" Name="pFormatString" />
+            <Param Type="void*" Name="pObject" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrPartialIgnoreClientBufferSize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="void*" Name="pMemory" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrPartialIgnoreClientMarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="void*" Name="pMemory" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrPartialIgnoreServerInitialize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="void**" Name="ppMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrPartialIgnoreServerUnmarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="void**" Name="ppMemory" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrPointerMemorySize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned long" />
+        </Api>
+        <Api Name="NdrRangeUnmarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char**" Name="ppMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Param Type="unsigned char" Name="fMustAlloc" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrRpcSmClientAllocate">
+            <Param Type="size_t" Name="Size" />
+            <Return Type="void*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="NdrRpcSmClientFree">
+            <Param Type="void*" Name="NodeToFree" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrRpcSmSetClientToOsf">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pMessage" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrRpcSsDefaultAllocate">
+            <Param Type="size_t" Name="Size" />
+            <Return Type="void*" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="NdrRpcSsDefaultFree">
+            <Param Type="void*" Name="NodeToFree" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrRpcSsDisableAllocate">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pMessage" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrRpcSsEnableAllocate">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pMessage" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrServerContextMarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="NDR_SCONTEXT" Name="ContextHandle" />
+            <Param Type="NDR_RUNDOWN" Name="RundownRoutine" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrServerContextNewMarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="NDR_SCONTEXT" Name="ContextHandle" />
+            <Param Type="NDR_RUNDOWN" Name="RundownRoutine" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrServerContextNewUnmarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="NDR_SCONTEXT" />
+        </Api>
+        <Api Name="NdrServerContextUnmarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Return Type="NDR_SCONTEXT" />
+        </Api>
+
+        <!-- Client and Server Contexts -->
+        <Category Name="Networking/Remote Procedure Call (RPC)/RPC NDR Interface/Client and Server Contexts" />
+        <Api Name="NDRCContextBinding">
+            <Param Type="NDR_CCONTEXT" Name="CContext" />
+            <Return Type="RPC_BINDING_HANDLE" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="NDRCContextMarshall">
+            <Param Type="NDR_CCONTEXT" Name="CContext" />
+            <Param Type="void*" Name="pBuff" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NDRCContextUnmarshall">
+            <Param Type="NDR_CCONTEXT*" Name="pCContext" />
+            <Param Type="RPC_BINDING_HANDLE" Name="hBinding" />
+            <Param Type="void*" Name="pBuff" />
+            <Param Type="unsigned long" Name="DataRepresentation" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NDRSContextMarshall">
+            <Param Type="NDR_SCONTEXT" Name="CContext" />
+            <Param Type="void*" Name="pBuff" />
+            <Param Type="NDR_RUNDOWN" Name="userRunDownIn" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NDRSContextMarshall2">
+            <Param Type="RPC_BINDING_HANDLE" Name="BindingHandle" />
+            <Param Type="NDR_SCONTEXT" Name="CContext" />
+            <Param Type="void*" Name="pBuff" />
+            <Param Type="NDR_RUNDOWN" Name="userRunDownIn" />
+            <Param Type="void*" Name="CtxGuard" />
+            <Param Type="unsigned long" Name="Flags" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NDRSContextMarshallEx">
+            <Param Type="RPC_BINDING_HANDLE" Name="BindingHandle" />
+            <Param Type="NDR_SCONTEXT" Name="CContext" />
+            <Param Type="void*" Name="pBuff" />
+            <Param Type="NDR_RUNDOWN" Name="userRunDownIn" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NDRSContextUnmarshall">
+            <Param Type="void*" Name="pBuff" />
+            <Param Type="unsigned long" Name="DataRepresentation" />
+            <Return Type="NDR_SCONTEXT" />
+        </Api>
+        <Api Name="NDRSContextUnmarshall2">
+            <Param Type="RPC_BINDING_HANDLE" Name="BindingHandle" />
+            <Param Type="void*" Name="pBuff" />
+            <Param Type="unsigned long" Name="DataRepresentation" />
+            <Param Type="void*" Name="CtxGuard" />
+            <Param Type="unsigned long" Name="Flags" />
+            <Return Type="NDR_SCONTEXT" />
+        </Api>
+        <Api Name="NDRSContextUnmarshallEx">
+            <Param Type="RPC_BINDING_HANDLE" Name="BindingHandle" />
+            <Param Type="void*" Name="pBuff" />
+            <Param Type="unsigned long" Name="DataRepresentation" />
+            <Return Type="NDR_SCONTEXT" />
+        </Api>
+
+        <!-- Strings -->
+        <Category Name="Networking/Remote Procedure Call (RPC)/RPC NDR Interface/Strings" />
+        <Api Name="NdrConformantStringBufferSize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrConformantStringMarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrConformantStringUnmarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char**" Name="ppMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Param Type="unsigned char" Name="fMustAlloc" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrConformantStringMemorySize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned long" />
+        </Api>
+        <Api Name="NdrNonConformantStringBufferSize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrNonConformantStringMarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrNonConformantStringMemorySize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned long" />
+        </Api>
+        <Api Name="NdrNonConformantStringUnmarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char**" Name="ppMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Param Type="unsigned char" Name="fMustAlloc" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+
+        <!-- Unions -->
+        <Category Name="Networking/Remote Procedure Call (RPC)/RPC NDR Interface/Unions" />
+        <Api Name="NdrEncapsulatedUnionBufferSize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrEncapsulatedUnionFree">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrEncapsulatedUnionMarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrEncapsulatedUnionMemorySize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned long" />
+        </Api>
+        <Api Name="NdrEncapsulatedUnionUnmarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char**" Name="ppMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Param Type="unsigned char" Name="fMustAlloc" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrNonEncapsulatedUnionBufferSize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrNonEncapsulatedUnionFree">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrNonEncapsulatedUnionMarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrNonEncapsulatedUnionMemorySize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned long" />
+        </Api>
+        <Api Name="NdrNonEncapsulatedUnionUnmarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char**" Name="ppMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Param Type="unsigned char" Name="fMustAlloc" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+
+        <!-- Arrays -->
+        <Category Name="Networking/Remote Procedure Call (RPC)/RPC NDR Interface/Arrays" />
+        <Api Name="NdrFixedArrayBufferSize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrFixedArrayFree">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrFixedArrayMarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrFixedArrayMemorySize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned long" />
+        </Api>
+        <Api Name="NdrFixedArrayUnmarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char**" Name="ppMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Param Type="unsigned char" Name="fMustAlloc" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrConformantArrayUnmarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="NdrConformantArrayUnmarshall" />
+            <Param Type="unsigned char**" Name="ppMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Param Type="unsigned char" Name="fMustAlloc" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrConformantArrayBufferSize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrConformantArrayMarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrConformantArrayFree">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrConformantArrayMemorySize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned long" />
+        </Api>
+        <Api Name="NdrComplexArrayBufferSize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrComplexArrayMarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrComplexArrayUnmarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char**" Name="ppMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Param Type="unsigned char" Name="fMustAlloc" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrComplexArrayFree">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrComplexArrayMemorySize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned long" />
+        </Api>
+        <Api Name="NdrConformantVaryingArrayBufferSize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrConformantVaryingArrayFree">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrConformantVaryingArrayMarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrConformantVaryingArrayMemorySize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned long" />
+        </Api>
+        <Api Name="NdrConformantVaryingArrayUnmarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char**" Name="ppMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Param Type="unsigned char" Name="fMustAlloc" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrVaryingArrayBufferSize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrVaryingArrayFree">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrVaryingArrayMarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrVaryingArrayMemorySize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned long" />
+        </Api>
+        <Api Name="NdrVaryingArrayUnmarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char**" Name="ppMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Param Type="unsigned char" Name="fMustAlloc" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+
+        <!-- Structures -->
+        <Category Name="Networking/Remote Procedure Call (RPC)/RPC NDR Interface/Structures" />
+        <Api Name="NdrSimpleStructBufferSize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrSimpleStructMarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrSimpleStructUnmarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char**" Name="ppMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Param Type="unsigned char" Name="fMustAlloc" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrSimpleStructFree">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrSimpleStructMemorySize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned long" />
+        </Api>
+        <Api Name="NdrComplexStructBufferSize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrComplexStructMarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrComplexStructUnmarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char**" Name="ppMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Param Type="unsigned char" Name="fMustAlloc" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrComplexStructFree">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrComplexStructMemorySize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned long" />
+        </Api>
+        <Api Name="NdrConformantVaryingStructBufferSize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrConformantVaryingStructFree">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrConformantVaryingStructMarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrConformantVaryingStructMemorySize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned long" />
+        </Api>
+        <Api Name="NdrConformantVaryingStructUnmarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char**" Name="ppMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Param Type="unsigned char" Name="fMustAlloc" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrConformantStructBufferSize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrConformantStructFree">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrConformantStructMarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrConformantStructMemorySize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned long" />
+        </Api>
+        <Api Name="NdrConformantStructUnmarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char**" Name="ppMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Param Type="unsigned char" Name="fMustAlloc" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+
+        <!-- Transmit and Represent -->
+        <Category Name="Networking/Remote Procedure Call (RPC)/RPC NDR Interface/Transmit and Represent" />
+        <Api Name="NdrXmitOrRepAsBufferSize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrXmitOrRepAsFree">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrXmitOrRepAsMarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrXmitOrRepAsMemorySize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned long" />
+        </Api>
+        <Api Name="NdrXmitOrRepAsUnmarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char**" Name="ppMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Param Type="unsigned char" Name="fMustAlloc" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+
+        <!-- Interface Pointer -->
+        <Category Name="Networking/Remote Procedure Call (RPC)/RPC NDR Interface/Interface Pointer" />
+        <Api Name="NdrInterfacePointerBufferSize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrInterfacePointerFree">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrInterfacePointerMarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrInterfacePointerUnmarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char**" Name="ppMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Param Type="unsigned char" Name="fMustAlloc" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrInterfacePointerMemorySize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned long" />
+        </Api>
+
+        <!-- User Marshal -->
+        <Category Name="Networking/Remote Procedure Call (RPC)/RPC NDR Interface/User Marshal" />
+        <Api Name="NdrGetUserMarshalInfo">
+            <Param Type="unsigned long*" Name="pFlags" />
+            <Param Type="unsigned long" Name="InformationLevel" />
+            <Param Type="NDR_USER_MARSHAL_INFO*" Name="pMarshalInfo" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+        <Api Name="NdrUserMarshalBufferSize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrUserMarshalFree">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrUserMarshalMarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrUserMarshalUnmarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char**" Name="ppMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Param Type="unsigned char" Name="fMustAlloc" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrUserMarshalMemorySize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned long" />
+        </Api>
+        <Api Name="NdrUserMarshalSimpleTypeConvert">
+            <Param Type="unsigned long*" Name="pFlags" />
+            <Param Type="unsigned char*" Name="pBuffer" />
+            <Param Type="unsigned char" Name="FormatChar" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+
+        <!-- Byte Count Pointer -->
+        <Category Name="Networking/Remote Procedure Call (RPC)/RPC NDR Interface/Byte Count Pointer" />
+        <Api Name="NdrByteCountPointerBufferSize">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrByteCountPointerFree">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrByteCountPointerMarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrByteCountPointerUnmarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char**" Name="ppMemory" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Param Type="unsigned char" Name="fMustAlloc" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+
+        <!-- Auxilary Routines -->
+        <Category Name="Networking/Remote Procedure Call (RPC)/RPC NDR Interface/Auxilary Routines" />
+        <Api Name="NdrClientInitializeNew">
+            <Param Type="PRPC_MESSAGE" Name="pRpcMsg" />
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PMIDL_STUB_DESC" Name="pStubDescriptor" />
+            <Param Type="unsigned int" Name="ProcNum" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrServerInitializeNew">
+            <Param Type="PRPC_MESSAGE" Name="pRpcMsg" />
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PMIDL_STUB_DESC" Name="pStubDescriptor" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrServerInitializePartial">
+            <Param Type="PRPC_MESSAGE" Name="pRpcMsg" />
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PMIDL_STUB_DESC" Name="pStubDescriptor" />
+            <Param Type="unsigned long" Name="RequestedBufferSize" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrClientInitialize">
+            <Param Type="PRPC_MESSAGE" Name="pRpcMsg" />
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PMIDL_STUB_DESC" Name="pStubDescriptor" />
+            <Param Type="unsigned int" Name="ProcNum" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrServerInitialize">
+            <Param Type="PRPC_MESSAGE" Name="pRpcMsg" />
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PMIDL_STUB_DESC" Name="pStubDescriptor" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrServerInitializeUnmarshall">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PMIDL_STUB_DESC" Name="pStubDescriptor" />
+            <Param Type="PRPC_MESSAGE" Name="pRpcMsg" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrServerInitializeMarshall">
+            <Param Type="PRPC_MESSAGE" Name="pRpcMsg" />
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrGetBuffer">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned long" Name="BufferLength" />
+            <Param Type="RPC_BINDING_HANDLE" Name="Handle" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrNsGetBuffer">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned long" Name="BufferLength" />
+            <Param Type="RPC_BINDING_HANDLE" Name="Handle" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrSendReceive">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pBufferEnd" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrNsSendReceive">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="unsigned char*" Name="pBufferEnd" />
+            <Param Type="RPC_BINDING_HANDLE*" Name="pAutoHandle" />
+            <Return Type="unsigned char*" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrFreeBuffer">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrGetDcomProtocolVersion">
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="RPC_VERSION*" Name="pVersion" />
+            <Return Type="RPC_STATUS" />
+        </Api>
+
+        <!-- Interpreter Calls -->
+        <Category Name="Networking/Remote Procedure Call (RPC)/RPC NDR Interface/Interpreter Calls" />
+        <!-- IE 64-bit - ole32.dll!Connect calls NdrClientCall2 with 31 variable arguments! -->
+        <Api Name="NdrClientCall2" VarArgs="True" MaxVarArgs="36">
+            <Param Type="PMIDL_STUB_DESC" Name="pStubDescriptor" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="CLIENT_CALL_RETURN" />
+        </Api>
+        <Api Name="NdrClientCall" VarArgs="True">
+            <Param Type="PMIDL_STUB_DESC" Name="pStubDescriptor" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="CLIENT_CALL_RETURN" />
+        </Api>
+        <Api Name="NdrAsyncClientCall" VarArgs="True">
+            <Param Type="PMIDL_STUB_DESC" Name="pStubDescriptor" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="CLIENT_CALL_RETURN" />
+        </Api>
+        <Api Name="NdrDcomAsyncClientCall" VarArgs="True">
+            <Param Type="PMIDL_STUB_DESC" Name="pStubDescriptor" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="CLIENT_CALL_RETURN" />
+        </Api>
+        <Api Name="NdrAsyncServerCall">
+            <Param Type="PRPC_MESSAGE" Name="pRpcMsg" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrAsyncStubCall">
+            <Param Type="IRpcStubBuffer*" Name="pThis" />
+            <Param Type="IRpcChannelBuffer*" Name="pChannel" />
+            <Param Type="PRPC_MESSAGE" Name="pRpcMsg" />
+            <Param Type="unsigned long*" Name="pdwStubPhase" />
+            <Return Type="long" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrDcomAsyncStubCall">
+            <Param Type="IRpcStubBuffer*" Name="pThis" />
+            <Param Type="IRpcChannelBuffer*" Name="pChannel" />
+            <Param Type="PRPC_MESSAGE" Name="pRpcMsg" />
+            <Param Type="unsigned long*" Name="pdwStubPhase" />
+            <Return Type="long" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrStubCall2">
+            <Param Type="IRpcStubBuffer*" Name="pThis" />
+            <Param Type="IRpcChannelBuffer*" Name="pChannel" />
+            <Param Type="PRPC_MESSAGE" Name="pRpcMsg" />
+            <Param Type="unsigned long*" Name="pdwStubPhase" />
+            <Return Type="long" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrServerCall2">
+            <Param Type="PRPC_MESSAGE" Name="pRpcMsg" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrStubCall">
+            <Param Type="IRpcStubBuffer*" Name="pThis" />
+            <Param Type="IRpcChannelBuffer*" Name="pChannel" />
+            <Param Type="PRPC_MESSAGE" Name="pRpcMsg" />
+            <Param Type="unsigned long*" Name="pdwStubPhase" />
+            <Return Type="long" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+        <Api Name="NdrServerCall">
+            <Param Type="PRPC_MESSAGE" Name="pRpcMsg" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrServerUnmarshall">
+            <Param Type="IRpcChannelBuffer*" Name="pChannel" />
+            <Param Type="PRPC_MESSAGE" Name="pRpcMsg" />
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PMIDL_STUB_DESC" Name="pStubDescriptor" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Param Type="void*" Name="pParamList" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="NdrServerMarshall">
+            <Param Type="IRpcStubBuffer*" Name="pThis" />
+            <Param Type="IRpcChannelBuffer*" Name="pChannel" />
+            <Param Type="PMIDL_STUB_MESSAGE" Name="pStubMsg" />
+            <Param Type="PFORMAT_STRING" Name="pFormat" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="Ndr64AsyncClientCall" VarArgs="True">
+            <Param Type="MIDL_STUBLESS_PROXY_INFO*" Name="pProxyInfo" />
+            <Param Type="unsigned long" Name="nProcNum" />
+            <Param Type="void*" Name="pReturnValue" />
+            <Return Type="CLIENT_CALL_RETURN" />
+        </Api>
+        <Api Name="Ndr64AsyncServerCall64">
+            <Param Type="PRPC_MESSAGE" Name="pRpcMsg" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="Ndr64AsyncServerCallAll">
+            <Param Type="PRPC_MESSAGE" Name="pRpcMsg" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="Ndr64DcomAsyncClientCall" VarArgs="True">
+            <Param Type="MIDL_STUBLESS_PROXY_INFO*" Name="pProxyInfo" />
+            <Param Type="unsigned long" Name="nProcNum" />
+            <Param Type="void*" Name="pReturnValue" />
+            <Return Type="CLIENT_CALL_RETURN" />
+        </Api>
+        <Api Name="Ndr64DcomAsyncStubCall">
+            <Param Type="IRpcStubBuffer*" Name="pThis" />
+            <Param Type="IRpcChannelBuffer*" Name="pChannel" />
+            <Param Type="PRPC_MESSAGE" Name="pRpcMsg" />
+            <Param Type="unsigned long*" Name="pdwStubPhase" />
+            <Return Type="long" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <!-- TODO: Disabled due to crash in certain situations. Will be fixed in a future release
+        <Api Name="NdrClientCall3" VarArgs="True">
+            <Param Type="MIDL_STUBLESS_PROXY_INFO*" Name="pProxyInfo" />
+            <Param Type="unsigned long" Name="nProcNum" />
+            <Param Type="void*" Name="pReturnValue" />
+            <Return Type="CLIENT_CALL_RETURN" />
+        </Api>
+        -->
+        <Api Name="NdrServerCallAll">
+            <Param Type="PRPC_MESSAGE" Name="pRpcMsg" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrServerCallNdr64">
+            <Param Type="PRPC_MESSAGE" Name="pRpcMsg" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrStubCall3">
+            <Param Type="IRpcStubBuffer*" Name="pThis" />
+            <Param Type="IRpcChannelBuffer*" Name="pChannel" />
+            <Param Type="PRPC_MESSAGE" Name="pRpcMsg" />
+            <Param Type="unsigned long*" Name="pdwStubPhase" />
+            <Return Type="long" />
+            <Success Return="Equal" Value="0" />
+        </Api>
+
+        <!-- Full Pointer -->
+        <Category Name="Networking/Remote Procedure Call (RPC)/RPC NDR Interface/Full Pointer" />
+        <Api Name="NdrFullPointerXlatInit">
+            <Param Type="unsigned long" Name="NumberOfPointers" />
+            <Param Type="XLAT_SIDE" Name="XlatSide" />
+            <Return Type="PFULL_PTR_XLAT_TABLES" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="NdrFullPointerXlatFree">
+            <Param Type="PFULL_PTR_XLAT_TABLES" Name="pXlatTables" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrFullPointerQueryPointer">
+            <Param Type="PFULL_PTR_XLAT_TABLES" Name="pXlatTables" />
+            <Param Type="void*" Name="pPointer" />
+            <Param Type="unsigned char" Name="QueryType" />
+            <Param Type="unsigned long*" Name="pRefId" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="NdrFullPointerQueryRefId">
+            <Param Type="PFULL_PTR_XLAT_TABLES" Name="pXlatTables" />
+            <Param Type="unsigned long" Name="RefId" />
+            <Param Type="unsigned char" Name="QueryType" />
+            <Param Type="void**" Name="ppPointer" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+        <Api Name="NdrFullPointerInsertRefId">
+            <Param Type="PFULL_PTR_XLAT_TABLES" Name="pXlatTables" />
+            <Param Type="unsigned long" Name="RefId" />
+            <Param Type="void*" Name="pPointer" />
+            <Return Type="void" />
+        </Api>
+        <Api Name="NdrFullPointerFree">
+            <Param Type="PFULL_PTR_XLAT_TABLES" Name="pXlatTables" />
+            <Param Type="void*" Name="Pointer" />
+            <Return Type="int" />
+            <Success Return="NotEqual" Value="0" />
+        </Api>
+
     </Module>
 </ApiMonitor>
